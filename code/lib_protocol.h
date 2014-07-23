@@ -7,6 +7,10 @@
  * Have a nice day! :)															*
  ********************************************************************************/
 
+/* @author: Audrey Yeoh (ayeohmy@gmail.com)
+ * @date: 7/22/2014
+ */
+
 #ifndef LIB_PROTOCOL_H
 #define LIB_PROTOCOL_H
 

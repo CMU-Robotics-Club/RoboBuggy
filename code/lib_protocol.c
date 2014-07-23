@@ -7,6 +7,11 @@
  * Have a nice day! :)															*
  ********************************************************************************/
 
+/* @author: Audrey Yeoh (ayeohmy@gmail.com)
+ * @date: 7/22/2014
+ */
+
+#include <Arduino.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,7 +32,7 @@
 *                      L O C A L    P R O T O T Y P E S
 ********************************************************************************/
 static uint32_t create_msg( uint8_t id, uint16_t msg);
-static Ret_E send_msg( uint32_t message );
+static Ret_E send_msg( uint32_t message );	// TODO: need to implement actual sending of message
 
 /********************************************************************************
 *                       G L O B A L    F U N C T I O N S
@@ -44,7 +49,7 @@ Ret_E protocol_send( uint8_t id, uint16_t msg )
 	// if more messages, append? << What do?
 
 	// send the message
-	send_msg( message );
+	success = send_msg( message );
 	// return state
 	return success;
 
@@ -63,4 +68,12 @@ static uint32_t create_msg( uint8_t id, uint16_t msg)
 	message = message << TWO_BYTE_SIZE;
 	message = message | msg;
 	return message;
+}
+
+static Ret_E send_msg( uint32_t message )
+{
+	Ret_E success = RET_ERROR;
+	// TODO!!!!! Send message
+
+	return success;
 }

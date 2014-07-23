@@ -7,6 +7,10 @@
  * Have a nice day! :)															*
  ********************************************************************************/
 
+/* @author: Audrey Yeoh (ayeohmy@gmail.com)
+ * @date: 7/22/2014
+ */
+
 #ifndef LIB_TYPES_H
 #define LIB_TYPES_H
 
@@ -16,9 +20,7 @@
 typedef enum 
 {
 	RET_OK,
-	RET_ERROR,
-	RET_BUFFER_UNAVAILABLE,
-	RET_NOT_INITIALIZED
+	RET_ERROR
 }Ret_E;
 
 
