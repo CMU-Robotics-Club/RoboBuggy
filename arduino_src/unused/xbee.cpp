@@ -1,7 +1,9 @@
 /**
  * Code relating to xbee
- *
+ * 
+ * This has been deprecated in favor of receiver.h
  */
+#include "Arduino.h"
 
 static int xbee_brake;
 static int xbee_angle;
@@ -19,6 +21,9 @@ void xbee_init() {
 
 
 }
+
+unsigned long timer = 0;
+byte data;
 
 void xbee_loop() {
   // receive and parse message from xbee

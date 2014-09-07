@@ -5,9 +5,10 @@
  * @author Zach Dawson
  * @author Matt Sebek
  */
+#include <Servo.h>
 
 Servo steer;  // create servo object to control a servo
-static int s_angle = STEERING_CENTER;
+static int s_angle;
 static int s_left, s_center, s_right;
 
 void steering_init(int SERVO_PIN, int left, int center, int right) {

@@ -10,10 +10,18 @@
 #ifndef _BRAKE_H_
 #define _BRAKE_H_
 
+#ifdef __cplusplus
+extern "C"{
+#endif
+
   void brake_init(int brakePin, int indicatorLedPin);
 
   void brake_raise();
 
   void brake_drop();
 
-#endif
+#ifdef __cplusplus
+} // extern "C"
+#endif /* __cplusplus */
+
+#endif /* _BRAKE_H_ */
