@@ -26,8 +26,8 @@ void loop() {
           byte incomingByte = Serial.read();
 
           // say what you got:
-          Serial.print("I received: ");
-          Serial.println(incomingByte, HEX);
+//          Serial.print("I received: ");
+//          Serial.println(incomingByte, HEX);
           
           if(incomingByte == HEAD)
           {
@@ -38,8 +38,9 @@ void loop() {
               incomingByte = Serial.read();
               pckt = pckt | incomingByte;  
             }
-           Serial.print("I received a packet! It is: ");
-           Serial.println(pckt, HEX); 
+//           Serial.print("I received a packet! It is: ");
+//           Serial.println(pckt, HEX); 
+           Serial.write(pckt);
           }
           // parse the byte?
           
