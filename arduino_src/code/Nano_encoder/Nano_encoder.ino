@@ -18,11 +18,14 @@
 
 unsigned long loop_starttime = 0;
 unsigned long last_looptime = 0;
-unsigned long count = 0;
+unsigned long reset_count;
+unsigned long last_count;
 
 void setup()
 {
   Serial.begin(9600);
+  reset_count = 0; // this is for the reset reset_count
+  last_count = 0;
 }
 
 
@@ -34,21 +37,30 @@ void loop()
   
   // D CODE GOES HEREEEEEE
   
-  // get count (already stored) TODO!
+  // get reset_count (already stored) TODO!
   
-  // split the count 
-  unsigned int upper_message = count >> 16;
-  unsigned int lower_message = count & 0xFF;
-  // send the two counts
+  // split the reset_count 
+  unsigned int upper_message = reset_count >> 16;
+  unsigned int lower_message = reset_count & 0xFF;
+  // send the two parts of reset_count
+  protocol_send(ENC_BYTE_ONE_TICK_RESET, upper_message);
+  protocol_send(ENC_BYTE_TWO_TICK_RESET , lower_message);
+  
+  // split the last_count
+  upper_message = last_count >> 16;
+  lower_message = last_count & 0xFF;
+  // send the two parts of last_count
   protocol_send(ENC_BYTE_ONE_TICK_LAST, upper_message);
   protocol_send(ENC_BYTE_TW0_TICK_LAST, lower_message);
-
+  
+  // reset the last count after the send
+  last_count = 0;
   
   /*************** TAIL OF TIMING LOOP **************/
   last_looptime = millis() - loop_starttime;
   while (last_looptime < LOOP_TIME)
   {
-    // count d tick?
+    // reset_count d tick?
     last_looptime = millis() - loop_starttime;
   }
   /************* END OF TAIL OF TIMING LOOP *********/
