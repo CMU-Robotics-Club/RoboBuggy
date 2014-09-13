@@ -43,15 +43,15 @@ void loop()
   unsigned int upper_message = reset_count >> 16;
   unsigned int lower_message = reset_count & 0xFF;
   // send the two parts of reset_count
-  protocol_send(ENC_BYTE_ONE_TICK_RESET, upper_message);
-  protocol_send(ENC_BYTE_TWO_TICK_RESET , lower_message);
+  Serial.println(protocol_send(ENC_BYTE_ONE_TICK_RESET, upper_message), HEX);
+  Serial.println(protocol_send(ENC_BYTE_TWO_TICK_RESET, lower_message), HEX);
   
   // split the last_count
   upper_message = last_count >> 16;
   lower_message = last_count & 0xFF;
   // send the two parts of last_count
-  protocol_send(ENC_BYTE_ONE_TICK_LAST, upper_message);
-  protocol_send(ENC_BYTE_TW0_TICK_LAST, lower_message);
+  Serial.println(protocol_send(ENC_BYTE_ONE_TICK_LAST, upper_message), HEX);
+  Serial.println(protocol_send(ENC_BYTE_TW0_TICK_LAST, lower_message), HEX);
   
   // reset the last count after the send
   last_count = 0;
@@ -64,4 +64,12 @@ void loop()
     last_looptime = millis() - loop_starttime;
   }
   /************* END OF TAIL OF TIMING LOOP *********/
+}
+
+void send_time(unsigned long time)
+{
+   unsigned int upper_message = time >> 16;
+   unsigned int lower_message = time & 0xFF;
+   Serial.println(protocol_send(ENC_TIMESTAMP_ONE, upper_message), HEX);
+   Serial.println(protocol_send(ENC_TIMESTAMP_TWO, lower_message), HEX);
 }
