@@ -7,7 +7,7 @@
  * Have a nice day! :)															*
  ********************************************************************************/
 
-
+#include "lib_test.h"
 #include "IO_pad.h"
 #include "lib_protocol.h"
 #include "lib_types.h"

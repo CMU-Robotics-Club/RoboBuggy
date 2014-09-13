@@ -26,13 +26,13 @@ void setup()
 
 void loop()
 {
-  // Timing Loop
   /*************** HEAD OF TIMING LOOP **************/
   loop_starttime = millis();
   /*************** END OF TIMING LOOP HEAD **********/
   
   // D CODE GOES HEREEEEEE
   // send tick count via the lib_protocol library
+  
 
 
   

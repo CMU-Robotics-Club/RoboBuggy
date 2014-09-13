@@ -30,6 +30,13 @@ typedef enum
 	RET_ERROR
 }Ret_E;
 
+// Define all the signals in the protocol index
+#define ENC_BYTE_ONE_TICK_LAST 0
+#define ENC_BYTE_TW0_TICK_LAST 1
+#define ENC_BYTE_ONE_TICK_RESET 2
+#define ENC_BYTE_TWO_TICK_RESET 3
+#define ENC_TIMESTAMP_ONE 4
+#define ENC_TIMESTAMP_TWO 5
 
 #ifdef __cplusplus
 }
