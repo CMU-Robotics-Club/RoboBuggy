@@ -11,12 +11,14 @@
  * @author: Audrey Yeoh (ayeoh) 
  */
 
-// loop time in milli seconds 
-#define LOOP_TIME 100 
+#define LOOP_TIME 100
+
+#include "lib_protocol.h"
+#include "lib_types.h"
 
 unsigned long loop_starttime = 0;
 unsigned long last_looptime = 0;
-
+unsigned long count = 0;
 
 void setup()
 {
@@ -31,9 +33,15 @@ void loop()
   /*************** END OF TIMING LOOP HEAD **********/
   
   // D CODE GOES HEREEEEEE
-  // send tick count via the lib_protocol library
   
-
+  // get count (already stored) TODO!
+  
+  // split the count 
+  unsigned int upper_message = count >> 16;
+  unsigned int lower_message = count & 0xFF;
+  // send the two counts
+  protocol_send(ENC_BYTE_ONE_TICK_LAST, upper_message);
+  protocol_send(ENC_BYTE_TW0_TICK_LAST, lower_message);
 
   
   /*************** TAIL OF TIMING LOOP **************/

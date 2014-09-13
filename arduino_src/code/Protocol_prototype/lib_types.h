@@ -26,10 +26,9 @@ extern "C"{
 
 typedef enum 
 {
-	HELP,
-	DYING
-}Help_E;
-
+	RET_OK,
+	RET_ERROR
+}Ret_E;
 
 #ifdef __cplusplus
 }

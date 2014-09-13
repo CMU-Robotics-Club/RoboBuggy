@@ -24,12 +24,6 @@ extern "C"{
 #define ONE_BYTE_SIZE 8
 #define TWO_BYTE_SIZE 16
 
-typedef enum 
-{
-	RET_OK,
-	RET_ERROR
-}Ret_E;
-
 // Define all the signals in the protocol index
 #define ENC_BYTE_ONE_TICK_LAST 0
 #define ENC_BYTE_TW0_TICK_LAST 1
@@ -37,6 +31,12 @@ typedef enum
 #define ENC_BYTE_TWO_TICK_RESET 3
 #define ENC_TIMESTAMP_ONE 4
 #define ENC_TIMESTAMP_TWO 5
+
+typedef enum 
+{
+	RET_OK,
+	RET_ERROR
+}Ret_E;
 
 #ifdef __cplusplus
 }
