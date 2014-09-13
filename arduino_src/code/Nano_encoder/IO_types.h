@@ -7,21 +7,24 @@
  * Have a nice day! :)															*
  ********************************************************************************/
 
-/* @author: Audrey Yeoh (ayeohmy@gmail.com)
- * @date: 7/22/2014
- */
+#ifndef IO_TYPES_H_
+#define IO_TYPES_H_
 
-#ifndef LIB_TYPES_H
-#define LIB_TYPES_H
+#include <Arduino.h>
 
-#include <stdint.h>
-
+#ifdef __cplusplus
+extern "C"{
+#endif
 
 typedef enum 
-{
-	RET_OK,
-	RET_ERROR
-}Ret_E;
+{  
+	low,
+	high
+}IO_state_e;
 
 
-#endif // LIB_TYPES_H
+
+#ifdef __cplusplus
+} // extern "C"
+#endif
+#endif

@@ -11,8 +11,16 @@
  * @date: 7/22/2014
  */
 
+
+
 #ifndef LIB_PROTOCOL_H
 #define LIB_PROTOCOL_H
+
+#include <Arduino.h>
+
+#ifdef __cplusplus
+extern "C"{
+#endif
 
 #include "lib_types.h"
 
@@ -25,8 +33,11 @@
 
 Ret_E protocol_init( void ); // TODO: I'm not sure exactly what needs to be initialized yet
 Ret_E protocol_run( void ); // TODO:
-Ret_E protocol_send(uint8_t id, uint16_t message); // Currently working on
+unsigned long protocol_send( byte id, unsigned int message); // Currently working on
+unsigned long protocol_getMessage(unsigned long packet);
+unsigned long protocol_getID(unsigned long packet);
 
-
-
+#ifdef __cplusplus
+}
+#endif
 #endif // LIB_PROTOCOL_H

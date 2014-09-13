@@ -7,14 +7,32 @@
  * Have a nice day! :)															*
  ********************************************************************************/
 
-#ifndef IO_PAD_H_
-#define IO_PAD_H_
+/* @author: Audrey Yeoh (ayeohmy@gmail.com)
+ * @date: 7/22/2014
+ */
 
-#include "IO_types.h"
-
-
-IO_ret_e IO_set_pad( uint8_t pad, uint8_t value);
-IO_ret_e IO_set_state( uint8_t pad, IO_state_e state );
-
-
+#ifndef LIB_TYPES_H
+#define LIB_TYPES_H
+#ifdef __cplusplus
+extern "C"{
 #endif
+
+#include <stdint.h>
+#include <Arduino.h>
+
+#define HEAD 0xFC
+#define ONE_BYTE_SIZE 8
+#define TWO_BYTE_SIZE 16
+
+typedef enum 
+{
+	RET_OK,
+	RET_ERROR
+}Ret_E;
+
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif // LIB_TYPES_H

@@ -9,7 +9,7 @@
 
 #include <Arduino.h>
 #include "IO_pad.h"
-
+#include "lib_types.h"
 /*********************************************************************************
  *						L O C A L    P R O T O T Y P E S						 *
  ********************************************************************************/
@@ -21,18 +21,18 @@
 /*********************************************************************************
  *						G L O B A L    F U N C T I O N S						 *
  ********************************************************************************/
-IO_ret_e IO_set_pad( uint8_t pad, uint8_t value )
+Ret_E IO_set_pad( byte pad, byte value )
 {
-	IO_ret_e success = RET_ERROR;
+	Ret_E success = RET_ERROR;
 	analogWrite(pad, value);
 	success = RET_OK;
 	return success;
 }
 
 
-IO_ret_e IO_set_state( uint8_t pad, IO_state_e state)
+Ret_E IO_set_state( byte pad, IO_state_e state)
 {
-	IO_ret_e success = RET_ERROR;
+	Ret_E success = RET_ERROR;
 	digitalWrite(pad, state);
 	success = RET_OK;
 	return success;

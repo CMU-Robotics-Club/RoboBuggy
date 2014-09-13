@@ -7,20 +7,23 @@
  * Have a nice day! :)															*
  ********************************************************************************/
 
-#ifndef IO_TYPES_H_
-#define IO_TYPES_H_
-
-typedef enum 
-{  
-	LOW,
-	HIGH
-}IO_state_e;
 
 
-typedef enum 
-{  
-	RET_OK,
-	RET_ERROR
-}IO_ret_e;
+#ifndef IO_PAD_H_
+#define IO_PAD_H_
+#include <Arduino.h>
+#include "IO_types.h"
+#include "lib_types.h"
 
+#ifdef __cplusplus
+extern "C"{
+#endif
+
+
+Ret_E IO_set_pad( byte pad, byte value);
+Ret_E IO_set_state( byte pad, IO_state_e state );
+
+#ifdef __cplusplus
+}
+#endif
 #endif
