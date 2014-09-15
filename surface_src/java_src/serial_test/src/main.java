@@ -15,8 +15,9 @@ public class main {
     public static void main(String args[]) {
 
         try {
-            CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier("/dev/tty1");
-            CommPort commPort = portIdentifier.open("owner-name", 2000);
+             CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier("COM5");
+            
+             CommPort commPort = portIdentifier.open("owner-name", 2000);
             SerialPort serialPort = null;
             int rate = 9600;
             int databits = SerialPort.DATABITS_8;
@@ -28,6 +29,19 @@ public class main {
             }
             InputStream in = serialPort.getInputStream();
             OutputStream out = serialPort.getOutputStream();
+            
+            byte[] arr = new byte[10];
+            
+            while(true) {
+            	if(in.available() > 10)
+            	{
+            		int n = in.read(arr);
+            		String temp = new String(arr);
+            		System.out.println(temp);
+            		//System.out.println((char)arr[0]);
+            		System.out.println(Arrays.toString(arr));
+            	}
+            }
             //
             // Use port identifier for acquiring the port
         } catch (Exception e) {
