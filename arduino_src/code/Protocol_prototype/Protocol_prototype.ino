@@ -22,7 +22,7 @@ void loop() {
   byte index = 0x01;
   unsigned int message = 0xDEAD;
   unsigned long packet = protocol_send(index, message);
-  Serial.write(packet);
+  Serial.write((uint8_t*)packet, 4);
   
   // TODO: should have a safe fault eg. packet != NULL
 //  Serial.print("The packet is: ");
