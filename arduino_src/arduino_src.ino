@@ -4,6 +4,7 @@
  * @author Zach Dawson (zachyzach)
  * @author Matt Sebek (msebek)
  */
+#include <WProgram.h>
 #include <Servo.h>
 #include "receiver.h"
 #include "brake.h"
