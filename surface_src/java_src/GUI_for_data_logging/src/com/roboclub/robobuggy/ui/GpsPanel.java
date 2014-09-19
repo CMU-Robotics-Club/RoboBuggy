@@ -20,7 +20,7 @@ public class GpsPanel extends JPanel {
 		
 		BufferedImage myPicture;
 		try {
-			myPicture = ImageIO.read(new File("path-to-file"));
+			myPicture = ImageIO.read(new File("map.jpg"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
