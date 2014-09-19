@@ -11,7 +11,7 @@ static int brake_pin;
 static int indicator_pin;
 
 void brake_init(int brakePin, int indicatorLed) {
-  pinMode(brake_pin, OUTPUT);
+  pinMode(brakePin, OUTPUT);
   pinMode(indicatorLed, OUTPUT);
   brake_pin = brakePin;
   indicator_pin = indicatorLed;
