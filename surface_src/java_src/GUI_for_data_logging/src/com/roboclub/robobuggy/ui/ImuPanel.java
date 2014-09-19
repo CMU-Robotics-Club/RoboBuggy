@@ -21,8 +21,7 @@ public class ImuPanel extends SerialPanel {
 
 	public ImuPanel(String port_name, int baud_rate) throws Exception {
 		super(port_name, "ARDUINO", 9600);
-		JPanel otherDataPanel = new JPanel();
-	    otherDataPanel.setLayout(new GridLayout(3, 1));			
+	    this.setLayout(new GridLayout(3, 1));			
 
 
 		//odom
@@ -30,20 +29,20 @@ public class ImuPanel extends SerialPanel {
         final JFreeChart chart = createOdomChart(dataset);
         final ChartPanel odomChartPanel = new ChartPanel(chart);
 //        odomChartPanel.setPreferredSize(new java.awt.Dimension(200, 200));
-        otherDataPanel.add(odomChartPanel);
+        this.add(odomChartPanel);
        
         //imu_rotX
         final XYDataset dataset1 = createDataset();
         final JFreeChart chart1 = createIMURotXChart(dataset);
         final ChartPanel imuRotXChartPanel = new ChartPanel(chart);
 //        imuRotXChartPanel.setPreferredSize(new java.awt.Dimension(200, 270));
-        otherDataPanel.add(imuRotXChartPanel);
+        this.add(imuRotXChartPanel);
         
         //comand_angle
         final XYDataset  dataset2 = createDataset();
         final JFreeChart chart2 = createCommandAngleChart(dataset);
         final ChartPanel commandAngleChartPanel = new ChartPanel(chart);
-        otherDataPanel.add(commandAngleChartPanel);
+        this.add(commandAngleChartPanel);
 }
 
 

@@ -23,12 +23,13 @@ public class ControlsPanel extends JPanel {
 	private JButton startPause_btn;
 	private JLabel time_lbl;
 	private boolean playPauseState;
-	
+    private Date startPressedTime;	
+    private Timer timer;
+    
 	public ControlsPanel() {
 		//stuff for setting up logging ie start/stop, file name ...
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
-		JPanel dataLoggingPanel = new JPanel();
-		dataLoggingPanel.setLayout(new GridLayout(4, 1));
+		this.setLayout(new GridLayout(4, 1));
 		startPause_btn = new JButton("Start");
 		playPauseState = true;
 		startPause_btn.setFont(new Font("serif", Font.PLAIN, 70));
@@ -37,32 +38,31 @@ public class ControlsPanel extends JPanel {
 		startPause_btn.addActionListener(startPauseHandler);
 		JLabel currentFile_lbl = new JLabel("currentFile",SwingConstants.CENTER);
 		JLabel newFile_lbl = new JLabel("newFile",SwingConstants.CENTER);
-		Date dateobj = new Date();
 		
-	    System.out.println("");
 
-		time_lbl = new JLabel("SystemTime: " + df.format(dateobj) + " logTime: ",SwingConstants.CENTER);
-	
-		Timer timer = new Timer(10, new timerHandler());//updates every .01 seconds
-		timer.setInitialDelay(200); //waits .2 seconds to start for first time
-		timer.setDelay(200);
+		time_lbl = new JLabel("",SwingConstants.CENTER);
+		time_lbl.setFont(new Font("sanserif",Font.PLAIN,70));
+		
+		timer = new Timer(10, new timerHandler());//updates every .01 seconds
+		timer.setDelay(100);
 	    timer.setRepeats(true);	
-	    timer.setCoalesce(false);
-	    timer.start();
+	   
 
-		dataLoggingPanel.add(startPause_btn);
-		dataLoggingPanel.add(currentFile_lbl);
-		dataLoggingPanel.add(newFile_lbl);
-		dataLoggingPanel.add(time_lbl);
+		this.add(startPause_btn);
+		this.add(currentFile_lbl);
+		this.add(newFile_lbl);
+		this.add(time_lbl);
 	}
 	
-	DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+	DateFormat df = new SimpleDateFormat("HH:mm:ss.S");
 	private class timerHandler implements ActionListener
 	{
 		@Override
 		public void actionPerformed(ActionEvent ae) {
 			Date now = new Date();
-			time_lbl.setText("REPAINTED SystemTime: " + df.format(now) + " logTime: ");
+			long difference = now.getTime() - startPressedTime.getTime();
+			time_lbl.setText(df.format(now) + "/" + df.format(new Date(difference)));
+			
 			repaint();
 		}
 	}
@@ -71,18 +71,19 @@ public class ControlsPanel extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			
-			System.out.println("Button was pressed!");
 			//inverts the state of the system every time the button is pressed 
 			playPauseState = !playPauseState;
 			if(playPauseState)
 			{	
 				startPause_btn.setBackground(Color.RED);
 				startPause_btn.setText("Pause");
-			}else
-			{	
+				
+				timer.start();
+				startPressedTime = new Date();
+			} else {
 				startPause_btn.setBackground(Color.GREEN);
 				startPause_btn.setText("Start");
+				timer.stop();
 			}
 			repaint();
 		}
