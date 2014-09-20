@@ -6,6 +6,8 @@ import serial.SerialListener;
 import serial.SerialReader;
 
 abstract class SerialPanel extends JPanel {
+	private static final long serialVersionUID = 8010633614957618540L;
+	
 	private SerialReader port;
 	private SerialListener listener;
 	
