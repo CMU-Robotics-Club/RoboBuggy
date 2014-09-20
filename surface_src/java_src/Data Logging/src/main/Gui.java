@@ -16,41 +16,46 @@ public class Gui extends JFrame {
 	
 	public Gui() {
 		window = new JFrame();
+		window.setSize(1000, 500);
 		
 		// Initialize Panels for Window
 		try {
 			cameraPanel = new CameraPanel( CAMERA_ID );
-			gpsPanel = new GpsPanel();
+			/*gpsPanel = new GpsPanel();
 			arduinoPanel = new ArduinoPanel();
 			controlsPanel = new ControlsPanel();
-			imuPanel = new ImuPanel();
+			imuPanel = new ImuPanel();*/
 		} catch (Exception e) {
-			System.out.println("Failed to Initialize Panels!");
-			System.exit(-1);
+			e.printStackTrace();
+			closeWindow(-1);
 		}
 		
 		// Close ports and close window upon exit
 		window.addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-		    	gpsPanel.closePort();
-		    	arduinoPanel.closePort();
-		    	imuPanel.closePort();
-		    	cameraPanel.close();
-		    	
-		        System.exit(0);
+		    	closeWindow(0);
 		    }
 		});
 		
 		// Add panels to window
 		window.add(cameraPanel);
-		window.add(gpsPanel);
+		/*window.add(gpsPanel);
 		window.add(arduinoPanel);
 		window.add(controlsPanel);
-		window.add(imuPanel);
+		window.add(imuPanel);*/
 		
 		window.setVisible(true);
-		window.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		window.setResizable(false);
+	}
+	
+	private void closeWindow(int exitCode) {
+		//gpsPanel.closePort();
+    	//arduinoPanel.closePort();
+    	//imuPanel.closePort();
+    	cameraPanel.close();
+    	
+        System.exit(exitCode);
 	}
 	
 	@SuppressWarnings("unused")
