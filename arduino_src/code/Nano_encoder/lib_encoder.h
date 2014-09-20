@@ -9,7 +9,7 @@
 extern "C"{
 #endif
 	//sets up the encoder with the given Pin
-	void encoder_init(int encPin);
+	void encoder_init(int encoderPin);
 	
 	//returns the count of the encoder
 	void get_enc_count();

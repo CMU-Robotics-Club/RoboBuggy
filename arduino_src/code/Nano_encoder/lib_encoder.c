@@ -1,27 +1,31 @@
 /**
- * @file encoder.h
- * @author Audrey Yeoh (ayeoh)
- * @author Matt Sebek (msebek)
+ * @file lib_encoder.c
+ * @author Joseph Paetz (rpaetz)
  */
-#ifndef _ENCODER_H_
-#define _ENCODER_H_
+#include <Arduino.h>
+#include "lib_encoder.h"
 
-#ifdef __cplusplus
-extern "C"{
-#endif
+//-------local Variables-----------------
+//required to be volatile for interrupts
+volatile int encCount = 0;
 
-  void encoder_init(int encoder_pin);
+//-------local function prototypes-----------
+void increment_encoder();
 
-  // Every X ms, publish.
-  void encoder_publish();
+//------------global functions---------------
+//sets up the encoder with the given Pin
+void encoder_init(){
+	pinMonde(ENC_PIN, INPUT);
+	attachInterrupt(INTERRUPT_NUM, increment_encoder, CHANGE); 
+}
 
-  int encoder_get_count();
+void get_enc_count(){
+	return encCount;
+}
 
-  // Lightweight, checks low-pri encoder loop
-  void encoder_loop();
-
-#ifdef __cplusplus
-} // extern "C"
-#endif /* __cplusplus */
-
-#endif /* _ENCODER_H_ */
+//-----------local Functions------------------
+//this will count every time the encoder goes from 
+//high to low or low to high
+void increment_encoder(){
+	encCount++;
+}
