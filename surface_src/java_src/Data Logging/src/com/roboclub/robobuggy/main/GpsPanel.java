@@ -1,5 +1,13 @@
 package com.roboclub.robobuggy.main;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+
+import javax.imageio.ImageIO;
+
+import java.awt.FlowLayout;
+import java.awt.Graphics;
+
 import com.roboclub.robobuggy.serial.SerialEvent;
 import com.roboclub.robobuggy.serial.SerialListener;
 
@@ -18,8 +26,15 @@ public class GpsPanel extends SerialPanel {
 	/** Index of longitude data as received during serial communication */
 	private static final int LONGITUDE = 1;
 	
+	/* Panel Dimensons */
+	private static final int PANEL_WIDTH = 400;
+	private static final int PANEL_HEIGHT = 300;
+	private static final int WIDTH = 400;
+	private static final int HEIGHT = 270;
+	
 	private double longitude;
 	private double latitude;
+	private BufferedImage map;
 	
 	/**
 	 * Constructor for GPS panel on user interface. Initializes a serial communication
@@ -29,8 +44,21 @@ public class GpsPanel extends SerialPanel {
 	public GpsPanel() {
 		super("GPS", BAUDRATE, HEADER, HEADER_LEN);
 		super.addListener(new GpsListener());
+		this.setLayout(new FlowLayout(FlowLayout.LEFT, 1, 0));
+		// Load map image as background
+		try {
+			map = ImageIO.read(new File("images/course_map.png"));
+		} catch (Exception e) {
+			// TODO error handling
+			return;
+		}
+	}
+	
+	@Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
 		
-		//TODO add chart for plotting latitude and longitude
+		g.drawImage(map, 0, (PANEL_HEIGHT-HEIGHT), null);
 	}
 	
 	/**
@@ -71,6 +99,8 @@ public class GpsPanel extends SerialPanel {
 						curVal += tmp[i];
 					}
 				}
+
+				//TODO redraw now
 			}
 		}
 	}
