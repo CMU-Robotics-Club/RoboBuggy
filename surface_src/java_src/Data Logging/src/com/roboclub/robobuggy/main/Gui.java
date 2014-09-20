@@ -28,7 +28,7 @@ public class Gui extends JFrame {
 			gpsPanel = new GpsPanel();
 			//arduinoPanel = new ArduinoPanel();
 			//controlsPanel = new ControlsPanel();
-			//imuPanel = new ImuPanel();
+			imuPanel = new ImuPanel();
 		} catch (Exception e) {
 			e.printStackTrace();
 			closeWindow(-1);
@@ -44,10 +44,10 @@ public class Gui extends JFrame {
 		
 		// Add panels to window
 		//window.add(cameraPanel);
-		window.add(gpsPanel);
+		//window.add(gpsPanel);
 		//window.add(arduinoPanel);
 		//window.add(controlsPanel);
-		//window.add(imuPanel);
+		window.add(imuPanel);
 		
 		window.setVisible(true);
 		window.setResizable(false);

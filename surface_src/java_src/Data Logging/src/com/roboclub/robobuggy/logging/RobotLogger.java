@@ -25,16 +25,22 @@ public final class RobotLogger {
 	
 	public static RobotLogger getInstance(){
 		if(instance == null){
-			File fileToLogTo = new File("C:\\Users\\Matt\\buggy-log");
+			System.out.println("Logging File Created \n");
+			File fileToLogTo = new File("C:\\Users\\Robot\\buggy-log");
 			fileToLogTo.mkdirs();
-			instance = new RobotLogger(fileToLogTo);
+			try {
+				instance = new RobotLogger(fileToLogTo);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return instance;
 		
 	}
 
 	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-	private RobotLogger(File logdir) {
+	private RobotLogger(File logdir) throws Exception {
 		Date d = new Date();
 		this.message = Logger.getLogger("RoboBuggy");
 		File msgFile = new File(logdir,df.format(d) + "-messages.log");

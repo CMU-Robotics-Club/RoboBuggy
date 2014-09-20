@@ -74,7 +74,7 @@ public final class SensorLogger {
 					}
 				}
 			}
-		}.start();
+		}.start();  //TODO please make eaiser to read
 		return ret;
 	};
 	
@@ -91,7 +91,7 @@ public final class SensorLogger {
 						ImageIO.write(img.img, "jpg", new File(outDir,img.tag + ".jpg"));
 					} catch (InterruptedException e) {
 						e.printStackTrace();
-					} catch (IOException e) {
+ 					} catch (IOException e) {
 						e.printStackTrace();
 					}
 				}
@@ -100,10 +100,19 @@ public final class SensorLogger {
 		return ret;
 	};
 
-	public SensorLogger(File outputDir,Date startTime) {
-		outputDir.mkdirs();
-
-		File csvFile = new File(outputDir,startTime.toString() + " sensors.csv");
+	public SensorLogger(File outputDir,Date startTime) throws Exception {
+		//check if dir exits
+		if(outputDir == null){
+			throw new Exception("Output Directory was null!");
+		} else if (!outputDir.exists()) {
+			outputDir.mkdirs();
+		}
+		String outputFileName = startTime.toString();
+		outputFileName = outputFileName.replaceAll(" ","");
+		outputFileName = outputFileName.replaceAll(":", "_");
+		System.out.println("FileToWriteto:"+outputFileName);
+		File csvFile = new File(outputDir,outputFileName + "sensors.csv");
+		System.out.println("file Created \n");
 		try {
 			_csv = new PrintStream(csvFile);
 		} catch (FileNotFoundException e) {
