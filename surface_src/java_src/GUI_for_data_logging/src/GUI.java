@@ -1,32 +1,32 @@
 import java.awt.*;
-
-import javax.imageio.ImageIO;
 import javax.swing.*;
 
-import java.awt.event.*;
-import java.awt.image.BufferedImage;
-import java.util.Date;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.awt.Color;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
-import org.jfree.data.xy.XYDataset;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
-import org.opencv.core.Core;
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfByte;
-import org.opencv.highgui.Highgui;
-import org.opencv.highgui.VideoCapture;
+//import javax.imageio.ImageIO;
+//
+//import java.awt.event.*;
+//import java.awt.image.BufferedImage;
+//import java.util.Date;
+//import java.text.DateFormat;
+//import java.text.SimpleDateFormat;
+//import java.awt.Color;
+//import java.io.ByteArrayInputStream;
+//import java.io.InputStream;
+//
+//import org.jfree.chart.ChartFactory;
+//import org.jfree.chart.ChartPanel;
+//import org.jfree.chart.JFreeChart;
+//import org.jfree.chart.axis.NumberAxis;
+//import org.jfree.chart.plot.PlotOrientation;
+//import org.jfree.chart.plot.XYPlot;
+//import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+//import org.jfree.data.xy.XYDataset;
+//import org.jfree.data.xy.XYSeries;
+//import org.jfree.data.xy.XYSeriesCollection;
+//import org.opencv.core.Core;
+//import org.opencv.core.Mat;
+//import org.opencv.core.MatOfByte;
+//import org.opencv.highgui.Highgui;
+//import org.opencv.highgui.VideoCapture;
 
 import com.roboclub.robobuggy.ui.ArduinoPanel;
 import com.roboclub.robobuggy.ui.CameraPanel;
@@ -82,11 +82,8 @@ public class GUI extends JFrame
 		mainFrame.add(arduinoPanel);
 		mainFrame.repaint();
 		
-		mainFrame = mainFrame;
 		// TODO: add imuPanel
 	}
-	
-
 	
 	public static void main(String[] args) throws Exception
 	{
@@ -104,7 +101,4 @@ public class GUI extends JFrame
 
 	}
 	
-}
-	
-	
-       
+}      
