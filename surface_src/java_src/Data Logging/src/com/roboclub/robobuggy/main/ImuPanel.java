@@ -22,9 +22,9 @@ public class ImuPanel extends SerialPanel {
 	
 	/* Constants for serial communication */
 	/** Header char array for choosing serial port */
-	private static final char[] HEADER = {'#', 'A', 'C', 'G'};
+	private static final char[] HEADER = {'#', 'A', 'C', 'G','='};
 	/** Length of header char array */
-	private static final int HEADER_LEN = 4;
+	private static final int HEADER_LEN = 5;
 	/** Baud rate for serial port */
 	private static final int BAUDRATE = 57600;
 	/** Index of accel x data as received during serial communication */
@@ -46,6 +46,7 @@ public class ImuPanel extends SerialPanel {
 	/** Index of magnetometer z data as received during serial communication */
 	private static final int MZ = 8;
 	
+	private boolean valid;
 	private float aX;
 	private float aY;
 	private float aZ;
@@ -58,8 +59,7 @@ public class ImuPanel extends SerialPanel {
 	
 	public ImuPanel() throws Exception {
 		super("IMU", BAUDRATE, HEADER, HEADER_LEN);
-		super.addListener(new ImuListener());
-		
+		super.addListener(new ImuListener());		
 		this.setLayout(new GridLayout(3, 1));			
 
 		//odom
@@ -92,13 +92,17 @@ public class ImuPanel extends SerialPanel {
 	private class ImuListener implements SerialListener {
 		@Override
 		public void onEvent(SerialEvent event) {
+			valid = false;
 			char[] tmp = event.getBuffer();
 			int index = 0;
 			
 			if (tmp != null && event.getLength() > HEADER_LEN) {
 				String curVal = "";
 				for (int i = HEADER_LEN; i < event.getLength(); i++ ) {
-					if (tmp[i] == ',' || tmp[i] == '\n') {
+					if(tmp[i] == '\n'){
+						break;
+					}
+					if (tmp[i] == ',' ){ 
 						try {
 							switch ( index ) {
 							case AX:
@@ -131,11 +135,10 @@ public class ImuPanel extends SerialPanel {
 							default:
 								return;
 							}
-							
 							curVal = "";
 							index++;
 						} catch (Exception e) {
-							System.out.println("Failed to parse gps message");
+							System.out.println("Failed to parse IMU message");
 							return;
 						}
 						
@@ -144,6 +147,7 @@ public class ImuPanel extends SerialPanel {
 					}
 				}
 			}
+			System.out.format("IMU Values: aX: %f aY: %f aZ: %f rX: %f rY: %f rZ: %f mX: %f mY: %f mZ: %f \n",aX,aY,aZ,rX,rY,rZ,mX,mY,mZ);
 		}
 	}
 	
