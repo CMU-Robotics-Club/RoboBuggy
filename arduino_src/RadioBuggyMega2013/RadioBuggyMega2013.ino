@@ -65,7 +65,7 @@ void setup()  {
   filter_init(&thr_state);
   watchdog_init(TIME_THRESH, &watchdog_fail);
   brake_init(BRAKE_PIN, BRAKE_INDICATOR_PIN);
-  steering_init(STEERING_PIN, 120, 133, 145);
+  steering_init(STEERING_PIN, 107, 126, 145);
   encoder_init(ENCODER_PIN);
 
   pinMode(LED_DANGER_PIN, OUTPUT);
