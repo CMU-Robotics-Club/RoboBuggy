@@ -72,6 +72,8 @@ public class SerialReader implements SerialPortEventListener {
 						}
 						
 						port.close();
+						input.close();
+						output.close();
 					} catch ( Exception e ) {
 						throw new Exception( "Unable to open serial port");
 					}
@@ -134,6 +136,12 @@ public class SerialReader implements SerialPortEventListener {
 	}
 	
 	public void close() {
-		port.close();
+		try {
+			input.close();
+			output.close();
+			port.close();
+		} catch (Exception e) {
+			System.exit(-1);
+		}
 	}
 }
