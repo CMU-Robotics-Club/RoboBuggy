@@ -19,9 +19,33 @@ import com.roboclub.robobuggy.serial.SerialListener;
 
 public class ImuPanel extends SerialPanel {
 	private static final long serialVersionUID = -929040896215455343L;
+	
+	/* Constants for serial communication */
+	/** Header char array for choosing serial port */
 	private static final char[] HEADER = {'#', 'A', 'C', 'G'};
+	/** Length of header char array */
 	private static final int HEADER_LEN = 4;
-
+	/** Baud rate for serial port */
+	private static final int BAUDRATE = 57600;
+	/** Index of accel x data as received during serial communication */
+	private static final int AX = 0;
+	/** Index of accel y data as received during serial communication */
+	private static final int AY = 1;
+	/** Index of accel z data as received during serial communication */
+	private static final int AZ = 2;
+	/** Index of gyro x data as received during serial communication */
+	private static final int RX = 3;
+	/** Index of gyro y data as received during serial communication */
+	private static final int RY = 4;
+	/** Index of gyro z data as received during serial communication */
+	private static final int RZ = 5;
+	/** Index of magnetometer x data as received during serial communication */
+	private static final int MX = 6;
+	/** Index of magnetometer y data as received during serial communication */
+	private static final int MY = 7;
+	/** Index of magnetometer z data as received during serial communication */
+	private static final int MZ = 8;
+	
 	private float aX;
 	private float aY;
 	private float aZ;
@@ -33,7 +57,7 @@ public class ImuPanel extends SerialPanel {
 	private float mZ;
 	
 	public ImuPanel() throws Exception {
-		super("IMU", 57600, HEADER, HEADER_LEN);
+		super("IMU", BAUDRATE, HEADER, HEADER_LEN);
 		super.addListener(new ImuListener());
 		
 		this.setLayout(new GridLayout(3, 1));			
@@ -59,10 +83,67 @@ public class ImuPanel extends SerialPanel {
         this.add(commandAngleChartPanel);
 	}
 
+	/**
+	 * ImuListener is an event handler for serial communication. It is notified
+	 * every time a complete message is received by serial port for the given
+	 * panel. It handles the serial event and parses the data to update the
+	 * current properties of the given panel.
+	 */
 	private class ImuListener implements SerialListener {
 		@Override
 		public void onEvent(SerialEvent event) {
-			//TODO parse serial event
+			char[] tmp = event.getBuffer();
+			int index = 0;
+			
+			if (tmp != null && event.getLength() > HEADER_LEN) {
+				String curVal = "";
+				for (int i = HEADER_LEN; i < event.getLength(); i++ ) {
+					if (tmp[i] == ',' || tmp[i] == '\n') {
+						try {
+							switch ( index ) {
+							case AX:
+								aX = Float.valueOf(curVal);
+								break;
+							case AY:
+								aY = Float.valueOf(curVal);
+								break;
+							case AZ:
+								aZ = Float.valueOf(curVal);
+								break;
+							case RX:
+								rX = Float.valueOf(curVal);
+								break;
+							case RY:
+								rY = Float.valueOf(curVal);
+								break;
+							case RZ:
+								rZ = Float.valueOf(curVal);
+								break;
+							case MX:
+								mX = Float.valueOf(curVal);
+								break;
+							case MY:
+								mY = Float.valueOf(curVal);
+								break;
+							case MZ:
+								mZ = Float.valueOf(curVal);
+								break;
+							default:
+								return;
+							}
+							
+							curVal = "";
+							index++;
+						} catch (Exception e) {
+							System.out.println("Failed to parse gps message");
+							return;
+						}
+						
+					} else {
+						curVal += tmp[i];
+					}
+				}
+			}
 		}
 	}
 	
