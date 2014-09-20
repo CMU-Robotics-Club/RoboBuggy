@@ -7,12 +7,15 @@
 // TODO figure out how to do a local install of the rxtx binaries vs. global install
 
 // TODO Note that, when you do a global install you WILL need to invalidate the cache of your IDE
+package com.roboclub.robobuggy;
+
 import gnu.io.*;
 import java.util.*;
 import java.io.InputStream;
 import java.io.OutputStream;
 public class main {
-    public static void main(String args[]) {
+    
+	public static void main(String args[]) {
 
         try {
              CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier("COM5");
