@@ -22,7 +22,18 @@
 extern "C"{
 #endif
 
-#include "lib_types.h"
+// protocol constants
+#define HEAD 0xFC
+#define ONE_BYTE_SIZE 8
+#define TWO_BYTE_SIZE 16
+
+// Define all the signals in the protocol index
+#define ENC_BYTE_ONE_TICK_LAST 0
+#define ENC_BYTE_TW0_TICK_LAST 1
+#define ENC_BYTE_ONE_TICK_RESET 2
+#define ENC_BYTE_TWO_TICK_RESET 3
+#define ENC_TIMESTAMP_ONE 4
+#define ENC_TIMESTAMP_TWO 5
 
 
 /* This will be the main structure of our packets:
@@ -31,8 +42,8 @@ extern "C"{
  * [ 1 byte  ] 	[1 byte]  [  2 bytes  ] ... [1 byte]  [  2 bytes  ]
  */
 
-Ret_E protocol_init( void ); // TODO: I'm not sure exactly what needs to be initialized yet
-Ret_E protocol_run( void ); // TODO:
+int protocol_init( void ); // TODO: I'm not sure exactly what needs to be initialized yet
+int protocol_run( void ); // TODO:
 unsigned long protocol_send( byte id, unsigned int message); // Currently working on
 unsigned long protocol_getMessage(unsigned long packet);
 unsigned long protocol_getID(unsigned long packet);
