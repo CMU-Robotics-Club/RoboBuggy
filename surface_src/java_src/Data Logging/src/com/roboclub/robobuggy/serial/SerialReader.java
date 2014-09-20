@@ -29,13 +29,10 @@ public class SerialReader implements SerialPortEventListener {
 		listeners = new ArrayList<SerialListener>();
 		port_list = CommPortIdentifier.getPortIdentifiers();
 		
-		System.out.println("Starting");
-		
 		while (port_list.hasMoreElements() ) {
 			port_id = (CommPortIdentifier)port_list.nextElement();
 			
 			if (port_id.getPortType() == CommPortIdentifier.PORT_SERIAL) {
-				System.out.println(port_id.getName());
 				if (!port_id.isCurrentlyOwned() ) {
 					port = (SerialPort)port_id.open(owner, TIMEOUT);
 					port.setInputBufferSize(BUFFER_SIZE);
@@ -48,12 +45,11 @@ public class SerialReader implements SerialPortEventListener {
 					input = port.getInputStream();
 					output = port.getOutputStream();
 					
-					char[] msg = new char[64];
+					char[] msg = new char[256];
 					int numRead = 0;
 					boolean passed = false;
 					
-					System.out.println("Testing");
-					while (numRead < 64) {
+					while (numRead < 256) {
 						char inByte = (char)input.read();
 						if (inByte != '?') msg[numRead++] = inByte;
 					}
