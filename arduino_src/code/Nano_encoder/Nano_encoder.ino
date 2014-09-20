@@ -15,6 +15,7 @@
 
 #include "lib_protocol.h"
 #include "lib_types.h"
+#include "lib_encoder.h"
 
 unsigned long loop_starttime = 0;
 unsigned long last_looptime = 0;
@@ -24,6 +25,7 @@ unsigned long last_count;
 void setup()
 {
   Serial.begin(9600);
+  enc_init();
   reset_count = 0; // this is for the reset reset_count
   last_count = 0;
 }
@@ -35,9 +37,11 @@ void loop()
   loop_starttime = millis();
   /*************** END OF TIMING LOOP HEAD **********/
   
+  current_enc_val = get_enc_count()
   // D CODE GOES HEREEEEEE
-  
+  last_count = current_enc_val - reset_count;
   // get reset_count (already stored) TODO!
+  reset_count = current_enc_val;
   
   // split the reset_count 
   unsigned int upper_message = reset_count >> 16;

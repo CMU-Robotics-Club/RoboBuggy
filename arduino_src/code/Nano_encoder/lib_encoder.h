@@ -8,11 +8,14 @@
 #ifdef __cplusplus
 extern "C"{
 #endif
-	//sets up the encoder with the given Pin
-	void encoder_init();
+  //sets up the encoder with the given Pin
+  void enc_init();
 	
-	//returns the count of the encoder
-	int get_enc_count();
+  //returns the count of the encoder
+  unsigned long get_enc_count();
+
+  //resets the encoder count to 0
+  void reset_enc();  
 
 #ifdef __cplusplus
 } // extern "C"
