@@ -76,7 +76,7 @@ public class GUI extends JFrame
 		setTitle("RoboBuggy Data Gathering");
 		Container mainFrame = getContentPane();
 		mainFrame.setLayout(new GridLayout(2, 2));			
-		mainFrame.add(cameraPanel);
+		mainFrame.add(imuPanel);
 		mainFrame.add(controlsPanel);
 		mainFrame.add(gpsPanel);
 		mainFrame.add(arduinoPanel);
