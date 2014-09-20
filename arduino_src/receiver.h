@@ -18,7 +18,7 @@ extern "C"{
   // To check if new value available, check the
   // value contained in this, using the correct
   // index.
-  volatile char rc_available[2];
+  volatile int rc_available[2];
 
   // if this is true, we are connected.
   volatile char rc_connected;

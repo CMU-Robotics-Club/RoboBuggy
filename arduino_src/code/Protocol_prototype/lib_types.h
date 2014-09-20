@@ -30,7 +30,6 @@ typedef enum
 	RET_ERROR
 }Ret_E;
 
-
 #ifdef __cplusplus
 }
 #endif

@@ -1,26 +1,19 @@
 /**
  * @file encoder.c
  * @author Audrey Yeoh (ayeoh)
- * @author Matt Sebek (msebek0
+ * @author Matt Sebek (msebek)
  */
+#include <Arduino.h>
+#include "encoder.h"
 
-static int input_pin;
+static int enc_pin = 1;
+static int count = 0;
+static int state = 1; // 1 if was high, 0 if was low
 
-static int count=0;
-// 1 if was high, 0 if was low
-static int state=0;
 
 void encoder_init(int encoder_pin) {
-  input_pin = encoder_pin;
-  pinMode(input_pin, INPUT);
-}
-
-// Every X ms, publish. (or perish!!)
-void encoder_publish() {
-  if (last_time < (millis() - print_period)) {
-    Serial.println(count);
-    last_time = millis();
-  }
+  pinMode(encoder_pin, INPUT);
+  enc_pin = encoder_pin;
 }
 
 int encoder_get_count() {
@@ -28,9 +21,12 @@ int encoder_get_count() {
 }
 
 // Lightweight, checks low-pri encoder loop
-void encoder_loop(){
-  if (state != digital_read(input_pin)){
-    count++;
+void encoder_loop() {
+  if (state != digitalRead(enc_pin)){
+    count++; 
     state = !state;
-  }
+  }  
 }
+
+
+

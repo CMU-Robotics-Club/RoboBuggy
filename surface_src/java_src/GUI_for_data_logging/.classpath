@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="lib" path="jars/hamcrest-core-1.3.jar"/>
+	<classpathentry kind="lib" path="jars/jcommon-1.0.23.jar"/>
+	<classpathentry kind="lib" path="jars/jfreechart-1.0.19-experimental.jar"/>
+	<classpathentry kind="lib" path="jars/jfreechart-1.0.19-swt.jar"/>
+	<classpathentry kind="lib" path="jars/jfreechart-1.0.19.jar"/>
+	<classpathentry kind="lib" path="jars/jfreesvg-2.0.jar"/>
+	<classpathentry kind="lib" path="jars/junit-4.11.jar"/>
+	<classpathentry kind="lib" path="jars/orsoncharts-1.4-eval-nofx.jar"/>
+	<classpathentry kind="lib" path="jars/orsonpdf-1.6-eval.jar"/>
+	<classpathentry kind="lib" path="jars/servlet.jar"/>
+	<classpathentry kind="lib" path="jars/swtgraphics2d.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/OpenCV-2.4.9"/>
+	<classpathentry kind="lib" path="C:/Users/Matt/OneDrive/workspace/RoboBuggy-2015/surface_src/java_src/Data Logging/library/opencv-249.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
