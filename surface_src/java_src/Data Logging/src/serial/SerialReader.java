@@ -34,49 +34,45 @@ public class SerialReader implements SerialPortEventListener {
 			
 			if (port_id.getPortType() == CommPortIdentifier.PORT_SERIAL) {
 				if (!port_id.isCurrentlyOwned() ) {
-					try {
-						port = (SerialPort)port_id.open(owner, TIMEOUT);
+					port = (SerialPort)port_id.open(owner, TIMEOUT);
+					
+					port.setSerialPortParams( baud_rate,
+							SerialPort.DATABITS_8,
+			                SerialPort.STOPBITS_1,
+			                SerialPort.PARITY_NONE );
+					
+					input = port.getInputStream();
+					output = port.getOutputStream();
+					
+					char[] msg = new char[128];
+					int numRead = 0;
+					boolean passed = false;
+					
+					while (true) {
+						char inByte = (char)input.read();
+						msg[numRead++] = inByte;
 						
-						port.setSerialPortParams( baud_rate,
-								SerialPort.DATABITS_8,
-				                SerialPort.STOPBITS_1,
-				                SerialPort.PARITY_NONE );
-						
-						input = port.getInputStream();
-						output = port.getOutputStream();
-						
-						char[] msg = new char[128];
-						int numRead = 0;
-						boolean passed = false;
-						
-						while (true) {
-							char inByte = (char)input.read();
-							msg[numRead++] = inByte;
-							
-							if (inByte == '\n') {
-								passed = checkHeader(msg, header, numRead, headerLen);
-								break;
-							}
-						}
-						
-						if ( passed )	 {
-							port.notifyOnDataAvailable(true);
-							
-							inputBuffer = new char[BUFFER_SIZE];
-							outputBuffer = new char[BUFFER_SIZE];
-							index = 0;
-							
-							port.addEventListener(this);
-							listeners.add(listener);
+						if (inByte == '\n') {
+							passed = checkHeader(msg, header, numRead, headerLen);
 							break;
 						}
-						
-						port.close();
-						input.close();
-						output.close();
-					} catch ( Exception e ) {
-						throw new Exception( "Unable to open serial port");
 					}
+					
+					if ( passed )	 {
+						port.notifyOnDataAvailable(true);
+						
+						inputBuffer = new char[BUFFER_SIZE];
+						outputBuffer = new char[BUFFER_SIZE];
+						index = 0;
+						
+						port.addEventListener(this);
+						listeners.add(listener);
+						break;
+					}
+					
+					port.close();
+					input.close();
+					output.close();
 				}
 			}
 		}

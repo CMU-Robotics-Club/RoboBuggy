@@ -11,12 +11,9 @@ abstract class SerialPanel extends JPanel {
 	private SerialReader port;
 	private SerialListener listener;
 	
-	public SerialPanel(String owner, int baud_rate, char[] header, int headerLen) {
-		try {
-			port = new SerialReader(owner, baud_rate, listener, header, headerLen);
-		} catch (Exception e) {
-			// TODO Implement error handler for serial panel
-		}
+	public SerialPanel(String owner, int baud_rate, char[] header,
+			int headerLen) throws Exception {
+		port = new SerialReader(owner, baud_rate, listener, header, headerLen);
 	}
 	
 	public void closePort() {

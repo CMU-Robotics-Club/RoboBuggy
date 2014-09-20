@@ -5,7 +5,7 @@ public class ArduinoPanel extends SerialPanel {
 	private static final char[] HEADER = {'a'};
 	private static final int HEADER_LEN = 1;
 
-	public ArduinoPanel() {
+	public ArduinoPanel() throws Exception {
 		super("ARDUINO", 9600, HEADER, HEADER_LEN);
 		
 	}
