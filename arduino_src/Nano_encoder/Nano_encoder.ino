@@ -14,7 +14,6 @@
 #define LOOP_TIME 100
 
 #include "lib_protocol.h"
-#include "lib_types.h"
 
 unsigned long loop_starttime = 0;
 unsigned long last_looptime = 0;
