@@ -1,11 +1,16 @@
 import java.awt.*;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
+
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-
 import java.awt.Color;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -17,11 +22,15 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.jfree.ui.ApplicationFrame;
-import org.jfree.ui.RefineryUtilities;
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.core.MatOfByte;
+import org.opencv.highgui.Highgui;
+import org.opencv.highgui.VideoCapture;
 
 public class GUI extends JFrame
 {
+	private static final long serialVersionUID = 8821046675205954386L;
 	//default value gets reset in the constructor based on the screen size 
 	private int WIDTH = 400;
 	private int HEIGHT = 300; 
@@ -38,6 +47,8 @@ public class GUI extends JFrame
 	//global state
 	private boolean playPauseState = false;
 	
+	private static VideoCapture camera;
+	private static JPanel camPanel;
 	
 	public GUI()
 	{
@@ -57,14 +68,12 @@ public class GUI extends JFrame
 		addDataLoggingPane(mainFrame);
 		addGPSPane(mainFrame);
 		addOtherDataPane(mainFrame);
-		
-
 	}
 	
 	private void addCamPane(Container parentFrame){
-		JPanel camPanel = new JPanel();
-		JLabel cam_message = new JLabel("Cam STUFF goes here",SwingConstants.CENTER);
-		camPanel.add(cam_message);
+		camPanel = new JPanel();
+		//JLabel cam_message = new JLabel("Cam STUFF goes here",SwingConstants.CENTER);
+		//camPanel.add(cam_message);
 		parentFrame.add(camPanel);
 	}
 	
@@ -179,6 +188,53 @@ public class GUI extends JFrame
 	public static void main(String[] args)
 	{
 		GUI rectObj = new GUI();
+		
+		// Initialize camera
+		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+		try {
+			initializeCamera(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}
+		
+		// Read from camera forever
+		Mat frame = new Mat();
+		while(true) {
+			camera.read(frame);
+			
+			MatOfByte bytemat = new MatOfByte();
+			Highgui.imencode(".jpg", frame, bytemat);
+			byte[] bytes = bytemat.toArray();
+			InputStream in = new ByteArrayInputStream(bytes);
+			
+			try {
+				BufferedImage img = ImageIO.read(in);
+				camPanel.add( new JLabel( new ImageIcon(img) ) );
+				camPanel.setVisible(true);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return;
+			}
+		}
+	}
+	
+	public static void initializeCamera(int camera_num) throws Exception {
+		
+		camera = new VideoCapture(camera_num);
+		
+		try {
+			// Allow camera to initialize
+			Thread.sleep(1000);	
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception("Unable to intialize camera object");
+		}
+		
+		camera.open(0);
+		if (!camera.isOpened()) {
+			throw new Exception("Unable to Open Camera");
+		}
 	}
 	
 
