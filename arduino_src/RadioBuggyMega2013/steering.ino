@@ -19,10 +19,13 @@ void steering_init(int SERVO_PIN, int left, int center, int right) {
 }
 
 void steering_set(int servo_value) {
+  //s_angle = servo_value;
   if(servo_value < s_left) {
     s_angle = s_left;
   } else if(servo_value > s_right) {
     s_angle = s_right;
+  } else {
+    s_angle = servo_value;
   }
   steer.write(s_angle);
 }

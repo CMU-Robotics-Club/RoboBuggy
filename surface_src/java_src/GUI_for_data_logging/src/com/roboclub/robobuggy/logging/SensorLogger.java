@@ -128,11 +128,18 @@ public final class SensorLogger {
 		_csvQueue.offer(_keys);
 	}
 	
+	@Override
+	protected void finalize() throws Throwable {
+		super.finalize();
+		_imgQueue.offer(null);
+		_csvQueue.offer(null);
+	}
+	
 	private void _log(long timestamp,String[] currkeys,String[] values) {
 		String[] line = new String[_keys.length];
 		for(int i=0;i<_keys.length;++i) {
 			String k = _keys[i];
-			if(k == "Timestamp") {
+			if(k.equals("Timestamp")) {
 				line[i] = "" + timestamp;
 				continue;
 			}

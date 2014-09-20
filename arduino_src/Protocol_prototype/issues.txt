@@ -1,6 +1,0 @@
-## Audrey Issues/ Questions:
-- The Arduino Serial.write, will it just work if I include Arduino.h?
-- C++ extern header needed?
-- Receiving Protocol. Similar? When is it fired?
-- Init protocol -> What is expected?
-- Receiving on interrupt? Serial??? hmmm
