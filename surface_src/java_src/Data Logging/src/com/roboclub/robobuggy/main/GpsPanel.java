@@ -2,12 +2,14 @@ package com.roboclub.robobuggy.main;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Date;
 
 import javax.imageio.ImageIO;
 
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 
+import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.map.Point;
 import com.roboclub.robobuggy.map.Rect;
 import com.roboclub.robobuggy.serial.SerialEvent;
@@ -25,11 +27,14 @@ public class GpsPanel extends SerialPanel {
 	private static final int BAUDRATE = 9600;
 	/** Index of latitude data as received during serial communication */
 	private static final int LAT_NUM = 1;
-	/** Index of longitude data as received during serial communication */
+	/** Index of latitude direction as received during serial communication */
 	private static final int LAT_DIR = 2;
+	/** Index of longitude data as received during serial communication */
 	private static final int LONG_NUM = 3;
+	/** Index of longitude direction as received during serial communication */
 	private static final int LONG_DIR = 4;
-	private static final int READ = 5;
+	/** Index to log updated GPS position */
+	private static final int LOG = 5;
 	
 	/* Panel Dimensons */
 	private static final int PANEL_WIDTH = 400;
@@ -86,6 +91,13 @@ public class GpsPanel extends SerialPanel {
 				(Double.valueOf(lonNum.substring(3)) / 60.0));
 	}
 	
+	private void logData() {
+		RobotLogger rl = RobotLogger.getInstance();
+	    Date now = new Date();
+	    long time_in_millis = now.getTime();
+	    rl.sensor.logGps(time_in_millis, currLoc.getX(), currLoc.getY());
+	}
+	
 	/**
 	 * GpsListener is an event handler for incoming serial messages. It
 	 * is notified every time a complete serial message is received by
@@ -123,9 +135,8 @@ public class GpsPanel extends SerialPanel {
 							case LONG_DIR:
 								if (curVal.equalsIgnoreCase("W")) currLoc.setX( -1 * currLoc.getX());
 								break;
-							case READ:
-								// TODO add logging and refresh at this point
-								System.out.println("("+currLoc.getY()+","+currLoc.getX()+")");
+							case LOG:
+								logData();
 								return;
 							}
 							
