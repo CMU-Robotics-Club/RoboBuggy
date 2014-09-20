@@ -14,13 +14,31 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import serial.SerialEvent;
+import serial.SerialListener;
+
 public class ImuPanel extends SerialPanel {
 	private static final long serialVersionUID = -929040896215455343L;
-	private static final char[] HEADER = {'a'};
-	private static final int HEADER_LEN = 1;
+	private static final char[] HEADER = {'#', 'A', 'C', 'G'};
+	private static final int HEADER_LEN = 4;
 
+	private static ImuListener listener;
+	private float aX;
+	private float aY;
+	private float aZ;
+	private float rX;
+	private float rY;
+	private float rZ;
+	private float mX;
+	private float mY;
+	private float mZ;
+	
 	public ImuPanel() throws Exception {
-		super("ARDUINO", 9600, HEADER, HEADER_LEN);
+		super("IMU", 57600, HEADER, HEADER_LEN);
+		
+		listener = new ImuListener();
+		super.addListener(listener);
+		
 		this.setLayout(new GridLayout(3, 1));			
 
 		//odom
@@ -42,6 +60,13 @@ public class ImuPanel extends SerialPanel {
         final JFreeChart chart2 = createCommandAngleChart(dataset);
         final ChartPanel commandAngleChartPanel = new ChartPanel(chart);
         this.add(commandAngleChartPanel);
+	}
+
+	private class ImuListener implements SerialListener {
+		@Override
+		public void onEvent(SerialEvent event) {
+			//TODO parse serial event
+		}
 	}
 	
 	XYDataset createDataset() {

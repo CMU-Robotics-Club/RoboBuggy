@@ -1,16 +1,7 @@
 package serial;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.Event;
 
-public class SerialListener implements ActionListener {
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		
-	}
-	
-	public void sendData(char[] buffer, int index) {
-		
-	}
+public interface SerialListener {
+	public void onEvent(SerialEvent event);
 }

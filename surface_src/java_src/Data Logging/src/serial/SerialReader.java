@@ -18,14 +18,14 @@ public class SerialReader implements SerialPortEventListener {
 	private OutputStream output;
 	
 	private char[] inputBuffer;
-	private char[] outputBuffer;
+	//private char[] outputBuffer;
 	private int index;
 	
 	private ArrayList<SerialListener> listeners;
 	
 	@SuppressWarnings("unchecked")
 	public SerialReader(String owner, int baud_rate,
-			SerialListener listener, char[] header, int headerLen) throws Exception {
+			char[] header, int headerLen) throws Exception {
 		listeners = new ArrayList<SerialListener>();
 		port_list = CommPortIdentifier.getPortIdentifiers();
 		
@@ -35,6 +35,7 @@ public class SerialReader implements SerialPortEventListener {
 			if (port_id.getPortType() == CommPortIdentifier.PORT_SERIAL) {
 				if (!port_id.isCurrentlyOwned() ) {
 					port = (SerialPort)port_id.open(owner, TIMEOUT);
+					port.setInputBufferSize(BUFFER_SIZE);
 					
 					port.setSerialPortParams( baud_rate,
 							SerialPort.DATABITS_8,
@@ -44,11 +45,11 @@ public class SerialReader implements SerialPortEventListener {
 					input = port.getInputStream();
 					output = port.getOutputStream();
 					
-					char[] msg = new char[128];
+					char[] msg = new char[256];
 					int numRead = 0;
 					boolean passed = false;
 					
-					while (true) {
+					while (true && numRead < 256) {
 						char inByte = (char)input.read();
 						msg[numRead++] = inByte;
 						
@@ -62,11 +63,10 @@ public class SerialReader implements SerialPortEventListener {
 						port.notifyOnDataAvailable(true);
 						
 						inputBuffer = new char[BUFFER_SIZE];
-						outputBuffer = new char[BUFFER_SIZE];
+						//outputBuffer = new char[BUFFER_SIZE];
 						index = 0;
 						
 						port.addEventListener(this);
-						listeners.add(listener);
 						break;
 					}
 					
@@ -100,7 +100,6 @@ public class SerialReader implements SerialPortEventListener {
 		case SerialPortEvent.DATA_AVAILABLE:
 			try {
 				char data = (char)input.read();
-				System.out.print(data);
 				inputBuffer[index++] = data;
 				
 				if (data == '\n') {
@@ -113,7 +112,8 @@ public class SerialReader implements SerialPortEventListener {
 					index = 0;
 				}
 			} catch (Exception e) {
-				// TODO Add error handler for serial port
+				listeners.clear();
+				port.close();
 				return;
 			}
 
@@ -126,9 +126,13 @@ public class SerialReader implements SerialPortEventListener {
 	private void notifyListeners() {
 		if (null != listeners && !listeners.isEmpty()) {
 			for (SerialListener listener : listeners) {
-				listener.sendData(inputBuffer, index);
+				listener.onEvent(new SerialEvent(inputBuffer, index));
 			}
 		}
+	}
+	
+	public void addListener(SerialListener listener) {
+		listeners.add(listener);
 	}
 	
 	public void close() {
