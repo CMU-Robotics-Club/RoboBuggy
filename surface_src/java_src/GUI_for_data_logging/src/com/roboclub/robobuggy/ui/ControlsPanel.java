@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -55,14 +56,19 @@ public class ControlsPanel extends JPanel {
 	}
 	
 	DateFormat df = new SimpleDateFormat("HH:mm:ss.S");
+	
 	private class timerHandler implements ActionListener
 	{
 		@Override
 		public void actionPerformed(ActionEvent ae) {
+			df.setTimeZone(TimeZone.getDefault());
 			Date now = new Date();
-			long difference = now.getTime() - startPressedTime.getTime();
-			time_lbl.setText(df.format(now) + "/" + df.format(new Date(difference)));
+			String currentTime = df.format(now);
 			
+			df.setTimeZone(TimeZone.getTimeZone("UTC"));
+			String runningTime = df.format(new Date(now.getTime() - startPressedTime.getTime()));
+			
+			time_lbl.setText(runningTime + " / " + currentTime);
 			repaint();
 		}
 	}

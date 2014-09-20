@@ -20,11 +20,13 @@ public class GpsPanel extends JPanel {
 		
 		BufferedImage myPicture;
 		try {
-			myPicture = ImageIO.read(new File("path-to-file"));
+			System.out.println(System.getProperty("user.dir"));
+			//RoboBuggy\surface_src\java_src\GUI_for_data_logging\
+			myPicture = ImageIO.read(new File("mapTest.jpg")); //random image
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			throw new RuntimeException("Course Map imqage could not be found");
+			throw new RuntimeException("Course Map image could not be found");
 		}
 		JLabel picLabel = new JLabel(new ImageIcon(myPicture));
 		add(picLabel);
