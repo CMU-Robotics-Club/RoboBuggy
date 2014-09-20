@@ -10,6 +10,7 @@
 #include "encoder.h"
 #include "watchdog.h"
 #include "filter.h"
+#include "steering.h"
 
 
 #define BRAKE_PIN 8

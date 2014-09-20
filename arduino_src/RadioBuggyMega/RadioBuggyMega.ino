@@ -5,7 +5,15 @@
  * @author Matt Sebek (msebek)
  */
 #include <Servo.h>
+#include "receiver.h"
+#include "brake.h"
+#include "encoder.h"
+#include "steering.h"
 
+
+// Before compiling switch device to Arduino Mega
+// Read http://www.arduino.cc/en/Hacking/BuildProcess before doing work. 
+//   Because Arduino is not a real build system. 
 #define BRAKE_PIN 8
 #define BRAKE_INDICATOR_PIN 5
 
@@ -20,6 +28,8 @@
 #define XBEE_MSG_REC 4
 
 #define XBEE_DANGER 12
+
+static unsigned long last_time = 0;
 
 unsigned long timer = 0L;
 static char data; // used to pass things into xbee
@@ -38,7 +48,7 @@ void setup()  {
   // Pins 2 and 3: pin 2 is thr, pin 3 is ail
   receiver_init();
   brake_init(BRAKE_PIN, BRAKE_INDICATOR_PIN);
-  steering_init(STEERING_PIN);
+  steering_init(STEERING_PIN, 133, 115, 160);
   encoder_init(ENCODER_PIN);
 
   // Set up loop
@@ -46,7 +56,7 @@ void setup()  {
 }
 
 int convert_rc_to_steering(int rc_angle) {
-  int out = (input/4)+(90*3/4)+39;
+  int out = (rc_angle/4)+(90*3/4)+39;
   if(out < 105 || out > 160) {
     Serial.println("FAKFAKFAK SERVO OUT OF RANGE");
     Serial.println(out);
@@ -57,7 +67,6 @@ int convert_rc_to_steering(int rc_angle) {
 //code that keeps loop time constant each loop
 static int hz = 40;
 static int print_period = 1000 / hz;
-static unsigned long last_time = 0;
 
 static int rc_angle;
 static int rc_thr;
@@ -70,12 +79,12 @@ void loop() {
   steering_set(convert_rc_to_steering(rc_angle));
 
   if(rc_available[AIL_INDEX]) {
-    rc_thr receiver_get_angle(THR_PIN);
+    rc_thr = receiver_get_angle(THR_PIN);
   }
 
   // Loop
   encoder_loop();
-  xbee_loop();
+  //xbee_loop();
 
   // If timer expired, then do ROS things
   if((last_time - millis()) > 0) {
