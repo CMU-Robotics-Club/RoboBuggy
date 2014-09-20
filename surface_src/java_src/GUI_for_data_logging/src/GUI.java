@@ -28,82 +28,57 @@ import org.opencv.core.MatOfByte;
 import org.opencv.highgui.Highgui;
 import org.opencv.highgui.VideoCapture;
 
+import com.roboclub.robobuggy.ui.ArduinoPanel;
+import com.roboclub.robobuggy.ui.CameraPanel;
+import com.roboclub.robobuggy.ui.GpsPanel;
+import com.roboclub.robobuggy.ui.ImuPanel;
+
 public class GUI extends JFrame
 {
 	private static final long serialVersionUID = 8821046675205954386L;
-	//default value gets reset in the constructor based on the screen size 
+	
+	// will reset these on init
 	private int WIDTH = 400;
 	private int HEIGHT = 300; 
 	
-	//Button handler
-	private ExitButtonHandler ebHandler;
-	private timerHandler tHandler;
+	// Timer handler
 	private javax.swing.Timer timer;
 	
-	//gui objects
-	private JButton startPause_btn;
-	private JLabel time_lbl;
-	
-	//global state
+	// Lovely global state
 	private boolean playPauseState = false;
 	
 	private static VideoCapture camera;
-	private static JPanel camPanel;
+	
+	private static ArduinoPanel arduinoPanel;
+	private static CameraPanel cameraPanel;
+	private static GpsPanel gpsPanel;
+	private static ImuPanel imuPanel;
 	
 	public GUI()
 	{
 		//size of the screen
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();		
-		WIDTH = screenSize.width;
-		HEIGHT = screenSize.height;	
+		WIDTH = screenSize.width-2;
+		HEIGHT = screenSize.height-2;	
 		
 		setSize(WIDTH, HEIGHT);
 		setVisible(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+		// Initialize panels
+		arduinoPanel = new ArduinoPanel("COM5", 9600);
+		cameraPanel = new CameraPanel(0);
+		gpsPanel = new GpsPanel();
+		imuPanel = new ImuPanel("COM10", 57600);
 		
 		setTitle("Data logging GUI");
 		Container mainFrame = getContentPane();
 		mainFrame.setLayout(new GridLayout(2, 2));			
+		mainFrame.add()
 		addCamPane(mainFrame);
 		addDataLoggingPane(mainFrame);
 		addGPSPane(mainFrame);
 		addOtherDataPane(mainFrame);
-	}
-	
-	private void addCamPane(Container parentFrame){
-		camPanel = new JPanel();
-		//JLabel cam_message = new JLabel("Cam STUFF goes here",SwingConstants.CENTER);
-		//camPanel.add(cam_message);
-		parentFrame.add(camPanel);
-	}
-	
-	private void addDataLoggingPane(Container parentFrame){
-		//stuff for setting up logging ie start/stop, file name ...
-		JPanel dataLoggingPanel = new JPanel();
-		dataLoggingPanel.setLayout(new GridLayout(4, 1));
-		startPause_btn = new JButton("Start");
-		playPauseState = true;
-		startPause_btn.setFont(new Font("serif", Font.PLAIN, 70));
-		startPause_btn.setBackground(Color.GREEN);
-		StartPauseButtonHandler startPauseHandler = new StartPauseButtonHandler();
-		startPause_btn.addActionListener(startPauseHandler);
-		JLabel currentFile_lbl = new JLabel("currentFile",SwingConstants.CENTER);
-		JLabel newFile_lbl = new JLabel("newFile",SwingConstants.CENTER);
-		Date dateobj = new Date();
-		DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
-	    System.out.println("");
-
-		//TODO Date logTime = 
-		
-		time_lbl = new JLabel("SystemTime: " + df.format(dateobj) + " logTime: ",SwingConstants.CENTER);
-		timer = new Timer(10, tHandler);//updates every .01 seconds
-		timer.setInitialDelay(200); //waits .2 seconds to start for first time
-		timer.start();
-		dataLoggingPanel.add(startPause_btn);
-		dataLoggingPanel.add(currentFile_lbl);
-		dataLoggingPanel.add(newFile_lbl);
-		dataLoggingPanel.add(time_lbl);
-		parentFrame.add(dataLoggingPanel);
 	}
 	
 	private void addOtherDataPane(Container parentFrame){
@@ -138,52 +113,16 @@ public class GUI extends JFrame
 		}
 	
 	
-	private void addGPSPane(Container parentFrame){
-		JPanel gpsPanel = new JPanel();
-		JLabel gps_message = new JLabel("GPS STUFF goes here",SwingConstants.CENTER);
-		gpsPanel.add(gps_message);		
-		parentFrame.add(gpsPanel);
-
-	}
-	
 	private class timerHandler implements ActionListener
 	{
-
 		@Override
-		public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(ActionEvent ae) {
 				System.out.println("hello world\n");			
-		}
-		
-		
-	}
-	
-	private class StartPauseButtonHandler implements ActionListener
-	{
-		@Override
-		public void actionPerformed(ActionEvent e)
-		{
-			//inverts the state of the system every time the button is pressed 
-			playPauseState = !playPauseState;
-			if(playPauseState)
-			{	
-				startPause_btn.setBackground(Color.RED);
-				startPause_btn.setText("Pause");
-			}else
-			{	
-				startPause_btn.setBackground(Color.GREEN);
-				startPause_btn.setText("Start");
-			}
-			repaint();
+				repaint();
 		}
 	}
 	
-	public class ExitButtonHandler implements ActionListener
-	{
-		public void actionPerformed(ActionEvent e)
-		{
-			System.exit(0);
-		}
-	}
+	
 	
 	public static void main(String[] args)
 	{
@@ -199,7 +138,7 @@ public class GUI extends JFrame
 		}
 		
 		// Read from camera forever
-		Mat frame = new Mat();
+		/*Mat frame = new Mat();
 		while(true) {
 			camera.read(frame);
 			
@@ -216,7 +155,7 @@ public class GUI extends JFrame
 				e.printStackTrace();
 				return;
 			}
-		}
+		}*/
 	}
 	
 	public static void initializeCamera(int camera_num) throws Exception {
