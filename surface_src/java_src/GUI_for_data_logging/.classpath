@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="lib" path="C:/Users/Transistor/Documents/GitHub/RoboBuggy/surface_src/java_src/libs/jxbrowser/lib/jxbrowser-4.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Transistor/Documents/GitHub/RoboBuggy/surface_src/java_src/libs/jxbrowser/lib/jxbrowser-linux32-4.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Transistor/Documents/GitHub/RoboBuggy/surface_src/java_src/libs/jxbrowser/lib/jxbrowser-linux64-4.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Transistor/Documents/GitHub/RoboBuggy/surface_src/java_src/libs/jxbrowser/lib/jxbrowser-mac-4.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Transistor/Documents/GitHub/RoboBuggy/surface_src/java_src/libs/jxbrowser/lib/jxbrowser-win-4.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Transistor/Documents/GitHub/RoboBuggy/surface_src/java_src/libs/jxbrowser/license.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Transistor/Documents/GitHub/RoboBuggy/surface_src/java_src/libs/jfreechart-1.0.19/jfreechart-1.0.19/lib/hamcrest-core-1.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Transistor/Documents/GitHub/RoboBuggy/surface_src/java_src/libs/jfreechart-1.0.19/jfreechart-1.0.19/lib/jcommon-1.0.23.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Transistor/Documents/GitHub/RoboBuggy/surface_src/java_src/libs/jfreechart-1.0.19/jfreechart-1.0.19/lib/jfreechart-1.0.19.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Transistor/Documents/GitHub/RoboBuggy/surface_src/java_src/libs/jfreechart-1.0.19/jfreechart-1.0.19/lib/jfreechart-1.0.19-experimental.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Transistor/Documents/GitHub/RoboBuggy/surface_src/java_src/libs/jfreechart-1.0.19/jfreechart-1.0.19/lib/jfreechart-1.0.19-swt.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Transistor/Documents/GitHub/RoboBuggy/surface_src/java_src/libs/jfreechart-1.0.19/jfreechart-1.0.19/lib/jfreesvg-2.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Transistor/Documents/GitHub/RoboBuggy/surface_src/java_src/libs/jfreechart-1.0.19/jfreechart-1.0.19/lib/junit-4.11.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Transistor/Documents/GitHub/RoboBuggy/surface_src/java_src/libs/jfreechart-1.0.19/jfreechart-1.0.19/lib/orsoncharts-1.4-eval-nofx.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Transistor/Documents/GitHub/RoboBuggy/surface_src/java_src/libs/jfreechart-1.0.19/jfreechart-1.0.19/lib/orsonpdf-1.6-eval.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Transistor/Documents/GitHub/RoboBuggy/surface_src/java_src/libs/jfreechart-1.0.19/jfreechart-1.0.19/lib/servlet.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Transistor/Documents/GitHub/RoboBuggy/surface_src/java_src/libs/jfreechart-1.0.19/jfreechart-1.0.19/lib/swtgraphics2d.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
