@@ -22,7 +22,6 @@ public class ControlsPanel extends JPanel {
 	// Big gui objects
 	private JButton startPause_btn;
 	private JLabel time_lbl;
-	private boolean playPauseState;
     private Date startPressedTime;	
     private Timer timer;
     
@@ -31,9 +30,19 @@ public class ControlsPanel extends JPanel {
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
 		this.setLayout(new GridLayout(4, 1));
 		startPause_btn = new JButton("Start");
-		playPauseState = true;
 		startPause_btn.setFont(new Font("serif", Font.PLAIN, 70));
-		startPause_btn.setBackground(Color.GREEN);
+		//TODO move following into a function 
+		if(Gui.getInstance().GetPlayPauseState())
+		{	
+			System.out.println("System Started");
+			startPause_btn.setBackground(Color.RED);
+			startPause_btn.setText("Pause");
+			startPressedTime = new Date();
+		} else {
+			System.out.println("System Paused");
+			startPause_btn.setBackground(Color.GREEN);
+			startPause_btn.setText("Start");
+		}		
 		StartPauseButtonHandler startPauseHandler = new StartPauseButtonHandler();
 		startPause_btn.addActionListener(startPauseHandler);
 		JLabel currentFile_lbl = new JLabel("currentFile",SwingConstants.CENTER);
@@ -72,15 +81,17 @@ public class ControlsPanel extends JPanel {
 		public void actionPerformed(ActionEvent e)
 		{
 			//inverts the state of the system every time the button is pressed 
-			playPauseState = !playPauseState;
-			if(playPauseState)
+			Gui.setPlayPauseState(!Gui.getInstance().GetPlayPauseState());
+			if(Gui.getInstance().GetPlayPauseState())
 			{	
+				System.out.println("System Started");
 				startPause_btn.setBackground(Color.RED);
 				startPause_btn.setText("Pause");
 				
 				timer.start();
 				startPressedTime = new Date();
 			} else {
+				System.out.println("System Paused");
 				startPause_btn.setBackground(Color.GREEN);
 				startPause_btn.setText("Start");
 				timer.stop();

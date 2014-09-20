@@ -59,11 +59,36 @@ public class ImuPanel extends SerialPanel {
 	private float mY;
 	private float mZ;
 	
+	//data stored for plotting
+	private static final int HISTORY_LENGTH = 20; 
+	private int count;
+	private XYSeries aX_history;
+	private XYSeries aY_history;
+	private XYSeries aZ_history;
+	private XYSeries rX_history;
+	private XYSeries rY_history;
+	private XYSeries rZ_history;
+	private XYSeries mX_history;
+	private XYSeries mY_history;
+	private XYSeries mZ_history;
+	
 	public ImuPanel() throws Exception {
 		super("IMU", BAUDRATE, HEADER, HEADER_LEN);
 		super.addListener(new ImuListener());		
 		this.setLayout(new GridLayout(3, 1));			
 
+		//sensor history for display
+		aX_history = new XYSeries("First");
+		aY_history = new XYSeries("Second");
+		aZ_history = new XYSeries("Thirty");
+		rX_history = new XYSeries("First");
+		rY_history = new XYSeries("Second");
+		rZ_history = new XYSeries("Thirty");
+		mX_history = new XYSeries("First");
+		mY_history = new XYSeries("Second");
+		mZ_history = new XYSeries("Thrty");
+		count = 0;
+		
 		//odom
 		final XYDataset dataset = createDataset();
         final JFreeChart chart = createOdomChart(dataset);
@@ -94,16 +119,18 @@ public class ImuPanel extends SerialPanel {
 	private class ImuListener implements SerialListener {
 		@Override
 		public void onEvent(SerialEvent event) {
+			if(Gui.getInstance().GetPlayPauseState())
+			{
 			valid = false;
 			char[] tmp = event.getBuffer();
 			int index = 0;
-			
-			if (tmp != null && event.getLength() > HEADER_LEN) {
-				String curVal = "";
-				for (int i = HEADER_LEN; i < event.getLength(); i++ ) {
-					if(tmp[i] == '\n'){
-						break;
-					}
+
+				if (tmp != null && event.getLength() > HEADER_LEN) {
+					String curVal = "";
+					for (int i = HEADER_LEN; i < event.getLength(); i++ ) {
+						if(tmp[i] == '\n'){
+							break;
+						}
 					if (tmp[i] == ',' ){ 
 						try {
 							switch ( index ) {
@@ -148,7 +175,8 @@ public class ImuPanel extends SerialPanel {
 						curVal += tmp[i];
 					}
 				}
-			}
+				}
+			count++;
 			System.out.format("IMU Values: aX: %f aY: %f aZ: %f rX: %f rY: %f rZ: %f mX: %f mY: %f mZ: %f \n",aX,aY,aZ,rX,rY,rZ,mX,mY,mZ);
 			// Message received
 			// message is now contained in tmp
@@ -163,45 +191,32 @@ public class ImuPanel extends SerialPanel {
 		    compass[0] = mX; compass[1] = mY; compass[2] = mZ;
 		    rl.sensor.logImu(time_in_millis, acc, gyro, compass);
 
+		    
+		    addToHistory(aX_history,Double.valueOf(aX));
+		    addToHistory(aY_history,Double.valueOf(aY));
+		    addToHistory(aZ_history,Double.valueOf(aZ));
+		    addToHistory(rX_history,Double.valueOf(rX));
+		    addToHistory(rY_history,Double.valueOf(rY));
+		    addToHistory(rZ_history,Double.valueOf(rZ));
+		    addToHistory(mX_history,Double.valueOf(mX));
+		    addToHistory(mY_history,Double.valueOf(mY));
+		    addToHistory(mZ_history,Double.valueOf(mZ));
+			}
 		}
 	}
-	
+	private void addToHistory(XYSeries history,double newdata){
+    if(history.getItemCount() > HISTORY_LENGTH){
+    	history.remove(0);
+    }
+    history.add(count,newdata);
+	}
+    	
 	XYDataset createDataset() {
-	    
-	    final XYSeries series1 = new XYSeries("First");
-	    series1.add(1.0, 1.0);
-	    series1.add(2.0, 4.0);
-	    series1.add(3.0, 3.0);
-	    series1.add(4.0, 5.0);
-	    series1.add(5.0, 5.0);
-	    series1.add(6.0, 7.0);
-	    series1.add(7.0, 7.0);
-	    series1.add(8.0, 8.0);
-
-	    final XYSeries series2 = new XYSeries("Second");
-	    series2.add(1.0, 5.0);
-	    series2.add(2.0, 7.0);
-	    series2.add(3.0, 6.0);
-	    series2.add(4.0, 8.0);
-	    series2.add(5.0, 4.0);
-	    series2.add(6.0, 4.0);
-	    series2.add(7.0, 2.0);
-	    series2.add(8.0, 1.0);
-
-	    final XYSeries series3 = new XYSeries("Third");
-	    series3.add(3.0, 4.0);
-	    series3.add(4.0, 3.0);
-	    series3.add(5.0, 2.0);
-	    series3.add(6.0, 3.0);
-	    series3.add(7.0, 6.0);
-	    series3.add(8.0, 3.0);
-	    series3.add(9.0, 4.0);
-	    series3.add(10.0, 3.0);
 
 	    final XYSeriesCollection dataset = new XYSeriesCollection();
-	    dataset.addSeries(series1);
-	    dataset.addSeries(series2);
-	    dataset.addSeries(series3);
+	    dataset.addSeries(aX_history);
+	    dataset.addSeries(aY_history);
+	    dataset.addSeries(aZ_history);
 	            
 	    return dataset;
 	    
@@ -293,9 +308,9 @@ public class ImuPanel extends SerialPanel {
 	    
 	    // create the chart...
 	    final JFreeChart chart = ChartFactory.createXYLineChart(
-	        "Line Chart Demo 6",      // chart title
-	        "X",                      // x axis label
-	        "Y",                      // y axis label
+	        "Omom ticks",      // chart title
+	        "time",                      // x axis label
+	        "mag",                      // y axis label
 	        dataset,                  // data
 	        PlotOrientation.VERTICAL,
 	        true,                     // include legend
@@ -321,11 +336,13 @@ public class ImuPanel extends SerialPanel {
 	    renderer.setSeriesShapesVisible(1, false);
 	    plot.setRenderer(renderer);
 
+	    NumberAxis range = (NumberAxis) plot.getRangeAxis();
+        range.setRange(0.0, 20.0);
 	    // change the auto tick unit selection to integer units only...
 	    final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
 	    rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 	    // OPTIONAL CUSTOMISATION COMPLETED.
-	            
+	         
 	    return chart;
 	    
 	}

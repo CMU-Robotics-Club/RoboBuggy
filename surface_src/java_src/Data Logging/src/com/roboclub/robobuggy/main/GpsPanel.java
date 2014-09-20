@@ -95,7 +95,7 @@ public class GpsPanel extends SerialPanel {
 		RobotLogger rl = RobotLogger.getInstance();
 	    Date now = new Date();
 	    long time_in_millis = now.getTime();
-	    rl.sensor.logGps(time_in_millis, currLoc.getX(), currLoc.getY());
+	    rl.sensor.logGps(time_in_millis, currLoc.getX(), currLoc.getY()); //TODO change names X = lat, Y = lon 
 	}
 	
 	/**
@@ -106,6 +106,8 @@ public class GpsPanel extends SerialPanel {
 	private class GpsListener implements SerialListener {
 		@Override
 		public void onEvent(SerialEvent event) {
+			if(Gui.getInstance().GetPlayPauseState())
+			{
 			char[] tmp = event.getBuffer();
 			int length = event.getLength();
 			int index = 0;
@@ -153,6 +155,7 @@ public class GpsPanel extends SerialPanel {
 				}
 
 				//TODO redraw now
+			}
 			}
 		}
 	}
