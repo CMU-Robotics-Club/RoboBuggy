@@ -9,10 +9,10 @@
 extern "C"{
 #endif
 	//sets up the encoder with the given Pin
-	void encoder_init(int encoderPin);
+	void encoder_init();
 	
 	//returns the count of the encoder
-	void get_enc_count();
+	int get_enc_count();
 
 #ifdef __cplusplus
 } // extern "C"

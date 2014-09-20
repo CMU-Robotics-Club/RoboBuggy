@@ -4,6 +4,7 @@
  */
 #include <Arduino.h>
 #include "lib_encoder.h"
+#include "lib_encoder_def.h"
 
 //-------local Variables-----------------
 //required to be volatile for interrupts
@@ -15,11 +16,11 @@ void increment_encoder();
 //------------global functions---------------
 //sets up the encoder with the given Pin
 void encoder_init(){
-	pinMonde(ENC_PIN, INPUT);
-	attachInterrupt(INTERRUPT_NUM, increment_encoder, CHANGE); 
+	pinMode(ENC_PIN, INPUT);
+	attachInterrupt(INTERRUPT_NUM, increment_encoder, RISING); 
 }
 
-void get_enc_count(){
+int get_enc_count(){
 	return encCount;
 }
 
