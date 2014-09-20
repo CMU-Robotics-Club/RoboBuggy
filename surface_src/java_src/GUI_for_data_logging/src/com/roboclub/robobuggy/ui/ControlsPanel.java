@@ -15,15 +15,13 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
-import GUI.StartPauseButtonHandler;
-import GUI.timerHandler;
-
 public class ControlsPanel extends JPanel {
 	private static final long serialVersionUID = -924045896215455343L;
 	
 	// Big gui objects
 	private JButton startPause_btn;
 	private JLabel time_lbl;
+	private boolean playPauseState;
 	
 	public ControlsPanel() {
 		//stuff for setting up logging ie start/stop, file name ...
@@ -43,20 +41,27 @@ public class ControlsPanel extends JPanel {
 
 				time_lbl = new JLabel("SystemTime: " + df.format(dateobj) + " logTime: ",SwingConstants.CENTER);
 			
-				timer = new Timer(10, new timerHandler());//updates every .01 seconds
+				Timer timer = new Timer(10, new timerHandler());//updates every .01 seconds
 				timer.setInitialDelay(200); //waits .2 seconds to start for first time
 				timer.setDelay(200);
 			    timer.setRepeats(true);	
-			    //timer.setCoalesce(false);
+			    timer.setCoalesce(false);
 			    timer.start();
 
 				dataLoggingPanel.add(startPause_btn);
 				dataLoggingPanel.add(currentFile_lbl);
 				dataLoggingPanel.add(newFile_lbl);
 				dataLoggingPanel.add(time_lbl);
-				parentFrame.add(dataLoggingPanel);	
 	}
-
+	
+	private class timerHandler implements ActionListener
+	{
+		@Override
+		public void actionPerformed(ActionEvent ae) {
+				System.out.println("hello world\n");			
+				repaint();
+		}
+	}
 	private class StartPauseButtonHandler implements ActionListener
 	{
 		@Override
@@ -64,7 +69,6 @@ public class ControlsPanel extends JPanel {
 		{
 			
 			System.out.println("Button was pressed!");
-			System.out.println(timer.isRunning());
 			//inverts the state of the system every time the button is pressed 
 			playPauseState = !playPauseState;
 			if(playPauseState)

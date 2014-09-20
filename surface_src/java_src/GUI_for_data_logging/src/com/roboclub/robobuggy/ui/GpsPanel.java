@@ -11,6 +11,5 @@ public class GpsPanel extends JPanel {
 		JPanel gpsPanel = new JPanel();
 		JLabel gps_message = new JLabel("GPS STUFF goes here",SwingConstants.CENTER);
 		gpsPanel.add(gps_message);		
-		parentFrame.add(gpsPanel);	
 	}
 }
