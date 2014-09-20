@@ -20,14 +20,9 @@ public class GpsPanel extends JPanel {
 		
 		BufferedImage myPicture;
 		try {
-<<<<<<< HEAD
-			myPicture = ImageIO.read(new File("map.jpg"));
-			
-=======
 			System.out.println(System.getProperty("user.dir"));
 			//RoboBuggy\surface_src\java_src\GUI_for_data_logging\
-			myPicture = ImageIO.read(new File("mapTest.jpg")); //random image
->>>>>>> c9d596ffc3b4473a17ec59eca21d07280eac52ba
+			myPicture = ImageIO.read(new File("map.jpg")); 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
