@@ -1,4 +1,4 @@
-package com.roboclub.robobuggy.ui;
+package main;
 
 import java.awt.Color;
 import java.awt.Font;

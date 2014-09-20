@@ -1,6 +1,8 @@
 package com.roboclub.robobuggy.ui;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import org.opencv.highgui.VideoCapture;
 
@@ -28,8 +30,8 @@ public class CameraPanel extends JPanel {
 	
 	
 	public CameraPanel( int camera_id ) {
-		//JLabel cam_message = new JLabel("Cam STUFF goes here",SwingConstants.CENTER);
-		//camPanel.add(cam_message);		// Read from camera forever
+		JLabel cam_message = new JLabel("Cam STUFF goes here",SwingConstants.CENTER);
+		this.add(cam_message);		// Read from camera forever
 		/*Mat frame = new Mat();
 		while(true) {
 			camera.read(frame);

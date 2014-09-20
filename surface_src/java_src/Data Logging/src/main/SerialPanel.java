@@ -2,16 +2,21 @@ package main;
 
 import javax.swing.JPanel;
 
+import serial.SerialListener;
 import serial.SerialReader;
 
 abstract class SerialPanel extends JPanel {
-	private SerialReader port;
+	private static final long serialVersionUID = 8010633614957618540L;
 	
-	public SerialPanel(String port_name, String owner, int baud_rate) {
-		try {
-			port = new SerialReader(port_name, owner, baud_rate);
-		} catch (Exception e) {
-			// TODO Implement error handler for serial panel
-		}
+	private SerialReader port;
+	private SerialListener listener;
+	
+	public SerialPanel(String owner, int baud_rate, char[] header,
+			int headerLen) throws Exception {
+		port = new SerialReader(owner, baud_rate, listener, header, headerLen);
+	}
+	
+	public void closePort() {
+		port.close();
 	}
 }

@@ -1,5 +1,11 @@
 package com.roboclub.robobuggy.ui;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -10,6 +16,18 @@ public class GpsPanel extends JPanel {
 	public GpsPanel() {
 		JPanel gpsPanel = new JPanel();
 		JLabel gps_message = new JLabel("GPS STUFF goes here",SwingConstants.CENTER);
-		gpsPanel.add(gps_message);		
+		gpsPanel.add(gps_message);
+		
+		BufferedImage myPicture;
+		try {
+			myPicture = ImageIO.read(new File("path-to-file"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new RuntimeException("Course Map imqage could not be found");
+		}
+		JLabel picLabel = new JLabel(new ImageIcon(myPicture));
+		add(picLabel);
+
 	}
 }

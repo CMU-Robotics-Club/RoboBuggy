@@ -58,8 +58,8 @@ public class GUI extends JFrame
 	{
 		//size of the screen
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();		
-		WIDTH = screenSize.width-2;
-		HEIGHT = screenSize.height-2;	
+		WIDTH = screenSize.width-10;
+		HEIGHT = screenSize.height-30;	
 		
 		setSize(WIDTH, HEIGHT);
 		setVisible(true);
@@ -76,10 +76,13 @@ public class GUI extends JFrame
 		setTitle("RoboBuggy Data Gathering");
 		Container mainFrame = getContentPane();
 		mainFrame.setLayout(new GridLayout(2, 2));			
-		mainFrame.add(cameraPanel);
+		mainFrame.add(imuPanel);
 		mainFrame.add(controlsPanel);
 		mainFrame.add(gpsPanel);
 		mainFrame.add(arduinoPanel);
+		mainFrame.repaint();
+		
+		mainFrame = mainFrame;
 		// TODO: add imuPanel
 	}
 	
