@@ -5,7 +5,7 @@
 # If not, you might have to include the full path.
 #ALTERNATE_CORE_PATH = /home/sudar/Dropbox/code/arduino-sketches/hardware/attiny/
 
-BOARD_TAG    = atmega328p
+BOARD_TAG    = nano328
 ISP_PORT     = /dev/tty.asdf
 
 include ../Arduino.mk
