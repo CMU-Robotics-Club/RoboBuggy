@@ -160,8 +160,8 @@ public final class SensorLogger {
 	public void logEncoder(long time,int value,int total,long encoderTime) {
 		_log(time,_encoderKeys,new String[]{ "" + value,"" + total,"" + encoderTime });
 	}
-	public void logGps(long time,float longitude,float latitude) {
-		_log(time,_gpsKeys,new String[]{ "" + longitude,"" + latitude });
+	public void logGps(long time_in_millis,double d,double e) {
+		_log(time_in_millis,_gpsKeys,new String[]{ "" + d,"" + e });
 	}
 	public void logImage(long time,String name,BufferedImage img) {
 		_log(time,_imgKeys,new String[]{ "" + name });
