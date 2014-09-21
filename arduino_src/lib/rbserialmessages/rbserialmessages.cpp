@@ -57,18 +57,18 @@ uint8_t RBSerialMessages::AppendMessageToBuffer(uint8_t id,
   buffer_out_[buffer_pos++] = id;
 
   // sanitize message content if necessary
-  if(message_l == RBSM_HEAD) {
-    buffer_out_[buffer_pos++] = message_l;
-    buffer_out_[buffer_pos++] = message_l;
-  } else {
-    buffer_out_[buffer_pos++] = message_l;
-  }
-
   if(message_h == RBSM_HEAD) {
     buffer_out_[buffer_pos++] = message_h;
     buffer_out_[buffer_pos++] = message_h;
   } else {
     buffer_out_[buffer_pos++] = message_h;
+  }
+
+  if(message_l == RBSM_HEAD) {
+    buffer_out_[buffer_pos++] = message_l;
+    buffer_out_[buffer_pos++] = message_l;
+  } else {
+    buffer_out_[buffer_pos++] = message_l;
   }
 
   // write null terminator just in case. note no increment
