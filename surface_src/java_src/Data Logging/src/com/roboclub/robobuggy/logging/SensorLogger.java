@@ -5,13 +5,20 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
+/**
+ * Logs data from the sensors
+ * 
+ * @author Joe Doyle
+ */
 public final class SensorLogger {
 	private final String[] _imuKeys = {
 		"IMU_Acc_X",     "IMU_Acc_Y",     "IMU_Acc_Z",
@@ -100,10 +107,10 @@ public final class SensorLogger {
 		return ret;
 	};
 
+	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 	public SensorLogger(File outputDir,Date startTime) {
 		outputDir.mkdirs();
-
-		File csvFile = new File(outputDir,startTime.toString() + " sensors.csv");
+		File csvFile = new File(outputDir,df.format(startTime) + "-sensors.csv");
 		try {
 			_csv = new PrintStream(csvFile);
 		} catch (FileNotFoundException e) {
@@ -112,7 +119,7 @@ public final class SensorLogger {
 		}
 		_csvQueue = startCsvThread(_csv);
 
-		File imgdir = new File(outputDir,startTime.toString() + " images");
+		File imgdir = new File(outputDir,df.format(startTime) + "-images");
 		imgdir.mkdirs();
 		_imgQueue = startImgThread(imgdir);
 

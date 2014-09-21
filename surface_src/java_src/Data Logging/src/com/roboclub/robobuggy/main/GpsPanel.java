@@ -2,12 +2,14 @@ package com.roboclub.robobuggy.main;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Date;
 
 import javax.imageio.ImageIO;
 
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 
+import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.serial.SerialEvent;
 import com.roboclub.robobuggy.serial.SerialListener;
 
@@ -31,9 +33,10 @@ public class GpsPanel extends SerialPanel {
 	private static final int PANEL_HEIGHT = 300;
 	private static final int WIDTH = 400;
 	private static final int HEIGHT = 270;
-	
-	private double longitude;
-	private double latitude;
+
+	// TODO: these could be doubles, but the IMU is currently not outputting that precision
+	private float longitude;
+	private float latitude;
 	private BufferedImage map;
 	
 	/**
@@ -100,6 +103,12 @@ public class GpsPanel extends SerialPanel {
 					}
 				}
 
+				// message is now contained in tmp
+			    RobotLogger rl = RobotLogger.getInstance();
+			    Date now = new Date();
+			    long time_in_millis = now.getTime();
+			    rl.sensor.logGps(time_in_millis, longitude, latitude);
+				
 				//TODO redraw now
 			}
 		}
