@@ -139,7 +139,7 @@ public final class SensorLogger {
 		String[] line = new String[_keys.length];
 		for(int i=0;i<_keys.length;++i) {
 			String k = _keys[i];
-			if(k.equls("Timestamp")) {
+			if(k.equals("Timestamp")) {
 				line[i] = "" + timestamp;
 				continue;
 			}
