@@ -11,75 +11,59 @@
  * @author: Audrey Yeoh (ayeoh) 
  */
 
-#define LOOP_TIME 10
+#define LOOP_TIME 100
 
 #include "rbserialmessages.h"
 #include "lib_encoder.h"
 
-#define DEBUG
+// #define DEBUG
 #ifdef DEBUG
 #  define dbg_Serial_print(...) Serial.println(__VA_ARGS__)
 #else
 #  define dbg_Serial_print(...)
 #endif
 
-unsigned long loop_starttime = 0;
-unsigned long last_looptime = 0;
-unsigned long reset_count;
-unsigned long last_count;
-unsigned long current_enc_val;
+
+static unsigned long g_last_loop_time;
+static unsigned long g_this_loop_time;
+static unsigned long g_last_enc_count;
+static unsigned long g_this_enc_count;
 RBSerialMessages g_rbserialmessages;
+
 
 void setup()
 {
   g_rbserialmessages.Begin(&Serial);
-  enc_init();
-  reset_count = 0; // this is for the reset reset_count
-  last_count = 0;
-  current_enc_val = 0;
+  encoder_init();
+  encoder_reset();
+  g_last_loop_time = 0;
+  g_this_loop_time = 0;
+  g_last_enc_count = 0;
+  g_this_enc_count = 0;
 }
 
 
 void loop()
 {
-  g_rbserialmessages.SendSingle(0xAA, 0xBBCC);
-  /*************** HEAD OF TIMING LOOP **************/
-  loop_starttime = millis();
-  /*************** END OF TIMING LOOP HEAD **********/
-  
-  current_enc_val = get_enc_count();
-  // D CODE GOES HEREEEEEE
-  last_count = current_enc_val - reset_count;
-  // get reset_count (already stored) TODO!
-  reset_count = current_enc_val;
-  
-  // split the last_count
-  unsigned int upper_message = last_count >> 16;
-  unsigned int lower_message = last_count & 0xFF;
-  // send the two parts of last_count
+  // get data for this loop
+  g_this_loop_time = millis();
+  g_this_enc_count = encoder_get_count();
 
-  
-  // split the reset_count 
-  upper_message = reset_count >> 16;
-  lower_message = reset_count & 0xFF;
-  // send the two parts of reset_count
+  // send new data
+  g_rbserialmessages.SendDouble(RBSM_MID_ENC_TICKS_LAST_H,
+                                RBSM_MID_ENC_TICKS_LAST_L,
+                                g_this_enc_count - g_last_enc_count);
+  g_rbserialmessages.SendDouble(RBSM_MID_ENC_TICKS_RESET_H,
+                                RBSM_MID_ENC_TICKS_RESET_L,
+                                g_this_enc_count);
+  g_rbserialmessages.SendDouble(RBSM_MID_ENC_TIMESTAMP_H,
+                                RBSM_MID_ENC_TIMESTAMP_L,
+                                g_this_loop_time);
 
-  // reset the last count after the send
-  last_count = 0;
-  
-  /*************** TAIL OF TIMING LOOP **************/
-  last_looptime = millis() - loop_starttime;
-  while (last_looptime < LOOP_TIME)
-  {
-    // reset_count d tick?
-    last_looptime = millis() - loop_starttime;
-  }
-  /************* END OF TAIL OF TIMING LOOP *********/
-}
+  // set carry over values
+  g_last_loop_time = g_this_loop_time;
+  g_last_enc_count = g_this_enc_count;
 
-// Send the timestamp in two packets
-void send_time(unsigned long time)
-{
-   unsigned int upper_message = time >> 16;
-   unsigned int lower_message = time & 0xFF;
+  // spin wait until next time
+  while(millis() - g_this_loop_time < LOOP_TIME) {}
 }

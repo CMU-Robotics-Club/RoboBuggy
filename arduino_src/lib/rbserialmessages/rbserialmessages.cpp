@@ -7,7 +7,9 @@
  * Have a nice day! :)															*
  ********************************************************************************/
 
-/* @author: Audrey Yeoh (ayeohmy@gmail.com)
+/**
+ * @author: Ian Hartwig (spacepenguine@gmail.com)
+ * @author: Audrey Yeoh (ayeohmy@gmail.com)
  * @date: 7/22/2014
  */
 
@@ -44,13 +46,28 @@ int RBSerialMessages::SendSingle(uint8_t id, uint16_t message) {
   return 0;
 }
 
+
+int RBSerialMessages::SendDouble(uint8_t id_h, uint8_t id_l, uint32_t message) {
+  uint8_t buffer_pos;
+  uint16_t message_l = message & RBSM_TWO_BYTE_MASK;
+  uint16_t message_h = (message >> RBSM_TWO_BYTE_SIZE) & RBSM_TWO_BYTE_MASK;
+  buffer_pos = InitMessageBuffer();
+  buffer_pos = AppendMessageToBuffer(id_h, message_h, buffer_pos);
+  buffer_pos = AppendMessageToBuffer(id_l, message_l, buffer_pos);
+  
+  serial_stream_->write(buffer_out_, buffer_pos);
+
+  // success
+  return 0;
+}
+
 // Private /////////////////////////////////////////////////////////////////////
 uint8_t RBSerialMessages::AppendMessageToBuffer(uint8_t id,
                                                 uint16_t message,
                                                 uint8_t out_start_pos) {
   uint8_t buffer_pos = out_start_pos;
-  uint8_t message_l = message & RBSM_BYTE_MASK;
-  uint8_t message_h = (message >> RBSM_ONE_BYTE_SIZE) & RBSM_BYTE_MASK;
+  uint8_t message_l = message & RBSM_ONE_BYTE_MASK;
+  uint8_t message_h = (message >> RBSM_ONE_BYTE_SIZE) & RBSM_ONE_BYTE_MASK;
 
   // write message id (and id since single message)
   buffer_out_[buffer_pos++] = RBSM_HEAD;
