@@ -3,7 +3,7 @@
 int encVal = 0;
 
 void setup() {
-  encoder_init();
+  enc_init();
   Serial.begin(9600); 
 }
 
