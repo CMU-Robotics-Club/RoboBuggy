@@ -17,6 +17,9 @@ import org.opencv.highgui.Highgui;
 import org.opencv.highgui.VideoCapture;
 import org.opencv.imgproc.Imgproc;
 
+import com.roboclub.robobuggy.map.Point;
+import com.roboclub.robobuggy.map.Rect;
+
 public class CameraPanel extends JPanel {
 	private static final long serialVersionUID = 2045798342979823126L;
 	/* Panel Dimensons */

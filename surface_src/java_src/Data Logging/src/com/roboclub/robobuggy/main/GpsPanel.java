@@ -8,6 +8,8 @@ import javax.imageio.ImageIO;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 
+import com.roboclub.robobuggy.map.Point;
+import com.roboclub.robobuggy.map.Rect;
 import com.roboclub.robobuggy.serial.SerialEvent;
 import com.roboclub.robobuggy.serial.SerialListener;
 
@@ -32,8 +34,12 @@ public class GpsPanel extends SerialPanel {
 	private static final int WIDTH = 400;
 	private static final int HEIGHT = 270;
 	
-	private double longitude;
-	private double latitude;
+	private static final Rect MAP_COORD = new Rect(
+			new Point(-79.94010, 40.442395),
+			new Point(-79.948686, 40.442395),
+			new Point(-79.94010, 40.438363),
+			new Point(-79.948686, 40.438363));
+	private Point currLoc;
 	private BufferedImage map;
 	
 	/**
@@ -45,6 +51,8 @@ public class GpsPanel extends SerialPanel {
 		super("GPS", BAUDRATE, HEADER, HEADER_LEN);
 		super.addListener(new GpsListener());
 		this.setLayout(new FlowLayout(FlowLayout.LEFT, 1, 0));
+		this.currLoc = new Point(0,0);
+		
 		// Load map image as background
 		try {
 			map = ImageIO.read(new File("images/course_map.png"));
@@ -59,6 +67,10 @@ public class GpsPanel extends SerialPanel {
 		super.paintComponent(g);
 		
 		g.drawImage(map, 0, (PANEL_HEIGHT-HEIGHT), null);
+		
+		if (MAP_COORD.within(currLoc)) {
+			//g.drawOval();
+		}
 	}
 	
 	/**
@@ -79,10 +91,10 @@ public class GpsPanel extends SerialPanel {
 						try {
 							switch ( index ) {
 							case LONGITUDE:
-								longitude = Float.valueOf(curVal);
+								currLoc.setX(Float.valueOf(curVal));
 								break;
 							case LATITUDE:
-								latitude = Float.valueOf(curVal);
+								currLoc.setY(Float.valueOf(curVal));
 								break;
 							default:
 								return;
