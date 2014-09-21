@@ -34,6 +34,10 @@ $ cd directory/with/.ino
 $ make upload ISP_PORT=/dev/tty.usbserial
 ```
 
+```
+ /Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/bin/avrdude  -p atmega328p -C /Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/etc/avrdude.conf -c avrispmkii -P usb -U flash:w:build-nano328/Nano_encoder.hex:i
+```
+
 ## Makefiles
 
 We are using the Makefile from [https://github.com/sudar/Arduino-Makefile](https://github.com/sudar/Arduino-Makefile). Most of the implementation is in /arduino_src/Arduino.mk. Each sketch gets it's own mini makefile with sketch-specific information like board type.
