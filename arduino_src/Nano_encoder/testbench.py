@@ -1,3 +1,7 @@
+
+# This testbench is untested because pyserial refuses to read from the arduino.
+# =(
+
 import serial
 import struct
 import sys
