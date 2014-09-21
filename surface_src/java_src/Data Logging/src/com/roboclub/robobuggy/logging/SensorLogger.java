@@ -5,13 +5,20 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
+/**
+ * Logs data from the sensors
+ * 
+ * @author Joe Doyle
+ */
 public final class SensorLogger {
 	private final String[] _imuKeys = {
 		"IMU_Acc_X",     "IMU_Acc_Y",     "IMU_Acc_Z",
@@ -100,6 +107,7 @@ public final class SensorLogger {
 		return ret;
 	};
 
+	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 	public SensorLogger(File outputDir,Date startTime) throws Exception {
 		//check if dir exits
 		if(outputDir == null){
@@ -110,9 +118,8 @@ public final class SensorLogger {
 		String outputFileName = startTime.toString();
 		outputFileName = outputFileName.replaceAll(" ","");
 		outputFileName = outputFileName.replaceAll(":", "_");
-		System.out.println("FileToWriteto:"+outputFileName);
 		File csvFile = new File(outputDir,outputFileName + "sensors.csv");
-		System.out.println("file Created \n");
+		System.out.println("FileCreated: " + outputFileName);
 		try {
 			_csv = new PrintStream(csvFile);
 		} catch (FileNotFoundException e) {
@@ -121,7 +128,7 @@ public final class SensorLogger {
 		}
 		_csvQueue = startCsvThread(_csv);
 
-		File imgdir = new File(outputDir,startTime.toString() + " images");
+		File imgdir = new File(outputDir,df.format(startTime) + "-images");
 		imgdir.mkdirs();
 		_imgQueue = startImgThread(imgdir);
 
@@ -166,8 +173,8 @@ public final class SensorLogger {
 	public void logServo(long time,float command,float actual) {
 		_log(time,_servoKeys,new String[]{ "" + command,"" + actual });
 	}
-	public void logEncoder(long time,int value,int total,long encoderTime) {
-		_log(time,_encoderKeys,new String[]{ "" + value,"" + total,"" + encoderTime });
+	public void logEncoder(long time,long encTickLast,long encReset,long encoderTime) {
+		_log(time,_encoderKeys,new String[]{ "" + encTickLast,"" + encReset,"" + encoderTime });
 	}
 	public void logGps(long time_in_millis,double d,double e) {
 		_log(time_in_millis,_gpsKeys,new String[]{ "" + d,"" + e });

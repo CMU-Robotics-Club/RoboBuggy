@@ -5,9 +5,8 @@ import java.io.File;
 import java.util.Date;
 
 import javax.imageio.ImageIO;
-
-import java.awt.FlowLayout;
 import java.awt.Graphics;
+import java.awt.GridLayout;
 
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.map.Point;
@@ -58,7 +57,7 @@ public class GpsPanel extends SerialPanel {
 	public GpsPanel() {
 		super("GPS", BAUDRATE, HEADER, HEADER_LEN);
 		super.addListener(new GpsListener());
-		this.setLayout(new FlowLayout(FlowLayout.LEFT, 1, 0));
+		this.setLayout(new GridLayout(2, 1));
 		this.currLoc = new Point(0,0);
 		
 		// Load map image as background
@@ -106,56 +105,53 @@ public class GpsPanel extends SerialPanel {
 	private class GpsListener implements SerialListener {
 		@Override
 		public void onEvent(SerialEvent event) {
-			if(Gui.getInstance().GetPlayPauseState())
-			{
-			char[] tmp = event.getBuffer();
-			int length = event.getLength();
-			int index = 0;
-			
-			if (tmp != null && event.getLength() > HEADER_LEN) {
-				String curVal = "";
+			if(Gui.getInstance().GetPlayPauseState()) {
+				char[] tmp = event.getBuffer();
+				int length = event.getLength();
+				int index = 0;
 				
-				// Filter messages by header
-				for (int i = 0; i < HEADER_LEN; i++) {
-					if (tmp[i] != HEADER[i]) return;
-				}
-				
-				// Parse message data
-				for (int i = HEADER_LEN+1; i < length; i++ ) {
-					if (tmp[i] == ',' || tmp[i] == '\n') {
-						try {
-							switch ( index ) {
-							case LAT_NUM:
-								currLoc.setY( parseLat(curVal) );
-								break;
-							case LAT_DIR:
-								if (curVal.equalsIgnoreCase("S")) currLoc.setY( -1 * currLoc.getY());
-								break;
-							case LONG_NUM:
-								currLoc.setX( parseLon(curVal) );
-								break;
-							case LONG_DIR:
-								if (curVal.equalsIgnoreCase("W")) currLoc.setX( -1 * currLoc.getX());
-								break;
-							case LOG:
-								logData();
+				if (tmp != null && event.getLength() > HEADER_LEN) {
+					String curVal = "";
+					
+					// Filter messages by header
+					for (int i = 0; i < HEADER_LEN; i++) {
+						if (tmp[i] != HEADER[i]) return;
+					}
+					
+					// Parse message data
+					for (int i = HEADER_LEN+1; i < length; i++ ) {
+						if (tmp[i] == ',' || tmp[i] == '\n') {
+							try {
+								switch ( index ) {
+								case LAT_NUM:
+									currLoc.setY( parseLat(curVal) );
+									break;
+								case LAT_DIR:
+									if (curVal.equalsIgnoreCase("S")) currLoc.setY( -1 * currLoc.getY());
+									break;
+								case LONG_NUM:
+									currLoc.setX( parseLon(curVal) );
+									break;
+								case LONG_DIR:
+									if (curVal.equalsIgnoreCase("W")) currLoc.setX( -1 * currLoc.getX());
+									break;
+								case LOG:
+									logData();
+									return;
+								}
+								
+								curVal = "";
+								index++;
+							} catch (Exception e) {
+								System.out.println("Failed to parse gps message");
 								return;
 							}
 							
-							curVal = "";
-							index++;
-						} catch (Exception e) {
-							System.out.println("Failed to parse gps message");
-							return;
+						} else {
+							curVal += tmp[i];
 						}
-						
-					} else {
-						curVal += tmp[i];
 					}
 				}
-
-				//TODO redraw now
-			}
 			}
 		}
 	}

@@ -28,7 +28,7 @@ public class ControlsPanel extends JPanel {
 	public ControlsPanel() {
 		//stuff for setting up logging ie start/stop, file name ...
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
-		this.setLayout(new GridLayout(4, 1));
+		this.setLayout(new GridLayout(1, 2));
 		startPause_btn = new JButton("Start");
 		startPause_btn.setFont(new Font("serif", Font.PLAIN, 70));
 		//TODO move following into a function 

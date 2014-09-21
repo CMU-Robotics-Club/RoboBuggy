@@ -1,9 +1,6 @@
 package com.roboclub.robobuggy.main;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-
 import com.roboclub.robobuggy.serial.SerialListener;
 import com.roboclub.robobuggy.serial.SerialReader;
 
@@ -28,6 +25,7 @@ abstract class SerialPanel extends JPanel {
 	public SerialReader getPort() {
 		return port;
 	}
+	
 	public void addListener(SerialListener listener) {
 		if (null != port) {
 			port.addListener(listener);

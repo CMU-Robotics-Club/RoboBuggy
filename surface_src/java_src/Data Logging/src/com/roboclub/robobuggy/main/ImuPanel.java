@@ -202,6 +202,18 @@ public class ImuPanel extends SerialPanel {
 		    addToHistory(mY_history,Double.valueOf(mY));
 		    addToHistory(mZ_history,Double.valueOf(mZ));
 			}
+			// Message received
+			// message is now contained in tmp
+		    RobotLogger rl = RobotLogger.getInstance();
+		    Date now = new Date();
+		    long time_in_millis = now.getTime();
+		    float[] acc = new float[3];
+		    float[] gyro = new float[3];
+		    float[] compass = new float[3];
+		    acc[0] = aX; acc[1] = aY; acc[2] = aZ;
+		    gyro[0] = rX; gyro[1] = rY; gyro[2] = rZ;
+		    compass[0] = mX; compass[1] = mY; compass[2] = mZ;
+		    rl.sensor.logImu(time_in_millis, acc, gyro, compass);
 		}
 	}
 	private void addToHistory(XYSeries history,double newdata){
