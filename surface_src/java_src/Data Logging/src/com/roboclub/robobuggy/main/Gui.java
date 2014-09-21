@@ -2,9 +2,7 @@ package com.roboclub.robobuggy.main;
 
 import java.awt.GridLayout;
 import java.io.File;
-
 import javax.swing.JFrame;
-
 import com.roboclub.robobuggy.logging.RobotLogger;
 
 public final class Gui extends JFrame {
@@ -29,7 +27,6 @@ public final class Gui extends JFrame {
 		return instance;
 	}
 	
-	
 	public Gui() {
 		playPauseState = false;
 	}
@@ -44,6 +41,7 @@ public final class Gui extends JFrame {
 			gpsPanel = new GpsPanel();
 			//arduinoPanel = new ArduinoPanel();
 			controlsPanel = new ControlsPanel();
+			
 			imuPanel = new ImuPanel();
 		} catch (Exception e) {
 			e.printStackTrace();

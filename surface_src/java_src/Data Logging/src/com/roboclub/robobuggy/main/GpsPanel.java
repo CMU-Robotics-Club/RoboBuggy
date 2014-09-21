@@ -154,6 +154,12 @@ public class GpsPanel extends SerialPanel {
 					}
 				}
 
+				// message is now contained in tmp
+			    RobotLogger rl = RobotLogger.getInstance();
+			    Date now = new Date();
+			    long time_in_millis = now.getTime();
+			    rl.sensor.logGps(time_in_millis, currLoc.getY(), currLoc.getX());
+				
 				//TODO redraw now
 			}
 			}
