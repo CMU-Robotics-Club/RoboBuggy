@@ -11,15 +11,18 @@
  * @date: 7/22/2014
  */
 
-#ifndef LIB_TYPES_H
-#define LIB_TYPES_H
+
+
+#ifndef LIB_PROTOCOL_H
+#define LIB_PROTOCOL_H
+
+#include <Arduino.h>
+
 #ifdef __cplusplus
 extern "C"{
 #endif
 
-#include <stdint.h>
-#include <Arduino.h>
-
+// protocol constants
 #define HEAD 0xFC
 #define ONE_BYTE_SIZE 8
 #define TWO_BYTE_SIZE 16
@@ -32,14 +35,20 @@ extern "C"{
 #define ENC_TIMESTAMP_ONE 4
 #define ENC_TIMESTAMP_TWO 5
 
-typedef enum 
-{
-	RET_OK,
-	RET_ERROR
-}Ret_E;
+
+/* This will be the main structure of our packets:
+ *
+ * Head [0xFC] 	ID [ - ]  Message[ - -] ... ID [ - ]  Message[ - -]
+ * [ 1 byte  ] 	[1 byte]  [  2 bytes  ] ... [1 byte]  [  2 bytes  ]
+ */
+
+int protocol_init( void ); // TODO: I'm not sure exactly what needs to be initialized yet
+int protocol_run( void ); // TODO:
+unsigned long protocol_send( byte id, unsigned int message); // Currently working on
+unsigned long protocol_getMessage(unsigned long packet);
+unsigned long protocol_getID(unsigned long packet);
 
 #ifdef __cplusplus
 }
 #endif
-
-#endif // LIB_TYPES_H
+#endif // LIB_PROTOCOL_H
