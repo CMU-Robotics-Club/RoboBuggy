@@ -1,2 +1,6 @@
 .class
 out/
+
+# mac os x temp files
+.DS_Store
+
