@@ -16,13 +16,6 @@
 #include "rbserialmessages.h"
 #include "lib_encoder.h"
 
-// #define DEBUG
-#ifdef DEBUG
-#  define dbg_Serial_print(...) Serial.println(__VA_ARGS__)
-#else
-#  define dbg_Serial_print(...)
-#endif
-
 
 static unsigned long g_last_loop_time;
 static unsigned long g_this_loop_time;
