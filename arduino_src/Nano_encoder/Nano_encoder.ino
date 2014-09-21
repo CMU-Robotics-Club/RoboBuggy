@@ -45,6 +45,9 @@ void setup()
 
 void loop()
 {
+  // send identity header
+  g_rbserialmessages.SendSingle(RBSM_MID_RESERVED, RBSM_DID_DRIVE_ENCODER);
+
   // get data for this loop
   g_this_loop_time = millis();
   g_this_enc_count = encoder_get_count();
