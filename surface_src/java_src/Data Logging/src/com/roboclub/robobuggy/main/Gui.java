@@ -21,7 +21,7 @@ public final class Gui extends JFrame {
 
 	public static Gui getInstance(){
 		if(instance == null){
-			System.out.println("Createde Gui instance");
+			System.out.println("Created Gui instance");
 			instance = new Gui();
 		}
 		return instance;
@@ -30,11 +30,13 @@ public final class Gui extends JFrame {
 	public Gui() {
 		playPauseState = false;
 	}
+	
 	public void populate(){
 		window = new JFrame();
-		window.setSize(800, 600);
+		window.setSize(1000, 600);
 		window.setTitle("RoboBuggy Data Gathering");
 		window.setLayout(new GridLayout(2, 2, 0, 0));
+		
 		// Initialize Panels for Window
 		try {
 			//cameraPanel = new CameraPanel( CAMERA_ID );
@@ -64,27 +66,24 @@ public final class Gui extends JFrame {
 		window.add(imuPanel);
 		
 		window.setVisible(true);
-//		window.setResizable(false);
 	}
 	
 	private void closeWindow(int exitCode) {
 		gpsPanel.closePort();
     	//arduinoPanel.closePort();
     	imuPanel.closePort();
-    	cameraPanel.close();
+    	//cameraPanel.close();
     	
         System.exit(exitCode);
 	}
 	
-	@SuppressWarnings("unused")
-	public static void main(String args[]) {		
-		//Gui gui = new Gui();
+	public static void main(String args[]) {
 		Gui.getInstance().populate();
 		
-		try
+		/*try
 		{
 			Process p = Runtime.getRuntime().exec("C:\\Users\\abc\\buggy-log\\VisionSystem.exe");
-		}catch(Exception exc){/*handle exception*/}
+		}catch(Exception exc){}*/
 	}
 
 

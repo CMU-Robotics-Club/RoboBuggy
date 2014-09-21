@@ -118,9 +118,8 @@ public final class SensorLogger {
 		String outputFileName = startTime.toString();
 		outputFileName = outputFileName.replaceAll(" ","");
 		outputFileName = outputFileName.replaceAll(":", "_");
-		System.out.println("FileToWriteto:"+outputFileName);
 		File csvFile = new File(outputDir,outputFileName + "sensors.csv");
-		System.out.println("file Created \n");
+		System.out.println("FileCreated: " + outputFileName);
 		try {
 			_csv = new PrintStream(csvFile);
 		} catch (FileNotFoundException e) {
@@ -174,8 +173,8 @@ public final class SensorLogger {
 	public void logServo(long time,float command,float actual) {
 		_log(time,_servoKeys,new String[]{ "" + command,"" + actual });
 	}
-	public void logEncoder(long time,int value,int total,long encoderTime) {
-		_log(time,_encoderKeys,new String[]{ "" + value,"" + total,"" + encoderTime });
+	public void logEncoder(long time,long encTickLast,long encReset,long encoderTime) {
+		_log(time,_encoderKeys,new String[]{ "" + encTickLast,"" + encReset,"" + encoderTime });
 	}
 	public void logGps(long time_in_millis,double d,double e) {
 		_log(time_in_millis,_gpsKeys,new String[]{ "" + d,"" + e });
