@@ -11,7 +11,7 @@
  * @author: Audrey Yeoh (ayeoh) 
  */
 
-#define LOOP_TIME 5000
+#define LOOP_TIME 10
 
 #include "lib_protocol.h"
 #include "lib_types.h"
