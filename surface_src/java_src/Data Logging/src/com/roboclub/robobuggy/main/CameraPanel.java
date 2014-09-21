@@ -77,7 +77,7 @@ public class CameraPanel extends JPanel {
 		this.repaint();
 	}
 
-	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS");
 	private class CameraThread extends Thread {
 		private boolean running = true;
 		
@@ -103,7 +103,7 @@ public class CameraPanel extends JPanel {
 			    RobotLogger rl = RobotLogger.getInstance();
 			    Date now = new Date();
 			    long time_in_millis = now.getTime();
-			    rl.sensor.logImage(time_in_millis, "", image);	
+			    rl.sensor.logImage(time_in_millis, df.format(now), image);	
 				redraw();
 			}
 		}
