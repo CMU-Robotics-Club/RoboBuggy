@@ -18,15 +18,18 @@ public class GpsPanel extends SerialPanel {
 	
 	/* Constants for Serial Communication */
 	/** Header char array for picking correct serial port */
-	private static final char[] HEADER = {'T', 'E', 'S', 'T'};
+	private static final char[] HEADER = {'$', 'G','P','G','G','A'};
 	/** Length of the header char array */
-	private static final int HEADER_LEN = 4;
+	private static final int HEADER_LEN = 6;
 	/** Baud rate for serial port */
 	private static final int BAUDRATE = 9600;
 	/** Index of latitude data as received during serial communication */
-	private static final int LATITUDE = 0;
+	private static final int LAT_NUM = 1;
 	/** Index of longitude data as received during serial communication */
-	private static final int LONGITUDE = 1;
+	private static final int LAT_DIR = 2;
+	private static final int LONG_NUM = 3;
+	private static final int LONG_DIR = 4;
+	private static final int READ = 5;
 	
 	/* Panel Dimensons */
 	private static final int PANEL_WIDTH = 400;
@@ -73,6 +76,16 @@ public class GpsPanel extends SerialPanel {
 		}
 	}
 	
+	private double parseLat(String latNum) {
+		return (Double.valueOf(latNum.substring(0,2)) + 
+				(Double.valueOf(latNum.substring(2)) / 60.0));
+	}
+	
+	private double parseLon(String lonNum) {
+		return (Double.valueOf(lonNum.substring(0,3)) + 
+				(Double.valueOf(lonNum.substring(3)) / 60.0));
+	}
+	
 	/**
 	 * GpsListener is an event handler for incoming serial messages. It
 	 * is notified every time a complete serial message is received by
@@ -82,21 +95,37 @@ public class GpsPanel extends SerialPanel {
 		@Override
 		public void onEvent(SerialEvent event) {
 			char[] tmp = event.getBuffer();
+			int length = event.getLength();
 			int index = 0;
 			
 			if (tmp != null && event.getLength() > HEADER_LEN) {
 				String curVal = "";
-				for (int i = HEADER_LEN; i < event.getLength(); i++ ) {
+				
+				// Filter messages by header
+				for (int i = 0; i < HEADER_LEN; i++) {
+					if (tmp[i] != HEADER[i]) return;
+				}
+				
+				// Parse message data
+				for (int i = HEADER_LEN+1; i < length; i++ ) {
 					if (tmp[i] == ',' || tmp[i] == '\n') {
 						try {
 							switch ( index ) {
-							case LONGITUDE:
-								currLoc.setX(Float.valueOf(curVal));
+							case LAT_NUM:
+								currLoc.setY( parseLat(curVal) );
 								break;
-							case LATITUDE:
-								currLoc.setY(Float.valueOf(curVal));
+							case LAT_DIR:
+								if (curVal.equalsIgnoreCase("S")) currLoc.setY( -1 * currLoc.getY());
 								break;
-							default:
+							case LONG_NUM:
+								currLoc.setX( parseLon(curVal) );
+								break;
+							case LONG_DIR:
+								if (curVal.equalsIgnoreCase("W")) currLoc.setX( -1 * currLoc.getX());
+								break;
+							case READ:
+								// TODO add logging and refresh at this point
+								System.out.println("("+currLoc.getY()+","+currLoc.getX()+")");
 								return;
 							}
 							
