@@ -16,13 +16,20 @@
 
 // Public //////////////////////////////////////////////////////////////////////
 
-RBSerialMessages::RBSerialMessages(HardwareSerial *serial_stream) {
+RBSerialMessages::RBSerialMessages() {
+}
+
+
+int RBSerialMessages::Begin(HardwareSerial *serial_stream) {
   // setup the hardware serial
   serial_stream_ = serial_stream;
   serial_stream_->begin(RBSM_BAUD_RATE);
 
   // send the device id message
   SendSingle(RBSM_MID_DEVICE_ID, RBSM_DID_DRIVE_ENCODER);
+
+  // success
+  return 1;
 }
 
 
@@ -31,11 +38,9 @@ int RBSerialMessages::SendSingle(uint8_t id, uint16_t message) {
   buffer_pos = InitMessageBuffer();
   buffer_pos = AppendMessageToBuffer(id, message, buffer_pos);
   
-  for(int i = 0; i < buffer_pos; i++) {
-    serial_stream_->write(buffer_out_[i]);
-  }
+  serial_stream_->write(buffer_out_, buffer_pos);
 
-  // sucess
+  // success
   return 0;
 }
 

@@ -48,7 +48,8 @@
 
 class RBSerialMessages {
  public:
-  RBSerialMessages(HardwareSerial *serial_stream);
+  RBSerialMessages();
+  int Begin(HardwareSerial *serial_stream);
   int SendSingle(uint8_t id, uint16_t message);
   // todo: define receive api
  private:

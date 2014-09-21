@@ -28,10 +28,11 @@ unsigned long last_looptime = 0;
 unsigned long reset_count;
 unsigned long last_count;
 unsigned long current_enc_val;
-RBSerialMessages g_rbserialmessages(&Serial);
+RBSerialMessages g_rbserialmessages;
 
 void setup()
 {
+  g_rbserialmessages.Begin(&Serial);
   enc_init();
   reset_count = 0; // this is for the reset reset_count
   last_count = 0;
@@ -41,6 +42,7 @@ void setup()
 
 void loop()
 {
+  g_rbserialmessages.SendSingle(0xAA, 0xBBCC);
   /*************** HEAD OF TIMING LOOP **************/
   loop_starttime = millis();
   /*************** END OF TIMING LOOP HEAD **********/
