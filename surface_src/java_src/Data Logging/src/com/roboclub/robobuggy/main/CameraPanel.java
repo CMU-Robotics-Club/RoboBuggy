@@ -4,7 +4,11 @@ import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -16,6 +20,8 @@ import org.opencv.core.Size;
 import org.opencv.highgui.Highgui;
 import org.opencv.highgui.VideoCapture;
 import org.opencv.imgproc.Imgproc;
+
+import com.roboclub.robobuggy.logging.RobotLogger;
 
 public class CameraPanel extends JPanel {
 	private static final long serialVersionUID = 2045798342979823126L;
@@ -71,6 +77,7 @@ public class CameraPanel extends JPanel {
 		this.repaint();
 	}
 
+	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 	private class CameraThread extends Thread {
 		private boolean running = true;
 		
@@ -90,7 +97,13 @@ public class CameraPanel extends JPanel {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				
+			
+				// Log and hope we log quickly
+				// message is now contained in tmp
+			    RobotLogger rl = RobotLogger.getInstance();
+			    Date now = new Date();
+			    long time_in_millis = now.getTime();
+			    rl.sensor.logImage(time_in_millis, "", image);	
 				redraw();
 			}
 		}

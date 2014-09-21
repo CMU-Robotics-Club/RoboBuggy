@@ -2,6 +2,7 @@ package com.roboclub.robobuggy.main;
 
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.util.Date;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -14,6 +15,7 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.serial.SerialEvent;
 import com.roboclub.robobuggy.serial.SerialListener;
 
@@ -144,6 +146,18 @@ public class ImuPanel extends SerialPanel {
 					}
 				}
 			}
+			// Message received
+			// message is now contained in tmp
+		    RobotLogger rl = RobotLogger.getInstance();
+		    Date now = new Date();
+		    long time_in_millis = now.getTime();
+		    float[] acc = new float[3];
+		    float[] gyro = new float[3];
+		    float[] compass = new float[3];
+		    acc[0] = aX; acc[1] = aY; acc[2] = aZ;
+		    gyro[0] = rX; gyro[1] = rY; gyro[2] = rZ;
+		    compass[0] = mX; compass[1] = mY; compass[2] = mZ;
+		    rl.sensor.logImu(time_in_millis, acc, gyro, compass);
 		}
 	}
 	
