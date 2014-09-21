@@ -1,5 +1,7 @@
 package com.roboclub.robobuggy.main;
 
+import java.awt.GridLayout;
+
 import javax.swing.JFrame;
 
 public class Gui extends JFrame {
@@ -16,8 +18,9 @@ public class Gui extends JFrame {
 	
 	public Gui() {
 		window = new JFrame();
-		window.setSize(1000, 500);
+		window.setSize(800, 600);
 		window.setTitle("RoboBuggy Data Gathering");
+		window.setLayout(new GridLayout(2, 2, 0, 0));
 		
 		// Initialize Panels for Window
 		try {

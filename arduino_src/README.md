@@ -1,8 +1,8 @@
 Arduino code goes here!
 
-## Sketchees Overview
+## Sketches Overview
 
-* **imu** - reference implementations for the razor imu
+* **imu** - Our code and reference implementation for the razor imu
 * **Nano_encoder** - a usb-serial to encoder bridge using the robobuggy serial data protocol on an Arduino Nano
 * **Protocol_prototype** - example of the robobuggy serial data protocol
 * **RadioBuggyMega** - current (not yet!) steering/brake/rc implementation with robobuggy serial data protocol on the Arduino Mega

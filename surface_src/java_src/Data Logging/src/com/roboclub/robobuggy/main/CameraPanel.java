@@ -1,5 +1,6 @@
 package com.roboclub.robobuggy.main;
 
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -18,6 +19,9 @@ import org.opencv.imgproc.Imgproc;
 
 public class CameraPanel extends JPanel {
 	private static final long serialVersionUID = 2045798342979823126L;
+	/* Panel Dimensons */
+	private static final int PANEL_WIDTH = 400;
+	private static final int PANEL_HEIGHT = 300;
 	private static final int WIDTH = 320;
 	private static final int HEIGHT = 240;
 	private static final Size size = new Size(WIDTH,HEIGHT);
@@ -29,7 +33,8 @@ public class CameraPanel extends JPanel {
 	public CameraPanel( int cameraId ) throws Exception {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		
-		this.setBounds(0, 0, WIDTH, HEIGHT);
+		this.setSize(PANEL_WIDTH, PANEL_HEIGHT);
+		this.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
 		
 		initializeCamera(cameraId);
 	}
@@ -59,7 +64,7 @@ public class CameraPanel extends JPanel {
 	}
 	
 	public void paintComponent(Graphics g) {
-		g.drawImage(this.image, 0, 0, this);
+		g.drawImage(this.image, (PANEL_WIDTH-WIDTH)/2, (PANEL_HEIGHT-HEIGHT)/2, this);
 	}
 	
 	public void redraw() {

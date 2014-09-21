@@ -22,7 +22,7 @@ public class GpsPanel extends JPanel {
 		try {
 			System.out.println(System.getProperty("user.dir"));
 			//RoboBuggy\surface_src\java_src\GUI_for_data_logging\
-			myPicture = ImageIO.read(new File("mapTest.jpg")); //random image
+			myPicture = ImageIO.read(new File("map.jpg")); 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

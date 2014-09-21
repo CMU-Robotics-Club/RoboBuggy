@@ -7,9 +7,10 @@ public class ArduinoPanel extends SerialPanel {
 	private static final long serialVersionUID = -929040896215455343L;
 	private static final char[] HEADER = {'a'};
 	private static final int HEADER_LEN = 1;
+	private static final int BAUDRATE = 9600;
 
 	public ArduinoPanel() throws Exception {
-		super("ARDUINO", 9600, HEADER, HEADER_LEN);
+		super("ARDUINO", BAUDRATE, HEADER, HEADER_LEN);
 		super.addListener(new ArduinoListener());
 	}
 	
