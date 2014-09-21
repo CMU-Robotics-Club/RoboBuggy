@@ -14,6 +14,7 @@
 #define LOOP_TIME 10
 
 #include "lib_protocol.h"
+#include "lib_encoder.h"
 
 #define DEBUG
 #ifdef DEBUG
