@@ -21,14 +21,15 @@
 #include "HardwareSerial.h"
 
 // Implementation Constants
-#define RBSM_BUFFER_OUT_LENGTH 7 // minimum to support single message
+#define RBSM_BUFFER_OUT_LENGTH 11 // minimum to support double message
 #define RBSM_NULL_TERM 0x00
 
 // Protocol Constants
 #define RBSM_HEAD 0xFC
 #define RBSM_ONE_BYTE_SIZE 8
 #define RBSM_TWO_BYTE_SIZE 16
-#define RBSM_BYTE_MASK 0xFF
+#define RBSM_ONE_BYTE_MASK 0xFF
+#define RBSM_TWO_BYTE_MASK 0xFFFF
 #define RBSM_BAUD_RATE 9600
 
 // Message Types
@@ -48,8 +49,10 @@
 
 class RBSerialMessages {
  public:
-  RBSerialMessages(HardwareSerial *serial_stream);
+  RBSerialMessages();
+  int Begin(HardwareSerial *serial_stream);
   int SendSingle(uint8_t id, uint16_t message);
+  int SendDouble(uint8_t id_h, uint8_t id_l, uint32_t message);
   // todo: define receive api
  private:
   HardwareSerial *serial_stream_;
