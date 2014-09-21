@@ -4,3 +4,5 @@ out/
 # mac os x temp files
 .DS_Store
 
+# arduino build files
+build-*

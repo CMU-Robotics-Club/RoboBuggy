@@ -11,12 +11,7 @@
  * @date: 7/22/2014
  */
 
-#include <Arduino.h>
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include "lib_types.h"
+#include "lib_protocol.h"
 
 
 /********************************************************************************
@@ -29,7 +24,7 @@
 *                      L O C A L    P R O T O T Y P E S
 ********************************************************************************/
 //static unsigned long create_msg( byte id, unsigned int msg);
-static Ret_E send_msg( unsigned long message );	// TODO: need to implement actual sending of message
+static int send_msg( unsigned long message );	// TODO: need to implement actual sending of message
 
 /********************************************************************************
 *                       G L O B A L    F U N C T I O N S
@@ -75,9 +70,9 @@ static unsigned long create_msg( byte id, unsigned int msg)
 	return message;
 }
 
-static Ret_E send_msg( unsigned long message )
+static int send_msg( unsigned long message )
 {
-	Ret_E success = RET_ERROR;
+	int success = -1;
 	// TODO!!!!! Send message
 
 	return success;
