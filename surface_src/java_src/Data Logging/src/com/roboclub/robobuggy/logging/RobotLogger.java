@@ -26,7 +26,7 @@ public final class RobotLogger {
 	public static RobotLogger getInstance(){
 		if(instance == null){
 			System.out.println("Logging File Created \n");
-			File fileToLogTo = new File("C:\\Users\\Robot\\buggy-log");
+			File fileToLogTo = new File("C:\\Users\\robot\\buggy-log");
 			fileToLogTo.mkdirs();
 			try {
 				instance = new RobotLogger(fileToLogTo);

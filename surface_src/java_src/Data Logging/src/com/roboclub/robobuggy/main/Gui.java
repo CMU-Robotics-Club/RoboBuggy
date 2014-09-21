@@ -82,6 +82,11 @@ public final class Gui extends JFrame {
 	public static void main(String args[]) {		
 		//Gui gui = new Gui();
 		Gui.getInstance().populate();
+		
+		try
+		{
+			Process p = Runtime.getRuntime().exec("C:\\Users\\abc\\buggy-log\\VisionSystem.exe");
+		}catch(Exception exc){/*handle exception*/}
 	}
 
 
