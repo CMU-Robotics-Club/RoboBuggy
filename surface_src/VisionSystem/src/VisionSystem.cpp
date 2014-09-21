@@ -10,13 +10,13 @@ using namespace cv;
 int main(int argc, char* argv[]) {
 	// Parse command line arguments
 	bool display = true;
-	int cameras[] = {2, 3, 0, 0, 0};
+	int cameras[] = {2, 2, 0, 0, 0};
 	char* names[] = {"cam1", "cam2", "cam3", "cam4", "cam5"};
 	string files[] = {"C:\\Users\\robot\\buggy-log\\out1.avi",
-			"C:\\Users\\abc\\buggy-log\\out2.avi",
-			"C:\\Users\\abc\\buggy-log\\out3.avi",
-			"C:\\Users\\abc\\buggy-log\\out4.avi",
-			"C:\\Users\\abc\\buggy-log\\out5.avi" };
+			"C:\\Users\\robot\\buggy-log\\out2.avi",
+			"C:\\Users\\robot\\buggy-log\\out3.avi",
+			"C:\\Users\\robot\\buggy-log\\out4.avi",
+			"C:\\Users\\robot\\buggy-log\\out5.avi" };
 	int num_cameras = 0;
 	VideoCapture captures[5];
 	VideoWriter videos[5];
@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	if (num_cameras <= 0) {
-		num_cameras = 2;
+		num_cameras = 1;
 	}
 
 	if (display) {
