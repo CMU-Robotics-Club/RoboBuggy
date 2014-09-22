@@ -1,6 +1,10 @@
 package com.roboclub.robobuggy.main;
 
+import java.awt.Color;
+
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+
 import com.roboclub.robobuggy.serial.SerialListener;
 import com.roboclub.robobuggy.serial.SerialReader;
 
@@ -11,6 +15,7 @@ abstract class SerialPanel extends JPanel {
 	
 	public SerialPanel(String owner, int baud_rate, char[] header,
 			int headerLen) {
+		this.setBorder(BorderFactory.createLineBorder(Color.black));
 		try {
 			port = new SerialReader(owner, baud_rate, header, headerLen);
 		} catch (Exception e) {
@@ -22,13 +27,13 @@ abstract class SerialPanel extends JPanel {
 		port.close();
 	}
 	
-	public SerialReader getPort() {
-		return port;
-	}
-	
-	public void addListener(SerialListener listener) {
+	protected void addListener(SerialListener listener) {
 		if (null != port) {
 			port.addListener(listener);
 		}
+	}
+	
+	protected boolean isConnected() {
+		return (this.port != null && this.port.isConnected());
 	}
 }

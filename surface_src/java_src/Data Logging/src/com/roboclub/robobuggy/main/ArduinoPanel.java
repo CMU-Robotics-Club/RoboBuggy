@@ -1,7 +1,6 @@
 package com.roboclub.robobuggy.main;
 
 import java.util.Date;
-
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.serial.SerialEvent;
 import com.roboclub.robobuggy.serial.SerialListener;

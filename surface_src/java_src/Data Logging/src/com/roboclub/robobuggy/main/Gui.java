@@ -1,18 +1,20 @@
 package com.roboclub.robobuggy.main;
 
-import java.awt.GridLayout;
-import java.io.File;
+import java.awt.Container;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import javax.swing.JFrame;
-import com.roboclub.robobuggy.logging.RobotLogger;
+import javax.swing.JPanel;
 
 public final class Gui extends JFrame {
 	private static final long serialVersionUID = 670947948979376738L;
 	
 	private final int CAMERA_ID = 0;
 	private static Gui instance = null;
+	private static final int WIDTH = 900;
+	private static final int HEIGHT = 800;
 
 	private static JFrame window;
-	private static CameraPanel cameraPanel;
 	private static GpsPanel gpsPanel;
 	private static ArduinoPanel arduinoPanel;
 	private static ControlsPanel controlsPanel;
@@ -33,18 +35,16 @@ public final class Gui extends JFrame {
 	
 	public void populate(){
 		window = new JFrame();
-		window.setSize(1000, 600);
 		window.setTitle("RoboBuggy Data Gathering");
-		window.setLayout(new GridLayout(2, 2, 0, 0));
 		
 		// Initialize Panels for Window
 		try {
-			//cameraPanel = new CameraPanel( CAMERA_ID );
 			gpsPanel = new GpsPanel();
-			//arduinoPanel = new ArduinoPanel();
+			arduinoPanel = new ArduinoPanel();
 			controlsPanel = new ControlsPanel();
-			
 			imuPanel = new ImuPanel();
+			
+			addPanels();
 		} catch (Exception e) {
 			e.printStackTrace();
 			closeWindow(-1);
@@ -58,20 +58,60 @@ public final class Gui extends JFrame {
 		    }
 		});
 		
-		// Add panels to window
-		//window.add(cameraPanel);
-		window.add(gpsPanel);
-		//window.add(arduinoPanel);
-		window.add(controlsPanel);
-		window.add(imuPanel);
-		
+		window.pack();
 		window.setVisible(true);
 	}
 	
+	private void addPanels() {
+		Container pane = window.getContentPane();
+		pane.setLayout(new GridBagLayout());
+		pane.setSize(WIDTH, HEIGHT);
+		GridBagConstraints c = new GridBagConstraints();
+		
+		JPanel rightPanel = new JPanel();
+		rightPanel.setLayout(new GridBagLayout());
+		c.fill = GridBagConstraints.BOTH;
+		c.gridheight = 1;
+		c.gridwidth = 1;
+		c.gridy = 0;
+		c.gridx = 0;
+		c.weightx = 1;
+		c.weighty = 0.5;
+		rightPanel.add(controlsPanel, c);
+		c.gridy = 1;
+		rightPanel.add(gpsPanel, c);
+		
+		JPanel leftPanel = new JPanel();
+		leftPanel.setLayout(new GridBagLayout());
+		c.gridy = 1;
+		c.weightx = 1;
+		c.weighty = 0.25;
+		leftPanel.add(arduinoPanel, c);
+		c.gridy = 0;
+		c.weighty = 0.75;
+		leftPanel.add(imuPanel, c);		
+		
+		c.gridx = 0;
+		c.gridy = 0;
+		c.weightx = 0.66;
+		c.weighty = 1;
+		pane.add(leftPanel, c);
+		c.gridx = 1;
+		c.weightx = 0.34;
+		pane.add(rightPanel, c);
+	}
+	
 	private void closeWindow(int exitCode) {
-		gpsPanel.closePort();
-    	//arduinoPanel.closePort();
-    	imuPanel.closePort();
+		if (gpsPanel != null && gpsPanel.isConnected()) {
+			gpsPanel.closePort();
+		}
+		if (arduinoPanel != null && arduinoPanel.isConnected()) {
+			arduinoPanel.closePort();
+		}
+		if (imuPanel != null && imuPanel.isConnected()) {
+			imuPanel.closePort();
+		}
+		
     	//cameraPanel.close();
     	
         System.exit(exitCode);

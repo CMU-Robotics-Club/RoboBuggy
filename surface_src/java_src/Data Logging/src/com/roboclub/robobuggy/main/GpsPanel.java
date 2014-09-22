@@ -5,8 +5,9 @@ import java.io.File;
 import java.util.Date;
 
 import javax.imageio.ImageIO;
+
+import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.GridLayout;
 
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.map.Point;
@@ -35,16 +36,13 @@ public class GpsPanel extends SerialPanel {
 	/** Index to log updated GPS position */
 	private static final int LOG = 5;
 	
-	/* Panel Dimensons */
-	private static final int PANEL_WIDTH = 400;
-	private static final int PANEL_HEIGHT = 300;
+	/* Image Dimensons */
 	private static final int WIDTH = 400;
 	private static final int HEIGHT = 270;
 	
 	private static final Rect MAP_COORD = new Rect(
 			new Point(-79.94010, 40.442395),
 			new Point(-79.948686, 40.442395),
-			new Point(-79.94010, 40.438363),
 			new Point(-79.948686, 40.438363));
 	private Point currLoc;
 	private BufferedImage map;
@@ -57,7 +55,6 @@ public class GpsPanel extends SerialPanel {
 	public GpsPanel() {
 		super("GPS", BAUDRATE, HEADER, HEADER_LEN);
 		super.addListener(new GpsListener());
-		this.setLayout(new GridLayout(2, 1));
 		this.currLoc = new Point(0,0);
 		
 		// Load map image as background
@@ -72,8 +69,7 @@ public class GpsPanel extends SerialPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		
-		g.drawImage(map, 0, (PANEL_HEIGHT-HEIGHT), null);
+		g.drawImage(map, 0, 0, WIDTH, HEIGHT, Color.black, null);
 		
 		if (MAP_COORD.within(currLoc)) {
 			//g.drawOval();
@@ -105,7 +101,8 @@ public class GpsPanel extends SerialPanel {
 	private class GpsListener implements SerialListener {
 		@Override
 		public void onEvent(SerialEvent event) {
-			if(Gui.getInstance().GetPlayPauseState()) {
+			Gui.getInstance();
+			if(Gui.GetPlayPauseState()) {
 				char[] tmp = event.getBuffer();
 				int length = event.getLength();
 				int index = 0;

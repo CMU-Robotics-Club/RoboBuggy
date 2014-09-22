@@ -2,7 +2,6 @@ package com.roboclub.robobuggy.main;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
@@ -28,11 +27,12 @@ public class ControlsPanel extends JPanel {
 	public ControlsPanel() {
 		//stuff for setting up logging ie start/stop, file name ...
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
-		this.setLayout(new GridLayout(1, 2));
+		
 		startPause_btn = new JButton("Start");
 		startPause_btn.setFont(new Font("serif", Font.PLAIN, 70));
+		Gui.getInstance();
 		//TODO move following into a function 
-		if(Gui.getInstance().GetPlayPauseState())
+		if(Gui.GetPlayPauseState())
 		{	
 			System.out.println("System Started");
 			startPause_btn.setBackground(Color.RED);
@@ -80,9 +80,10 @@ public class ControlsPanel extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
+			Gui.getInstance();
 			//inverts the state of the system every time the button is pressed 
-			Gui.setPlayPauseState(!Gui.getInstance().GetPlayPauseState());
-			if(Gui.getInstance().GetPlayPauseState())
+			Gui.setPlayPauseState(!Gui.GetPlayPauseState());
+			if(Gui.GetPlayPauseState())
 			{	
 				System.out.println("System Started");
 				startPause_btn.setBackground(Color.RED);
