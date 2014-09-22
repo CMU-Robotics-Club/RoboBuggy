@@ -40,6 +40,13 @@ public class GpsPanel extends SerialPanel {
 	private static final int WIDTH = 400;
 	private static final int HEIGHT = 270;
 	
+	private static final Point UR = new Point(-79.94010, 40.442395);
+	private static final Point UL = new Point(-79.948686, 40.442395);
+	private static final Point LL = new Point(-79.948686, 40.438363);
+	private static final double lon_width  = UR.getX() - UL.getX();
+	private static final double lat_height = UL.getY() - LL.getY();
+	
+	
 	private static final Rect MAP_COORD = new Rect(
 			new Point(-79.94010, 40.442395),
 			new Point(-79.948686, 40.442395),
@@ -55,7 +62,7 @@ public class GpsPanel extends SerialPanel {
 	public GpsPanel() {
 		super("GPS", BAUDRATE, HEADER, HEADER_LEN);
 		super.addListener(new GpsListener());
-		this.currLoc = new Point(0,0);
+		this.currLoc = new Point(-79.94500,40.44000);
 		
 		// Load map image as background
 		try {
@@ -72,7 +79,10 @@ public class GpsPanel extends SerialPanel {
 		g.drawImage(map, 0, 0, WIDTH, HEIGHT, Color.black, null);
 		
 		if (MAP_COORD.within(currLoc)) {
-			//g.drawOval();
+			int x = (int)(WIDTH * (currLoc.getX() - UL.getX()) / lon_width);
+			int y = (int)(HEIGHT * (UL.getY() - currLoc.getY()) / lat_height);
+			g.setColor(Color.RED);
+			g.fillOval(x, y, 5, 5);
 		}
 	}
 	
