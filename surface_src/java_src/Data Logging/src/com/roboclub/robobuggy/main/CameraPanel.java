@@ -58,7 +58,7 @@ public class CameraPanel extends JPanel {
 		popup.setModal(false);
 		popup.setSize(WIDTH+5, HEIGHT+20);
 		popup.setResizable(false);
-		popup.setVisible(true);
+		popup.setVisible(Gui.GetDisplayState());
 	}
 	
 	public void close() {
@@ -78,12 +78,25 @@ public class CameraPanel extends JPanel {
 	public void redraw() {
 		this.repaint();
 	}
+	
+	public void setLogging(boolean input) {
+		this.cameraFeed.setLogging(input);
+	}
+	
+	public void setDisplaying(boolean input) {
+		if (this.cameraFeed != null) {
+			this.cameraFeed.setDisplaying(input);
+		}
+		if (this.popup != null) {
+			this.popup.setVisible(input);
+		}
+	}
 
 	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS");
 	private class CameraThread extends Thread {
 		private boolean running = true;
-		private boolean logging = false;
-		private boolean displaying = true;
+		private boolean logging = Gui.GetPlayPauseState();
+		private boolean displaying = Gui.GetDisplayState();
 		
 		public void run() {
 			Mat frame = new Mat();
@@ -96,23 +109,28 @@ public class CameraPanel extends JPanel {
 			Highgui.imencode(".jpg", dst, mb);
 			
 			while(running) {
-				try {
-					camera.read(frame);
-					Imgproc.resize(frame, dst, size);
-					Highgui.imencode(".jpg", dst, mb);
-					image = ImageIO.read(new ByteArrayInputStream(mb.toArray()));
-					
-					if (displaying) redraw();
-					if (logging) {
-						// Log and hope we log quickly
-						// message is now contained in tmp
-					    /*RobotLogger rl = RobotLogger.getInstance();
-					    Date now = new Date();
-					    long time_in_millis = now.getTime();
-					    rl.sensor.logImage(time_in_millis, df.format(now), image);*/
+				if (displaying || logging) {
+					try {
+						camera.read(frame);
+						Imgproc.resize(frame, dst, size);
+						Highgui.imencode(".jpg", dst, mb);
+						image = ImageIO.read(new ByteArrayInputStream(mb.toArray()));
+						
+						if (displaying) redraw();
+						if (logging) {
+							// Log and hope we log quickly
+							// message is now contained in tmp
+						    /*RobotLogger rl = RobotLogger.getInstance();
+						    Date now = new Date();
+						    long time_in_millis = now.getTime();
+						    rl.sensor.logImage(time_in_millis, df.format(now), image);*/
+						}
+					} catch (IOException e) {
+						e.printStackTrace();
 					}
-				} catch (IOException e) {
-					e.printStackTrace();
+				}
+				else {
+					CameraThread.yield();
 				}
 			}
 		}

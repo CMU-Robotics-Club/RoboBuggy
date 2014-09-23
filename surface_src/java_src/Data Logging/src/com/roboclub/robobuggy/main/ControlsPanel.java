@@ -3,8 +3,6 @@ package com.roboclub.robobuggy.main;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
@@ -12,7 +10,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -63,10 +60,21 @@ public class ControlsPanel extends JPanel {
 		timer.setDelay(100);
 	    timer.setRepeats(true);
 	    
+	    displayFeed = new JCheckBox();
+	    displayFeed.setEnabled(true);
+	    displayFeed.setSelected(Gui.GetDisplayState());
+	    displayFeed.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Gui.setDisplayState(displayFeed.isSelected());
+			}
+	    });
+	    
 		this.add(startPause_btn);
 		this.add(currentFile_lbl);
 		this.add(newFile_lbl);
 		this.add(time_lbl);
+		this.add(displayFeed);
 	}
 	
 	DateFormat df = new SimpleDateFormat("HH:mm:ss.S");

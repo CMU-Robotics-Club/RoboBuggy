@@ -24,6 +24,7 @@ public final class Gui extends JFrame {
 	private static ArrayList<CameraPanel> cameraPanels;
 	private static ImuPanel imuPanel;
 	private static boolean playPauseState;
+	private static boolean displayState;
 
 	public static Gui getInstance(){
 		if(instance == null){
@@ -35,6 +36,7 @@ public final class Gui extends JFrame {
 	
 	public Gui() {
 		playPauseState = false;
+		displayState = true;
 	}
 	
 	public void populate(){
@@ -143,8 +145,27 @@ public final class Gui extends JFrame {
 		return playPauseState;
 	}
 
-
 	public static void setPlayPauseState(boolean playPauseState) {
 		Gui.playPauseState = playPauseState;
+		
+		if (cameraPanels != null && !cameraPanels.isEmpty()) {
+			for (CameraPanel panel : cameraPanels) {
+				panel.setLogging(playPauseState);
+			}
+		}
+	}
+	
+	public static boolean GetDisplayState() {
+		return displayState;
+	}
+	
+	public static void setDisplayState(boolean displayState) {
+		Gui.displayState = displayState;
+		
+		if (cameraPanels != null && !cameraPanels.isEmpty()) {
+			for (CameraPanel panel : cameraPanels) {
+				panel.setDisplaying(displayState);
+			}
+		}
 	}
 }
