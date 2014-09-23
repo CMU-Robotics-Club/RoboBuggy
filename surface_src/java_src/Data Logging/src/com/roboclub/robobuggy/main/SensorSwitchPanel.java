@@ -33,7 +33,7 @@ private Sensor_state_type sensor_state;
 		sensorName_lbl.setHorizontalAlignment(JLabel.CENTER);
 		sensor_switch.add(sensorName_lbl);
 		
-		//TODO implment label changing by each sensor 
+		//TODO setup  label changing by each sensor 
 		JLabel sensorMessage_lbl = new JLabel("No Data Avilable");
 		sensorMessage_lbl.setHorizontalAlignment(JLabel.CENTER);
 		sensor_switch.add(sensorMessage_lbl);
