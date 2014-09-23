@@ -22,6 +22,7 @@ public final class RobotLogger {
 	public final Logger message;
 	public final SensorLogger sensor;
 	private static RobotLogger instance = null;
+	private static String filename;
 	
 	public static RobotLogger getInstance(){
 		if(instance == null){
@@ -39,11 +40,20 @@ public final class RobotLogger {
 		
 	}
 
+	public static String getFilename() {
+		if (instance != null) {
+			return instance.filename;
+		}
+		return "";
+	}
+	
 	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 	private RobotLogger(File logdir) throws Exception {
 		Date d = new Date();
 		this.message = Logger.getLogger("RoboBuggy");
 		File msgFile = new File(logdir,df.format(d) + "-messages.log");
+		filename = msgFile.getName();
+		
 		Handler handler = null;
 		try {
 			msgFile.createNewFile();

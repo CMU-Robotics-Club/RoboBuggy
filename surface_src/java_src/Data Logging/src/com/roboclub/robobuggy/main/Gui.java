@@ -11,8 +11,8 @@ import javax.swing.JPanel;
 public final class Gui extends JFrame {
 	private static final long serialVersionUID = 670947948979376738L;
 	
-	private final int[] CAMERA_IDS = {0, 1};
-	private final int NUM_CAMERAS = 2;
+	private static int[] CAMERA_IDS = {0, 1, 0, 0, 0};
+	private static int NUM_CAMERAS = 2;
 	private static Gui instance = null;
 	private static final int WIDTH = 900;
 	private static final int HEIGHT = 800;
@@ -36,7 +36,7 @@ public final class Gui extends JFrame {
 	
 	public Gui() {
 		playPauseState = false;
-		displayState = true;
+		displayState = false;
 	}
 	
 	public void populate(){
@@ -132,14 +132,19 @@ public final class Gui extends JFrame {
 	}
 	
 	public static void main(String args[]) {
-		Gui.getInstance().populate();
+		if (args.length > 0) NUM_CAMERAS = 0;
 		
-		/*try
-		{
-			Process p = Runtime.getRuntime().exec("C:\\Users\\abc\\buggy-log\\VisionSystem.exe");
-		}catch(Exception exc){}*/
+		// Check for commandline arguments
+		for (int i = 0; i < args.length; i++) {
+			if (i+1 < args.length) {
+				if (args[i].equalsIgnoreCase("-c")) {
+					CAMERA_IDS[NUM_CAMERAS++] = Integer.valueOf(args[i+1]);
+				}
+			}
+		}
+		
+		Gui.getInstance().populate();
 	}
-
 
 	public static boolean GetPlayPauseState() {
 		return playPauseState;

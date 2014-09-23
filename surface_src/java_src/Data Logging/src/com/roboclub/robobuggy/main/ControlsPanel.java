@@ -1,7 +1,7 @@
 package com.roboclub.robobuggy.main;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,6 +18,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
+import com.roboclub.robobuggy.logging.RobotLogger;
+
 public class ControlsPanel extends JPanel {
 	private static final long serialVersionUID = -924045896215455343L;
 	
@@ -32,27 +34,11 @@ public class ControlsPanel extends JPanel {
 	public ControlsPanel() {
 		//stuff for setting up logging ie start/stop, file name ...
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
-		this.setLayout( new FlowLayout(FlowLayout.CENTER));
+		// TODO add layout manager
 		
-		startPause_btn = new JButton("Start");
-		startPause_btn.setFont(new Font("serif", Font.PLAIN, 70));
-		//TODO move following into a function 
-		if(Gui.GetPlayPauseState())
-		{	
-			startPause_btn.setBackground(Color.RED);
-			startPause_btn.setText("Pause");
-			startPressedTime = new Date();
-		} else {
-			startPause_btn.setBackground(Color.GREEN);
-			startPause_btn.setText("Start");
-		}		
+		setupStartPauseBtn();
 		
-		StartPauseButtonHandler startPauseHandler = new StartPauseButtonHandler();
-		startPause_btn.addActionListener(startPauseHandler);
-		JLabel currentFile_lbl = new JLabel("currentFile",SwingConstants.CENTER);
-		JLabel newFile_lbl = new JLabel("newFile",SwingConstants.CENTER);
-		
-
+		//TODO fix displaying clock
 		time_lbl = new JLabel("",SwingConstants.CENTER);
 		time_lbl.setFont(new Font("sanserif",Font.PLAIN,70));
 		
@@ -60,7 +46,21 @@ public class ControlsPanel extends JPanel {
 		timer.setDelay(100);
 	    timer.setRepeats(true);
 	    
+	    JLabel file_lbl = new JLabel("Filename: ", SwingConstants.CENTER);
+	    file_lbl.setFont(new Font("sanserif",Font.PLAIN,20));
+	    
+	    //TODO set filename box to fixed size
+	    filename = new JTextField(RobotLogger.getFilename(), 
+	    		SwingConstants.CENTER);
+	    filename.setSize(200, 50);
+	    filename.setFont(new Font("sanserif",Font.PLAIN,20));
+	    filename.setEditable(false);
+
+	    JLabel display_lbl = new JLabel("Display Cameras: ", SwingConstants.CENTER);
+	    display_lbl.setFont(new Font("sanserif",Font.PLAIN,20));
+	    
 	    displayFeed = new JCheckBox();
+	    // TODO increase size of checkbox
 	    displayFeed.setEnabled(true);
 	    displayFeed.setSelected(Gui.GetDisplayState());
 	    displayFeed.addActionListener(new ActionListener() {
@@ -71,10 +71,49 @@ public class ControlsPanel extends JPanel {
 	    });
 	    
 		this.add(startPause_btn);
-		this.add(currentFile_lbl);
-		this.add(newFile_lbl);
 		this.add(time_lbl);
+		this.add(file_lbl);
+		this.add(filename);
+		this.add(display_lbl);
 		this.add(displayFeed);
+	}
+	
+	private void setupStartPauseBtn() {
+		startPause_btn = new JButton("Start");
+		startPause_btn.setFont(new Font("serif", Font.PLAIN, 70));
+		
+		if(Gui.GetPlayPauseState())
+		{	
+			startPause_btn.setBackground(Color.RED);
+			startPause_btn.setText("Pause");
+			startPressedTime = new Date();
+		} else {
+			startPause_btn.setBackground(Color.GREEN);
+			startPause_btn.setText("Start");
+		}
+		
+		startPause_btn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//inverts the state of the system every time the button is pressed 
+				Gui.setPlayPauseState(!Gui.GetPlayPauseState());
+				if(Gui.GetPlayPauseState())
+				{	
+					System.out.println("System Started");
+					startPause_btn.setBackground(Color.RED);
+					startPause_btn.setText("Pause");
+					
+					timer.start();
+					startPressedTime = new Date();
+				} else {
+					System.out.println("System Paused");
+					startPause_btn.setBackground(Color.GREEN);
+					startPause_btn.setText("Start");
+					timer.stop();
+				}
+				repaint();
+			}
+		});
 	}
 	
 	DateFormat df = new SimpleDateFormat("HH:mm:ss.S");
@@ -86,31 +125,6 @@ public class ControlsPanel extends JPanel {
 			long difference = now.getTime() - startPressedTime.getTime();
 			time_lbl.setText(df.format(now) + "/" + df.format(new Date(difference)));
 			
-			repaint();
-		}
-	}
-	private class StartPauseButtonHandler implements ActionListener
-	{
-		@Override
-		public void actionPerformed(ActionEvent e)
-		{
-			Gui.getInstance();
-			//inverts the state of the system every time the button is pressed 
-			Gui.setPlayPauseState(!Gui.GetPlayPauseState());
-			if(Gui.GetPlayPauseState())
-			{	
-				System.out.println("System Started");
-				startPause_btn.setBackground(Color.RED);
-				startPause_btn.setText("Pause");
-				
-				timer.start();
-				startPressedTime = new Date();
-			} else {
-				System.out.println("System Paused");
-				startPause_btn.setBackground(Color.GREEN);
-				startPause_btn.setText("Start");
-				timer.stop();
-			}
 			repaint();
 		}
 	}
