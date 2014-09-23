@@ -3,13 +3,16 @@ package com.roboclub.robobuggy.main;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.ArrayList;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public final class Gui extends JFrame {
 	private static final long serialVersionUID = 670947948979376738L;
 	
-	private final int CAMERA_ID = 1;
+	private final int[] CAMERA_IDS = {0, 1};
+	private final int NUM_CAMERAS = 2;
 	private static Gui instance = null;
 	private static final int WIDTH = 900;
 	private static final int HEIGHT = 800;
@@ -18,7 +21,7 @@ public final class Gui extends JFrame {
 	private static GpsPanel gpsPanel;
 	private static ArduinoPanel arduinoPanel;
 	private static ControlsPanel controlsPanel;
-	private static CameraPanel cameraPanel;
+	private static ArrayList<CameraPanel> cameraPanels;
 	private static ImuPanel imuPanel;
 	private static boolean playPauseState;
 
@@ -44,7 +47,11 @@ public final class Gui extends JFrame {
 			arduinoPanel = new ArduinoPanel();
 			controlsPanel = new ControlsPanel();
 			imuPanel = new ImuPanel();
-			//cameraPanel = new CameraPanel(CAMERA_ID);
+			
+			cameraPanels = new ArrayList<CameraPanel>();
+			for (int i = 0; i < NUM_CAMERAS; i++) {
+				cameraPanels.add( new CameraPanel(CAMERA_IDS[i]) );
+			}
 			
 			addPanels();
 		} catch (Exception e) {
@@ -114,8 +121,11 @@ public final class Gui extends JFrame {
 			imuPanel.closePort();
 		}
 		
-    	//cameraPanel.close();
-    	
+		if (cameraPanels != null && !cameraPanels.isEmpty()) {
+			for (CameraPanel panel : cameraPanels) {
+				panel.close();
+			}
+		}
         System.exit(exitCode);
 	}
 	
