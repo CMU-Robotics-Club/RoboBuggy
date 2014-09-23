@@ -11,8 +11,8 @@ import javax.swing.JPanel;
 public final class Gui extends JFrame {
 	private static final long serialVersionUID = 670947948979376738L;
 	
-	private static int[] CAMERA_IDS = {0, 1, 0, 0, 0};
-	private static int NUM_CAMERAS = 2;
+	private static int[] CAMERA_IDS = {5, 1, 0, 0, 0};
+	private static int NUM_CAMERAS = 1;
 	private static Gui instance = null;
 	private static final int WIDTH = 900;
 	private static final int HEIGHT = 800;

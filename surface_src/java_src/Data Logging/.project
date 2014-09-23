@@ -14,4 +14,16 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>javacpp</name>
+			<type>2</type>
+			<location>C:/Users/abc/Documents/GitHub/javacpp</location>
+		</link>
+		<link>
+			<name>javacv</name>
+			<type>2</type>
+			<location>C:/Users/abc/Documents/GitHub/javacv</location>
+		</link>
+	</linkedResources>
 </projectDescription>

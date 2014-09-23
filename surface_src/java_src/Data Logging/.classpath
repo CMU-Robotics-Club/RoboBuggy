@@ -15,5 +15,10 @@
 	<classpathentry kind="lib" path="library/servlet.jar"/>
 	<classpathentry kind="lib" path="library/swtgraphics2d.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/OpenCV-2.4.9"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JavaCV">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="C:/Users/abc/Documents/GitHub/javacv"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
