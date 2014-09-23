@@ -28,7 +28,9 @@ public class ControlsPanel extends JPanel {
 	public ControlsPanel() {
 		//stuff for setting up logging ie start/stop, file name ...
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
-		this.setLayout(new GridLayout(1, 2));
+		this.setLayout(new GridLayout(2, 1));
+		JPanel top_panel = new JPanel();
+		top_panel.setLayout(new GridLayout(1,2));
 		startPause_btn = new JButton("Start");
 		startPause_btn.setFont(new Font("serif", Font.PLAIN, 70));
 		//TODO move following into a function 
@@ -57,10 +59,37 @@ public class ControlsPanel extends JPanel {
 	    timer.setRepeats(true);	
 	   
 
-		this.add(startPause_btn);
-		this.add(currentFile_lbl);
-		this.add(newFile_lbl);
-		this.add(time_lbl);
+	    top_panel.add(startPause_btn);
+	    top_panel.add(currentFile_lbl);
+	    top_panel.add(newFile_lbl);
+	    top_panel.add(time_lbl);
+	    this.add(top_panel);
+		
+	    JPanel bottom_panel = new JPanel();
+	    bottom_panel.setLayout(new GridLayout(1, 2));
+	    
+	    SensorSwitchPanel gps_switch = new SensorSwitchPanel("GPS",Sensor_state_type.ON);
+	    SensorSwitchPanel frontCam_switch = new SensorSwitchPanel("Front Cam",Sensor_state_type.ON);
+	    SensorSwitchPanel backCam_switch = new SensorSwitchPanel("Back Cam",Sensor_state_type.ON);
+	    SensorSwitchPanel encoders_switch = new SensorSwitchPanel("Encoders",Sensor_state_type.ON);
+	    SensorSwitchPanel IMU_switch = new SensorSwitchPanel("IMU",Sensor_state_type.ON);
+	    SensorSwitchPanel controlInputs_switch = new SensorSwitchPanel("Control Inputs",Sensor_state_type.ON);
+	    SensorSwitchPanel logging_switch = new SensorSwitchPanel("Logging",Sensor_state_type.ON);
+	    SensorSwitchPanel autonomous_switch = new SensorSwitchPanel("Autonomous",Sensor_state_type.OFF);
+ 
+	    
+	    bottom_panel.add(gps_switch.getGraphics());
+	    bottom_panel.add(frontCam_switch.getGraphics());
+	    bottom_panel.add(backCam_switch.getGraphics());
+	    bottom_panel.add(encoders_switch.getGraphics());
+	    bottom_panel.add(IMU_switch.getGraphics());
+	    bottom_panel.add(controlInputs_switch.getGraphics());
+	    bottom_panel.add(logging_switch.getGraphics());
+	    bottom_panel.add(autonomous_switch.getGraphics());
+
+	    this.add(bottom_panel);
+		
+		
 	}
 	
 	DateFormat df = new SimpleDateFormat("HH:mm:ss.S");
