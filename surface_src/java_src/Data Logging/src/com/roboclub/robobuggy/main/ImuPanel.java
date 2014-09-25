@@ -3,6 +3,8 @@ package com.roboclub.robobuggy.main;
 import java.awt.Color;
 import java.util.Date;
 
+import javax.swing.BoxLayout;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -72,6 +74,7 @@ public class ImuPanel extends SerialPanel {
 	
 	public ImuPanel() {
 		super("IMU", BAUDRATE, HEADER, HEADER_LEN);
+		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		if (!this.isConnected()) return;
 		
@@ -98,15 +101,15 @@ public class ImuPanel extends SerialPanel {
        
         //imu_rotX
         final XYDataset dataset1 = createDataset();
-        final JFreeChart chart1 = createIMURotXChart(dataset);
-        final ChartPanel imuRotXChartPanel = new ChartPanel(chart);
+        final JFreeChart chart1 = createIMURotXChart(dataset1);
+        final ChartPanel imuRotXChartPanel = new ChartPanel(chart1);
 //        imuRotXChartPanel.setPreferredSize(new java.awt.Dimension(200, 270));
         this.add(imuRotXChartPanel);
         
         //comand_angle
         final XYDataset  dataset2 = createDataset();
-        final JFreeChart chart2 = createCommandAngleChart(dataset);
-        final ChartPanel commandAngleChartPanel = new ChartPanel(chart);
+        final JFreeChart chart2 = createCommandAngleChart(dataset2);
+        final ChartPanel commandAngleChartPanel = new ChartPanel(chart2);
         this.add(commandAngleChartPanel);
 	}
 

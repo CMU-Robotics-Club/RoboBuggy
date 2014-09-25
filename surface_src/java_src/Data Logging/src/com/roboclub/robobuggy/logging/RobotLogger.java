@@ -10,8 +10,7 @@ import java.util.logging.Handler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
-
-import javax.swing.text.DateFormatter;
+import com.roboclub.robobuggy.main.Gui;
 
 /**
  * Logs data from the sensors
@@ -22,7 +21,6 @@ public final class RobotLogger {
 	public final Logger message;
 	public final SensorLogger sensor;
 	private static RobotLogger instance = null;
-	private static String filename;
 	
 	public static RobotLogger getInstance(){
 		if(instance == null){
@@ -39,26 +37,19 @@ public final class RobotLogger {
 		return instance;
 		
 	}
-
-	public static String getFilename() {
-		if (instance != null) {
-			return filename;
-		}
-		return "";
-	}
 	
 	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 	private RobotLogger(File logdir) throws Exception {
 		Date d = new Date();
 		this.message = Logger.getLogger("RoboBuggy");
 		File msgFile = new File(logdir,df.format(d) + "-messages.log");
-		filename = msgFile.getName();
 		
 		Handler handler = null;
 		try {
 			msgFile.createNewFile();
 			handler = new StreamHandler(new FileOutputStream(msgFile),
 												new SimpleFormatter());
+			Gui.UpdateLogName( msgFile.getName() );
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			throw new RuntimeException("Could not open message log file (" + msgFile + ")!");
@@ -69,7 +60,4 @@ public final class RobotLogger {
 		this.message.addHandler(handler);
 		this.sensor = new SensorLogger(logdir,new Date());
 	}
-	
-	private RobotLogger _instance;
-
 }

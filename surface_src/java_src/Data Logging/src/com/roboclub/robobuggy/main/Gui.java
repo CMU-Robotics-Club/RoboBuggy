@@ -5,7 +5,6 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -29,6 +28,7 @@ public final class Gui extends JFrame {
 
 	private static Gui instance;
 	private static JCheckBox toggleGraph;
+	private static JTextArea filename;
 	private static ArrayList<CameraPanel> cameraPanels;
 	private static AnalyticsWindow graphs;
 	private Timer timer;
@@ -157,8 +157,7 @@ public final class Gui extends JFrame {
 		file_lbl.setAlignmentX(Component.LEFT_ALIGNMENT);
 		fileShow.add(file_lbl);
 		
-		JTextArea filename = new JTextArea();
-		filename.setText("Filename here!!!");
+		filename = new JTextArea();
 		filename.setEditable(false);
 		filename.setFont(new Font("sanserif",Font.PLAIN,20));
 		filename.setAlignmentX(Component.RIGHT_ALIGNMENT);
@@ -332,6 +331,12 @@ public final class Gui extends JFrame {
 			//robot.encDst = dst;
 			
 			if (graphs != null && graphs.data != null) graphs.data.UpdateDst(dst);
+		}
+	}
+	
+	public static void UpdateLogName(String filename_) {
+		if (filename != null) {
+			filename.setText(filename_);
 		}
 	}
 }
