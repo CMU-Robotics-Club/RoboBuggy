@@ -70,8 +70,11 @@ public class ImuPanel extends SerialPanel {
 	private XYSeries mY_history;
 	private XYSeries mZ_history;
 	
-	public ImuPanel() throws Exception {
+	public ImuPanel() {
 		super("IMU", BAUDRATE, HEADER, HEADER_LEN);
+		
+		if (!this.isConnected()) return;
+		
 		super.addListener(new ImuListener());
 
 		//sensor history for display
@@ -202,6 +205,7 @@ public class ImuPanel extends SerialPanel {
 			break;
 		case AZ:
 			aZ = value;
+			Gui.UpdateRobotAccel(aX, aY, aZ);
 			break;
 		case RX:
 			rX = value;
@@ -211,6 +215,7 @@ public class ImuPanel extends SerialPanel {
 			break;
 		case RZ:
 			rZ = value;
+			Gui.UpdateRobotGyro(rX, rY, rZ);
 			break;
 		case MX:
 			mX = value;
@@ -220,6 +225,7 @@ public class ImuPanel extends SerialPanel {
 			break;
 		case MZ:
 			mZ = value;
+			Gui.UpdateRobotMagnet(mX, mY, mZ);
 			break;
 		default:
 			return;

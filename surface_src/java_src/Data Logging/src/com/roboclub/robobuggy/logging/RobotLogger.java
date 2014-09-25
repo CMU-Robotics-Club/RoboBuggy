@@ -42,7 +42,7 @@ public final class RobotLogger {
 
 	public static String getFilename() {
 		if (instance != null) {
-			return instance.filename;
+			return filename;
 		}
 		return "";
 	}

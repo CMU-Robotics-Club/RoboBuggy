@@ -7,6 +7,7 @@ import java.util.Date;
 import javax.imageio.ImageIO;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 
 import com.roboclub.robobuggy.logging.RobotLogger;
@@ -40,17 +41,15 @@ public class GpsPanel extends SerialPanel {
 	private static final int WIDTH = 400;
 	private static final int HEIGHT = 270;
 	
-	private static final Point UR = new Point(-79.94010, 40.442395);
-	private static final Point UL = new Point(-79.948686, 40.442395);
-	private static final Point LL = new Point(-79.948686, 40.438363);
+	private static final Point UR = new Point(-79.94010f, 40.442395f);
+	private static final Point UL = new Point(-79.948686f, 40.442395f);
+	private static final Point LL = new Point(-79.948686f, 40.438363f);
 	private static final double lon_width  = UR.getX() - UL.getX();
 	private static final double lat_height = UL.getY() - LL.getY();
+	private static int pixelX = -1;
+	private static int pixelY = -1;
 	
-	
-	private static final Rect MAP_COORD = new Rect(
-			new Point(-79.94010, 40.442395),
-			new Point(-79.948686, 40.442395),
-			new Point(-79.948686, 40.438363));
+	private static final Rect MAP_COORD = new Rect(UR, UL, LL);
 	private Point currLoc;
 	private BufferedImage map;
 	
@@ -61,39 +60,54 @@ public class GpsPanel extends SerialPanel {
 	 */
 	public GpsPanel() {
 		super("GPS", BAUDRATE, HEADER, HEADER_LEN);
+		
+		if (!this.isConnected()) return;
+		
 		super.addListener(new GpsListener());
-		this.currLoc = new Point(-79.94500,40.44000);
+		this.currLoc = new Point(0,0);
+		this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		
 		// Load map image as background
 		try {
 			map = ImageIO.read(new File("images/course_map.png"));
 		} catch (Exception e) {
-			// TODO error handling
-			return;
+			System.out.println("Unable to open map background!");
 		}
 	}
-	
+	private boolean painted = false;
 	@Override
 	public void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		g.drawImage(map, 0, 0, WIDTH, HEIGHT, Color.black, null);
+		//super.paintComponent(g);
+		if (!painted)g.drawImage(map, 0, 0, WIDTH, HEIGHT, Color.black, null);
 		
-		if (MAP_COORD.within(currLoc)) {
-			int x = (int)(WIDTH * (currLoc.getX() - UL.getX()) / lon_width);
-			int y = (int)(HEIGHT * (UL.getY() - currLoc.getY()) / lat_height);
+		if (pixelX > 0 && pixelY > 0) {
 			g.setColor(Color.RED);
-			g.fillOval(x, y, 5, 5);
+			g.fillOval(pixelX, pixelY, 5, 5);
 		}
+		
 	}
 	
-	private double parseLat(String latNum) {
-		return (Double.valueOf(latNum.substring(0,2)) + 
-				(Double.valueOf(latNum.substring(2)) / 60.0));
+	private void setPixels() {
+		if (MAP_COORD.within(currLoc)) {
+			pixelX = (int)(WIDTH * (currLoc.getX() - UL.getX()) / lon_width);
+			pixelY = (int)(HEIGHT * (UL.getY() - currLoc.getY()) / lat_height);
+			
+			repaint();
+		} else {
+			pixelX = -1;
+			pixelY = -1;
+		}
+		
 	}
 	
-	private double parseLon(String lonNum) {
-		return (Double.valueOf(lonNum.substring(0,3)) + 
-				(Double.valueOf(lonNum.substring(3)) / 60.0));
+	private float parseLat(String latNum) {
+		return (Float.valueOf(latNum.substring(0,2)) + 
+				(Float.valueOf(latNum.substring(2)) / 60.0f));
+	}
+	
+	private float parseLon(String lonNum) {
+		return (Float.valueOf(lonNum.substring(0,3)) + 
+				(Float.valueOf(lonNum.substring(3)) / 60.0f));
 	}
 	
 	private void logData() {
@@ -111,8 +125,7 @@ public class GpsPanel extends SerialPanel {
 	private class GpsListener implements SerialListener {
 		@Override
 		public void onEvent(SerialEvent event) {
-			Gui.getInstance();
-			if(Gui.GetPlayPauseState()) {
+			if(Gui.GetGraphState() || Gui.GetPlayPauseState()) {
 				char[] tmp = event.getBuffer();
 				int length = event.getLength();
 				int index = 0;
@@ -143,7 +156,10 @@ public class GpsPanel extends SerialPanel {
 									if (curVal.equalsIgnoreCase("W")) currLoc.setX( -1 * currLoc.getX());
 									break;
 								case LOG:
-									logData();
+									setPixels();
+									
+									if (Gui.GetPlayPauseState()) logData();
+									if (Gui.GetGraphState()) Gui.UpdateRobotPos(currLoc.getY(), currLoc.getX());
 									return;
 								}
 								

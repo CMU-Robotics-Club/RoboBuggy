@@ -25,8 +25,11 @@ public class ArduinoPanel extends SerialPanel {
 	private int encTimeTmp;
 	private long encTime;
 
-	public ArduinoPanel() throws Exception {
+	public ArduinoPanel() {
 		super("ARDUINO", BAUDRATE, HEADER, HEADER_LEN);
+		
+		if (!this.isConnected()) return;
+		
 		super.addListener(new ArduinoListener());
 	}
 	

@@ -100,7 +100,7 @@ public class SerialReader implements SerialPortEventListener {
 			try {
 				char data = (char)input.read();
 				inputBuffer[index++] = data;
-				System.out.print(data);
+				
 				if (data == '\n') {
 					notifyListeners();					
 					index = 0;

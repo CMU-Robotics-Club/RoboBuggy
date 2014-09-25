@@ -1,8 +1,10 @@
 package com.roboclub.robobuggy.main;
 
 import java.awt.Color;
+import java.awt.Font;
 
 import javax.swing.BorderFactory;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.roboclub.robobuggy.serial.SerialListener;
@@ -19,7 +21,15 @@ abstract class SerialPanel extends JPanel {
 		try {
 			port = new SerialReader(owner, baud_rate, header, headerLen);
 		} catch (Exception e) {
-			//TODO add error handling for serial ports
+			System.out.println("Unable to connect to port for: " + owner);
+		}
+		
+		if (port == null || !port.isConnected()) {
+			System.out.println("No Serial Connection for: " + owner);
+			JLabel msg = new JLabel("No Serial Connection for: " + owner);
+			msg.setFont(new Font("sanserif",Font.PLAIN,20));
+			msg.setForeground(Color.RED);
+			this.add(msg);
 		}
 	}
 	

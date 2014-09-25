@@ -1,27 +1,27 @@
 package com.roboclub.robobuggy.map;
 
 public class Point {
-	private double x;
-	private double y;
+	private float x;
+	private float y;
 	
-	public Point(double x_, double y_) {
+	public Point(float x_, float y_) {
 		this.x = x_;
 		this.y = y_;
 	}
 	
-	public double getX() {
+	public float getX() {
 		return this.x;
 	}
 	
-	public double getY() {
+	public float getY() {
 		return this.y;
 	}
 
-	public void setX(double x_) {
+	public void setX(float x_) {
 		this.x = x_;
 	}
 	
-	public void setY(double y_) {
+	public void setY(float y_) {
 		this.y = y_;
 	}
 }

@@ -46,6 +46,7 @@ public class CameraPanel extends JPanel {
 		
 		camera.open(cameraId);
 		if (!camera.isOpened()) {
+			System.out.println("Failed to Open Camera" + cameraId);
 			throw new Exception("Failed to Open Camera: "+ cameraId);
 		}
 		
