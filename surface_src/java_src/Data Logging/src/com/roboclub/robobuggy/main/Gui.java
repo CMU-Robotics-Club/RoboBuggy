@@ -5,13 +5,16 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -69,6 +72,12 @@ public final class Gui extends JFrame {
 		this.setResizable(false);
 		Container pane = this.getContentPane();
 		pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
+		
+		try {
+			this.setIconImage(ImageIO.read(new File("images/rc_logo.png")));
+		} catch (Exception e) {
+			System.out.println("Unable to read icon image!");
+		}
 		
 		// Initialize Camera Feeds
 		cameraPanels = new ArrayList<CameraPanel>();

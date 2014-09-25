@@ -2,7 +2,9 @@ package com.roboclub.robobuggy.main;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.io.File;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -16,9 +18,14 @@ public class AnalyticsWindow extends JFrame{
 	public DataPanel data;
 	
 	public AnalyticsWindow() {
-		this.setTitle("Data Analyitics");
-		//this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		this.setTitle("Data Analytics");
 		this.setLayout(new BorderLayout());
+		
+		try {
+			this.setIconImage(ImageIO.read(new File("images/rc_logo.png")));
+		} catch (Exception e) {
+			System.out.println("Unable to read icon image!");
+		}
 		
 		JPanel rightPanel = new JPanel();
 		rightPanel.setBorder(BorderFactory.createLineBorder(Color.black));
