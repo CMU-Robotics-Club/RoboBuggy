@@ -9,6 +9,7 @@ public class ArduinoPanel extends SerialPanel {
 	private static final long serialVersionUID = -929040896215455343L;
 	private static final char[] HEADER = {(char)0xFC};
 	private static final int HEADER_LEN = 1;
+	private static final int MSG_LEN = 8;
 	private static final int BAUDRATE = 9600;
 	
 	private static final char ENC_BYTE_ONE_TICK_LAST = 0;
@@ -40,49 +41,63 @@ public class ArduinoPanel extends SerialPanel {
 	    rl.sensor.logEncoder(time_in_millis, encTickLast, encReset, encTime);
 	}
 	
+	private int parseData(char[] data, int ind) {
+		int tmp = data[0] << (HEADER_LEN + ind + 2);
+		tmp |= data[1] << (HEADER_LEN + ind + 3);
+		tmp |= data[1] << (HEADER_LEN + ind + 4);
+		tmp |= data[1] << (HEADER_LEN + ind + 5);
+		
+		return tmp;
+	}
+	
 	private class ArduinoListener implements SerialListener {
 		@Override
 		public void onEvent(SerialEvent event) {
 			char[] tmp = event.getBuffer();
+			int tmp_len = event.getLength();
 			
-			if (tmp != null && event.getLength() > HEADER_LEN) {
-				String curVal = "";
-				try {
-					switch (tmp[HEADER_LEN]) {
+			System.out.println("Start : " + tmp_len);
+			for (int i = 0; i < event.getLength(); i++ ) {
+				if (tmp[i] == HEADER[0] && (tmp_len - i) >= MSG_LEN) {
+					System.out.println("ind" + (int)tmp[i+1]);
+					switch(tmp[i+1]) {
 					case ENC_BYTE_ONE_TICK_LAST:
-						encTickLastTmp = Integer.parseInt(curVal.substring(2,6), 16);
+						encTickLastTmp = parseData(tmp, i);
+						i += MSG_LEN;
 						break;
 					case ENC_BYTE_TW0_TICK_LAST:
-						encTickLast = ((long)encTickLastTmp << 0x32) & Integer.parseInt(curVal.substring(2,6), 16);
+						encTickLast = (((long)0 | encTickLastTmp) << 0x32) & parseData(tmp, i);
+						i += MSG_LEN;
 						System.out.println("Tick Last: " + encTickLast);
-						logData();
+						//logData();
 						break;
 					case ENC_BYTE_ONE_TICK_RESET:
-						encResetTmp = Integer.parseInt(curVal.substring(2,6), 16);
+						encResetTmp = parseData(tmp, i);
+						i += MSG_LEN;
 						break;
 					case ENC_BYTE_TWO_TICK_RESET:
-						encReset = ((long)encResetTmp << 0x32) & Integer.parseInt(curVal.substring(2,6), 16);
+						encReset = (((long)0 | encResetTmp << 0x32)) & parseData(tmp, i);
+						i += MSG_LEN;
 						System.out.println("Reset: " + encReset);
-						logData();
+						//logData();
 						break;
 					case ENC_TIMESTAMP_ONE:
-						encTimeTmp = Integer.parseInt(curVal.substring(2,6), 16);
+						encTimeTmp = parseData(tmp, i);
+						i += MSG_LEN;
 						break;
 					case ENC_TIMESTAMP_TWO:
-						encTime = ((long)encTimeTmp << 0x32) & Integer.parseInt(curVal.substring(2,6), 16);
+						encTime = (((long)0 | encTimeTmp) << 0x32) & parseData(tmp, i);
+						i += MSG_LEN;
 						System.out.println("Time: " + encTime);
-						logData();
+						//logData();
 						break;
 					default:
+						System.out.println("How did you get here");
 						return;
 					}
-				} catch (Exception e) {
-					System.out.println("Failed to parse arduino message");
-					return;
-				}
-
-				//TODO redraw now
+				}	
 			}
+			System.out.println("End");
 		}
 	}
 }

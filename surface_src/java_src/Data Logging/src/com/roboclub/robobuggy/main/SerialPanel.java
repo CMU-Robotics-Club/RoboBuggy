@@ -30,6 +30,8 @@ abstract class SerialPanel extends JPanel {
 			msg.setFont(new Font("sanserif",Font.PLAIN,20));
 			msg.setForeground(Color.RED);
 			this.add(msg);
+		} else {
+			System.out.println("Open port: " + port.getName() + " for " + owner);
 		}
 	}
 	
