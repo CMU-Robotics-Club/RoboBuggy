@@ -9,7 +9,8 @@
 #include "brake.h"
 #include "encoder.h"
 #include "steering.h"
-
+#include "rbserialmessages.c"
+#include "rbserialmessages.h"
 
 // Before compiling switch device to Arduino Mega
 // Read http://www.arduino.cc/en/Hacking/BuildProcess before doing work. 
