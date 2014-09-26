@@ -13,6 +13,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.imageio.ImageIO;
 
+import com.roboclub.robobuggy.main.Gui;
+
 /**
  * Logs data from the sensors
  * 
@@ -119,6 +121,7 @@ public final class SensorLogger {
 		outputFileName = outputFileName.replaceAll(":", "_");
 		File csvFile = new File(outputDir,outputFileName + "sensors.csv");
 		System.out.println("FileCreated: " + outputFileName);
+		Gui.UpdateLogName( outputFileName );
 		try {
 			_csv = new PrintStream(csvFile);
 		} catch (FileNotFoundException e) {

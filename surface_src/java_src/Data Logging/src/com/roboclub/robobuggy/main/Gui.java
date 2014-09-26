@@ -23,6 +23,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.Timer;
 
+import com.roboclub.robobuggy.logging.RobotLogger;
+
 public final class Gui extends JFrame {
 	private static final long serialVersionUID = 670947948979376738L;
 
@@ -134,12 +136,17 @@ public final class Gui extends JFrame {
 				if (playState) {
 					toggleButton.setText("Pause");
 					toggleButton.setBackground(Color.RED);
+					
+					RobotLogger.CreateLog();
+					
 					startTime = new Date().getTime();
 					timer.start();
 				} else {
 					toggleButton.setText("Start");
 					toggleButton.setBackground(Color.GREEN);
 					timer.stop();
+					
+					RobotLogger.CloseLog();
 				}
 			}
 		});
