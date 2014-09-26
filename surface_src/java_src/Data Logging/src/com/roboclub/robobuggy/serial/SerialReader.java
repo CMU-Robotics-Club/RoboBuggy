@@ -8,7 +8,7 @@ import gnu.io.*;
 
 public class SerialReader implements SerialPortEventListener {
 	private static final int TIMEOUT = 2000;
-	private static final int BUFFER_SIZE = 256;
+	private static final int BUFFER_SIZE = 512;
 	
 	private SerialPort port;
 	private Enumeration<CommPortIdentifier> port_list;
@@ -53,7 +53,7 @@ public class SerialReader implements SerialPortEventListener {
 					
 					while (numRead < BUFFER_SIZE) {
 						char inByte = (char)input.read();
-						if (inByte != '?') msg[numRead++] = inByte;
+						msg[numRead++] = inByte;
 					}
 				
 					passed = checkHeader(msg, header, numRead, headerLen);
@@ -108,11 +108,12 @@ public class SerialReader implements SerialPortEventListener {
 				
 				// Reset buffer index in overflow
 				if (index == BUFFER_SIZE) {
+					System.out.println("Overflow!");
 					index = 0;
 				}
 			} catch (Exception e) {
-				listeners.clear();
-				port.close();
+				System.out.println("Exception, Why?");
+				e.printStackTrace();
 				return;
 			}
 
@@ -146,5 +147,13 @@ public class SerialReader implements SerialPortEventListener {
 	
 	public boolean isConnected() {
 		return this.connected;
+	}
+	
+	public String getName() {
+		if (this.connected) {
+			return this.port_id.getName();
+		}
+		
+		return "";
 	}
 }

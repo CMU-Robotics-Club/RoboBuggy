@@ -187,7 +187,7 @@ public class ImuPanel extends SerialPanel {
 		    acc[0] = aX; acc[1] = aY; acc[2] = aZ;
 		    gyro[0] = rX; gyro[1] = rY; gyro[2] = rZ;
 		    compass[0] = mX; compass[1] = mY; compass[2] = mZ;
-		    rl.sensor.logImu(time_in_millis, acc, gyro, compass);
+		    //rl.sensor.logImu(time_in_millis, acc, gyro, compass);
 		}
 	}
 	
