@@ -1,7 +1,6 @@
 package com.roboclub.robobuggy.main;
 
 import java.util.Date;
-
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.serial.SerialEvent;
 import com.roboclub.robobuggy.serial.SerialListener;
@@ -26,8 +25,11 @@ public class ArduinoPanel extends SerialPanel {
 	private int encTimeTmp;
 	private long encTime;
 
-	public ArduinoPanel() throws Exception {
+	public ArduinoPanel() {
 		super("ARDUINO", BAUDRATE, HEADER, HEADER_LEN);
+		
+		if (!this.isConnected()) return;
+		
 		super.addListener(new ArduinoListener());
 	}
 	

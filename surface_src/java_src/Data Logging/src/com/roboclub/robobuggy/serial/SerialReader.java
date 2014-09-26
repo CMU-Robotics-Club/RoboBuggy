@@ -13,6 +13,7 @@ public class SerialReader implements SerialPortEventListener {
 	private SerialPort port;
 	private Enumeration<CommPortIdentifier> port_list;
 	private CommPortIdentifier port_id;
+	private boolean connected;
 	
 	private InputStream input;
 	private OutputStream output;
@@ -28,6 +29,7 @@ public class SerialReader implements SerialPortEventListener {
 			char[] header, int headerLen) throws Exception {
 		listeners = new ArrayList<SerialListener>();
 		port_list = CommPortIdentifier.getPortIdentifiers();
+		connected = false;
 		
 		while (port_list.hasMoreElements() ) {
 			port_id = (CommPortIdentifier)port_list.nextElement();
@@ -45,11 +47,11 @@ public class SerialReader implements SerialPortEventListener {
 					input = port.getInputStream();
 					output = port.getOutputStream();
 					
-					char[] msg = new char[256];
+					char[] msg = new char[BUFFER_SIZE];
 					int numRead = 0;
 					boolean passed = false;
 					
-					while (numRead < 256) {
+					while (numRead < BUFFER_SIZE) {
 						char inByte = (char)input.read();
 						if (inByte != '?') msg[numRead++] = inByte;
 					}
@@ -62,9 +64,9 @@ public class SerialReader implements SerialPortEventListener {
 						inputBuffer = new char[BUFFER_SIZE];
 						//outputBuffer = new char[BUFFER_SIZE];
 						index = 0;
-						
+						connected = true;
 						port.addEventListener(this);
-						break;
+						return;
 					}
 					
 					port.close();
@@ -98,6 +100,7 @@ public class SerialReader implements SerialPortEventListener {
 			try {
 				char data = (char)input.read();
 				inputBuffer[index++] = data;
+				
 				if (data == '\n') {
 					notifyListeners();					
 					index = 0;
@@ -139,5 +142,9 @@ public class SerialReader implements SerialPortEventListener {
 		} catch (Exception e) {
 			System.exit(-1);
 		}
+	}
+	
+	public boolean isConnected() {
+		return this.connected;
 	}
 }

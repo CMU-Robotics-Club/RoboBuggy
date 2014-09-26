@@ -11,8 +11,8 @@ public class Line {
 	
 	//consider making template function right now is dependent on the type of point  
 	public Line(double start_x,double start_y,double end_x,double end_y){
-		Point startPoint = new Point(start_x,start_y);
-		Point endPoint = new Point(end_x,end_y);
+		Point startPoint = new Point((float)start_x,(float)start_y);
+		Point endPoint = new Point((float)end_x,(float)end_y);
 		this.start = startPoint;
 		this.end = endPoint;
 	}
