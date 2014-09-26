@@ -24,6 +24,7 @@ public class ControlsPanel extends JPanel {
 	private JLabel time_lbl;
     private Date startPressedTime;	
     private Timer timer;
+    DateFormat df = new SimpleDateFormat("HH:mm:ss.S");
     
 	public ControlsPanel() {
 		//stuff for setting up logging ie start/stop, file name ...
@@ -33,18 +34,7 @@ public class ControlsPanel extends JPanel {
 		top_panel.setLayout(new GridLayout(1,2));
 		startPause_btn = new JButton("Start");
 		startPause_btn.setFont(new Font("serif", Font.PLAIN, 70));
-		//TODO move following into a function 
-		if(Gui.getInstance().GetPlayPauseState())
-		{	
-			System.out.println("System Started");
-			startPause_btn.setBackground(Color.RED);
-			startPause_btn.setText("Pause");
-			startPressedTime = new Date();
-		} else {
-			System.out.println("System Paused");
-			startPause_btn.setBackground(Color.GREEN);
-			startPause_btn.setText("Start");
-		}		
+		updateStartPause_btn();
 		StartPauseButtonHandler startPauseHandler = new StartPauseButtonHandler();
 		startPause_btn.addActionListener(startPauseHandler);
 		JLabel currentFile_lbl = new JLabel("currentFile",SwingConstants.CENTER);
@@ -92,7 +82,12 @@ public class ControlsPanel extends JPanel {
 		
 	}
 	
-	DateFormat df = new SimpleDateFormat("HH:mm:ss.S");
+	//updates the display based on external events
+	public void updatePanel(){
+		//TODO
+		updateStartPause_btn();
+	}
+	
 	private class timerHandler implements ActionListener
 	{
 		@Override
@@ -104,28 +99,38 @@ public class ControlsPanel extends JPanel {
 			repaint();
 		}
 	}
+	
+	private void updateStartPause_btn(){
+		if(Gui.getInstance().GetPlayPauseState())
+		{	
+			System.out.println("System Started");
+			startPause_btn.setBackground(Color.RED);
+			startPause_btn.setText("Pause");			
+		} else {
+			System.out.println("System Paused");
+			startPause_btn.setBackground(Color.GREEN);
+		}
+		repaint();		
+		
+	}
+	
+	
 	private class StartPauseButtonHandler implements ActionListener
 	{
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			//inverts the state of the system every time the button is pressed 
-			Gui.setPlayPauseState(!Gui.getInstance().GetPlayPauseState());
-			if(Gui.getInstance().GetPlayPauseState())
-			{	
-				System.out.println("System Started");
-				startPause_btn.setBackground(Color.RED);
-				startPause_btn.setText("Pause");
-				
+			//inverts the state of the system every time the button is pressed
+			if(Gui.getInstance().GetPlayPauseState()){
+				Gui.setPlayPauseState(false);
 				timer.start();
-				startPressedTime = new Date();
-			} else {
-				System.out.println("System Paused");
-				startPause_btn.setBackground(Color.GREEN);
-				startPause_btn.setText("Start");
+			    startPressedTime = new Date();
+			}else{
+				Gui.setPlayPauseState(true);
 				timer.stop();
 			}
-			repaint();
+			updateStartPause_btn();
+
 		}
 	}
 

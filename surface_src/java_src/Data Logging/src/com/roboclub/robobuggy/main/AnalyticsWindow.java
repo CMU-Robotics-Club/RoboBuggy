@@ -16,7 +16,7 @@ public class AnalyticsWindow extends JFrame{
 	private static GpsPanel gpsPanel;
 	private static ArduinoPanel arduinoPanel;
 	private static ImuPanel imuPanel;
-	private static ControlsPanel controlsPanel;
+	public static ControlsPanel controlsPanel;   //TODO fix this hack 
 	public DataPanel data;
 	
 	public AnalyticsWindow() {
