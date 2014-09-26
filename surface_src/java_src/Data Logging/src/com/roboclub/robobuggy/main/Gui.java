@@ -38,11 +38,13 @@ public final class Gui extends JFrame {
 	private static boolean playState;
 	private static boolean graphDisplay;
 	private static boolean cameraDisplay;
-	
-	//private static Robot robot;
 
 	public static void main(String args[]) {
-		// Check for commandline arguments
+		processArgs(args);
+	}
+	
+	public static void processArgs(String args[]){
+		// Check for command line arguments
 		ArrayList<Integer> cameras = new ArrayList<Integer>();
 		for (int i = 0; i < args.length; i++) {
 			if (i+1 < args.length) {

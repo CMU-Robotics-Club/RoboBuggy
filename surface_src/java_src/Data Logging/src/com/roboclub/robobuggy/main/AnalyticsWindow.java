@@ -9,12 +9,14 @@ import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+//What shows up when display graphics is clicked 
 public class AnalyticsWindow extends JFrame{
 	private static final long serialVersionUID = 1903486493950389240L;
 	
 	private static GpsPanel gpsPanel;
 	private static ArduinoPanel arduinoPanel;
 	private static ImuPanel imuPanel;
+	private static ControlsPanel controlsPanel;
 	public DataPanel data;
 	
 	public AnalyticsWindow() {
@@ -32,8 +34,10 @@ public class AnalyticsWindow extends JFrame{
 		rightPanel.setLayout(new BorderLayout());
 		data = new DataPanel(this.getContentPane());
 		gpsPanel = new GpsPanel();
-		rightPanel.add(gpsPanel, BorderLayout.NORTH);
-		rightPanel.add(data, BorderLayout.CENTER);
+		controlsPanel = new ControlsPanel();
+		rightPanel.add(controlsPanel,BorderLayout.NORTH);
+		rightPanel.add(gpsPanel, BorderLayout.CENTER);
+		rightPanel.add(data, BorderLayout.SOUTH);
 		this.add(rightPanel, BorderLayout.EAST);
 		
 		// Initialize Panels for Window
