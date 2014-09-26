@@ -12,8 +12,9 @@ public class ListMap implements Map{
 		thisMap = new ArrayList<MapObject>();
 	}
 	
+	//if remove is successful then evaluate to true, otherwise evaluates to false 
 	public boolean removeFromMap(MapObject mapObjectToRemove){
-		//TODO
+		thisMap.remove(mapObjectToRemove);
 		return true;
 	}
 	
