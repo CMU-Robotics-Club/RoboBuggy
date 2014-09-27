@@ -19,7 +19,6 @@ public class SerialReader implements SerialPortEventListener {
 	private OutputStream output;
 	
 	private char[] inputBuffer;
-	//private char[] outputBuffer;
 	private int index;
 	
 	private ArrayList<SerialListener> listeners;
@@ -147,6 +146,28 @@ public class SerialReader implements SerialPortEventListener {
 	
 	public boolean isConnected() {
 		return this.connected;
+	}
+	
+	public void serialWrite(byte[] data) {
+		if (connected && output != null) {
+			try {
+				output.write(data);
+				output.flush();
+			} catch (Exception e) {
+				System.out.println("Unable to write: " + data);
+			}
+		}
+	} 
+	
+	public void serialWrite(String data) {
+		if (connected && data != null && output != null) {
+			try {
+				output.write(data.getBytes());
+				output.flush();
+			} catch (Exception e) {
+				System.out.println("Unable to write: " + data);
+			}
+		}
 	}
 	
 	public String getName() {

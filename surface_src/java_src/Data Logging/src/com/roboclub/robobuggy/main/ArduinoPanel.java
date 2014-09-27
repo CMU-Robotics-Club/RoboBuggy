@@ -56,7 +56,6 @@ public class ArduinoPanel extends SerialPanel {
 			char[] tmp = event.getBuffer();
 			int tmp_len = event.getLength();
 			
-			System.out.println("Start : " + tmp_len);
 			for (int i = 0; i < event.getLength(); i++ ) {
 				if (tmp[i] == HEADER[0] && (tmp_len - i) >= MSG_LEN) {
 					System.out.println("ind" + (int)tmp[i+1]);
@@ -97,7 +96,6 @@ public class ArduinoPanel extends SerialPanel {
 					}
 				}	
 			}
-			System.out.println("End");
 		}
 	}
 }

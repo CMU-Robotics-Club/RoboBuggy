@@ -179,8 +179,7 @@ public class ImuPanel extends SerialPanel {
 			// Message received
 			// message is now contained in tmp
 		    RobotLogger rl = RobotLogger.getInstance();
-		    Date now = new Date();
-		    long time_in_millis = now.getTime();
+		    long time_in_millis = new Date().getTime();
 		    float[] acc = new float[3];
 		    float[] gyro = new float[3];
 		    float[] compass = new float[3];
