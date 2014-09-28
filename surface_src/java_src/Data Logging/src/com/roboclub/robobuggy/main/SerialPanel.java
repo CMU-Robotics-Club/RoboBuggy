@@ -13,7 +13,7 @@ import com.roboclub.robobuggy.serial.SerialReader;
 abstract class SerialPanel extends JPanel {
 	private static final long serialVersionUID = 8010633614957618540L;
 	
-	private SerialReader port;
+	protected SerialReader port;
 	
 	public SerialPanel(String owner, int baud_rate, char[] header,
 			int headerLen) {

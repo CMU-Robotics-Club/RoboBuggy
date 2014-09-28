@@ -125,10 +125,11 @@ public class GpsPanel extends SerialPanel {
 	private class GpsListener implements SerialListener {
 		@Override
 		public void onEvent(SerialEvent event) {
-			if(Gui.GetGraphState() || Gui.GetPlayPauseState()) {
+			if(!Gui.InPlayBack() 
+					&& (Gui.GetGraphState() || Gui.GetPlayPauseState())) {
 				char[] tmp = event.getBuffer();
 				int length = event.getLength();
-				int index = 0;
+				int index = 0;	
 				
 				if (tmp != null && event.getLength() > HEADER_LEN) {
 					String curVal = "";

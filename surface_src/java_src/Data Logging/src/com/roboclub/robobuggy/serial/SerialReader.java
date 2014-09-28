@@ -152,7 +152,8 @@ public class SerialReader implements SerialPortEventListener {
 		if (connected && output != null) {
 			try {
 				output.write(data);
-				output.flush();
+				System.out.println("Wrote: " + data);
+				//output.flush();
 			} catch (Exception e) {
 				System.out.println("Unable to write: " + data);
 			}

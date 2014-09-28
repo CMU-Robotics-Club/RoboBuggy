@@ -38,12 +38,9 @@ public final class Gui extends JFrame {
 	private static boolean playState;
 	private static boolean graphDisplay;
 	private static boolean cameraDisplay;
-
-	public static void main(String args[]) {
-		processArgs(args);
-	}
+	private static boolean playBack;
 	
-	public static void processArgs(String args[]){
+	public static void main(String args[]) {
 		// Check for command line arguments
 		ArrayList<Integer> cameras = new ArrayList<Integer>();
 		for (int i = 0; i < args.length; i++) {
@@ -69,6 +66,7 @@ public final class Gui extends JFrame {
 		playState = false;
 		graphDisplay = false;
 		cameraDisplay = false;
+		playBack = false;
 	}
 	
 	public void populate(ArrayList<Integer> cameras) {
@@ -188,7 +186,6 @@ public final class Gui extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				graphDisplay = !graphDisplay;
-				
 				graphs.setVisible(graphDisplay);
 			}
 		});
@@ -293,6 +290,10 @@ public final class Gui extends JFrame {
 	
 	public static boolean GetGraphState() {
 		return graphDisplay;
+	}
+	
+	public static boolean InPlayBack() {
+		return playBack;
 	}
 
 	// Update Sensor Data in Graph

@@ -112,6 +112,35 @@ public class ImuPanel extends SerialPanel {
         final ChartPanel commandAngleChartPanel = new ChartPanel(chart2);
         this.add(commandAngleChartPanel);
 	}
+	
+	private void logData() {
+		if (Gui.GetPlayPauseState()) {
+			RobotLogger rl = RobotLogger.getInstance();
+		    Date now = new Date();
+		    long time_in_millis = now.getTime();
+		    float[] acc = new float[3];
+		    float[] gyro = new float[3];
+		    float[] compass = new float[3];
+		    acc[0] = aX; acc[1] = aY; acc[2] = aZ;
+		    gyro[0] = rX; gyro[1] = rY; gyro[2] = rZ;
+		    compass[0] = mX; compass[1] = mY; compass[2] = mZ;
+		    rl.sensor.logImu(time_in_millis, acc, gyro, compass);
+		}
+	}
+	
+	private void addToDisplay() {
+		addToHistory(aX_history,Double.valueOf(aX));
+	    addToHistory(aY_history,Double.valueOf(aY));
+	    addToHistory(aZ_history,Double.valueOf(aZ));
+	    addToHistory(rX_history,Double.valueOf(rX));
+	    addToHistory(rY_history,Double.valueOf(rY));
+	    addToHistory(rZ_history,Double.valueOf(rZ));
+	    addToHistory(mX_history,Double.valueOf(mX));
+	    addToHistory(mY_history,Double.valueOf(mY));
+	    addToHistory(mZ_history,Double.valueOf(mZ));
+	    
+	    count++;
+	}
 
 	/**
 	 * ImuListener is an event handler for serial communication. It is notified
@@ -122,17 +151,18 @@ public class ImuPanel extends SerialPanel {
 	private class ImuListener implements SerialListener {
 		@Override
 		public void onEvent(SerialEvent event) {
-			if(Gui.GetPlayPauseState()) {
+			if(!Gui.InPlayBack() && 
+					(Gui.GetGraphState() || Gui.GetPlayPauseState())) {
 				char[] tmp = event.getBuffer();
 				int index = 0;
 	
-					if (tmp != null && event.getLength() > HEADER_LEN) {
-						String curVal = "";
-						for (int i = HEADER_LEN; i < event.getLength(); i++ ) {
-							if(tmp[i] == '\n'){
-								break;
-							}
-						if (tmp[i] == ',' ){ 
+				if (tmp != null && event.getLength() > HEADER_LEN) {
+					String curVal = "";
+					for (int i = HEADER_LEN; i < event.getLength(); i++ ) {
+						if(tmp[i] == '\n'){
+							break;
+						}
+						else if (tmp[i] == ',' ){ 
 							try {
 								setValue(index, Float.valueOf(curVal));
 								
@@ -147,46 +177,12 @@ public class ImuPanel extends SerialPanel {
 							curVal += tmp[i];
 						}
 					}
+					System.out.format("IMU Values: aX: %f aY: %f aZ: %f rX: %f rY: %f rZ: %f "
+							+ "mX: %f mY: %f mZ: %f \n",aX,aY,aZ,rX,rY,rZ,mX,mY,mZ);
+					logData();
+					addToDisplay();
 				}
-					
-				count++;
-				System.out.format("IMU Values: aX: %f aY: %f aZ: %f rX: %f rY: %f rZ: %f "
-						+ "mX: %f mY: %f mZ: %f \n",aX,aY,aZ,rX,rY,rZ,mX,mY,mZ);
-				// Message received
-				// message is now contained in tmp
-			    RobotLogger rl = RobotLogger.getInstance();
-			    Date now = new Date();
-			    long time_in_millis = now.getTime();
-			    float[] acc = new float[3];
-			    float[] gyro = new float[3];
-			    float[] compass = new float[3];
-			    acc[0] = aX; acc[1] = aY; acc[2] = aZ;
-			    gyro[0] = rX; gyro[1] = rY; gyro[2] = rZ;
-			    compass[0] = mX; compass[1] = mY; compass[2] = mZ;
-			    rl.sensor.logImu(time_in_millis, acc, gyro, compass);
-	
-			    
-			    addToHistory(aX_history,Double.valueOf(aX));
-			    addToHistory(aY_history,Double.valueOf(aY));
-			    addToHistory(aZ_history,Double.valueOf(aZ));
-			    addToHistory(rX_history,Double.valueOf(rX));
-			    addToHistory(rY_history,Double.valueOf(rY));
-			    addToHistory(rZ_history,Double.valueOf(rZ));
-			    addToHistory(mX_history,Double.valueOf(mX));
-			    addToHistory(mY_history,Double.valueOf(mY));
-			    addToHistory(mZ_history,Double.valueOf(mZ));
 			}
-			// Message received
-			// message is now contained in tmp
-		    RobotLogger rl = RobotLogger.getInstance();
-		    long time_in_millis = new Date().getTime();
-		    float[] acc = new float[3];
-		    float[] gyro = new float[3];
-		    float[] compass = new float[3];
-		    acc[0] = aX; acc[1] = aY; acc[2] = aZ;
-		    gyro[0] = rX; gyro[1] = rY; gyro[2] = rZ;
-		    compass[0] = mX; compass[1] = mY; compass[2] = mZ;
-		    //rl.sensor.logImu(time_in_millis, acc, gyro, compass);
 		}
 	}
 	

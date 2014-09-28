@@ -1,6 +1,7 @@
 package com.roboclub.robobuggy.main;
 
 import java.util.Date;
+
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.serial.SerialEvent;
 import com.roboclub.robobuggy.serial.SerialListener;
@@ -35,10 +36,12 @@ public class ArduinoPanel extends SerialPanel {
 	}
 	
 	private void logData() {
-		RobotLogger rl = RobotLogger.getInstance();
-	    Date now = new Date();
-	    long time_in_millis = now.getTime();
-	    rl.sensor.logEncoder(time_in_millis, encTickLast, encReset, encTime);
+		if (Gui.GetPlayPauseState()) {
+			RobotLogger rl = RobotLogger.getInstance();
+		    Date now = new Date();
+		    long time_in_millis = now.getTime();
+		    rl.sensor.logEncoder(time_in_millis, encTickLast, encReset, encTime);
+		}
 	}
 	
 	private int parseData(char[] data, int ind) {
@@ -50,51 +53,63 @@ public class ArduinoPanel extends SerialPanel {
 		return tmp;
 	}
 	
+	public void writeAngle(int angle) {
+		if (angle >= 0 && angle <= 180) {
+			if(isConnected()) {
+				byte[] msg = {'T', 'H', 'a','\n'};
+				msg[2] = (byte)angle;
+				this.port.serialWrite(msg);
+			}
+		}
+	}
+	
 	private class ArduinoListener implements SerialListener {
 		@Override
 		public void onEvent(SerialEvent event) {
-			char[] tmp = event.getBuffer();
-			int tmp_len = event.getLength();
-			
-			for (int i = 0; i < event.getLength(); i++ ) {
-				if (tmp[i] == HEADER[0] && (tmp_len - i) >= MSG_LEN) {
-					System.out.println("ind" + (int)tmp[i+1]);
-					switch(tmp[i+1]) {
-					case ENC_BYTE_ONE_TICK_LAST:
-						encTickLastTmp = parseData(tmp, i);
-						i += MSG_LEN;
-						break;
-					case ENC_BYTE_TW0_TICK_LAST:
-						encTickLast = (((long)0 | encTickLastTmp) << 0x32) & parseData(tmp, i);
-						i += MSG_LEN;
-						System.out.println("Tick Last: " + encTickLast);
-						//logData();
-						break;
-					case ENC_BYTE_ONE_TICK_RESET:
-						encResetTmp = parseData(tmp, i);
-						i += MSG_LEN;
-						break;
-					case ENC_BYTE_TWO_TICK_RESET:
-						encReset = (((long)0 | encResetTmp << 0x32)) & parseData(tmp, i);
-						i += MSG_LEN;
-						System.out.println("Reset: " + encReset);
-						//logData();
-						break;
-					case ENC_TIMESTAMP_ONE:
-						encTimeTmp = parseData(tmp, i);
-						i += MSG_LEN;
-						break;
-					case ENC_TIMESTAMP_TWO:
-						encTime = (((long)0 | encTimeTmp) << 0x32) & parseData(tmp, i);
-						i += MSG_LEN;
-						System.out.println("Time: " + encTime);
-						//logData();
-						break;
-					default:
-						System.out.println("How did you get here");
-						return;
-					}
-				}	
+			if (!Gui.InPlayBack() 
+					&& (Gui.GetGraphState() || Gui.GetPlayPauseState())) {
+				char[] tmp = event.getBuffer();
+				int tmp_len = event.getLength();
+				
+				for (int i = 0; i < event.getLength(); i++ ) {
+					if (tmp[i] == HEADER[0] && (tmp_len - i) >= MSG_LEN) {
+						switch(tmp[i+1]) {
+						case ENC_BYTE_ONE_TICK_LAST:
+							encTickLastTmp = parseData(tmp, i);
+							i += MSG_LEN;
+							break;
+						case ENC_BYTE_TW0_TICK_LAST:
+							encTickLast = (((long)0 | encTickLastTmp) << 0x32) & parseData(tmp, i);
+							i += MSG_LEN;
+							System.out.println("Tick Last: " + encTickLast);
+							logData();
+							break;
+						case ENC_BYTE_ONE_TICK_RESET:
+							encResetTmp = parseData(tmp, i);
+							i += MSG_LEN;
+							break;
+						case ENC_BYTE_TWO_TICK_RESET:
+							encReset = (((long)0 | encResetTmp << 0x32)) & parseData(tmp, i);
+							i += MSG_LEN;
+							System.out.println("Reset: " + encReset);
+							logData();
+							break;
+						case ENC_TIMESTAMP_ONE:
+							encTimeTmp = parseData(tmp, i);
+							i += MSG_LEN;
+							break;
+						case ENC_TIMESTAMP_TWO:
+							encTime = (((long)0 | encTimeTmp) << 0x32) & parseData(tmp, i);
+							i += MSG_LEN;
+							System.out.println("Time: " + encTime);
+							logData();
+							break;
+						default:
+							System.out.println("How did you get here");
+							return;
+						}
+					}	
+				}
 			}
 		}
 	}

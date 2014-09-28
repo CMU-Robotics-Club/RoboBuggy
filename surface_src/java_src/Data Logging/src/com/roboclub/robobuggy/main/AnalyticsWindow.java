@@ -65,6 +65,14 @@ public class AnalyticsWindow extends JFrame{
 		Gui.updateGraphToggle(false);
 	}
 	
+	public void writeAngle(int angle) {
+		if (angle >= 0 && angle <= 180) {
+			if (arduinoPanel != null && arduinoPanel.isConnected()) {
+				arduinoPanel.writeAngle(angle);
+			}
+		}
+	}
+	
 	public void close() {
 		if (gpsPanel != null && gpsPanel.isConnected()) {
 			gpsPanel.closePort();
