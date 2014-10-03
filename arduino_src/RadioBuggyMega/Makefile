@@ -5,10 +5,10 @@
 # If not, you might have to include the full path.
 #ALTERNATE_CORE_PATH = /home/sudar/Dropbox/code/arduino-sketches/hardware/attiny/
 
-BOARD_TAG     = nano328
+BOARD_TAG     = mega2560
 ISP_PORT      = /dev/tty.asdf
 USER_LIB_PATH = ../lib
-ARDUINO_LIBS  = lib_protocol
+ARDUINO_LIBS  = rbserialmessages
 
 include ../Arduino.mk
 
