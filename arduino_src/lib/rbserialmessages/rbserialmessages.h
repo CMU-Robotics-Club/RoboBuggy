@@ -25,9 +25,10 @@
 #define RBSM_NULL_TERM 0x00
 
 // Protocol Constants
-#define RBSM_HEAD 0xFC
+#define RBSM_FOOTER 0xFC
 #define RBSM_ONE_BYTE_SIZE 8
 #define RBSM_TWO_BYTE_SIZE 16
+#define RBSM_THREE_BYTE_SIZE 24
 #define RBSM_ONE_BYTE_MASK 0xFF
 #define RBSM_TWO_BYTE_MASK 0xFFFF
 #define RBSM_BAUD_RATE 9600
@@ -49,8 +50,8 @@ class RBSerialMessages {
  public:
   RBSerialMessages();
   int Begin(HardwareSerial *serial_stream);
-  int SendSingle(uint8_t id, uint16_t message);
-  int SendDouble(uint8_t id_h, uint8_t id_l, uint32_t message);
+  // int SendSingle(uint8_t id, uint16_t message); This should be gone due to change in protocol design
+  int SendDouble(uint8_t id, uint32_t message);
   // todo: define receive api
  private:
   HardwareSerial *serial_stream_;
