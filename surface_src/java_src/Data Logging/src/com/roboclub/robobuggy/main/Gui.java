@@ -8,6 +8,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -138,6 +139,12 @@ public final class Gui extends JFrame {
 					toggleButton.setBackground(Color.RED);
 					
 					RobotLogger.CreateLog();
+					
+					try {
+						new ProcessBuilder("C:\\Users\\abc\\buggy-log\\VisionSystem.exe","-c","0").start();
+					} catch (Exception exc) {
+						exc.printStackTrace();
+					}
 					
 					startTime = new Date().getTime();
 					timer.start();
@@ -273,11 +280,7 @@ public final class Gui extends JFrame {
 	public static void setPlayPauseState(boolean playPauseState) {
 		Gui.playState = playPauseState;
 		
-		if (cameraPanels != null && !cameraPanels.isEmpty()) {
-			for (CameraPanel panel : cameraPanels) {
-				panel.setLogging(playPauseState);
-			}
-		}
+		
 	}
 	
 	public static boolean HasCameras() {
