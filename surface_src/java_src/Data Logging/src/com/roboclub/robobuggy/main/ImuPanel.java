@@ -124,6 +124,15 @@ public class ImuPanel extends SerialPanel {
 		    acc[0] = aX; acc[1] = aY; acc[2] = aZ;
 		    gyro[0] = rX; gyro[1] = rY; gyro[2] = rZ;
 		    compass[0] = mX; compass[1] = mY; compass[2] = mZ;
+		   
+		    if(rl == null){
+		    	System.out.println("r1 is null the system is exiting\n");
+		        System.exit(1);
+		    }else if(rl.sensor == null){
+		    	System.out.println("rl.sensor is null the system is exiting\n");
+		    	System.exit(1);
+		    }
+		    
 		    rl.sensor.logImu(time_in_millis, acc, gyro, compass);
 		}
 	}

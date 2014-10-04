@@ -31,14 +31,13 @@ public final class RobotLogger {
 				logDir.mkdirs();
 				System.out.println("Created directory: " + logDir.getAbsolutePath());
 				
+			}
 				try {
 					instance = new RobotLogger(logDir);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
-			}
 		}
 		return instance;
 		

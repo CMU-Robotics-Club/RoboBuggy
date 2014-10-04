@@ -164,6 +164,7 @@ public final class SensorLogger {
 	}
 
 	public void logImu(long time,float[] acc,float[] gyro,float[] compass) {
+		System.out.println("logging IMU\n");
 		String[] vals = new String[9];
 		for(int i=0;i<3;++i) {
 			vals[i+0] = "" + acc[i];
