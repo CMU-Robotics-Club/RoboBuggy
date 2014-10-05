@@ -28,30 +28,14 @@ int RBSerialMessages::Begin(HardwareSerial *serial_stream) {
   serial_stream_->begin(RBSM_BAUD_RATE);
 
   // send the device id message
-  // EDIT: Can't do that now as no such thing as SendSingle
-  // SendSingle(RBSM_MID_DEVICE_ID, RBSM_DID_DRIVE_ENCODER);
+  Send(RBSM_MID_DEVICE_ID, RBSM_DID_DRIVE_ENCODER);
 
   // success
   return 1;
 }
 
-/*
-int RBSerialMessages::SendSingle(uint8_t id, uint16_t message) {
+int RBSerialMessages::Send(uint8_t id, uint32_t message) {
   uint8_t buffer_pos;
-  buffer_pos = InitMessageBuffer();
-  buffer_pos = AppendMessageToBuffer(id, message, buffer_pos);
-  
-  serial_stream_->write(buffer_out_, buffer_pos);
-
-  // success
-  return 0;
-}*/
-
-
-int RBSerialMessages::SendDouble(uint8_t id, uint32_t message) {
-  uint8_t buffer_pos;
-  // uint16_t message_l = message & RBSM_TWO_BYTE_MASK;
-  // uint16_t message_h = (message >> RBSM_TWO_BYTE_SIZE) & RBSM_TWO_BYTE_MASK;
   buffer_pos = InitMessageBuffer();
   buffer_pos = AppendMessageToBuffer(id, message, buffer_pos);
   
@@ -73,22 +57,6 @@ uint8_t RBSerialMessages::AppendMessageToBuffer(uint8_t id,
 
   // write message id (and id since single message)
   buffer_out_[buffer_pos++] = id;
-
-  // sanitize message content if necessary
-  /* TO BE REMOVED AFTER FUNCTIONALITY CONFIRMATION
-  if(message_h == RBSM_HEAD) {
-    buffer_out_[buffer_pos++] = message_h;
-    buffer_out_[buffer_pos++] = message_h;
-  } else {
-    buffer_out_[buffer_pos++] = message_h;
-  }
-
-  if(message_l == RBSM_HEAD) {
-    buffer_out_[buffer_pos++] = message_l;
-    buffer_out_[buffer_pos++] = message_l;
-  } else {
-    buffer_out_[buffer_pos++] = message_l;
-  }*/ 
 
   buffer_out_[buffer_pos++] = message_hh;
   buffer_out_[buffer_pos++] = message_hl;

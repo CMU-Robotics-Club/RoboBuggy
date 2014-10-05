@@ -50,14 +50,13 @@ class RBSerialMessages {
  public:
   RBSerialMessages();
   int Begin(HardwareSerial *serial_stream);
-  // int SendSingle(uint8_t id, uint16_t message); This should be gone due to change in protocol design
-  int SendDouble(uint8_t id, uint32_t message);
+  int Send(uint8_t id, uint32_t message);
   // todo: define receive api
  private:
   HardwareSerial *serial_stream_;
   uint8_t buffer_out_[RBSM_BUFFER_OUT_LENGTH];
   uint8_t AppendMessageToBuffer(uint8_t id,
-                                uint16_t message,
+                                uint32_t message,
                                 uint8_t out_start_pos);
   uint8_t InitMessageBuffer();
 };
