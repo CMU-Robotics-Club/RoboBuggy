@@ -3,7 +3,7 @@
  * @author Haley Dalzell (haylee)
  * @author Zach Dawson (zachyzach)
  * @author Matt Sebek (msebek)
-  *@author 
+  *@author Ian Hartwig (ihartwig)
  */
 #include "receiver.h"
 #include "brake.h"
@@ -11,6 +11,7 @@
 #include "watchdog.h"
 #include "filter.h"
 #include "steering.h"
+#include "rbserialmessages.h"
 
 
 #define BRAKE_PIN 8
@@ -33,6 +34,8 @@
 unsigned long timer = 0L;
 static char data; // used to pass things into xbee
 static unsigned long last_time;
+static uint8_t g_brake_state; // 0 = engaged, !0 = disengaged.
+RBSerialMessages g_rbserialmessages;
 
 // Initialize filter for
 struct filter_state ail_state;
@@ -46,15 +49,16 @@ enum STATE { START, RC_CON, RC_DC, BBB_CON };
 
 void watchdog_fail(){
  brake_drop();
- Serial.println("Watchdog Fail! -------------------");
+ Serial1.println("Watchdog Fail! -------------------");
  digitalWrite(LED_DANGER_PIN, HIGH);
 }
 
 
 
 void setup()  {
-  Serial.begin(9600);
-  Serial1.begin(9600);
+  // Initialize serial connections
+  Serial1.begin(9600); // debug messages
+  g_rbserialmessages.Begin(&Serial); // command/telemetry serial connection
 
   //pinMode(XBEE_MSG_REC, OUTPUT);
 
@@ -72,6 +76,8 @@ void setup()  {
 
   // Set up loop
   //last_time = millis();
+
+  g_brake_state = 1; // assume disengaged
 }
 
 int convert_rc_to_steering(int rc_angle) {
@@ -79,8 +85,8 @@ int convert_rc_to_steering(int rc_angle) {
   rc_angle = 180-rc_angle;
   int out = (rc_angle/4)+(90*3/4)+36;
   if(out < 100 || out > 155) {
-    Serial.println("FAKFAKFAK SERVO OUT OF RANGE");
-    Serial.println(out);
+    Serial1.println("FAKFAKFAK SERVO OUT OF RANGE");
+    Serial1.println(out);
     out = 125;
   }
   return out;
@@ -113,8 +119,10 @@ void loop() {
     smoothed_thr = filter_loop(&thr_state, raw_thr);
     // TODO make this code...less...something
     if(smoothed_thr < 70) {
+      g_brake_state = 1;
       brake_drop();
     } else {
+      g_brake_state = 0;
       brake_raise();
     }
   }
@@ -125,9 +133,15 @@ void loop() {
 
   // If timer expired, then do ROS things
   if((last_time - millis()) > 0) {
-    Serial.print(steer_angle);
-    Serial.print("    ");
-    Serial.println(encoder_get_count());
+    Serial1.print(steer_angle);
+    Serial1.print("    ");
+    Serial1.println(encoder_get_count());
   }
+
+  // Send telemetry messages
+  g_rbserialmessages.Send(RBSM_MID_DEVICE_ID, RBSM_DID_DRIVE_ENCODER);
+  g_rbserialmessages.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
+  g_rbserialmessages.Send(RBSM_MID_MEGA_BRAKE_STATE, 
+                          (long unsigned)g_brake_state);
 
 }
