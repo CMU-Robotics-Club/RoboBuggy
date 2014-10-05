@@ -25,7 +25,7 @@
 #define RBSM_NULL_TERM 0x00
 
 // Protocol Constants
-#define RBSM_FOOTER 0xFC
+#define RBSM_FOOTER 0x0A // \n
 #define RBSM_ONE_BYTE_SIZE 8
 #define RBSM_TWO_BYTE_SIZE 16
 #define RBSM_THREE_BYTE_SIZE 24
