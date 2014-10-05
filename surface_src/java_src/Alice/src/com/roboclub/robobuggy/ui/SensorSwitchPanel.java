@@ -21,7 +21,23 @@ private JButton sensor_off_btn;
 
 private Sensor_state_type sensor_state;
 
-	SensorSwitchPanel(String sensorName,Sensor_state_type defaultState){
+// simpler constructor which will only allow on and off
+public SensorSwitchPanel(String sensorName,boolean on) {
+	this(sensorName,SensorStateFromBool(on));
+		
+		
+
+	}
+public static Sensor_state_type SensorStateFromBool(boolean on){
+Sensor_state_type defaultState; 
+if(on){
+	return Sensor_state_type.ON;
+}else{
+	return Sensor_state_type.OFF;
+}
+}
+
+public SensorSwitchPanel(String sensorName,Sensor_state_type defaultState){
 		
 		sensor_state = defaultState;
 		

@@ -16,6 +16,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
+import com.roboclub.robobuggy.main.Robot;
+
 public class ControlPanel extends JPanel {
 	private static final long serialVersionUID = -924045896215455343L;
 	
@@ -25,6 +27,17 @@ public class ControlPanel extends JPanel {
     private Date startPressedTime;	
     private Timer timer;
     DateFormat df = new SimpleDateFormat("HH:mm:ss.S");
+    
+    SensorSwitchPanel gps_switch;
+    SensorSwitchPanel frontCam_switch;
+    SensorSwitchPanel backCam_switch; 
+    SensorSwitchPanel encoders_switch; 
+    SensorSwitchPanel IMU_switch; 
+    SensorSwitchPanel controlInputs_switch;
+    SensorSwitchPanel logging_switch;
+    SensorSwitchPanel autonomous_switch;
+  
+    
     
 	public ControlPanel() {
 		//stuff for setting up logging ie start/stop, file name ...
@@ -58,15 +71,15 @@ public class ControlPanel extends JPanel {
 	    JPanel bottom_panel = new JPanel();
 	    bottom_panel.setLayout(new GridLayout(1, 2));
 	    
-	    SensorSwitchPanel gps_switch = new SensorSwitchPanel("GPS",Sensor_state_type.ON);
-	    SensorSwitchPanel frontCam_switch = new SensorSwitchPanel("Front Cam",Sensor_state_type.ON);
-	    SensorSwitchPanel backCam_switch = new SensorSwitchPanel("Back Cam",Sensor_state_type.ON);
-	    SensorSwitchPanel encoders_switch = new SensorSwitchPanel("Encoders",Sensor_state_type.ON);
-	    SensorSwitchPanel IMU_switch = new SensorSwitchPanel("IMU",Sensor_state_type.ON);
-	    SensorSwitchPanel controlInputs_switch = new SensorSwitchPanel("Control Inputs",Sensor_state_type.ON);
-	    SensorSwitchPanel logging_switch = new SensorSwitchPanel("Logging",Sensor_state_type.ON);
-	    SensorSwitchPanel autonomous_switch = new SensorSwitchPanel("Autonomous",Sensor_state_type.OFF);
- 
+	     gps_switch = new SensorSwitchPanel("GPS",Sensor_state_type.ON);
+	     frontCam_switch = new SensorSwitchPanel("Front Cam",Sensor_state_type.ON);
+	     backCam_switch = new SensorSwitchPanel("Back Cam",Sensor_state_type.ON);
+	     encoders_switch = new SensorSwitchPanel("Encoders",Sensor_state_type.ON);
+	     IMU_switch = new SensorSwitchPanel("IMU",Sensor_state_type.ON);
+	     controlInputs_switch = new SensorSwitchPanel("Control Inputs",Sensor_state_type.ON);
+	     logging_switch = new SensorSwitchPanel("Logging",Robot.getInstance().get_logging());
+	     autonomous_switch = new SensorSwitchPanel("Autonomous",Robot.getInstance().get_running());
+	    		 
 	    
 	    bottom_panel.add(gps_switch.getGraphics());
 	    bottom_panel.add(frontCam_switch.getGraphics());
@@ -84,6 +97,7 @@ public class ControlPanel extends JPanel {
 	
 	//updates the display based on external events
 	public void updatePanel(){
+		//autonomous_switch.setState(Robot.getInstance().get_running());
 		//TODO
 		updateStartPause_btn();
 	}

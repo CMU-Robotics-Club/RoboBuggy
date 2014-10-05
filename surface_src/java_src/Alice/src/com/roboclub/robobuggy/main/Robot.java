@@ -153,4 +153,12 @@ public class Robot {
 		
 		//TODO Update planner
 	}
+	
+	public boolean get_logging(){
+		return logging;
+	}
+	
+	public boolean get_running(){
+		return running;
+	}
 }
