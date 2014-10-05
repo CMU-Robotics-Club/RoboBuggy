@@ -26,6 +26,8 @@ public class Gps extends Sensor {
 	public Gps() {
 		super("GPS", BAUDRATE, HEADER);
 		super.addListener(new GpsListener());
+		System.out.println("Initializing GPS");
+
 	}
 	
 	private float parseLat(String latNum) {

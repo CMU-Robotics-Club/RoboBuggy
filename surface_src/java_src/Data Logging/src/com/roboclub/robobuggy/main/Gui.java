@@ -141,7 +141,7 @@ public final class Gui extends JFrame {
 					RobotLogger.CreateLog();
 					
 					try {
-						new ProcessBuilder("C:\\Users\\abc\\buggy-log\\VisionSystem.exe","-c","0").start();
+						new ProcessBuilder("C:\\Users\\abc\\buggy-log\\VisionSystem.exe","-c","3","-c","0").start();
 					} catch (Exception exc) {
 						exc.printStackTrace();
 					}

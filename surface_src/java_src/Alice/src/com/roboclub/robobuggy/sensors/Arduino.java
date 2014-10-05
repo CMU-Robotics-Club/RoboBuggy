@@ -25,6 +25,7 @@ public class Arduino extends Sensor {
 	
 	public Arduino() {
 		super("Arduino", BAUDRATE, null);
+		System.out.println("Initializing Arudino");
 		if (port != null && port.isConnected()) super.addListener(new ArduinoListener());
 	}
 	

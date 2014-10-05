@@ -42,6 +42,8 @@ public class Imu extends Sensor {
 	public Imu() {
 		super("IMU", BAUDRATE, HEADER);
 		super.addListener(new ImuListener());
+		System.out.println("Initializing IMU");
+
 	}
 	
 	private void setValue(int index, float value) {
