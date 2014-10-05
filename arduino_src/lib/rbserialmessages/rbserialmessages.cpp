@@ -27,9 +27,6 @@ int RBSerialMessages::Begin(HardwareSerial *serial_stream) {
   serial_stream_ = serial_stream;
   serial_stream_->begin(RBSM_BAUD_RATE);
 
-  // send the device id message
-  Send(RBSM_MID_DEVICE_ID, RBSM_DID_DRIVE_ENCODER);
-
   // success
   return 1;
 }
