@@ -50,8 +50,11 @@ public class MessageServer{
 			
 				outbox_lock.readLock().lock();
 				List<Subscriber> subs = outbox_mapping.get(topicName);
-				for(Subscriber s : subs) {
-					s.putMessage(m);
+				
+				if(subs != null) {
+					for(Subscriber s : subs) {
+						s.putMessage(m);
+					}
 				}
 				outbox_lock.readLock().unlock();
 			}	
