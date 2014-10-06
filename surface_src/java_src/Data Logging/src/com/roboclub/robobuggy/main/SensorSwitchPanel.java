@@ -125,4 +125,8 @@ private class OffButtonHandler implements ActionListener
 
 
 	}
+<<<<<<< HEAD
 	
+=======
+	
+>>>>>>> master

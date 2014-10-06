@@ -8,7 +8,7 @@
 BOARD_TAG     = nano328
 ISP_PORT      = /dev/tty.asdf
 USER_LIB_PATH = ../lib
-ARDUINO_LIBS  = lib_protocol
+ARDUINO_LIBS  = rbserialmessages
 
 include ../Arduino.mk
 
