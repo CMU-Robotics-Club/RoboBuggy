@@ -10,7 +10,7 @@
 /**
  * @author: Ian Hartwig (spacepenguine@gmail.com)
  * @author: Audrey Yeoh (ayeohmy@gmail.com)
- * @date: 7/22/2014
+ * @date: 10/3/2014
  */
 
 #include "rbserialmessages.h"
@@ -27,15 +27,11 @@ int RBSerialMessages::Begin(HardwareSerial *serial_stream) {
   serial_stream_ = serial_stream;
   serial_stream_->begin(RBSM_BAUD_RATE);
 
-  // send the device id message
-  SendSingle(RBSM_MID_DEVICE_ID, RBSM_DID_DRIVE_ENCODER);
-
   // success
   return 1;
 }
 
-
-int RBSerialMessages::SendSingle(uint8_t id, uint16_t message) {
+int RBSerialMessages::Send(uint8_t id, uint32_t message) {
   uint8_t buffer_pos;
   buffer_pos = InitMessageBuffer();
   buffer_pos = AppendMessageToBuffer(id, message, buffer_pos);
@@ -46,50 +42,29 @@ int RBSerialMessages::SendSingle(uint8_t id, uint16_t message) {
   return 0;
 }
 
-
-int RBSerialMessages::SendDouble(uint8_t id_h, uint8_t id_l, uint32_t message) {
-  uint8_t buffer_pos;
-  uint16_t message_l = message & RBSM_TWO_BYTE_MASK;
-  uint16_t message_h = (message >> RBSM_TWO_BYTE_SIZE) & RBSM_TWO_BYTE_MASK;
-  buffer_pos = InitMessageBuffer();
-  buffer_pos = AppendMessageToBuffer(id_h, message_h, buffer_pos);
-  buffer_pos = AppendMessageToBuffer(id_l, message_l, buffer_pos);
-  
-  serial_stream_->write(buffer_out_, buffer_pos);
-
-  // success
-  return 0;
-}
-
 // Private /////////////////////////////////////////////////////////////////////
 uint8_t RBSerialMessages::AppendMessageToBuffer(uint8_t id,
-                                                uint16_t message,
+                                                uint32_t message,
                                                 uint8_t out_start_pos) {
   uint8_t buffer_pos = out_start_pos;
-  uint8_t message_l = message & RBSM_ONE_BYTE_MASK;
-  uint8_t message_h = (message >> RBSM_ONE_BYTE_SIZE) & RBSM_ONE_BYTE_MASK;
+  uint8_t message_ll = message & RBSM_ONE_BYTE_MASK;
+  uint8_t message_lh = (message >> RBSM_ONE_BYTE_SIZE) & RBSM_ONE_BYTE_MASK;
+  uint8_t message_hl = (message >> RBSM_TWO_BYTE_SIZE) & RBSM_ONE_BYTE_MASK;
+  uint8_t message_hh = (message >> RBSM_THREE_BYTE_SIZE) & RBSM_ONE_BYTE_MASK;
 
   // write message id (and id since single message)
-  buffer_out_[buffer_pos++] = RBSM_HEAD;
   buffer_out_[buffer_pos++] = id;
 
-  // sanitize message content if necessary
-  if(message_h == RBSM_HEAD) {
-    buffer_out_[buffer_pos++] = message_h;
-    buffer_out_[buffer_pos++] = message_h;
-  } else {
-    buffer_out_[buffer_pos++] = message_h;
-  }
+  buffer_out_[buffer_pos++] = message_hh;
+  buffer_out_[buffer_pos++] = message_hl;
+  buffer_out_[buffer_pos++] = message_lh;
+  buffer_out_[buffer_pos++] = message_ll;
 
-  if(message_l == RBSM_HEAD) {
-    buffer_out_[buffer_pos++] = message_l;
-    buffer_out_[buffer_pos++] = message_l;
-  } else {
-    buffer_out_[buffer_pos++] = message_l;
-  }
+  buffer_out_[buffer_pos++] = RBSM_FOOTER;
 
   // write null terminator just in case. note no increment
   buffer_out_[buffer_pos] = RBSM_NULL_TERM;
+
 
   return buffer_pos;
 }
