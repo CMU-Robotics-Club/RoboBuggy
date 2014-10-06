@@ -30,7 +30,8 @@ public class main {
 			Gui.getInstance();
 		}
 		//starts the robot
-		Robot.getInstance();
+		//Robot.getInstance();
+		new SimRobot();
 		
 	}
 	
