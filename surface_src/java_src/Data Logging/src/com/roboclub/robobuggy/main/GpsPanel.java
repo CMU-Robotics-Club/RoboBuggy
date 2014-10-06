@@ -129,7 +129,6 @@ public class GpsPanel extends SerialPanel {
 					&& (Gui.GetGraphState() || Gui.GetPlayPauseState())) {
 				char[] tmp = event.getBuffer();
 				int length = event.getLength();
-				System.out.println(tmp);
 				int index = 0;	
 				
 				if (tmp != null && event.getLength() > HEADER_LEN) {

@@ -17,15 +17,16 @@ import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
 import com.roboclub.robobuggy.main.Robot;
+import com.roboclub.robobuggy.main.config;
 
 public class ControlPanel extends JPanel {
 	private static final long serialVersionUID = -924045896215455343L;
 	
 	// Big gui objects
-	private JButton startPause_btn;
+	private static JButton startPause_btn;
 	private JLabel time_lbl;
-    private Date startPressedTime;	
-    private Timer timer;
+    private static Date startPressedTime;	
+    private static Timer timer;
     DateFormat df = new SimpleDateFormat("HH:mm:ss.S");
     
     SensorSwitchPanel gps_switch;
@@ -36,10 +37,12 @@ public class ControlPanel extends JPanel {
     SensorSwitchPanel controlInputs_switch;
     SensorSwitchPanel logging_switch;
     SensorSwitchPanel autonomous_switch;
-  
-    
     
 	public ControlPanel() {
+		timer = new Timer(10, new timerHandler());//updates every .01 seconds
+		timer.setDelay(100);
+	    timer.setRepeats(true);	//timer needs to be setup before startpause_btn
+		
 		//stuff for setting up logging ie start/stop, file name ...
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
 		this.setLayout(new GridLayout(2, 1));
@@ -57,9 +60,7 @@ public class ControlPanel extends JPanel {
 		time_lbl = new JLabel("",SwingConstants.CENTER);
 		time_lbl.setFont(new Font("sanserif",Font.PLAIN,70));
 		
-		timer = new Timer(10, new timerHandler());//updates every .01 seconds
-		timer.setDelay(100);
-	    timer.setRepeats(true);	
+
 	   
 
 	    top_panel.add(startPause_btn);
@@ -77,8 +78,8 @@ public class ControlPanel extends JPanel {
 	     encoders_switch = new SensorSwitchPanel("Encoders",Sensor_state_type.ON);
 	     IMU_switch = new SensorSwitchPanel("IMU",Sensor_state_type.ON);
 	     controlInputs_switch = new SensorSwitchPanel("Control Inputs",Sensor_state_type.ON);
-	     logging_switch = new SensorSwitchPanel("Logging",Robot.getInstance().get_logging());
-	     autonomous_switch = new SensorSwitchPanel("Autonomous",Robot.getInstance().get_running());
+	     logging_switch = new SensorSwitchPanel("Logging",config.logging);
+	     autonomous_switch = new SensorSwitchPanel("Autonomous",Robot.getInstance().get_autonomus());
 	    		 
 	    
 	    bottom_panel.add(gps_switch.getGraphics());
@@ -114,17 +115,21 @@ public class ControlPanel extends JPanel {
 		}
 	}
 	
-	private void updateStartPause_btn(){
-		if(Gui.GetPlayPauseState())
+	static void updateStartPause_btn(){
+		if(config.active)
 		{	
 			System.out.println("System Started");
 			startPause_btn.setBackground(Color.RED);
-			startPause_btn.setText("Pause");			
+			startPause_btn.setText("Pause");
+			timer.start();
+		    startPressedTime = new Date();
 		} else {
 			System.out.println("System Paused");
 			startPause_btn.setBackground(Color.GREEN);
+			startPause_btn.setText("Start");
+			timer.stop();
 		}
-		repaint();		
+		startPause_btn.repaint();		
 		
 	}
 	
@@ -135,13 +140,10 @@ public class ControlPanel extends JPanel {
 		public void actionPerformed(ActionEvent e)
 		{
 			//inverts the state of the system every time the button is pressed
-			if(Gui.GetPlayPauseState()){
-				//Gui.setPlayPauseState(false);
-				timer.start();
-			    startPressedTime = new Date();
+			if(config.active){
+				config.active = false;
 			}else{
-				//Gui.setPlayPauseState(true);
-				timer.stop();
+				config.active = true;
 			}
 			updateStartPause_btn();
 

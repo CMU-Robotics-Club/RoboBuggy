@@ -24,6 +24,7 @@ import javax.swing.Timer;
 
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.main.Robot;
+import com.roboclub.robobuggy.main.config;
 import com.roboclub.robobuggy.sensors.Arduino;
 import com.roboclub.robobuggy.sensors.Gps;
 import com.roboclub.robobuggy.sensors.Imu;
@@ -34,23 +35,28 @@ public final class Gui extends JFrame {
 	private static JCheckBox toggleGraph;
 	private static JTextArea filename;
 	private static AnalyticsWindow graphs;
-	private Timer timer;
+	private static Timer timer;
 	private static long startTime;
-	private static boolean playState;
+	private static Gui instance;
 	private static boolean graphDisplay;
-	private static boolean playBack;
+	public static Container mainGuiPane;
 	
-	public Gui(Arduino arduino, Gps gps, Imu imu) {
-		playState = false;
-		graphDisplay = false;
-		playBack = false;
-		
+	public static Gui getInstance(){
+		if(instance == null){
+			instance = new Gui();
+		}
+		return instance;
+	}
+	
+	public Gui() {
+		System.out.println("starting the GUI \n");
 		populate();
 	}
 	
 	public void populate() {
 		this.setTitle("RoboBuggy Data Gathering");
 		this.setResizable(false);
+		mainGuiPane = this;
 		Container pane = this.getContentPane();
 		pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
 		
@@ -82,44 +88,65 @@ public final class Gui extends JFrame {
 		this.setVisible(true);
 	}
 	
+	static JButton playPauseButton; 
+	
 	private JButton addToggleBtn() {
-		JButton toggleButton = new JButton();
-		toggleButton.setPreferredSize(new Dimension(WIDTH, 100));
-		toggleButton.setFont(new Font("sanserif",Font.PLAIN,50));
-		toggleButton.setText("Start");
-		toggleButton.setSelected(playState);
-		if (playState) {
-			toggleButton.setBackground(Color.RED);
+		playPauseButton = new JButton();
+		playPauseButton.setPreferredSize(new Dimension(WIDTH, 100));
+		playPauseButton.setFont(new Font("sanserif",Font.PLAIN,50));
+		playPauseButton.setText("Start");
+		playPauseButton.setSelected(config.active);
+		if (config.active) {
+			playPauseButton.setBackground(Color.RED);
 		} else {
-			toggleButton.setBackground(Color.GREEN);
+			playPauseButton.setBackground(Color.GREEN);
 		}
 		
-		toggleButton.addActionListener(new ActionListener() {
+		playPauseButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				playState = !playState;
+				config.active = !config.active;
 				
-				if (playState) {
-					toggleButton.setText("Pause");
-					toggleButton.setBackground(Color.RED);
+				if (config.active) {
+					playPauseButton.setText("Pause");
+					playPauseButton.setBackground(Color.RED);
 					
 					RobotLogger.CreateLog();
 					
 					startTime = new Date().getTime();
 					timer.start();
 				} else {
-					toggleButton.setText("Start");
-					toggleButton.setBackground(Color.GREEN);
+					playPauseButton.setText("Start");
+					playPauseButton.setBackground(Color.GREEN);
 					timer.stop();
 					
 					RobotLogger.CloseLog();
 				}
+				ControlPanel.updateStartPause_btn();
+//				AnalyticsWindow
 			}
 		});
 		
-		toggleButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		playPauseButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
-		return toggleButton;
+		return playPauseButton;
+	}
+	
+	public static void updatedPalyPause(){
+		if (config.active) {
+			playPauseButton.setText("Pause");
+			playPauseButton.setBackground(Color.RED);			
+			startTime = new Date().getTime();
+			RobotLogger.CreateLog();
+			timer.start();
+		} else {
+			playPauseButton.setText("Start");
+			playPauseButton.setBackground(Color.GREEN);
+			timer.stop();
+			
+			RobotLogger.CloseLog();
+		}
+		
 	}
 	
 	private JPanel addFileShow() {
@@ -153,6 +180,8 @@ public final class Gui extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				graphDisplay = !graphDisplay;
 				graphs.setVisible(graphDisplay);
+				//turns visablity of main gui off since graphs is up
+				mainGuiPane.setVisible(false);
 			}
 		});
 		graphShow.add(toggleGraph);
@@ -184,21 +213,15 @@ public final class Gui extends JFrame {
 		graphDisplay = value;
 		
 		toggleGraph.setSelected(graphDisplay);
+		updatedPalyPause();
+		
 	}
 	
 	/* Methods for Statically Accessing Gui Instance Variables */
-	public static boolean GetPlayPauseState() {
-		return playState;
-	}
-	
 	public boolean GetGraphState() {
 		return graphDisplay;
 	}
 	
-	public boolean InPlayBack() {
-		return playBack;
-	}
-
 	// Update Sensor Data in Graph
 	public static void UpdateRobotPos(Float lat, Float lon) {
 		/*if (lat != null) robot.latitude = lat;

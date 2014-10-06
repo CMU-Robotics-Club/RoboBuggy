@@ -12,13 +12,11 @@ import com.roboclub.robobuggy.ui.Gui;
 
 public class Robot {
 	private static Robot instance;
-	private static Gui gui;
 	private static Thread alice;
 	private static Arduino arduino;
 	private static Gps gps;
 	private static Imu imu;
-	private static boolean logging;
-	private static boolean running;
+	private static boolean autonomous;
 	private static VisionSystem vision;
 	//private ArrayList<Markers> markers
 	
@@ -32,8 +30,7 @@ public class Robot {
 	
 	
 	public Robot() {
-		logging = config.LOGGING_DEFAULT;
-		running = config.RUNNING_DEFAULT;
+		autonomous = config.AUTONOMUS_DEFAULT;
 		
 		
 		//TODO break apart the arduino
@@ -45,12 +42,12 @@ public class Robot {
 		if(config.VISION_SYSTEM_DEFAULT) vision = new VisionSystem();
 		
 		//if ((encAng.isConnected() || gps.isConnected() || imu.isConnected()) && logging) {
-		if (logging) {
-			Robot.gui = new Gui(Robot.arduino, Robot.gps, Robot.imu);
+		if (config.active) {
+			//Robot.gui = new Gui(Robot.arduino, Robot.gps, Robot.imu);
 		}
 		
 		// Start Autonomous Control
-		if (running) {
+		if (autonomous) {
 			System.out.println("Alice is in control!");
 			alice = new Thread(new Planner());
 			alice.start();
@@ -77,7 +74,7 @@ public class Robot {
 	
 	/* Methods for Updating Planner, Gui, and Logger */
 	public static void UpdateGps(float latitude, float longitude) {
-		if (logging) {
+		if (config.logging) {
 			//gui.UpdateGps(latitude, longitude);
 			RobotLogger rl = RobotLogger.getInstance();
 		    long time_in_millis = new Date().getTime();
@@ -89,7 +86,7 @@ public class Robot {
 	
 	public static void UpdateImu(float aX, float aY, float aZ, 
 			float rX, float rY, float rZ, float mX, float mY, float mZ) {
-		if (logging) {
+		if (config.logging) {
 			RobotLogger rl = RobotLogger.getInstance();
 		    long time_in_millis = new Date().getTime();
 		    float[] acc = new float[3];
@@ -105,7 +102,7 @@ public class Robot {
 	}
 	
 	public static void UpdateSteering(char angle) {
-		if (logging) {
+		if (config.logging) {
 			//TODO add logging
 		}
 		
@@ -113,7 +110,7 @@ public class Robot {
 	}
 	
 	public static void UpdateError(int error) {
-		if (logging) {
+		if (config.logging) {
 			//TODO add logging
 		}
 		
@@ -121,7 +118,7 @@ public class Robot {
 	}
 	
 	public static void UpdateEnc(int encTime, int encReset, int encTick) {
-		if (logging) {
+		if (config.logging) {
 			//TODO add logging
 		}
 		
@@ -129,7 +126,7 @@ public class Robot {
 	}
 	
 	public static void UpdateBrake(char angle) {
-		if (logging) {
+		if (config.logging) {
 			//TODO add logging
 		}
 		
@@ -137,7 +134,7 @@ public class Robot {
 	}
 	
 	public static void UpdateEnc(double distance, double velocity) {
-		if (logging) {
+		if (config.logging) {
 			RobotLogger rl = RobotLogger.getInstance();
 		    long time_in_millis = new Date().getTime();
 		    //rl.sensor.logEncoder(time_in_millis, encTickLast, encReset, encTime);
@@ -147,18 +144,16 @@ public class Robot {
 	}
 	
 	public static void UpdateAngle(int angle) {
-		if (logging) {
+		if (config.logging) {
 			//TODO add logging
 		}
 		
 		//TODO Update planner
 	}
 	
-	public boolean get_logging(){
-		return logging;
+	
+	public boolean get_autonomus(){
+		return autonomous;
 	}
 	
-	public boolean get_running(){
-		return running;
-	}
 }

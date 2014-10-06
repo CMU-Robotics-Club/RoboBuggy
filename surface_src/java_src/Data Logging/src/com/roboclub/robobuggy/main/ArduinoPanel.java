@@ -29,6 +29,8 @@ public class ArduinoPanel extends SerialPanel {
 
 	public ArduinoPanel() {
 		super("ARDUINO", BAUDRATE, HEADER, HEADER_LEN);
+	
+		
 		
 		if (!this.isConnected()) return;
 		
