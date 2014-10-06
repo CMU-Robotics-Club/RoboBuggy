@@ -3,6 +3,8 @@ package com.roboclub.robobuggy.sensors;
 import java.nio.ByteBuffer;
 
 import com.roboclub.robobuggy.main.Robot;
+import com.roboclub.robobuggy.messages.EncoderMeasurement;
+import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.serial.SerialEvent;
 import com.roboclub.robobuggy.serial.SerialListener;
 
@@ -22,9 +24,14 @@ public class Arduino extends Sensor {
 	private int encReset;
 	private int encTickLast;
 	private int encTime;
+
+	// Set up publishers
+	// TODO refactor into string PublishPath argument to Arduino()
+	private Publisher encoderPub = new Publisher("/sensor/encoder");
 	
 	public Arduino() {
 		super("Arduino", BAUDRATE, null);
+		
 		System.out.println("Initializing Arudino");
 		if (port != null && port.isConnected()) super.addListener(new ArduinoListener());
 	}
@@ -55,6 +62,7 @@ public class Arduino extends Sensor {
 		double velocity = dist / encTime;
 		
 		Robot.UpdateEnc(dist, velocity);
+		//encoderPub.publish(new EncoderMeasurement(dist, velocity));
 	}
 	
 	public static boolean validId(char value) {

@@ -1,6 +1,8 @@
 package com.roboclub.robobuggy.sensors;
 
 import com.roboclub.robobuggy.main.Robot;
+import com.roboclub.robobuggy.messages.ImuMeasurement;
+import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.serial.SerialEvent;
 import com.roboclub.robobuggy.serial.SerialListener;
 
@@ -28,7 +30,7 @@ public class Imu extends Sensor {
 	private static final int MY = 7;
 	/** Index of magnetometer z data as received during serial communication */
 	private static final int MZ = 8;
-	
+
 	private float aX;
 	private float aY;
 	private float aZ;
@@ -38,16 +40,21 @@ public class Imu extends Sensor {
 	private float mX;
 	private float mY;
 	private float mZ;
-	
-	public Imu() {
+
+	private Publisher imuPub;
+
+	public Imu(String publishPath) {
 		super("IMU", BAUDRATE, HEADER);
 		super.addListener(new ImuListener());
+
+		imuPub = new Publisher("/sensor/IMU");
+
 		System.out.println("Initializing IMU");
 
 	}
-	
+
 	private void setValue(int index, float value) {
-		switch ( index ) {
+		switch (index) {
 		case AX:
 			aX = value;
 			break;
@@ -75,14 +82,18 @@ public class Imu extends Sensor {
 		case MZ:
 			mZ = value;
 			Robot.UpdateImu(aX, aY, aZ, rX, rY, rZ, mX, mY, mZ);
-			System.out.format("IMU Values: aX: %f aY: %f aZ: %f rX: %f rY: %f rZ: %f "
-					+ "mX: %f mY: %f mZ: %f \n",aX,aY,aZ,rX,rY,rZ,mX,mY,mZ);
+			imuPub.publish(new ImuMeasurement(aX, aY, aZ, rX, rY, rZ, mX, mY,
+					mZ));
+			System.out.format(
+					"IMU Values: aX: %f aY: %f aZ: %f rX: %f rY: %f rZ: %f "
+							+ "mX: %f mY: %f mZ: %f \n", aX, aY, aZ, rX, rY,
+					rZ, mX, mY, mZ);
 			break;
 		default:
 			return;
 		}
 	}
-	
+
 	/**
 	 * ImuListener is an event handler for serial communication. It is notified
 	 * every time a complete message is received by serial port for the given
@@ -97,21 +108,20 @@ public class Imu extends Sensor {
 
 			if (tmp != null && event.getLength() > HEADER.length()) {
 				String curVal = "";
-				for (int i = HEADER.length(); i < event.getLength(); i++ ) {
-					if(tmp[i] == '\n'){
+				for (int i = HEADER.length(); i < event.getLength(); i++) {
+					if (tmp[i] == '\n') {
 						break;
-					}
-					else if (tmp[i] == ',' ){ 
+					} else if (tmp[i] == ',') {
 						try {
 							setValue(index, Float.valueOf(curVal));
-							
+
 							curVal = "";
 							index++;
 						} catch (Exception e) {
 							System.out.println("Failed to parse IMU message");
 							return;
 						}
-						
+
 					} else {
 						curVal += tmp[i];
 					}

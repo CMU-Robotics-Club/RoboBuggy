@@ -1,6 +1,8 @@
 package com.roboclub.robobuggy.sensors;
 
 import com.roboclub.robobuggy.main.Robot;
+import com.roboclub.robobuggy.messages.GpsMeasurement;
+import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.serial.SerialEvent;
 import com.roboclub.robobuggy.serial.SerialListener;
 import com.roboclub.robobuggy.ui.Gui;
@@ -22,6 +24,8 @@ public class Gps extends Sensor {
 	
 	private float latitude;
 	private float longitude;
+	
+	private Publisher gpsPub = new Publisher("/sensor/gps");
 
 	public Gps() {
 		super("GPS", BAUDRATE, HEADER);
@@ -77,6 +81,7 @@ public class Gps extends Sensor {
 							case LONG_DIR:
 								if (curVal.equalsIgnoreCase("W")) longitude = -1 * longitude;
 								Robot.UpdateGps(latitude, longitude);
+								gpsPub.publish(new GpsMeasurement(latitude, longitude));
 								return;
 							}
 							
