@@ -1,0 +1,20 @@
+package com.roboclub.robobuggy.messages;
+
+import java.util.Date;
+
+import com.roboclub.robobuggy.ros.Message;
+
+// Represents raw measurement from the IMU
+public class WheelAngleCommand implements Message {
+
+	public Date timestamp;
+	public double angle;
+
+	// Makes an encoder measurement with the time of Now.
+	public WheelAngleCommand(double angle) {
+		this.angle = angle;
+		this.timestamp = new Date();
+	}
+	
+
+}
