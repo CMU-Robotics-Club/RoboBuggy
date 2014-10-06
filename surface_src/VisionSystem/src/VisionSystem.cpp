@@ -1,50 +1,72 @@
 #include <iostream>
-#include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 #include <cstdlib>
+#include <string>
+#include <fstream>
 
 using namespace std;
 using namespace cv;
 
+string getFilename(int id) {
+	int i  = 0;
+	string path = "C:\\Users\\abc\\buggy-log\\run";
+
+	for (;;) {
+		string filename;
+		filename.append(path);
+		stringstream strs;
+		strs << i;
+		filename.append(strs.str());
+		filename.append("-cam");
+		stringstream ids;
+		ids << id;
+		filename.append(ids.str());
+		filename.append(".avi");
+
+		ifstream file(filename.c_str());
+		if (file.good()) {
+			file.close();
+		} else {
+			file.close();
+			return filename;
+		}
+
+		i++;
+	}
+
+	return NULL;
+
+}
+
 int main(int argc, char* argv[]) {
-	// Parse command line arguments
-	bool display = true;
-	int cameras[] = {2, 2, 0, 0, 0};
-	char* names[] = {"cam1", "cam2", "cam3", "cam4", "cam5"};
-	string files[] = {"C:\\Users\\robot\\buggy-log\\out1.avi",
-			"C:\\Users\\robot\\buggy-log\\out2.avi",
-			"C:\\Users\\robot\\buggy-log\\out3.avi",
-			"C:\\Users\\robot\\buggy-log\\out4.avi",
-			"C:\\Users\\robot\\buggy-log\\out5.avi" };
+	int cameras[5];
+	char* names[] = {"camera1", "camera2", "camera3", "camera4", "camera5"};
 	int num_cameras = 0;
-	VideoCapture captures[5];
-	VideoWriter videos[5];
-
-	for (int i = 0; i < argc; i++) {
-		if (argv[i] == "-c") {
-			if (i+1 != argc) {
-				cout << "Added camera" << endl;
-				if (num_cameras < 5) cameras[num_cameras++] = atoi(argv[i++]);
-			}
-		} else if (argv[i] == "-s") {
-			display = false;
-		}
-	}
-
-	if (num_cameras <= 0) {
-		num_cameras = 1;
-	}
-
-	if (display) {
-		for (int i = 0; i < num_cameras; i++) {
-			cvNamedWindow(names[i], 1);
-		}
-	}
-
-	Mat src, dst;
-	vector<Mat> hsv_src;
+	Mat src,dst;
+	VideoCapture feeds[5];
+	VideoWriter files[5];
 	Size img_size;
+	bool running = true;
+
+	cout << "Argc : " << argc << endl;
+
+	// Parse Command Line Arguments
+	for (int i = 0; i < argc; i++) {
+		if (argv[i][0] == '-' && argv[i][1] == 'c') {
+			if (i + 1 < argc) {
+				int tmp = (int)argv[i + 1][0];
+				if (tmp >= 48 && tmp <= 57) {
+					cameras[num_cameras++] = tmp - 48;
+				}
+			}
+		}
+	}
+
+	cout << "Opening " << num_cameras << " cameras" << endl;
+	if (num_cameras == 0) return 0;
+
 
 	for (int i = 0; i < num_cameras; i++) {
 		VideoCapture camera(cameras[i]);
@@ -53,60 +75,47 @@ int main(int argc, char* argv[]) {
 			return -1;
 		}
 
-		captures[i] = camera;
-
 		if (i == 0) {
-			captures[0].read(src);
+			camera.read(src);
 			img_size = src.size();
-			img_size.height /= 2;
-			img_size.width /= 2;
+			//img_size.height /= 2;
+			//img_size.width /= 2;
 		}
+		feeds[i] = camera;
 
-		VideoWriter vidcapt;
-		vidcapt.open(files[i],CV_FOURCC('P','I','M','1'),20,img_size,true);
+		cvNamedWindow(names[i], cameras[i]);
 
-		if ( !vidcapt.isOpened() ) {
-		  cout << "ERROR: Failed to write the video" << endl;
-		  return -1;
+		string filename = getFilename(cameras[i]);
+		cout << "Creating file: " << filename << " for camera: " << cameras[i] << endl;
+
+		VideoWriter file(filename.c_str(), CV_FOURCC('M','J','P','G'), 20, img_size, true);
+		if (!file.isOpened()) {
+			cout << "Failed to open file" << endl;
+			return -1;
 		}
-
-		camera.read(src);
-		resize(src, dst, img_size, 0, 0, INTER_CUBIC);
-		vidcapt.write(dst);
-		videos[i] = vidcapt;
+		files[i] = file;
 	}
-
-	bool running = true;
 
 	while (running) {
 		for (int i = 0; i < num_cameras; i++) {
-			if (!captures[i].read(src)) {
-				cout << "Unable to read from camera" << endl;
-				break;
+			if (!feeds[i].read(src)) {
+				cout << "Failed to read frame from camera: " << cameras[i] << endl;
+				return -1;
 			}
 			resize(src, dst, img_size, 0, 0, INTER_CUBIC);
 
-			videos[i].write(dst);
-
-			if (display) {
-				imshow(names[i], dst);
-				if (cvWaitKey(10) == 27) {
-					running = false;
-					break;
-				}
+			imshow(names[i], dst);
+			files[i].write(dst);
+			if (cvWaitKey(10) > 0) {
+				running = false;
 			}
 		}
 	}
 
-	// Release image arrays and window
-	for (int i = 0; i < num_cameras; i++) {
-		cvDestroyWindow(names[i]);
-		captures[i].release();
-		videos[i].release();
-
+	for(int i = 0; i < num_cameras; i++) {
+		feeds[i].release();
 	}
+
 	src.release();
 	dst.release();
-
-	return 0;
 }

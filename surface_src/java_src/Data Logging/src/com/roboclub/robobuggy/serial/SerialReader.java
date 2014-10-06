@@ -8,17 +8,17 @@ import gnu.io.*;
 
 public class SerialReader implements SerialPortEventListener {
 	private static final int TIMEOUT = 2000;
-	private static final int BUFFER_SIZE = 256;
+	private static final int BUFFER_SIZE = 512;
 	
 	private SerialPort port;
 	private Enumeration<CommPortIdentifier> port_list;
 	private CommPortIdentifier port_id;
+	private boolean connected;
 	
 	private InputStream input;
 	private OutputStream output;
 	
 	private char[] inputBuffer;
-	//private char[] outputBuffer;
 	private int index;
 	
 	private ArrayList<SerialListener> listeners;
@@ -28,6 +28,7 @@ public class SerialReader implements SerialPortEventListener {
 			char[] header, int headerLen) throws Exception {
 		listeners = new ArrayList<SerialListener>();
 		port_list = CommPortIdentifier.getPortIdentifiers();
+		connected = false;
 		
 		while (port_list.hasMoreElements() ) {
 			port_id = (CommPortIdentifier)port_list.nextElement();
@@ -45,13 +46,13 @@ public class SerialReader implements SerialPortEventListener {
 					input = port.getInputStream();
 					output = port.getOutputStream();
 					
-					char[] msg = new char[256];
+					char[] msg = new char[BUFFER_SIZE];
 					int numRead = 0;
 					boolean passed = false;
 					
-					while (numRead < 256) {
+					while (numRead < BUFFER_SIZE) {
 						char inByte = (char)input.read();
-						if (inByte != '?') msg[numRead++] = inByte;
+						msg[numRead++] = inByte;
 					}
 				
 					passed = checkHeader(msg, header, numRead, headerLen);
@@ -62,9 +63,9 @@ public class SerialReader implements SerialPortEventListener {
 						inputBuffer = new char[BUFFER_SIZE];
 						//outputBuffer = new char[BUFFER_SIZE];
 						index = 0;
-						
+						connected = true;
 						port.addEventListener(this);
-						break;
+						return;
 					}
 					
 					port.close();
@@ -98,6 +99,7 @@ public class SerialReader implements SerialPortEventListener {
 			try {
 				char data = (char)input.read();
 				inputBuffer[index++] = data;
+				
 				if (data == '\n') {
 					notifyListeners();					
 					index = 0;
@@ -105,11 +107,12 @@ public class SerialReader implements SerialPortEventListener {
 				
 				// Reset buffer index in overflow
 				if (index == BUFFER_SIZE) {
+					System.out.println("Overflow!");
 					index = 0;
 				}
 			} catch (Exception e) {
-				listeners.clear();
-				port.close();
+				System.out.println("Exception, Why?");
+				e.printStackTrace();
 				return;
 			}
 
@@ -139,5 +142,40 @@ public class SerialReader implements SerialPortEventListener {
 		} catch (Exception e) {
 			System.exit(-1);
 		}
+	}
+	
+	public boolean isConnected() {
+		return this.connected;
+	}
+	
+	public void serialWrite(byte[] data) {
+		if (connected && output != null) {
+			try {
+				output.write(data);
+				System.out.println("Wrote: " + data);
+				//output.flush();
+			} catch (Exception e) {
+				System.out.println("Unable to write: " + data);
+			}
+		}
+	} 
+	
+	public void serialWrite(String data) {
+		if (connected && data != null && output != null) {
+			try {
+				output.write(data.getBytes());
+				output.flush();
+			} catch (Exception e) {
+				System.out.println("Unable to write: " + data);
+			}
+		}
+	}
+	
+	public String getName() {
+		if (this.connected) {
+			return this.port_id.getName();
+		}
+		
+		return "";
 	}
 }
