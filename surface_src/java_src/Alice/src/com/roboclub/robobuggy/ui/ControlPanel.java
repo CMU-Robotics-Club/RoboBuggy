@@ -79,7 +79,7 @@ public class ControlPanel extends JPanel {
 	     IMU_switch = new SensorSwitchPanel("IMU",Sensor_state_type.ON);
 	     controlInputs_switch = new SensorSwitchPanel("Control Inputs",Sensor_state_type.ON);
 	     logging_switch = new SensorSwitchPanel("Logging",config.logging);
-	     autonomous_switch = new SensorSwitchPanel("Autonomous",Robot.getInstance().get_autonomus());
+	     //autonomous_switch = new SensorSwitchPanel("Autonomous",Robot.getInstance().get_autonomus());
 	    		 
 	    
 	    bottom_panel.add(gps_switch.getGraphics());
@@ -89,7 +89,7 @@ public class ControlPanel extends JPanel {
 	    bottom_panel.add(IMU_switch.getGraphics());
 	    bottom_panel.add(controlInputs_switch.getGraphics());
 	    bottom_panel.add(logging_switch.getGraphics());
-	    bottom_panel.add(autonomous_switch.getGraphics());
+	    //bottom_panel.add(autonomous_switch.getGraphics());
 
 	    this.add(bottom_panel);
 		
