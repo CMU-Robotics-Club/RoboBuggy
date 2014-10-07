@@ -1,6 +1,7 @@
 package com.roboclub.robobuggy.main;
 
-//where all system configuration values should be placed
+// where all system configuration values should be placed
+// add jason parser for config
 
 public class  config{
 //port index of the front camera 

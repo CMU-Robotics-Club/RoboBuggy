@@ -12,6 +12,7 @@ using namespace cv;
 
 string getFilename(int id) {
 	int i  = 0;
+	//TODO read from config
 	string path = "C:\\Users\\abc\\buggy-log\\run";
 
 	for (;;) {
