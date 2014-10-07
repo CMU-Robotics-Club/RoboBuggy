@@ -6,7 +6,7 @@ Arduino code goes here!
 * **lib** - our custom libraries to share between sketches
 * **Nano_encoder** - a usb-serial to encoder bridge using the robobuggy serial data protocol on an Arduino Nano
 * **Protocol_prototype** - example of the robobuggy serial data protocol
-* **RadioBuggyMega** - current (not yet!) steering/brake/rc implementation with robobuggy serial data protocol on the Arduino Mega
+* **RadioBuggyMega** - current steering/brake/rc implementation with robobuggy serial data protocol on the Arduino Mega
 * **RadioBuggyMega2013** - legacy steering/brake/rc implementation for the Arduino Mega
 * **unused** - who knows? maybe this is where we hide the driver!
 
