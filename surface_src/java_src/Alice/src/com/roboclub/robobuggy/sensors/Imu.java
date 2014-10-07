@@ -3,10 +3,11 @@ package com.roboclub.robobuggy.sensors;
 import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.ros.Publisher;
+import com.roboclub.robobuggy.serial.SerialConnection;
 import com.roboclub.robobuggy.serial.SerialEvent;
 import com.roboclub.robobuggy.serial.SerialListener;
 
-public class Imu extends Sensor {
+public class IMU extends SerialConnection implements Sensor {
 	/* Constants for serial communication */
 	/** Header for choosing serial port */
 	private static final String HEADER = "#ACG=";
@@ -43,7 +44,7 @@ public class Imu extends Sensor {
 
 	private Publisher imuPub;
 
-	public Imu(String publishPath) {
+	public IMU(String publishPath) {
 		super("IMU", BAUDRATE, HEADER);
 		super.addListener(new ImuListener());
 

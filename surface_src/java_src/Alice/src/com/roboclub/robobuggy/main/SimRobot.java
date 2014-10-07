@@ -3,7 +3,7 @@ package com.roboclub.robobuggy.main;
 import java.util.Date;
 
 import com.roboclub.robobuggy.logging.RobotLogger;
-import com.roboclub.robobuggy.sensors.FauxArduino;
+import com.roboclub.robobuggy.serial.FauxArduino;
 
 public class SimRobot {
 	// published encoder, subscribes steering and brake

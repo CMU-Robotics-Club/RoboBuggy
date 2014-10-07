@@ -1,14 +1,13 @@
-package com.roboclub.robobuggy.sensors;
+package com.roboclub.robobuggy.serial;
 
 import java.nio.ByteBuffer;
 
 import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.ros.Publisher;
-import com.roboclub.robobuggy.serial.SerialEvent;
-import com.roboclub.robobuggy.serial.SerialListener;
+import com.roboclub.robobuggy.sensors.Sensor;
 
-public class Arduino extends Sensor {
+public class Arduino extends SerialConnection {
 	public static final int MSG_LEN = 8;
 	public static final char ENC_TIME = (char)0x00;
 	public static final char ENC_RESET = (char)0x01;
@@ -21,13 +20,20 @@ public class Arduino extends Sensor {
 	private static final long TICKS_PER_REV = 5;
 	private static final double M_PER_REV = 5.0;
 	
+	private static Arduino instance;
+	
 	private int encReset;
 	private int encTickLast;
 	private int encTime;
 
-	// Set up publishers
-	// TODO refactor into string PublishPath argument to Arduino()
-	private Publisher encoderPub = new Publisher("/sensor/encoder");
+	
+	//TODO make so that we can have multiple arduinos 
+	public static Arduino getInstance(){
+		if(instance == null){
+			instance = new Arduino();
+		}
+		return instance;
+	}
 	
 	public Arduino() {
 		super("Arduino", BAUDRATE, null);
@@ -57,13 +63,18 @@ public class Arduino extends Sensor {
 		}
 	}
 	
-	private void calcDist() {
+	public double getDist() {
 		double dist = ((double)(encTickLast - encReset)/TICKS_PER_REV) / M_PER_REV;
 		double velocity = dist / encTime;
-		
-		Robot.UpdateEnc(dist, velocity);
-		//encoderPub.publish(new EncoderMeasurement(dist, velocity));
+		return dist;
 	}
+	
+	public double getVelocity() {
+		double dist = ((double)(encTickLast - encReset)/TICKS_PER_REV) / M_PER_REV;
+		double velocity = dist / encTime;
+		return velocity;
+	}
+	
 	
 	public static boolean validId(char value) {
 		switch (value) {

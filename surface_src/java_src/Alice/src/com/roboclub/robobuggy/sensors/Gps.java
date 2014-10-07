@@ -3,11 +3,12 @@ package com.roboclub.robobuggy.sensors;
 import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.ros.Publisher;
+import com.roboclub.robobuggy.serial.SerialConnection;
 import com.roboclub.robobuggy.serial.SerialEvent;
 import com.roboclub.robobuggy.serial.SerialListener;
 import com.roboclub.robobuggy.ui.Gui;
 
-public class Gps extends Sensor {
+public class GPS extends SerialConnection implements Sensor{
 	/* Constants for Serial Communication */
 	/** Header for picking correct serial port */
 	private static final String HEADER = "$GPGGA";
@@ -25,13 +26,13 @@ public class Gps extends Sensor {
 	private float latitude;
 	private float longitude;
 	
-	private Publisher gpsPub = new Publisher("/sensor/gps");
+	private Publisher gpsPub;
 
-	public Gps() {
+	public GPS(String publishPath) {
 		super("GPS", BAUDRATE, HEADER);
 		super.addListener(new GpsListener());
 		System.out.println("Initializing GPS");
-
+		gpsPub = new Publisher(publishPath);
 	}
 	
 	private float parseLat(String latNum) {
@@ -80,7 +81,6 @@ public class Gps extends Sensor {
 								break;
 							case LONG_DIR:
 								if (curVal.equalsIgnoreCase("W")) longitude = -1 * longitude;
-								Robot.UpdateGps(latitude, longitude);
 								gpsPub.publish(new GpsMeasurement(latitude, longitude));
 								return;
 							}

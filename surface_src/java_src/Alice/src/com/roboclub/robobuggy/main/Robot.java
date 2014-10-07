@@ -1,21 +1,18 @@
 package com.roboclub.robobuggy.main;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import com.roboclub.robobuggy.logging.RobotLogger;
-import com.roboclub.robobuggy.sensors.Arduino;
-import com.roboclub.robobuggy.sensors.Gps;
-import com.roboclub.robobuggy.sensors.Imu;
-import com.roboclub.robobuggy.sensors.VisionSystem;
+import com.roboclub.robobuggy.sensors.*;
+import com.roboclub.robobuggy.serial.Arduino;
 
 public class Robot {
 	private static Robot instance;
 	private static Thread alice;
 	private static Arduino arduino;
-	private static Gps gps;
-	private static Imu imu;
 	private static boolean autonomous;
-	private static VisionSystem vision;
+	private static ArrayList<Sensor> sensorList;
 
 	// private ArrayList<Markers> markers
 
@@ -34,13 +31,29 @@ public class Robot {
 
 		// Initialize Sensor
 		if (config.GPS_DEFAULT)
-			gps = new Gps();
+		{
+			GPS gps = new GPS("/sensors/GPS");
+		    sensorList.add(gps);
+		}
+		
 		if (config.IMU_DEFAULT)
-			imu = new Imu("/sensors/IMU");
-		if (config.VISION_SYSTEM_DEFAULT)
-			vision = new VisionSystem();
-
-		// if ((encAng.isConnected() || gps.isConnected() || imu.isConnected())
+		{
+			IMU imu = new IMU("/sensors/IMU");
+			sensorList.add(imu);
+		}
+		
+		if(config.ENCODER_DEFAULT)
+		{
+			Encoder encoder = new Encoder("/sensors/Encoder");
+			sensorList.add(encoder);
+		}
+		
+		if (config.VISION_SYSTEM_DEFAULT){
+			VisionSystem vision = new VisionSystem("/sensors/vision");
+		    sensorList.add(vision);
+		}
+		
+		    // if ((encAng.isConnected() || gps.isConnected() || imu.isConnected())
 		// && logging) {
 		if (config.active) {
 			// Robot.gui = new Gui(Robot.arduino, Robot.gps, Robot.imu);
@@ -56,10 +69,10 @@ public class Robot {
 
 	// shuts down the robot and all of its child sensors
 	public static void ShutDown() {
-		arduino.close();
-		gps.close();
-		imu.close();
-
+		for(Sensor thisSensor:sensorList)
+		{
+			thisSensor.close();
+		}
 		System.exit(0);
 	}
 

@@ -1,13 +1,14 @@
 package com.roboclub.robobuggy.sensors;
 
 import com.roboclub.robobuggy.main.config;
+import com.roboclub.robobuggy.serial.SerialConnection;
 
 // spans a new instance of the c++ vision system which will be connected to
 // for vision code
-public class VisionSystem {
+public class VisionSystem implements Sensor{
 
 //spans the vision system thread ( a c++ program which does our image processing)
-public VisionSystem(){	
+public VisionSystem(String string){	
 	System.out.println("Initializing Vision System");
 	try {
 		String frontCamIndex_str = Integer.toString(config.FRONT_CAM_INDEX);

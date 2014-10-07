@@ -1,4 +1,4 @@
-package com.roboclub.robobuggy.sensors;
+package com.roboclub.robobuggy.serial;
 
 import java.nio.ByteBuffer;
 
@@ -9,8 +9,6 @@ import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
-import com.roboclub.robobuggy.serial.SerialEvent;
-import com.roboclub.robobuggy.serial.SerialListener;
 
 public class FauxArduino {
 	

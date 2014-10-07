@@ -4,8 +4,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
 
-import com.roboclub.robobuggy.sensors.Arduino;
-
 import gnu.io.*;
 
 public class SerialReader implements SerialPortEventListener {
