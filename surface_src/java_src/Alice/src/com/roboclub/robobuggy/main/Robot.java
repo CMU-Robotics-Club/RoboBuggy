@@ -23,7 +23,9 @@ public class Robot {
 		return instance;
 	}
 
-	public Robot() {
+	private Robot() {
+		sensorList = new ArrayList<>();
+		System.out.println("starting Robot");
 		autonomous = config.AUTONOMUS_DEFAULT;
 
 		// TODO break apart the arduino

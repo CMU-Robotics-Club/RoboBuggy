@@ -9,18 +9,21 @@ public class Encoder implements Sensor {
 	// Set up publishers
 	private Publisher encoderPub = new Publisher("/sensor/encoder");
 	
-	public Encoder(String publishPath) {
+	public Encoder(String publishPath) 
+	{
 		Arduino.getInstance(); //makes sure that the arduino has been started 
-		}
+	}
 	
-	public void updated(){
+	public void updated()
+	{
 		double dist = Arduino.getInstance().getDist();
 		double velocity = Arduino.getInstance().getVelocity();
 		encoderPub.publish(new EncoderMeasurement(dist, velocity));
 	}
 	
 	
-	public boolean close(){
+	public boolean close()
+	{
 		//TODO 
 		return false;
 	}

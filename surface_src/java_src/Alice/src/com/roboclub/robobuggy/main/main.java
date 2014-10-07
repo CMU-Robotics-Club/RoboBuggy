@@ -30,9 +30,11 @@ public class main {
 			Gui.getInstance();
 		}
 		//starts the robot
-		//Robot.getInstance();
-		new SimRobot();
-		
+		if(config.DATA_PLAY_BACK_DEFAULT){
+			new SimRobot();
+		}else{
+			Robot.getInstance();
+		}	
 	}
 	
 	
