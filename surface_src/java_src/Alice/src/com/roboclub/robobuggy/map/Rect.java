@@ -1,6 +1,7 @@
 package com.roboclub.robobuggy.map;
+//todo deprecate in favor of Polygon 
 
-public class Rect {
+public class Rect implements MapObject{
 	private Point uR;
 	private Point uL;
 	private Point lL;

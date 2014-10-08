@@ -1,6 +1,6 @@
 package com.roboclub.robobuggy.map;
 
-public class Point {
+public class Point implements MapObject{
 	private float x;
 	private float y;
 	
