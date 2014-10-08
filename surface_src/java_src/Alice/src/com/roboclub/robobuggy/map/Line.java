@@ -4,7 +4,9 @@ import java.util.ArrayList;
 
 public class Line implements MapObject{
 	ArrayList<Point> points = new ArrayList<Point>();
+	final static double ON_LINE_DISTANCE = .1; //meters
 	//must have at least two points
+
 	Line(ArrayList<Point> newPoints){
 		for(int i = 0;i<newPoints.size();i++){
 			points.add(newPoints.get(i));
@@ -30,19 +32,41 @@ public class Line implements MapObject{
 	
 	//returns true if aPoint is on the line, flase otherwise 
 	public boolean onLine(Point aPoint){
-		//TODO
-		return false;
+		return getDistance(Point aPoint) < ON_LINE_DISTANCE;
 	}
 	
 	//returns true if the two lines intersect, false otherwise
-	//TODO
+	public boolean intersect(Line aLine){
+		// TODO
+	}
 	
 	//returns the distance from a point to the line
-	//TODO
+	// returns in meters 
+	public double getDistance(Point aPoint){
+		Point closestPoint = projectPointToLine(aPoint);
+		return aPoint.getDistance(closestPoint);
+	}
+
+	public Point projectPointToLine(Point aPoint){
+		//TODO
+	}
 	
-	//combines linea and lineb into 1 continues line
-	//TODO
-	
+	//combines line_a and line_b into 1 continuous line
+	public Line combineLine(Line line_a,Line line_b){
+		//TODO
+	}
+
+	/// returns true if aLine is a subsection of the line
+	public boolean isSubSection(Line thisLine){
+		for(int i=0;i<thisLine.points.size();i++)
+		{
+			if(!onLine(thisLine.points.get(i))){
+				return false;
+			}
+		}
+		return true;
+	}
+
 	
 	
 	@Override
@@ -52,21 +76,17 @@ public class Line implements MapObject{
 			return false;
 		}
 		Line thisLine = (Line)thisObject;
-		
-		for(int i=0;i<points.size();i++)
-		{
-			if(!thisLine.onLine(points.get(i))){
-				return false;
-			}
+
+		if(!thisLine.isSubSection(this)){
+			return false;
 		}
-		
-		for(int i=0;i<thisLine.points.size();i++){
-			if(!onLine(thisLine.points.get(i))){
-				return false;
-			}
+
+		if(isSubSection(thisLine)){
+			return false;
 		}
-		
-		//every point in either line is on the other line so they must be equivlent lines
+	
+		// every point on either line is on the other line so they
+		// must be equivlent lines
 		return true;
 	}
 
