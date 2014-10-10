@@ -25,14 +25,9 @@
 #define THR_PIN 2
 #define AIL_PIN 3
 
-#define XBEE_MSG_REC 4
-
-#define XBEE_DANGER 12
-
 #define TIME_THRESH 1000
 
 unsigned long timer = 0L;
-static char data; // used to pass things into xbee
 static unsigned long last_time;
 static uint8_t g_brake_state; // 0 = engaged, !0 = disengaged.
 RBSerialMessages g_rbserialmessages;
@@ -53,14 +48,10 @@ void watchdog_fail(){
  digitalWrite(LED_DANGER_PIN, HIGH);
 }
 
-
-
 void setup()  {
   // Initialize serial connections
   Serial1.begin(9600); // debug messages
   g_rbserialmessages.Begin(&Serial); // command/telemetry serial connection
-
-  //pinMode(XBEE_MSG_REC, OUTPUT);
 
   // Initialize Buggy
   // Pins 2 and 3: pin 2 is thr, pin 3 is ail
