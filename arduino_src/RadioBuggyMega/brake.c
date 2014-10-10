@@ -2,6 +2,8 @@
  * @file brake.c
  * @author Audrey Yeoh (ayeoh)
  * @author Matt Sebek (msebek)
+ *
+ * These functions are used to control the brakes
  */
 #include <Arduino.h>
 #include "brake.h"
