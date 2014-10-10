@@ -7,10 +7,12 @@
  *
  * @author Matt Sebek (msebek)
  * @author Zach Dawson (zsd)
+ *
+ * These functions are used to connect/communicate with
+ * the RC radio receiver.
  */
 #include <Arduino.h>
 #include "receiver.h"
-
 
 #define AIL_LEFTMOST 2000
 #define AIL_RIGHTMOST 980
