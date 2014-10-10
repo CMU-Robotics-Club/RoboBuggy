@@ -1,15 +1,16 @@
 package com.roboclub.robobuggy.map;
+//TODO move to a polygon class 
+
 
 public class Rect {
 	private Point uR;
 	private Point uL;
-	private Point lR;
 	private Point lL;
 	
-	public Rect(Point uR_, Point uL_, Point lR_, Point lL_) {
+	/// ordering of points for Rect matter //TODO write requirement and assertions 
+	public Rect(Point uR_, Point uL_, Point lL_) {
 		this.uR = uR_;
 		this.uL = uL_;
-		this.lR = lR_;
 		this.lL = lL_;
 	}
 	
@@ -23,4 +24,27 @@ public class Rect {
 		
 		return false;
 	}
+	
+	@Override
+	//TODO fix ordering of points matters 
+	public boolean equals(Object obj){
+		if(!(obj instanceof Rect)){
+			return false;
+		} 	
+		Rect otherRect = (Rect)obj;
+		//checks individual properties of the Rect for equality 
+		if(!(uR.equals(otherRect.uR))){
+			return false;
+		}
+		if(!(uL.equals(otherRect.uL))){
+			return false;
+		}
+		if(!(lL.equals(otherRect.lL))){
+			return false;
+		}
+		//passed all equality requirements so the rects point our equivalent 
+		return true;
+	}
+	
+	
 }

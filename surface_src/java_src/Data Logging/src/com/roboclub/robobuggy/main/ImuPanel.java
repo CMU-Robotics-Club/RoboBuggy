@@ -1,8 +1,9 @@
 package com.roboclub.robobuggy.main;
 
 import java.awt.Color;
-import java.awt.GridLayout;
 import java.util.Date;
+
+import javax.swing.BoxLayout;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -48,7 +49,6 @@ public class ImuPanel extends SerialPanel {
 	/** Index of magnetometer z data as received during serial communication */
 	private static final int MZ = 8;
 	
-	private boolean valid;
 	private float aX;
 	private float aY;
 	private float aZ;
@@ -72,10 +72,13 @@ public class ImuPanel extends SerialPanel {
 	private XYSeries mY_history;
 	private XYSeries mZ_history;
 	
-	public ImuPanel() throws Exception {
+	public ImuPanel() {
 		super("IMU", BAUDRATE, HEADER, HEADER_LEN);
-		super.addListener(new ImuListener());		
-		this.setLayout(new GridLayout(3, 1));			
+		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		
+		if (!this.isConnected()) return;
+		
+		super.addListener(new ImuListener());
 
 		//sensor history for display
 		aX_history = new XYSeries("First");
@@ -98,16 +101,54 @@ public class ImuPanel extends SerialPanel {
        
         //imu_rotX
         final XYDataset dataset1 = createDataset();
-        final JFreeChart chart1 = createIMURotXChart(dataset);
-        final ChartPanel imuRotXChartPanel = new ChartPanel(chart);
+        final JFreeChart chart1 = createIMURotXChart(dataset1);
+        final ChartPanel imuRotXChartPanel = new ChartPanel(chart1);
 //        imuRotXChartPanel.setPreferredSize(new java.awt.Dimension(200, 270));
         this.add(imuRotXChartPanel);
         
         //comand_angle
         final XYDataset  dataset2 = createDataset();
-        final JFreeChart chart2 = createCommandAngleChart(dataset);
-        final ChartPanel commandAngleChartPanel = new ChartPanel(chart);
+        final JFreeChart chart2 = createCommandAngleChart(dataset2);
+        final ChartPanel commandAngleChartPanel = new ChartPanel(chart2);
         this.add(commandAngleChartPanel);
+	}
+	
+	private void logData() {
+		if (Gui.GetPlayPauseState()) {
+			RobotLogger rl = RobotLogger.getInstance();
+		    Date now = new Date();
+		    long time_in_millis = now.getTime();
+		    float[] acc = new float[3];
+		    float[] gyro = new float[3];
+		    float[] compass = new float[3];
+		    acc[0] = aX; acc[1] = aY; acc[2] = aZ;
+		    gyro[0] = rX; gyro[1] = rY; gyro[2] = rZ;
+		    compass[0] = mX; compass[1] = mY; compass[2] = mZ;
+		   
+		    if(rl == null){
+		    	System.out.println("r1 is null the system is exiting\n");
+		        System.exit(1);
+		    }else if(rl.sensor == null){
+		    	System.out.println("rl.sensor is null the system is exiting\n");
+		    	System.exit(1);
+		    }
+		    
+		    rl.sensor.logImu(time_in_millis, acc, gyro, compass);
+		}
+	}
+	
+	private void addToDisplay() {
+		addToHistory(aX_history,Double.valueOf(aX));
+	    addToHistory(aY_history,Double.valueOf(aY));
+	    addToHistory(aZ_history,Double.valueOf(aZ));
+	    addToHistory(rX_history,Double.valueOf(rX));
+	    addToHistory(rY_history,Double.valueOf(rY));
+	    addToHistory(rZ_history,Double.valueOf(rZ));
+	    addToHistory(mX_history,Double.valueOf(mX));
+	    addToHistory(mY_history,Double.valueOf(mY));
+	    addToHistory(mZ_history,Double.valueOf(mZ));
+	    
+	    count++;
 	}
 
 	/**
@@ -119,108 +160,83 @@ public class ImuPanel extends SerialPanel {
 	private class ImuListener implements SerialListener {
 		@Override
 		public void onEvent(SerialEvent event) {
-			if(Gui.getInstance().GetPlayPauseState())
-			{
-			valid = false;
-			char[] tmp = event.getBuffer();
-			int index = 0;
-
+			if(!Gui.InPlayBack() && 
+					(Gui.GetGraphState() || Gui.GetPlayPauseState())) {
+				char[] tmp = event.getBuffer();
+				int index = 0;
+	
 				if (tmp != null && event.getLength() > HEADER_LEN) {
 					String curVal = "";
 					for (int i = HEADER_LEN; i < event.getLength(); i++ ) {
 						if(tmp[i] == '\n'){
 							break;
 						}
-					if (tmp[i] == ',' ){ 
-						try {
-							switch ( index ) {
-							case AX:
-								aX = Float.valueOf(curVal);
-								break;
-							case AY:
-								aY = Float.valueOf(curVal);
-								break;
-							case AZ:
-								aZ = Float.valueOf(curVal);
-								break;
-							case RX:
-								rX = Float.valueOf(curVal);
-								break;
-							case RY:
-								rY = Float.valueOf(curVal);
-								break;
-							case RZ:
-								rZ = Float.valueOf(curVal);
-								break;
-							case MX:
-								mX = Float.valueOf(curVal);
-								break;
-							case MY:
-								mY = Float.valueOf(curVal);
-								break;
-							case MZ:
-								mZ = Float.valueOf(curVal);
-								break;
-							default:
+						else if (tmp[i] == ',' ){ 
+							try {
+								setValue(index, Float.valueOf(curVal));
+								
+								curVal = "";
+								index++;
+							} catch (Exception e) {
+								System.out.println("Failed to parse IMU message");
 								return;
 							}
-							curVal = "";
-							index++;
-						} catch (Exception e) {
-							System.out.println("Failed to parse IMU message");
-							return;
+							
+						} else {
+							curVal += tmp[i];
 						}
-						
-					} else {
-						curVal += tmp[i];
 					}
+					System.out.format("IMU Values: aX: %f aY: %f aZ: %f rX: %f rY: %f rZ: %f "
+							+ "mX: %f mY: %f mZ: %f \n",aX,aY,aZ,rX,rY,rZ,mX,mY,mZ);
+					logData();
+					addToDisplay();
 				}
-				}
-			count++;
-			System.out.format("IMU Values: aX: %f aY: %f aZ: %f rX: %f rY: %f rZ: %f mX: %f mY: %f mZ: %f \n",aX,aY,aZ,rX,rY,rZ,mX,mY,mZ);
-			// Message received
-			// message is now contained in tmp
-		    RobotLogger rl = RobotLogger.getInstance();
-		    Date now = new Date();
-		    long time_in_millis = now.getTime();
-		    float[] acc = new float[3];
-		    float[] gyro = new float[3];
-		    float[] compass = new float[3];
-		    acc[0] = aX; acc[1] = aY; acc[2] = aZ;
-		    gyro[0] = rX; gyro[1] = rY; gyro[2] = rZ;
-		    compass[0] = mX; compass[1] = mY; compass[2] = mZ;
-		    rl.sensor.logImu(time_in_millis, acc, gyro, compass);
-
-		    
-		    addToHistory(aX_history,Double.valueOf(aX));
-		    addToHistory(aY_history,Double.valueOf(aY));
-		    addToHistory(aZ_history,Double.valueOf(aZ));
-		    addToHistory(rX_history,Double.valueOf(rX));
-		    addToHistory(rY_history,Double.valueOf(rY));
-		    addToHistory(rZ_history,Double.valueOf(rZ));
-		    addToHistory(mX_history,Double.valueOf(mX));
-		    addToHistory(mY_history,Double.valueOf(mY));
-		    addToHistory(mZ_history,Double.valueOf(mZ));
 			}
-			// Message received
-			// message is now contained in tmp
-		    RobotLogger rl = RobotLogger.getInstance();
-		    Date now = new Date();
-		    long time_in_millis = now.getTime();
-		    float[] acc = new float[3];
-		    float[] gyro = new float[3];
-		    float[] compass = new float[3];
-		    acc[0] = aX; acc[1] = aY; acc[2] = aZ;
-		    gyro[0] = rX; gyro[1] = rY; gyro[2] = rZ;
-		    compass[0] = mX; compass[1] = mY; compass[2] = mZ;
-		    rl.sensor.logImu(time_in_millis, acc, gyro, compass);
 		}
 	}
-	private void addToHistory(XYSeries history,double newdata){
-    if(history.getItemCount() > HISTORY_LENGTH){
-    	history.remove(0);
-    }
-    history.add(count,newdata);
+	
+	private void addToHistory(XYSeries history,double newdata) {
+	    if(history.getItemCount() > HISTORY_LENGTH) {
+	    	history.remove(0);
+	    }
+	    history.add(count,newdata);
+	}
+	
+	private void setValue(int index, float value) {
+		switch ( index ) {
+		case AX:
+			aX = value;
+			break;
+		case AY:
+			aY = value;
+			break;
+		case AZ:
+			aZ = value;
+			Gui.UpdateRobotAccel(aX, aY, aZ);
+			break;
+		case RX:
+			rX = value;
+			break;
+		case RY:
+			rY = value;
+			break;
+		case RZ:
+			rZ = value;
+			Gui.UpdateRobotGyro(rX, rY, rZ);
+			break;
+		case MX:
+			mX = value;
+			break;
+		case MY:
+			mY = value;
+			break;
+		case MZ:
+			mZ = value;
+			Gui.UpdateRobotMagnet(mX, mY, mZ);
+			break;
+		default:
+			return;
+		}
 	}
     	
 	XYDataset createDataset() {

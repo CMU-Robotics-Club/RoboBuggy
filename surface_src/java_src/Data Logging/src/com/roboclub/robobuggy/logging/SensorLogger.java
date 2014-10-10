@@ -10,9 +10,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
+
+import com.roboclub.robobuggy.main.Gui;
 
 /**
  * Logs data from the sensors
@@ -120,6 +121,7 @@ public final class SensorLogger {
 		outputFileName = outputFileName.replaceAll(":", "_");
 		File csvFile = new File(outputDir,outputFileName + "sensors.csv");
 		System.out.println("FileCreated: " + outputFileName);
+		Gui.UpdateLogName( outputFileName );
 		try {
 			_csv = new PrintStream(csvFile);
 		} catch (FileNotFoundException e) {
@@ -162,6 +164,7 @@ public final class SensorLogger {
 	}
 
 	public void logImu(long time,float[] acc,float[] gyro,float[] compass) {
+		System.out.println("logging IMU\n");
 		String[] vals = new String[9];
 		for(int i=0;i<3;++i) {
 			vals[i+0] = "" + acc[i];

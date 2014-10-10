@@ -1,16 +1,14 @@
 package com.roboclub.robobuggy.main;
 
-import java.awt.FlowLayout;
+import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 
 import org.opencv.core.Core;
@@ -21,15 +19,9 @@ import org.opencv.highgui.Highgui;
 import org.opencv.highgui.VideoCapture;
 import org.opencv.imgproc.Imgproc;
 
-import com.roboclub.robobuggy.map.Point;
-import com.roboclub.robobuggy.map.Rect;
-import com.roboclub.robobuggy.logging.RobotLogger;
-
 public class CameraPanel extends JPanel {
 	private static final long serialVersionUID = 2045798342979823126L;
 	/* Panel Dimensons */
-	private static final int PANEL_WIDTH = 400;
-	private static final int PANEL_HEIGHT = 300;
 	private static final int WIDTH = 320;
 	private static final int HEIGHT = 240;
 	private static final Size size = new Size(WIDTH,HEIGHT);
@@ -37,51 +29,75 @@ public class CameraPanel extends JPanel {
 	private VideoCapture camera;
 	private CameraThread cameraFeed;
 	private BufferedImage image = null;
+	private JDialog popup;
 	
 	public CameraPanel( int cameraId ) throws Exception {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+		this.setLayout(new BorderLayout());
 		
-		this.setSize(PANEL_WIDTH, PANEL_HEIGHT);
-		this.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
-		
-		initializeCamera(cameraId);
-	}
-	
-	private void initializeCamera(int cameraNum) throws Exception {
-		camera = new VideoCapture(cameraNum);
+		camera = new VideoCapture(cameraId);
 		
 		try {
 			// Allow camera to initialize
-			Thread.sleep(1000);	
+			Thread.sleep(5000);	
 		} catch (Exception e) {
 			System.exit(-1);
 		}
 		
-		camera.open(cameraNum);
+		camera.open(cameraId);
 		if (!camera.isOpened()) {
-			throw new Exception("Failed to Open Camera!");
+			System.out.println("Failed to Open Camera" + cameraId);
+			throw new Exception("Failed to Open Camera: "+ cameraId);
 		}
 		
 		cameraFeed = new CameraThread();
 		cameraFeed.start();
+		
+		popup = new JDialog();
+		popup.add(this);
+		popup.setTitle("Camera " + cameraId);
+		popup.setModal(false);
+		popup.setSize(WIDTH+5, HEIGHT+20);
+		popup.setResizable(false);
+		popup.setVisible(Gui.GetDisplayState());
 	}
 	
 	public void close() {
 		cameraFeed.close();
 		camera.release();
+		popup.dispose();
+	}
+	
+	public CameraThread getFeed() {
+		return this.cameraFeed;
 	}
 	
 	public void paintComponent(Graphics g) {
-		g.drawImage(this.image, (PANEL_WIDTH-WIDTH)/2, (PANEL_HEIGHT-HEIGHT)/2, this);
+		g.drawImage(this.image, 0, 0, this);
 	}
 	
 	public void redraw() {
 		this.repaint();
 	}
+	
+	public void setLogging(boolean input) {
+		this.cameraFeed.setLogging(input);
+	}
+	
+	public void setDisplaying(boolean input) {
+		if (this.cameraFeed != null) {
+			this.cameraFeed.setDisplaying(input);
+		}
+		if (this.popup != null) {
+			this.popup.setVisible(input);
+		}
+	}
 
 	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS");
 	private class CameraThread extends Thread {
 		private boolean running = true;
+		private boolean logging = Gui.GetPlayPauseState();
+		private boolean displaying = Gui.GetDisplayState();
 		
 		public void run() {
 			Mat frame = new Mat();
@@ -89,29 +105,47 @@ public class CameraPanel extends JPanel {
 			Mat dst = new Mat();
 			MatOfByte mb = new MatOfByte();
 			
-			while(running) {
-				camera.read(frame);
-				Imgproc.resize(frame, dst, size);
-				Highgui.imencode(".jpg", dst, mb);
-				
-				try {
-					image = ImageIO.read(new ByteArrayInputStream(mb.toArray()));
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+			camera.read(frame);
+			Imgproc.resize(frame, dst, size);
+			Highgui.imencode(".jpg", dst, mb);
 			
-				// Log and hope we log quickly
-				// message is now contained in tmp
-			    RobotLogger rl = RobotLogger.getInstance();
-			    Date now = new Date();
-			    long time_in_millis = now.getTime();
-			    rl.sensor.logImage(time_in_millis, df.format(now), image);	
-				redraw();
+			while(running) {
+				if (displaying || logging) {
+					try {
+						camera.read(frame);
+						Imgproc.resize(frame, dst, size);
+						Highgui.imencode(".jpg", dst, mb);
+						image = ImageIO.read(new ByteArrayInputStream(mb.toArray()));
+						
+						if (displaying) redraw();
+						if (logging) {
+							// Log and hope we log quickly
+							// message is now contained in tmp
+						    /*RobotLogger rl = RobotLogger.getInstance();
+						    Date now = new Date();
+						    long time_in_millis = now.getTime();
+						    rl.sensor.logImage(time_in_millis, df.format(now), image);*/
+						}
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				else {
+					CameraThread.yield();
+				}
 			}
 		}
 		
 		public void close() {
 			this.running = false;
+		}
+		
+		public void setLogging(boolean input) {
+			this.logging = input;
+		}
+		
+		public void setDisplaying(boolean input) {
+			this.displaying = input;
 		}
 	}	
 }
