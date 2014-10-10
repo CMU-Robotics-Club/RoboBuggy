@@ -8,10 +8,10 @@ import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.sensors.Sensor;
 
 public class Arduino extends SerialConnection {
-	public static final int MSG_LEN = 8;
-	public static final char ENC_TIME = (char)0x00;
-	public static final char ENC_RESET = (char)0x01;
-	public static final char ENC_TICK = (char)0x02;
+	public static final int MSG_LEN = 6;
+	public static final char ENC_TIME = (char)0x02;
+	public static final char ENC_RESET = (char)0x00;
+	public static final char ENC_TICK = (char)0x01;
 	public static final char STEERING = (char)0x05;
 	public static final char BRAKE = (char)0x06;
 	public static final char ERROR = (char)0xFF;
@@ -35,10 +35,9 @@ public class Arduino extends SerialConnection {
 		return instance;
 	}
 	
-	public Arduino() {
+	private Arduino() {
 		super("Arduino", BAUDRATE, null);
 		
-		System.out.println("Initializing Arudino");
 		if (port != null && port.isConnected()) super.addListener(new ArduinoListener());
 	}
 	
@@ -96,22 +95,38 @@ public class Arduino extends SerialConnection {
 			char[] tmp = event.getBuffer();
 			if (event.getLength() != MSG_LEN) return;
 			byte[] msg = {(byte)tmp[1], (byte)tmp[2], (byte)tmp[3], (byte)tmp[4]};
-			ByteBuffer wrapper = ByteBuffer.wrap(msg);
-			
+			//ByteBuffer wrapper = ByteBuffer.wrap(msg);
+			int val = 0;
+			val |= tmp[1];
+			val = val << 0x8;
+			val |= tmp[2];
+			val = val << 0x8;
+			val |= tmp[3];
+			val = val << 0x8;
+			val |= tmp[4];
 			switch (tmp[0]) {
 			case ENC_TIME:
-				encTime = wrapper.getInt();
+				encTime = val;//wrapper.getInt();
+				System.out.println("Time: " + encTime);
+				break;
 			case ENC_RESET:
-				encReset = wrapper.getInt();
+				encReset = val;//wrapper.getInt();
+				System.out.println("Reset: " + encReset);
+				break;
 			case ENC_TICK:
-				encTickLast = wrapper.getInt();
+				encTickLast = val;//wrapper.getInt();
+				System.out.println("Ticks: " + encTickLast);
 				Robot.UpdateEnc(encTime, encReset, encTickLast);
+				break;
 			case STEERING:
 				Robot.UpdateSteering(tmp[4]);
+				break;
 			case BRAKE:
 				Robot.UpdateBrake(tmp[4]);
+				break;
 			case ERROR:
-				Robot.UpdateError(wrapper.getInt());
+				Robot.UpdateError(val);//wrapper.getInt());
+				break;
 			default:
 				return;
 			}

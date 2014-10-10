@@ -29,7 +29,7 @@ public class Robot {
 		autonomous = config.AUTONOMUS_DEFAULT;
 
 		// TODO break apart the arduino
-		Robot.arduino = new Arduino();
+		Robot.arduino = Arduino.getInstance();
 
 		// Initialize Sensor
 		if (config.GPS_DEFAULT)
