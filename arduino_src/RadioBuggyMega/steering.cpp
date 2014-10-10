@@ -1,9 +1,10 @@
 /**
  * @file steering.c
- * @brief Steering!
+ * @brief These functions are used to control the steering servo motor
  * @author Haley Dalzell
  * @author Zach Dawson
  * @author Matt Sebek
+ *
  */
 #include <Servo.h>
 
