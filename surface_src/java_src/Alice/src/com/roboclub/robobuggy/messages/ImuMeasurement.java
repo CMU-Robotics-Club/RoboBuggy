@@ -32,4 +32,16 @@ public class ImuMeasurement implements Message {
 		this.mY = mY;
 		this.mZ = mZ;
 	}
+
+	@Override
+	public String toLogString() {
+		// TODO Auto-generated method stub
+		return Float.toString(aX + aY + aZ + rX + rY + rZ + mX + mY + mZ);
+	}
+
+	@Override
+	public void fromLogString(String str) {
+		// TODO Auto-generated method stub
+		
+	}
 }
