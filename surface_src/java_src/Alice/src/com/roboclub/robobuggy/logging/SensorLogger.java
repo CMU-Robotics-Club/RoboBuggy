@@ -35,26 +35,13 @@ public final class SensorLogger {
 	private final String[] _gpsKeys = {
 		"GPS_Longitude", "GPS_Latitude"
 	};
-	private final String[] _imgKeys = {
-		"Image_Name"
-	};
 	
 	private final String[][] _keySets = {
-		_imuKeys,_encoderKeys,_servoKeys,_gpsKeys,_imgKeys	
+		_imuKeys,_encoderKeys,_servoKeys,_gpsKeys
 	};
-	
-	private static final class _TaggedImage {
-		public final String tag;
-		public final BufferedImage img;
-		public _TaggedImage(String tag,BufferedImage img) {
-			this.tag = tag;
-			this.img = img;
-		}
-	}
 
 	private final PrintStream _csv;
 	private final Queue<String[]> _csvQueue;
-	private final Queue<_TaggedImage> _imgQueue;
 	
 	private final String[] _keys;
 
@@ -86,28 +73,7 @@ public final class SensorLogger {
 		return ret;
 	};
 	
-	private static final Queue<_TaggedImage> startImgThread(File outDir) {
-		final LinkedBlockingQueue<_TaggedImage> ret = new LinkedBlockingQueue<>();
-		new Thread() {
-			public void run() {
-				while(true) {
-					try {
-						_TaggedImage img = ret.take();
-						if(img == null) {
-							break;
-						}
-						ImageIO.write(img.img, "jpg", new File(outDir,img.tag + ".jpg"));
-					} catch (InterruptedException e) {
-						e.printStackTrace();
- 					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}.start();
-		return ret;
-	};
-
+	
 	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 	public SensorLogger(File outputDir,Date startTime) throws Exception {
 		//check if dir exits
@@ -119,8 +85,9 @@ public final class SensorLogger {
 		String outputFileName = startTime.toString();
 		outputFileName = outputFileName.replaceAll(" ","");
 		outputFileName = outputFileName.replaceAll(":", "_");
-		File csvFile = new File(outputDir,outputFileName + "sensors.csv");
-		System.out.println("FileCreated: " + outputFileName);
+		
+		File csvFile = new File(outputDir, outputFileName + "-sensors.csv");
+		System.out.println("FileCreated: " + csvFile.getAbsolutePath());
 		//TODO fix Gui.UpdateLogName( outputFileName );
 		try {
 			_csv = new PrintStream(csvFile);
@@ -129,10 +96,6 @@ public final class SensorLogger {
 			throw new RuntimeException("Cannot create sensor log file (" + csvFile + ")!");
 		}
 		_csvQueue = startCsvThread(_csv);
-
-		File imgdir = new File(outputDir,df.format(startTime) + "-images");
-		imgdir.mkdirs();
-		_imgQueue = startImgThread(imgdir);
 
 		ArrayList<String> keys = new ArrayList<>();
 		keys.add("Timestamp");
@@ -180,9 +143,5 @@ public final class SensorLogger {
 	}
 	public void logGps(long time_in_millis,double d,double e) {
 		_log(time_in_millis,_gpsKeys,new String[]{ "" + d,"" + e });
-	}
-	public void logImage(long time,String name,BufferedImage img) {
-		_log(time,_imgKeys,new String[]{ "" + name });
-		_imgQueue.offer(new _TaggedImage(name, img));
 	}
 }

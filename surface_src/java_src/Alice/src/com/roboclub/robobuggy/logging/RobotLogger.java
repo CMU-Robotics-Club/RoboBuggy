@@ -23,6 +23,7 @@ public final class RobotLogger {
 	public final SensorLogger sensor;
 	private static RobotLogger instance;
 	private static File logDir;
+	private static File logFolder;
 	
 	public static RobotLogger getInstance(){
 		if(instance == null){
@@ -60,7 +61,10 @@ public final class RobotLogger {
 		
 		if (instance != null) {
 			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-			File msgFile = new File(logDir,df.format( new Date()) + "-messages.log");
+			logFolder = new File(logDir,df.format( new Date()));
+			logFolder.mkdirs();
+			
+			File msgFile = new File(logFolder, "messages.log");
 			
 			try {
 				msgFile.createNewFile();
@@ -69,7 +73,7 @@ public final class RobotLogger {
 				Handler handler = new StreamHandler(new FileOutputStream(msgFile),
 						new SimpleFormatter());
 				instance.message.addHandler(handler);
-				System.out.println("Created Log File: " + msgFile.getName());
+				System.out.println("Created Log File: " + msgFile.getAbsolutePath());
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 				throw new RuntimeException("Could not open message log file (" + msgFile + ")!");
