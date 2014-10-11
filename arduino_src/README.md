@@ -27,16 +27,21 @@ $ cd directory/with/.ino
 $ make
 ```
 
-Upload:
+Upload (on a sane arduino board):
 
 ```
 $ cd directory/with/.ino
-$ make upload ISP_PORT=/dev/tty.usbserial
+$ make upload DEVICE_PATH=/dev/tty.usbserial######
 ```
+
+The arduino nanos we have on the buggy right now do not have the proper auto-reset circuit, so they need to be programmed by ISP. This should able to be done with `make ispload`, but that command doesn't seem to work correctly in the makefile. I have been using the following command:
 
 ```
  /Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/bin/avrdude  -p atmega328p -C /Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/etc/avrdude.conf -c avrispmkii -P usb -U flash:w:build-nano328/Nano_encoder.hex:i
 ```
+
+## Useful Commands
+
 Extract Hex Image From Flash Using AVR Programmer:
 
 ```
