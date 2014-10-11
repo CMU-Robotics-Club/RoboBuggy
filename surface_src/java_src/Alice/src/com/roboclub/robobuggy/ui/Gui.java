@@ -141,17 +141,17 @@ public final class Gui extends JFrame {
 		resetLocalization_btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//TODO
+				Robot.getInstance().getKalmanFilter().reset();
 			}});
 		pane.add(resetLocalization_btn);
 		
 		JButton NewLog_btn = new JButton("New Log");
 		NewLog_btn.setSize(new Dimension(WIDTH,100));
 		NewLog_btn.setSize(new Dimension(HEIGHT,50));
-		resetEncoders_btn.addActionListener(new ActionListener() {
+		NewLog_btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//TODO
+				RobotLogger.getInstance().startNewLog();
 			}});
 		pane.add(NewLog_btn);		
 		

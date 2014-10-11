@@ -23,6 +23,7 @@ public class Encoder extends Arduino {
 
 	// Set up publishers
 	private Publisher encoderPub;
+	private SensorType thisSensorType;
 	
 	public Encoder() 
 	{
@@ -93,4 +94,9 @@ public class Encoder extends Arduino {
 			}
 		}
 	}
+	@Override
+	public SensorType getSensorType() {
+		return thisSensorType;
+	}
+
 }

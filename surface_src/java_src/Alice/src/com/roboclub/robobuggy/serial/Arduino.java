@@ -2,6 +2,7 @@ package com.roboclub.robobuggy.serial;
 
 import com.roboclub.robobuggy.sensors.Sensor;
 import com.roboclub.robobuggy.sensors.SensorState;
+import com.roboclub.robobuggy.sensors.SensorType;
 
 public class Arduino extends SerialConnection implements Sensor {
 	public static final int MSG_LEN = 6;
@@ -65,5 +66,10 @@ public class Arduino extends SerialConnection implements Sensor {
 		val |= x3;
 		
 		return val;
+	}
+
+	@Override
+	public SensorType getSensorType() {
+		return null;
 	}
 }

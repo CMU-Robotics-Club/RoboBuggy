@@ -34,6 +34,9 @@ public class Imu extends SerialConnection implements Sensor {
 	// how long the system should wait until a sensor switches to Disconnected
 	private static final long SENSOR_TIME_OUT = 5000;
 
+	private SensorType thisSensorType;
+
+	
 	long lastUpdateTime;
 
 	private float aX;
@@ -165,5 +168,10 @@ public class Imu extends SerialConnection implements Sensor {
 			currentState = SensorState.DISCONECTED;
 		}
 		return currentState;
+	}
+
+	@Override
+	public SensorType getSensorType() {
+		return thisSensorType;
 	}
 }

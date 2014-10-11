@@ -3,6 +3,7 @@ package com.roboclub.robobuggy.main;
 import java.util.ArrayList;
 import java.util.Date;
 
+import com.roboclub.robobuggy.localization.KalmanFilter;
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.sensors.DriveActuator;
 import com.roboclub.robobuggy.sensors.Encoder;
@@ -18,7 +19,8 @@ public class Robot {
 	private static Arduino arduino;
 	private static boolean autonomous;
 	private static ArrayList<Sensor> sensorList;
-
+	private KalmanFilter kf;
+	
 	// private ArrayList<Markers> markers
 
 	public static Robot getInstance() {
@@ -30,11 +32,13 @@ public class Robot {
 
 	private Robot() {
 		sensorList = new ArrayList<>();
+		kf = new KalmanFilter();
 		System.out.println("starting Robot");
 		autonomous = config.AUTONOMUS_DEFAULT;
 
 		//creates a log file even if no data is used
 		if(config.getInstance().logging){
+			System.out.println("starting Logging \n");
 			RobotLogger.getInstance();
 		}
 		
@@ -64,6 +68,7 @@ public class Robot {
 		}
 
 		if (config.VISION_SYSTEM_DEFAULT) {
+			System.out.println("start Vision \n");
 			VisionSystem vision = new VisionSystem("/sensors/vision");
 			sensorList.add(vision);
 		}
@@ -82,6 +87,10 @@ public class Robot {
 		}
 	}
 
+	public KalmanFilter getKalmanFilter(){
+		return kf; 
+	}
+	
 	public ArrayList<Sensor> getSensorList(){
 		return sensorList;
 	}

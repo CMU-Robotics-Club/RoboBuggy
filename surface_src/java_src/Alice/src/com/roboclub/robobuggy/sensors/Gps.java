@@ -24,6 +24,8 @@ public class Gps extends SerialConnection implements Sensor{
 	private static final int LONG_DIR = 4;
 	//how long the system should wait until a sensor switches to Disconnected
 	private static final long SENSOR_TIME_OUT = 5000;
+	private SensorType thisSensorType;
+
 	
 	private SensorState currentState;
 
@@ -130,5 +132,10 @@ public class Gps extends SerialConnection implements Sensor{
 			currentState = SensorState.DISCONECTED;
 		}
 		return currentState;
+	}
+
+	@Override
+	public SensorType getSensorType() {
+		return thisSensorType;
 	}
 }
