@@ -8,6 +8,10 @@ import com.roboclub.robobuggy.serial.SerialConnection;
 public class VisionSystem implements Sensor{
 
 private Process externalProcess;
+
+long lastUpdateTime;
+private SensorState currentState;
+
 	
 //spans the vision system thread ( a c++ program which does our image processing)
 public VisionSystem(String string){	
@@ -31,5 +35,20 @@ public boolean close(){
 	return true;
 	//TODO
 }
+
+public long timeOfLastUpdate(){
+	return lastUpdateTime;
+}
+
+@Override
+public SensorState getState() {
+	return currentState;
+}
+
+@Override
+public boolean isConnected() {
+	return false;
+}
+
 
 }

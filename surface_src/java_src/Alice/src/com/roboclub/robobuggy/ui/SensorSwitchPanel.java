@@ -10,6 +10,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import com.roboclub.robobuggy.sensors.SensorState;
+
 
 
 public class SensorSwitchPanel {
@@ -19,7 +21,7 @@ private JButton sensor_reset_btn;
 private JButton sensor_off_btn;
 
 
-private Sensor_state_type sensor_state;
+private SensorState sensor_state;
 
 // simpler constructor which will only allow on and off
 public SensorSwitchPanel(String sensorName,boolean on) {
@@ -28,18 +30,17 @@ public SensorSwitchPanel(String sensorName,boolean on) {
 		
 
 	}
-public static Sensor_state_type SensorStateFromBool(boolean on){
-Sensor_state_type defaultState; 
+public static SensorState SensorStateFromBool(boolean on){
 if(on){
-	return Sensor_state_type.ON;
+	return SensorState.ON;
 }else{
-	return Sensor_state_type.OFF;
+	return SensorState.DISCONECTED;
 }
 }
 
-public SensorSwitchPanel(String sensorName,Sensor_state_type defaultState){
+public SensorSwitchPanel(String sensorName,SensorState sensorState){
 		
-		sensor_state = defaultState;
+		sensor_state = sensorState;
 		
 		sensor_switch = new JPanel();
 		sensor_switch.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -58,43 +59,50 @@ public SensorSwitchPanel(String sensorName,Sensor_state_type defaultState){
 		sensor_switch.add(sensor_on_btn);
 		OnButtonHandler  onHandler = new OnButtonHandler();
 		sensor_on_btn.addActionListener(onHandler);
-		
+
 		sensor_reset_btn = new JButton("RESET");
 		sensor_switch.add(sensor_reset_btn);
-		ResetButtonHandler  resetHandler = new ResetButtonHandler();
-		sensor_reset_btn.addActionListener(resetHandler);
+	//	ResetButtonHandler  resetHandler = new ResetButtonHandler();
+	//	sensor_reset_btn.addActionListener(resetHandler);
 		
 		sensor_off_btn = new JButton("OFF");
 		sensor_switch.add(sensor_off_btn);
-		OffButtonHandler  offHandler = new OffButtonHandler();
-		sensor_off_btn.addActionListener(offHandler);
-			
+//		OffButtonHandler  offHandler = new OffButtonHandler();
+//		sensor_off_btn.addActionListener(offHandler);
 		updateButtonColors();
 
 
 	}
 
-public Sensor_state_type getState(){
+public SensorState getState(){
 	return sensor_state;
 }
 
-public void setState(Sensor_state_type newSensor_state){
+public void setState(SensorState newSensor_state){
 	sensor_state = newSensor_state;
 }
 	
 private void updateButtonColors(){
-	if(sensor_state == Sensor_state_type.ON){
+	if(sensor_state == SensorState.ON){
 		sensor_on_btn.setBackground(Color.GREEN);
 	}else{
 		sensor_on_btn.setBackground(Color.LIGHT_GRAY);
 	}
-	if(sensor_state == Sensor_state_type.RESET){
+	
+	if(sensor_state == SensorState.ERROR){
 		sensor_reset_btn.setBackground(Color.ORANGE);
 	}else{
 		sensor_reset_btn.setBackground(Color.LIGHT_GRAY);
 	}
-	if(sensor_state == Sensor_state_type.OFF){
-		sensor_off_btn.setBackground(Color.RED);
+	
+	if(sensor_state == SensorState.AVILABLE){
+		//TODO
+	}else{
+		//TODO
+	}
+	
+	if(sensor_state == SensorState.DISCONECTED){
+		sensor_off_btn.setBackground(Color.DARK_GRAY);
 	}else{
 		sensor_off_btn.setBackground(Color.LIGHT_GRAY);
 	}
@@ -104,24 +112,26 @@ public JPanel getGraphics(){
 		return sensor_switch;
 	}
 
+
 private class OnButtonHandler implements ActionListener
 {
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 		//TODO
-		sensor_state = Sensor_state_type.ON;
+		sensor_state = SensorState.ON;
 		updateButtonColors();
 	}
 }
 
+/*
 private class ResetButtonHandler implements ActionListener
 {
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 		//TODO
-		sensor_state = Sensor_state_type.RESET;
+		sensor_state = SensorState.RESET;
 		updateButtonColors();
 	}
 }
@@ -132,10 +142,11 @@ private class OffButtonHandler implements ActionListener
 	public void actionPerformed(ActionEvent e)
 	{
 		//TODO
-		sensor_state = Sensor_state_type.OFF;
+		sensor_state = SensorState.OFF;
 		updateButtonColors();
 	}
 }
+*/
 
 
 
