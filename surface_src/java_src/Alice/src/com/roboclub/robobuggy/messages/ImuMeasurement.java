@@ -1,6 +1,8 @@
 package com.roboclub.robobuggy.messages;
 
+import java.text.DateFormat;
 import java.text.Format;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -55,7 +57,18 @@ public class ImuMeasurement implements Message {
 	public void fromLogString(String str) {
 		String delims = ",";
 		String[] ar = str.split(delims);
-		timestamp = (Date) ;
+		
+		DateFormat formatter = null;
+        // Creating SimpleDateFormat with yyyyMMdd format e.g."20110914"
+        String yyyyMMdd = ar[0];
+        formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+			timestamp = (Date) formatter.parse(yyyyMMdd);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		aX = Float.parseFloat(ar[1]);
 		aY = Float.parseFloat(ar[2]);
 		aZ = Float.parseFloat(ar[3]);
