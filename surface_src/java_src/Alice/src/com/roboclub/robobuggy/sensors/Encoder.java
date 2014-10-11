@@ -15,6 +15,11 @@ public class Encoder implements Sensor {
 		Arduino.getInstance(); //makes sure that the arduino has been started 
 	}
 	
+	public boolean reset(){
+		//TODO
+		return false;
+	}
+	
 	//is run after the encoder gets new data to update internal sate variables 
 	public void updated()
 	{

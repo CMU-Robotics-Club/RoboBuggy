@@ -56,12 +56,15 @@ public final class Gui extends JFrame {
 		mainGuiPane = this;
 		Container pane = this.getContentPane();
 		pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
+		
 
 		try {
 			this.setIconImage(ImageIO.read(new File("images/rc_logo.png")));
 		} catch (Exception e) {
 			System.out.println("Unable to read icon image!");
 		}
+		
+		
 
 		// Initialize Analytics Window
 		graphs = new AnalyticsWindow();
@@ -80,6 +83,62 @@ public final class Gui extends JFrame {
 			}
 		});
 
+		JButton resetEncoders_btn = new JButton("Reset Encoders");
+		resetEncoders_btn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//TODO
+			}});
+		pane.add(resetEncoders_btn);
+		
+		JButton resetGPS_btn = new JButton("Reset GPS");
+		resetEncoders_btn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//TODO
+			}});
+		pane.add(resetGPS_btn);
+		
+		JButton recenterServo_btn = new JButton("Recenter Servo");
+		recenterServo_btn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//TODO
+			}});
+		pane.add(recenterServo_btn);
+		
+		JButton resetIMU_btn = new JButton("Reset IMU");
+		resetIMU_btn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//TODO
+			}});
+		pane.add(resetIMU_btn);
+		
+		JButton resetVision_btn = new JButton("Reset Vision");
+		resetVision_btn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//TODO
+			}});
+		pane.add(resetVision_btn);
+		
+		JButton resetLocalization_btn = new JButton("Reset localization");
+		resetLocalization_btn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//TODO
+			}});
+		pane.add(resetLocalization_btn);
+		
+		JButton NewLog_btn = new JButton("New Log");
+		resetEncoders_btn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//TODO
+			}});
+		pane.add(NewLog_btn);		
+		
 		this.pack();
 		this.setAlwaysOnTop(true);
 		this.setVisible(true);

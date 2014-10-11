@@ -120,6 +120,11 @@ public class GPS extends SerialConnection implements Sensor{
 		}
 	}
 	
+	public boolean reset(){
+		//TODO
+		return false;
+	}
+	
 	@Override
 	public SensorState getState() {
 		if(System.currentTimeMillis() - lastUpdateTime > SENSOR_TIME_OUT){

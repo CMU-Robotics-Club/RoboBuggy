@@ -60,6 +60,11 @@ public class IMU extends SerialConnection implements Sensor {
 
 	}
 
+	public boolean reset(){
+		//TODO
+		return false;
+	}
+	
 	@Override
 	public long timeOfLastUpdate() {
 		return lastUpdateTime;

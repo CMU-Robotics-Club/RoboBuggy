@@ -12,6 +12,10 @@ private Process externalProcess;
 long lastUpdateTime;
 private SensorState currentState;
 
+public boolean reset(){
+	//TODO
+	return false;
+}
 	
 //spans the vision system thread ( a c++ program which does our image processing)
 public VisionSystem(String string){	
