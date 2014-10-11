@@ -5,10 +5,10 @@ package com.roboclub.robobuggy.main;
 
 public class  config{
 //port index of the front camera 
-public static final int FRONT_CAM_INDEX = 0;
+public static final int FRONT_CAM_INDEX = 2;
 
 //port index of the rear (pushbar camera)
-public static final int REAR_CAM_INDEX = 1;
+public static final int REAR_CAM_INDEX = 3;
 
 //location of the executable that should be run for the camera sub system 
 public static final String VISION_SYSTEM_EXECUTABLE_LOCATION = "C:\\Users\\abc\\buggy-log\\VisionSystem.exe";
@@ -22,11 +22,11 @@ public static boolean ACTIVE_DEFAULT = false;
 public static boolean AUTONOMUS_DEFAULT = false;
 
 //sensor default settings (true for on false for off)
-public static boolean IMU_DEFAULT = true;
-public static boolean GPS_DEFAULT = true;
+public static boolean IMU_DEFAULT = false;
+public static boolean GPS_DEFAULT = false;
 public static boolean ENCODER_DEFAULT = true;
-public static boolean VISION_SYSTEM_DEFAULT = true;
-public static boolean COMMANDED_ANGLE_DEFAULT = true;
+public static boolean VISION_SYSTEM_DEFAULT = false;
+public static boolean COMMANDED_ANGLE_DEFAULT = false;
 
 //number of times that we will allow for the brakes to be deployed and still have the buggy run
 public static byte BRAKES_PER_FULL_PRESSURE = 4;  
