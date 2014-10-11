@@ -24,6 +24,21 @@ public class ImuMeasurement implements Message {
 
 	Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+	public ImuMeasurement(float aX, float aY, float aZ, 
+						float rX, float rY, float rZ, 
+						float mX, float mY, float mZ) {
+		this.aX = aX;
+		this.aY = aY;
+		this.aZ = aZ;
+		this.rX = rX;
+		this.rY = rY;
+		this.rZ = rZ;
+		this.mX = mX;
+		this.mY = mY;
+		this.mZ = mZ;
+	}
+	
+	
 	@Override
 	public String toLogString() {
 		// TODO Auto-generated method stub
@@ -40,7 +55,7 @@ public class ImuMeasurement implements Message {
 	public void fromLogString(String str) {
 		String delims = ",";
 		String[] ar = str.split(delims);
-		timestamp = Date.parse(ar[0]);
+		timestamp = (Date) ;
 		aX = Float.parseFloat(ar[1]);
 		aY = Float.parseFloat(ar[2]);
 		aZ = Float.parseFloat(ar[3]);
