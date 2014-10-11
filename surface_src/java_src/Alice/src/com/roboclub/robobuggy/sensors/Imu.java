@@ -51,13 +51,10 @@ public class Imu extends SerialConnection implements Sensor {
 	private SensorState currentState;
 
 	public Imu(String publishPath) {
-		super("IMU", BAUDRATE, HEADER);
+		super("IMU", BAUDRATE, HEADER, null);
 		super.addListener(new ImuListener());
 
 		imuPub = new Publisher("/sensor/IMU");
-
-		System.out.println("Initializing IMU");
-
 	}
 
 	public boolean reset(){

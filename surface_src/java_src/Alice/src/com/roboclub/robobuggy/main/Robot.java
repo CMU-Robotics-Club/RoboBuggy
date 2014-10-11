@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import com.roboclub.robobuggy.logging.RobotLogger;
+import com.roboclub.robobuggy.sensors.DriveActuator;
 import com.roboclub.robobuggy.sensors.Encoder;
 import com.roboclub.robobuggy.sensors.Gps;
 import com.roboclub.robobuggy.sensors.Imu;
@@ -37,23 +38,29 @@ public class Robot {
 			RobotLogger.getInstance();
 		}
 		
-		// TODO break apart the arduino
-		Robot.arduino = Arduino.getInstance();
-
 		// Initialize Sensor
 		if (config.GPS_DEFAULT) {
+			System.out.println("Initializing GPS Serial Connection");
 			Gps gps = new Gps("/sensors/GPS");
 			sensorList.add(gps);
 		}
 
 		if (config.IMU_DEFAULT) {
+			System.out.println("Initializing IMU Serial Connection");
 			Imu imu = new Imu("/sensors/IMU");
 			sensorList.add(imu);
 		}
 
 		if (config.ENCODER_DEFAULT) {
-			Encoder encoder = new Encoder("/sensors/Encoder");
+			System.out.println("Initializing Encoder Serial Connection");
+			Encoder encoder = new Encoder();
 			sensorList.add(encoder);
+		}
+
+		if (config.DRIVE_DEFAULT) {
+			System.out.println("Initializing Drive Serial Connection");
+			Arduino mega = new DriveActuator();
+			sensorList.add(mega);
 		}
 
 		if (config.VISION_SYSTEM_DEFAULT) {
@@ -85,15 +92,6 @@ public class Robot {
 			thisSensor.close();
 		}
 		System.exit(0);
-	}
-
-	/* Methods for Writing to Arduino */
-	public static void WriteAngle(int angle) {
-		arduino.writeAngle(angle);
-	}
-
-	public static void WriteBrakes(int angle) {
-		arduino.writeBrake(angle);
 	}
 
 	/* Methods for Updating Planner, Gui, and Logger */

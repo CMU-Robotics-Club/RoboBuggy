@@ -22,11 +22,11 @@ public static boolean ACTIVE_DEFAULT = false;
 public static boolean AUTONOMUS_DEFAULT = false;
 
 //sensor default settings (true for on false for off)
-public static boolean IMU_DEFAULT = false;
-public static boolean GPS_DEFAULT = false;
+public static boolean DRIVE_DEFAULT = false;
+public static boolean IMU_DEFAULT = true;
+public static boolean GPS_DEFAULT = true;
 public static boolean ENCODER_DEFAULT = true;
 public static boolean VISION_SYSTEM_DEFAULT = false;
-public static boolean COMMANDED_ANGLE_DEFAULT = false;
 
 //number of times that we will allow for the brakes to be deployed and still have the buggy run
 public static byte BRAKES_PER_FULL_PRESSURE = 4;  
