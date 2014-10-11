@@ -7,7 +7,7 @@ import com.roboclub.robobuggy.serial.SerialConnection;
 import com.roboclub.robobuggy.serial.SerialEvent;
 import com.roboclub.robobuggy.serial.SerialListener;
 
-public class IMU extends SerialConnection implements Sensor {
+public class Imu extends SerialConnection implements Sensor {
 	/* Constants for serial communication */
 	/** Header for choosing serial port */
 	private static final String HEADER = "#ACG=";
@@ -50,7 +50,7 @@ public class IMU extends SerialConnection implements Sensor {
 
 	private SensorState currentState;
 
-	public IMU(String publishPath) {
+	public Imu(String publishPath) {
 		super("IMU", BAUDRATE, HEADER);
 		super.addListener(new ImuListener());
 

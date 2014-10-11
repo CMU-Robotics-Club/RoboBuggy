@@ -5,8 +5,8 @@ import java.util.Date;
 
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.sensors.Encoder;
-import com.roboclub.robobuggy.sensors.GPS;
-import com.roboclub.robobuggy.sensors.IMU;
+import com.roboclub.robobuggy.sensors.Gps;
+import com.roboclub.robobuggy.sensors.Imu;
 import com.roboclub.robobuggy.sensors.Sensor;
 import com.roboclub.robobuggy.sensors.VisionSystem;
 import com.roboclub.robobuggy.serial.Arduino;
@@ -42,12 +42,12 @@ public class Robot {
 
 		// Initialize Sensor
 		if (config.GPS_DEFAULT) {
-			GPS gps = new GPS("/sensors/GPS");
+			Gps gps = new Gps("/sensors/GPS");
 			sensorList.add(gps);
 		}
 
 		if (config.IMU_DEFAULT) {
-			IMU imu = new IMU("/sensors/IMU");
+			Imu imu = new Imu("/sensors/IMU");
 			sensorList.add(imu);
 		}
 
