@@ -37,9 +37,8 @@ public class Gps extends SerialConnection implements Sensor{
 	private Publisher gpsPub;
 
 	public Gps(String publishPath) {
-		super("GPS", BAUDRATE, HEADER);
+		super("GPS", BAUDRATE, HEADER, null);
 		super.addListener(new GpsListener());
-		System.out.println("Initializing GPS");
 		gpsPub = new Publisher(publishPath);
 	}
 	

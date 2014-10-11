@@ -4,6 +4,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
 
+import com.roboclub.robobuggy.sensors.DriveActuator;
+import com.roboclub.robobuggy.sensors.Encoder;
+
 import gnu.io.*;
 
 public class SerialReader implements SerialPortEventListener {
@@ -24,7 +27,7 @@ public class SerialReader implements SerialPortEventListener {
 	private ArrayList<SerialListener> listeners;
 	
 	@SuppressWarnings("unchecked")
-	public SerialReader(String owner, int baud_rate, String header) {
+	public SerialReader(String owner, int baud_rate, String header, Integer ardType) {
 		listeners = new ArrayList<SerialListener>();
 		port_list = CommPortIdentifier.getPortIdentifiers();
 		connected = false;
@@ -55,7 +58,7 @@ public class SerialReader implements SerialPortEventListener {
 							msg[numRead++] = inByte;
 						}
 					
-						passed = checkHeader(msg, header, numRead);
+						passed = checkHeader(msg, header, numRead, ardType);
 						
 						if ( passed )	 {
 							port.notifyOnDataAvailable(true);
@@ -72,14 +75,14 @@ public class SerialReader implements SerialPortEventListener {
 						input.close();
 						output.close();
 					}  catch (Exception e) {
-						
+						e.printStackTrace();
 					}
 				}
 			}
 		}
 	}
 	
-	private boolean checkHeader(char[] msg, String header, int numRead) {
+	private boolean checkHeader(char[] msg, String header, int numRead, Integer ardType) {
 		int start = 0;
 		
 		if (header != null) {
@@ -95,7 +98,16 @@ public class SerialReader implements SerialPortEventListener {
 			}
 		} else {
 			for (int i = 0; i < (numRead-Arduino.MSG_LEN); i++) {
-				if (Arduino.validId(msg[i]) && msg[i+Arduino.MSG_LEN-1] == '\n') return true;
+				switch (ardType) {
+				case 0:
+					if (Encoder.validId(msg[i]) && msg[i+Arduino.MSG_LEN-1] == '\n') return true;
+					break;
+				case 1:
+					if (DriveActuator.validId(msg[i]) && msg[i+Arduino.MSG_LEN-1] == '\n') return true;
+					break;
+				default:
+				}
+					
 			}
 		}
 		
