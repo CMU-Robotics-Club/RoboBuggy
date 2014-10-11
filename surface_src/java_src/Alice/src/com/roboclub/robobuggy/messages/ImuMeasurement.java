@@ -36,7 +36,7 @@ public class ImuMeasurement implements Message {
 	@Override
 	public String toLogString() {
 		// TODO Auto-generated method stub
-		return Float.toString(aX + aY + aZ + rX + rY + rZ + mX + mY + mZ);
+		return Float.toString(aX) + ',' + Float.toString(aY) + ',' + Float.toString(aZ) + ',' + Float.toString(rX) + ',' + Float.toString(rY) + ',' + Float.toString(rZ) + ',' + Float.toString(mX) + ',' + Float.toString(mY) + ',' + Float.toString(mZ));
 	}
 
 	@Override
