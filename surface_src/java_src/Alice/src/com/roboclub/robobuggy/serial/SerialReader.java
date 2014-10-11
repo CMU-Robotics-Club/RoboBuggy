@@ -37,6 +37,7 @@ public class SerialReader implements SerialPortEventListener {
 			
 			if (port_id.getPortType() == CommPortIdentifier.PORT_SERIAL) {
 				if (!port_id.isCurrentlyOwned() ) {
+					System.out.println("name"+port_id.getName());
 					try {
 						port = (SerialPort)port_id.open(owner, TIMEOUT);
 						port.setInputBufferSize(BUFFER_SIZE);
@@ -84,8 +85,9 @@ public class SerialReader implements SerialPortEventListener {
 	
 	private boolean checkHeader(char[] msg, String header, int numRead, Integer ardType) {
 		int start = 0;
-		
+
 		if (header != null) {
+			System.out.println("Normal");
 			while ( start < numRead ) {
 				for (int i = 0; i < header.length(); i++) {
 					if (msg[i + start] != header.charAt(i)) {
@@ -97,6 +99,7 @@ public class SerialReader implements SerialPortEventListener {
 				start++;
 			}
 		} else {
+			System.out.println("Arduino");
 			for (int i = 0; i < (numRead-Arduino.MSG_LEN); i++) {
 				switch (ardType) {
 				case 0:
@@ -119,6 +122,10 @@ public class SerialReader implements SerialPortEventListener {
 		case SerialPortEvent.DATA_AVAILABLE:
 			try {
 				char data = (char)input.read();
+			/*	if(this.port_id.getName().equalsIgnoreCase("COM4")){
+					System.out.print(data);
+				}*/
+				
 				inputBuffer[index++] = data;
 				
 				if (data == '\n') {

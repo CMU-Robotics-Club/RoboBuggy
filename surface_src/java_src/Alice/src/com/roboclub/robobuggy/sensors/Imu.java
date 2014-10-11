@@ -94,6 +94,7 @@ public class Imu extends SerialConnection implements Sensor {
 			mY = value;
 			break;
 		case MZ:
+			System.out.println("outMZ");
 			mZ = value;
 			Robot.UpdateImu(aX, aY, aZ, rX, rY, rZ, mX, mY, mZ);
 			imuPub.publish(new ImuMeasurement(aX, aY, aZ, rX, rY, rZ, mX, mY,
@@ -119,6 +120,7 @@ public class Imu extends SerialConnection implements Sensor {
 		// TODO add avilable and on state update
 		public void onEvent(SerialEvent event) {
 			char[] tmp = event.getBuffer();
+			//System.out.println(tmp);
 			int index = 0;
 			boolean valid = true;
 			if (tmp != null && event.getLength() > HEADER.length()) {
@@ -126,6 +128,7 @@ public class Imu extends SerialConnection implements Sensor {
 				for (int i = HEADER.length(); i < event.getLength(); i++) {
 					if (tmp[i] == '\n') {
 						if (valid) {
+							setValue(index, Float.valueOf(curVal));
 							if (currentState == SensorState.ON) {
 								currentState = SensorState.ON;
 							} else {

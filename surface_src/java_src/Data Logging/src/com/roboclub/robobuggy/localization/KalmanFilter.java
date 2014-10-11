@@ -1,5 +1,5 @@
 package com.roboclub.robobuggy.localization;
-import org.opencv.core.Mat;
+//import org.opencv.core.Mat;
 
 public class KalmanFilter {
 	//TODO implement
@@ -8,9 +8,9 @@ public class KalmanFilter {
 	private Covariance thisCovariance;
 	
 	public KalmanFilter(){
-		reset();
+//		reset();
 	}
-		
+/*		
 	//TODO link in JBlas for matrix operations 
 	public void updateStep(Covariance thisCovarance,Mat updateMatrix,Mat measerment){
 		//TODO 
@@ -33,7 +33,7 @@ public class KalmanFilter {
 	public State getState(){
 		return thisState;
 	}
-	
+	*/
 	
 	
 }
