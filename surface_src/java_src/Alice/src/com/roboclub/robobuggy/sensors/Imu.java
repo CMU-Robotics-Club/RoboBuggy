@@ -7,7 +7,7 @@ import com.roboclub.robobuggy.serial.SerialConnection;
 import com.roboclub.robobuggy.serial.SerialEvent;
 import com.roboclub.robobuggy.serial.SerialListener;
 
-public class IMU extends SerialConnection implements Sensor {
+public class Imu extends SerialConnection implements Sensor {
 	/* Constants for serial communication */
 	/** Header for choosing serial port */
 	private static final String HEADER = "#ACG=";
@@ -31,12 +31,10 @@ public class IMU extends SerialConnection implements Sensor {
 	private static final int MY = 7;
 	/** Index of magnetometer z data as received during serial communication */
 	private static final int MZ = 8;
-	//how long the system should wait until a sensor switches to Disconnected
+	// how long the system should wait until a sensor switches to Disconnected
 	private static final long SENSOR_TIME_OUT = 5000;
-	
-	
-	long lastUpdateTime;
 
+	long lastUpdateTime;
 
 	private float aX;
 	private float aY;
@@ -52,8 +50,7 @@ public class IMU extends SerialConnection implements Sensor {
 
 	private SensorState currentState;
 
-	
-	public IMU(String publishPath) {
+	public Imu(String publishPath) {
 		super("IMU", BAUDRATE, HEADER);
 		super.addListener(new ImuListener());
 
@@ -62,8 +59,9 @@ public class IMU extends SerialConnection implements Sensor {
 		System.out.println("Initializing IMU");
 
 	}
-	
-	public long timeOfLastUpdate(){
+
+	@Override
+	public long timeOfLastUpdate() {
 		return lastUpdateTime;
 	}
 
@@ -116,7 +114,7 @@ public class IMU extends SerialConnection implements Sensor {
 	 */
 	private class ImuListener implements SerialListener {
 		@Override
-		//TODO add avilable and on state update 
+		// TODO add avilable and on state update
 		public void onEvent(SerialEvent event) {
 			char[] tmp = event.getBuffer();
 			int index = 0;
@@ -125,10 +123,10 @@ public class IMU extends SerialConnection implements Sensor {
 				String curVal = "";
 				for (int i = HEADER.length(); i < event.getLength(); i++) {
 					if (tmp[i] == '\n') {
-						if(valid){
-							if(currentState == SensorState.ON){
+						if (valid) {
+							if (currentState == SensorState.ON) {
 								currentState = SensorState.ON;
-							}else{
+							} else {
 								currentState = SensorState.AVILABLE;
 							}
 							lastUpdateTime = System.currentTimeMillis();
@@ -155,10 +153,10 @@ public class IMU extends SerialConnection implements Sensor {
 			}
 		}
 	}
-	
+
 	@Override
 	public SensorState getState() {
-		if(System.currentTimeMillis() - lastUpdateTime > SENSOR_TIME_OUT){
+		if (System.currentTimeMillis() - lastUpdateTime > SENSOR_TIME_OUT) {
 			currentState = SensorState.DISCONECTED;
 		}
 		return currentState;

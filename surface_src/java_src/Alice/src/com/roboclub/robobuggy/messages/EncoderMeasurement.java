@@ -17,6 +17,17 @@ public class EncoderMeasurement implements Message {
 		this.velocity = velocity;
 		this.timestamp = new Date();
 	}
-	
+
+	@Override
+	public String toLogString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void fromLogString(String str) {
+		// TODO Auto-generated method stub
+
+	}
 
 }

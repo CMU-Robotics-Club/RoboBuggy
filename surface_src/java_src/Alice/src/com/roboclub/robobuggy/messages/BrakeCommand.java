@@ -18,13 +18,14 @@ public class BrakeCommand implements Message {
 
 	@Override
 	public String toLogString() {
+		return null;
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void fromLogString() {
+	public void fromLogString(String str) {
 		// TODO Auto-generated method stub
-		return null;
+
 	}
 }
