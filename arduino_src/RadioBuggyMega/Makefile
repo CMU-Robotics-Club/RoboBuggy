@@ -7,6 +7,7 @@
 
 BOARD_TAG     = mega2560
 ISP_PORT      = /dev/tty.asdf
+DEVICE_PATH   = /dev/tty.asdf
 USER_LIB_PATH = ../lib
 ARDUINO_LIBS  = rbserialmessages Servo
 

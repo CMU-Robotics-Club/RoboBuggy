@@ -37,8 +37,8 @@
 //High pulse lasts under 1/21 of period
 
 //For 2.4 GHz racecar reciever
-#define PWM_TIME 45000   //the pwn period (us)
-#define PWM_THRESH 130
+#define PWM_TIME 18370   //the pwn period (us)
+#define PWM_THRESH 1300
 #define BIG_PULSE 8
 //High pulse lasts over 1/8 of period
 #define SHORT_PULSE 19
