@@ -1,5 +1,7 @@
 package com.roboclub.robobuggy.messages;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.roboclub.robobuggy.ros.Message;
@@ -19,24 +21,19 @@ public class ImuMeasurement implements Message {
 	public float mY;
 	public float mZ;
 	
-	public ImuMeasurement(float aX, float aY, float aZ, 
-							float rX, float rY, float rZ, 
-							float mX, float mY, float mZ) {
-		this.aX = aX;
-		this.aY = aY;
-		this.aZ = aZ;
-		this.rX = rX;
-		this.rY = rY;
-		this.rZ = rZ;
-		this.mX = mX;
-		this.mY = mY;
-		this.mZ = mZ;
-	}
+
+	Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	@Override
 	public String toLogString() {
 		// TODO Auto-generated method stub
-		return Float.toString(aX) + ',' + Float.toString(aY) + ',' + Float.toString(aZ) + ',' + Float.toString(rX) + ',' + Float.toString(rY) + ',' + Float.toString(rZ) + ',' + Float.toString(mX) + ',' + Float.toString(mY) + ',' + Float.toString(mZ));
+		
+		String s = formatter.format(timestamp);
+		return  s + ',' + Float.toString(aX) + ',' + Float.toString(aY) + ',' 
+				+ Float.toString(aZ) + ',' + Float.toString(rX) + ',' 
+				+ Float.toString(rY) + ',' + Float.toString(rZ) + ',' 
+				+ Float.toString(mX) + ',' + Float.toString(mY) + ',' 
+				+ Float.toString(mZ);
 	}
 
 	@Override
