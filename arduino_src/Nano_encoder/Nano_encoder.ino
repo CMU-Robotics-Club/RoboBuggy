@@ -39,22 +39,17 @@ void setup()
 void loop()
 {
   // send identity header
-  g_rbserialmessages.SendSingle(RBSM_MID_RESERVED, RBSM_DID_DRIVE_ENCODER);
+  g_rbserialmessages.Send(RBSM_MID_DEVICE_ID, RBSM_DID_DRIVE_ENCODER);
 
   // get data for this loop
   g_this_loop_time = millis();
   g_this_enc_count = encoder_get_count();
 
   // send new data
-  g_rbserialmessages.SendDouble(RBSM_MID_ENC_TICKS_LAST_H,
-                                RBSM_MID_ENC_TICKS_LAST_L,
-                                g_this_enc_count - g_last_enc_count);
-  g_rbserialmessages.SendDouble(RBSM_MID_ENC_TICKS_RESET_H,
-                                RBSM_MID_ENC_TICKS_RESET_L,
-                                g_this_enc_count);
-  g_rbserialmessages.SendDouble(RBSM_MID_ENC_TIMESTAMP_H,
-                                RBSM_MID_ENC_TIMESTAMP_L,
-                                g_this_loop_time);
+  g_rbserialmessages.Send(RBSM_MID_ENC_TICKS_LAST,
+                          g_this_enc_count - g_last_enc_count);
+  g_rbserialmessages.Send(RBSM_MID_ENC_TICKS_RESET, g_this_enc_count);
+  g_rbserialmessages.Send(RBSM_MID_ENC_TIMESTAMP, g_this_loop_time);
 
   // set carry over values
   g_last_loop_time = g_this_loop_time;

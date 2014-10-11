@@ -4,8 +4,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
 
-import com.roboclub.robobuggy.sensors.Arduino;
-
 import gnu.io.*;
 
 public class SerialReader implements SerialPortEventListener {
@@ -97,8 +95,7 @@ public class SerialReader implements SerialPortEventListener {
 			}
 		} else {
 			for (int i = 0; i < (numRead-Arduino.MSG_LEN); i++) {
-				System.out.println(i + " : " + Integer.toHexString(msg[i]) + " " + Integer.toHexString(msg[i+Arduino.MSG_LEN-1]));
-				if (Arduino.validId(msg[i]) && msg[i+Arduino.MSG_LEN-1] == 0x10) return true;
+				if (Arduino.validId(msg[i]) && msg[i+Arduino.MSG_LEN-1] == '\n') return true;
 			}
 		}
 		

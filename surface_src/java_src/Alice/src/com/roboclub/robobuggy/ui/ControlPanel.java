@@ -18,6 +18,7 @@ import javax.swing.Timer;
 
 import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.main.config;
+import com.roboclub.robobuggy.sensors.SensorState;
 
 public class ControlPanel extends JPanel {
 	private static final long serialVersionUID = -924045896215455343L;
@@ -72,12 +73,12 @@ public class ControlPanel extends JPanel {
 	    JPanel bottom_panel = new JPanel();
 	    bottom_panel.setLayout(new GridLayout(1, 2));
 	    
-	     gps_switch = new SensorSwitchPanel("GPS",Sensor_state_type.ON);
-	     frontCam_switch = new SensorSwitchPanel("Front Cam",Sensor_state_type.ON);
-	     backCam_switch = new SensorSwitchPanel("Back Cam",Sensor_state_type.ON);
-	     encoders_switch = new SensorSwitchPanel("Encoders",Sensor_state_type.ON);
-	     IMU_switch = new SensorSwitchPanel("IMU",Sensor_state_type.ON);
-	     controlInputs_switch = new SensorSwitchPanel("Control Inputs",Sensor_state_type.ON);
+	     gps_switch = new SensorSwitchPanel("GPS",SensorState.DISCONECTED);
+	     frontCam_switch = new SensorSwitchPanel("Front Cam",SensorState.DISCONECTED);
+	     backCam_switch = new SensorSwitchPanel("Back Cam",SensorState.DISCONECTED);
+	     encoders_switch = new SensorSwitchPanel("Encoders",SensorState.DISCONECTED);
+	     IMU_switch = new SensorSwitchPanel("IMU",SensorState.DISCONECTED);
+	     controlInputs_switch = new SensorSwitchPanel("Control Inputs",SensorState.DISCONECTED);
 	     logging_switch = new SensorSwitchPanel("Logging",config.logging);
 	     //autonomous_switch = new SensorSwitchPanel("Autonomous",Robot.getInstance().get_autonomus());
 	    		 

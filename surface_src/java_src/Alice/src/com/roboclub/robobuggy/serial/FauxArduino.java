@@ -1,4 +1,4 @@
-package com.roboclub.robobuggy.sensors;
+package com.roboclub.robobuggy.serial;
 
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.WheelAngleCommand;

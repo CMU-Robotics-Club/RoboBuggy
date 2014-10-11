@@ -5,12 +5,14 @@
 #include <cstdlib>
 #include <string>
 #include <fstream>
+#include <csignal>
 
 using namespace std;
 using namespace cv;
 
 string getFilename(int id) {
 	int i  = 0;
+	//TODO read from config
 	string path = "C:\\Users\\abc\\buggy-log\\run";
 
 	for (;;) {
@@ -40,12 +42,32 @@ string getFilename(int id) {
 
 }
 
+int num_cameras;
+Mat src,dst;
+VideoCapture feeds[5];
+
+void signalHandler(int signum)
+{
+std::cout<<"Interrupt signal ("<<signum <<") received.\n";
+for(int i = 0; i < num_cameras; i++) {
+	feeds[i].release();
+}
+
+src.release();
+dst.release();
+}
+
+
+
+
 int main(int argc, char* argv[]) {
+
+	//setsup signal handler so that the program can exit gracefully
+	signal(SIGINT,signalHandler);
+
 	int cameras[5];
 	char* names[] = {"camera1", "camera2", "camera3", "camera4", "camera5"};
-	int num_cameras = 0;
-	Mat src,dst;
-	VideoCapture feeds[5];
+	num_cameras = 0;
 	VideoWriter files[5];
 	Size img_size;
 	bool running = true;

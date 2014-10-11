@@ -25,9 +25,9 @@ import javax.swing.Timer;
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.main.config;
-import com.roboclub.robobuggy.sensors.Arduino;
-import com.roboclub.robobuggy.sensors.Gps;
-import com.roboclub.robobuggy.sensors.Imu;
+import com.roboclub.robobuggy.sensors.GPS;
+import com.roboclub.robobuggy.sensors.IMU;
+import com.roboclub.robobuggy.serial.Arduino;
 
 public final class Gui extends JFrame {
 	private static final long serialVersionUID = 670947948979376738L;

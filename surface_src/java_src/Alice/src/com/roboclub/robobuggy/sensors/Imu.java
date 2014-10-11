@@ -3,10 +3,11 @@ package com.roboclub.robobuggy.sensors;
 import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.ros.Publisher;
+import com.roboclub.robobuggy.serial.SerialConnection;
 import com.roboclub.robobuggy.serial.SerialEvent;
 import com.roboclub.robobuggy.serial.SerialListener;
 
-public class Imu extends Sensor {
+public class IMU extends SerialConnection implements Sensor {
 	/* Constants for serial communication */
 	/** Header for choosing serial port */
 	private static final String HEADER = "#ACG=";
@@ -30,6 +31,12 @@ public class Imu extends Sensor {
 	private static final int MY = 7;
 	/** Index of magnetometer z data as received during serial communication */
 	private static final int MZ = 8;
+	//how long the system should wait until a sensor switches to Disconnected
+	private static final long SENSOR_TIME_OUT = 5000;
+	
+	
+	long lastUpdateTime;
+
 
 	private float aX;
 	private float aY;
@@ -43,7 +50,10 @@ public class Imu extends Sensor {
 
 	private Publisher imuPub;
 
-	public Imu(String publishPath) {
+	private SensorState currentState;
+
+	
+	public IMU(String publishPath) {
 		super("IMU", BAUDRATE, HEADER);
 		super.addListener(new ImuListener());
 
@@ -51,6 +61,10 @@ public class Imu extends Sensor {
 
 		System.out.println("Initializing IMU");
 
+	}
+	
+	public long timeOfLastUpdate(){
+		return lastUpdateTime;
 	}
 
 	private void setValue(int index, float value) {
@@ -102,14 +116,23 @@ public class Imu extends Sensor {
 	 */
 	private class ImuListener implements SerialListener {
 		@Override
+		//TODO add avilable and on state update 
 		public void onEvent(SerialEvent event) {
 			char[] tmp = event.getBuffer();
 			int index = 0;
-
+			boolean valid = true;
 			if (tmp != null && event.getLength() > HEADER.length()) {
 				String curVal = "";
 				for (int i = HEADER.length(); i < event.getLength(); i++) {
 					if (tmp[i] == '\n') {
+						if(valid){
+							if(currentState == SensorState.ON){
+								currentState = SensorState.ON;
+							}else{
+								currentState = SensorState.AVILABLE;
+							}
+							lastUpdateTime = System.currentTimeMillis();
+						}
 						break;
 					} else if (tmp[i] == ',') {
 						try {
@@ -119,6 +142,9 @@ public class Imu extends Sensor {
 							index++;
 						} catch (Exception e) {
 							System.out.println("Failed to parse IMU message");
+							currentState = SensorState.ERROR;
+							lastUpdateTime = System.currentTimeMillis();
+							valid = false;
 							return;
 						}
 
@@ -128,5 +154,13 @@ public class Imu extends Sensor {
 				}
 			}
 		}
+	}
+	
+	@Override
+	public SensorState getState() {
+		if(System.currentTimeMillis() - lastUpdateTime > SENSOR_TIME_OUT){
+			currentState = SensorState.DISCONECTED;
+		}
+		return currentState;
 	}
 }
