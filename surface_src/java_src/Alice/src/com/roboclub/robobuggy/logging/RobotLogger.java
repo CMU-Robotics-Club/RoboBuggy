@@ -56,6 +56,13 @@ public final class RobotLogger {
 		}
 	}
 	
+	//closes the current log and creates a new one 
+	public void startNewLog(){
+		//TODO send signal to vision to start a new log also 
+		CloseLog();
+		CreateLog();
+	}
+	
 	public static void CreateLog() {
 		getInstance();
 		

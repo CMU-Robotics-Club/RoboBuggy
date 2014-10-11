@@ -6,7 +6,10 @@ import com.roboclub.robobuggy.serial.SerialConnection;
 // spans a new instance of the c++ vision system which will be connected to
 // for vision code
 public class VisionSystem implements Sensor{
+private SensorType thisSensorType;
 
+
+	
 private Process externalProcess;
 
 long lastUpdateTime;
@@ -30,6 +33,8 @@ public VisionSystem(String string){
 	
 }
 
+
+
 //TODO connect input stream and output stream of vision system to java 
 
 //returns true if the Visions System was closed properly otherwise return false
@@ -52,6 +57,11 @@ public SensorState getState() {
 @Override
 public boolean isConnected() {
 	return false;
+}
+
+@Override
+public SensorType getSensorType() {
+	return thisSensorType;
 }
 
 

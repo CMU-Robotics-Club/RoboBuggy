@@ -9,6 +9,7 @@ public class Encoder implements Sensor {
 	private SensorState currentSensorState;
 	// Set up publishers
 	private Publisher encoderPub = new Publisher("/sensor/encoder");
+	private SensorType thisSensorType;
 	
 	public Encoder(String publishPath) 
 	{
@@ -59,6 +60,11 @@ public class Encoder implements Sensor {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public SensorType getSensorType() {
+		return thisSensorType;
 	}
 
 }
