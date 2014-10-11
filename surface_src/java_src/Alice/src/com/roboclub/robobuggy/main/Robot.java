@@ -5,8 +5,8 @@ import java.util.Date;
 
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.sensors.Encoder;
-import com.roboclub.robobuggy.sensors.Gps;
-import com.roboclub.robobuggy.sensors.Imu;
+import com.roboclub.robobuggy.sensors.GPS;
+import com.roboclub.robobuggy.sensors.IMU;
 import com.roboclub.robobuggy.sensors.Sensor;
 import com.roboclub.robobuggy.sensors.VisionSystem;
 import com.roboclub.robobuggy.serial.Arduino;
@@ -32,17 +32,22 @@ public class Robot {
 		System.out.println("starting Robot");
 		autonomous = config.AUTONOMUS_DEFAULT;
 
+		//creates a log file even if no data is used
+		if(config.getInstance().logging){
+			RobotLogger.getInstance();
+		}
+		
 		// TODO break apart the arduino
 		Robot.arduino = Arduino.getInstance();
 
 		// Initialize Sensor
 		if (config.GPS_DEFAULT) {
-			Gps gps = new Gps("/sensors/GPS");
+			GPS gps = new GPS("/sensors/GPS");
 			sensorList.add(gps);
 		}
 
 		if (config.IMU_DEFAULT) {
-			Imu imu = new Imu("/sensors/IMU");
+			IMU imu = new IMU("/sensors/IMU");
 			sensorList.add(imu);
 		}
 

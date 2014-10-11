@@ -16,7 +16,7 @@ import com.roboclub.robobuggy.ui.Gui;
 /**
  * Logs data from the sensors
  * 
- * @author Joe Doyle
+ * @author Joe Doyle  && Trevor Decker
  */
 public final class RobotLogger {
 	public final Logger message;
@@ -31,7 +31,7 @@ public final class RobotLogger {
 			if (!logDir.exists()) {
 				logDir.mkdirs();
 				System.out.println("Created directory: " + logDir.getAbsolutePath());
-				
+			}
 				try {
 					instance = new RobotLogger(logDir);
 				} catch (Exception e) {
@@ -39,7 +39,6 @@ public final class RobotLogger {
 					e.printStackTrace();
 				}
 				
-			}
 		}
 		return instance;
 		

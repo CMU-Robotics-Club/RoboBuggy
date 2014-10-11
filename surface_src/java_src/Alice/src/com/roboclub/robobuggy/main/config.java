@@ -14,7 +14,7 @@ public static final int REAR_CAM_INDEX = 3;
 public static final String VISION_SYSTEM_EXECUTABLE_LOCATION = "C:\\Users\\abc\\buggy-log\\VisionSystem.exe";
 
 //default logging state, should the buggy start logging as soon as this program is started
-public static boolean LOGGING_DEFAULT = false;
+public static boolean LOGGING_DEFAULT = true;
 
 //default running state, should the buggy program start running as soon as this program is started
 public static boolean ACTIVE_DEFAULT = false;

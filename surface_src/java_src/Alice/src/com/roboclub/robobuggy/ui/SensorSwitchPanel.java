@@ -63,7 +63,7 @@ public SensorSwitchPanel(String sensorName,SensorState sensorState){
 		sensor_reset_btn = new JButton("RESET");
 		sensor_switch.add(sensor_reset_btn);
 	//	ResetButtonHandler  resetHandler = new ResetButtonHandler();
-	//	sensor_reset_btn.addActionListener(resetHandler);
+	//	sensor_resettn.addActionListener(resetHandler);
 		
 		sensor_off_btn = new JButton("OFF");
 		sensor_switch.add(sensor_off_btn);

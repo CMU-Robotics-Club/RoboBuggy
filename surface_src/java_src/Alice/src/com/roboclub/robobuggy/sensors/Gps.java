@@ -8,7 +8,7 @@ import com.roboclub.robobuggy.serial.SerialEvent;
 import com.roboclub.robobuggy.serial.SerialListener;
 import com.roboclub.robobuggy.ui.Gui;
 
-public class Gps extends SerialConnection implements Sensor{
+public class GPS extends SerialConnection implements Sensor{
 	/* Constants for Serial Communication */
 	/** Header for picking correct serial port */
 	private static final String HEADER = "$GPGGA";
@@ -34,7 +34,7 @@ public class Gps extends SerialConnection implements Sensor{
 	
 	private Publisher gpsPub;
 
-	public Gps(String publishPath) {
+	public GPS(String publishPath) {
 		super("GPS", BAUDRATE, HEADER);
 		super.addListener(new GpsListener());
 		System.out.println("Initializing GPS");
