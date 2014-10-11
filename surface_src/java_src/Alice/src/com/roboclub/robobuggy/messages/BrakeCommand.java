@@ -15,6 +15,5 @@ public class BrakeCommand implements Message {
 		this.down = brake_is_down;
 		this.timestamp = new Date();
 	}
-	
 
 }

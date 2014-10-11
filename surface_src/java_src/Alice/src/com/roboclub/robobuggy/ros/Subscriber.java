@@ -13,7 +13,7 @@ public class Subscriber {
 	private MessageListener callback;
 
 	private Deque<Message> local_inbox = new ArrayDeque<Message>();
-	//private Lock local_inbox_lock = new ReentrantLock();
+	// private Lock local_inbox_lock = new ReentrantLock();
 
 	private Thread worker;
 
