@@ -75,6 +75,10 @@ public class Robot {
 		}
 	}
 
+	public ArrayList<Sensor> getSensorList(){
+		return sensorList;
+	}
+	
 	// shuts down the robot and all of its child sensors
 	public static void ShutDown() {
 		for (Sensor thisSensor : sensorList) {

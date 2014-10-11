@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.imageio.ImageIO;
@@ -25,6 +26,7 @@ import javax.swing.Timer;
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.main.config;
+import com.roboclub.robobuggy.sensors.Sensor;
 
 public final class Gui extends JFrame {
 	private static final long serialVersionUID = 670947948979376738L;
@@ -74,7 +76,7 @@ public final class Gui extends JFrame {
 		pane.add(addTimeShow());
 		pane.add(addFileShow());
 		pane.add(addGraphShow());
-
+		
 		// Close ports and close window upon exit
 		this.addWindowListener(new java.awt.event.WindowAdapter() {
 			@Override
@@ -84,15 +86,19 @@ public final class Gui extends JFrame {
 		});
 
 		JButton resetEncoders_btn = new JButton("Reset Encoders");
+		resetEncoders_btn.setSize(new Dimension(WIDTH,200));
+		resetEncoders_btn.setSize(new Dimension(HEIGHT,100));
 		resetEncoders_btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//TODO
+				//todo
 			}});
 		pane.add(resetEncoders_btn);
 		
 		JButton resetGPS_btn = new JButton("Reset GPS");
-		resetEncoders_btn.addActionListener(new ActionListener() {
+		resetGPS_btn.setSize(new Dimension(WIDTH,200));
+		resetGPS_btn.setSize(new Dimension(HEIGHT,100));
+		resetGPS_btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				//TODO
@@ -100,6 +106,8 @@ public final class Gui extends JFrame {
 		pane.add(resetGPS_btn);
 		
 		JButton recenterServo_btn = new JButton("Recenter Servo");
+		recenterServo_btn.setSize(new Dimension(WIDTH,100));
+		recenterServo_btn.setSize(new Dimension(HEIGHT,50));
 		recenterServo_btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -108,6 +116,8 @@ public final class Gui extends JFrame {
 		pane.add(recenterServo_btn);
 		
 		JButton resetIMU_btn = new JButton("Reset IMU");
+		resetIMU_btn.setSize(new Dimension(WIDTH,100));
+		resetIMU_btn.setSize(new Dimension(HEIGHT,50));
 		resetIMU_btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -116,6 +126,8 @@ public final class Gui extends JFrame {
 		pane.add(resetIMU_btn);
 		
 		JButton resetVision_btn = new JButton("Reset Vision");
+		resetVision_btn.setSize(new Dimension(WIDTH,100));
+		resetVision_btn.setSize(new Dimension(HEIGHT,50));
 		resetVision_btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -124,6 +136,8 @@ public final class Gui extends JFrame {
 		pane.add(resetVision_btn);
 		
 		JButton resetLocalization_btn = new JButton("Reset localization");
+		resetLocalization_btn.setSize(new Dimension(WIDTH,100));
+		resetLocalization_btn.setSize(new Dimension(HEIGHT,50));
 		resetLocalization_btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -132,6 +146,8 @@ public final class Gui extends JFrame {
 		pane.add(resetLocalization_btn);
 		
 		JButton NewLog_btn = new JButton("New Log");
+		NewLog_btn.setSize(new Dimension(WIDTH,100));
+		NewLog_btn.setSize(new Dimension(HEIGHT,50));
 		resetEncoders_btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
