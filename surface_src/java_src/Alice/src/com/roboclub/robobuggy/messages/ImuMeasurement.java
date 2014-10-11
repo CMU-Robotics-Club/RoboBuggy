@@ -38,7 +38,18 @@ public class ImuMeasurement implements Message {
 
 	@Override
 	public void fromLogString(String str) {
-		// TODO Auto-generated method stub
+		String delims = ",";
+		String[] ar = str.split(delims);
+		timestamp = Date.parse(ar[0]);
+		aX = Float.parseFloat(ar[1]);
+		aY = Float.parseFloat(ar[2]);
+		aZ = Float.parseFloat(ar[3]);
+		rX = Float.parseFloat(ar[4]);
+		rY = Float.parseFloat(ar[5]);
+		rZ = Float.parseFloat(ar[6]);
+		mX = Float.parseFloat(ar[7]);
+		mX = Float.parseFloat(ar[8]);
+		mX = Float.parseFloat(ar[9]);
 		
 	}
 }
