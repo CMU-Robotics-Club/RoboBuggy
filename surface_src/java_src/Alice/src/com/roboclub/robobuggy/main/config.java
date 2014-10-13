@@ -14,6 +14,8 @@ public static final int REAR_CAM_INDEX = 3;
 public static final String VISION_SYSTEM_EXECUTABLE_LOCATION = "C:\\Users\\Robot\\Documents\\GitHub\\RoboBuggy\\surface_src\\VisionSystem\\Debug\\VisionSystem.exe";
 //"C:\\Users\\abc\\buggy-log\\VisionSystem.exe";
 
+public static final String LOG_FILE_LOCATION = "C:\\Users\\Robot\\Documents\\BuggyLog";
+
 //default logging state, should the buggy start logging as soon as this program is started
 public static boolean LOGGING_DEFAULT = true;
 

@@ -109,7 +109,9 @@ public class Robot {
 			// gui.UpdateGps(latitude, longitude);
 			RobotLogger rl = RobotLogger.getInstance();
 			long time_in_millis = new Date().getTime();
-			rl.sensor.logGps(time_in_millis, latitude, longitude);
+			if(config.active){
+				rl.sensor.logGps(time_in_millis, latitude, longitude);
+			}
 		}
 
 		// TODO Update planner
@@ -132,7 +134,9 @@ public class Robot {
 			compass[0] = mX;
 			compass[1] = mY;
 			compass[2] = mZ;
-			rl.sensor.logImu(time_in_millis, acc, gyro, compass);
+			if(config.active){
+				rl.sensor.logImu(time_in_millis, acc, gyro, compass);
+			}
 		}
 
 		// TODO Update planner
@@ -157,7 +161,9 @@ public class Robot {
 	public static void UpdateEnc(int encTime, int encReset, int encTick) {
 		if (config.logging) {
 			RobotLogger rl = RobotLogger.getInstance();
+			if(config.active){
 			rl.sensor.logEncoder(new Date().getTime(),encTick,encReset,encTime);
+			}
 		}
 
 		// TODO update planner

@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
 
+import com.roboclub.robobuggy.main.config;
 import com.roboclub.robobuggy.ui.Gui;
 
 /**
@@ -20,14 +21,14 @@ import com.roboclub.robobuggy.ui.Gui;
  */
 public final class RobotLogger {
 	public final Logger message;
-	public final SensorLogger sensor;
+	public static SensorLogger sensor;
 	private static RobotLogger instance;
 	private static File logDir;
 	private static File logFolder;
 	
 	public static RobotLogger getInstance(){
 		if(instance == null){
-			logDir = new File("C:\\Users\\abc\\buggy-log");
+			logDir = new File(config.LOG_FILE_LOCATION);
 			
 			if (!logDir.exists()) {
 				logDir.mkdirs();
@@ -36,7 +37,6 @@ public final class RobotLogger {
 				try {
 					instance = new RobotLogger(logDir);
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				
@@ -63,7 +63,7 @@ public final class RobotLogger {
 		CreateLog();
 	}
 	
-	public static void CreateLog() {
+	public static  void CreateLog() {
 		getInstance();
 		
 		if (instance != null) {
@@ -72,6 +72,12 @@ public final class RobotLogger {
 			logFolder.mkdirs();
 			
 			File msgFile = new File(logFolder, "messages.log");
+			try {
+				sensor =  new SensorLogger(logFolder,new Date());
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			
 			try {
 				msgFile.createNewFile();
@@ -94,6 +100,6 @@ public final class RobotLogger {
 	
 	private RobotLogger(File logdir) throws Exception {
 		this.message = Logger.getLogger("RoboBuggy");
-		this.sensor = new SensorLogger(logdir,new Date());
+		this.sensor = null; 
 	}
 }
