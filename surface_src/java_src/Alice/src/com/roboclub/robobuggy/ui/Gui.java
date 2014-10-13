@@ -8,6 +8,8 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -152,6 +154,14 @@ public final class Gui extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				RobotLogger.getInstance().startNewLog();
+				OutputStream stream = Robot.getCameraThread();
+				if (stream != null) {
+					try {
+						stream.write((byte)'r');
+					} catch (Exception ex){
+						System.out.println("Failed to start vision recording");
+					}
+				}
 			}});
 		pane.add(NewLog_btn);		
 		

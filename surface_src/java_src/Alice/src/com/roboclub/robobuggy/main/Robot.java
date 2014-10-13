@@ -1,5 +1,6 @@
 package com.roboclub.robobuggy.main;
 
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -10,8 +11,10 @@ import com.roboclub.robobuggy.sensors.Encoder;
 import com.roboclub.robobuggy.sensors.Gps;
 import com.roboclub.robobuggy.sensors.Imu;
 import com.roboclub.robobuggy.sensors.Sensor;
+import com.roboclub.robobuggy.sensors.SensorType;
 import com.roboclub.robobuggy.sensors.VisionSystem;
 import com.roboclub.robobuggy.serial.Arduino;
+import com.roboclub.robobuggy.ui.Gui;
 
 public class Robot {
 	private static Robot instance;
@@ -91,8 +94,20 @@ public class Robot {
 		return kf; 
 	}
 	
-	public ArrayList<Sensor> getSensorList(){
+	public static ArrayList<Sensor> getSensorList(){
 		return sensorList;
+	}
+	
+	public static OutputStream getCameraThread() {
+		if (!sensorList.isEmpty()) {
+			for (Sensor sensor : sensorList) {
+				if (sensor.getSensorType() == SensorType.VISION) {
+					return ((VisionSystem)sensor).getStream();
+				}
+			}
+		}
+		
+		return null;
 	}
 	
 	// shuts down the robot and all of its child sensors
@@ -199,5 +214,35 @@ public class Robot {
 	public boolean get_autonomus() {
 		return autonomous;
 	}
-
+	
+	public static void main(String args[]) {
+		//ArrayList<Integer> cameras = new ArrayList<Integer>();  //TODO have this set the cameras to use 
+		config.getInstance();//must be run at least once
+		for (int i = 0; i < args.length; i++) {
+		/*	if (args[i].equalsIgnoreCase("-c")) {
+				if (i+1 < args.length) {
+					cameras.add(Integer.valueOf(args[1+i++]));
+				}
+			} else*/
+			if (args[i].equalsIgnoreCase("-g")) {
+				config.getInstance().GUI_ON = false;
+			}else if (args[i].equalsIgnoreCase("+g")){
+				config.getInstance().GUI_ON = true;
+			} else if (args[i].equalsIgnoreCase("-r")) {
+				config.getInstance().active = false;
+			}else if (args[i].equalsIgnoreCase("+r")){
+				config.getInstance().active = true;
+			}
+		}
+		
+		if(config.GUI_ON){
+			Gui.getInstance();
+		}
+		//starts the robot
+		if(config.DATA_PLAY_BACK_DEFAULT){
+			new SimRobot();
+		}else{
+			Robot.getInstance();
+		}	
+	}
 }
