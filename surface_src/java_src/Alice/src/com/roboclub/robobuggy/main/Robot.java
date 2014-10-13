@@ -156,7 +156,8 @@ public class Robot {
 
 	public static void UpdateEnc(int encTime, int encReset, int encTick) {
 		if (config.logging) {
-			// TODO add logging
+			RobotLogger rl = RobotLogger.getInstance();
+			rl.sensor.logEncoder(new Date().getTime(),encTick,encReset,encTime);
 		}
 
 		// TODO update planner

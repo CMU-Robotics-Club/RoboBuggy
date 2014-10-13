@@ -135,11 +135,11 @@ public class SerialReader implements SerialPortEventListener {
 				
 				// Reset buffer index in overflow
 				if (index == BUFFER_SIZE) {
-					System.out.println("Overflow!");
+					System.out.println(this.getName() + "Overflow!");
 					index = 0;
 				}
 			} catch (Exception e) {
-				System.out.println("Exception, Why?");
+				System.out.println(this.getName() + "Exception, Why?");
 				e.printStackTrace();
 				return;
 			}

@@ -114,7 +114,7 @@ public final class SensorLogger {
 		for(int i=0;i<_keys.length;++i) {
 			String k = _keys[i];
 			if(k == "Timestamp") {
-				line[i] = "" + timestamp;
+				line[i] = "" + timestamp;  
 				continue;
 			}
 			for(int j=0;j<currkeys.length;++j) {
@@ -142,6 +142,6 @@ public final class SensorLogger {
 		_log(time,_encoderKeys,new String[]{ "" + encTickLast,"" + encReset,"" + encoderTime });
 	}
 	public void logGps(long time_in_millis,double d,double e) {
-		_log(time_in_millis,_gpsKeys,new String[]{ "" + d,"" + e });
+		_log(time_in_millis,_gpsKeys,new String[]{ "" + d,"" + e +"/n"});
 	}
 }
