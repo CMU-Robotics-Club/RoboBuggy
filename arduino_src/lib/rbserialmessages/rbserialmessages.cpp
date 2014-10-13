@@ -72,9 +72,6 @@ uint8_t RBSerialMessages::AppendMessageToBuffer(uint8_t id,
 uint8_t RBSerialMessages::InitMessageBuffer() {
   uint8_t buffer_pos = 0;
 
-  // message header
-  buffer_out_[buffer_pos++] = 0;
-
   // write null terminator just in case. note no increment
   buffer_out_[buffer_pos] = RBSM_NULL_TERM;
 

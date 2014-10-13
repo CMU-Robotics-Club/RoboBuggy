@@ -2,8 +2,6 @@ package com.roboclub.robobuggy.ros;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import com.roboclub.robobuggy.ros.internal.MessageServer;
 
@@ -13,7 +11,7 @@ public class Subscriber {
 	private MessageListener callback;
 
 	private Deque<Message> local_inbox = new ArrayDeque<Message>();
-	//private Lock local_inbox_lock = new ReentrantLock();
+	// private Lock local_inbox_lock = new ReentrantLock();
 
 	private Thread worker;
 
@@ -42,25 +40,27 @@ public class Subscriber {
 		@Override
 		public void run() {
 
-			while (true) {
-				// Retrieve the latest measurements
-				synchronized (local_inbox) {
-					while (local_inbox.peek() != null) {
-						try {
-							local_inbox.wait();
-						} catch (InterruptedException ie) {
-							System.out.println("much awoken for no reason, such wow");
-						}
-						
-						Message m = local_inbox.poll();
-						if (m != null) {
-							callback.actionPerformed(m);
-						} else {
-							System.out.println("It looks like there is a race condition in Subscriber");
-						}
+			// while (true) {
+			// Retrieve the latest measurements
+			synchronized (local_inbox) {
+				while (local_inbox.peek() != null) {
+					try {
+						local_inbox.wait();
+					} catch (InterruptedException ie) {
+						System.out
+								.println("much awoken for no reason, such wow");
+					}
+
+					Message m = local_inbox.poll();
+					if (m != null) {
+						callback.actionPerformed(m);
+					} else {
+						System.out
+								.println("It looks like there is a race condition in Subscriber");
 					}
 				}
 			}
+			// }
 		}
 	}
 }

@@ -27,15 +27,47 @@ $ cd directory/with/.ino
 $ make
 ```
 
-Upload:
+Upload (on a sane arduino board):
 
 ```
 $ cd directory/with/.ino
-$ make upload ISP_PORT=/dev/tty.usbserial
+$ make upload DEVICE_PATH=/dev/tty.usbserial######
 ```
+
+The arduino nanos we have on the buggy right now do not have the proper auto-reset circuit, so they need to be programmed by ISP. This should able to be done with `make ispload`, but that command doesn't seem to work correctly in the makefile. I have been using the following command:
 
 ```
  /Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/bin/avrdude  -p atmega328p -C /Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/etc/avrdude.conf -c avrispmkii -P usb -U flash:w:build-nano328/Nano_encoder.hex:i
+```
+
+## Useful Commands
+
+Extract Hex Image From Flash Using AVR Programmer:
+
+```
+Arduino flash image can be extracted using this command:
+
+avrdude -p m328p -Dn -c avrispmkII -U flash:r:outfile.bin:r
+
+Replace "m328p" with the identifier for the MCU on your arduino
+board. For the robobuggy, this is most likely "m2560" for atmega2560.
+
+The list of possible MCU device ids can be displayed with:
+
+avrdude -p ?
+
+Replace "avrispmkII" with the identifier for you AVR programmer.
+The list of possible programmer ids can be displayed with:
+
+avrdude -c ?
+
+If avrdude cannot find your device, you may need to specify the
+serial port it is connected to. Use the -P option as follows:
+
+avrdude -P <port>
+
+Where <port> is a path to the serial port in /dev/
+
 ```
 
 ## Makefiles

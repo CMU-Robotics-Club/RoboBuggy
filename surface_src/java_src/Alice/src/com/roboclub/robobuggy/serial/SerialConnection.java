@@ -3,8 +3,8 @@ package com.roboclub.robobuggy.serial;
 public class SerialConnection {
 	protected SerialReader port;
 	
-	public SerialConnection(String owner, int baud_rate, String header) {
-		port = new SerialReader(owner, baud_rate, header);
+	public SerialConnection(String owner, int baud_rate, String header, Integer ardType) {
+		port = new SerialReader(owner, baud_rate, header, ardType);
 		
 		if (!port.isConnected()) {
 			System.out.println("Failed to Create Connection for: " + owner);

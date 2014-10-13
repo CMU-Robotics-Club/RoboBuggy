@@ -19,17 +19,17 @@ public class SimRobot {
 	public static void UpdateEnc(double distance, double velocity) {
 		if (config.logging) {
 			RobotLogger rl = RobotLogger.getInstance();
-		    long time_in_millis = new Date().getTime();
-		    //rl.sensor.logEncoder(time_in_millis, encTickLast, encReset, encTime);
+			long time_in_millis = new Date().getTime();
+			// rl.sensor.logEncoder(time_in_millis, encTickLast, encReset,
+			// encTime);
 		}
-		
-		//TODO Update planner
+
+		// TODO Update planner
 	}
 	
 	public static void UpdateAngle(int angle) {
 		if (config.logging) {
-			//TODO add logging
+			// TODO add logging
 		}
-		
 	}
 }

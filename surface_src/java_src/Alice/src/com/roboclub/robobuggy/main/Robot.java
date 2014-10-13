@@ -3,8 +3,14 @@ package com.roboclub.robobuggy.main;
 import java.util.ArrayList;
 import java.util.Date;
 
+import com.roboclub.robobuggy.localization.KalmanFilter;
 import com.roboclub.robobuggy.logging.RobotLogger;
-import com.roboclub.robobuggy.sensors.*;
+import com.roboclub.robobuggy.sensors.DriveActuator;
+import com.roboclub.robobuggy.sensors.Encoder;
+import com.roboclub.robobuggy.sensors.Gps;
+import com.roboclub.robobuggy.sensors.Imu;
+import com.roboclub.robobuggy.sensors.Sensor;
+import com.roboclub.robobuggy.sensors.VisionSystem;
 import com.roboclub.robobuggy.serial.Arduino;
 
 public class Robot {
@@ -13,7 +19,8 @@ public class Robot {
 	private static Arduino arduino;
 	private static boolean autonomous;
 	private static ArrayList<Sensor> sensorList;
-
+	private KalmanFilter kf;
+	
 	// private ArrayList<Markers> markers
 
 	public static Robot getInstance() {
@@ -25,37 +32,48 @@ public class Robot {
 
 	private Robot() {
 		sensorList = new ArrayList<>();
+		kf = new KalmanFilter();
 		System.out.println("starting Robot");
 		autonomous = config.AUTONOMUS_DEFAULT;
 
-		// TODO break apart the arduino
-		Robot.arduino = new Arduino();
-
-		// Initialize Sensor
-		if (config.GPS_DEFAULT)
-		{
-			GPS gps = new GPS("/sensors/GPS");
-		    sensorList.add(gps);
+		//creates a log file even if no data is used
+		if(config.getInstance().logging){
+			System.out.println("starting Logging \n");
+			RobotLogger.getInstance();
 		}
 		
-		if (config.IMU_DEFAULT)
-		{
-			IMU imu = new IMU("/sensors/IMU");
+		// Initialize Sensor
+		if (config.GPS_DEFAULT) {
+			System.out.println("Initializing GPS Serial Connection");
+			Gps gps = new Gps("/sensors/GPS");
+			sensorList.add(gps);
+		}
+
+		if (config.IMU_DEFAULT) {
+			System.out.println("Initializing IMU Serial Connection");
+			Imu imu = new Imu("/sensors/IMU");
 			sensorList.add(imu);
 		}
-		
-		if(config.ENCODER_DEFAULT)
-		{
-			Encoder encoder = new Encoder("/sensors/Encoder");
+
+		if (config.ENCODER_DEFAULT) {
+			System.out.println("Initializing Encoder Serial Connection");
+			Encoder encoder = new Encoder();
 			sensorList.add(encoder);
 		}
-		
-		if (config.VISION_SYSTEM_DEFAULT){
-			VisionSystem vision = new VisionSystem("/sensors/vision");
-		    sensorList.add(vision);
+
+		if (config.DRIVE_DEFAULT) {
+			System.out.println("Initializing Drive Serial Connection");
+			Arduino mega = new DriveActuator();
+			sensorList.add(mega);
 		}
-		
-		    // if ((encAng.isConnected() || gps.isConnected() || imu.isConnected())
+
+		if (config.VISION_SYSTEM_DEFAULT) {
+			System.out.println("start Vision \n");
+			VisionSystem vision = new VisionSystem("/sensors/vision");
+			sensorList.add(vision);
+		}
+
+		// if ((encAng.isConnected() || gps.isConnected() || imu.isConnected())
 		// && logging) {
 		if (config.active) {
 			// Robot.gui = new Gui(Robot.arduino, Robot.gps, Robot.imu);
@@ -69,22 +87,20 @@ public class Robot {
 		}
 	}
 
+	public KalmanFilter getKalmanFilter(){
+		return kf; 
+	}
+	
+	public ArrayList<Sensor> getSensorList(){
+		return sensorList;
+	}
+	
 	// shuts down the robot and all of its child sensors
 	public static void ShutDown() {
-		for(Sensor thisSensor:sensorList)
-		{
+		for (Sensor thisSensor : sensorList) {
 			thisSensor.close();
 		}
 		System.exit(0);
-	}
-
-	/* Methods for Writing to Arduino */
-	public static void WriteAngle(int angle) {
-		arduino.writeAngle(angle);
-	}
-
-	public static void WriteBrakes(int angle) {
-		arduino.writeBrake(angle);
 	}
 
 	/* Methods for Updating Planner, Gui, and Logger */
@@ -93,7 +109,9 @@ public class Robot {
 			// gui.UpdateGps(latitude, longitude);
 			RobotLogger rl = RobotLogger.getInstance();
 			long time_in_millis = new Date().getTime();
-			rl.sensor.logGps(time_in_millis, latitude, longitude);
+			if(config.active){
+				rl.sensor.logGps(time_in_millis, latitude, longitude);
+			}
 		}
 
 		// TODO Update planner
@@ -116,7 +134,9 @@ public class Robot {
 			compass[0] = mX;
 			compass[1] = mY;
 			compass[2] = mZ;
-			rl.sensor.logImu(time_in_millis, acc, gyro, compass);
+			if(config.active){
+				rl.sensor.logImu(time_in_millis, acc, gyro, compass);
+			}
 		}
 
 		// TODO Update planner
@@ -140,7 +160,10 @@ public class Robot {
 
 	public static void UpdateEnc(int encTime, int encReset, int encTick) {
 		if (config.logging) {
-			// TODO add logging
+			RobotLogger rl = RobotLogger.getInstance();
+			if(config.active){
+			rl.sensor.logEncoder(new Date().getTime(),encTick,encReset,encTime);
+			}
 		}
 
 		// TODO update planner

@@ -4,6 +4,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
 
+import com.roboclub.robobuggy.sensors.DriveActuator;
+import com.roboclub.robobuggy.sensors.Encoder;
+
 import gnu.io.*;
 
 public class SerialReader implements SerialPortEventListener {
@@ -24,7 +27,7 @@ public class SerialReader implements SerialPortEventListener {
 	private ArrayList<SerialListener> listeners;
 	
 	@SuppressWarnings("unchecked")
-	public SerialReader(String owner, int baud_rate, String header) {
+	public SerialReader(String owner, int baud_rate, String header, Integer ardType) {
 		listeners = new ArrayList<SerialListener>();
 		port_list = CommPortIdentifier.getPortIdentifiers();
 		connected = false;
@@ -34,6 +37,7 @@ public class SerialReader implements SerialPortEventListener {
 			
 			if (port_id.getPortType() == CommPortIdentifier.PORT_SERIAL) {
 				if (!port_id.isCurrentlyOwned() ) {
+					System.out.println("name"+port_id.getName());
 					try {
 						port = (SerialPort)port_id.open(owner, TIMEOUT);
 						port.setInputBufferSize(BUFFER_SIZE);
@@ -55,7 +59,7 @@ public class SerialReader implements SerialPortEventListener {
 							msg[numRead++] = inByte;
 						}
 					
-						passed = checkHeader(msg, header, numRead);
+						passed = checkHeader(msg, header, numRead, ardType);
 						
 						if ( passed )	 {
 							port.notifyOnDataAvailable(true);
@@ -72,17 +76,18 @@ public class SerialReader implements SerialPortEventListener {
 						input.close();
 						output.close();
 					}  catch (Exception e) {
-						
+						e.printStackTrace();
 					}
 				}
 			}
 		}
 	}
 	
-	private boolean checkHeader(char[] msg, String header, int numRead) {
+	private boolean checkHeader(char[] msg, String header, int numRead, Integer ardType) {
 		int start = 0;
-		
+
 		if (header != null) {
+			System.out.println("Normal");
 			while ( start < numRead ) {
 				for (int i = 0; i < header.length(); i++) {
 					if (msg[i + start] != header.charAt(i)) {
@@ -94,9 +99,18 @@ public class SerialReader implements SerialPortEventListener {
 				start++;
 			}
 		} else {
+			System.out.println("Arduino");
 			for (int i = 0; i < (numRead-Arduino.MSG_LEN); i++) {
-				System.out.println(i + " : " + Integer.toHexString(msg[i]) + " " + Integer.toHexString(msg[i+Arduino.MSG_LEN-1]));
-				if (Arduino.validId(msg[i]) && msg[i+Arduino.MSG_LEN-1] == 0x10) return true;
+				switch (ardType) {
+				case 0:
+					if (Encoder.validId(msg[i]) && msg[i+Arduino.MSG_LEN-1] == '\n') return true;
+					break;
+				case 1:
+					if (DriveActuator.validId(msg[i]) && msg[i+Arduino.MSG_LEN-1] == '\n') return true;
+					break;
+				default:
+				}
+					
 			}
 		}
 		
@@ -108,6 +122,10 @@ public class SerialReader implements SerialPortEventListener {
 		case SerialPortEvent.DATA_AVAILABLE:
 			try {
 				char data = (char)input.read();
+			/*	if(this.port_id.getName().equalsIgnoreCase("COM4")){
+					System.out.print(data);
+				}*/
+				
 				inputBuffer[index++] = data;
 				
 				if (data == '\n') {
@@ -117,11 +135,11 @@ public class SerialReader implements SerialPortEventListener {
 				
 				// Reset buffer index in overflow
 				if (index == BUFFER_SIZE) {
-					System.out.println("Overflow!");
+					System.out.println(this.getName() + "Overflow!");
 					index = 0;
 				}
 			} catch (Exception e) {
-				System.out.println("Exception, Why?");
+				System.out.println(this.getName() + "Exception, Why?");
 				e.printStackTrace();
 				return;
 			}

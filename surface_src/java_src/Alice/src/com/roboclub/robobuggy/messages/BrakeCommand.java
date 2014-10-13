@@ -15,6 +15,17 @@ public class BrakeCommand implements Message {
 		this.down = brake_is_down;
 		this.timestamp = new Date();
 	}
-	
 
+	@Override
+	public String toLogString() {
+		return null;
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void fromLogString(String str) {
+		// TODO Auto-generated method stub
+
+	}
 }

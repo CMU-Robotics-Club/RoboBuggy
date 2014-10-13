@@ -1,13 +1,14 @@
-/* Watchdog Library. Woof! woof!
- * 	Cats beware! Meow.
+/* Watchdog Library.
  * 
- * The watchdog library checks everytime its called how long time has passed
- * between change in signals. If the time passed between signals is more than
- * the threshold initialized in the begining, it enters the fail case. In the case
+ * @file watchdog.c
+ *
+ * The watchdog library checks how much time has passed between change in signals
+ * every time its called . If the time passed between signals is more than the 
+ * threshold initialized in the beginning, it enters the fail case. In the case
  * of buggy, it drops the brakes. 
  * 
- * The watchdog can be fed, preferably with a bone, everytime a signal is made. 
- * ie. rc_available is true. If the dog has been fed recently, then the time last fed
+ * The watchdog can be fed, preferably with a bone, every time a signal is made. 
+ * i.e. rc_available is true. If the dog has been fed recently, then the time last fed
  * is reset to the current time. 
  *
  * @author: Audrey Yeoh (ayeoh)

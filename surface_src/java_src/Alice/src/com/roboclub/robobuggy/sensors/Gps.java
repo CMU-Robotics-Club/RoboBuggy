@@ -8,7 +8,7 @@ import com.roboclub.robobuggy.serial.SerialEvent;
 import com.roboclub.robobuggy.serial.SerialListener;
 import com.roboclub.robobuggy.ui.Gui;
 
-public class GPS extends SerialConnection implements Sensor{
+public class Gps extends SerialConnection implements Sensor{
 	/* Constants for Serial Communication */
 	/** Header for picking correct serial port */
 	private static final String HEADER = "$GPGGA";
@@ -22,17 +22,28 @@ public class GPS extends SerialConnection implements Sensor{
 	private static final int LONG_NUM = 3;
 	/** Index of longitude direction as received during serial communication */
 	private static final int LONG_DIR = 4;
+	//how long the system should wait until a sensor switches to Disconnected
+	private static final long SENSOR_TIME_OUT = 5000;
+	private SensorType thisSensorType;
+
 	
+	private SensorState currentState;
+
 	private float latitude;
 	private float longitude;
+	long lastUpdateTime;
+
 	
 	private Publisher gpsPub;
 
-	public GPS(String publishPath) {
-		super("GPS", BAUDRATE, HEADER);
+	public Gps(String publishPath) {
+		super("GPS", BAUDRATE, HEADER, null);
 		super.addListener(new GpsListener());
-		System.out.println("Initializing GPS");
 		gpsPub = new Publisher(publishPath);
+	}
+	
+	public long timeOfLastUpdate(){
+		return lastUpdateTime;
 	}
 	
 	private float parseLat(String latNum) {
@@ -82,6 +93,14 @@ public class GPS extends SerialConnection implements Sensor{
 							case LONG_DIR:
 								if (curVal.equalsIgnoreCase("W")) longitude = -1 * longitude;
 								gpsPub.publish(new GpsMeasurement(latitude, longitude));
+								
+								//got a valid reading updates currentState accordingly
+								if(currentState == SensorState.ON){
+									currentState = SensorState.ON;
+								}else{
+									currentState = SensorState.AVILABLE;
+								}
+								lastUpdateTime = System.currentTimeMillis();
 								return;
 							}
 							
@@ -89,6 +108,8 @@ public class GPS extends SerialConnection implements Sensor{
 							index++;
 						} catch (Exception e) {
 							System.out.println("Failed to parse gps message");
+							currentState = SensorState.ERROR;
+							lastUpdateTime = System.currentTimeMillis();
 							return;
 						}
 						
@@ -98,5 +119,23 @@ public class GPS extends SerialConnection implements Sensor{
 				}
 			}
 		}
+	}
+	
+	public boolean reset(){
+		//TODO
+		return false;
+	}
+	
+	@Override
+	public SensorState getState() {
+		if(System.currentTimeMillis() - lastUpdateTime > SENSOR_TIME_OUT){
+			currentState = SensorState.DISCONECTED;
+		}
+		return currentState;
+	}
+
+	@Override
+	public SensorType getSensorType() {
+		return thisSensorType;
 	}
 }

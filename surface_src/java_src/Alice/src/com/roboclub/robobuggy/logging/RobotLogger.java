@@ -11,35 +11,35 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
 
+import com.roboclub.robobuggy.main.config;
 import com.roboclub.robobuggy.ui.Gui;
 
 /**
  * Logs data from the sensors
  * 
- * @author Joe Doyle
+ * @author Joe Doyle  && Trevor Decker
  */
 public final class RobotLogger {
 	public final Logger message;
-	public final SensorLogger sensor;
+	public static SensorLogger sensor;
 	private static RobotLogger instance;
 	private static File logDir;
+	private static File logFolder;
 	
 	public static RobotLogger getInstance(){
 		if(instance == null){
-			logDir = new File("C:\\Users\\abc\\buggy-log");
+			logDir = new File(config.LOG_FILE_LOCATION);
 			
 			if (!logDir.exists()) {
 				logDir.mkdirs();
 				System.out.println("Created directory: " + logDir.getAbsolutePath());
-				
+			}
 				try {
 					instance = new RobotLogger(logDir);
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				
-			}
 		}
 		return instance;
 		
@@ -56,12 +56,28 @@ public final class RobotLogger {
 		}
 	}
 	
-	public static void CreateLog() {
+	//closes the current log and creates a new one 
+	public void startNewLog(){
+		//TODO send signal to vision to start a new log also 
+		CloseLog();
+		CreateLog();
+	}
+	
+	public static  void CreateLog() {
 		getInstance();
 		
 		if (instance != null) {
 			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-			File msgFile = new File(logDir,df.format( new Date()) + "-messages.log");
+			logFolder = new File(logDir,df.format( new Date()));
+			logFolder.mkdirs();
+			
+			File msgFile = new File(logFolder, "messages.log");
+			try {
+				sensor =  new SensorLogger(logFolder,new Date());
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			
 			try {
 				msgFile.createNewFile();
@@ -70,7 +86,7 @@ public final class RobotLogger {
 				Handler handler = new StreamHandler(new FileOutputStream(msgFile),
 						new SimpleFormatter());
 				instance.message.addHandler(handler);
-				System.out.println("Created Log File: " + msgFile.getName());
+				System.out.println("Created Log File: " + msgFile.getAbsolutePath());
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 				throw new RuntimeException("Could not open message log file (" + msgFile + ")!");
@@ -84,6 +100,6 @@ public final class RobotLogger {
 	
 	private RobotLogger(File logdir) throws Exception {
 		this.message = Logger.getLogger("RoboBuggy");
-		this.sensor = new SensorLogger(logdir,new Date());
+		this.sensor = null; 
 	}
 }

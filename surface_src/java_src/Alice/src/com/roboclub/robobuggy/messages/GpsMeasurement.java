@@ -13,10 +13,22 @@ public class GpsMeasurement implements Message {
 	public boolean north;
 	public float longt;
 	public boolean west;
-	
+
 	public GpsMeasurement(float latitude, float longitude) {
 		latt = latitude;
 		longt = longitude;
+	}
+
+	@Override
+	public String toLogString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void fromLogString(String str) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

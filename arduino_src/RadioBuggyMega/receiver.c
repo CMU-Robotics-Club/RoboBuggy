@@ -7,10 +7,12 @@
  *
  * @author Matt Sebek (msebek)
  * @author Zach Dawson (zsd)
+ *
+ * These functions are used to connect/communicate with
+ * the RC radio receiver.
  */
 #include <Arduino.h>
 #include "receiver.h"
-
 
 #define AIL_LEFTMOST 2000
 #define AIL_RIGHTMOST 980
@@ -35,8 +37,8 @@
 //High pulse lasts under 1/21 of period
 
 //For 2.4 GHz racecar reciever
-#define PWM_TIME 18370
-#define PWM_THRESH 130
+#define PWM_TIME 18370   //the pwn period (us)
+#define PWM_THRESH 1300
 #define BIG_PULSE 8
 //High pulse lasts over 1/8 of period
 #define SHORT_PULSE 19

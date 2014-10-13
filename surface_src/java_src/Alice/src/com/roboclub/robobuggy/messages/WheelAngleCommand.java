@@ -15,6 +15,17 @@ public class WheelAngleCommand implements Message {
 		this.angle = angle;
 		this.timestamp = new Date();
 	}
-	
+
+	@Override
+	public String toLogString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void fromLogString(String str) {
+		// TODO Auto-generated method stub
+
+	}
 
 }
