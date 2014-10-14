@@ -46,10 +46,9 @@ void watchdog_fail(){
 }
 
 void setup()  {
-  Serial.begin(9600);
   // Initialize serial connections
   Serial1.begin(9600); // debug messages
-  g_rbserialmessages.Begin(&Serial2); // command/telemetry serial connection
+  g_rbserialmessages.Begin(&Serial); // command/telemetry serial connection
 
   // Initialize Buggy
   // Pins 2 and 3: pin 2 is thr, pin 3 is ail
@@ -109,7 +108,6 @@ void loop() {
       // brake has been reset
       g_brake_needs_reset = 0;
     }
-    Serial.println(smoothed_thr);
   }
 
   // Always run watchdog to check if connection is lost
