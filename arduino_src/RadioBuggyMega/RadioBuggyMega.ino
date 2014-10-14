@@ -100,13 +100,13 @@ void loop() {
     smoothed_thr = filter_loop(&thr_state, raw_thr);
     // TODO make this code...less...something
     if(smoothed_thr < 70) {
-      // read as disengaged
-      g_brake_state_engaged = 0;
-    } else {
       // read as engaged
       g_brake_state_engaged = 1;
       // brake has been reset
       g_brake_needs_reset = 0;
+    } else {
+      // read as disengaged
+      g_brake_state_engaged = 0;
     }
   }
 
