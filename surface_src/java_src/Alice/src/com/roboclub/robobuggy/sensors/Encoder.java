@@ -83,7 +83,7 @@ public class Encoder extends Arduino {
 				break;
 			case ENC_TICK:
 				encTickLast = parseInt(tmp[1], tmp[2], tmp[3], tmp[4]);
-				System.out.println("Time: " + encTime + ", Reset: " + encReset + ", Ticks: " + encTickLast);
+				//System.out.println("Time: " + encTime + ", Reset: " + encReset + ", Ticks: " + encTickLast);
 				Robot.UpdateEnc(encTime, encReset, encTickLast);
 				break;
 			case ERROR:

@@ -70,14 +70,15 @@ public class Gps extends SerialConnection implements Sensor{
 			
 			if (tmp != null && event.getLength() > HEADER.length()) {
 				String curVal = "";
-				
+				//System.out.println("Passed");
 				// Filter messages by header
 				for (int i = 0; i < HEADER.length(); i++) {
 					if (tmp[i] != HEADER.charAt(i)) return;
 				}
-				
+				//System.out.println("Passed2");
 				// Parse message data
-				for (int i = HEADER.length()+1; i < length; i++ ) {
+				int numCharInGPS = 44;
+				for (int i = HEADER.length()+1; i < length && i < numCharInGPS; i++ ) {
 					if (tmp[i] == ',' || tmp[i] == '\n') {
 						try {
 							switch ( index ) {
@@ -93,7 +94,7 @@ public class Gps extends SerialConnection implements Sensor{
 							case LONG_DIR:
 								if (curVal.equalsIgnoreCase("W")) longitude = -1 * longitude;
 								gpsPub.publish(new GpsMeasurement(latitude, longitude));
-								
+								System.out.println("gpsMessage: lat:"+latitude +"lon:"+longitude); 
 								//got a valid reading updates currentState accordingly
 								if(currentState == SensorState.ON){
 									currentState = SensorState.ON;
@@ -101,7 +102,7 @@ public class Gps extends SerialConnection implements Sensor{
 									currentState = SensorState.AVILABLE;
 								}
 								lastUpdateTime = System.currentTimeMillis();
-								return;
+								break;
 							}
 							
 							curVal = "";

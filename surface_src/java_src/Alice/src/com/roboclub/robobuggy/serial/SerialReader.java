@@ -38,7 +38,7 @@ public class SerialReader implements SerialPortEventListener {
 			
 			if (port_id.getPortType() == CommPortIdentifier.PORT_SERIAL) {
 				if (!port_id.isCurrentlyOwned() ) {
-					System.out.println("name"+port_id.getName());
+					System.out.println("Testing Port: "+port_id.getName());
 					try {
 						port = (SerialPort)port_id.open(owner, TIMEOUT);
 						port.setInputBufferSize(BUFFER_SIZE);
@@ -88,7 +88,6 @@ public class SerialReader implements SerialPortEventListener {
 		int start = 0;
 
 		if (header != null) {
-			System.out.println("Normal");
 			while ( start < numRead ) {
 				for (int i = 0; i < header.length(); i++) {
 					if (msg[i + start] != header.charAt(i)) {
@@ -100,7 +99,6 @@ public class SerialReader implements SerialPortEventListener {
 				start++;
 			}
 		} else {
-			System.out.println("Arduino");
 			for (int i = 0; i < (numRead-Arduino.MSG_LEN); i++) {
 				switch (ardType) {
 				case 0:
@@ -123,27 +121,30 @@ public class SerialReader implements SerialPortEventListener {
 		case SerialPortEvent.DATA_AVAILABLE:
 			try {
 				char data = (char)input.read();
+				//if(port_id.getName().equalsIgnoreCase("com5")){
+					//System.out.println("data:"+data+ " index:"+index);
+				//}
+				//if(data == '$' ){
+					//notifyListeners(index);
+					//index = 0;
+				//}
+					inputBuffer[index++] = data;
+			
 				
-				inputBuffer[index++] = data;
-				
-				if (data == '\n') {
-					notifyListeners();					
+				if (data == '\n' || data == '\r') {
+					notifyListeners(index);
 					index = 0;
 				}
 				
 				// Reset buffer index in overflow
-				if (index == BUFFER_SIZE) {
+				if (index > BUFFER_SIZE-50) {
+					notifyListeners(index);
 					System.out.println(this.getName() + " overflowed!");
-					input.reset();
 					index = 0;
 				}
 			} catch (Exception e) {
 				System.out.println(this.getName() + " exception!");
-				try {
-					input.reset();
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
+				e.printStackTrace();
 			}
 			break;
 		default:
@@ -151,10 +152,10 @@ public class SerialReader implements SerialPortEventListener {
 		}
 	}
 	
-	private void notifyListeners() {
+	private void notifyListeners(int ind) {
 		if (null != listeners && !listeners.isEmpty()) {
 			for (SerialListener listener : listeners) {
-				listener.onEvent(new SerialEvent(inputBuffer, index));
+				listener.onEvent(new SerialEvent(inputBuffer, ind));
 			}
 		}
 	}

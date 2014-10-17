@@ -97,15 +97,15 @@ public class Imu extends SerialConnection implements Sensor {
 			mY = value;
 			break;
 		case MZ:
-			System.out.println("outMZ");
+			//System.out.println("outMZ");
 			mZ = value;
 			Robot.UpdateImu(aX, aY, aZ, rX, rY, rZ, mX, mY, mZ);
 			imuPub.publish(new ImuMeasurement(aX, aY, aZ, rX, rY, rZ, mX, mY,
 					mZ));
-			System.out.format(
-					"IMU Values: aX: %f aY: %f aZ: %f rX: %f rY: %f rZ: %f "
-							+ "mX: %f mY: %f mZ: %f \n", aX, aY, aZ, rX, rY,
-					rZ, mX, mY, mZ);
+			//System.out.format(
+			//		"IMU Values: aX: %f aY: %f aZ: %f rX: %f rY: %f rZ: %f "
+			//				+ "mX: %f mY: %f mZ: %f \n", aX, aY, aZ, rX, rY,
+			//		rZ, mX, mY, mZ);
 			break;
 		default:
 			return;
@@ -129,6 +129,7 @@ public class Imu extends SerialConnection implements Sensor {
 			if (tmp != null && event.getLength() > HEADER.length()) {
 				String curVal = "";
 				for (int i = HEADER.length(); i < event.getLength(); i++) {
+					try {
 					if (tmp[i] == '\n') {
 						if (valid) {
 							setValue(index, Float.valueOf(curVal));
@@ -141,21 +142,19 @@ public class Imu extends SerialConnection implements Sensor {
 						}
 						break;
 					} else if (tmp[i] == ',') {
-						try {
 							setValue(index, Float.valueOf(curVal));
 
 							curVal = "";
 							index++;
-						} catch (Exception e) {
-							System.out.println("Failed to parse IMU message");
-							currentState = SensorState.ERROR;
-							lastUpdateTime = System.currentTimeMillis();
-							valid = false;
-							return;
-						}
-
 					} else {
 						curVal += tmp[i];
+					}
+					} catch (Exception e) {
+						System.out.println("Failed to parse IMU message");
+						currentState = SensorState.ERROR;
+						lastUpdateTime = System.currentTimeMillis();
+						valid = false;
+						return;
 					}
 				}
 			}
