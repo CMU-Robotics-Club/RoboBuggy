@@ -1,11 +1,13 @@
 package com.roboclub.robobuggy.main;
 
+import java.io.BufferedOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 
 import com.roboclub.robobuggy.localization.KalmanFilter;
 import com.roboclub.robobuggy.logging.RobotLogger;
+import com.roboclub.robobuggy.sensors.CLCamera;
 import com.roboclub.robobuggy.sensors.DriveActuator;
 import com.roboclub.robobuggy.sensors.Encoder;
 import com.roboclub.robobuggy.sensors.Gps;
@@ -23,6 +25,7 @@ public class Robot {
 	private static boolean autonomous;
 	private static ArrayList<Sensor> sensorList;
 	private KalmanFilter kf;
+	private static VisionSystem vision;
 	
 	// private ArrayList<Markers> markers
 
@@ -36,14 +39,16 @@ public class Robot {
 	private Robot() {
 		sensorList = new ArrayList<>();
 		kf = new KalmanFilter();
-		System.out.println("starting Robot");
+		System.out.println("Starting Robot");
 		autonomous = config.AUTONOMUS_DEFAULT;
 
 		//creates a log file even if no data is used
 		if(config.getInstance().logging){
-			System.out.println("starting Logging \n");
+			System.out.println("Starting Logging");
 			RobotLogger.getInstance();
 		}
+		
+		System.out.println();
 		
 		// Initialize Sensor
 		if (config.GPS_DEFAULT) {
@@ -71,9 +76,9 @@ public class Robot {
 		}
 
 		if (config.VISION_SYSTEM_DEFAULT) {
-			System.out.println("start Vision \n");
-			VisionSystem vision = new VisionSystem("/sensors/vision");
-			sensorList.add(vision);
+			//CLCamera camera = new CLCamera(0, 20);
+			//vision = new VisionSystem("/sensors/vision");
+			//sensorList.add(vision);
 		}
 
 		// if ((encAng.isConnected() || gps.isConnected() || imu.isConnected())
@@ -88,6 +93,8 @@ public class Robot {
 			alice = new Thread(new Planner());
 			alice.start();
 		}
+		
+		System.out.println();
 	}
 
 	public KalmanFilter getKalmanFilter(){
@@ -98,18 +105,6 @@ public class Robot {
 		return sensorList;
 	}
 	
-	public static OutputStream getCameraThread() {
-		if (!sensorList.isEmpty()) {
-			for (Sensor sensor : sensorList) {
-				if (sensor.getSensorType() == SensorType.VISION) {
-					return ((VisionSystem)sensor).getStream();
-				}
-			}
-		}
-		
-		return null;
-	}
-	
 	// shuts down the robot and all of its child sensors
 	public static void ShutDown() {
 		for (Sensor thisSensor : sensorList) {
@@ -118,7 +113,19 @@ public class Robot {
 		System.exit(0);
 	}
 
+	public static VisionSystem GetVision() {
+		return vision;
+	}
+	
 	/* Methods for Updating Planner, Gui, and Logger */
+	public static void WriteCamera(String data) {
+		VisionSystem tmp = Robot.getInstance().GetVision();
+		
+		if (tmp != null) {
+			Robot.getInstance().vision.write(data);
+		}
+	}
+	
 	public static void UpdateGps(float latitude, float longitude) {
 		if (config.logging) {
 			// gui.UpdateGps(latitude, longitude);
@@ -216,22 +223,20 @@ public class Robot {
 	}
 	
 	public static void main(String args[]) {
-		//ArrayList<Integer> cameras = new ArrayList<Integer>();  //TODO have this set the cameras to use 
 		config.getInstance();//must be run at least once
 		for (int i = 0; i < args.length; i++) {
-		/*	if (args[i].equalsIgnoreCase("-c")) {
-				if (i+1 < args.length) {
-					cameras.add(Integer.valueOf(args[1+i++]));
-				}
-			} else*/
 			if (args[i].equalsIgnoreCase("-g")) {
-				config.getInstance().GUI_ON = false;
-			}else if (args[i].equalsIgnoreCase("+g")){
-				config.getInstance().GUI_ON = true;
+				config.GUI_ON = false;
+			} else if (args[i].equalsIgnoreCase("+g")){
+				config.GUI_ON = true;
 			} else if (args[i].equalsIgnoreCase("-r")) {
-				config.getInstance().active = false;
-			}else if (args[i].equalsIgnoreCase("+r")){
-				config.getInstance().active = true;
+				config.active = false;
+			} else if (args[i].equalsIgnoreCase("+r")){
+				config.active = true;
+			} else if (args[i].equalsIgnoreCase("-config")) {
+				if (i+1 < args.length) {
+					config.Set(args[++i]);
+				}
 			}
 		}
 		

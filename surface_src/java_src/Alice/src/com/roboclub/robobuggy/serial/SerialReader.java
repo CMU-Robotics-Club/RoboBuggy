@@ -1,5 +1,6 @@
 package com.roboclub.robobuggy.serial;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
@@ -122,9 +123,6 @@ public class SerialReader implements SerialPortEventListener {
 		case SerialPortEvent.DATA_AVAILABLE:
 			try {
 				char data = (char)input.read();
-			/*	if(this.port_id.getName().equalsIgnoreCase("COM4")){
-					System.out.print(data);
-				}*/
 				
 				inputBuffer[index++] = data;
 				
@@ -135,15 +133,18 @@ public class SerialReader implements SerialPortEventListener {
 				
 				// Reset buffer index in overflow
 				if (index == BUFFER_SIZE) {
-					System.out.println(this.getName() + "Overflow!");
+					System.out.println(this.getName() + " overflowed!");
+					input.reset();
 					index = 0;
 				}
 			} catch (Exception e) {
-				System.out.println(this.getName() + "Exception, Why?");
-				e.printStackTrace();
-				return;
+				System.out.println(this.getName() + " exception!");
+				try {
+					input.reset();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 			}
-
 			break;
 		default:
 			break;

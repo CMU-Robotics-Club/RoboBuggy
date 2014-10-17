@@ -1,5 +1,8 @@
 package com.roboclub.robobuggy.sensors;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 
 import com.roboclub.robobuggy.main.config;
@@ -8,9 +11,10 @@ import com.roboclub.robobuggy.main.config;
 // for vision code
 public class VisionSystem implements Sensor{
 private SensorType thisSensorType;
-private Process externalProcess;
 private long lastUpdateTime;
 private SensorState currentState;
+private BufferedInputStream input;
+private BufferedOutputStream output;
 
 public boolean reset(){
 	//TODO
@@ -18,13 +22,18 @@ public boolean reset(){
 }
 	
 //spans the vision system thread ( a c++ program which does our image processing)
-public VisionSystem(String string){	
+public VisionSystem(String string){
 	System.out.println("Initializing Vision System");
 	try {
+		System.loadLibrary("robo_vison");
+		
 		String frontCamIndex_str = Integer.toString(config.FRONT_CAM_INDEX);
 		String rearCamIndex_str = Integer.toString(config.REAR_CAM_INDEX);
-		externalProcess = new ProcessBuilder(config.VISION_SYSTEM_EXECUTABLE_LOCATION,"-c",frontCamIndex_str,"-c",rearCamIndex_str).start();
-		//externalProcess = new ProcessBuilder(config.VISION_SYSTEM_EXECUTABLE_LOCATION,"-c",frontCamIndex_str).start();
+		//Process externalProcess = new ProcessBuilder(config.VISION_SYSTEM_EXECUTABLE_LOCATION,"-c",frontCamIndex_str,"-c",rearCamIndex_str).start();
+		Process externalProcess = new ProcessBuilder(config.VISION_SYSTEM_EXECUTABLE_LOCATION,"-c",frontCamIndex_str).start();
+		
+		input = new BufferedInputStream(externalProcess.getInputStream());
+		output = new BufferedOutputStream(externalProcess.getOutputStream());
 	} catch (Exception exc) {
 		exc.printStackTrace();
 	}
@@ -32,14 +41,19 @@ public VisionSystem(String string){
 	this.thisSensorType = SensorType.VISION;
 }
 
-
-
 //TODO connect input stream and output stream of vision system to java 
+public void write(String data) {
+	try {
+		output.write(data.getBytes());
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
+}
 
 //returns true if the Visions System was closed properly otherwise return false
 public boolean close(){
 	System.out.println("closing Vision System");
-	externalProcess.destroy();
+	//externalProcess.destroy();
 	return true;
 	//TODO
 }
@@ -61,14 +75,6 @@ public boolean isConnected() {
 @Override
 public SensorType getSensorType() {
 	return thisSensorType;
-}
-
-public OutputStream getStream() {
-	if (externalProcess != null && externalProcess.isAlive()) {
-		return externalProcess.getOutputStream();
-	} else {
-		return null;
-	}
 }
 
 }

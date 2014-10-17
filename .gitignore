@@ -6,3 +6,4 @@ out/
 
 # arduino build files
 build-*
+surface_src/java_src/Alice/src/com/roboclub/robobuggy/main/config.java

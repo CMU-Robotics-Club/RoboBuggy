@@ -1,19 +1,13 @@
 package com.roboclub.robobuggy.logging;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
-
-import javax.imageio.ImageIO;
-
-import com.roboclub.robobuggy.ui.Gui;
 
 /**
  * Logs data from the sensors
@@ -82,11 +76,8 @@ public final class SensorLogger {
 		} else if (!outputDir.exists()) {
 			outputDir.mkdirs();
 		}
-		String outputFileName = startTime.toString();
-		outputFileName = outputFileName.replaceAll(" ","");
-		outputFileName = outputFileName.replaceAll(":", "_");
 		
-		File csvFile = new File(outputDir, outputFileName + "-sensors.csv");
+		File csvFile = new File(outputDir, "sensors.csv");
 		System.out.println("FileCreated: " + csvFile.getAbsolutePath());
 		//TODO fix Gui.UpdateLogName( outputFileName );
 		try {

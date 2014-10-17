@@ -50,7 +50,7 @@ public final class Gui extends JFrame {
 	}
 
 	public Gui() {
-		System.out.println("starting the GUI \n");
+		System.out.println("Starting GUI");
 		populate();
 	}
 
@@ -154,14 +154,6 @@ public final class Gui extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				RobotLogger.getInstance().startNewLog();
-				OutputStream stream = Robot.getCameraThread();
-				if (stream != null) {
-					try {
-						stream.write((byte)'r');
-					} catch (Exception ex){
-						System.out.println("Failed to start vision recording");
-					}
-				}
 			}});
 		pane.add(NewLog_btn);		
 		
@@ -178,6 +170,7 @@ public final class Gui extends JFrame {
 		playPauseButton.setFont(new Font("sanserif", Font.PLAIN, 50));
 		playPauseButton.setText("Start");
 		playPauseButton.setSelected(config.active);
+		
 		if (config.active) {
 			playPauseButton.setBackground(Color.RED);
 		} else {
@@ -197,12 +190,16 @@ public final class Gui extends JFrame {
 
 					startTime = new Date().getTime();
 					timer.start();
+					
+					Robot.WriteCamera("r");
 				} else {
 					playPauseButton.setText("Start");
 					playPauseButton.setBackground(Color.GREEN);
 					timer.stop();
 
 					RobotLogger.CloseLog();
+					
+					Robot.WriteCamera("r");
 				}
 				ControlPanel.updateStartPause_btn();
 				// AnalyticsWindow
