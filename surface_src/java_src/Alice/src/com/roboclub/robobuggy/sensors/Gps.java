@@ -67,55 +67,60 @@ public class Gps extends SerialConnection implements Sensor{
 			char[] tmp = event.getBuffer();
 			int length = event.getLength();
 			int index = 0;	
-			
+			int headerIndex = 0;
 			if (tmp != null && event.getLength() > HEADER.length()) {
 				String curVal = "";
-				//System.out.println("Passed");
-				// Filter messages by header
-				for (int i = 0; i < HEADER.length(); i++) {
-					if (tmp[i] != HEADER.charAt(i)) return;
-				}
-				//System.out.println("Passed2");
-				// Parse message data
-				int numCharInGPS = 44;
-				for (int i = HEADER.length()+1; i < length && i < numCharInGPS; i++ ) {
-					if (tmp[i] == ',' || tmp[i] == '\n') {
-						try {
-							switch ( index ) {
-							case LAT_NUM:
-								latitude =  parseLat(curVal);
-								break;
-							case LAT_DIR:
-								if (curVal.equalsIgnoreCase("S")) latitude = -1 * latitude;
-								break;
-							case LONG_NUM:
-								longitude = parseLon(curVal);
-								break;
-							case LONG_DIR:
-								if (curVal.equalsIgnoreCase("W")) longitude = -1 * longitude;
-								gpsPub.publish(new GpsMeasurement(latitude, longitude));
-								System.out.println("gpsMessage: lat:"+latitude +"lon:"+longitude); 
-								//got a valid reading updates currentState accordingly
-								if(currentState == SensorState.ON){
-									currentState = SensorState.ON;
-								}else{
-									currentState = SensorState.AVILABLE;
+				
+				boolean checking = true;
+				for (int i = 0; i < length; i++) {
+					if (checking) {
+						if (tmp[i] == HEADER.charAt(headerIndex)) {
+							headerIndex++;
+							if (headerIndex == HEADER.length()) checking = false;
+						}
+						else headerIndex = 0;
+					} else {
+						if (tmp[i] == ',' || tmp[i] == '\n') {
+							try {
+								switch ( index ) {
+								case LAT_NUM:
+									latitude =  parseLat(curVal);
+									break;
+								case LAT_DIR:
+									if (curVal.equalsIgnoreCase("S")) latitude = -1 * latitude;
+									break;
+								case LONG_NUM:
+									longitude = parseLon(curVal);
+									break;
+								case LONG_DIR:
+									if (curVal.equalsIgnoreCase("W")) longitude = -1 * longitude;
+									gpsPub.publish(new GpsMeasurement(latitude, longitude));
+									System.out.println("gpsMessage: lat:"+latitude +"lon:"+longitude); 
+									
+									checking = true;
+									
+									//got a valid reading updates currentState accordingly
+									if(currentState == SensorState.ON){
+										currentState = SensorState.ON;
+									}else{
+										currentState = SensorState.AVILABLE;
+									}
+									lastUpdateTime = System.currentTimeMillis();
+									break;
 								}
+								
+								curVal = "";
+								index++;
+							} catch (Exception e) {
+								System.out.println("Failed to parse gps message");
+								currentState = SensorState.ERROR;
 								lastUpdateTime = System.currentTimeMillis();
-								break;
+								return;
 							}
 							
-							curVal = "";
-							index++;
-						} catch (Exception e) {
-							System.out.println("Failed to parse gps message");
-							currentState = SensorState.ERROR;
-							lastUpdateTime = System.currentTimeMillis();
-							return;
+						} else {
+							curVal += tmp[i];
 						}
-						
-					} else {
-						curVal += tmp[i];
 					}
 				}
 			}

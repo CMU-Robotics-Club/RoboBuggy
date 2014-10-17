@@ -1,6 +1,5 @@
 package com.roboclub.robobuggy.serial;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
@@ -12,7 +11,7 @@ import gnu.io.*;
 
 public class SerialReader implements SerialPortEventListener {
 	private static final int TIMEOUT = 2000;
-	private static final int BUFFER_SIZE = 256;
+	private static final int BUFFER_SIZE = 128;
 	
 	private SerialPort port;
 	private Enumeration<CommPortIdentifier> port_list;
@@ -121,24 +120,16 @@ public class SerialReader implements SerialPortEventListener {
 		case SerialPortEvent.DATA_AVAILABLE:
 			try {
 				char data = (char)input.read();
-				//if(port_id.getName().equalsIgnoreCase("com5")){
-					//System.out.println("data:"+data+ " index:"+index);
-				//}
-				//if(data == '$' ){
-					//notifyListeners(index);
-					//index = 0;
-				//}
-					inputBuffer[index++] = data;
-			
+				inputBuffer[index++] = data;
 				
 				if (data == '\n' || data == '\r') {
-					notifyListeners(index);
+					notifyListeners();
 					index = 0;
 				}
 				
 				// Reset buffer index in overflow
 				if (index > BUFFER_SIZE-50) {
-					notifyListeners(index);
+					notifyListeners();
 					System.out.println(this.getName() + " overflowed!");
 					index = 0;
 				}
@@ -152,10 +143,10 @@ public class SerialReader implements SerialPortEventListener {
 		}
 	}
 	
-	private void notifyListeners(int ind) {
+	private void notifyListeners() {
 		if (null != listeners && !listeners.isEmpty()) {
 			for (SerialListener listener : listeners) {
-				listener.onEvent(new SerialEvent(inputBuffer, ind));
+				listener.onEvent(new SerialEvent(inputBuffer, index));
 			}
 		}
 	}
