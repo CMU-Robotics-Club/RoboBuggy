@@ -12,6 +12,17 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import com.roboclub.robobuggy.main.Robot;
+/**
+ * 
+ * @author Trevor Decker
+ * @author Kevin Brennan 
+ *
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION: TODO
+ */
 
 //What shows up when display graphics is clicked 
 public class AnalyticsWindow extends JFrame{

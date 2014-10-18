@@ -1,5 +1,16 @@
 package com.roboclub.robobuggy.sensors;
 
+/**
+ * 
+ * @author Kevin Brennan 
+ *
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION: TODO
+ */
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;

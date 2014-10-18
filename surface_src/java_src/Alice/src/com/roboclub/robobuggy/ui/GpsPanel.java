@@ -17,6 +17,17 @@ import com.roboclub.robobuggy.map.Rect;
 import com.roboclub.robobuggy.serial.SerialEvent;
 import com.roboclub.robobuggy.serial.SerialListener;
 
+/**
+ * 
+ * @author Kevin Brennan 
+ *
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION: TODO
+ */
+
 public class GpsPanel extends JPanel {
 	private static final long serialVersionUID = 1399590586061060311L;
 	

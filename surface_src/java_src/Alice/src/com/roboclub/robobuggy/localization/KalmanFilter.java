@@ -1,5 +1,16 @@
 package com.roboclub.robobuggy.localization;
 
+/**
+ * 
+ * @author Trevor Decker 
+ *
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION: TODO
+ */
+
 public class KalmanFilter {
 
 	public KalmanFilter() {

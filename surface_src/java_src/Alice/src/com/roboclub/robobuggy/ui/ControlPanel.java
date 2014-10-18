@@ -20,6 +20,17 @@ import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.main.config;
 import com.roboclub.robobuggy.sensors.SensorState;
 
+/**
+ * 
+ * @author Trevor Decker 
+ *
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION: TODO
+ */
+
 public class ControlPanel extends JPanel {
 	private static final long serialVersionUID = -924045896215455343L;
 	

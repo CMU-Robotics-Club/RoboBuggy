@@ -6,6 +6,17 @@ import com.roboclub.robobuggy.serial.Arduino;
 import com.roboclub.robobuggy.serial.SerialEvent;
 import com.roboclub.robobuggy.serial.SerialListener;
 
+/**
+ * 
+ * @author Kevin Brennan
+ *
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION: TODO
+ */
+
 public class DriveActuator extends Arduino {
 	public static final char STEERING = (char)0x05;
 	public static final char BRAKE = (char)0x06;

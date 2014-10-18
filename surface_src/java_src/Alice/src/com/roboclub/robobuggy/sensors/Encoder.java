@@ -7,6 +7,17 @@ import com.roboclub.robobuggy.serial.Arduino;
 import com.roboclub.robobuggy.serial.SerialEvent;
 import com.roboclub.robobuggy.serial.SerialListener;
 
+/**
+ * 
+ * @author Kevin Brennan
+ *
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION: TODO
+ */
+
 public class Encoder extends Arduino {
 	public static final char ENC_TIME = (char)0x02;
 	public static final char ENC_RESET = (char)0x00;

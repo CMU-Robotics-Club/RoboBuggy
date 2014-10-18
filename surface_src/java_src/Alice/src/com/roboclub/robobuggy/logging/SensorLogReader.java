@@ -1,5 +1,16 @@
 package com.roboclub.robobuggy.logging;
 
-public class SensorLogReader {
+/**
+ * 
+ * @author TODO
+ *
+ * @version 0.0
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION:  TODO
+ */
 
+public class SensorLogReader {
+	//TODO
 }

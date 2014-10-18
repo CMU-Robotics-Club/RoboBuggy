@@ -9,6 +9,17 @@ import com.roboclub.robobuggy.sensors.Encoder;
 
 import gnu.io.*;
 
+/**
+ * 
+ * @author Kevin Brennan 
+ *
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION: TODO
+ */
+
 public class SerialReader implements SerialPortEventListener {
 	private static final int TIMEOUT = 2000;
 	private static final int BUFFER_SIZE = 128;

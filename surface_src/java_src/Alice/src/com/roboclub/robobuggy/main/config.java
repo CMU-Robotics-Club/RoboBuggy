@@ -1,5 +1,4 @@
 package com.roboclub.robobuggy.main;
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -8,22 +7,35 @@ import com.orsoncharts.util.json.JSONObject;
 import com.orsoncharts.util.json.parser.JSONParser;
 import com.orsoncharts.util.json.parser.ParseException;
 
-// where all system configuration values should be placed
-// values can be overwritten by json file 
+/**
+ * 
+ * @author Kevin Brennan
+ * @author Trevor Decker
+ *
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION:  where all system configuration value are set if a json config file is provided 
+ *               then values in json are used instead of the default values, this is intended
+ *               to allow for easy deployment to different computers and to allow for different
+ *               modes ie TestSensors, LogData, raceday config ...
+ */
+
 
 public class  config{
-//port index of the front camera 
+/** port index of the front camera  */
 public static int FRONT_CAM_INDEX= 0;
-//port index of the rear (pushbar camera)
+/** port index of the rear (pushbar camera) */
 public static int REAR_CAM_INDEX = 3;
-//default logging state, should the buggy start logging as soon as this program is started
+/** default logging state, should the buggy start logging as soon as this program is started */
 public final static boolean LOGGING_DEFAULT = true;
-//default running state, should the buggy program start running as soon as this program is started
+/** default running state, should the buggy program start running as soon as this program is started */
 public final static boolean ACTIVE_DEFAULT = false;
-//should we start in autonums by default
+/** should we start in autonums by default */
 public static boolean AUTONOMUS_DEFAULT = false;
 
-//sensor default settings (true for on false for off)
+/**sensor default settings (true for on false for off) */
 
 public static boolean DRIVE_DEFAULT = false;
 public static boolean IMU_DEFAULT = false;
@@ -31,7 +43,7 @@ public static boolean GPS_DEFAULT = true;
 public static boolean ENCODER_DEFAULT = false;
 public static boolean VISION_SYSTEM_DEFAULT = false;
 
-//number of times that we will allow for the brakes to be deployed and still have the buggy run
+/** number of times that we will allow for the brakes to be deployed and still have the buggy run */
 public static byte BRAKES_PER_FULL_PRESSURE = 4;  
 
 public static boolean GUI_ON_DEFAULT = true;
@@ -39,9 +51,9 @@ public static boolean DATA_PLAY_BACK_DEFAULT = false;//if false then try to read
 public static String LOG_FILE_LOCATION = "C:\\Users\\abc\\buggy-log";
 
 
-//defalut Paths
+/** defalut Paths */
 public static String clEyeDllPath = "C://CL-Eye Platform SDK//Bin//CLEyeMulticam.dll";
-//location of the executable that should be run for the camera sub system 
+/** location of the executable that should be run for the camera sub system  */
 public static String VISION_SYSTEM_EXECUTABLE_LOCATION = "C:\\Users\\abc\\buggy-log\\VisionSystem.exe";
 
 
@@ -57,7 +69,7 @@ public static boolean logging;
 
 
 
-//internal reference of this config so that it can fit the factory pattern
+/** internal reference of this config so that it can fit the factory pattern */
 private static config instance;
 
 public static config getInstance(){
@@ -73,6 +85,10 @@ public static config getInstance(){
 }
 
 @SuppressWarnings("unchecked")
+/**
+ * 
+ * @param filename(the file to read json from)
+ */
 public static void Set(String filename) {
 	System.out.println("Setting configuration parameters from file: " + filename);
 	

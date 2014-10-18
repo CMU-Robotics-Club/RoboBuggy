@@ -1,6 +1,14 @@
 package com.roboclub.robobuggy.ros.tools;
 
-/** Disaply for seeing the contents of messages as they are broadcasted **/
+/**
+ * @author Matt Sebek
+ *
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION: Disaply for seeing the contents of messages as they are broadcasted 
+ */
 
 import java.awt.BorderLayout; //for layout managers and more
 import java.awt.GridBagConstraints;

@@ -4,6 +4,17 @@ import com.roboclub.robobuggy.sensors.Sensor;
 import com.roboclub.robobuggy.sensors.SensorState;
 import com.roboclub.robobuggy.sensors.SensorType;
 
+/**
+ * 
+ * @author Kevin Brennan 
+ *
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION: TODO
+ */
+
 public class Arduino extends SerialConnection implements Sensor {
 	public static final int MSG_LEN = 6;
 	public static final char ERROR = (char)0xFF;

@@ -2,6 +2,17 @@ package com.roboclub.robobuggy.serial;
 
 import java.util.EventListener;
 
+/**
+ * 
+ * @author Kevin Brennan 
+ *
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION: TODO
+ */
+
 public class SerialEvent implements EventListener {
 	private char[] buffer;
 	private int len;

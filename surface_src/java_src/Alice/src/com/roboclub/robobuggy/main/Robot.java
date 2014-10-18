@@ -18,6 +18,18 @@ import com.roboclub.robobuggy.sensors.VisionSystem;
 import com.roboclub.robobuggy.serial.Arduino;
 import com.roboclub.robobuggy.ui.Gui;
 
+/**
+ * @author Trevor Decker
+ * @author Kevin Brennan
+ *
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION: Data storage of the robots current state 
+ * follows the factory pattern 
+ */
+
 public class Robot {
 	private static Robot instance;
 	private static Thread alice;
@@ -36,6 +48,7 @@ public class Robot {
 		return instance;
 	}
 
+	
 	private Robot() {
 		sensorList = new ArrayList<>();
 		kf = new KalmanFilter();

@@ -8,6 +8,17 @@ import com.roboclub.robobuggy.serial.SerialEvent;
 import com.roboclub.robobuggy.serial.SerialListener;
 import com.roboclub.robobuggy.ui.Gui;
 
+/**
+ * 
+ * @author Kevin Brennan
+ *
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION: TODO
+ */
+
 public class Gps extends SerialConnection implements Sensor{
 	/* Constants for Serial Communication */
 	/** Header for picking correct serial port */

@@ -3,6 +3,16 @@ package com.roboclub.robobuggy.map;
 import java.util.ArrayList;
 //TODO write Line test system
 
+/**
+ * @author Trevor Decker
+ *
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION: TODO
+ */
+
 
 public class Line implements MapObject{
 	ArrayList<Point> points = new ArrayList<Point>();
