@@ -102,10 +102,10 @@ public class Imu extends SerialConnection implements Sensor {
 			Robot.UpdateImu(aX, aY, aZ, rX, rY, rZ, mX, mY, mZ);
 			imuPub.publish(new ImuMeasurement(aX, aY, aZ, rX, rY, rZ, mX, mY,
 					mZ));
-			//System.out.format(
-			//		"IMU Values: aX: %f aY: %f aZ: %f rX: %f rY: %f rZ: %f "
-			//				+ "mX: %f mY: %f mZ: %f \n", aX, aY, aZ, rX, rY,
-			//		rZ, mX, mY, mZ);
+			System.out.format(
+					"IMU Values: aX: %f aY: %f aZ: %f rX: %f rY: %f rZ: %f "
+							+ "mX: %f mY: %f mZ: %f \n", aX, aY, aZ, rX, rY,
+					rZ, mX, mY, mZ);
 			break;
 		default:
 			return;
@@ -123,7 +123,8 @@ public class Imu extends SerialConnection implements Sensor {
 		// TODO add avilable and on state update
 		public void onEvent(SerialEvent event) {
 			char[] tmp = event.getBuffer();
-			//System.out.println(tmp);
+		//	System.out.println("newevent");
+		//	System.out.println(tmp);
 			int index = 0;
 			boolean valid = true;
 			if (tmp != null && event.getLength() > HEADER.length()) {

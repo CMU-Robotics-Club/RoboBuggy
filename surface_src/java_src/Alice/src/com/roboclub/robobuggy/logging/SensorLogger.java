@@ -11,8 +11,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Logs data from the sensors
- * 
+ * TODO write a better description
  * @author Joe Doyle
+ * @author Trevor Decker
  */
 public final class SensorLogger {
 	private final String[] _imuKeys = {

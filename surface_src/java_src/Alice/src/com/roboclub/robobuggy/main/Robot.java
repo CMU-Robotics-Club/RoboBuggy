@@ -165,6 +165,7 @@ public class Robot {
 	}
 
 	public static void UpdateSteering(char angle) {
+		System.out.println("NewSteeringAngle: "+(int)angle);
 		if (config.logging) {
 			// TODO add logging
 		}
@@ -173,6 +174,7 @@ public class Robot {
 	}
 
 	public static void UpdateError(int error) {
+		System.out.println("error: "+error);
 		if (config.logging) {
 			// TODO add logging
 		}
@@ -192,6 +194,7 @@ public class Robot {
 	}
 
 	public static void UpdateBrake(char angle) {
+		System.out.println("new brakeState"+(int)angle);
 		if (config.logging) {
 			// TODO add logging
 		}

@@ -65,6 +65,7 @@ public class Gps extends SerialConnection implements Sensor{
 		@Override
 		public void onEvent(SerialEvent event) {
 			char[] tmp = event.getBuffer();
+			//System.out.println(tmp);
 			int length = event.getLength();
 			int index = 0;	
 			int headerIndex = 0;
@@ -115,7 +116,8 @@ public class Gps extends SerialConnection implements Sensor{
 								System.out.println("Failed to parse gps message");
 								currentState = SensorState.ERROR;
 								lastUpdateTime = System.currentTimeMillis();
-								return;
+								checking = true;
+								curVal = "";
 							}
 							
 						} else {

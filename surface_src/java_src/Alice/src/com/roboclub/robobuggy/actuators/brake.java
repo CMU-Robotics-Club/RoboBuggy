@@ -1,4 +1,4 @@
-package actuators;
+package com.roboclub.robobuggy.actuators;
 
 import com.roboclub.robobuggy.main.config;
 

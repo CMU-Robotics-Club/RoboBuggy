@@ -64,7 +64,7 @@ public class SerialReader implements SerialPortEventListener {
 						if ( passed )	 {
 							port.notifyOnDataAvailable(true);
 							
-							inputBuffer = new char[BUFFER_SIZE];
+							inputBuffer = new char[2*BUFFER_SIZE];
 							//outputBuffer = new char[BUFFER_SIZE];
 							index = 0;
 							connected = true;
@@ -120,9 +120,10 @@ public class SerialReader implements SerialPortEventListener {
 		case SerialPortEvent.DATA_AVAILABLE:
 			try {
 				char data = (char)input.read();
+				//System.out.print(data);
 				inputBuffer[index++] = data;
 				
-				if (data == '\n' || data == '\r') {
+				if (data == '\n' ){//|| data == '\r') {
 					notifyListeners();
 					index = 0;
 				}

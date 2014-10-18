@@ -1,5 +1,7 @@
 package com.roboclub.robobuggy.ros.tools;
 
+/** Disaply for seeing the contents of messages as they are broadcasted **/
+
 import java.awt.BorderLayout; //for layout managers and more
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;

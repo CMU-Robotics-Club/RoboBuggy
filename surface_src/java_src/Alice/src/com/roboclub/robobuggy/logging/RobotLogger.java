@@ -16,8 +16,8 @@ import com.roboclub.robobuggy.ui.Gui;
 
 /**
  * Logs data from the sensors
- * 
- * @author Joe Doyle  && Trevor Decker
+ * TODO write a better description
+ * @author Trevor Decker
  */
 public final class RobotLogger {
 	public final Logger message;

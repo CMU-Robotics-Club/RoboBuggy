@@ -9,50 +9,52 @@ import com.orsoncharts.util.json.parser.JSONParser;
 import com.orsoncharts.util.json.parser.ParseException;
 
 // where all system configuration values should be placed
-// add jason parser for config
+// values can be overwritten by json file 
 
 public class  config{
 //port index of the front camera 
-public static int FRONT_CAM_INDEX = 0;
-
+public static int FRONT_CAM_INDEX= 0;
 //port index of the rear (pushbar camera)
 public static int REAR_CAM_INDEX = 3;
-
-//location of the executable that should be run for the camera sub system 
-public static String VISION_SYSTEM_EXECUTABLE_LOCATION = "C:\\Users\\abc\\buggy-log\\VisionSystem.exe";
-//"C:\\Users\\abc\\buggy-log\\VisionSystem.exe";
-
-public static String LOG_FILE_LOCATION = "C:\\Users\\abc\\buggy-log";
-
 //default logging state, should the buggy start logging as soon as this program is started
-public static boolean LOGGING_DEFAULT = true;
-
+public final static boolean LOGGING_DEFAULT = true;
 //default running state, should the buggy program start running as soon as this program is started
-public static boolean ACTIVE_DEFAULT = false;
-
+public final static boolean ACTIVE_DEFAULT = false;
+//should we start in autonums by default
 public static boolean AUTONOMUS_DEFAULT = false;
 
 //sensor default settings (true for on false for off)
 
 public static boolean DRIVE_DEFAULT = false;
-public static boolean IMU_DEFAULT = true;
+public static boolean IMU_DEFAULT = false;
 public static boolean GPS_DEFAULT = true;
-public static boolean ENCODER_DEFAULT = true;
-public static boolean VISION_SYSTEM_DEFAULT = true;
+public static boolean ENCODER_DEFAULT = false;
+public static boolean VISION_SYSTEM_DEFAULT = false;
 
 //number of times that we will allow for the brakes to be deployed and still have the buggy run
 public static byte BRAKES_PER_FULL_PRESSURE = 4;  
 
 public static boolean GUI_ON_DEFAULT = true;
 public static boolean DATA_PLAY_BACK_DEFAULT = false;//if false then try to read from live sensors 
+public static String LOG_FILE_LOCATION = "C:\\Users\\abc\\buggy-log";
 
 
-//current status values 
-public static boolean GUI_ON;
+//defalut Paths
+public static String clEyeDllPath = "C://CL-Eye Platform SDK//Bin//CLEyeMulticam.dll";
+//location of the executable that should be run for the camera sub system 
+public static String VISION_SYSTEM_EXECUTABLE_LOCATION = "C:\\Users\\abc\\buggy-log\\VisionSystem.exe";
+
+
+/*
+ **************************************
+ *** current status values  ***********
+ **************************************
+ */
+public static boolean GUI_ON;  
 public static boolean active;
 public static boolean logging;
+//public static int FRONT_CAM_INDEX;
 
-public static String clEyeDllPath = "C://CL-Eye Platform SDK//Bin//CLEyeMulticam.dll";
 
 
 //internal reference of this config so that it can fit the factory pattern
