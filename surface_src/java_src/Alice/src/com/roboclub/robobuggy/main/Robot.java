@@ -1,19 +1,14 @@
 package com.roboclub.robobuggy.main;
 
-import java.io.BufferedOutputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
-
 import com.roboclub.robobuggy.localization.KalmanFilter;
 import com.roboclub.robobuggy.logging.RobotLogger;
-import com.roboclub.robobuggy.sensors.CLCamera;
 import com.roboclub.robobuggy.sensors.DriveActuator;
 import com.roboclub.robobuggy.sensors.Encoder;
 import com.roboclub.robobuggy.sensors.Gps;
 import com.roboclub.robobuggy.sensors.Imu;
 import com.roboclub.robobuggy.sensors.Sensor;
-import com.roboclub.robobuggy.sensors.SensorType;
 import com.roboclub.robobuggy.sensors.VisionSystem;
 import com.roboclub.robobuggy.serial.Arduino;
 import com.roboclub.robobuggy.ui.Gui;
@@ -21,7 +16,6 @@ import com.roboclub.robobuggy.ui.Gui;
 public class Robot {
 	private static Robot instance;
 	private static Thread alice;
-	private static Arduino arduino;
 	private static boolean autonomous;
 	private static ArrayList<Sensor> sensorList;
 	private KalmanFilter kf;

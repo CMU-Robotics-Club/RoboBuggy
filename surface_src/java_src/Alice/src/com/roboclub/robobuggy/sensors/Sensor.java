@@ -7,4 +7,5 @@ public interface Sensor {
 	boolean close();
 	boolean reset();
 	SensorType getSensorType();
+	void publish();
 }

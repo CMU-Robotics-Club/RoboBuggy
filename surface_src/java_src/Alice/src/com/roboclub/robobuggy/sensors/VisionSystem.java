@@ -77,4 +77,10 @@ public SensorType getSensorType() {
 	return thisSensorType;
 }
 
+@Override
+public void publish() {
+	// TODO Auto-generated method stub
+	
+}
+
 }
