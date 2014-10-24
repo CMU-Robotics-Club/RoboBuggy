@@ -42,6 +42,38 @@ int RBSerialMessages::Send(uint8_t id, uint32_t message) {
   return 0;
 }
 
+bool RBSerialMessages::Available(){
+    serial_stream_ = serial_stream;
+    serial_stream_->available(RBSM_BAUD_RATE);
+
+    return serial_stream_;
+}
+
+rb_message_t* RBSerialMessages::Read(rb_message_t* ptr){
+
+    char footer = serial_stream_->read(RBSM_BAUD_RATE);
+    while (footer != RBSM_FOOTER){    // read until found the footer
+        footer = serial_stream_->read(RBSM_BAUD_RATE);  // null segfault?
+    }
+
+
+    char message = serial_stream_->read(RBSM_BAUD_RATE);
+    ptr->message_id = message;
+    char message1 = serial_stream_->read(RBSM_BAUD_RATE);
+    char message2 = serial_stream_->read(RBSM_BAUD_RATE);
+    char message3 = serial_stream_->read(RBSM_BAUD_RATE);
+    char message4 = serial_stream_->read(RBSM_BAUD_RATE);
+    uint32_t data = (message1<<RBSM_THREE_BYTE_SIZE) | (message2<<RBSM_TWO_BYTE_SIZE) | (message3<<RBSM_ONE_BYTE_SIZE) | message4;
+    ptr->data = data;
+    message = serial_stream_->read(RBSM_BAUD_RATE);
+    ptr->footer_id = message;
+
+    // maybe check if the footer matches buffer_in_, else throw the message cause it is sad.
+
+
+    return ptr;
+}
+
 // Private /////////////////////////////////////////////////////////////////////
 uint8_t RBSerialMessages::AppendMessageToBuffer(uint8_t id,
                                                 uint32_t message,
