@@ -39,41 +39,11 @@ public class DriveActuator extends Arduino {
 		switch (value) {
 			case STEERING:
 			case BRAKE:
-			case Arduino.ERROR:
+			case ERROR:
+			case MSG_ID:
 				return true;
 			default:
 				return false;
-		}
-	}
-	
-	@Override
-	public void serialEvent(SerialPortEvent event) {
-		switch (event.getEventType()) {
-		case SerialPortEvent.DATA_AVAILABLE:
-			try {
-				char data = (char)input.read();
-				
-				switch (state) {
-				case 0:
-					if (validId(data)) {
-						inputBuffer[index++] = data;
-						state++;
-					}
-					
-					break;
-				case 1:
-					inputBuffer[index++] = data;
-					
-					if (index == MSG_LEN) {
-						if (data == '\n') publish();
-						index = 0;
-						state = 0;
-					}
-					break;
-				}
-			} catch (Exception e) {
-				System.out.println("Encoder Exception in port: " + this.getName());
-			}
 		}
 	}
 
@@ -81,6 +51,7 @@ public class DriveActuator extends Arduino {
 	public void publish() {
 		currentState = SensorState.ON;
 		lastUpdateTime = System.currentTimeMillis();
+		
 		switch (inputBuffer[0]) {
 		case STEERING:
 			Robot.UpdateSteering(inputBuffer[4]);

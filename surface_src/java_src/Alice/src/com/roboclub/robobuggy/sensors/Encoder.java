@@ -1,6 +1,5 @@
 package com.roboclub.robobuggy.sensors;
 
-import gnu.io.SerialPortEvent;
 import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.serial.Arduino;
@@ -39,6 +38,7 @@ public class Encoder extends Arduino {
 			case ENC_RESET:
 			case ENC_TICK:
 			case ERROR:
+			case MSG_ID:
 				return true;
 			default:
 				return false;
@@ -50,57 +50,33 @@ public class Encoder extends Arduino {
 		currentState = SensorState.ON;
 		lastUpdateTime = System.currentTimeMillis();
 		
-		System.out.println((int)inputBuffer[0] + " " + (int)inputBuffer[1] + 
-				" " + (int)inputBuffer[2] + " " + (int)inputBuffer[3]);
+		System.out.println((0 | inputBuffer[0]) + " " + 
+				(0 | inputBuffer[1]) + " " +
+				(0 | inputBuffer[2]) + " " +
+				(0 | inputBuffer[3]) + " " +
+				(0 | inputBuffer[4]) + " ");
 		switch (inputBuffer[0]) {
 		case ENC_TIME:
-			encTime = parseInt(inputBuffer[1], inputBuffer[2], inputBuffer[3], inputBuffer[4]);
+			encTime = parseInt(inputBuffer[1], inputBuffer[2],
+					inputBuffer[3], inputBuffer[4]);
 			break;
 		case ENC_RESET:
-			encReset = parseInt(inputBuffer[1], inputBuffer[2], inputBuffer[3], inputBuffer[4]);
+			encReset = parseInt(inputBuffer[1], inputBuffer[2], 
+					inputBuffer[3], inputBuffer[4]);
 			break;
 		case ENC_TICK:
-			System.out.println("Time: " + encTime + " Reset: " + encReset + " Ticks: " + encTicks);
-			encTicks = parseInt(inputBuffer[1], inputBuffer[2], inputBuffer[3], inputBuffer[4]);
+			encTicks = parseInt(inputBuffer[1], inputBuffer[2], 
+					inputBuffer[3], inputBuffer[4]);
 			Robot.UpdateEnc(encTime, encReset, encTicks);
+			
+			System.out.println("Time: " + encTime + " Reset: " + encReset + " Ticks: " + encTicks);
 			break;
 		case ERROR:
-			Robot.UpdateError(parseInt(inputBuffer[1], inputBuffer[2], inputBuffer[3], inputBuffer[4]));
+			Robot.UpdateError(parseInt(inputBuffer[1], inputBuffer[2], 
+					inputBuffer[3], inputBuffer[4]));
 			break;
 		default:
 			System.out.println("Invalid Encoder Message!");
-		}
-	}
-
-	/*%*****		Serial Methods			*****%*/
-	@Override
-	public void serialEvent(SerialPortEvent event) {
-		switch (event.getEventType()) {
-		case SerialPortEvent.DATA_AVAILABLE:
-			try {
-				char data = (char)input.read();
-				
-				switch (state) {
-				case 0:
-					if (validId(data)) {
-						inputBuffer[index++] = data;
-						state++;
-					}
-					
-					break;
-				case 1:
-					inputBuffer[index++] = data;
-					
-					if (index == MSG_LEN) {
-						if (data == '\n') publish();
-						index = 0;
-						state = 0;
-					}
-					break;
-				}
-			} catch (Exception e) {
-				System.out.println("Encoder Exception in port: " + this.getName());
-			}
 		}
 	}
 }
