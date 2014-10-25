@@ -48,11 +48,11 @@
 #define RBSM_DID_MEGA 0
 #define RBSM_DID_DRIVE_ENCODER 1
 
-typedef struct received_message{
+
+typedef struct rb_message {
   char message_id;
   uint32_t data;
-  char footer_id;
-}rb_message_t;
+} rb_message_t;
 
 
 class RBSerialMessages {
@@ -60,7 +60,8 @@ class RBSerialMessages {
   RBSerialMessages();
   int Begin(HardwareSerial *serial_stream);
   int Send(uint8_t id, uint32_t message);
-  // todo: define receive api
+  bool Available();
+  int Read(rb_message_t* ptr);
  private:
   HardwareSerial *serial_stream_;
   uint8_t buffer_out_[RBSM_BUFFER_OUT_LENGTH];
