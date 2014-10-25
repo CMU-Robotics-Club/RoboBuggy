@@ -7,6 +7,16 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+/**
+ * @author Trevor Decker
+ * @author Kevin Brennan 
+ *
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION: TODO
+ */
 
 public class DataPanel extends JPanel {
 	private static final long serialVersionUID = 3950373392222628865L;

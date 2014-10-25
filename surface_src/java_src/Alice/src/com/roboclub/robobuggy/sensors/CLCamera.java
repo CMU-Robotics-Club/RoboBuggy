@@ -2,6 +2,17 @@ package com.roboclub.robobuggy.sensors;
 
 import com.roboclub.robobuggy.main.config;
 
+/**
+ * 
+ * @author Kevin Brennan
+ *
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION: TODO
+ */
+
 public class CLCamera {
 	// camera color mode
     public static int CLEYE_MONO_PROCESSED	= 0;

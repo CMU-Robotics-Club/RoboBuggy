@@ -7,8 +7,18 @@ import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.sensors.Sensor;
 import com.roboclub.robobuggy.sensors.SensorState;
 import com.roboclub.robobuggy.sensors.SensorType;
-
 import gnu.io.SerialPortEvent;
+
+/**
+ * 
+ * @author Kevin Brennan 
+ *
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION: TODO
+ */
 
 public abstract class Arduino extends SerialConnection implements Sensor {
 	protected static final int BAUDRATE = 9600;

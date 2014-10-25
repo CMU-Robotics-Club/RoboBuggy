@@ -30,6 +30,18 @@ import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.main.config;
 import com.roboclub.robobuggy.sensors.Sensor;
 
+/**
+ * 
+ * @author Trevor Decker
+ * @author Kevin Brennan 
+ *
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION: TODO
+ */
+
 public final class Gui extends JFrame {
 	private static final long serialVersionUID = 670947948979376738L;
 

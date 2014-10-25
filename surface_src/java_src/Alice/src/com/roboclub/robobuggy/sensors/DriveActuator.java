@@ -5,6 +5,17 @@ import com.roboclub.robobuggy.messages.BrakeCommand;
 import com.roboclub.robobuggy.messages.WheelAngleCommand;
 import com.roboclub.robobuggy.serial.Arduino;
 
+/**
+ * 
+ * @author Kevin Brennan
+ *
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION: TODO
+ */
+
 public class DriveActuator extends Arduino {
 	
 	public DriveActuator() {

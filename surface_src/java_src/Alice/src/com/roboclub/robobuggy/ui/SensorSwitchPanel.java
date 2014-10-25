@@ -12,7 +12,16 @@ import javax.swing.JPanel;
 
 import com.roboclub.robobuggy.sensors.SensorState;
 
-
+/**
+ * 
+ * @author Trevor Decker 
+ *
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION: TODO
+ */
 
 public class SensorSwitchPanel {
 private JPanel sensor_switch;

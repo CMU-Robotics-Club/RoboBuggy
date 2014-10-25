@@ -4,6 +4,17 @@ import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.serial.Arduino;
 
+/**
+ * 
+ * @author Kevin Brennan
+ *
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION: TODO
+ */
+
 public class Encoder extends Arduino {
 	private static final long TICKS_PER_REV = 5;
 	private static final double M_PER_REV = 5.0;

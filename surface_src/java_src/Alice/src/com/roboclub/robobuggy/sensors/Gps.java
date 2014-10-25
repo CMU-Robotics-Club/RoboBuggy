@@ -5,6 +5,17 @@ import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.serial.SerialConnection;
 
+/**
+ * 
+ * @author Kevin Brennan
+ *
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION: TODO
+ */
+
 public class Gps extends SerialConnection implements Sensor{
 	/* Constants for Serial Communication */
 	/** Header for picking correct serial port */
@@ -50,6 +61,7 @@ public class Gps extends SerialConnection implements Sensor{
 				(Float.valueOf(lonNum.substring(3)) / 60.0f));
 	}
 	
+
 	public boolean reset(){
 		//TODO
 		return false;

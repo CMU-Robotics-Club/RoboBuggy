@@ -6,6 +6,16 @@ import java.io.OutputStream;
 import java.util.*;
 import gnu.io.*;
 
+/**
+ * 
+ * @author Kevin Brennan 
+ *
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION: TODO
+ */
 public abstract class SerialConnection implements SerialPortEventListener {
 	protected static final int TIMEOUT = 2000;
 	protected static final int BUFFER_SIZE = 128;
@@ -17,7 +27,6 @@ public abstract class SerialConnection implements SerialPortEventListener {
 	
 	protected InputStream input;
 	protected OutputStream output;
-	
 	protected char[] inputBuffer;
 	protected int index;
 	protected int state;

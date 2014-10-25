@@ -6,6 +6,17 @@ import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.serial.SerialConnection;
 
+/**
+ * 
+ * @author Kevin Brennan
+ *
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION: TODO
+ */
+
 public class Imu extends SerialConnection implements Sensor {
 	/** Header for choosing serial port */
 	private static final String HEADER = "#ACG=";
@@ -72,6 +83,13 @@ public class Imu extends SerialConnection implements Sensor {
 	public boolean isConnected() {
 		return this.connected;
 	}
+	/**
+	 * ImuListener is an event handler for serial communication. It is notified
+	 * every time a complete message is received by serial port for the given
+	 * panel. It handles the serial event and parses the data to update the
+	 * current properties of the given panel.
+	 */
+
 
 	@Override
 	public boolean close() {
