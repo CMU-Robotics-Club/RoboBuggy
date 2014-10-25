@@ -29,6 +29,10 @@ public class Encoder extends Arduino {
 		super("Encoder", "/sensor/encoder");
 	}
 	
+	public int getTicks(){
+		return encTicks;
+	}
+	
 	//is run after the encoder gets new data to update internal sate variables 
 	public void updated()
 	{

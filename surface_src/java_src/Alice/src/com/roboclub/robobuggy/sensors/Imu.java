@@ -70,7 +70,7 @@ public class Imu extends SerialConnection implements Sensor {
 	public SensorState getState() {
 		if (System.currentTimeMillis() - lastUpdateTime > SENSOR_TIME_OUT) {
 			currentState = SensorState.DISCONECTED;
-		}
+		} 
 		return currentState;
 	}
 
@@ -83,12 +83,7 @@ public class Imu extends SerialConnection implements Sensor {
 	public boolean isConnected() {
 		return this.connected;
 	}
-	/**
-	 * ImuListener is an event handler for serial communication. It is notified
-	 * every time a complete message is received by serial port for the given
-	 * panel. It handles the serial event and parses the data to update the
-	 * current properties of the given panel.
-	 */
+
 
 
 	@Override
@@ -115,6 +110,9 @@ public class Imu extends SerialConnection implements Sensor {
 
 		lastUpdateTime = System.currentTimeMillis();
 		currentState = SensorState.ON;
+		System.out.println("publish:"+currentState);
+
+
 		try {
 			for (int i = 0; i < index; i++) {
 				if (inputBuffer[i] == '\n' || inputBuffer[i] == ',' || i == index) {

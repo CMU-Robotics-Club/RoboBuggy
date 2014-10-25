@@ -34,7 +34,7 @@ public static boolean AUTONOMUS_DEFAULT = false;
 
 //sensor default settings (true for on false for off)
 
-public static boolean DRIVE_DEFAULT = false;
+public static boolean DRIVE_DEFAULT = true;
 public static boolean IMU_DEFAULT = true;
 public static boolean GPS_DEFAULT = true;
 public static boolean ENCODER_DEFAULT = true;

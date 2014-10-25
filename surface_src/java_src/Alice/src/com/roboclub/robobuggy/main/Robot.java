@@ -2,6 +2,7 @@ package com.roboclub.robobuggy.main;
 
 import java.util.ArrayList;
 import java.util.Date;
+
 import com.roboclub.robobuggy.localization.KalmanFilter;
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.sensors.DriveActuator;
@@ -9,6 +10,7 @@ import com.roboclub.robobuggy.sensors.Encoder;
 import com.roboclub.robobuggy.sensors.Gps;
 import com.roboclub.robobuggy.sensors.Imu;
 import com.roboclub.robobuggy.sensors.Sensor;
+import com.roboclub.robobuggy.sensors.SensorState;
 import com.roboclub.robobuggy.sensors.VisionSystem;
 import com.roboclub.robobuggy.serial.Arduino;
 import com.roboclub.robobuggy.ui.Gui;
@@ -20,6 +22,58 @@ public class Robot {
 	private static ArrayList<Sensor> sensorList;
 	private KalmanFilter kf;
 	private static VisionSystem vision;
+	
+	//this moves away from the sensor list model but is needed for the control panel 
+	private Gps gps;
+	private Imu imu;
+	private Encoder encoder;
+	private Arduino mega;
+	
+	//TODO implment front cam nativly in java 
+	public SensorState getFrontCamState(){
+		return SensorState.DISCONECTED;
+	}
+	
+	//TODO implment back cam nativly in java 
+	public SensorState getBackCamState(){
+		return SensorState.DISCONECTED;
+	}
+	
+	public SensorState getControlInputState(){
+		if(mega == null){
+			return SensorState.DISCONECTED;
+		}
+		return mega.getState();
+	}
+	
+	public SensorState getGpsState(){
+		if(gps == null){
+			return SensorState.DISCONECTED;
+		}
+		return gps.getState();
+	}
+	
+	public SensorState getEncoderState(){
+		if(encoder == null){
+			return SensorState.DISCONECTED;
+		}
+		return encoder.getState();
+	}
+	
+	public String getEncoderMsg(){
+		if(encoder == null){
+			return "encoder not init";
+		}
+		return "ticks:"+Integer.toString(encoder.getTicks());
+	}
+	
+	public SensorState getImuState(){
+		if(imu == null){
+			return SensorState.DISCONECTED;
+		}
+		return imu.getState();
+	}
+	
 	
 	// private ArrayList<Markers> markers
 
@@ -47,25 +101,25 @@ public class Robot {
 		// Initialize Sensor
 		if (config.GPS_DEFAULT) {
 			System.out.println("Initializing GPS Serial Connection");
-			Gps gps = new Gps("/sensors/GPS");
+			gps = new Gps("/sensors/GPS");
 			sensorList.add(gps);
 		}
 
 		if (config.IMU_DEFAULT) {
 			System.out.println("Initializing IMU Serial Connection");
-			Imu imu = new Imu("/sensors/IMU");
+			imu = new Imu("/sensors/IMU");
 			sensorList.add(imu);
 		}
 
 		if (config.ENCODER_DEFAULT) {
 			System.out.println("Initializing Encoder Serial Connection");
-			Encoder encoder = new Encoder();
+			encoder = new Encoder();
 			sensorList.add(encoder);
 		}
 
 		if (config.DRIVE_DEFAULT) {
 			System.out.println("Initializing Drive Serial Connection");
-			Arduino mega = new DriveActuator();
+			mega = new DriveActuator();
 			sensorList.add(mega);
 		}
 
