@@ -33,18 +33,11 @@ public class Gps extends SerialConnection implements Sensor{
 	private static final int LONG_DIR = 5;
 	//how long the system should wait until a sensor switches to Disconnected
 	private static final long SENSOR_TIME_OUT = 5000;
-	
-	private SensorType thisSensorType;
-
-	private SensorState currentState;
-
-	long lastUpdateTime;
-	
-	private Publisher gpsPub;
 
 	public Gps(String publishPath) {
 		super("GPS", BAUDRATE, HEADER);
-		gpsPub = new Publisher(publishPath);
+		publisher = new Publisher(publishPath);
+		thisSensorType = SensorType.GPS;
 	}
 	
 	public long timeOfLastUpdate(){
@@ -71,7 +64,8 @@ public class Gps extends SerialConnection implements Sensor{
 	public SensorState getState() {
 		if(System.currentTimeMillis() - lastUpdateTime > SENSOR_TIME_OUT){
 			currentState = SensorState.DISCONECTED;
-		}
+		} 
+		
 		return currentState;
 	}
 
@@ -103,7 +97,7 @@ public class Gps extends SerialConnection implements Sensor{
 						break;
 					case LONG_DIR:
 						if (val.equalsIgnoreCase("W")) longitude = -1 * longitude;
-						gpsPub.publish(new GpsMeasurement(latitude, longitude));
+						publisher.publish(new GpsMeasurement(latitude, longitude));
 						System.out.println("lat: " + latitude + " lon: " + longitude);
 						return;
 					}

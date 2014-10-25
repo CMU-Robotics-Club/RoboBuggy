@@ -113,26 +113,27 @@ public class ControlPanel extends JPanel {
 		System.out.println("updated panel");
 		//autonomous_switch.setState(Robot.getInstance().get_running());
 		//TODO
-		gps_switch.setState(Robot.getInstance().getGpsState());
+		Robot robot = Robot.getInstance();
+		gps_switch.setState(robot.getGpsState());
 	    //TODO	    controlInputs_switch.updateSensorMessage_lbl("hi");
 
 		gps_switch.repaint();
-		IMU_switch.setState(Robot.getInstance().getImuState());
+		IMU_switch.setState(robot.getImuState());
 	    //TODO	    controlInputs_switch.updateSensorMessage_lbl("hi");
 
 		IMU_switch.repaint();
-	    frontCam_switch.setState(Robot.getInstance().getFrontCamState());
+	    frontCam_switch.setState(robot.getFrontCamState());
 	    //TODO	    controlInputs_switch.updateSensorMessage_lbl("hi");
 
 	    frontCam_switch.repaint();
-	    backCam_switch.setState(Robot.getInstance().getBackCamState());
+	    backCam_switch.setState(robot.getBackCamState());
 	    //TODO	    controlInputs_switch.updateSensorMessage_lbl("hi");
 
 	    backCam_switch.repaint();
-	    encoders_switch.setState(Robot.getInstance().getEncoderState());
-	    encoders_switch.updateSensorMessage_lbl(Robot.getInstance().getEncoderMsg());
+	    encoders_switch.setState(robot.getEncoderState());
+	    encoders_switch.updateSensorMessage_lbl(robot.getEncoderMsg());
 	    encoders_switch.repaint();
-	    controlInputs_switch.setState(Robot.getInstance().getControlInputState());
+	    controlInputs_switch.setState(robot.getControlInputState());
 	    //TODO	    controlInputs_switch.updateSensorMessage_lbl("hi");
 
 	    controlInputs_switch.repaint();

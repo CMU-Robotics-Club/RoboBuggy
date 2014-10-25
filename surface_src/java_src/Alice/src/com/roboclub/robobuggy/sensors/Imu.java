@@ -1,6 +1,7 @@
 package com.roboclub.robobuggy.sensors;
 
 import gnu.io.SerialPortEvent;
+
 import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.ros.Publisher;
@@ -43,17 +44,10 @@ public class Imu extends SerialConnection implements Sensor {
 	// how long the system should wait until a sensor switches to Disconnected
 	private static final long SENSOR_TIME_OUT = 5000;
 
-	private SensorType thisSensorType;
-	
-	long lastUpdateTime;
-
-	private Publisher imuPub;
-
-	private SensorState currentState;
-
 	public Imu(String publishPath) {
 		super("IMU", BAUDRATE, HEADER);
-		imuPub = new Publisher("/sensor/IMU");
+		publisher = new Publisher("/sensor/IMU");
+		thisSensorType = SensorType.IMU;
 	}
 
 	public boolean reset(){
@@ -147,7 +141,7 @@ public class Imu extends SerialConnection implements Sensor {
 								" rx: " + rX + " ry: " + rY + " mx: " + mX + " my: " + mY +
 								" mz: " + mZ);
 						Robot.UpdateImu(aX, aY, aZ, rX, rY, rZ, mX, mY, mZ);
-						imuPub.publish(new ImuMeasurement(
+						publisher.publish(new ImuMeasurement(
 								aX, aY, aZ, rX, rY, rZ, mX, mY, mZ));
 						
 						break;
