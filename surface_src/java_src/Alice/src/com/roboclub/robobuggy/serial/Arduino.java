@@ -62,7 +62,7 @@ public abstract class Arduino extends SerialConnection implements Sensor {
 					else index = 0;
 					break;
 				case 1:
-					if (index > MSG_LEN) {
+					if (index >= MSG_LEN) {
 						if (data == '\n') publish();
 						index = 0;
 						state = 0;

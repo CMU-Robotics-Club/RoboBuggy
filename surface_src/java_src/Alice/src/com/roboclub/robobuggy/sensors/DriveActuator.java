@@ -56,7 +56,7 @@ public class DriveActuator extends Arduino {
 		case STEERING:
 			Robot.UpdateSteering(inputBuffer[4]);
 			publisher.publish(new WheelAngleCommand((byte) inputBuffer[4]));
-			System.out.println("Steering Angle:" + (int)inputBuffer[4]);
+			System.out.println("Steering Angle:" + Integer.toHexString((int)inputBuffer[4]));
 			break;
 		case BRAKE:
 			Robot.UpdateBrake(inputBuffer[4]);
@@ -66,8 +66,6 @@ public class DriveActuator extends Arduino {
 			Robot.UpdateError(parseInt(inputBuffer[1], inputBuffer[2],
 					inputBuffer[3], inputBuffer[4]));
 			break;
-		default:
-			return;
 		}
 	}
 }
