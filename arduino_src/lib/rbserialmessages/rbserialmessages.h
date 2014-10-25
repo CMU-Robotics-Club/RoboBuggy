@@ -22,7 +22,6 @@
 
 // Implementation Constants
 #define RBSM_BUFFER_OUT_LENGTH 11 // minimum to support double message
-#define RBSM_BUFFER_IN_LENGTH 6
 #define RBSM_NULL_TERM 0x00
 
 // Protocol Constants
@@ -48,12 +47,6 @@
 #define RBSM_DID_MEGA 0
 #define RBSM_DID_DRIVE_ENCODER 1
 
-typedef struct received_message{
-  char message_id;
-  uint32_t data;
-  char footer_id;
-}rb_message_t;
-
 
 class RBSerialMessages {
  public:
@@ -64,7 +57,6 @@ class RBSerialMessages {
  private:
   HardwareSerial *serial_stream_;
   uint8_t buffer_out_[RBSM_BUFFER_OUT_LENGTH];
-  char buffer_in_[RBSM_BUFFER_IN_LENGTH];
   uint8_t AppendMessageToBuffer(uint8_t id,
                                 uint32_t message,
                                 uint8_t out_start_pos);
