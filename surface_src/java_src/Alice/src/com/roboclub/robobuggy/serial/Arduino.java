@@ -16,8 +16,8 @@ public abstract class Arduino extends SerialConnection implements Sensor {
 	protected static final char ENC_RESET = (char)0x00;
 	protected static final char ENC_TICK = (char)0x01;
 	protected static final char ENC_TIME = (char)0x02;
-	protected static final char STEERING = (char)0x05;
-	protected static final char BRAKE = (char)0x06;
+	protected static final char STEERING = (char)0x0A;
+	protected static final char BRAKE = (char)0x0B;
 	protected static final char ERROR = (char)0xFE;
 	protected static final char MSG_ID = (char)0xFF;
 	
