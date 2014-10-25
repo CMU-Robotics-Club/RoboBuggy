@@ -1,6 +1,8 @@
 package com.roboclub.robobuggy.sensors;
 
 import gnu.io.SerialPortEvent;
+
+import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.serial.SerialConnection;
@@ -34,16 +36,8 @@ public class Gps extends SerialConnection implements Sensor{
 	//how long the system should wait until a sensor switches to Disconnected
 	private static final long SENSOR_TIME_OUT = 5000;
 	
-	private SensorType thisSensorType;
-
-	private SensorState currentState;
-
-	long lastUpdateTime;
-	
-	private Publisher gpsPub;
 	public double lat;
 	public double lon;
-
 
 	public Gps(String publishPath) {
 		super("GPS", BAUDRATE, HEADER);
@@ -109,6 +103,7 @@ public class Gps extends SerialConnection implements Sensor{
 					case LONG_DIR:
 						if (val.equalsIgnoreCase("W")) longitude = -1 * longitude;
 						publisher.publish(new GpsMeasurement(latitude, longitude));
+						Robot.UpdateGps(latitude, longitude);
 						System.out.println("lat: " + latitude + " lon: " + longitude);
 						lat = latitude;
 						lon = longitude;

@@ -151,12 +151,10 @@ public class Robot {
 
 		if (config.VISION_SYSTEM_DEFAULT) {
 			//CLCamera camera = new CLCamera(0, 20);
-			//vision = new VisionSystem("/sensors/vision");
-			//sensorList.add(vision);
+			vision = new VisionSystem("/sensors/vision");
+			sensorList.add(vision);
 		}
 
-		// if ((encAng.isConnected() || gps.isConnected() || imu.isConnected())
-		// && logging) {
 		if (config.active) {
 			// Robot.gui = new Gui(Robot.arduino, Robot.gps, Robot.imu);
 		}

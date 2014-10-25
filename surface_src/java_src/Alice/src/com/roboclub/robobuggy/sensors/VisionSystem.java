@@ -36,12 +36,12 @@ public boolean reset(){
 public VisionSystem(String string){
 	System.out.println("Initializing Vision System");
 	try {
-		System.loadLibrary("robo_vison");
+		//System.loadLibrary("robo_vison");
 		
 		String frontCamIndex_str = Integer.toString(config.FRONT_CAM_INDEX);
 		String rearCamIndex_str = Integer.toString(config.REAR_CAM_INDEX);
-		//Process externalProcess = new ProcessBuilder(config.VISION_SYSTEM_EXECUTABLE_LOCATION,"-c",frontCamIndex_str,"-c",rearCamIndex_str).start();
-		Process externalProcess = new ProcessBuilder(config.VISION_SYSTEM_EXECUTABLE_LOCATION,"-c",frontCamIndex_str).start();
+		Process externalProcess = new ProcessBuilder(config.VISION_SYSTEM_EXECUTABLE_LOCATION,"-c",frontCamIndex_str,"-c",rearCamIndex_str).start();
+		//Process externalProcess = new ProcessBuilder(config.VISION_SYSTEM_EXECUTABLE_LOCATION,"-c",frontCamIndex_str).start();
 		
 		input = new BufferedInputStream(externalProcess.getInputStream());
 		output = new BufferedOutputStream(externalProcess.getOutputStream());
