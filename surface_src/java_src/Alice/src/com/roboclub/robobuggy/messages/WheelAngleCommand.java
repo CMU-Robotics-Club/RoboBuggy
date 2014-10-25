@@ -18,10 +18,10 @@ import com.roboclub.robobuggy.ros.Message;
 public class WheelAngleCommand implements Message {
 
 	public Date timestamp;
-	public double angle;
+	public byte angle;
 
 	// Makes an encoder measurement with the time of Now.
-	public WheelAngleCommand(double angle) {
+	public WheelAngleCommand(byte angle) {
 		this.angle = angle;
 		this.timestamp = new Date();
 	}

@@ -4,25 +4,9 @@ import java.util.ArrayList;
 
 import com.roboclub.robobuggy.ui.Gui;
 
-/**
- * 
- * @author Kevin Brennan
- * @author Trevor Decker
- *
- * @version 0.5
- * 
- * CHANGELOG: NONE
- * 
- * DESCRIPTION:  Driver for system
- */
-
 public class mainFile {
 	static Robot buggy;
-	 
-	/** 
-	 * 
-	 * @param args
-	 */
+	
 	public static void main(String args[]) {
 		//ArrayList<Integer> cameras = new ArrayList<Integer>();  //TODO have this set the cameras to use 
 		config.getInstance();//must be run at least once

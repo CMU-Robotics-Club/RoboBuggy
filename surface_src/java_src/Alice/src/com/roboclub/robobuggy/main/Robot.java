@@ -1,39 +1,21 @@
 package com.roboclub.robobuggy.main;
 
-import java.io.BufferedOutputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
-
 import com.roboclub.robobuggy.localization.KalmanFilter;
 import com.roboclub.robobuggy.logging.RobotLogger;
-import com.roboclub.robobuggy.sensors.CLCamera;
 import com.roboclub.robobuggy.sensors.DriveActuator;
 import com.roboclub.robobuggy.sensors.Encoder;
 import com.roboclub.robobuggy.sensors.Gps;
 import com.roboclub.robobuggy.sensors.Imu;
 import com.roboclub.robobuggy.sensors.Sensor;
-import com.roboclub.robobuggy.sensors.SensorType;
 import com.roboclub.robobuggy.sensors.VisionSystem;
 import com.roboclub.robobuggy.serial.Arduino;
 import com.roboclub.robobuggy.ui.Gui;
 
-/**
- * @author Trevor Decker
- * @author Kevin Brennan
- *
- * @version 0.5
- * 
- * CHANGELOG: NONE
- * 
- * DESCRIPTION: Data storage of the robots current state 
- * follows the factory pattern 
- */
-
 public class Robot {
 	private static Robot instance;
 	private static Thread alice;
-	private static Arduino arduino;
 	private static boolean autonomous;
 	private static ArrayList<Sensor> sensorList;
 	private KalmanFilter kf;
@@ -48,7 +30,6 @@ public class Robot {
 		return instance;
 	}
 
-	
 	private Robot() {
 		sensorList = new ArrayList<>();
 		kf = new KalmanFilter();
@@ -156,21 +137,11 @@ public class Robot {
 			float rY, float rZ, float mX, float mY, float mZ) {
 		if (config.logging) {
 			RobotLogger rl = RobotLogger.getInstance();
-			long time_in_millis = new Date().getTime();
-			float[] acc = new float[3];
-			float[] gyro = new float[3];
-			float[] compass = new float[3];
-			acc[0] = aX;
-			acc[1] = aY;
-			acc[2] = aZ;
-			gyro[0] = rX;
-			gyro[1] = rY;
-			gyro[2] = rZ;
-			compass[0] = mX;
-			compass[1] = mY;
-			compass[2] = mZ;
+			float[] acc = {aX, aY, aZ};
+			float[] gyro = {rX, rY, rZ};
+			float[] compass = {mX, mY, mZ};
 			if(config.active){
-				rl.sensor.logImu(time_in_millis, acc, gyro, compass);
+				//rl.sensor.logImu(new Date().getTime(), acc, gyro, compass);
 			}
 		}
 
@@ -178,7 +149,6 @@ public class Robot {
 	}
 
 	public static void UpdateSteering(char angle) {
-		System.out.println("NewSteeringAngle: "+(int)angle);
 		if (config.logging) {
 			// TODO add logging
 		}
@@ -187,7 +157,6 @@ public class Robot {
 	}
 
 	public static void UpdateError(int error) {
-		System.out.println("error: "+error);
 		if (config.logging) {
 			// TODO add logging
 		}
@@ -199,7 +168,7 @@ public class Robot {
 		if (config.logging) {
 			RobotLogger rl = RobotLogger.getInstance();
 			if(config.active){
-			rl.sensor.logEncoder(new Date().getTime(),encTick,encReset,encTime);
+				rl.sensor.logEncoder(new Date().getTime(),encTick,encReset,encTime);
 			}
 		}
 
@@ -207,7 +176,6 @@ public class Robot {
 	}
 
 	public static void UpdateBrake(char angle) {
-		System.out.println("new brakeState"+(int)angle);
 		if (config.logging) {
 			// TODO add logging
 		}

@@ -1,11 +1,10 @@
 package com.roboclub.robobuggy.sensors;
 
+import gnu.io.SerialPortEvent;
 import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.serial.SerialConnection;
-import com.roboclub.robobuggy.serial.SerialEvent;
-import com.roboclub.robobuggy.serial.SerialListener;
 
 /**
  * 
@@ -19,7 +18,6 @@ import com.roboclub.robobuggy.serial.SerialListener;
  */
 
 public class Imu extends SerialConnection implements Sensor {
-	/* Constants for serial communication */
 	/** Header for choosing serial port */
 	private static final String HEADER = "#ACG=";
 	/** Baud rate for serial port */
@@ -46,28 +44,15 @@ public class Imu extends SerialConnection implements Sensor {
 	private static final long SENSOR_TIME_OUT = 5000;
 
 	private SensorType thisSensorType;
-
 	
 	long lastUpdateTime;
-
-	private float aX;
-	private float aY;
-	private float aZ;
-	private float rX;
-	private float rY;
-	private float rZ;
-	private float mX;
-	private float mY;
-	private float mZ;
 
 	private Publisher imuPub;
 
 	private SensorState currentState;
 
 	public Imu(String publishPath) {
-		super("IMU", BAUDRATE, HEADER, null);
-		super.addListener(new ImuListener());
-
+		super("IMU", BAUDRATE, HEADER);
 		imuPub = new Publisher("/sensor/IMU");
 	}
 
@@ -79,98 +64,6 @@ public class Imu extends SerialConnection implements Sensor {
 	@Override
 	public long timeOfLastUpdate() {
 		return lastUpdateTime;
-	}
-
-	private void setValue(int index, float value) {
-		switch (index) {
-		case AX:
-			aX = value;
-			break;
-		case AY:
-			aY = value;
-			break;
-		case AZ:
-			aZ = value;
-			break;
-		case RX:
-			rX = value;
-			break;
-		case RY:
-			rY = value;
-			break;
-		case RZ:
-			rZ = value;
-			break;
-		case MX:
-			mX = value;
-			break;
-		case MY:
-			mY = value;
-			break;
-		case MZ:
-			//System.out.println("outMZ");
-			mZ = value;
-			Robot.UpdateImu(aX, aY, aZ, rX, rY, rZ, mX, mY, mZ);
-			imuPub.publish(new ImuMeasurement(aX, aY, aZ, rX, rY, rZ, mX, mY,
-					mZ));
-			System.out.format(
-					"IMU Values: aX: %f aY: %f aZ: %f rX: %f rY: %f rZ: %f "
-							+ "mX: %f mY: %f mZ: %f \n", aX, aY, aZ, rX, rY,
-					rZ, mX, mY, mZ);
-			break;
-		default:
-			return;
-		}
-	}
-
-	/**
-	 * ImuListener is an event handler for serial communication. It is notified
-	 * every time a complete message is received by serial port for the given
-	 * panel. It handles the serial event and parses the data to update the
-	 * current properties of the given panel.
-	 */
-	private class ImuListener implements SerialListener {
-		@Override
-		// TODO add avilable and on state update
-		public void onEvent(SerialEvent event) {
-			char[] tmp = event.getBuffer();
-		//	System.out.println("newevent");
-		//	System.out.println(tmp);
-			int index = 0;
-			boolean valid = true;
-			if (tmp != null && event.getLength() > HEADER.length()) {
-				String curVal = "";
-				for (int i = HEADER.length(); i < event.getLength(); i++) {
-					try {
-					if (tmp[i] == '\n') {
-						if (valid) {
-							setValue(index, Float.valueOf(curVal));
-							if (currentState == SensorState.ON) {
-								currentState = SensorState.ON;
-							} else {
-								currentState = SensorState.AVILABLE;
-							}
-							lastUpdateTime = System.currentTimeMillis();
-						}
-						break;
-					} else if (tmp[i] == ',') {
-							setValue(index, Float.valueOf(curVal));
-
-							curVal = "";
-							index++;
-					} else {
-						curVal += tmp[i];
-					}
-					} catch (Exception e) {
-						System.out.println("Failed to parse IMU message");
-						currentState = SensorState.ERROR;
-						lastUpdateTime = System.currentTimeMillis();
-						valid = false;
-						return;
-					}
-				}
-			}
-		}
 	}
 
 	@Override
@@ -185,4 +78,153 @@ public class Imu extends SerialConnection implements Sensor {
 	public SensorType getSensorType() {
 		return thisSensorType;
 	}
-}
+	
+	@Override
+	public boolean isConnected() {
+		return this.connected;
+	}
+	/**
+	 * ImuListener is an event handler for serial communication. It is notified
+	 * every time a complete message is received by serial port for the given
+	 * panel. It handles the serial event and parses the data to update the
+	 * current properties of the given panel.
+	 */
+
+
+	@Override
+	public boolean close() {
+		try {
+			input.close();
+			output.close();
+			port.close();
+			return true;
+		} catch (Exception e) {
+			System.out.println("Failed to Close Port: " + this.getName());
+		}
+		
+		return false;
+	}
+
+	@Override
+	public void publish() {
+		float aX = 0, aY = 0, aZ = 0, 
+				rX = 0, rY = 0, rZ = 0,
+				mX = 0, mY = 0, mZ = 0;
+		String val = "";
+		int state = 0;
+
+		lastUpdateTime = System.currentTimeMillis();
+		currentState = SensorState.ON;
+		try {
+			for (int i = 0; i < index; i++) {
+				if (inputBuffer[i] == '\n' || inputBuffer[i] == ',' || i == index) {
+					switch (state) {
+					case AX:
+						aX = Float.valueOf(val);
+						break;
+					case AY:
+						aY = Float.valueOf(val);
+						break;
+					case AZ:
+						aZ = Float.valueOf(val);
+						break;
+					case RX:
+						rX = Float.valueOf(val);
+						break;
+					case RY:
+						rY = Float.valueOf(val);
+						break;
+					case RZ:
+						rZ = Float.valueOf(val);
+						break;
+					case MX:
+						mX = Float.valueOf(val);
+						break;
+					case MY:
+						mY = Float.valueOf(val);
+						break;
+					case MZ:
+						mZ = Float.valueOf(val);
+						System.out.println("ax: " + aX + " ay: " + aY + " az: " + aZ + 
+								" rx: " + rX + " ry: " + rY + " mx: " + mX + " my: " + mY +
+								" mz: " + mZ);
+						Robot.UpdateImu(aX, aY, aZ, rX, rY, rZ, mX, mY, mZ);
+						imuPub.publish(new ImuMeasurement(
+								aX, aY, aZ, rX, rY, rZ, mX, mY, mZ));
+						
+						break;
+					}
+					
+					val = "";
+					state++;
+				} else {
+					val += inputBuffer[i];
+				}
+			}
+		} catch (Exception e) {
+			System.out.println("Failed to parse Imu Message");
+			currentState = SensorState.ERROR;
+		}
+	}
+	
+	/*%*****		Serial Methods			*****%*/
+	@Override
+	protected void serialWrite(byte[] data) {
+		if (connected && output != null) {
+			try {
+				output.write(data);
+				System.out.println("Wrote: " + data);
+				//output.flush();
+			} catch (Exception e) {
+				System.out.println("Unable to write: " + data);
+			}
+		}
+	} 
+
+	@Override
+	protected void serialWrite(String data) {
+		if (connected && data != null && output != null) {
+			try {
+				output.write(data.getBytes());
+				output.flush();
+			} catch (Exception e) {
+				System.out.println("Unable to write: " + data);
+			}
+		}
+	}
+	
+	public void serialEvent(SerialPortEvent event) {
+		switch (event.getEventType()) {
+		case SerialPortEvent.DATA_AVAILABLE:
+			try {
+				char data = (char)input.read();
+				
+				switch (state) {
+				case 0:
+					if (data == HEADER.charAt(index)) index++;
+					else index = 0;
+					
+					if (index == HEADER.length()) {
+						index = 0;
+						state++;
+					}
+					break;
+				case 1:
+					inputBuffer[index++] = data;
+					
+					if (data == '\n' || index >= BUFFER_SIZE) {
+						publish();
+						index = 0;
+						state = 0;
+					}
+				}
+			} catch (Exception e) {
+				System.out.println(this.getName() + " exception!");
+				e.printStackTrace();
+			}
+			break;
+		default:
+			break;
+		}
+	}
+	}
