@@ -5,7 +5,7 @@
  * @author Matt Sebek (msebek)
   *@author Ian Hartwig (ihartwig)
  */
-#include "receiver.h"
+#include "newreceiver.h"
 #include "brake.h"
 #include "encoder.h"
 #include "watchdog.h"
@@ -16,8 +16,6 @@
 // Input pins
 #define BRAKE_PIN 8
 #define ENCODER_PIN 7
-#define THR_PIN 2
-#define AIL_PIN 3
 
 // Output pins
 #define STEERING_PIN 9
@@ -35,6 +33,8 @@ static uint8_t g_brake_needs_reset; // 0 = nominal, !0 = needs reset
 RBSerialMessages g_rbserialmessages;
 struct filter_state ail_state;
 struct filter_state thr_state;
+PinReceiver g_steering_pin_receiver;
+PinReceiver g_brake_pin_receiver;
 
 enum STATE { START, RC_CON, RC_DC, BBB_CON };
 
@@ -52,7 +52,10 @@ void setup()  {
 
   // Initialize Buggy
   // Pins 2 and 3: pin 2 is thr, pin 3 is ail
-  receiver_init();
+  // receiver pin, receiver int
+  g_steering_pin_receiver.Begin(2, 0);
+  g_brake_pin_receiver.Begin(3, 1);
+
   filter_init(&ail_state);
   filter_init(&thr_state);
   watchdog_init(WATCHDOG_THRESH_MS, &watchdog_fail);
@@ -86,17 +89,17 @@ static int steer_angle;
 
 void loop() {
   // find the new steering angle, if available
-  if(rc_available[AIL_INDEX]) {
+  if(g_steering_pin_receiver.rc_available) {
     watchdog_feed();
-    raw_angle = receiver_get_angle(AIL_INDEX);
+    raw_angle = g_steering_pin_receiver.GetAngle();
     smoothed_angle = convert_rc_to_steering(raw_angle);
     steer_angle = filter_loop(&ail_state, smoothed_angle);
   }
 
   // find the new brake state, if available
-  if(rc_available[THR_INDEX]) {
+  if(g_brake_pin_receiver.rc_available) {
     watchdog_feed();
-    raw_thr = receiver_get_angle(THR_INDEX);
+    raw_thr = g_brake_pin_receiver.GetAngle();
     smoothed_thr = filter_loop(&thr_state, raw_thr);
     // TODO make this code...less...something
     if(smoothed_thr < 70) {
