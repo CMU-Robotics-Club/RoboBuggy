@@ -1,6 +1,7 @@
 package com.roboclub.robobuggy.sensors;
 
 import gnu.io.SerialPortEvent;
+
 import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.ros.Publisher;
@@ -51,8 +52,11 @@ public class Imu extends SerialConnection implements Sensor {
 
 	private SensorState currentState;
 
+	public double angle;
+	
 	public Imu(String publishPath) {
 		super("IMU", BAUDRATE, HEADER);
+
 		imuPub = new Publisher("/sensor/IMU");
 	}
 
@@ -146,6 +150,7 @@ public class Imu extends SerialConnection implements Sensor {
 						System.out.println("ax: " + aX + " ay: " + aY + " az: " + aZ + 
 								" rx: " + rX + " ry: " + rY + " mx: " + mX + " my: " + mY +
 								" mz: " + mZ);
+						angle = rY;
 						Robot.UpdateImu(aX, aY, aZ, rX, rY, rZ, mX, mY, mZ);
 						imuPub.publish(new ImuMeasurement(
 								aX, aY, aZ, rX, rY, rZ, mX, mY, mZ));

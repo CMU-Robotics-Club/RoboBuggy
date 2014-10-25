@@ -41,6 +41,8 @@ public class Gps extends SerialConnection implements Sensor{
 	long lastUpdateTime;
 	
 	private Publisher gpsPub;
+	public double lat;
+	public double lon;
 
 	public Gps(String publishPath) {
 		super("GPS", BAUDRATE, HEADER);
@@ -105,6 +107,8 @@ public class Gps extends SerialConnection implements Sensor{
 						if (val.equalsIgnoreCase("W")) longitude = -1 * longitude;
 						gpsPub.publish(new GpsMeasurement(latitude, longitude));
 						System.out.println("lat: " + latitude + " lon: " + longitude);
+						lat = latitude;
+						lon = longitude;
 						return;
 					}
 					

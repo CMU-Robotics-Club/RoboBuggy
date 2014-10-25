@@ -39,6 +39,8 @@ public class ControlPanel extends JPanel {
 	private JLabel time_lbl;
     private static Date startPressedTime;	
     private static Timer timer;
+    private static Timer updateTimer;
+
     DateFormat df = new SimpleDateFormat("HH:mm:ss.S");
     
     SensorSwitchPanel gps_switch;
@@ -54,7 +56,7 @@ public class ControlPanel extends JPanel {
 		timer = new Timer(10, new timerHandler());//updates every .01 seconds
 		timer.setDelay(100);
 	    timer.setRepeats(true);	//timer needs to be setup before startpause_btn
-		
+	    
 		//stuff for setting up logging ie start/stop, file name ...
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
 		this.setLayout(new GridLayout(2, 1));
@@ -104,7 +106,14 @@ public class ControlPanel extends JPanel {
 	    //bottom_panel.add(autonomous_switch.getGraphics());
 
 	    this.add(bottom_panel);
-		
+	    
+	    //update timer should be after everything in the gui has been setup
+	    updateTimer = new Timer(10000, new updateTimedHandler());
+	    updateTimer.setDelay(1000); //updates every .1 seconds 
+	    updateTimer.setRepeats(true);
+	    updateTimer.start();
+	    
+	    
 		
 	}
 	
@@ -114,26 +123,26 @@ public class ControlPanel extends JPanel {
 		//autonomous_switch.setState(Robot.getInstance().get_running());
 		//TODO
 		gps_switch.setState(Robot.getInstance().getGpsState());
-	    //TODO	    controlInputs_switch.updateSensorMessage_lbl("hi");
+		gps_switch.updateSensorMessage_lbl(Robot.getInstance().getGpsMsg());
 
 		gps_switch.repaint();
 		IMU_switch.setState(Robot.getInstance().getImuState());
-	    //TODO	    controlInputs_switch.updateSensorMessage_lbl("hi");
+	    IMU_switch.updateSensorMessage_lbl(Robot.getInstance().getImuMsg());
 
 		IMU_switch.repaint();
 	    frontCam_switch.setState(Robot.getInstance().getFrontCamState());
-	    //TODO	    controlInputs_switch.updateSensorMessage_lbl("hi");
+	    frontCam_switch.updateSensorMessage_lbl("In C++ check window");
 
 	    frontCam_switch.repaint();
 	    backCam_switch.setState(Robot.getInstance().getBackCamState());
-	    //TODO	    controlInputs_switch.updateSensorMessage_lbl("hi");
+	    backCam_switch.updateSensorMessage_lbl("In C++ check window");
 
 	    backCam_switch.repaint();
 	    encoders_switch.setState(Robot.getInstance().getEncoderState());
 	    encoders_switch.updateSensorMessage_lbl(Robot.getInstance().getEncoderMsg());
 	    encoders_switch.repaint();
 	    controlInputs_switch.setState(Robot.getInstance().getControlInputState());
-	    //TODO	    controlInputs_switch.updateSensorMessage_lbl("hi");
+	    controlInputs_switch.updateSensorMessage_lbl(Robot.getInstance().getControlInputMsg());
 
 	    controlInputs_switch.repaint();
 	    //TODO add update for logging_switch
@@ -149,10 +158,20 @@ public class ControlPanel extends JPanel {
 			Date now = new Date();
 			long difference = now.getTime() - startPressedTime.getTime();
 			time_lbl.setText(df.format(now) + "/" + df.format(new Date(difference)));
-			updatePanel();
 			repaint();
 		}
 	}
+	
+	//timed update for the control input 
+	private class updateTimedHandler implements ActionListener
+	{
+		@Override 
+		public void actionPerformed(ActionEvent e)
+		{
+			updatePanel();		
+		}
+	}
+	
 	
 	static void updateStartPause_btn(){
 		if(config.active)
@@ -161,6 +180,7 @@ public class ControlPanel extends JPanel {
 			startPause_btn.setBackground(Color.RED);
 			startPause_btn.setText("Pause");
 			timer.start();
+		    //updateTimer.start();
 		    startPressedTime = new Date();
 		} else {
 			System.out.println("System Paused");

@@ -19,7 +19,7 @@ public static int FRONT_CAM_INDEX = 0;
 public static int REAR_CAM_INDEX = 3;
 
 //location of the executable that should be run for the camera sub system 
-public static String VISION_SYSTEM_EXECUTABLE_LOCATION = "C:\\Users\\abc\\buggy-log\\VisionSystem.exe";
+public static String VISION_SYSTEM_EXECUTABLE_LOCATION = "C:\\Users\\Robot\\Documents\\GitHub\\RoboBuggy\\surface_src\\VisionSystem\\Debug\\VisionSystem.exe";
 //"C:\\Users\\abc\\buggy-log\\VisionSystem.exe";
 
 public static String LOG_FILE_LOCATION = "C:\\Users\\abc\\buggy-log";
@@ -38,7 +38,7 @@ public static boolean DRIVE_DEFAULT = true;
 public static boolean IMU_DEFAULT = true;
 public static boolean GPS_DEFAULT = true;
 public static boolean ENCODER_DEFAULT = true;
-public static boolean VISION_SYSTEM_DEFAULT = true;
+public static boolean VISION_SYSTEM_DEFAULT = false;
 
 //number of times that we will allow for the brakes to be deployed and still have the buggy run
 public static byte BRAKES_PER_FULL_PRESSURE = 4;  

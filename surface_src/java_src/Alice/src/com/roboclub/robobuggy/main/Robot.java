@@ -28,6 +28,7 @@ public class Robot {
 	private Imu imu;
 	private Encoder encoder;
 	private Arduino mega;
+	private DriveActuator da;
 	
 	//TODO implment front cam nativly in java 
 	public SensorState getFrontCamState(){
@@ -40,10 +41,17 @@ public class Robot {
 	}
 	
 	public SensorState getControlInputState(){
-		if(mega == null){
+		if(da == null){
 			return SensorState.DISCONECTED;
 		}
-		return mega.getState();
+		return da.getState();
+	}
+	
+	public String getControlInputMsg(){
+		if(da == null){
+			return "mega not init";
+		}
+		return Integer.toString(da.steeringAngle);
 	}
 	
 	public SensorState getGpsState(){
@@ -52,6 +60,14 @@ public class Robot {
 		}
 		return gps.getState();
 	}
+	
+	public String getGpsMsg(){
+		if(gps == null){
+			return "GPS not init";
+		}
+		return "("+Double.toString(gps.lat) +","+ Double.toString(gps.lon)+")";
+	}
+	
 	
 	public SensorState getEncoderState(){
 		if(encoder == null){
@@ -74,10 +90,18 @@ public class Robot {
 		return imu.getState();
 	}
 	
+	public String getImuMsg(){
+		if(imu == null){
+			return "encoder not init";
+		}
+		return "th:"+Double.toString(imu.angle);
+	}
+	
 	
 	// private ArrayList<Markers> markers
 
 	public static Robot getInstance() {
+		System.out.println("we want a robot");
 		if (instance == null) {
 			instance = new Robot();
 		}
@@ -105,6 +129,7 @@ public class Robot {
 			sensorList.add(gps);
 		}
 
+
 		if (config.IMU_DEFAULT) {
 			System.out.println("Initializing IMU Serial Connection");
 			imu = new Imu("/sensors/IMU");
@@ -119,7 +144,8 @@ public class Robot {
 
 		if (config.DRIVE_DEFAULT) {
 			System.out.println("Initializing Drive Serial Connection");
-			mega = new DriveActuator();
+			da = new DriveActuator();
+			mega = da;
 			sensorList.add(mega);
 		}
 
