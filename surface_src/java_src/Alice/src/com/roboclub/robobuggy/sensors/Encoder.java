@@ -27,6 +27,7 @@ public class Encoder extends Arduino {
 	
 	public Encoder() {
 		super("Encoder", "/sensor/encoder");
+		thisSensorType = SensorType.ENCODER;
 	}
 	
 	public int getTicks(){

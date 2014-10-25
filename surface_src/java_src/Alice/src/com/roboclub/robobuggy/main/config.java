@@ -84,7 +84,6 @@ public static void Set(String filename) {
 				config.VISION_SYSTEM_EXECUTABLE_LOCATION);
 		LOG_FILE_LOCATION = (String)obj.getOrDefault("LOG_FILE_LOCATION", config.LOG_FILE_LOCATION);
 		
-		active = (boolean)obj.getOrDefault("ACTIVE", config.ACTIVE_DEFAULT);
 		logging = (boolean)obj.getOrDefault("LOGGING", config.LOGGING_DEFAULT);
 		GUI_ON = (boolean)obj.getOrDefault("GUI", config.GUI_ON_DEFAULT);
 		

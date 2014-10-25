@@ -44,9 +44,11 @@ public class Gps extends SerialConnection implements Sensor{
 	public double lat;
 	public double lon;
 
+
 	public Gps(String publishPath) {
 		super("GPS", BAUDRATE, HEADER);
-		gpsPub = new Publisher(publishPath);
+		publisher = new Publisher(publishPath);
+		thisSensorType = SensorType.GPS;
 	}
 	
 	public long timeOfLastUpdate(){
@@ -73,7 +75,8 @@ public class Gps extends SerialConnection implements Sensor{
 	public SensorState getState() {
 		if(System.currentTimeMillis() - lastUpdateTime > SENSOR_TIME_OUT){
 			currentState = SensorState.DISCONECTED;
-		}
+		} 
+		
 		return currentState;
 	}
 
@@ -105,7 +108,7 @@ public class Gps extends SerialConnection implements Sensor{
 						break;
 					case LONG_DIR:
 						if (val.equalsIgnoreCase("W")) longitude = -1 * longitude;
-						gpsPub.publish(new GpsMeasurement(latitude, longitude));
+						publisher.publish(new GpsMeasurement(latitude, longitude));
 						System.out.println("lat: " + latitude + " lon: " + longitude);
 						lat = latitude;
 						lon = longitude;

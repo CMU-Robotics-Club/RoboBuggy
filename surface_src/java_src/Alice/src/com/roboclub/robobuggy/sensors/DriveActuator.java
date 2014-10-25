@@ -22,6 +22,7 @@ public class DriveActuator extends Arduino {
 	
 	public DriveActuator() {
 		super("Steering", "/sensor/drive");
+		thisSensorType = SensorType.GPS;
 	}
 	
 	/* Methods for Serial Communication with Arduino */

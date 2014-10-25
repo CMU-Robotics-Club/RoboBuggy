@@ -4,6 +4,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
+
+import com.roboclub.robobuggy.ros.Publisher;
+import com.roboclub.robobuggy.sensors.SensorState;
+import com.roboclub.robobuggy.sensors.SensorType;
+
 import gnu.io.*;
 
 /**
@@ -31,10 +36,17 @@ public abstract class SerialConnection implements SerialPortEventListener {
 	protected int index;
 	protected int state;
 	
+	protected long lastUpdateTime;
+	protected SensorState currentState;
+	protected SensorType thisSensorType;
+	protected Publisher publisher;
+	
 	@SuppressWarnings("unchecked")
 	protected SerialConnection(String owner, int baud_rate, String header) {
 		port_list = CommPortIdentifier.getPortIdentifiers();
 		connected = false;
+		currentState = SensorState.DISCONECTED;
+		lastUpdateTime = 0;
 		
 		while (port_list.hasMoreElements() ) {
 			port_id = (CommPortIdentifier)port_list.nextElement();
@@ -59,6 +71,7 @@ public abstract class SerialConnection implements SerialPortEventListener {
 						inputBuffer = new char[BUFFER_SIZE];
 						index = 0;
 						connected = true;
+						currentState = SensorState.ON;
 						port.addEventListener(this);
 						System.out.println("Connected to port: " + this.getName());
 						return;

@@ -56,8 +56,8 @@ public class Imu extends SerialConnection implements Sensor {
 	
 	public Imu(String publishPath) {
 		super("IMU", BAUDRATE, HEADER);
-
-		imuPub = new Publisher("/sensor/IMU");
+		publisher = new Publisher("/sensor/IMU");
+		thisSensorType = SensorType.IMU;
 	}
 
 	public boolean reset(){
@@ -152,7 +152,7 @@ public class Imu extends SerialConnection implements Sensor {
 								" mz: " + mZ);
 						angle = rY;
 						Robot.UpdateImu(aX, aY, aZ, rX, rY, rZ, mX, mY, mZ);
-						imuPub.publish(new ImuMeasurement(
+						publisher.publish(new ImuMeasurement(
 								aX, aY, aZ, rX, rY, rZ, mX, mY, mZ));
 						
 						break;

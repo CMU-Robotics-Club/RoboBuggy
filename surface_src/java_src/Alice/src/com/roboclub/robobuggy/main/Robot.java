@@ -115,7 +115,7 @@ public class Robot {
 		autonomous = config.AUTONOMUS_DEFAULT;
 
 		//creates a log file even if no data is used
-		if(config.getInstance().logging){
+		if(config.logging){
 			System.out.println("Starting Logging");
 			RobotLogger.getInstance();
 		}
@@ -221,7 +221,7 @@ public class Robot {
 			float[] gyro = {rX, rY, rZ};
 			float[] compass = {mX, mY, mZ};
 			if(config.active){
-				//rl.sensor.logImu(new Date().getTime(), acc, gyro, compass);
+				rl.sensor.logImu(new Date().getTime(), acc, gyro, compass);
 			}
 		}
 
@@ -248,7 +248,7 @@ public class Robot {
 		if (config.logging) {
 			RobotLogger rl = RobotLogger.getInstance();
 			if(config.active){
-				rl.sensor.logEncoder(new Date().getTime(),encTick,encReset,encTime);
+				RobotLogger.sensor.logEncoder(new Date().getTime(),encTick,encReset,encTime);
 			}
 		}
 
@@ -261,17 +261,6 @@ public class Robot {
 		}
 
 		// TODO update planner
-	}
-
-	public static void UpdateEnc(double distance, double velocity) {
-		if (config.logging) {
-			RobotLogger rl = RobotLogger.getInstance();
-			long time_in_millis = new Date().getTime();
-			// rl.sensor.logEncoder(time_in_millis, encTickLast, encReset,
-			// encTime);
-		}
-
-		// TODO Update planner
 	}
 
 	public static void UpdateAngle(int angle) {

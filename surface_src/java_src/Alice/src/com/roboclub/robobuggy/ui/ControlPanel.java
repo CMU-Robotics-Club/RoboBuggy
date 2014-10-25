@@ -137,13 +137,13 @@ public class ControlPanel extends JPanel {
 	    backCam_switch.setState(Robot.getInstance().getBackCamState());
 	    backCam_switch.updateSensorMessage_lbl("In C++ check window");
 
+
 	    backCam_switch.repaint();
 	    encoders_switch.setState(Robot.getInstance().getEncoderState());
 	    encoders_switch.updateSensorMessage_lbl(Robot.getInstance().getEncoderMsg());
 	    encoders_switch.repaint();
 	    controlInputs_switch.setState(Robot.getInstance().getControlInputState());
 	    controlInputs_switch.updateSensorMessage_lbl(Robot.getInstance().getControlInputMsg());
-
 	    controlInputs_switch.repaint();
 	    //TODO add update for logging_switch
 	    

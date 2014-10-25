@@ -31,12 +31,6 @@ public abstract class Arduino extends SerialConnection implements Sensor {
 	protected static final char ERROR = (char)0xFE;
 	protected static final char MSG_ID = (char)0xFF;
 	
-	protected long lastUpdateTime;
-	protected SensorState currentState;
-	
-	protected Publisher publisher;
-	private SensorType thisSensorType;
-	
 	protected Arduino(String type, String path) {
 		super("Arduino-"+type, BAUDRATE, null);
 		publisher = new Publisher(path);
