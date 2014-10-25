@@ -51,19 +51,21 @@ public abstract class SerialConnection implements SerialPortEventListener {
 						index = 0;
 						connected = true;
 						port.addEventListener(this);
+						System.out.println("Connected to port: " + this.getName());
 						return;
 					}
 					
 					port.close();
 					input.close();
 					output.close();
-				} catch (NullPointerException e) {
+				} catch (PortInUseException e) {
 					//TODO pass through for now
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		}
+		System.out.println("Failed to connect for " + owner);
 	}
 	
 	protected boolean isCorrectPort(InputStream input, String header) {

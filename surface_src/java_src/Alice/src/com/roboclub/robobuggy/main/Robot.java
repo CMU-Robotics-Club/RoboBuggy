@@ -137,21 +137,11 @@ public class Robot {
 			float rY, float rZ, float mX, float mY, float mZ) {
 		if (config.logging) {
 			RobotLogger rl = RobotLogger.getInstance();
-			long time_in_millis = new Date().getTime();
-			float[] acc = new float[3];
-			float[] gyro = new float[3];
-			float[] compass = new float[3];
-			acc[0] = aX;
-			acc[1] = aY;
-			acc[2] = aZ;
-			gyro[0] = rX;
-			gyro[1] = rY;
-			gyro[2] = rZ;
-			compass[0] = mX;
-			compass[1] = mY;
-			compass[2] = mZ;
+			float[] acc = {aX, aY, aZ};
+			float[] gyro = {rX, rY, rZ};
+			float[] compass = {mX, mY, mZ};
 			if(config.active){
-				rl.sensor.logImu(time_in_millis, acc, gyro, compass);
+				//rl.sensor.logImu(new Date().getTime(), acc, gyro, compass);
 			}
 		}
 

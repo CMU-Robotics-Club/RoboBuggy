@@ -10,7 +10,7 @@ public class Encoder extends Arduino {
 	private static final double M_PER_REV = 5.0;
 	
 	private int encReset;
-	private int encTickLast;
+	private int encTicks;
 	private int encTime;
 	private double dist;
 	private double velocity;
@@ -25,7 +25,7 @@ public class Encoder extends Arduino {
 		lastUpdateTime = System.currentTimeMillis();
 		currentState = SensorState.ON; //TODO fix this 
 		
-		dist = ((double)(encTickLast - encReset)/TICKS_PER_REV) / M_PER_REV;
+		dist = ((double)(encTicks - encReset)/TICKS_PER_REV) / M_PER_REV;
 		velocity = dist / encTime;	
 		
 		publisher.publish(new EncoderMeasurement(dist, velocity));
@@ -50,6 +50,8 @@ public class Encoder extends Arduino {
 		currentState = SensorState.ON;
 		lastUpdateTime = System.currentTimeMillis();
 		
+		System.out.println((int)inputBuffer[0] + " " + (int)inputBuffer[1] + 
+				" " + (int)inputBuffer[2] + " " + (int)inputBuffer[3]);
 		switch (inputBuffer[0]) {
 		case ENC_TIME:
 			encTime = parseInt(inputBuffer[1], inputBuffer[2], inputBuffer[3], inputBuffer[4]);
@@ -58,12 +60,15 @@ public class Encoder extends Arduino {
 			encReset = parseInt(inputBuffer[1], inputBuffer[2], inputBuffer[3], inputBuffer[4]);
 			break;
 		case ENC_TICK:
-			encTickLast = parseInt(inputBuffer[1], inputBuffer[2], inputBuffer[3], inputBuffer[4]);
-			Robot.UpdateEnc(encTime, encReset, encTickLast);
+			System.out.println("Time: " + encTime + " Reset: " + encReset + " Ticks: " + encTicks);
+			encTicks = parseInt(inputBuffer[1], inputBuffer[2], inputBuffer[3], inputBuffer[4]);
+			Robot.UpdateEnc(encTime, encReset, encTicks);
 			break;
 		case ERROR:
 			Robot.UpdateError(parseInt(inputBuffer[1], inputBuffer[2], inputBuffer[3], inputBuffer[4]));
 			break;
+		default:
+			System.out.println("Invalid Encoder Message!");
 		}
 	}
 

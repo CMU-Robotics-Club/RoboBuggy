@@ -81,11 +81,11 @@ public class DriveActuator extends Arduino {
 	public void publish() {
 		currentState = SensorState.ON;
 		lastUpdateTime = System.currentTimeMillis();
-		
 		switch (inputBuffer[0]) {
 		case STEERING:
 			Robot.UpdateSteering(inputBuffer[4]);
 			publisher.publish(new WheelAngleCommand((byte) inputBuffer[4]));
+			System.out.println("Steering Angle:" + (int)inputBuffer[4]);
 			break;
 		case BRAKE:
 			Robot.UpdateBrake(inputBuffer[4]);

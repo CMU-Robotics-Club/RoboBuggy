@@ -11,15 +11,15 @@ public class Gps extends SerialConnection implements Sensor{
 	private static final String HEADER = "$GPGGA";
 	/** Baud rate for serial port */
 	private static final int BAUDRATE = 9600;
-	private static final int MESSAGE_SIZE = 17;
+	private static final int MESSAGE_SIZE = 40;
 	/** Index of latitude data as received during serial communication */
-	private static final int LAT_NUM = 1;
+	private static final int LAT_NUM = 2;
 	/** Index of latitude direction as received during serial communication */
-	private static final int LAT_DIR = 2;
+	private static final int LAT_DIR = 3;
 	/** Index of longitude data as received during serial communication */
-	private static final int LONG_NUM = 3;
+	private static final int LONG_NUM = 4;
 	/** Index of longitude direction as received during serial communication */
-	private static final int LONG_DIR = 4;
+	private static final int LONG_DIR = 5;
 	//how long the system should wait until a sensor switches to Disconnected
 	private static final long SENSOR_TIME_OUT = 5000;
 	
@@ -92,8 +92,12 @@ public class Gps extends SerialConnection implements Sensor{
 					case LONG_DIR:
 						if (val.equalsIgnoreCase("W")) longitude = -1 * longitude;
 						gpsPub.publish(new GpsMeasurement(latitude, longitude));
+						System.out.println("lat: " + latitude + " lon: " + longitude);
 						return;
 					}
+					
+					val  = "";
+					state++;
 				} else val += inputBuffer[i];
 			}
 		} catch (Exception e) {

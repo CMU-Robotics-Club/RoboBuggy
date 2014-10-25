@@ -12,7 +12,7 @@ import gnu.io.SerialPortEvent;
 
 public abstract class Arduino extends SerialConnection implements Sensor {
 	protected static final int BAUDRATE = 9600;
-	protected static final int MSG_LEN = 6;
+	protected static final int MSG_LEN = 5;
 	protected static final char ERROR = (char)0xFF;
 	protected static final char ENC_TIME = (char)0x02;
 	protected static final char ENC_RESET = (char)0x00;
@@ -61,8 +61,9 @@ public abstract class Arduino extends SerialConnection implements Sensor {
 				continue;
 			}
 			
-			if (state == 0 && validId(data)) state++;
-			else if (state != 0 && test < MSG_LEN) test++;
+			if (state == 0) {
+				if (validId(data)) state++;
+			} else if (state != 0 && test < MSG_LEN) test++;
 			else {
 				if (data == '\n') return true;
 				else {
