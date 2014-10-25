@@ -101,7 +101,6 @@ public class Robot {
 	// private ArrayList<Markers> markers
 
 	public static Robot getInstance() {
-		System.out.println("we want a robot");
 		if (instance == null) {
 			instance = new Robot();
 		}

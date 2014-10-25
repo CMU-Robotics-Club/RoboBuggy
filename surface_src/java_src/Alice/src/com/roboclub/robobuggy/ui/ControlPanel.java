@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
+import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.main.config;
 import com.roboclub.robobuggy.sensors.SensorState;
@@ -119,7 +120,6 @@ public class ControlPanel extends JPanel {
 	
 	//updates the display based on external events
 	public void updatePanel(){
-		System.out.println("updated panel");
 		//autonomous_switch.setState(Robot.getInstance().get_running());
 		//TODO
 		gps_switch.setState(Robot.getInstance().getGpsState());
@@ -180,7 +180,7 @@ public class ControlPanel extends JPanel {
 			startPause_btn.setBackground(Color.RED);
 			startPause_btn.setText("Pause");
 			timer.start();
-		    //updateTimer.start();
+
 		    startPressedTime = new Date();
 		} else {
 			System.out.println("System Paused");
