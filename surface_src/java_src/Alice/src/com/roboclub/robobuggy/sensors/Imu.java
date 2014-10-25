@@ -127,9 +127,9 @@ public class Imu extends SerialConnection implements Sensor {
 						break;
 					case MZ:
 						mZ = Float.valueOf(val);
-						/*System.out.println("ax: " + aX + " ay: " + aY + " az: " + aZ + 
+						System.out.println("ax: " + aX + " ay: " + aY + " az: " + aZ + 
 								" rx: " + rX + " ry: " + rY + " mx: " + mX + " my: " + mY +
-								" mz: " + mZ);*/
+								" mz: " + mZ);
 						Robot.UpdateImu(aX, aY, aZ, rX, rY, rZ, mX, mY, mZ);
 						imuPub.publish(new ImuMeasurement(
 								aX, aY, aZ, rX, rY, rZ, mX, mY, mZ));

@@ -4,7 +4,7 @@ Serial port;
 boolean foundPort = false;
 
 void setup() {
-  port = new Serial(this, "COM12",9600);
+  port = new Serial(this, "COM14",9600);
 }
 
 void draw() {

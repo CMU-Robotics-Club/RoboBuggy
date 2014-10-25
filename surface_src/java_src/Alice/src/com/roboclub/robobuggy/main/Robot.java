@@ -168,7 +168,7 @@ public class Robot {
 		if (config.logging) {
 			RobotLogger rl = RobotLogger.getInstance();
 			if(config.active){
-			rl.sensor.logEncoder(new Date().getTime(),encTick,encReset,encTime);
+				rl.sensor.logEncoder(new Date().getTime(),encTick,encReset,encTime);
 			}
 		}
 

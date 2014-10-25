@@ -1,6 +1,5 @@
 package com.roboclub.robobuggy.sensors;
 
-import gnu.io.SerialPortEvent;
 import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.messages.BrakeCommand;
 import com.roboclub.robobuggy.messages.WheelAngleCommand;
@@ -52,20 +51,24 @@ public class DriveActuator extends Arduino {
 		currentState = SensorState.ON;
 		lastUpdateTime = System.currentTimeMillis();
 		
-		switch (inputBuffer[0]) {
-		case STEERING:
-			Robot.UpdateSteering(inputBuffer[4]);
-			publisher.publish(new WheelAngleCommand((byte) inputBuffer[4]));
-			System.out.println("Steering Angle:" + Integer.toHexString((int)inputBuffer[4]));
-			break;
-		case BRAKE:
-			Robot.UpdateBrake(inputBuffer[4]);
-			publisher.publish(new BrakeCommand(true));
-			break;
-		case ERROR:
-			Robot.UpdateError(parseInt(inputBuffer[1], inputBuffer[2],
-					inputBuffer[3], inputBuffer[4]));
-			break;
+		try {
+			switch (inputBuffer[0]) {
+			case STEERING:
+				Robot.UpdateSteering(inputBuffer[4]);
+				publisher.publish(new WheelAngleCommand((byte) inputBuffer[4]));
+				System.out.println("Steering Angle:" + Integer.toHexString((int)inputBuffer[4]));
+				break;
+			case BRAKE:
+				Robot.UpdateBrake(inputBuffer[4]);
+				publisher.publish(new BrakeCommand(true));
+				break;
+			case ERROR:
+				Robot.UpdateError(parseInt(inputBuffer[1], inputBuffer[2],
+						inputBuffer[3], inputBuffer[4]));
+				break;
+			}
+		} catch (Exception e) {
+			System.out.println("Drive Exception on port: " + this.getName());
 		}
 	}
 }
