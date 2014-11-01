@@ -6,6 +6,7 @@ import com.roboclub.robobuggy.ros.Message;
 
 // Represents raw measurement from the IMU
 public class GpsMeasurement implements Message {
+	public static final String version_id = "gpsV0.1";
 
 	public Date timestamp;
 
@@ -26,9 +27,9 @@ public class GpsMeasurement implements Message {
 	}
 
 	@Override
-	public void fromLogString(String str) {
+	public Message fromLogString(String str) {
 		// TODO Auto-generated method stub
-
+		return null;
 	}
 
 }

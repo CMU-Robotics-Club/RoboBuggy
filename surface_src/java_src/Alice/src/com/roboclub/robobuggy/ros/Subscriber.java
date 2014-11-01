@@ -22,7 +22,7 @@ public class Subscriber {
 		// Start a thread to pull from mqueue
 		ms.addListener(topic, this);
 
-		worker = new Thread(new WorkerThread(), "Subscriber-Internal");
+		worker = new Thread(new WorkerThread(), "Subscriber-Internal=" + topic);
 		worker.start();
 	}
 
@@ -39,28 +39,24 @@ public class Subscriber {
 
 		@Override
 		public void run() {
-
-			// while (true) {
-			// Retrieve the latest measurements
+			Message m;
 			synchronized (local_inbox) {
-				while (local_inbox.peek() != null) {
-					try {
+				while (true) {
+					while(local_inbox.peek()) == null) {
+						try {
 						local_inbox.wait();
 					} catch (InterruptedException ie) {
 						System.out
 								.println("much awoken for no reason, such wow");
 					}
+					}
 
 					Message m = local_inbox.poll();
 					if (m != null) {
 						callback.actionPerformed(m);
-					} else {
-						System.out
-								.println("It looks like there is a race condition in Subscriber");
 					}
 				}
 			}
-			// }
 		}
 	}
 }
