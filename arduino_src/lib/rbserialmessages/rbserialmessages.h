@@ -24,6 +24,7 @@
 #define RBSM_BUFFER_OUT_LENGTH 11 // minimum to support double message
 #define RBSM_BUFFER_IN_LENGTH 6
 #define RBSM_NULL_TERM 0x00
+#define RBSM_PACKET_LENGTH 6
 
 // Protocol Constants
 #define RBSM_FOOTER 0x0A // \n
@@ -60,16 +61,18 @@ class RBSerialMessages {
   RBSerialMessages();
   int Begin(HardwareSerial *serial_stream);
   int Send(uint8_t id, uint32_t message);
-  bool Available();
-  int Read(rb_message_t* ptr);
+  int Read(rb_message_t* read_message);
  private:
   HardwareSerial *serial_stream_;
   uint8_t buffer_out_[RBSM_BUFFER_OUT_LENGTH];
-  char buffer_in_[RBSM_BUFFER_IN_LENGTH];
+  uint8_t buffer_in_[RBSM_BUFFER_IN_LENGTH];
+  uint8_t buffer_in_pos_;
+  bool buffer_in_stream_lock_;
   uint8_t AppendMessageToBuffer(uint8_t id,
                                 uint32_t message,
                                 uint8_t out_start_pos);
   uint8_t InitMessageBuffer();
+  int InitReadBuffer();
 };
 
 

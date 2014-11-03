@@ -27,6 +27,9 @@ int RBSerialMessages::Begin(HardwareSerial *serial_stream) {
   serial_stream_ = serial_stream;
   serial_stream_->begin(RBSM_BAUD_RATE);
 
+  // init the input buffer
+  InitReadBuffer();
+
   // success
   return 1;
 }
@@ -44,38 +47,53 @@ int RBSerialMessages::Send(uint8_t id, uint32_t message) {
 }
 
 
-bool RBSerialMessages::Available(){
-    return serial_stream_->available(RBSM_BAUD_RATE);
-
-}
-
-
 // return 0 if a complete message was found
 // return -1 if not enough data was found
 // return -2 if an invalid message was found
-int RBSerialMessages::Read(rb_message_t* ptr){
-
-
-
-    uint8_t possiblefooter = serial_stream_->read(RBSM_BAUD_RATE);
-    while (footer != RBSM_FOOTER){    // read until found the footer
-        footer = serial_stream_->read(RBSM_BAUD_RATE);  // null segfault?
+int RBSerialMessages::Read(rb_message_t* read_message){
+  while(serial_stream_->available()) {
+    // first, we need to try to lock on to the stream
+    if(buffer_in_stream_lock_ == false) {
+      uint8_t possible_footer;
+      possible_footer = serial_stream_->read();
+      // read until we find an old footer
+      while(possible_footer != RBSM_FOOTER){
+          possible_footer = serial_stream_->read();
+      }
+      buffer_in_stream_lock_ = true;
     }
 
+    // after we lock we need to read in to the buffer until full
+    else {
+      buffer_in_[buffer_in_pos_] = serial_stream_->read();
+      buffer_in_pos_++;
+      // handle the end of a packet
+      if(buffer_in_pos_ == RBSM_PACKET_LENGTH) {
+        // reset buffer for next packet
+        buffer_in_pos_ = 0;
+        // parse this complete packet
+        if(buffer_in_[5] == RBSM_FOOTER) {
+          read_message->message_id = buffer_in_[0];
+          uint8_t *data_bytes = (uint8_t *) &(read_message->data);
+          data_bytes[0] = buffer_in_[4];
+          data_bytes[1] = buffer_in_[3];
+          data_bytes[2] = buffer_in_[2];
+          data_bytes[3] = buffer_in_[1];
+          return 0;
+        }
+        // skip packet as an error
+        else {
+          buffer_in_stream_lock_ = false;
+          return -2;
+        }
+      }
+    }
+  }
 
-    char message = serial_stream_->read(RBSM_BAUD_RATE);
-    ptr->message_id = message;
-    char message1 = serial_stream_->read(RBSM_BAUD_RATE);
-    char message2 = serial_stream_->read(RBSM_BAUD_RATE);
-    char message3 = serial_stream_->read(RBSM_BAUD_RATE);
-    char message4 = serial_stream_->read(RBSM_BAUD_RATE);
-    uint32_t data = (message1<<RBSM_THREE_BYTE_SIZE) | (message2<<RBSM_TWO_BYTE_SIZE) | (message3<<RBSM_ONE_BYTE_SIZE) | message4;
-    ptr->data = data;
+  // we didn't have enough data to read a whole packet
+  return -1;
 
-    // maybe check if the footer matches buffer_in_, else throw the message cause it is sad.
-
-
-    return 0;
+  // maybe check if the footer matches buffer_in_, else throw the message cause it is sad.
 }
 
 
@@ -106,6 +124,7 @@ uint8_t RBSerialMessages::AppendMessageToBuffer(uint8_t id,
   return buffer_pos;
 }
 
+
 uint8_t RBSerialMessages::InitMessageBuffer() {
   uint8_t buffer_pos = 0;
 
@@ -113,4 +132,12 @@ uint8_t RBSerialMessages::InitMessageBuffer() {
   buffer_out_[buffer_pos] = RBSM_NULL_TERM;
 
   return buffer_pos;
+}
+
+
+int RBSerialMessages::InitReadBuffer() {
+  buffer_in_pos_ = 0;
+  buffer_in_stream_lock_ = false;
+
+  return 0;
 }
