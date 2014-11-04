@@ -22,7 +22,6 @@
 
 // Implementation Constants
 #define RBSM_BUFFER_OUT_LENGTH 11 // minimum to support double message
-#define RBSM_BUFFER_IN_LENGTH 6
 #define RBSM_NULL_TERM 0x00
 #define RBSM_PACKET_LENGTH 6
 
