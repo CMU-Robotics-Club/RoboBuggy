@@ -10,17 +10,10 @@ import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
+ * Logs data from the sensors
  * 
  * @author Joe Doyle
- *
- * @version 0.5
- * 
- * CHANGELOG: NONE
- * 
- * DESCRIPTION:  Logs data from the sensors
  */
-
-
 public final class SensorLogger {
 	private final String[] _imuKeys = {
 		"IMU_Acc_X",     "IMU_Acc_Y",     "IMU_Acc_Z",
