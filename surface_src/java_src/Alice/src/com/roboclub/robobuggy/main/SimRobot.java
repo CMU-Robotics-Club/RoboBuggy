@@ -5,16 +5,6 @@ import java.util.Date;
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.serial.FauxArduino;
 
-/**
- * @author Matt Sebek
- *
- * @version 0.5
- * 
- * CHANGELOG: NONE
- * 
- * DESCRIPTION: TODO
- */
-
 public class SimRobot {
 	// published encoder, subscribes steering and brake
 	// TODO: pass the subscribe/pub paths in as arguments?

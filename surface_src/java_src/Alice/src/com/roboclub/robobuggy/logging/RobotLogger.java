@@ -15,16 +15,10 @@ import com.roboclub.robobuggy.main.config;
 import com.roboclub.robobuggy.ui.Gui;
 
 /**
+ * Logs data from the sensors
  * 
- * @author Kevin Brennan
- *
- * @version 0.5
- * 
- * CHANGELOG: NONE
- * 
- * DESCRIPTION:  Logs data from the sensors
+ * @author Joe Doyle  && Trevor Decker
  */
-
 public final class RobotLogger {
 	public final Logger message;
 	public static SensorLogger sensor;
