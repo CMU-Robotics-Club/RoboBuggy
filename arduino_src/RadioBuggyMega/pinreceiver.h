@@ -1,10 +1,8 @@
-#ifndef _NEWRECEIVER_H_
-#define _NEWRECEIVER_H_
-
-volatile char rc_connected;
+#ifndef _PINRECEIVER_H_
+#define _PINRECEIVER_H_
 
 class PinReceiver {
-    int receiver_pin, receiver_int;
+    int receiver_pin_;
     int leftmost, rightmost, centermost;
     int pwm_time, pwm_thresh, big_pulse, short_pulse;
     int signal_time;
@@ -16,8 +14,10 @@ class PinReceiver {
 
     public:
         PinReceiver();
-        void Begin(int receiverPin, int receiverInt);
+        void Begin(int pin, int int_num, void (*int_wrapper)() );
         void OnInterruptReceiver();
+        bool Available();
+        int GetAngle();
 };
 
 #endif

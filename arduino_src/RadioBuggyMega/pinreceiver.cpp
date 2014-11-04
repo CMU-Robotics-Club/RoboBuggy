@@ -1,14 +1,13 @@
-#include "newreceiver.h"
+#include "pinreceiver.h"
 #include <Arduino.h>
 
 PinReceiver::PinReceiver(){
 
 }
 
-void PinReceiver::Begin(int receiverPin, int receiverInt){
-    receiver_pin = receiverPin;
-    receiver_int = receiverInt;
-    switch(receiver_pin){
+void PinReceiver::Begin(int pin, int int_num, void (*int_wrapper)() ){
+    receiver_pin_ = pin;
+    switch(receiver_pin_){
         case 2:
             leftmost = 2000;
             rightmost = 980;
@@ -32,11 +31,13 @@ void PinReceiver::Begin(int receiverPin, int receiverInt){
     up_switch_time = 0;
     down_switch_time = 0;
     rc_value = 0;
-    attachInterrupt(receiver_int, OnInterruptReceiver, CHANGE);
+
+    attachInterrupt(int_num, int_wrapper, CHANGE);
 }
 
+
 void PinReceiver::OnInterruptReceiver(){
-    if (digitalRead(receiver_pin) == HIGH){
+    if (digitalRead(receiver_pin_) == HIGH){
         if ((micros() - up_switch_time > pwm_time - pwm_thresh) &&
             (micros() - up_switch_time < pwm_time + pwm_thresh)) {
             if ((down_switch_time > up_switch_time) && (rc_available == 0)) {
@@ -55,6 +56,11 @@ void PinReceiver::OnInterruptReceiver(){
 
         }
     }
+}
+
+
+bool PinReceiver::Available() {
+    return rc_available;
 }
 
 

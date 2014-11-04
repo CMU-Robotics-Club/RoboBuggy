@@ -5,7 +5,7 @@
  * @author Matt Sebek (msebek)
   *@author Ian Hartwig (ihartwig)
  */
-#include "newreceiver.h"
+#include "pinreceiver.h"
 #include "brake.h"
 #include "encoder.h"
 #include "watchdog.h"
@@ -14,6 +14,10 @@
 #include "rbserialmessages.h"
 
 // Input pins
+#define RX_STEERING_PIN 2
+#define RX_STEERING_INT 0
+#define RX_BRAKE_PIN 3
+#define RX_BRAKE_INT 1
 #define BRAKE_PIN 8
 #define ENCODER_PIN 7
 
@@ -33,10 +37,18 @@ static uint8_t g_brake_needs_reset; // 0 = nominal, !0 = needs reset
 RBSerialMessages g_rbserialmessages;
 struct filter_state ail_state;
 struct filter_state thr_state;
-PinReceiver g_steering_pin_receiver;
-PinReceiver g_brake_pin_receiver;
+PinReceiver g_steering_rx;
+PinReceiver g_brake_rx;
 
 enum STATE { START, RC_CON, RC_DC, BBB_CON };
+
+void steering_int_wrapper() {
+  g_steering_rx.OnInterruptReceiver();
+}
+
+void brake_int_wrapper() {
+  g_brake_rx.OnInterruptReceiver();
+}
 
 // TODO: FIX IT WHEN IT STOPS FAILING. MAKE CODE BREAK BETTER
 
@@ -50,11 +62,9 @@ void setup()  {
   Serial1.begin(9600); // debug messages
   g_rbserialmessages.Begin(&Serial); // command/telemetry serial connection
 
-  // Initialize Buggy
-  // Pins 2 and 3: pin 2 is thr, pin 3 is ail
-  // receiver pin, receiver int
-  g_steering_pin_receiver.Begin(2, 0);
-  g_brake_pin_receiver.Begin(3, 1);
+  // init rc receiver
+  g_steering_rx.Begin(RX_STEERING_PIN, RX_STEERING_INT, steering_int_wrapper);
+  g_brake_rx.Begin(RX_BRAKE_PIN, RX_BRAKE_INT, brake_int_wrapper);
 
   filter_init(&ail_state);
   filter_init(&thr_state);
@@ -89,17 +99,17 @@ static int steer_angle;
 
 void loop() {
   // find the new steering angle, if available
-  if(g_steering_pin_receiver.rc_available) {
+  if(g_steering_rx.Available()) {
     watchdog_feed();
-    raw_angle = g_steering_pin_receiver.GetAngle();
+    raw_angle = g_steering_rx.GetAngle();
     smoothed_angle = convert_rc_to_steering(raw_angle);
     steer_angle = filter_loop(&ail_state, smoothed_angle);
   }
 
   // find the new brake state, if available
-  if(g_brake_pin_receiver.rc_available) {
+  if(g_brake_rx.Available()) {
     watchdog_feed();
-    raw_thr = g_brake_pin_receiver.GetAngle();
+    raw_thr = g_brake_rx.GetAngle();
     smoothed_thr = filter_loop(&thr_state, raw_thr);
     // TODO make this code...less...something
     if(smoothed_thr < 70) {
