@@ -30,20 +30,28 @@
 
 // Global state
 unsigned long timer = 0L;
-static uint8_t g_brake_state_engaged; // 0 = disengaged, !0 = engaged.
-static uint8_t g_brake_needs_reset; // 0 = nominal, !0 = needs reset
 RBSerialMessages g_rbserialmessages;
 struct filter_state ail_state;
 struct filter_state thr_state;
+static uint8_t g_brake_state_engaged; // 0 = disengaged, !0 = engaged.
+static uint8_t g_brake_needs_reset; // 0 = nominal, !0 = needs reset
+static int raw_angle;
+static int smoothed_angle;
+static int raw_thr;
+static int smoothed_thr;
+static int steer_angle;
+static int auto_steering_angle;
 
 enum STATE { START, RC_CON, RC_DC, BBB_CON };
 
 // TODO: FIX IT WHEN IT STOPS FAILING. MAKE CODE BREAK BETTER
 
+
 void watchdog_fail(){
   g_brake_needs_reset = 1;
   Serial1.println("Watchdog Fail! -------------------");
 }
+
 
 void setup()  {
   // Initialize serial connections
@@ -62,9 +70,17 @@ void setup()  {
 
   pinMode(LED_DANGER_PIN, OUTPUT);
 
+  // Init loop state
   g_brake_state_engaged = 0; // assume disengaged
   g_brake_needs_reset = 1; // need brake reset at start
+  raw_angle = 0;
+  smoothed_angle = 0;
+  raw_thr = 0;
+  smoothed_thr = 0;
+  steer_angle = 0;
+  auto_steering_angle = 0;
 }
+
 
 int convert_rc_to_steering(int rc_angle) {
   //Inverter for 2.4 GHz racecar received
@@ -78,13 +94,28 @@ int convert_rc_to_steering(int rc_angle) {
   return out;
 }
 
-static int raw_angle;
-static int smoothed_angle;
-static int raw_thr;
-static int smoothed_thr;
-static int steer_angle;
 
 void loop() {
+  // get new command messages
+  rb_message_t new_command;
+  int read_status;
+  while((read_status = g_rbserialmessages.Read(&new_command))
+        != RBSM_ERROR_INSUFFICIENT_DATA) {
+    if(read_status == 0) {
+      switch(new_command.message_id) {
+        case RBSM_MID_MEGA_STEER_ANGLE:
+          auto_steering_angle = (int)new_command.data;
+          g_rbserialmessages.Send(RBSM_MID_ERROR, new_command.data);
+        default:
+          // ignore unknown messages
+          break;
+      }
+    } else if(read_status == RBSM_ERROR_INVALID_MESSAGE) {
+      // g_rbserialmessages.Send(RBSM_MID_ERROR, RBSM_ERROR_INVALID_MESSAGE);
+    }
+    // drop messages with other faults
+  }
+
   // find the new steering angle, if available
   if(rc_available[AIL_INDEX]) {
     watchdog_feed();

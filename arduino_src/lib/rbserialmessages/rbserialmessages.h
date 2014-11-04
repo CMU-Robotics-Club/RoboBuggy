@@ -49,6 +49,10 @@
 #define RBSM_DID_MEGA 0
 #define RBSM_DID_DRIVE_ENCODER 1
 
+// Error Codes
+#define RBSM_ERROR_INSUFFICIENT_DATA -1
+#define RBSM_ERROR_INVALID_MESSAGE -2
+
 
 typedef struct rb_message {
   char message_id;
