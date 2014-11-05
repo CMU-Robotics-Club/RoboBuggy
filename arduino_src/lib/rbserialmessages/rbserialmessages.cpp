@@ -54,6 +54,7 @@ int RBSerialMessages::Read(rb_message_t* read_message){
   while(serial_stream_->available()) {
     // first, we need to try to lock on to the stream
     if(buffer_in_stream_lock_ == false) {
+      Serial1.println("searching for lock...");
       uint8_t possible_footer;
       possible_footer = serial_stream_->read();
       // read until we find an old footer

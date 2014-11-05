@@ -49,7 +49,13 @@
 #define RBSM_DID_MEGA 0
 #define RBSM_DID_DRIVE_ENCODER 1
 
-// Error Codes
+// Error Message Codes
+#define RBSM_EID_OK 0
+#define RBSM_EID_RBSM_LOST_STREAM 1
+#define RBSM_EID_RBSM_INVALID_MID 2
+#define RBSM_EID_RC_LOST_SIGNAL 20
+
+// Library Error Codes
 #define RBSM_ERROR_INSUFFICIENT_DATA -1
 #define RBSM_ERROR_INVALID_MESSAGE -2
 

@@ -13,6 +13,17 @@
 #include "steering.h"
 #include "rbserialmessages.h"
 
+// Turn debug output on/off
+#define DEBUG_EN
+#define DEBUG_SERIAL Serial1
+#ifdef DEBUG_EN
+# define dbg_println(...) Serial1.println(__VA_ARGS__)
+# define dbg(...)        __VA_ARGS__
+#else
+# define dbg_println(...)
+# define dbg(...)
+#endif
+
 // Input pins
 #define BRAKE_PIN 8
 #define ENCODER_PIN 7
@@ -49,13 +60,14 @@ enum STATE { START, RC_CON, RC_DC, BBB_CON };
 
 void watchdog_fail(){
   g_brake_needs_reset = 1;
+  g_rbserialmessages.Send(RBSM_MID_ERROR, RBSM_EID_RC_LOST_SIGNAL);
   Serial1.println("Watchdog Fail! -------------------");
 }
 
 
 void setup()  {
   // Initialize serial connections
-  Serial1.begin(9600); // debug messages
+  dbg(Serial1.begin(9600);) // debug messages
   g_rbserialmessages.Begin(&Serial); // command/telemetry serial connection
 
   // Initialize Buggy
@@ -87,8 +99,8 @@ int convert_rc_to_steering(int rc_angle) {
   rc_angle = 180-rc_angle;
   int out = (rc_angle/4)+(90*3/4)+36;
   if(out < 100 || out > 155) {
-    Serial1.println("FAKFAKFAK SERVO OUT OF RANGE");
-    Serial1.println(out);
+    dbg_println("FAKFAKFAK SERVO OUT OF RANGE");
+    dbg_println(out);
     out = 125;
   }
   return out;
@@ -102,18 +114,25 @@ void loop() {
   while((read_status = g_rbserialmessages.Read(&new_command))
         != RBSM_ERROR_INSUFFICIENT_DATA) {
     if(read_status == 0) {
+      // dipatch complete message
       switch(new_command.message_id) {
         case RBSM_MID_MEGA_STEER_ANGLE:
           auto_steering_angle = (int)new_command.data;
-          g_rbserialmessages.Send(RBSM_MID_ERROR, new_command.data);
+          break;
+
         default:
-          // ignore unknown messages
+          // report unknown message
+          g_rbserialmessages.Send(RBSM_MID_ERROR, RBSM_EID_RBSM_INVALID_MID);
+          dbg_println("Got message with invalid mid:");
+          dbg_println(new_command.message_id);
+          dbg_println(new_command.data);
           break;
       }
     } else if(read_status == RBSM_ERROR_INVALID_MESSAGE) {
-      // g_rbserialmessages.Send(RBSM_MID_ERROR, RBSM_ERROR_INVALID_MESSAGE);
+      // report stream losses for tracking
+      g_rbserialmessages.Send(RBSM_MID_ERROR, RBSM_EID_RBSM_LOST_STREAM);
     }
-    // drop messages with other faults
+    // drop responses with other faults
   }
 
   // find the new steering angle, if available
@@ -164,5 +183,4 @@ void loop() {
   g_rbserialmessages.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
   g_rbserialmessages.Send(RBSM_MID_MEGA_BRAKE_STATE, 
                           (long unsigned)g_brake_state_engaged);
-  g_rbserialmessages.Send(RBSM_MID_ERROR, 0);
 }
