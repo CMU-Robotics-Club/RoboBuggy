@@ -164,4 +164,5 @@ void loop() {
   g_rbserialmessages.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
   g_rbserialmessages.Send(RBSM_MID_MEGA_BRAKE_STATE, 
                           (long unsigned)g_brake_state_engaged);
+  g_rbserialmessages.Send(RBSM_MID_ERROR, 0);
 }
