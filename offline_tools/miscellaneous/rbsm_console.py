@@ -1,3 +1,19 @@
+# rbsm_console.py
+# Author: Ian Hartwig (ihartwig)
+# 
+# Python shell program for reading and writing robobuggy serial messages.
+# Features an ncurses UI that displays the latest data for all message types
+# received as well as accepting user input to send a command. The program spawns
+# 2 daemon threads in the background to handle message receiving and keyboard
+# events. The display is updated when either action happens
+# 
+# To start:
+# python rbsm_console.py /dev/tty.something
+# 
+# To send a command from the console:
+# send? message_id message_data
+# 
+
 import atexit
 import curses
 import rbsm_lib
@@ -115,6 +131,11 @@ def command_handler(rbsm_endpoint, command_line):
 
 
 def main():
+  if(len(sys.argv) < 2):
+    print "You didn't provide enough arguments. Please run with:"
+    print "%s /dev/tty.something" % (sys.argv[0])
+    sys.exit()
+
   state = {
     "message_cache": {},
     "command_line": "",
@@ -153,7 +174,10 @@ def main():
 
 @atexit.register
 def clean_up():
-  curses.endwin()
+  try:
+    curses.endwin()
+  except:
+    pass
 
 
 if __name__ == "__main__":
