@@ -25,17 +25,24 @@ def redraw(state):
   screen = state["screen"]
   message_cache = state["message_cache"]
   command_line = state["command_line"]
+  status_line = state["status_line"]
   
   (max_y, max_x) = screen.getmaxyx()
   row_id = 2
   for mid in message_cache.keys():
-    screen.addstr(row_id, 2, "                                                                 ")
+    # clear line and write new data
+    screen.addstr(row_id, 2, " " * (max_x - 2))
     screen.addstr(row_id, 2, "%s %s %s" % (mid_to_str[mid],
                                            message_cache[mid]["data"],
                                            message_cache[mid]["update_time"]) )
     row_id = row_id + 1
 
-  screen.addstr(max_y-2, 2, "                                                                 ")
+  # update status line
+  screen.addstr(max_y-3, 2, " " * (max_x - 2 - 8))
+  screen.addstr(max_y-3, 2, "status: %s" % status_line)
+
+  # clear command line an write the current one
+  screen.addstr(max_y-2, 2, " " * (max_x - 2 - 6))
   screen.addstr(max_y-2, 2, "send? %s" % command_line)
 
   screen.refresh()
@@ -48,6 +55,8 @@ def rbsm_worker(state):
   while(1):
     new_message = rbsm_endpoint.read()
     if(new_message["status"] == "locked"):
+      # update status
+      state["status_line"] = "Locked."
       # save new data
       message_cache.update([
         ( new_message["id"], 
@@ -55,6 +64,8 @@ def rbsm_worker(state):
       ])
       # update remotely
       redraw(state)
+    else:
+      state["status_line"] = "Unlocked!"
 
   return None
 
@@ -64,10 +75,21 @@ def command_worker(state):
 
   while(1):
     new_char = screen.getch()
+
+    # backspace
     if(new_char == 8 or new_char == 127):
       state["command_line"] = state["command_line"][0:-1]
+
+    # enter
     elif(new_char == 10 or new_char == 13):
+      # try to run the command
+      error = command_handler(state["rbsm_endpoint"], state["command_line"])
+      if(error):
+        state["status_line"] = "Error sending message!"
+      # clear visible command line
       state["command_line"] = ""
+
+    # standard ascii characters
     elif(new_char < 128):
       state["command_line"] = state["command_line"] + chr(new_char)
 
@@ -83,15 +105,10 @@ def command_handler(rbsm_endpoint, command_line):
 
   try:
     message_id = int(command_parts[0])
-  except:
-    error = True
-
-  try:
     message_data = int(command_parts[1])
+    rbsm_endpoint.send(message_id, message_data)
   except:
     error = True
-
-  rbsm_endpoint.send(message_id, message_data)
 
   return error
 
@@ -101,6 +118,7 @@ def main():
   state = {
     "message_cache": {},
     "command_line": "",
+    "status_line": "Starting...",
     "screen": None,
     "rbsm_endpoint": None,
   }
