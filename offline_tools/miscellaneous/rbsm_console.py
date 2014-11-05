@@ -76,6 +76,26 @@ def command_worker(state):
   return None
 
 
+def command_handler(rbsm_endpoint, command_line):
+  error = False
+  command_line = command_line.strip()
+  command_parts = command_line.split(" ")
+
+  try:
+    message_id = int(command_parts[0])
+  except:
+    error = True
+
+  try:
+    message_data = int(command_parts[1])
+  except:
+    error = True
+
+  rbsm_endpoint.send(message_id, message_data)
+
+  return error
+
+
 
 def main():
   state = {

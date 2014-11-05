@@ -43,6 +43,19 @@ class RBSerialMessage:
       self.stream_lock = False
       return {"id": 0, "data": 0, "status": "unlocked"}
 
+  def send(self, message_id, message_data):
+    message_buffer = []
+    # add header
+    message_buffer.append(message_id & 0xFF)
+    # add data in big endian byte-order
+    message_buffer.append((message_data >> 24) & 0xFF)
+    message_buffer.append((message_data >> 16) & 0xFF)
+    message_buffer.append((message_data >> 8) & 0xFF)
+    message_buffer.append((message_data) & 0xFF)
+    # add footer
+    message_buffer.append(self.RBSM_FOOTER)
+
+    self.port.write(message_buffer)
 
 if __name__ == "__main__":
   rbsm_endpoint = RBSerialMessage(sys.argv[1])
