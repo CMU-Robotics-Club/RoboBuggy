@@ -31,6 +31,7 @@
 #define RX_BRAKE_INT 1
 #define BRAKE_PIN 8
 #define ENCODER_PIN 7
+#define VOLTAGE_READ_PIN A0
 
 // Output pins
 #define STEERING_PIN 9
@@ -122,10 +123,17 @@ int convert_rc_to_steering(int rc_angle) {
 }
 
 
+void report_current_voltage() {
+  int analogReport = analogRead(VOLTAGE_READ_PIN);
+  double actualVoltage = (analogReport / 1023.00) * 5.0;
+  Serial1.println(actualVoltage);
+}
+
 void loop() {
   // get new command messages
   rb_message_t new_command;
   int read_status;
+  
   while((read_status = g_rbserialmessages.Read(&new_command))
         != RBSM_ERROR_INSUFFICIENT_DATA) {
     if(read_status == 0) {
@@ -177,6 +185,9 @@ void loop() {
 
   // Always run watchdog to check if connection is lost
   watchdog_loop();
+  
+  //report voltage
+  report_current_voltage();
 
   // Set outputs
   if(g_brake_state_engaged == 0 && g_brake_needs_reset == 0) {
