@@ -10,9 +10,7 @@ import java.util.logging.Handler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
-
 import com.roboclub.robobuggy.main.config;
-import com.roboclub.robobuggy.ui.Gui;
 
 /**
  * Logs data from the sensors

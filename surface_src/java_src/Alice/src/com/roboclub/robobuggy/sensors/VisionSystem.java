@@ -11,24 +11,15 @@ package com.roboclub.robobuggy.sensors;
  * DESCRIPTION: TODO
  */
 
-import java.io.File;
-import java.io.IOException;
-
 import com.roboclub.robobuggy.main.config;
 
 public class VisionSystem implements Sensor {
 	private SensorType sensorType;
 	private boolean connected = true;
 	
-	// spans the vision system thread ( a c++ program which does our image
-	// processing)
 	public VisionSystem(String string) {
 		this.sensorType = SensorType.VISION;
 		this.connected = false;
-		
-		// TODO implement init from 
-		String frontCamIndex_str = Integer.toString(config.FRONT_CAM_INDEX);
-		String rearCamIndex_str = Integer.toString(config.REAR_CAM_INDEX);
 		
 		try {
 			System.loadLibrary("robobuggy_vision");
@@ -38,15 +29,17 @@ public class VisionSystem implements Sensor {
 			return;
 		}
 		
+		int[] cameras = {config.FRONT_CAM_INDEX, config.REAR_CAM_INDEX};
+		String[] labels = {"FRONT", "BACK"};
+		
 		Thread thread = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				initVisionDefault();
+				initVision(cameras, labels, 2);
 			}
 		});
 		thread.start();
-		
-		connected = true;
 	}
 	
 	/*			JNI Native Methods			*/
@@ -56,6 +49,19 @@ public class VisionSystem implements Sensor {
 	public native int startRecording(String directory);
 	public native int stopRecording();
 
+	/*			Callbacks			*/
+	public void callback(boolean value) {
+		this.connected = value;
+	}
+	
+	public void callback(float x, float y) {
+		// TODO update position based on vision
+	}
+	
+	public void callback(float orient) {
+		// TODO update orientation based on vision
+	}
+	
 	/*			Inherited Methods from Sensor		*/
 	@Override
 	public SensorState getState() {
@@ -76,8 +82,7 @@ public class VisionSystem implements Sensor {
 
 	@Override
 	public boolean close() {
-		// TODO Auto-generated method stub
-		return false;
+		return (disconnect() > 0);
 	}
 
 	@Override
@@ -93,8 +98,21 @@ public class VisionSystem implements Sensor {
 
 	@Override
 	public boolean reset() {
-		// TODO Auto-generated method stub
-		return false;
+		disconnect();
+
+		int[] cameras = {config.FRONT_CAM_INDEX, config.REAR_CAM_INDEX};
+		String[] labels = {"FRONT", "BACK"};
+		
+		Thread thread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				initVisionDefault();
+				initVision(cameras, labels, 2);
+			}
+		});
+		thread.start();
+		
+		return true;
 	}
 
 }

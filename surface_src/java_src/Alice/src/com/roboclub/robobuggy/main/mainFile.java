@@ -1,7 +1,5 @@
 package com.roboclub.robobuggy.main;
 
-import java.util.ArrayList;
-
 import com.roboclub.robobuggy.ui.Gui;
 
 public class mainFile {
@@ -18,13 +16,13 @@ public class mainFile {
 				}
 			} else*/
 			if (args[i].equalsIgnoreCase("-g")) {
-				config.getInstance().GUI_ON = false;
+				config.GUI_ON = false;
 			}else if (args[i].equalsIgnoreCase("+g")){
-				config.getInstance().GUI_ON = true;
+				config.GUI_ON = true;
 			} else if (args[i].equalsIgnoreCase("-r")) {
-				config.getInstance().active = false;
+				config.active = false;
 			}else if (args[i].equalsIgnoreCase("+r")){
-				config.getInstance().active = true;
+				config.active = true;
 			}
 		}
 		

@@ -48,8 +48,6 @@ public class Imu extends SerialConnection implements Sensor {
 	
 	long lastUpdateTime;
 
-	private Publisher imuPub;
-
 	private SensorState currentState;
 
 	public double angle;

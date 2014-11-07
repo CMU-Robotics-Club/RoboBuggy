@@ -1,7 +1,5 @@
 package com.roboclub.robobuggy.main;
 
-import java.util.ArrayList;
-
 public class Planner implements Runnable {
 	private boolean running;
 	
