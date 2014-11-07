@@ -25,10 +25,12 @@
 #endif
 
 // Input pins
-#define RX_STEERING_PIN 2
-#define RX_STEERING_INT 0
-#define RX_BRAKE_PIN 3
-#define RX_BRAKE_INT 1
+#define RX_STEERING_PIN 2 // Mega interrupt pin
+#define RX_STEERING_INT 0 // Mega interrupt int value
+#define RX_BRAKE_PIN 3 // Mega interrupt pin
+#define RX_BRAKE_INT 1 // Mega interrupt int value
+#define RX_AUTON_PIN 21 // Mega interrupt pin
+#define RX_AUTON_INT 2 // Mega interrupt int value
 #define BRAKE_PIN 8
 #define ENCODER_PIN 7
 
@@ -48,8 +50,10 @@ struct filter_state ail_state;
 struct filter_state thr_state;
 PinReceiver g_steering_rx;
 PinReceiver g_brake_rx;
+PinReceiver g_auton_rx;
 static uint8_t g_brake_state_engaged; // 0 = disengaged, !0 = engaged.
 static uint8_t g_brake_needs_reset; // 0 = nominal, !0 = needs reset
+static bool g_is_autonomous;
 static int raw_angle;
 static int smoothed_angle;
 static int raw_thr;
@@ -67,8 +71,11 @@ void brake_int_wrapper() {
   g_brake_rx.OnInterruptReceiver();
 }
 
-// TODO: FIX IT WHEN IT STOPS FAILING. MAKE CODE BREAK BETTER
+void auton_int_wrapper(){
+  g_auton_rx.OnInterruptReceiver();
+}
 
+// TODO: FIX IT WHEN IT STOPS FAILING. MAKE CODE BREAK BETTER
 
 void watchdog_fail(){
   if(g_brake_needs_reset == 0) {
@@ -85,9 +92,10 @@ void setup()  {
   g_rbserialmessages.Begin(&Serial); // command/telemetry serial connection
 
   // init rc receiver
-  g_steering_rx.Begin(RX_STEERING_PIN, RX_STEERING_INT, steering_int_wrapper);
+  g_ // Mega interrupt int valuesteering_rx.Begin(RX_STEERING_PIN, RX_STEERING_INT, steering_int_wrapper);
   g_brake_rx.Begin(RX_BRAKE_PIN, RX_BRAKE_INT, brake_int_wrapper);
-
+ // Mega interrupt int value
+#define RX_AUTON
   filter_init(&ail_state);
   filter_init(&thr_state);
   watchdog_init(WATCHDOG_THRESH_MS, &watchdog_fail);
@@ -100,6 +108,7 @@ void setup()  {
   // Init loop state
   g_brake_state_engaged = 0; // assume disengaged
   g_brake_needs_reset = 1; // need brake reset at start
+  g_is_autonomous = false;
   raw_angle = 0;
   smoothed_angle = 0;
   raw_thr = 0;
@@ -175,6 +184,21 @@ void loop() {
     }
   }
 
+  // find the new autonomous state, if available
+  if(g_auton_rx.Available()) {
+    watchdog_feed();
+    raw_thr = g_auton_rx.GetAngle();
+    smoothed_thr = filter_loop(&thr_state, raw_thr);
+    // TODO make this code...less...something
+    if(smoothed_thr < 70) { // MAGIC NUMBERS
+      // read as engaged
+      g_is_autonomous = true;
+    } else {
+      // read as disengaged
+      g_is_autonomous = false;
+    }
+  }
+
   // Always run watchdog to check if connection is lost
   watchdog_loop();
 
@@ -185,7 +209,16 @@ void loop() {
     brake_drop();
   }
 
-  steering_set(steer_angle);
+  if(g_is_autonomous){
+    steering_set(auto_steering_angle);
+  }
+  else if(!g_is_autonomous){
+    steering_set(steer_angle + 124);
+  }
+  else{
+    dbg_println("Somehow not in either autonomous or teleop")
+    steering_set(steer_angle + 124); 
+  }
 
   if(g_brake_needs_reset == 1) {
     digitalWrite(LED_DANGER_PIN, HIGH);
@@ -198,4 +231,6 @@ void loop() {
   g_rbserialmessages.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
   g_rbserialmessages.Send(RBSM_MID_MEGA_BRAKE_STATE, 
                           (long unsigned)g_brake_state_engaged);
+  g_rbserialmessages.Send(RBSM_MID_MEGA_AUTON_STATE,
+                          (long unsigned)g_is_autonomous);
 }
