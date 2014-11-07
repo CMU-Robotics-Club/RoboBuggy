@@ -11,88 +11,90 @@ package com.roboclub.robobuggy.sensors;
  * DESCRIPTION: TODO
  */
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 
 import com.roboclub.robobuggy.main.config;
 
-// spans a new instance of the c++ vision system which will be connected to
-// for vision code
-public class VisionSystem implements Sensor{
-private SensorType thisSensorType;
-private long lastUpdateTime;
-private SensorState currentState;
-private BufferedInputStream input;
-private BufferedOutputStream output;
-
-public boolean reset(){
-	//TODO
-	return false;
-}
+public class VisionSystem implements Sensor {
+	private SensorType sensorType;
+	private boolean connected = true;
 	
-//spans the vision system thread ( a c++ program which does our image processing)
-public VisionSystem(String string){
-	System.out.println("Initializing Vision System");
-	try {
-		//System.loadLibrary("robo_vison");
+	// spans the vision system thread ( a c++ program which does our image
+	// processing)
+	public VisionSystem(String string) {
+		this.sensorType = SensorType.VISION;
+		this.connected = false;
 		
+		// TODO implement init from 
 		String frontCamIndex_str = Integer.toString(config.FRONT_CAM_INDEX);
 		String rearCamIndex_str = Integer.toString(config.REAR_CAM_INDEX);
-		System.out.println("vision attempt start");
-		Process externalProcess = new ProcessBuilder(config.VISION_SYSTEM_EXECUTABLE_LOCATION,"-c",frontCamIndex_str,"-c",rearCamIndex_str).start();
-		//Process externalProcess = new ProcessBuilder(config.VISION_SYSTEM_EXECUTABLE_LOCATION,"-c",frontCamIndex_str).start();
 		
-		input = new BufferedInputStream(externalProcess.getInputStream());
-		output = new BufferedOutputStream(externalProcess.getOutputStream());
-	} catch (Exception exc) {
-		exc.printStackTrace();
+		try {
+			System.loadLibrary("robobuggy_vision");
+		} catch (UnsatisfiedLinkError e) {
+			System.out.println("Failed to Load Library");
+			e.printStackTrace();
+			return;
+		}
+		
+		Thread thread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				initVisionDefault();
+			}
+		});
+		thread.start();
+		
+		connected = true;
 	}
 	
-	this.thisSensorType = SensorType.VISION;
-}
+	/*			JNI Native Methods			*/
+	public native int initVision(int[] cameras, String[] labels, int length);
+	public native int initVisionDefault();
+	public native int disconnect();
+	public native int startRecording(String directory);
+	public native int stopRecording();
 
-//TODO connect input stream and output stream of vision system to java 
-public void write(String data) {
-	try {
-		output.write(data.getBytes());
-	} catch (IOException e) {
-		e.printStackTrace();
+	/*			Inherited Methods from Sensor		*/
+	@Override
+	public SensorState getState() {
+		// TODO Auto-generated method stub
+		return null;
 	}
-}
 
-//returns true if the Visions System was closed properly otherwise return false
-public boolean close(){
-	System.out.println("closing Vision System");
-	//externalProcess.destroy();
-	return true;
-	//TODO
-}
+	@Override
+	public boolean isConnected() {
+		return this.connected;
+	}
 
-public long timeOfLastUpdate(){
-	return lastUpdateTime;
-}
+	@Override
+	public long timeOfLastUpdate() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
-@Override
-public SensorState getState() {
-	return currentState;
-}
+	@Override
+	public boolean close() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
-@Override
-public boolean isConnected() {
-	return false;
-}
+	@Override
+	public SensorType getSensorType() {
+		return this.sensorType;
+	}
 
-@Override
-public SensorType getSensorType() {
-	return thisSensorType;
-}
+	@Override
+	public void publish() {
+		// TODO Auto-generated method stub
 
-@Override
-public void publish() {
-	// TODO Auto-generated method stub
-	
-}
+	}
+
+	@Override
+	public boolean reset() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 }

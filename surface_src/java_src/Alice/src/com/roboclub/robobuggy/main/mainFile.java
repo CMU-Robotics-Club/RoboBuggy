@@ -10,6 +10,7 @@ public class mainFile {
 	public static void main(String args[]) {
 		//ArrayList<Integer> cameras = new ArrayList<Integer>();  //TODO have this set the cameras to use 
 		config.getInstance();//must be run at least once
+		
 		for (int i = 0; i < args.length; i++) {
 		/*	if (args[i].equalsIgnoreCase("-c")) {
 				if (i+1 < args.length) {

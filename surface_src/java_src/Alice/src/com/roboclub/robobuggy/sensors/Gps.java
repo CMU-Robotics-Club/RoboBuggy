@@ -68,7 +68,7 @@ public class Gps extends SerialConnection implements Sensor{
 	@Override
 	public SensorState getState() {
 		if(System.currentTimeMillis() - lastUpdateTime > SENSOR_TIME_OUT){
-			currentState = SensorState.DISCONECTED;
+			currentState = SensorState.DISCONNECTED;
 		} 
 		
 		return currentState;

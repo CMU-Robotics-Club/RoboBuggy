@@ -56,7 +56,7 @@ public class Imu extends SerialConnection implements Sensor {
 	
 	public Imu(String publishPath) {
 		super("IMU", BAUDRATE, HEADER);
-		publisher = new Publisher("/sensor/IMU");
+		publisher = new Publisher(publishPath);
 		thisSensorType = SensorType.IMU;
 	}
 
@@ -73,7 +73,7 @@ public class Imu extends SerialConnection implements Sensor {
 	@Override
 	public SensorState getState() {
 		if (System.currentTimeMillis() - lastUpdateTime > SENSOR_TIME_OUT) {
-			currentState = SensorState.DISCONECTED;
+			currentState = SensorState.FAULT;
 		} 
 		return currentState;
 	}

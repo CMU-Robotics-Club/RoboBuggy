@@ -25,8 +25,8 @@ public class Encoder extends Arduino {
 	private double dist;
 	private double velocity;
 	
-	public Encoder() {
-		super("Encoder", "/sensor/encoder");
+	public Encoder(String publishPath) {
+		super("Encoder", publishPath);
 		thisSensorType = SensorType.ENCODER;
 	}
 	

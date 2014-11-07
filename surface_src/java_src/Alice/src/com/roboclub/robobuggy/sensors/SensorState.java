@@ -11,7 +11,10 @@ package com.roboclub.robobuggy.sensors;
  * DESCRIPTION: TODO
  */
 
-
 public enum SensorState {
-	ON,AVILABLE,DISCONECTED,ERROR
+	ON,
+	NOT_IN_USE,
+	DISCONNECTED,
+	ERROR,
+	FAULT
 }
