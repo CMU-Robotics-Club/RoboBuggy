@@ -5,7 +5,7 @@
  * @author Matt Sebek (msebek)
   *@author Ian Hartwig (ihartwig)
  */
-#include "receiver.h"
+#include "pinreceiver.h"
 #include "brake.h"
 #include "encoder.h"
 #include "watchdog.h"
@@ -25,10 +25,12 @@
 #endif
 
 // Input pins
+#define RX_STEERING_PIN 2
+#define RX_STEERING_INT 0
+#define RX_BRAKE_PIN 3
+#define RX_BRAKE_INT 1
 #define BRAKE_PIN 8
 #define ENCODER_PIN 7
-#define THR_PIN 2
-#define AIL_PIN 3
 
 // Output pins
 #define STEERING_PIN 9
@@ -44,6 +46,8 @@ unsigned long timer = 0L;
 RBSerialMessages g_rbserialmessages;
 struct filter_state ail_state;
 struct filter_state thr_state;
+PinReceiver g_steering_rx;
+PinReceiver g_brake_rx;
 static uint8_t g_brake_state_engaged; // 0 = disengaged, !0 = engaged.
 static uint8_t g_brake_needs_reset; // 0 = nominal, !0 = needs reset
 static int raw_angle;
@@ -55,13 +59,23 @@ static int auto_steering_angle;
 
 enum STATE { START, RC_CON, RC_DC, BBB_CON };
 
+void steering_int_wrapper() {
+  g_steering_rx.OnInterruptReceiver();
+}
+
+void brake_int_wrapper() {
+  g_brake_rx.OnInterruptReceiver();
+}
+
 // TODO: FIX IT WHEN IT STOPS FAILING. MAKE CODE BREAK BETTER
 
 
 void watchdog_fail(){
+  if(g_brake_needs_reset == 0) {
+    g_rbserialmessages.Send(RBSM_MID_ERROR, RBSM_EID_RC_LOST_SIGNAL);
+    Serial1.println("Watchdog Fail! Brake dropped. Please reset brake.");
+  }
   g_brake_needs_reset = 1;
-  g_rbserialmessages.Send(RBSM_MID_ERROR, RBSM_EID_RC_LOST_SIGNAL);
-  Serial1.println("Watchdog Fail! -------------------");
 }
 
 
@@ -70,9 +84,10 @@ void setup()  {
   dbg(Serial1.begin(9600);) // debug messages
   g_rbserialmessages.Begin(&Serial); // command/telemetry serial connection
 
-  // Initialize Buggy
-  // Pins 2 and 3: pin 2 is thr, pin 3 is ail
-  receiver_init();
+  // init rc receiver
+  g_steering_rx.Begin(RX_STEERING_PIN, RX_STEERING_INT, steering_int_wrapper);
+  g_brake_rx.Begin(RX_BRAKE_PIN, RX_BRAKE_INT, brake_int_wrapper);
+
   filter_init(&ail_state);
   filter_init(&thr_state);
   watchdog_init(WATCHDOG_THRESH_MS, &watchdog_fail);
@@ -136,17 +151,17 @@ void loop() {
   }
 
   // find the new steering angle, if available
-  if(rc_available[AIL_INDEX]) {
+  if(g_steering_rx.Available()) {
     watchdog_feed();
-    raw_angle = receiver_get_angle(AIL_INDEX);
+    raw_angle = g_steering_rx.GetAngle();
     smoothed_angle = convert_rc_to_steering(raw_angle);
     steer_angle = filter_loop(&ail_state, smoothed_angle);
   }
 
   // find the new brake state, if available
-  if(rc_available[THR_INDEX]) {
+  if(g_brake_rx.Available()) {
     watchdog_feed();
-    raw_thr = receiver_get_angle(THR_INDEX);
+    raw_thr = g_brake_rx.GetAngle();
     smoothed_thr = filter_loop(&thr_state, raw_thr);
     // TODO make this code...less...something
     if(smoothed_thr < 70) {
