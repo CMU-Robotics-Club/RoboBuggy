@@ -51,12 +51,14 @@ PinReceiver g_steering_rx;
 PinReceiver g_brake_rx;
 static uint8_t g_brake_state_engaged; // 0 = disengaged, !0 = engaged.
 static uint8_t g_brake_needs_reset; // 0 = nominal, !0 = needs reset
+static unsigned long g_current_voltage;
 static int raw_angle;
 static int smoothed_angle;
 static int raw_thr;
 static int smoothed_thr;
 static int steer_angle;
 static int auto_steering_angle;
+
 
 enum STATE { START, RC_CON, RC_DC, BBB_CON };
 
@@ -125,7 +127,8 @@ int convert_rc_to_steering(int rc_angle) {
 
 unsigned long get_current_voltage() {
   int analog_report = analogRead(VOLTAGE_READ_PIN);
-  unsigned long actual_voltage = (analog_report * 5) / 1024;
+  //use an unsigned long because floats are expensive
+  unsigned long actual_voltage = (analog_report * 5) / 1024; //analogRead returns value between 0 and 1023 that maps to 0 to 5
   return actual_voltage;
 }
 
@@ -185,6 +188,9 @@ void loop() {
 
   // Always run watchdog to check if connection is lost
   watchdog_loop();
+
+  //get the current voltage
+  g_current_voltage = get_current_voltage();
   
 
   // Set outputs
@@ -207,5 +213,5 @@ void loop() {
   g_rbserialmessages.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
   g_rbserialmessages.Send(RBSM_MID_MEGA_BRAKE_STATE, 
                           (long unsigned)g_brake_state_engaged);
-  g_rbserialmessages.Send(RBSM_MID_MEGA_BATTERY_LEVEL, get_current_voltage());
+  g_rbserialmessages.Send(RBSM_MID_MEGA_BATTERY_LEVEL, g_current_voltage); //sends the current voltage out
 }
