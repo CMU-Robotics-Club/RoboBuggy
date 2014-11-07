@@ -60,13 +60,11 @@ void PinReceiver::OnInterruptReceiver(){
 
 
 bool PinReceiver::Available() {
-    Serial.println(rc_available);
     return rc_available;
 }
 
 
 int PinReceiver::GetAngle(){
-    Serial.println(rc_value);
     int ret_val = (int)(rc_value - 980)*3/17; //WHYYYYY
     rc_available = 0;
     return ret_val;
