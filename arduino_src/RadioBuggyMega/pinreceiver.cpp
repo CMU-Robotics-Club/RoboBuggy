@@ -60,12 +60,26 @@ void PinReceiver::OnInterruptReceiver(){
 
 
 bool PinReceiver::Available() {
+    Serial.println(rc_available);
     return rc_available;
 }
 
 
 int PinReceiver::GetAngle(){
-    int ret_val = (int)(rc_value - 980)*(3/17); //WHYYYYY
+    Serial.println(rc_value);
+    int ret_val = (int)(rc_value - 980)*3/17; //WHYYYYY
     rc_available = 0;
     return ret_val;
+}
+
+
+void PinReceiver::PrintDebugInfo(){
+    Serial1.print("up_switch_time: ");
+    Serial1.println(up_switch_time);
+    Serial1.print("down_switch_time: ");
+    Serial1.println(down_switch_time);
+    Serial1.print("rc_available: ");
+    Serial1.println(rc_available);
+    Serial1.print("rc_value: ");
+    Serial1.println(rc_value);
 }

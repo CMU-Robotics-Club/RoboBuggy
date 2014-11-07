@@ -2,15 +2,13 @@
 #define _PINRECEIVER_H_
 
 class PinReceiver {
-    int receiver_pin_;
+    unsigned int receiver_pin_;
     int leftmost, rightmost, centermost;
     int pwm_time, pwm_thresh, big_pulse, short_pulse;
-    int signal_time;
-    int signal_diff_time;
-    int rc_available;
-    int up_switch_time;
-    int down_switch_time;
-    int rc_value;
+    volatile unsigned int rc_available;
+    volatile unsigned long up_switch_time;
+    volatile unsigned long down_switch_time;
+    volatile unsigned long rc_value;
 
     public:
         PinReceiver();
@@ -18,6 +16,7 @@ class PinReceiver {
         void OnInterruptReceiver();
         bool Available();
         int GetAngle();
+        void PrintDebugInfo();
 };
 
 #endif

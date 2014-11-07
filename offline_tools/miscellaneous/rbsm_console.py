@@ -45,13 +45,17 @@ def redraw(state):
   
   (max_y, max_x) = screen.getmaxyx()
   row_id = 2
-  for mid in message_cache.keys():
-    # clear line and write new data
-    screen.addstr(row_id, 2, " " * (max_x - 2))
-    screen.addstr(row_id, 2, "%s %s %s" % (mid_to_str[mid],
-                                           message_cache[mid]["data"],
-                                           message_cache[mid]["update_time"]) )
-    row_id = row_id + 1
+
+  try:
+    for mid in message_cache.keys():
+      # clear line and write new data
+      screen.addstr(row_id, 2, " " * (max_x - 2))
+      screen.addstr(row_id, 2, "%s %s %s" % (mid_to_str[mid],
+                                             message_cache[mid]["data"],
+                                             message_cache[mid]["update_time"]))
+      row_id = row_id + 1
+  except:
+    pass
 
   # update status line
   screen.addstr(max_y-3, 2, " " * (max_x - 2 - 8))

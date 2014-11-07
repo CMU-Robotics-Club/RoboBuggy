@@ -53,8 +53,10 @@ void brake_int_wrapper() {
 // TODO: FIX IT WHEN IT STOPS FAILING. MAKE CODE BREAK BETTER
 
 void watchdog_fail(){
+  if(g_brake_needs_reset == 0) {
+    Serial1.println("Watchdog Fail! Brake dropped. Please reset brake.");
+  }
   g_brake_needs_reset = 1;
-  Serial1.println("Watchdog Fail! -------------------");
 }
 
 void setup()  {
