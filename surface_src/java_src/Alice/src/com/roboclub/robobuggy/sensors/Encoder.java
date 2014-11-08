@@ -2,7 +2,6 @@ package com.roboclub.robobuggy.sensors;
 
 import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
-import com.roboclub.robobuggy.serial.Arduino;
 
 /**
  * 
@@ -25,8 +24,8 @@ public class Encoder extends Arduino {
 	private double dist;
 	private double velocity;
 	
-	public Encoder() {
-		super("Encoder", "/sensor/encoder");
+	public Encoder(String publishPath) {
+		super("Encoder", publishPath);
 		thisSensorType = SensorType.ENCODER;
 	}
 	
@@ -80,7 +79,7 @@ public class Encoder extends Arduino {
 				encTicks = parseInt(inputBuffer[1], inputBuffer[2], 
 						inputBuffer[3], inputBuffer[4]);
 				Robot.UpdateEnc(encTime, encReset, encTicks);
-				System.out.println("Time: " + encTime + " Reset: " + encReset + " Ticks: " + encTicks);
+				//System.out.println("Time: " + encTime + " Reset: " + encReset + " Ticks: " + encTicks);
 				break;
 			case ERROR:
 				Robot.UpdateError(parseInt(inputBuffer[1], inputBuffer[2], 

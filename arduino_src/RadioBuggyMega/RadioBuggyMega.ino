@@ -25,15 +25,21 @@
 #endif
 
 // Input pins
+/* These values are from http://arduino.cc/en/Reference/attachInterrupt
+   The _PIN numbers refer to the digital arduino pin the signal is connected to,
+   and the _INT is the interrupt number associated with that pin as understood
+   by the attachInterrupt function in the Arduino library. */
 #define RX_STEERING_PIN 2
 #define RX_STEERING_INT 0
-#define RX_BRAKE_PIN 3
-#define RX_BRAKE_INT 1
-#define BRAKE_PIN 8
-#define ENCODER_PIN 7
-#define VOLTAGE_READ_PIN A0
+#define RX_BRAKE_PIN 21
+#define RX_BRAKE_INT 2
+#define RX_AUTON_PIN 20
+#define RX_AUTON_INT 3
+#define ENCODER_PIN 7 // I think this is unused.
+#define VOLTAGE_READ_PIN 0
 
 // Output pins
+#define BRAKE_PIN 8
 #define STEERING_PIN 9
 #define BRAKE_INDICATOR_PIN 5
 #define LED_DANGER_PIN 12
@@ -41,37 +47,47 @@
 // Calibration values
 #define WATCHDOG_THRESH_MS 1000
 #define STEERING_CENTER 133
+#define VOLTAGE_READ_NUMERATOR 5L
+#define VOLTAGE_READ_DENOMINATOR 13312L // 1024 * 13
 
 // Global state
 unsigned long timer = 0L;
 RBSerialMessages g_rbserialmessages;
 struct filter_state ail_state;
 struct filter_state thr_state;
+struct filter_state g_auton_filter;
 PinReceiver g_steering_rx;
 PinReceiver g_brake_rx;
+PinReceiver g_auton_rx;
 static uint8_t g_brake_state_engaged; // 0 = disengaged, !0 = engaged.
 static uint8_t g_brake_needs_reset; // 0 = nominal, !0 = needs reset
+static bool g_is_autonomous;
 static unsigned long g_current_voltage;
 static int raw_angle;
 static int smoothed_angle;
 static int raw_thr;
 static int smoothed_thr;
+static int raw_auton;
+static int smoothed_auton;
 static int steer_angle;
 static int auto_steering_angle;
 
 
 enum STATE { START, RC_CON, RC_DC, BBB_CON };
 
-void steering_int_wrapper() {
+static void steering_int_wrapper() {
   g_steering_rx.OnInterruptReceiver();
 }
 
-void brake_int_wrapper() {
+static void brake_int_wrapper() {
   g_brake_rx.OnInterruptReceiver();
 }
 
-// TODO: FIX IT WHEN IT STOPS FAILING. MAKE CODE BREAK BETTER
+static void auton_int_wrapper(){
+  g_auton_rx.OnInterruptReceiver();
+}
 
+// TODO: FIX IT WHEN IT STOPS FAILING. MAKE CODE BREAK BETTER
 
 void watchdog_fail(){
   if(g_brake_needs_reset == 0) {
@@ -90,9 +106,11 @@ void setup()  {
   // init rc receiver
   g_steering_rx.Begin(RX_STEERING_PIN, RX_STEERING_INT, steering_int_wrapper);
   g_brake_rx.Begin(RX_BRAKE_PIN, RX_BRAKE_INT, brake_int_wrapper);
+  g_auton_rx.Begin(RX_AUTON_PIN, RX_AUTON_INT, auton_int_wrapper);
 
   filter_init(&ail_state);
   filter_init(&thr_state);
+  filter_init(&g_auton_filter);
   watchdog_init(WATCHDOG_THRESH_MS, &watchdog_fail);
   brake_init(BRAKE_PIN, BRAKE_INDICATOR_PIN);
   steering_init(STEERING_PIN, 107, 126, 145);
@@ -103,6 +121,7 @@ void setup()  {
   // Init loop state
   g_brake_state_engaged = 0; // assume disengaged
   g_brake_needs_reset = 1; // need brake reset at start
+  g_is_autonomous = false;
   raw_angle = 0;
   smoothed_angle = 0;
   raw_thr = 0;
@@ -125,12 +144,19 @@ int convert_rc_to_steering(int rc_angle) {
 }
 
 
+/*
+Return the current battery voltage in mV. The battery is connected to the ADC
+through a 10k ohm / 16k ohm divider, so the value sensed is 10/26 = 5/13 of the
+true value. The value returned is a 10-bit (1023 max) value compared to 5 volts.
+*/
 unsigned long get_current_voltage() {
   int analog_report = analogRead(VOLTAGE_READ_PIN);
   //use an unsigned long because floats are expensive
-  unsigned long actual_voltage = (analog_report * 5) / 1024; //analogRead returns value between 0 and 1023 that maps to 0 to 5
+  unsigned long actual_voltage =
+    (analog_report * VOLTAGE_READ_NUMERATOR) / (VOLTAGE_READ_DENOMINATOR);
   return actual_voltage;
 }
+
 
 void loop() {
   // get new command messages
@@ -143,7 +169,7 @@ void loop() {
       // dipatch complete message
       switch(new_command.message_id) {
         case RBSM_MID_MEGA_STEER_ANGLE:
-          auto_steering_angle = (int)new_command.data;
+          auto_steering_angle = (int)(long)new_command.data;
           break;
 
         default:
@@ -175,7 +201,7 @@ void loop() {
     raw_thr = g_brake_rx.GetAngle();
     smoothed_thr = filter_loop(&thr_state, raw_thr);
     // TODO make this code...less...something
-    if(smoothed_thr < 70) {
+    if(smoothed_thr > 120) {
       // read as engaged
       g_brake_state_engaged = 1;
       // brake has been reset
@@ -186,11 +212,26 @@ void loop() {
     }
   }
 
+  // find the new autonomous state, if available
+  if(g_auton_rx.Available()) {
+    watchdog_feed();
+    raw_auton = g_auton_rx.GetAngle();
+    smoothed_auton = filter_loop(&g_auton_filter, raw_auton);
+    // TODO make this code...less...something
+    if(smoothed_auton > 120) { // MAGIC NUMBERS
+      // read as engaged
+      g_is_autonomous = true;
+    } else {
+      // read as disengaged
+      g_is_autonomous = false;
+    }
+  }
+
   // Always run watchdog to check if connection is lost
   watchdog_loop();
 
   //get the current voltage
-  g_current_voltage = get_current_voltage();
+  // g_current_voltage = get_current_voltage();
   
 
   // Set outputs
@@ -200,7 +241,18 @@ void loop() {
     brake_drop();
   }
 
-  steering_set(steer_angle);
+  if(g_is_autonomous){
+    steering_set(auto_steering_angle + 124);
+    g_rbserialmessages.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)(auto_steering_angle + 124));
+  }
+  else if(!g_is_autonomous){
+    steering_set(steer_angle);
+    g_rbserialmessages.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
+  }
+  else{
+    dbg_println("Somehow not in either autonomous or teleop");
+    steering_set(124); 
+  }
 
   if(g_brake_needs_reset == 1) {
     digitalWrite(LED_DANGER_PIN, HIGH);
@@ -210,8 +262,10 @@ void loop() {
 
   // Send telemetry messages
   g_rbserialmessages.Send(RBSM_MID_DEVICE_ID, RBSM_DID_DRIVE_ENCODER);
-  g_rbserialmessages.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
+  // g_rbserialmessages.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
   g_rbserialmessages.Send(RBSM_MID_MEGA_BRAKE_STATE, 
                           (long unsigned)g_brake_state_engaged);
-  g_rbserialmessages.Send(RBSM_MID_MEGA_BATTERY_LEVEL, g_current_voltage); //sends the current voltage out
+  g_rbserialmessages.Send(RBSM_MID_MEGA_AUTON_STATE,
+                          (long unsigned)g_is_autonomous);
+  g_rbserialmessages.Send(RBSM_MID_MEGA_BATTERY_LEVEL, g_current_voltage);
 }

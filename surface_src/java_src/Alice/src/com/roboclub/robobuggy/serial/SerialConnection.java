@@ -45,7 +45,7 @@ public abstract class SerialConnection implements SerialPortEventListener {
 	protected SerialConnection(String owner, int baud_rate, String header) {
 		port_list = CommPortIdentifier.getPortIdentifiers();
 		connected = false;
-		currentState = SensorState.DISCONECTED;
+		currentState = SensorState.DISCONNECTED;
 		lastUpdateTime = 0;
 		
 		while (port_list.hasMoreElements() ) {

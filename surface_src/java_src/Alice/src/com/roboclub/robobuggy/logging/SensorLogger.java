@@ -13,8 +13,11 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Logs data from the sensors
  * 
  * @author Joe Doyle
+ * @author Trevor Decker
  */
 public final class SensorLogger {
+	private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+
 	private final String[] _imuKeys = {
 		"IMU_Acc_X",     "IMU_Acc_Y",     "IMU_Acc_Z",
 		"IMU_Gyro_X",    "IMU_Gyro_Y",    "IMU_Gyro_Z",
@@ -39,6 +42,15 @@ public final class SensorLogger {
 	
 	private final String[] _keys;
 
+	/***
+	 * Spins a new thread which continually takes tokens off of the a que and prints them to the
+	 * PrintStream
+	 *  
+	 * TODO improve documentation 
+	 * 
+	 * @param stream
+	 * @return
+	 */
 	private static final Queue<String[]> startCsvThread(PrintStream stream) {
 		final LinkedBlockingQueue<String[]> ret = new LinkedBlockingQueue<>();
 		new Thread() {
@@ -59,6 +71,7 @@ public final class SensorLogger {
 							stream.print(s);
 						}
 					} catch (InterruptedException e) {
+						//TODO add to messages 
 						e.printStackTrace();
 					}
 				}
@@ -68,23 +81,23 @@ public final class SensorLogger {
 	};
 	
 	
-	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 	public SensorLogger(File outputDir,Date startTime) throws Exception {
 		//check if dir exits
 		if(outputDir == null){
+			//TODO add to message Log
 			throw new Exception("Output Directory was null!");
 		} else if (!outputDir.exists()) {
 			outputDir.mkdirs();
 		}
 		
 		File csvFile = new File(outputDir, "sensors.csv");
-		System.out.println("FileCreated: " + csvFile.getAbsolutePath());
+		System.out.println("FileCreated: " + csvFile.getAbsolutePath()); //TODO add to message LOG
 		//TODO fix Gui.UpdateLogName( outputFileName );
 		try {
 			_csv = new PrintStream(csvFile);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-			throw new RuntimeException("Cannot create sensor log file (" + csvFile + ")!");
+			throw new RuntimeException("Cannot create sensor log file (" + csvFile + ")!");  //TODO add to message Log
 		}
 		_csvQueue = startCsvThread(_csv);
 
@@ -126,12 +139,15 @@ public final class SensorLogger {
 		}
 		_log(time,_imuKeys,vals);
 	}
+	
 	public void logServo(long time,float command,float actual) {
 		_log(time,_servoKeys,new String[]{ "" + command,"" + actual });
 	}
+	
 	public void logEncoder(long time,long encTickLast,long encReset,long encoderTime) {
 		_log(time,_encoderKeys,new String[]{ "" + encTickLast,"" + encReset,"" + encoderTime });
 	}
+	
 	public void logGps(long time_in_millis,double d,double e) {
 		_log(time_in_millis,_gpsKeys,new String[]{ "" + d,"" + e +"/n"});
 	}
