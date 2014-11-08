@@ -31,7 +31,7 @@ public class SimRobot {
 		}
 
 		@Override
-		public void actionPerformed(Message m) {
+		public void actionPerformed(String topicName, Message m) {
 			System.out.println("received message; loggin!");
 			enc_log.log(m);
 
