@@ -33,7 +33,7 @@
 #define RX_STEERING_INT 0
 #define RX_BRAKE_PIN 21
 #define RX_BRAKE_INT 2
-#define RX_AUTON_PIN 22
+#define RX_AUTON_PIN 20
 #define RX_AUTON_INT 3
 #define ENCODER_PIN 7 // I think this is unused.
 #define VOLTAGE_READ_PIN 0
