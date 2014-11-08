@@ -14,10 +14,14 @@
 	<classpathentry kind="lib" path="library/orsonpdf-1.6-eval.jar"/>
 	<classpathentry kind="lib" path="library/servlet.jar"/>
 	<classpathentry kind="lib" path="library/swtgraphics2d.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/OpenCV-2.4.9"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JavaCV">
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/OpenCV-2.4.9">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="C:/Users/abc/Documents/GitHub/javacv"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="C:/opencv/build/java/x64"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JNI">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Alice/jni"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="output" path="bin"/>

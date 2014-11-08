@@ -11,62 +11,76 @@ package com.roboclub.robobuggy.sensors;
  * DESCRIPTION: TODO
  */
 
+import java.awt.BorderLayout;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+
+import javax.imageio.ImageIO;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.core.MatOfByte;
+import org.opencv.core.Size;
+import org.opencv.highgui.Highgui;
+import org.opencv.highgui.VideoCapture;
+import org.opencv.imgproc.Imgproc;
+
 import com.roboclub.robobuggy.main.config;
 
 public class VisionSystem implements Sensor {
 	private SensorType sensorType;
-	private boolean connected = true;
+	private boolean connected;
+	private SensorState state;
+	
+	// TODO Consider moving to array for exandability
+	private VideoCapture frontFeed;
+	private VideoCapture rearFeed;
+	private CameraPanel frontPanel;
+	private CameraPanel rearPanel;
 	
 	public VisionSystem(String string) {
+		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+		
 		this.sensorType = SensorType.VISION;
 		this.connected = false;
 		
+		if(!initCameras()) return;
+		
+		connected = true;
+		frontPanel = new CameraPanel("FRONT", frontFeed);
+		rearPanel = new CameraPanel("REAR", rearFeed);
+	}
+
+	private boolean initCameras() {
+		frontFeed = new VideoCapture(config.FRONT_CAM_INDEX);
+		rearFeed = new VideoCapture(config.REAR_CAM_INDEX);
+		
 		try {
-			System.loadLibrary("robobuggy_vision");
-		} catch (UnsatisfiedLinkError e) {
-			System.out.println("Failed to Load Library");
+			Thread.sleep(1000);
+		} catch (Exception e) {
 			e.printStackTrace();
-			return;
+			return false;
 		}
 		
-		int[] cameras = {config.FRONT_CAM_INDEX, config.REAR_CAM_INDEX};
-		String[] labels = {"FRONT", "BACK"};
+		if (!frontFeed.isOpened()) {
+			System.out.println("Failed to open front camera: " + 
+					config.FRONT_CAM_INDEX);
+			return false;
+		} else if (!rearFeed.isOpened()) {
+			System.out.println("Failed to open rear camera: " + 
+					config.REAR_CAM_INDEX);
+			return false;
+		}
 		
-		Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				initVisionDefault();
-				initVision(cameras, labels, 2);
-			}
-		});
-		thread.start();
+		return true;
 	}
 	
-	/*			JNI Native Methods			*/
-	public native int initVision(int[] cameras, String[] labels, int length);
-	public native int initVisionDefault();
-	public native int disconnect();
-	public native int startRecording(String directory);
-	public native int stopRecording();
-
-	/*			Callbacks			*/
-	public void callback(boolean value) {
-		this.connected = value;
-	}
-	
-	public void callback(float x, float y) {
-		// TODO update position based on vision
-	}
-	
-	public void callback(float orient) {
-		// TODO update orientation based on vision
-	}
-	
-	/*			Inherited Methods from Sensor		*/
 	@Override
 	public SensorState getState() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.state;
 	}
 
 	@Override
@@ -82,7 +96,32 @@ public class VisionSystem implements Sensor {
 
 	@Override
 	public boolean close() {
-		return (disconnect() > 0);
+		if (connected) {
+			try {
+				frontFeed.release();
+			} catch (Exception e) {
+				System.out.println("Failed to close front feed!");
+			}
+			
+			try {
+				rearFeed.release();
+			} catch (Exception e) {
+				System.out.println("Failed to close rear feed!");
+			}
+			
+			frontPanel.setVisible(false);
+			rearPanel.setVisible(false);
+		}
+		connected = false;
+		state = SensorState.DISCONNECTED;
+		
+		return false;
+	}
+
+	@Override
+	public boolean reset() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	@Override
@@ -93,26 +132,68 @@ public class VisionSystem implements Sensor {
 	@Override
 	public void publish() {
 		// TODO Auto-generated method stub
-
 	}
 
-	@Override
-	public boolean reset() {
-		disconnect();
+	public void setDisplay(boolean value) {
+		if (connected) {
+			frontPanel.setVisible(value);
+			rearPanel.setVisible(value);
+		}
+	}
+	
+	private class CameraPanel extends JPanel {
+		private static final long serialVersionUID = 4784083162709347884L;
 
-		int[] cameras = {config.FRONT_CAM_INDEX, config.REAR_CAM_INDEX};
-		String[] labels = {"FRONT", "BACK"};
+		private static final int WIDTH = 320;
+		private static final int HEIGHT = 240;
+		private BufferedImage img;
 		
-		Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				initVisionDefault();
-				initVision(cameras, labels, 2);
+		public CameraPanel(String title, VideoCapture feed) {
+			this.setLayout(new BorderLayout());
+			
+			Thread thread = new Thread(new Runnable() {
+				Mat frame = new Mat();
+				Mat dst = new Mat();
+				MatOfByte mb = new MatOfByte();
+				Size size = new Size(WIDTH, HEIGHT);
+				
+				@Override
+				public void run() {
+					while (connected) {
+						try {
+							feed.read(frame);
+							Imgproc.resize(frame, dst, size);
+							Highgui.imencode(".jpg", dst, mb);
+							img = ImageIO.read(new ByteArrayInputStream(mb.toArray()));
+							repaint();
+							
+						} catch (Exception e) {
+							e.printStackTrace();
+							close();
+							break;
+						}
+					}
+					
+					System.out.println("Vision Thread - " + title + " destroyed!");
+				}
+			});
+			thread.start();
+			
+			JDialog window = new JDialog();
+			window.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+			window.setTitle(title);
+			window.setModal(false);
+			window.setSize(WIDTH+5, HEIGHT+5);
+			window.setResizable(false);
+			
+			window.add(this);
+			window.setVisible(true);
+		}
+		
+		public void paintComponent(Graphics g) {
+			if (img != null) {
+				g.drawImage(img, 0, 0, this);
 			}
-		});
-		thread.start();
-		
-		return true;
+		}
 	}
-
 }

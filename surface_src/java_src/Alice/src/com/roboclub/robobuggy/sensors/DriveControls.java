@@ -3,7 +3,6 @@ package com.roboclub.robobuggy.sensors;
 import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.messages.BrakeCommand;
 import com.roboclub.robobuggy.messages.WheelAngleCommand;
-import com.roboclub.robobuggy.serial.Arduino;
 
 /**
  * 
@@ -23,6 +22,29 @@ public class DriveControls extends Arduino {
 	public DriveControls(String publishPath) {
 		super("Steering", publishPath);
 		thisSensorType = SensorType.GPS;
+		
+		// Test sweep
+		Thread thread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				int i = 0;
+				
+				while(true) {
+					try {
+						writeAngle(i);
+					} catch(Exception e) {
+						e.printStackTrace();
+						break;
+					}
+					i++;
+					
+					if (i >= 20) {
+						i = -20;
+					}
+				}
+			}
+		});
+		thread.start();
 	}
 	
 	/* Methods for Serial Communication with Arduino */
