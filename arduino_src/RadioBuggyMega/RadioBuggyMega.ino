@@ -101,10 +101,10 @@ void setup()  {
   g_rbserialmessages.Begin(&Serial); // command/telemetry serial connection
 
   // init rc receiver
-  g_ // Mega interrupt int valuesteering_rx.Begin(RX_STEERING_PIN, RX_STEERING_INT, steering_int_wrapper);
+  g_steering_rx.Begin(RX_STEERING_PIN, RX_STEERING_INT, steering_int_wrapper);
   g_brake_rx.Begin(RX_BRAKE_PIN, RX_BRAKE_INT, brake_int_wrapper);
- // Mega interrupt int value
-#define RX_AUTON
+  g_auton_rx.Begin(RX_AUTON_PIN, RX_AUTON_INT, auton_int_wrapper);
+
   filter_init(&ail_state);
   filter_init(&thr_state);
   watchdog_init(WATCHDOG_THRESH_MS, &watchdog_fail);
@@ -244,7 +244,7 @@ void loop() {
     steering_set(steer_angle + 124);
   }
   else{
-    dbg_println("Somehow not in either autonomous or teleop")
+    dbg_println("Somehow not in either autonomous or teleop");
     steering_set(steer_angle + 124); 
   }
 
