@@ -5,6 +5,7 @@ import com.roboclub.robobuggy.main.Robot;
 /**
  * 
  * @author Trevor Decker
+ * @author Kevin 
  *
  * @version 0.5
  * 
@@ -22,6 +23,45 @@ private static boolean running;
 		LeftRightSweep();
 
 	}
+	
+	//drives straight then turns right 
+	public static void straightAndRight(){
+		int count = 0;
+		int straightOneTime = 10;
+		int turnTime = 10;
+		int traightTwoTime = 10;
+		while(running && count < straightOneTime){
+			try{
+				Thread.sleep(100);
+				//TODO send angle message 
+			} catch (Exception e){
+				Thread.currentThread().interrupt();
+			}
+		}
+		//send turn angle 
+		count = 0;
+		while(running && count < turnTime){
+			try{ 
+				Thread.sleep(100);
+				//TODO send angle message
+			} catch(Exception e){
+				Thread.currentThread().interrupt();
+			}
+		}
+		count = 0;
+		while(running && count < straightTwoTime){
+			try{
+				Thread.sleep(100);
+				//TODO send angle message 
+			} catch (Exception e){
+				Thread.currentThread().interrupt();
+			}
+		}
+		
+		Thread.sleep(100);	
+		
+	}
+	
 	
 	public static void LeftRightSweep(){
 		//currently a test of the servo, todo change this to a seprate test class 
