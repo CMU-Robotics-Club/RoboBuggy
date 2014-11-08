@@ -61,14 +61,15 @@ public class Gps extends SerialConnection implements Sensor{
 	
 
 	public boolean reset(){
-		//TODO
+		//TODO implment
+		//TODO add to messages 
 		return false;
 	}
 	
 	@Override
 	public SensorState getState() {
 		if(System.currentTimeMillis() - lastUpdateTime > SENSOR_TIME_OUT){
-			currentState = SensorState.DISCONECTED;
+			currentState = SensorState.DISCONNECTED;
 		} 
 		
 		return currentState;
@@ -104,7 +105,7 @@ public class Gps extends SerialConnection implements Sensor{
 						if (val.equalsIgnoreCase("W")) longitude = -1 * longitude;
 						publisher.publish(new GpsMeasurement(latitude, longitude));
 						Robot.UpdateGps(latitude, longitude);
-						System.out.println("lat: " + latitude + " lon: " + longitude);
+					//	System.out.println("lat: " + latitude + " lon: " + longitude);
 						lat = latitude;
 						lon = longitude;
 						return;

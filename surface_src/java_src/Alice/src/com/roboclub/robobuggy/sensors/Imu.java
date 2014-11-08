@@ -48,15 +48,13 @@ public class Imu extends SerialConnection implements Sensor {
 	
 	long lastUpdateTime;
 
-	private Publisher imuPub;
-
 	private SensorState currentState;
 
 	public double angle;
 	
 	public Imu(String publishPath) {
 		super("IMU", BAUDRATE, HEADER);
-		publisher = new Publisher("/sensor/IMU");
+		publisher = new Publisher(publishPath);
 		thisSensorType = SensorType.IMU;
 	}
 
@@ -73,7 +71,7 @@ public class Imu extends SerialConnection implements Sensor {
 	@Override
 	public SensorState getState() {
 		if (System.currentTimeMillis() - lastUpdateTime > SENSOR_TIME_OUT) {
-			currentState = SensorState.DISCONECTED;
+			currentState = SensorState.FAULT;
 		} 
 		return currentState;
 	}
@@ -114,7 +112,6 @@ public class Imu extends SerialConnection implements Sensor {
 
 		lastUpdateTime = System.currentTimeMillis();
 		currentState = SensorState.ON;
-		System.out.println("publish:"+currentState);
 
 
 		try {
@@ -147,9 +144,9 @@ public class Imu extends SerialConnection implements Sensor {
 						break;
 					case MZ:
 						mZ = Float.valueOf(val);
-						System.out.println("ax: " + aX + " ay: " + aY + " az: " + aZ + 
+					/*	System.out.println("ax: " + aX + " ay: " + aY + " az: " + aZ + 
 								" rx: " + rX + " ry: " + rY + " mx: " + mX + " my: " + mY +
-								" mz: " + mZ);
+								" mz: " + mZ); */
 						angle = rY;
 						Robot.UpdateImu(aX, aY, aZ, rX, rY, rZ, mX, mY, mZ);
 						publisher.publish(new ImuMeasurement(
