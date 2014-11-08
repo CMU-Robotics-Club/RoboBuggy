@@ -13,13 +13,13 @@ import com.orsoncharts.util.json.parser.ParseException;
 
 public class  config{
 //port index of the front camera 
-public static int FRONT_CAM_INDEX = 3;
+public static int FRONT_CAM_INDEX = 2;
 
 //port index of the rear (pushbar camera)
 public static int REAR_CAM_INDEX = 0;
 
 //location of the executable that should be run for the camera sub system 
-public static String VISION_SYSTEM_EXECUTABLE_LOCATION = "C:\\Users\\Robot\\Downloads\\RoboBuggy-488f6e0a9a3d563741eedb485eae9d7405e712d9\\RoboBuggy-488f6e0a9a3d563741eedb485eae9d7405e712d9\\surface_src\\VisionSystem\\Debug\\VisionSystem.exe";
+public static String VISION_SYSTEM_EXECUTABLE_LOCATION = "C:\\Users\\Robot\\Documents\\GitHub\\RoboBuggy\\surface_src\\VisionSystem\\Debug\\VisionSystem.exe";
 //"C:\\Users\\abc\\buggy-log\\VisionSystem.exe";
 
 public static String LOG_FILE_LOCATION = "C:\\Users\\abc\\buggy-log";
