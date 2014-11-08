@@ -75,15 +75,15 @@ static int auto_steering_angle;
 
 enum STATE { START, RC_CON, RC_DC, BBB_CON };
 
-void steering_int_wrapper() {
+static void steering_int_wrapper() {
   g_steering_rx.OnInterruptReceiver();
 }
 
-void brake_int_wrapper() {
+static void brake_int_wrapper() {
   g_brake_rx.OnInterruptReceiver();
 }
 
-void auton_int_wrapper(){
+static void auton_int_wrapper(){
   g_auton_rx.OnInterruptReceiver();
 }
 
@@ -231,7 +231,7 @@ void loop() {
   watchdog_loop();
 
   //get the current voltage
-  g_current_voltage = get_current_voltage();
+  // g_current_voltage = get_current_voltage();
   
 
   // Set outputs
