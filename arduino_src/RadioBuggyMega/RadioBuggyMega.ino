@@ -25,15 +25,16 @@
 #endif
 
 // Input pins
+// These values are from http://arduino.cc/en/Reference/attachInterrupt
 #define RX_STEERING_PIN 2
 #define RX_STEERING_INT 0
-#define RX_BRAKE_PIN 3
-#define RX_BRAKE_INT 1
-#define BRAKE_PIN 8
-#define ENCODER_PIN 7
+#define RX_BRAKE_PIN 21
+#define RX_BRAKE_INT 2
+#define ENCODER_PIN 7 // I think this is unused.
 #define VOLTAGE_READ_PIN 0
 
 // Output pins
+#define BRAKE_PIN 8
 #define STEERING_PIN 9
 #define BRAKE_INDICATOR_PIN 5
 #define LED_DANGER_PIN 12
@@ -184,7 +185,7 @@ void loop() {
     raw_thr = g_brake_rx.GetAngle();
     smoothed_thr = filter_loop(&thr_state, raw_thr);
     // TODO make this code...less...something
-    if(smoothed_thr < 70) {
+    if(smoothed_thr > 120) {
       // read as engaged
       g_brake_state_engaged = 1;
       // brake has been reset
@@ -220,7 +221,8 @@ void loop() {
   // Send telemetry messages
   g_rbserialmessages.Send(RBSM_MID_DEVICE_ID, RBSM_DID_DRIVE_ENCODER);
   g_rbserialmessages.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
-  g_rbserialmessages.Send(RBSM_MID_MEGA_BRAKE_STATE, 
-                          (long unsigned)g_brake_state_engaged);
+  // g_rbserialmessages.Send(RBSM_MID_MEGA_BRAKE_STATE, 
+  //                         (long unsigned)g_brake_state_engaged);
+  g_rbserialmessages.Send(RBSM_MID_MEGA_BRAKE_STATE, (long int)smoothed_thr);
   g_rbserialmessages.Send(RBSM_MID_MEGA_BATTERY_LEVEL, g_current_voltage);
 }
