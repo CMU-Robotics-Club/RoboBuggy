@@ -90,6 +90,7 @@ public class Robot {
 	}
 	
 	public static Robot getInstance() {
+		System.out.println("we want a robot");
 		if (instance == null) {
 			instance = new Robot();
 		}

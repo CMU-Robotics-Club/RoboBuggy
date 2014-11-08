@@ -16,6 +16,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
+<<<<<<< HEAD
+=======
+
+import com.roboclub.robobuggy.main.Robot;
+>>>>>>> parent of 488f6e0... stable for rolls 10/25/14
 import com.roboclub.robobuggy.main.config;
 
 /**
@@ -53,6 +58,7 @@ public class ControlPanel extends JPanel {
 
 		startTime = new Date(0);
 		
+<<<<<<< HEAD
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
 		this.setLayout(new GridBagLayout());
 
@@ -63,6 +69,40 @@ public class ControlPanel extends JPanel {
 		gbc.gridy = 0;
 		gbc.fill = GridBagConstraints.BOTH;
 		addLoggingPanel(gbc);
+=======
+	}
+	
+	//updates the display based on external events
+	public void updatePanel(){
+		System.out.println("updated panel");
+		//autonomous_switch.setState(Robot.getInstance().get_running());
+		//TODO
+		gps_switch.setState(Robot.getInstance().getGpsState());
+		gps_switch.updateSensorMessage_lbl(Robot.getInstance().getGpsMsg());
+
+		gps_switch.repaint();
+		IMU_switch.setState(Robot.getInstance().getImuState());
+	    IMU_switch.updateSensorMessage_lbl(Robot.getInstance().getImuMsg());
+
+		IMU_switch.repaint();
+	    frontCam_switch.setState(Robot.getInstance().getFrontCamState());
+	    frontCam_switch.updateSensorMessage_lbl("In C++ check window");
+
+	    frontCam_switch.repaint();
+	    backCam_switch.setState(Robot.getInstance().getBackCamState());
+	    backCam_switch.updateSensorMessage_lbl("In C++ check window");
+
+
+	    backCam_switch.repaint();
+	    encoders_switch.setState(Robot.getInstance().getEncoderState());
+	    encoders_switch.updateSensorMessage_lbl(Robot.getInstance().getEncoderMsg());
+	    encoders_switch.repaint();
+	    controlInputs_switch.setState(Robot.getInstance().getControlInputState());
+	    controlInputs_switch.updateSensorMessage_lbl(Robot.getInstance().getControlInputMsg());
+	    controlInputs_switch.repaint();
+	    //TODO add update for logging_switch
+	    
+>>>>>>> parent of 488f6e0... stable for rolls 10/25/14
 		
 		gbc.gridy = 1;
 		addSensorSwitchPanel(gbc);
@@ -96,6 +136,7 @@ public class ControlPanel extends JPanel {
 			}
 		}
 	}
+<<<<<<< HEAD
 
 	private void addLoggingPanel(GridBagConstraints gbc) {
 		JPanel loggingPanel = new JPanel();
@@ -136,6 +177,26 @@ public class ControlPanel extends JPanel {
 		gbc_panel.gridy = 2;
 		gbc_panel.weighty = 0.25;
 		loggingPanel.add(time_lbl, gbc_panel);
+=======
+	
+	
+	static void updateStartPause_btn(){
+		if(config.active)
+		{	
+			System.out.println("System Started");
+			startPause_btn.setBackground(Color.RED);
+			startPause_btn.setText("Pause");
+			timer.start();
+		    //updateTimer.start();
+		    startPressedTime = new Date();
+		} else {
+			System.out.println("System Paused");
+			startPause_btn.setBackground(Color.GREEN);
+			startPause_btn.setText("Start");
+			timer.stop();
+		}
+		startPause_btn.repaint();		
+>>>>>>> parent of 488f6e0... stable for rolls 10/25/14
 		
 		this.add(loggingPanel, gbc);
 	}

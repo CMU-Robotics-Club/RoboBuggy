@@ -47,7 +47,14 @@ public class VisionSystem implements Sensor {
 		this.sensorType = SensorType.VISION;
 		this.connected = false;
 		
+<<<<<<< HEAD
 		if(!initCameras()) return;
+=======
+		String frontCamIndex_str = Integer.toString(config.FRONT_CAM_INDEX);
+		String rearCamIndex_str = Integer.toString(config.REAR_CAM_INDEX);
+		Process externalProcess = new ProcessBuilder(config.VISION_SYSTEM_EXECUTABLE_LOCATION,"-c",frontCamIndex_str,"-c",rearCamIndex_str).start();
+		//Process externalProcess = new ProcessBuilder(config.VISION_SYSTEM_EXECUTABLE_LOCATION,"-c",frontCamIndex_str).start();
+>>>>>>> parent of 488f6e0... stable for rolls 10/25/14
 		
 		connected = true;
 		frontPanel = new CameraPanel("FRONT", frontFeed);
