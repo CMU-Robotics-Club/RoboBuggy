@@ -14,7 +14,6 @@ package com.roboclub.robobuggy.sensors;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 
 import com.roboclub.robobuggy.main.config;
 
@@ -40,14 +39,12 @@ public VisionSystem(String string){
 		
 		String frontCamIndex_str = Integer.toString(config.FRONT_CAM_INDEX);
 		String rearCamIndex_str = Integer.toString(config.REAR_CAM_INDEX);
-		System.out.println("vision attempt start");
 		Process externalProcess = new ProcessBuilder(config.VISION_SYSTEM_EXECUTABLE_LOCATION,"-c",frontCamIndex_str,"-c",rearCamIndex_str).start();
-		//Process externalProcess = new ProcessBuilder(config.VISION_SYSTEM_EXECUTABLE_LOCATION,"-c",frontCamIndex_str).start();
-		
 		input = new BufferedInputStream(externalProcess.getInputStream());
 		output = new BufferedOutputStream(externalProcess.getOutputStream());
 	} catch (Exception exc) {
-		exc.printStackTrace();
+			// exc.printStackTrace();
+			System.out.println("****WARNING::::CAMERA NOT INITIALIZED!!!!!");
 	}
 	
 	this.thisSensorType = SensorType.VISION;
