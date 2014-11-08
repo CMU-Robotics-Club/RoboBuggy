@@ -4,6 +4,16 @@ import java.util.Date;
 
 import com.roboclub.robobuggy.ros.Message;
 
+/**
+ * @author ?
+ *
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION: TODO
+ */
+
 // Represents raw measurement from the IMU
 public class GpsMeasurement implements Message {
 	public static final String version_id = "gpsV0.1";

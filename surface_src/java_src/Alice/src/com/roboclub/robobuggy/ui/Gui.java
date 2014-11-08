@@ -8,8 +8,11 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.imageio.ImageIO;
@@ -25,6 +28,19 @@ import javax.swing.Timer;
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.main.config;
+import com.roboclub.robobuggy.sensors.Sensor;
+
+/**
+ * 
+ * @author Trevor Decker
+ * @author Kevin Brennan 
+ *
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION: TODO
+ */
 
 public final class Gui extends JFrame {
 	private static final long serialVersionUID = 670947948979376738L;
@@ -46,7 +62,7 @@ public final class Gui extends JFrame {
 	}
 
 	public Gui() {
-		System.out.println("starting the GUI \n");
+		System.out.println("Starting GUI");
 		populate();
 	}
 
@@ -56,12 +72,15 @@ public final class Gui extends JFrame {
 		mainGuiPane = this;
 		Container pane = this.getContentPane();
 		pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
+		
 
 		try {
 			this.setIconImage(ImageIO.read(new File("images/rc_logo.png")));
 		} catch (Exception e) {
 			System.out.println("Unable to read icon image!");
 		}
+		
+		
 
 		// Initialize Analytics Window
 		graphs = new AnalyticsWindow();
@@ -71,7 +90,7 @@ public final class Gui extends JFrame {
 		pane.add(addTimeShow());
 		pane.add(addFileShow());
 		pane.add(addGraphShow());
-
+		
 		// Close ports and close window upon exit
 		this.addWindowListener(new java.awt.event.WindowAdapter() {
 			@Override
@@ -80,6 +99,76 @@ public final class Gui extends JFrame {
 			}
 		});
 
+		JButton resetEncoders_btn = new JButton("Reset Encoders");
+		resetEncoders_btn.setSize(new Dimension(WIDTH,200));
+		resetEncoders_btn.setSize(new Dimension(HEIGHT,100));
+		resetEncoders_btn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//todo
+			}});
+		pane.add(resetEncoders_btn);
+		
+		JButton resetGPS_btn = new JButton("Reset GPS");
+		resetGPS_btn.setSize(new Dimension(WIDTH,200));
+		resetGPS_btn.setSize(new Dimension(HEIGHT,100));
+		resetGPS_btn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//TODO
+			}});
+		pane.add(resetGPS_btn);
+		
+		JButton recenterServo_btn = new JButton("Recenter Servo");
+		recenterServo_btn.setSize(new Dimension(WIDTH,100));
+		recenterServo_btn.setSize(new Dimension(HEIGHT,50));
+		recenterServo_btn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//TODO
+			}});
+		pane.add(recenterServo_btn);
+		
+		JButton resetIMU_btn = new JButton("Reset IMU");
+		resetIMU_btn.setSize(new Dimension(WIDTH,100));
+		resetIMU_btn.setSize(new Dimension(HEIGHT,50));
+		resetIMU_btn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//TODO
+			}});
+		pane.add(resetIMU_btn);
+		
+		JButton resetVision_btn = new JButton("Reset Vision");
+		resetVision_btn.setSize(new Dimension(WIDTH,100));
+		resetVision_btn.setSize(new Dimension(HEIGHT,50));
+		resetVision_btn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//TODO
+			}});
+		pane.add(resetVision_btn);
+		
+		JButton resetLocalization_btn = new JButton("Reset localization");
+		resetLocalization_btn.setSize(new Dimension(WIDTH,100));
+		resetLocalization_btn.setSize(new Dimension(HEIGHT,50));
+		resetLocalization_btn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Robot.getInstance().getKalmanFilter().reset();
+			}});
+		pane.add(resetLocalization_btn);
+		
+		JButton NewLog_btn = new JButton("New Log");
+		NewLog_btn.setSize(new Dimension(WIDTH,100));
+		NewLog_btn.setSize(new Dimension(HEIGHT,50));
+		NewLog_btn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				RobotLogger.getInstance().startNewLog();
+			}});
+		pane.add(NewLog_btn);		
+		
 		this.pack();
 		this.setAlwaysOnTop(true);
 		this.setVisible(true);
@@ -93,6 +182,7 @@ public final class Gui extends JFrame {
 		playPauseButton.setFont(new Font("sanserif", Font.PLAIN, 50));
 		playPauseButton.setText("Start");
 		playPauseButton.setSelected(config.active);
+		
 		if (config.active) {
 			playPauseButton.setBackground(Color.RED);
 		} else {
@@ -112,12 +202,16 @@ public final class Gui extends JFrame {
 
 					startTime = new Date().getTime();
 					timer.start();
+					
+					Robot.WriteCamera("r");
 				} else {
 					playPauseButton.setText("Start");
 					playPauseButton.setBackground(Color.GREEN);
 					timer.stop();
 
 					RobotLogger.CloseLog();
+					
+					Robot.WriteCamera("r");
 				}
 				ControlPanel.updateStartPause_btn();
 				// AnalyticsWindow

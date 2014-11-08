@@ -1,8 +1,10 @@
-.class
+*.class
 out/
+*.pyc
 
 # mac os x temp files
 .DS_Store
 
 # arduino build files
 build-*
+surface_src/java_src/Alice/src/com/roboclub/robobuggy/main/config.java

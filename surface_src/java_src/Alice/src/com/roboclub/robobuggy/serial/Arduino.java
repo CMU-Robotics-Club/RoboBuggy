@@ -1,135 +1,185 @@
 package com.roboclub.robobuggy.serial;
 
-import java.nio.ByteBuffer;
+import java.io.IOException;
+import java.io.InputStream;
 
-import com.roboclub.robobuggy.main.Robot;
-import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.sensors.Sensor;
+import com.roboclub.robobuggy.sensors.SensorState;
+import com.roboclub.robobuggy.sensors.SensorType;
+import gnu.io.SerialPortEvent;
 
-public class Arduino extends SerialConnection {
-	public static final int MSG_LEN = 6;
-	public static final char ENC_TIME = (char)0x02;
-	public static final char ENC_RESET = (char)0x00;
-	public static final char ENC_TICK = (char)0x01;
-	public static final char STEERING = (char)0x05;
-	public static final char BRAKE = (char)0x06;
-	public static final char ERROR = (char)0xFF;
-	private static final int BAUDRATE = 9600;
-	
-	private static final long TICKS_PER_REV = 5;
-	private static final double M_PER_REV = 5.0;
-	
-	private static Arduino instance;
-	
-	private int encReset;
-	private int encTickLast;
-	private int encTime;
+/**
+ * 
+ * @author Kevin Brennan 
+ *
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION: TODO
+ */
 
+public abstract class Arduino extends SerialConnection implements Sensor {
+	protected static final int BAUDRATE = 9600;
+	protected static final int MSG_LEN = 6;
+	protected static final char ENC_RESET = (char)0x00;
+	protected static final char ENC_TICK = (char)0x01;
+	protected static final char ENC_TIME = (char)0x02;
+	protected static final char STEERING = (char)0x0A;
+	protected static final char BRAKE = (char)0x0B;
+	protected static final char ERROR = (char)0xFE;
+	protected static final char MSG_ID = (char)0xFF;
 	
-	//TODO make so that we can have multiple arduinos 
-	public static Arduino getInstance(){
-		if(instance == null){
-			instance = new Arduino();
-		}
-		return instance;
+	protected Arduino(String type, String path) {
+		super("Arduino-"+type, BAUDRATE, null);
+		publisher = new Publisher(path);
 	}
+
+	protected abstract boolean validId(char id);
 	
-	private Arduino() {
-		super("Arduino", BAUDRATE, null);
+	protected int parseInt(char x0, char x1, char x2, char x3) {
+		int val = 0;
+		val |= x0;
+		val = val << 0x8;
+		val |= x1;
+		val = val << 0x8;
+		val |= x2;
+		val = val << 0x8;
+		val |= x3;
 		
-		if (port != null && port.isConnected()) super.addListener(new ArduinoListener());
+		return val;
 	}
 	
-	/* Methods for Serial Communication with Arduino */
-	public void writeAngle(int angle) {
-		if (angle >= 0 && angle <= 180) {
-			if(isConnected()) {
-				byte[] msg = {0x05, 0, 0, 0, (byte)angle,'\n'};
-				msg[2] = (byte)angle;
-				this.port.serialWrite(msg);
+	@Override
+	public void serialEvent(SerialPortEvent event) {
+		switch (event.getEventType()) {
+		case SerialPortEvent.DATA_AVAILABLE:
+			try {
+				char data = (char)input.read();
+				
+				inputBuffer[index++] = data;
+				
+				switch (state) {
+				case 0:
+					if (validId(data)) state++;
+					else index = 0;
+					break;
+				case 1:
+					if (index >= MSG_LEN) {
+						if (data == '\n') publish();
+						index = 0;
+						state = 0;
+					}
+					break;
+				}
+			} catch (Exception e) {
+				System.out.println("Exception in port: " + this.getName());
 			}
 		}
 	}
-	
-	public void writeBrake(int angle) {
-		if (angle >= 0 && angle <= 180) {
-			if (isConnected()) {
-				byte[] msg = {0x06, 0, 0, 0, (byte)angle,'\n'};
-				msg[2] = (byte)angle;
-				this.port.serialWrite(msg);
+
+	@Override
+	protected boolean isCorrectPort(InputStream input, String header) {
+		char data;
+		int state = 0, test = 0;
+			
+		for (int i = 0; i < 2*BUFFER_SIZE; i++) {
+			try {
+				data = (char)input.read();
+			} catch (IOException e) {
+				continue;
+			}
+			
+			switch (state) {
+			case 0:
+				if (validId(data)) {
+					state++;
+					test++;
+				}
+				break;
+			case 1:
+				test++;
+				if (test >= MSG_LEN) {
+					if (data == '\n') state++;
+					else state = 0;
+					
+					test = 0;
+				}
+				break;
+			case 2:
+				if (validId(data)) {
+					state++;
+					test++;
+				} else {
+					state = 0;
+					test = 0;
+				}
+				break;
+			case 3:
+				test++;
+				if (test >= MSG_LEN) {
+					if (data == '\n') return true;
+					else state = 0;
+					
+					test = 0;
+				}
+				break;
 			}
 		}
+		
+		return false;
 	}
 	
-	public double getDist() {
-		double dist = ((double)(encTickLast - encReset)/TICKS_PER_REV) / M_PER_REV;
-		double velocity = dist / encTime;
-		return dist;
+	@Override
+	protected void serialWrite(byte[] data) {
+		try {
+			output.write(data);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-	
-	public double getVelocity() {
-		double dist = ((double)(encTickLast - encReset)/TICKS_PER_REV) / M_PER_REV;
-		double velocity = dist / encTime;
-		return velocity;
-	}
-	
-	
-	public static boolean validId(char value) {
-		switch (value) {
-			case Arduino.ENC_TIME:
-			case Arduino.ENC_RESET:
-			case Arduino.ENC_TICK:
-			case Arduino.STEERING:
-			case Arduino.BRAKE:
-			case Arduino.ERROR:
-				return true;
-			default:
-				return false;
+
+	@Override
+	protected void serialWrite(String data) {
+		try {
+			output.write(data.getBytes());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
-	private class ArduinoListener implements SerialListener {
-		@Override
-		public void onEvent(SerialEvent event) {
-			char[] tmp = event.getBuffer();
-			if (event.getLength() != MSG_LEN) return;
-			byte[] msg = {(byte)tmp[1], (byte)tmp[2], (byte)tmp[3], (byte)tmp[4]};
-			//ByteBuffer wrapper = ByteBuffer.wrap(msg);
-			int val = 0;
-			val |= tmp[1];
-			val = val << 0x8;
-			val |= tmp[2];
-			val = val << 0x8;
-			val |= tmp[3];
-			val = val << 0x8;
-			val |= tmp[4];
-			switch (tmp[0]) {
-			case ENC_TIME:
-				encTime = val;//wrapper.getInt();
-				System.out.println("Time: " + encTime);
-				break;
-			case ENC_RESET:
-				encReset = val;//wrapper.getInt();
-				System.out.println("Reset: " + encReset);
-				break;
-			case ENC_TICK:
-				encTickLast = val;//wrapper.getInt();
-				System.out.println("Ticks: " + encTickLast);
-				Robot.UpdateEnc(encTime, encReset, encTickLast);
-				break;
-			case STEERING:
-				Robot.UpdateSteering(tmp[4]);
-				break;
-			case BRAKE:
-				Robot.UpdateBrake(tmp[4]);
-				break;
-			case ERROR:
-				Robot.UpdateError(val);//wrapper.getInt());
-				break;
-			default:
-				return;
-			}
-		}
+	@Override
+	public SensorState getState() {
+		return currentState;
+	}
+
+	@Override
+	public boolean isConnected() {
+		return connected;
+	}
+
+	@Override
+	public long timeOfLastUpdate() {
+		return lastUpdateTime;
+	}
+
+	@Override
+	public boolean close() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean reset() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+	@Override
+	public SensorType getSensorType() {
+		return thisSensorType;
 	}
 }

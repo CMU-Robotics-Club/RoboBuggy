@@ -5,6 +5,16 @@ import java.util.Deque;
 
 import com.roboclub.robobuggy.ros.internal.MessageServer;
 
+/**
+ * @author Matt Sebek
+ *
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION: TODO
+ */
+
 public class Subscriber {
 
 	private MessageServer ms;

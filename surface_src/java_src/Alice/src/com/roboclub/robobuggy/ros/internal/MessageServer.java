@@ -14,6 +14,16 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.Subscriber;
 
+/**
+ * @author Matt Sebek
+ *
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION: TODO
+ */
+
 // This class is the backbone of the publisher/subscriber infrastructure.
 public class MessageServer {
 

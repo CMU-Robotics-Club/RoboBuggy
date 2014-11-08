@@ -1,19 +1,19 @@
 package com.roboclub.robobuggy.map;
 
-public class Point {
-	private float x;
-	private float y;
+public class Point implements MapObject{
+	private double x;
+	private double y;
 	
-	public Point(float x_, float y_) {
+	public Point(double x_, double y_) {
 		this.x = x_;
 		this.y = y_;
 	}
 	
-	public float getX() {
+	public double getX() {
 		return this.x;
 	}
 	
-	public float getY() {
+	public double getY() {
 		return this.y;
 	}
 
@@ -23,5 +23,14 @@ public class Point {
 	
 	public void setY(float y_) {
 		this.y = y_;
+	}
+
+	//ues L2 distance 
+	public double getDistance(Point closestPoint) {
+		return Math.sqrt(x*x + y*y);
+	}
+	
+	public double dotProduct(Point aPoint){
+		return this.x*aPoint.x + this.y*aPoint.y;
 	}
 }
