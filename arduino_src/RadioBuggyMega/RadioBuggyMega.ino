@@ -31,7 +31,7 @@
 #define RX_BRAKE_INT 1
 #define BRAKE_PIN 8
 #define ENCODER_PIN 7
-#define VOLTAGE_READ_PIN A0
+#define VOLTAGE_READ_PIN 0
 
 // Output pins
 #define STEERING_PIN 9
