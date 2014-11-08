@@ -55,6 +55,7 @@ unsigned long timer = 0L;
 RBSerialMessages g_rbserialmessages;
 struct filter_state ail_state;
 struct filter_state thr_state;
+struct filter_state g_auton_filter;
 PinReceiver g_steering_rx;
 PinReceiver g_brake_rx;
 PinReceiver g_auton_rx;
@@ -66,6 +67,8 @@ static int raw_angle;
 static int smoothed_angle;
 static int raw_thr;
 static int smoothed_thr;
+static int raw_auton;
+static int smoothed_auton;
 static int steer_angle;
 static int auto_steering_angle;
 
@@ -107,6 +110,7 @@ void setup()  {
 
   filter_init(&ail_state);
   filter_init(&thr_state);
+  filter_init(&g_auton_filter);
   watchdog_init(WATCHDOG_THRESH_MS, &watchdog_fail);
   brake_init(BRAKE_PIN, BRAKE_INDICATOR_PIN);
   steering_init(STEERING_PIN, 107, 126, 145);
@@ -211,10 +215,10 @@ void loop() {
   // find the new autonomous state, if available
   if(g_auton_rx.Available()) {
     watchdog_feed();
-    raw_thr = g_auton_rx.GetAngle();
-    smoothed_thr = filter_loop(&thr_state, raw_thr);
+    raw_auton = g_auton_rx.GetAngle();
+    smoothed_auton = filter_loop(&g_auton_filter, raw_auton);
     // TODO make this code...less...something
-    if(smoothed_thr < 70) { // MAGIC NUMBERS
+    if(smoothed_auton > 120) { // MAGIC NUMBERS
       // read as engaged
       g_is_autonomous = true;
     } else {
