@@ -2,7 +2,6 @@ package com.roboclub.robobuggy.sensors;
 
 import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
-import com.roboclub.robobuggy.serial.Arduino;
 
 /**
  * 
