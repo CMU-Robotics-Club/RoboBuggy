@@ -41,6 +41,8 @@
 // Calibration values
 #define WATCHDOG_THRESH_MS 1000
 #define STEERING_CENTER 133
+#define VOLTAGE_READ_NUMERATOR 5L
+#define VOLTAGE_READ_DENOMINATOR 13312L // 1024 * 13
 
 // Global state
 unsigned long timer = 0L;
@@ -125,12 +127,19 @@ int convert_rc_to_steering(int rc_angle) {
 }
 
 
+/*
+Return the current battery voltage in mV. The battery is connected to the ADC
+through a 10k ohm / 16k ohm divider, so the value sensed is 10/26 = 5/13 of the
+true value. The value returned is a 10-bit (1023 max) value compared to 5 volts.
+*/
 unsigned long get_current_voltage() {
   int analog_report = analogRead(VOLTAGE_READ_PIN);
   //use an unsigned long because floats are expensive
-  unsigned long actual_voltage = (analog_report * 5) / 1024; //analogRead returns value between 0 and 1023 that maps to 0 to 5
+  unsigned long actual_voltage =
+    (analog_report * VOLTAGE_READ_NUMERATOR) / (VOLTAGE_READ_DENOMINATOR);
   return actual_voltage;
 }
+
 
 void loop() {
   // get new command messages
@@ -213,5 +222,5 @@ void loop() {
   g_rbserialmessages.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
   g_rbserialmessages.Send(RBSM_MID_MEGA_BRAKE_STATE, 
                           (long unsigned)g_brake_state_engaged);
-  g_rbserialmessages.Send(RBSM_MID_MEGA_BATTERY_LEVEL, g_current_voltage); //sends the current voltage out
+  g_rbserialmessages.Send(RBSM_MID_MEGA_BATTERY_LEVEL, g_current_voltage);
 }
