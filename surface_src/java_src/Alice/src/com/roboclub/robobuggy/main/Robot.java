@@ -5,13 +5,14 @@ import java.util.Date;
 
 import com.roboclub.robobuggy.localization.KalmanFilter;
 import com.roboclub.robobuggy.logging.RobotLogger;
-import com.roboclub.robobuggy.sensors.DriveControls;
+import com.roboclub.robobuggy.sensors.DriveActuator;
 import com.roboclub.robobuggy.sensors.Encoder;
 import com.roboclub.robobuggy.sensors.Gps;
 import com.roboclub.robobuggy.sensors.Imu;
 import com.roboclub.robobuggy.sensors.Sensor;
 import com.roboclub.robobuggy.sensors.SensorState;
 import com.roboclub.robobuggy.sensors.VisionSystem;
+import com.roboclub.robobuggy.serial.Arduino;
 import com.roboclub.robobuggy.ui.Gui;
 
 public class Robot {
@@ -26,30 +27,36 @@ public class Robot {
 	private Gps gps;
 	private Imu imu;
 	private Encoder encoder;
-	private DriveControls controls;
+	private Arduino mega;
+	private DriveActuator da;
 	
-	//TODO fix
-	public SensorState getVisionState() {
-		return SensorState.NOT_IN_USE;
+	//TODO implment front cam nativly in java 
+	public SensorState getFrontCamState(){
+		return SensorState.DISCONECTED;
+	}
+	
+	//TODO implment back cam nativly in java 
+	public SensorState getBackCamState(){
+		return SensorState.DISCONECTED;
 	}
 	
 	public SensorState getControlInputState(){
-		if(controls == null){
-			return SensorState.NOT_IN_USE;
+		if(da == null){
+			return SensorState.DISCONECTED;
 		}
-		return controls.getState();
+		return da.getState();
 	}
 	
 	public String getControlInputMsg(){
-		if(controls == null){
+		if(da == null){
 			return "mega not init";
 		}
-		return Integer.toString(controls.steeringAngle);
+		return Integer.toString(da.steeringAngle);
 	}
 	
 	public SensorState getGpsState(){
 		if(gps == null){
-			return SensorState.NOT_IN_USE;
+			return SensorState.DISCONECTED;
 		}
 		return gps.getState();
 	}
@@ -61,9 +68,10 @@ public class Robot {
 		return "("+Double.toString(gps.lat) +","+ Double.toString(gps.lon)+")";
 	}
 	
+	
 	public SensorState getEncoderState(){
 		if(encoder == null){
-			return SensorState.NOT_IN_USE;
+			return SensorState.DISCONECTED;
 		}
 		return encoder.getState();
 	}
@@ -77,7 +85,7 @@ public class Robot {
 	
 	public SensorState getImuState(){
 		if(imu == null){
-			return SensorState.NOT_IN_USE;
+			return SensorState.DISCONECTED;
 		}
 		return imu.getState();
 	}
@@ -89,8 +97,10 @@ public class Robot {
 		return "th:"+Double.toString(imu.angle);
 	}
 	
+	
+	// private ArrayList<Markers> markers
+
 	public static Robot getInstance() {
-		System.out.println("we want a robot");
 		if (instance == null) {
 			instance = new Robot();
 		}
@@ -114,36 +124,39 @@ public class Robot {
 		// Initialize Sensor
 		if (config.GPS_DEFAULT) {
 			System.out.println("Initializing GPS Serial Connection");
-			gps = new Gps("/sensors/gps");
+			gps = new Gps("/sensors/GPS");
 			sensorList.add(gps);
 		}
 
 
 		if (config.IMU_DEFAULT) {
 			System.out.println("Initializing IMU Serial Connection");
-			imu = new Imu("/sensors/imu");
+			imu = new Imu("/sensors/IMU");
 			sensorList.add(imu);
 		}
 
 		if (config.ENCODER_DEFAULT) {
 			System.out.println("Initializing Encoder Serial Connection");
-			encoder = new Encoder("/sensors/encoders");
+			encoder = new Encoder();
 			sensorList.add(encoder);
 		}
 
 		if (config.DRIVE_DEFAULT) {
 			System.out.println("Initializing Drive Serial Connection");
-			controls = new DriveControls("/sensors/controls");
-			sensorList.add(controls);
+			da = new DriveActuator();
+			mega = da;
+			sensorList.add(mega);
 		}
 
 		if (config.VISION_SYSTEM_DEFAULT) {
-			System.out.println("Initializing Vision System");
+			//CLCamera camera = new CLCamera(0, 20);
 			vision = new VisionSystem("/sensors/vision");
 			sensorList.add(vision);
 		}
 
-		System.out.println();
+		if (config.active) {
+			// Robot.gui = new Gui(Robot.arduino, Robot.gps, Robot.imu);
+		}
 
 		// Start Autonomous Control
 		if (autonomous) {
@@ -152,7 +165,6 @@ public class Robot {
 			alice.start();
 		}
 		
-		Gui.EnableLogging();
 		System.out.println();
 	}
 
@@ -177,6 +189,14 @@ public class Robot {
 	}
 	
 	/* Methods for Updating Planner, Gui, and Logger */
+	public static void WriteCamera(String data) {
+		VisionSystem tmp = Robot.getInstance().GetVision();
+		
+		if (tmp != null) {
+			Robot.getInstance().vision.write(data);
+		}
+	}
+	
 	public static void UpdateGps(float latitude, float longitude) {
 		if (config.logging) {
 			// gui.UpdateGps(latitude, longitude);
@@ -248,7 +268,7 @@ public class Robot {
 		// TODO Update planner
 	}
 
-	public boolean get_autonomous() {
+	public boolean get_autonomus() {
 		return autonomous;
 	}
 	

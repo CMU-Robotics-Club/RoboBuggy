@@ -1,0 +1,2 @@
+INDEX VERSION 1.127+C:\Users\Robot\Documents\GitHub\RoboBuggy\surface_src\java_src\.metadata\.plugins\org.eclipse.jdt.core
+3940748657.index

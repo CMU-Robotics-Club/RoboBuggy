@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="com.roboclub.robobuggy.main.Robot"/>
+<fullyQualifiedTypeName name="com.roboclub.robobuggy.logging.RobotLogger"/>
+<fullyQualifiedTypeName name="java.util.logging.Level"/>
+</qualifiedTypeNameHistroy>

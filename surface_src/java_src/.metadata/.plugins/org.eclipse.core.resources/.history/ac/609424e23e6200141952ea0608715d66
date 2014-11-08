@@ -1,0 +1,14 @@
+package com.roboclub.robobuggy.logging;
+/***
+ * 
+ * @author Trevor Decker
+ * Logs messages into messages file
+ *
+ */
+
+
+public class MessageLogger {
+	
+	//TODO implement
+
+}

@@ -1,0 +1,11 @@
+package com.roboclub.robobuggy.logging;
+/***
+ * 
+ * @author Robot
+ *
+ */
+
+
+public class MessageLogger {
+
+}
