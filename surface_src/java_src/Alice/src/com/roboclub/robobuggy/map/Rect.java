@@ -1,6 +1,18 @@
 package com.roboclub.robobuggy.map;
 
-public class Rect {
+/**
+ * @author Trevor Decker
+ * 
+ * @deprecated use polygon 
+ * 
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION: TODO
+ */
+
+public class Rect implements MapObject{
 	private Point uR;
 	private Point uL;
 	private Point lL;

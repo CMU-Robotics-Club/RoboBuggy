@@ -4,14 +4,24 @@ import java.util.Date;
 
 import com.roboclub.robobuggy.ros.Message;
 
+/**
+ * @author ?
+ *
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION: TODO
+ */
+
 // Represents raw measurement from the IMU
 public class WheelAngleCommand implements Message {
 
 	public Date timestamp;
-	public double angle;
+	public byte angle;
 
 	// Makes an encoder measurement with the time of Now.
-	public WheelAngleCommand(double angle) {
+	public WheelAngleCommand(byte angle) {
 		this.angle = angle;
 		this.timestamp = new Date();
 	}

@@ -12,14 +12,23 @@ import javax.swing.JPanel;
 
 import com.roboclub.robobuggy.sensors.SensorState;
 
-
+/**
+ * 
+ * @author Trevor Decker 
+ *
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION: TODO
+ */
 
 public class SensorSwitchPanel {
 private JPanel sensor_switch;
 private JButton sensor_on_btn;
 private JButton sensor_reset_btn;
 private JButton sensor_off_btn;
-
+private JLabel sensorMessage_lbl;
 
 private SensorState sensor_state;
 
@@ -51,7 +60,7 @@ public SensorSwitchPanel(String sensorName,SensorState sensorState){
 		sensor_switch.add(sensorName_lbl);
 		
 		//TODO setup  label changing by each sensor 
-		JLabel sensorMessage_lbl = new JLabel("No Data Avilable");
+		sensorMessage_lbl = new JLabel("No Data Avilable");
 		sensorMessage_lbl.setHorizontalAlignment(JLabel.CENTER);
 		sensor_switch.add(sensorMessage_lbl);
 		
@@ -63,7 +72,7 @@ public SensorSwitchPanel(String sensorName,SensorState sensorState){
 		sensor_reset_btn = new JButton("RESET");
 		sensor_switch.add(sensor_reset_btn);
 	//	ResetButtonHandler  resetHandler = new ResetButtonHandler();
-	//	sensor_reset_btn.addActionListener(resetHandler);
+	//	sensor_resettn.addActionListener(resetHandler);
 		
 		sensor_off_btn = new JButton("OFF");
 		sensor_switch.add(sensor_off_btn);
@@ -73,6 +82,21 @@ public SensorSwitchPanel(String sensorName,SensorState sensorState){
 
 
 	}
+
+public void repaint(){
+	updateButtonColors();
+	
+	
+}
+
+public boolean updateSensorMessage_lbl(String newMessage){
+	if(sensorMessage_lbl == null){
+		return false;
+	}
+	sensorMessage_lbl.setText(newMessage);
+	return true;
+}
+
 
 public SensorState getState(){
 	return sensor_state;
@@ -103,8 +127,10 @@ private void updateButtonColors(){
 	
 	if(sensor_state == SensorState.DISCONECTED){
 		sensor_off_btn.setBackground(Color.DARK_GRAY);
+		sensor_off_btn.setForeground(Color.WHITE);
 	}else{
 		sensor_off_btn.setBackground(Color.LIGHT_GRAY);
+		sensor_off_btn.setForeground(Color.BLACK);
 	}
 }
 	

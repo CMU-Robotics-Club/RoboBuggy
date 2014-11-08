@@ -21,6 +21,18 @@ import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.serial.SerialEvent;
 import com.roboclub.robobuggy.serial.SerialListener;
 
+/**
+ * 
+ * @author Trevor Decker
+ * @author Kevin Brennan 
+ *
+ * @version 0.5
+ * 
+ * CHANGELOG: NONE
+ * 
+ * DESCRIPTION: TODO
+ */
+
 public class ImuPanel extends JPanel {
 	private static final long serialVersionUID = 8766665153831557631L;
 	

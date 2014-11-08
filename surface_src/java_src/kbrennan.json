@@ -1,0 +1,14 @@
+{
+	"VISION_SYSTEM_EXECUTABLE_LOCATION" : "C:\\Users\\abc\\buggy-log\\VisionSystem.exe",
+	"LOG_FILE_LOCATION" : "C:\\Users\\abc\\buggy-log",
+	"LOGGING" : true,
+	"ACTIVE" : true,
+	"GUI" : true,
+	"AUTONOMOUS" : false,
+	"DRIVE" : false,
+	"IMU" : true,
+	"GPS" : true,
+	"ENCODER" : true,
+	"VISION" : true,
+	"BRAKES_PER_FULL_PRESSURE" : 4
+}

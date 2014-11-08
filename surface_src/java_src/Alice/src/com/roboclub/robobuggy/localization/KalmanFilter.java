@@ -8,4 +8,8 @@ public class KalmanFilter {
 		
 	}
 	
+	public void reset(){
+		//TODO 
+	}
+	
 }
