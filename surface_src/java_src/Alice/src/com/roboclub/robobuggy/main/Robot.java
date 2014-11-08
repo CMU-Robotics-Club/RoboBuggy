@@ -23,6 +23,7 @@ public class Robot {
 	private static VisionSystem vision;
 	
 	//this moves away from the sensor list model but is needed for the control panel 
+	//will not be needed once pub sub is working TODO
 	private Gps gps;
 	private Imu imu;
 	private Encoder encoder;

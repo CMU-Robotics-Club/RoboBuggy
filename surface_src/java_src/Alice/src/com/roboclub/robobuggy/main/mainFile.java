@@ -29,6 +29,7 @@ public class mainFile {
 		if(config.GUI_ON){
 			Gui.getInstance();
 		}
+		
 		//starts the robot
 		if(config.DATA_PLAY_BACK_DEFAULT){
 			new SimRobot();

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
@@ -15,10 +16,11 @@ import com.roboclub.robobuggy.main.config;
 /**
  * Logs data from the sensors
  * 
- * @author Joe Doyle  && Trevor Decker
+ * @author Joe Doyle 
+ * @author Trevor Decker
  */
 public final class RobotLogger {
-	public final Logger message;
+	public  static Logger message;
 	public static SensorLogger sensor;
 	private static RobotLogger instance;
 	private static File logDir;
@@ -31,17 +33,31 @@ public final class RobotLogger {
 			if (!logDir.exists()) {
 				logDir.mkdirs();
 				System.out.println("Created directory: " + logDir.getAbsolutePath());
+				getMessageLogger().log(Level.INFO, "Created directory: "+logDir.getAbsolutePath());
 			}
 				try {
 					instance = new RobotLogger(logDir);
-				} catch (Exception e) {
+					getMessageLogger().log(Level.INFO, "Created a new Robot Logger with logDir:"+logDir.toString());
+
+				} catch (Exception e){ 
+					getMessageLogger().log(Level.SEVERE, "Failed to Create a new RobotLogger with logDir:"+logDir+"stackTrace: "+e.getMessage().toString());
 					e.printStackTrace();
 				}
 				
 		}
-		return instance;
-		
+		return instance;	
 	}
+	
+	private RobotLogger(File logdir) throws Exception {
+		this.message = Logger.getLogger("RoboBuggy");
+		this.sensor = null; 
+	}
+	
+	public static Logger getMessageLogger(){
+		return message;
+	}
+	
+	
 	
 	public static void CloseLog() {
 		if (instance != null) {
@@ -57,6 +73,7 @@ public final class RobotLogger {
 	//closes the current log and creates a new one 
 	public void startNewLog(){
 		//TODO send signal to vision to start a new log also 
+		
 		CloseLog();
 		CreateLog();
 	}
@@ -96,8 +113,5 @@ public final class RobotLogger {
 	}
 	
 	
-	private RobotLogger(File logdir) throws Exception {
-		this.message = Logger.getLogger("RoboBuggy");
-		this.sensor = null; 
-	}
+	
 }
