@@ -169,7 +169,7 @@ void loop() {
       // dipatch complete message
       switch(new_command.message_id) {
         case RBSM_MID_MEGA_STEER_ANGLE:
-          auto_steering_angle = (int)new_command.data;
+          auto_steering_angle = (int)(long)new_command.data;
           break;
 
         default:
@@ -242,14 +242,16 @@ void loop() {
   }
 
   if(g_is_autonomous){
-    steering_set(auto_steering_angle);
+    steering_set(auto_steering_angle + 124);
+    g_rbserialmessages.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)(auto_steering_angle + 124));
   }
   else if(!g_is_autonomous){
-    steering_set(steer_angle + 124);
+    steering_set(steer_angle);
+    g_rbserialmessages.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
   }
   else{
     dbg_println("Somehow not in either autonomous or teleop");
-    steering_set(steer_angle + 124); 
+    steering_set(124); 
   }
 
   if(g_brake_needs_reset == 1) {
@@ -260,7 +262,7 @@ void loop() {
 
   // Send telemetry messages
   g_rbserialmessages.Send(RBSM_MID_DEVICE_ID, RBSM_DID_DRIVE_ENCODER);
-  g_rbserialmessages.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
+  // g_rbserialmessages.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
   g_rbserialmessages.Send(RBSM_MID_MEGA_BRAKE_STATE, 
                           (long unsigned)g_brake_state_engaged);
   g_rbserialmessages.Send(RBSM_MID_MEGA_AUTON_STATE,
