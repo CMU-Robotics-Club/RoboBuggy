@@ -29,8 +29,10 @@ mid_to_str = {
   0: "ENC_TICKS_LAST",
   1: "ENC_TICKS_RESET",
   2: "ENC_TIMESTAMP",
-  10: "MEGA_STEER_ANGLE",
-  11: "MEGA_BRAKE_STATE",
+  20: "MEGA_STEER_ANGLE",
+  21: "MEGA_BRAKE_STATE",
+  22: "MEGA_AUTON_STATE",
+  23: "MEGA_BATTERY_LEVEL",
   252: "RESERVED",
   254: "ERROR",
   255: "DEVICE_ID"
@@ -50,7 +52,7 @@ def redraw(state):
     for mid in message_cache.keys():
       # clear line and write new data
       screen.addstr(row_id, 2, " " * (max_x - 2))
-      screen.addstr(row_id, 2, "%s %s %s" % (mid_to_str[mid],
+      screen.addstr(row_id, 2, "%s %s %s" % (mid_to_str.get(mid, "MID %d"%(mid)),
                                              message_cache[mid]["data"],
                                              message_cache[mid]["update_time"]))
       row_id = row_id + 1
