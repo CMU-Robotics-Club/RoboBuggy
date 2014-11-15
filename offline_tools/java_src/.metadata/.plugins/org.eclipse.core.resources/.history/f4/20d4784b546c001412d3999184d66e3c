@@ -1,0 +1,242 @@
+package pointsTracker;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeListener;
+import java.io.IOException;
+
+import javax.swing.Action;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JRadioButton;
+
+public class Display extends JComponent implements ActionListener {
+	
+	GraphPanel mapCover;
+
+	// Note that a final field can be initialized in constructor
+	private final int DISPLAY_WIDTH;   
+	private final int DISPLAY_HEIGHT;
+
+
+	public Display(int width, int height) {
+		DISPLAY_WIDTH = width;
+		DISPLAY_HEIGHT = height;
+		try {
+			init();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+
+	public void init() throws IOException {
+		mapCover = new GraphPanel(DISPLAY_WIDTH, DISPLAY_HEIGHT);
+		mapCover.setBounds(0, 60, mapCover.WIDE, mapCover.HIGH);
+		setSize(DISPLAY_WIDTH, DISPLAY_HEIGHT);
+		JButton button = new JButton("New");
+		button.setBackground(Color.YELLOW);
+		button.setBounds(0, 0, 50, 50);
+		button.setAction(new Action() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				mapCover.addPin(new Pin(100, 100, 0, 0));
+				repaint();
+			}
+			
+			@Override
+			public void setEnabled(boolean arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void removePropertyChangeListener(PropertyChangeListener arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void putValue(String arg0, Object arg1) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public boolean isEnabled() {
+				// TODO Auto-generated method stub
+				return true;
+			}
+			
+			@Override
+			public Object getValue(String arg0) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public void addPropertyChangeListener(PropertyChangeListener arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		JButton buttonSt = new JButton();
+		buttonSt.setBackground(Color.GREEN);
+		buttonSt.setBounds(50, 0, 50, 50);
+		buttonSt.setAction(new Action() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				mapCover.addPin(new StartPin(100, 100, 0, 0));
+			}
+			
+			@Override
+			public void setEnabled(boolean arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void removePropertyChangeListener(PropertyChangeListener arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void putValue(String arg0, Object arg1) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public boolean isEnabled() {
+				// TODO Auto-generated method stub
+				return true;
+			}
+			
+			@Override
+			public Object getValue(String arg0) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public void addPropertyChangeListener(PropertyChangeListener arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		JButton buttonEnd = new JButton();
+		buttonEnd.setBackground(Color.RED);
+		buttonEnd.setBounds(100, 0, 50, 50);
+		buttonEnd.setAction(new Action() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				mapCover.addPin(new EndPin(150, 150, 0, 0));
+				
+			}
+			
+			@Override
+			public void setEnabled(boolean arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void removePropertyChangeListener(PropertyChangeListener arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void putValue(String arg0, Object arg1) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public boolean isEnabled() {
+				// TODO Auto-generated method stub
+				return true;
+			}
+			
+			@Override
+			public Object getValue(String arg0) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public void addPropertyChangeListener(PropertyChangeListener arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		initRadioGroup();
+		
+		add(mapCover);
+		add(button);
+		add(buttonSt);
+		add(buttonEnd);
+		
+		
+		repaint();
+	}
+
+
+	private void initRadioGroup() {
+		// TODO Auto-generated method stub
+		JRadioButton startButton = new JRadioButton("Start");
+		startButton.setActionCommand("start");
+
+	    JRadioButton midButton = new JRadioButton("Middle");
+	    midButton.setActionCommand("mid");
+
+	    JRadioButton endButton = new JRadioButton("End");
+	    endButton.setActionCommand("end");
+
+	    //Group the radio buttons.
+	    ButtonGroup group = new ButtonGroup();
+	    group.add(startButton);
+	    group.add(midButton);
+	    group.add(endButton);
+	    
+	    add(startButton);
+	    add(midButton);
+	    add(endButton);
+	    
+
+	    //Register a listener for the radio buttons.
+	    startButton.addActionListener(this);
+	    midButton.addActionListener(this);
+	    endButton.addActionListener(this);
+	}
+
+
+	public void paintComponent(Graphics g) {
+		mapCover.repaint();
+	}
+
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		if(arg0.getActionCommand().equals("start")) mapCover.setPinMode(GraphPanel.PIN_MODE_START);
+		if(arg0.getActionCommand().equals("mid")) mapCover.setPinMode(GraphPanel.PIN_MODE_MID);
+		if(arg0.getActionCommand().equals("end")) mapCover.setPinMode(GraphPanel.PIN_MODE_END);
+		else mapCover.setPinMode(GraphPanel.PIN_MODE_OOPS);
+		
+	}
+}

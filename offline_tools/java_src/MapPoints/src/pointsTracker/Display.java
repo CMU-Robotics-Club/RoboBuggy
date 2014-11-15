@@ -3,174 +3,99 @@ package pointsTracker;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.beans.PropertyChangeListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.IOException;
 
-import javax.imageio.ImageIO;
-import javax.swing.Action;
 import javax.swing.ButtonGroup;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JRadioButton;
 
-public class Display extends JComponent implements ActionListener {
+public class Display extends JComponent implements ActionListener{
 	
-	private final int DISP_WIDTH;
-	private final int DISP_HEIGHT;
-	
-	private Map map;
-	
+	GraphPanel mapCover;
 
-	public Display(int dispWidth, int dispHeight) {
-		// TODO Auto-generated constructor stub
-		DISP_WIDTH = dispWidth;
-		DISP_HEIGHT = dispHeight;
-		
+	// Note that a final field can be initialized in constructor
+	private final int DISPLAY_WIDTH;   
+	private final int DISPLAY_HEIGHT;
+
+
+	public Display(int width, int height) {
+		DISPLAY_WIDTH = width;
+		DISPLAY_HEIGHT = height;
 		init();
 	}
-	
-	
-	
-	public void paintComponent(Graphics g) {
-		// TODO Auto-generated method stub
-//		repaint();
-	}
 
 
-
-	private void init() {
-		setSize(DISP_WIDTH, DISP_HEIGHT);
-		BufferedImage img = null;
-		
-		try {
-			img = ImageIO.read(ClassLoader.getSystemResourceAsStream("courseMap.png"));
-			//777 x 539
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.out.println("uhoh");
-		}
-		
-		map = new Map(777, 539, img);
-		map.setVisible(true);
-		this.add(map);
-		map.repaint();
-		
-		
+	public void init() {
+		mapCover = new GraphPanel(DISPLAY_WIDTH, DISPLAY_HEIGHT);
+		mapCover.setBounds(0, 60, mapCover.WIDE, mapCover.HIGH);
+		setSize(DISPLAY_WIDTH, DISPLAY_HEIGHT);
 		initRadioGroup();
-		initClearButton();
+		add(mapCover);
 		
-	}
-
-
-
-	private void initClearButton() {
-		// TODO Auto-generated method stub
-		JButton clear = new JButton("Clear Pins");
-		clear.setText("Clear Pins");
-		clear.setAction(new Action() {
-			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
-				Display.this.map.clearPins();
-				Display.this.map.repaint();
-			}
-			
-			@Override
-			public void setEnabled(boolean arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void removePropertyChangeListener(PropertyChangeListener arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void putValue(String arg0, Object arg1) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public boolean isEnabled() {
-				// TODO Auto-generated method stub
-				return false;
-			}
-			
-			@Override
-			public Object getValue(String arg0) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-			
-			@Override
-			public void addPropertyChangeListener(PropertyChangeListener arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-		clear.setEnabled(true);
-		clear.setBounds(map.getX() + map.getWidth() + 20, 80, 150, 40);
-		add(clear);
-		clear.repaint();
 		
+		repaint();
 	}
-
 
 
 	private void initRadioGroup() {
 		// TODO Auto-generated method stub
-		JRadioButton startpin = new JRadioButton("Start Pin");
-		startpin.setActionCommand("start");
-		startpin.addActionListener(this);
-		startpin.setSelected(true);
-		
-		JRadioButton midpin = new JRadioButton("Mid Pin");
-		midpin.setActionCommand("mid");
-		midpin.addActionListener(this);
-		midpin.setSelected(false);
-		
-		JRadioButton endpin = new JRadioButton("End Pin");
-		endpin.setActionCommand("end");
-		endpin.addActionListener(this);
-		endpin.setSelected(false);
-		
-		ButtonGroup group = new ButtonGroup();
-		group.add(startpin);
-		group.add(midpin);
-		group.add(endpin);
-		
-		startpin.setBounds(map.getX() + map.getWidth() + 20, 20, 100, 20);
-		add(startpin);
-		midpin.setBounds(map.getX() + map.getWidth() + 20, startpin.getY() + startpin.getHeight(), 100, 20);
-		add(midpin);
-		endpin.setBounds(map.getX() + map.getWidth() + 20, midpin.getY() + midpin.getHeight(), 100, 20);
-		add(endpin);
-		
+		JRadioButton startButton = new JRadioButton("Start");
+		startButton.setBounds(0, 10, 100, 20);
+		startButton.setActionCommand("start");
+
+	    JRadioButton midButton = new JRadioButton("Middle");
+	    midButton.setBounds(100, 10, 100, 20);
+	    midButton.setActionCommand("mid");
+
+	    JRadioButton endButton = new JRadioButton("End");
+	    endButton.setBounds(200, 10, 100, 20);
+	    endButton.setActionCommand("end");
+	    
+	    JRadioButton noneButton = new JRadioButton("None");
+	    noneButton.setBounds(300, 10, 100, 20);
+	    noneButton.setActionCommand("none");
+
+	    //Group the radio buttons.
+	    ButtonGroup group = new ButtonGroup();
+	    group.add(startButton);
+	    group.add(midButton);
+	    group.add(endButton);
+	    group.add(noneButton);
+	    
+	    add(startButton);
+	    add(midButton);
+	    add(endButton);
+	    add(noneButton);
+	    
+
+	    //Register a listener for the radio buttons.
+	    startButton.addActionListener(this);
+	    midButton.addActionListener(this);
+	    endButton.addActionListener(this);
+	    noneButton.addActionListener(this);
 	}
 
+
+	public void paintComponent(Graphics g) {
+		mapCover.repaint();
+	}
 
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
-		String pinmode = e.getActionCommand();
-		if (pinmode.equals("start")) {
-			map.changePinMode(Map.START_PIN);
-		}
-		else if (pinmode.equals("mid")) {
-			map.changePinMode(Map.MID_PIN);
-		}
-		else if (pinmode.equals("end")) {
-			map.changePinMode(Map.END_PIN);
-		}
-		else {
-			map.changePinMode(Map.OOPS_PIN);
-		}
+		System.out.println(arg0.getActionCommand());
+		if(arg0.getActionCommand().equals("start")) mapCover.setPinMode(GraphPanel.PIN_MODE_START);
+		else if(arg0.getActionCommand().equals("mid")) mapCover.setPinMode(GraphPanel.PIN_MODE_MID);
+		else if(arg0.getActionCommand().equals("end")) mapCover.setPinMode(GraphPanel.PIN_MODE_END);
+		else mapCover.setPinMode(GraphPanel.PIN_MODE_OOPS);
+		
 	}
+	
+	
+    
+
 
 }

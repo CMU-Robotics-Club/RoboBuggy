@@ -1,0 +1,104 @@
+package pointsTracker;
+
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.concurrent.BrokenBarrierException;
+
+import javax.swing.Action;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+
+
+
+public class Display extends JComponent {
+	
+	GraphPanel mapCover;
+
+	// Note that a final field can be initialized in constructor
+	private final int DISPLAY_WIDTH;   
+	private final int DISPLAY_HEIGHT;
+
+
+	public Display(int width, int height) {
+		DISPLAY_WIDTH = width;
+		DISPLAY_HEIGHT = height;
+		try {
+			init();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+
+	public void init() throws IOException {
+		mapCover = new GraphPanel(DISPLAY_WIDTH, DISPLAY_HEIGHT);
+		mapCover.setBounds(60, 60, mapCover.WIDE, mapCover.HIGH);
+		setSize(DISPLAY_WIDTH, DISPLAY_HEIGHT);
+		JButton button = new JButton("New");
+		button.setBounds(0, 0, 50, 50);
+		button.setAction(new Action() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				mapCover.addPin(new Pin(100, 100, 0, 0));
+				repaint();
+			}
+			
+			@Override
+			public void setEnabled(boolean arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void removePropertyChangeListener(PropertyChangeListener arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void putValue(String arg0, Object arg1) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public boolean isEnabled() {
+				// TODO Auto-generated method stub
+				return true;
+			}
+			
+			@Override
+			public Object getValue(String arg0) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public void addPropertyChangeListener(PropertyChangeListener arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		add(mapCover);
+		add(button);
+		
+	    Browser b;
+		
+		repaint();
+	}
+
+
+	public void paintComponent(Graphics g) {
+		mapCover.repaint();
+	}
+}
