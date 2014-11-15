@@ -2,15 +2,15 @@ package com.roboclub.robobuggy.actuators;
 
 /**
  * 
- * @author Trevor Decker 
+ * @author Trevor Decker
  * 
  * @version 0.5
  * 
- * CHANGELOG: NONE
+ *          CHANGELOG: NONE
  * 
- * DESCRIPTION: TODO 
+ *          DESCRIPTION: TODO
  */
 
-public class Servo extends actuator{
-	//TODO
+public class Servo extends actuator {
+	// TODO
 }

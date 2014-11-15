@@ -2,7 +2,7 @@ package com.roboclub.robobuggy.sensors;
 
 import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
-import com.roboclub.robobuggy.serial.Arduino;
+import com.roboclub.robobuggy.ros.SensorChannel;
 
 /**
  * 
@@ -25,9 +25,9 @@ public class Encoder extends Arduino {
 	private double dist;
 	private double velocity;
 	
-	public Encoder() {
-		super("Encoder", "/sensor/encoder");
-		thisSensorType = SensorType.ENCODER;
+	public Encoder(SensorChannel sensor) {
+		super(sensor, "Encoder");
+		sensorType = SensorType.ENCODER;
 	}
 	
 	public int getTicks(){
@@ -38,12 +38,12 @@ public class Encoder extends Arduino {
 	public void updated()
 	{
 		lastUpdateTime = System.currentTimeMillis();
-		currentState = SensorState.ON; //TODO fix this 
+		currState = SensorState.ON; //TODO fix this 
 		
 		dist = ((double)(encTicks - encReset)/TICKS_PER_REV) / M_PER_REV;
 		velocity = dist / encTime;	
 		
-		publisher.publish(new EncoderMeasurement(dist, velocity));
+		msgPub.publish(new EncoderMeasurement(dist, velocity));
 	}
 	
 	/* Methods for reading from Serial */
@@ -63,7 +63,7 @@ public class Encoder extends Arduino {
 	
 	@Override
 	public void publish() {
-		currentState = SensorState.ON;
+		currState = SensorState.ON;
 		lastUpdateTime = System.currentTimeMillis();
 		
 		try {
@@ -89,6 +89,11 @@ public class Encoder extends Arduino {
 			}
 		} catch (Exception e) {
 			System.out.println("Encoder Exception on port: " + this.getName());
+			currState = SensorState.FAULT;
 		}
+		
+		
 	}
+	
+	
 }

@@ -33,7 +33,7 @@ public class FauxArduino {
 
 	private class wheelAngleCallback implements MessageListener {
 		@Override
-		public void actionPerformed(Message m) {
+		public void actionPerformed(String topicName, Message m) {
 			WheelAngleCommand wac = (WheelAngleCommand) m;
 			System.out.printf("Wheel commanded to position %d\n", wac.angle);
 		}
@@ -41,7 +41,7 @@ public class FauxArduino {
 
 	private class brakeCallback implements MessageListener {
 		@Override
-		public void actionPerformed(Message m) {
+		public void actionPerformed(String topicName, Message m) {
 			WheelAngleCommand wac = (WheelAngleCommand) m;
 			System.out.printf("Wheel commanded to position %d\n", wac.angle);
 		}

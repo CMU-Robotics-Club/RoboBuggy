@@ -4,7 +4,9 @@ import gnu.io.SerialPortEvent;
 
 import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
+import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.ros.Publisher;
+import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.serial.SerialConnection;
 
 /**
@@ -39,15 +41,18 @@ public class Gps extends SerialConnection implements Sensor{
 	public double lat;
 	public double lon;
 
-	public Gps(String publishPath) {
-		super("GPS", BAUDRATE, HEADER);
-		publisher = new Publisher(publishPath);
-		thisSensorType = SensorType.GPS;
+	public Gps(SensorChannel sensor) {
+		super("GPS", BAUDRATE, HEADER, sensor.getRstPath());
+		msgPub = new Publisher(sensor.getMsgPath());
+		statePub = new Publisher(sensor.getStatePath());
+		sensorType = SensorType.GPS;
+		
+		statePub.publish(new StateMessage(this.currState, "GPS"));
 	}
 	
 	public long timeOfLastUpdate(){
 		return lastUpdateTime;
-	}
+	} 
 	
 	private float parseLat(String latNum) {
 		return (Float.valueOf(latNum.substring(0,2)) + 
@@ -68,15 +73,16 @@ public class Gps extends SerialConnection implements Sensor{
 	@Override
 	public SensorState getState() {
 		if(System.currentTimeMillis() - lastUpdateTime > SENSOR_TIME_OUT){
-			currentState = SensorState.DISCONECTED;
+			currState = SensorState.DISCONNECTED;
+			statePub.publish(new StateMessage(this.currState, "GPS"));
 		} 
 		
-		return currentState;
+		return currState;
 	}
 
 	@Override
 	public SensorType getSensorType() {
-		return thisSensorType;
+		return sensorType;
 	}
 	
 	@Override
@@ -85,7 +91,7 @@ public class Gps extends SerialConnection implements Sensor{
 		int state = 0;
 		String val = "";
 		
-		currentState = SensorState.ON;
+		currState = SensorState.ON;
 		lastUpdateTime = System.currentTimeMillis();
 		try {
 			for (int i = 0; i < index; i++) {
@@ -102,7 +108,7 @@ public class Gps extends SerialConnection implements Sensor{
 						break;
 					case LONG_DIR:
 						if (val.equalsIgnoreCase("W")) longitude = -1 * longitude;
-						publisher.publish(new GpsMeasurement(latitude, longitude));
+						msgPub.publish(new GpsMeasurement(latitude, longitude));
 						Robot.UpdateGps(latitude, longitude);
 						System.out.println("lat: " + latitude + " lon: " + longitude);
 						lat = latitude;
@@ -116,7 +122,7 @@ public class Gps extends SerialConnection implements Sensor{
 			}
 		} catch (Exception e) {
 			System.out.println("Failed to parse GPS message!");
-			currentState = SensorState.ERROR;
+			currState = SensorState.ERROR;
 		}
 	}
 	

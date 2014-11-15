@@ -5,9 +5,9 @@ package com.roboclub.robobuggy.messages;
  *
  * @version 0.5
  * 
- * CHANGELOG: NONE
+ *          CHANGELOG: NONE
  * 
- * DESCRIPTION: TODO
+ *          DESCRIPTION: TODO
  */
 
 public class DateFormatUtils {

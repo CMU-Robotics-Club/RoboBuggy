@@ -5,7 +5,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
 
+import com.roboclub.robobuggy.messages.ResetMessage;
+import com.roboclub.robobuggy.ros.Message;
+import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.Publisher;
+import com.roboclub.robobuggy.ros.Subscriber;
 import com.roboclub.robobuggy.sensors.SensorState;
 import com.roboclub.robobuggy.sensors.SensorType;
 
@@ -26,7 +30,6 @@ public abstract class SerialConnection implements SerialPortEventListener {
 	protected static final int BUFFER_SIZE = 128;
 	
 	protected SerialPort port;
-	protected Enumeration<CommPortIdentifier> port_list;
 	protected CommPortIdentifier port_id;
 	protected boolean connected;
 	
@@ -37,16 +40,24 @@ public abstract class SerialConnection implements SerialPortEventListener {
 	protected int state;
 	
 	protected long lastUpdateTime;
-	protected SensorState currentState;
-	protected SensorType thisSensorType;
-	protected Publisher publisher;
+	protected SensorState currState;
+	protected SensorType sensorType;
+	protected Publisher msgPub;
+	protected Publisher statePub;
+	protected Subscriber ctrlSub;
+	
+	protected SerialConnection(String owner, int baudrate, String header, String ctrlPath) {
+		connected = false;
+		currState = SensorState.DISCONNECTED;
+		lastUpdateTime = 0;
+		ctrlSub = new Subscriber(ctrlPath, new ResetListener());
+		
+		findPort(baudrate, header, owner);
+	}
 	
 	@SuppressWarnings("unchecked")
-	protected SerialConnection(String owner, int baud_rate, String header) {
-		port_list = CommPortIdentifier.getPortIdentifiers();
-		connected = false;
-		currentState = SensorState.DISCONECTED;
-		lastUpdateTime = 0;
+	private void findPort(int baudrate, String header, String owner) {
+		Enumeration<CommPortIdentifier> port_list = CommPortIdentifier.getPortIdentifiers();
 		
 		while (port_list.hasMoreElements() ) {
 			port_id = (CommPortIdentifier)port_list.nextElement();
@@ -57,7 +68,7 @@ public abstract class SerialConnection implements SerialPortEventListener {
 					port = (SerialPort)port_id.open(owner, TIMEOUT);
 					port.setInputBufferSize(BUFFER_SIZE);
 					
-					port.setSerialPortParams( baud_rate,
+					port.setSerialPortParams( baudrate,
 							SerialPort.DATABITS_8,
 			                SerialPort.STOPBITS_1,
 			                SerialPort.PARITY_NONE );
@@ -71,7 +82,7 @@ public abstract class SerialConnection implements SerialPortEventListener {
 						inputBuffer = new char[BUFFER_SIZE];
 						index = 0;
 						connected = true;
-						currentState = SensorState.ON;
+						currState = SensorState.ON;
 						port.addEventListener(this);
 						System.out.println("Connected to port: " + this.getName());
 						return;
@@ -121,5 +132,39 @@ public abstract class SerialConnection implements SerialPortEventListener {
 		}
 		
 		return "";
+	}
+
+	private class ResetListener implements MessageListener {
+		@Override
+		public void actionPerformed(String topicName, Message m) {
+			if (connected && port != null) {
+				port.close();
+				connected = false;
+				currState = SensorState.DISCONNECTED;
+			}
+			
+			try {
+				if (port == null || port_id == null) {
+					return;
+				}
+				int baudrate = port.getBaudRate();
+				
+				port = (SerialPort)port_id.open(port_id.getCurrentOwner(), TIMEOUT);
+				port.setInputBufferSize(BUFFER_SIZE);
+				
+				port.setSerialPortParams( baudrate,
+						SerialPort.DATABITS_8,
+		                SerialPort.STOPBITS_1,
+		                SerialPort.PARITY_NONE );
+				
+				input = port.getInputStream();
+				output = port.getOutputStream();
+				
+				connected = true;
+				currState = SensorState.ON;
+			} catch (Exception e) {
+				System.out.println("Failed to reconnect " + port_id.getCurrentOwner());
+			}
+		}
 	}
 }

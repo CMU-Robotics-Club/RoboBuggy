@@ -2,211 +2,187 @@ package com.roboclub.robobuggy.ui;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
-import com.roboclub.robobuggy.logging.RobotLogger;
-import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.main.config;
-import com.roboclub.robobuggy.sensors.SensorState;
+import com.roboclub.robobuggy.ros.SensorChannel;
 
 /**
  * 
- * @author Trevor Decker 
+ * @author Trevor Decker
+ * @author Kevin Brennan
  *
  * @version 0.5
  * 
- * CHANGELOG: NONE
+ *          CHANGELOG: NONE
  * 
- * DESCRIPTION: TODO
+ *          DESCRIPTION: TODO
  */
 
 public class ControlPanel extends JPanel {
 	private static final long serialVersionUID = -924045896215455343L;
-	
-	// Big gui objects
-	private static JButton startPause_btn;
-	private JLabel time_lbl;
-    private static Date startPressedTime;	
-    private static Timer timer;
-    private static Timer updateTimer;
 
-    DateFormat df = new SimpleDateFormat("HH:mm:ss.S");
-    
-    SensorSwitchPanel gps_switch;
-    SensorSwitchPanel frontCam_switch;
-    SensorSwitchPanel backCam_switch; 
-    SensorSwitchPanel encoders_switch; 
-    SensorSwitchPanel IMU_switch; 
-    SensorSwitchPanel controlInputs_switch;
-    SensorSwitchPanel logging_switch;
-    SensorSwitchPanel autonomous_switch;
-    
+	private static JButton play_btn;
+	private JFormattedTextField time_lbl;
+	private static Date startTime;
+	private static Timer timer;
+
+	SensorSwitch gps_switch;
+	SensorSwitch vision_switch;
+	SensorSwitch encoders_switch;
+	SensorSwitch imu_switch;
+	SensorSwitch controls_switch;
+	SensorSwitch autonomous_switch;
+	JButton display;
+
 	public ControlPanel() {
-		timer = new Timer(10, new timerHandler());//updates every .01 seconds
+		timer = new Timer(10, new timerHandler());// updates every .01 seconds
 		timer.setDelay(100);
-	    timer.setRepeats(true);	//timer needs to be setup before startpause_btn
-	    
-		//stuff for setting up logging ie start/stop, file name ...
+		timer.setRepeats(true); // timer needs to be setup before startpause_btn
+
+		startTime = new Date(0);
+		
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
-		this.setLayout(new GridLayout(2, 1));
-		JPanel top_panel = new JPanel();
-		top_panel.setLayout(new GridLayout(1,2));
-		startPause_btn = new JButton("Start");
-		startPause_btn.setFont(new Font("serif", Font.PLAIN, 70));
-		updateStartPause_btn();
-		StartPauseButtonHandler startPauseHandler = new StartPauseButtonHandler();
-		startPause_btn.addActionListener(startPauseHandler);
-		JLabel currentFile_lbl = new JLabel("currentFile",SwingConstants.CENTER);
-		JLabel newFile_lbl = new JLabel("newFile",SwingConstants.CENTER);
-		
+		this.setLayout(new GridBagLayout());
 
-		time_lbl = new JLabel("",SwingConstants.CENTER);
-		time_lbl.setFont(new Font("sanserif",Font.PLAIN,70));
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.weightx = 1;
+		gbc.weighty = 0.5;
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.fill = GridBagConstraints.BOTH;
+		addLoggingPanel(gbc);
 		
-
-	   
-
-	    top_panel.add(startPause_btn);
-	    top_panel.add(currentFile_lbl);
-	    top_panel.add(newFile_lbl);
-	    top_panel.add(time_lbl);
-	    this.add(top_panel);
-		
-	    JPanel bottom_panel = new JPanel();
-	    bottom_panel.setLayout(new GridLayout(1, 2));
-	    
-	     gps_switch = new SensorSwitchPanel("GPS",SensorState.DISCONECTED);
-	     frontCam_switch = new SensorSwitchPanel("Front Cam",SensorState.DISCONECTED);
-	     backCam_switch = new SensorSwitchPanel("Back Cam",SensorState.DISCONECTED);
-	     encoders_switch = new SensorSwitchPanel("Encoders",SensorState.DISCONECTED);
-	     IMU_switch = new SensorSwitchPanel("IMU",SensorState.DISCONECTED);
-	     controlInputs_switch = new SensorSwitchPanel("Control Inputs",SensorState.DISCONECTED);
-	     logging_switch = new SensorSwitchPanel("Logging",config.logging);
-	     //autonomous_switch = new SensorSwitchPanel("Autonomous",Robot.getInstance().get_autonomus());
-	    		 
-	    
-	    bottom_panel.add(gps_switch.getGraphics());
-	    bottom_panel.add(frontCam_switch.getGraphics());
-	    bottom_panel.add(backCam_switch.getGraphics());
-	    bottom_panel.add(encoders_switch.getGraphics());
-	    bottom_panel.add(IMU_switch.getGraphics());
-	    bottom_panel.add(controlInputs_switch.getGraphics());
-	    bottom_panel.add(logging_switch.getGraphics());
-	    //bottom_panel.add(autonomous_switch.getGraphics());
-
-	    this.add(bottom_panel);
-	    
-	    //update timer should be after everything in the gui has been setup
-	    updateTimer = new Timer(10000, new updateTimedHandler());
-	    updateTimer.setDelay(1000); //updates every .1 seconds 
-	    updateTimer.setRepeats(true);
-	    updateTimer.start();
-	    
-	    
-		
+		gbc.gridy = 1;
+		addSensorSwitchPanel(gbc);
 	}
-	
-	//updates the display based on external events
-	public void updatePanel(){
-		//autonomous_switch.setState(Robot.getInstance().get_running());
-		//TODO
-		gps_switch.setState(Robot.getInstance().getGpsState());
-		gps_switch.updateSensorMessage_lbl(Robot.getInstance().getGpsMsg());
 
-		gps_switch.repaint();
-		IMU_switch.setState(Robot.getInstance().getImuState());
-	    IMU_switch.updateSensorMessage_lbl(Robot.getInstance().getImuMsg());
-
-		IMU_switch.repaint();
-	    frontCam_switch.setState(Robot.getInstance().getFrontCamState());
-	    frontCam_switch.updateSensorMessage_lbl("In C++ check window");
-
-	    frontCam_switch.repaint();
-	    backCam_switch.setState(Robot.getInstance().getBackCamState());
-	    backCam_switch.updateSensorMessage_lbl("In C++ check window");
-
-
-	    backCam_switch.repaint();
-	    encoders_switch.setState(Robot.getInstance().getEncoderState());
-	    encoders_switch.updateSensorMessage_lbl(Robot.getInstance().getEncoderMsg());
-	    encoders_switch.repaint();
-	    controlInputs_switch.setState(Robot.getInstance().getControlInputState());
-	    controlInputs_switch.updateSensorMessage_lbl(Robot.getInstance().getControlInputMsg());
-	    controlInputs_switch.repaint();
-	    //TODO add update for logging_switch
-	    
-		
-		updateStartPause_btn();
-	}
-	
-	private class timerHandler implements ActionListener
-	{
+	private class timerHandler implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent ae) {
-			Date now = new Date();
-			long difference = now.getTime() - startPressedTime.getTime();
-			time_lbl.setText(df.format(now) + "/" + df.format(new Date(difference)));
-			repaint();
+			time_lbl.setValue(new Date().getTime() - startTime.getTime());
 		}
 	}
-	
-	//timed update for the control input 
-	private class updateTimedHandler implements ActionListener
-	{
-		@Override 
-		public void actionPerformed(ActionEvent e)
-		{
-			updatePanel();		
-		}
-	}
-	
-	
-	static void updateStartPause_btn(){
-		if(config.active)
-		{	
-			System.out.println("System Started");
-			startPause_btn.setBackground(Color.RED);
-			startPause_btn.setText("Pause");
-			timer.start();
 
-		    startPressedTime = new Date();
-		} else {
-			System.out.println("System Paused");
-			startPause_btn.setBackground(Color.GREEN);
-			startPause_btn.setText("Start");
-			timer.stop();
-		}
-		startPause_btn.repaint();		
-		
-	}
-	
-	
-	private class StartPauseButtonHandler implements ActionListener
-	{
+	private class PlayButtonHandler implements ActionListener {
 		@Override
-		public void actionPerformed(ActionEvent e)
-		{
-			//inverts the state of the system every time the button is pressed
-			if(config.active){
-				config.active = false;
-			}else{
-				config.active = true;
-			}
-			updateStartPause_btn();
+		public void actionPerformed(ActionEvent e) {
+			// inverts the state of the system every time the button is pressed
+			config.active = !config.active;
+			
+			if (config.active) {
+				System.out.println("System Started");
+				play_btn.setBackground(Color.RED);
+				play_btn.setText("STOP");
+				timer.start();
 
+				startTime = new Date();
+			} else {
+				System.out.println("System Paused");
+				play_btn.setBackground(Color.GREEN);
+				play_btn.setText("START");
+				timer.stop();
+			}
 		}
 	}
 
+	private void addLoggingPanel(GridBagConstraints gbc) {
+		JPanel loggingPanel = new JPanel();
+		loggingPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+		loggingPanel.setLayout(new GridBagLayout());
+		
+		GridBagConstraints gbc_panel = new GridBagConstraints();
+		gbc.weightx = 1.0;
+		
+		play_btn = new JButton("START");
+		play_btn.setFont(new Font("serif", Font.PLAIN, 70));
+		play_btn.addActionListener(new PlayButtonHandler());
+		play_btn.setEnabled(false);
+		play_btn.setBackground(Color.BLUE);
+		
+		JLabel filename_lbl = new JLabel("File: ",
+				SwingConstants.CENTER);
+		filename_lbl.setFont(new Font("sanserif", Font.PLAIN, 30));
+
+		time_lbl = new JFormattedTextField(new SimpleDateFormat("HH:mm:ss.S"));
+		time_lbl.setHorizontalAlignment(SwingConstants.CENTER);
+		time_lbl.setFont(new Font("sanserif", Font.PLAIN, 50));
+		time_lbl.setEditable(false);
+		time_lbl.setColumns(7);
+		time_lbl.setValue(startTime);
+
+		gbc_panel.weightx = 1;
+		gbc_panel.fill = GridBagConstraints.BOTH;
+		gbc_panel.gridx = 0;
+		gbc_panel.gridy = 0;
+		gbc_panel.weighty = 0.5;
+		loggingPanel.add(play_btn, gbc_panel);
+		
+		gbc_panel.gridy = 1;
+		gbc_panel.weighty = 0.25;
+		loggingPanel.add(filename_lbl, gbc_panel);
+
+		gbc_panel.gridy = 2;
+		gbc_panel.weighty = 0.25;
+		loggingPanel.add(time_lbl, gbc_panel);
+		
+		this.add(loggingPanel, gbc);
+	}
+	
+	private void addSensorSwitchPanel(GridBagConstraints gbc) {
+		JPanel switchPanel = new JPanel();
+		switchPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+		switchPanel.setLayout(new GridLayout(7,1));
+		
+		gps_switch = new SensorSwitch("GPS", SensorChannel.GPS);
+		vision_switch = new SensorSwitch("VISION", SensorChannel.VISION);
+		encoders_switch = new SensorSwitch("ENCODERS", SensorChannel.ENCODER);
+		imu_switch = new SensorSwitch("IMU", SensorChannel.IMU);
+		controls_switch = new SensorSwitch("CONTROLS", SensorChannel.DRIVE_CTRL);
+		autonomous_switch = new SensorSwitch("AUTO", SensorChannel.GPS);
+		//TODO Add Autonomous Channel
+		
+		display = new JButton("DISPLAY");
+		display.setBackground(Color.BLUE);
+		display.setForeground(Color.WHITE);
+		display.setEnabled(false);
+		display.setFont(new Font("serif", Font.BOLD, 20));
+		display.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+			}
+		});
+		
+		switchPanel.add(autonomous_switch);
+		switchPanel.add(gps_switch);
+		switchPanel.add(imu_switch);
+		switchPanel.add(encoders_switch);
+		switchPanel.add(controls_switch);
+		switchPanel.add(vision_switch);
+		switchPanel.add(display);
+		
+		this.add(switchPanel, gbc);
+	}
+
+	
+	/*		Update Methods */
+	public void enableLogging() {
+		play_btn.setEnabled(true);
+		play_btn.setBackground(Color.GREEN);
+	}
 }

@@ -9,9 +9,9 @@ import com.roboclub.robobuggy.ros.Message;
  *
  * @version 0.5
  * 
- * CHANGELOG: NONE
+ *          CHANGELOG: NONE
  * 
- * DESCRIPTION: TODO
+ *          DESCRIPTION: TODO
  */
 
 // Represents raw measurement from the IMU

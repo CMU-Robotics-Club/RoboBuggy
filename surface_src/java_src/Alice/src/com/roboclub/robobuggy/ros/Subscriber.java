@@ -9,9 +9,9 @@ import com.roboclub.robobuggy.ros.internal.MessageServer;
  * @author Matt Sebek
  *
  * @version 0.5
- * 
+ *
  * CHANGELOG: NONE
- * 
+ *
  * DESCRIPTION: TODO
  */
 
@@ -19,6 +19,7 @@ public class Subscriber {
 
 	private MessageServer ms;
 	private MessageListener callback;
+	private String topicName;
 
 	private Deque<Message> local_inbox = new ArrayDeque<Message>();
 	// private Lock local_inbox_lock = new ReentrantLock();
@@ -27,12 +28,14 @@ public class Subscriber {
 
 	// Note that callbacks will run in a different thread
 	public Subscriber(String topic, MessageListener messageListener) {
-		ms = MessageServer.getMaster();
+		this.ms = MessageServer.getMaster();
 		this.callback = messageListener;
-		// Start a thread to pull from mqueue
+		this.topicName = topic;
+
+		// Register this thread as a subscriber to "topic" on the master queue
 		ms.addListener(topic, this);
 
-		worker = new Thread(new WorkerThread(), "Subscriber-Internal");
+		worker = new Thread(new WorkerThread(), "Subscriber-Internal=" + topic);
 		worker.start();
 	}
 
@@ -49,28 +52,24 @@ public class Subscriber {
 
 		@Override
 		public void run() {
-
-			// while (true) {
-			// Retrieve the latest measurements
+			Message m;
 			synchronized (local_inbox) {
-				while (local_inbox.peek() != null) {
-					try {
-						local_inbox.wait();
-					} catch (InterruptedException ie) {
-						System.out
-								.println("much awoken for no reason, such wow");
+				while (true) {
+					while (local_inbox.peek() == null) {
+						try {
+							local_inbox.wait();
+						} catch (InterruptedException ie) {
+							System.out
+									.println("much awoken for no reason, such wow");
+						}
 					}
 
-					Message m = local_inbox.poll();
+					m = local_inbox.poll();
 					if (m != null) {
-						callback.actionPerformed(m);
-					} else {
-						System.out
-								.println("It looks like there is a race condition in Subscriber");
+						callback.actionPerformed(topicName, m);
 					}
 				}
 			}
-			// }
 		}
 	}
 }

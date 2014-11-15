@@ -4,7 +4,9 @@ import gnu.io.SerialPortEvent;
 
 import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
+import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.ros.Publisher;
+import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.serial.SerialConnection;
 
 /**
@@ -44,20 +46,15 @@ public class Imu extends SerialConnection implements Sensor {
 	// how long the system should wait until a sensor switches to Disconnected
 	private static final long SENSOR_TIME_OUT = 5000;
 
-	private SensorType thisSensorType;
-	
-	long lastUpdateTime;
-
-	private Publisher imuPub;
-
-	private SensorState currentState;
-
 	public double angle;
 	
-	public Imu(String publishPath) {
-		super("IMU", BAUDRATE, HEADER);
-		publisher = new Publisher("/sensor/IMU");
-		thisSensorType = SensorType.IMU;
+	public Imu(SensorChannel sensor) {
+		super("IMU", BAUDRATE, HEADER, sensor.getRstPath());
+		msgPub = new Publisher(sensor.getMsgPath());
+		statePub = new Publisher(sensor.getStatePath());
+		sensorType = SensorType.IMU;
+		
+		statePub.publish(new StateMessage(this.currState, "IMU"));
 	}
 
 	public boolean reset(){
@@ -73,14 +70,15 @@ public class Imu extends SerialConnection implements Sensor {
 	@Override
 	public SensorState getState() {
 		if (System.currentTimeMillis() - lastUpdateTime > SENSOR_TIME_OUT) {
-			currentState = SensorState.DISCONECTED;
+			currState = SensorState.FAULT;
+			statePub.publish(new StateMessage(this.currState, "IMU"));
 		} 
-		return currentState;
+		return currState;
 	}
 
 	@Override
 	public SensorType getSensorType() {
-		return thisSensorType;
+		return sensorType;
 	}
 	
 	@Override
@@ -88,17 +86,17 @@ public class Imu extends SerialConnection implements Sensor {
 		return this.connected;
 	}
 
-
-
 	@Override
 	public boolean close() {
-		try {
-			input.close();
-			output.close();
-			port.close();
-			return true;
-		} catch (Exception e) {
-			System.out.println("Failed to Close Port: " + this.getName());
+		if (connected) {
+			try {
+				input.close();
+				output.close();
+				port.close();
+				return true;
+			} catch (Exception e) {
+				System.out.println("Failed to Close Port: " + this.getName());
+			}
 		}
 		
 		return false;
@@ -113,9 +111,6 @@ public class Imu extends SerialConnection implements Sensor {
 		int state = 0;
 
 		lastUpdateTime = System.currentTimeMillis();
-		currentState = SensorState.ON;
-		System.out.println("publish:"+currentState);
-
 
 		try {
 			for (int i = 0; i < index; i++) {
@@ -151,8 +146,7 @@ public class Imu extends SerialConnection implements Sensor {
 								" rx: " + rX + " ry: " + rY + " mx: " + mX + " my: " + mY +
 								" mz: " + mZ);
 						angle = rY;
-						Robot.UpdateImu(aX, aY, aZ, rX, rY, rZ, mX, mY, mZ);
-						publisher.publish(new ImuMeasurement(
+						msgPub.publish(new ImuMeasurement(
 								aX, aY, aZ, rX, rY, rZ, mX, mY, mZ));
 						
 						break;
@@ -166,7 +160,8 @@ public class Imu extends SerialConnection implements Sensor {
 			}
 		} catch (Exception e) {
 			System.out.println("Failed to parse Imu Message");
-			currentState = SensorState.ERROR;
+			currState = SensorState.ERROR;
+			statePub.publish(new StateMessage(this.currState, "IMU"));
 		}
 	}
 	

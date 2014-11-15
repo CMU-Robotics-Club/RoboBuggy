@@ -5,9 +5,9 @@ package com.roboclub.robobuggy.ros;
  *
  * @version 0.5
  * 
- * CHANGELOG: NONE
+ *          CHANGELOG: NONE
  * 
- * DESCRIPTION: TODO
+ *          DESCRIPTION: TODO
  */
 
 public interface Message {
