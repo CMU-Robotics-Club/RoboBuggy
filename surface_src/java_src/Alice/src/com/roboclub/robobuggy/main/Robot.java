@@ -1,12 +1,16 @@
 package com.roboclub.robobuggy.main;
 
 import java.util.ArrayList;
-import java.util.Date;
-
 import com.roboclub.robobuggy.localization.KalmanFilter;
 import com.roboclub.robobuggy.logging.RobotLogger;
+import com.roboclub.robobuggy.messages.EncoderMeasurement;
+import com.roboclub.robobuggy.messages.GpsMeasurement;
+import com.roboclub.robobuggy.messages.ImuMeasurement;
+import com.roboclub.robobuggy.messages.SteeringMeasurement;
+import com.roboclub.robobuggy.ros.CommandChannel;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
+import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 import com.roboclub.robobuggy.sensors.DriveControls;
@@ -14,7 +18,6 @@ import com.roboclub.robobuggy.sensors.Encoder;
 import com.roboclub.robobuggy.sensors.Gps;
 import com.roboclub.robobuggy.sensors.Imu;
 import com.roboclub.robobuggy.sensors.Sensor;
-import com.roboclub.robobuggy.sensors.SensorState;
 import com.roboclub.robobuggy.sensors.VisionSystem;
 import com.roboclub.robobuggy.ui.Gui;
 
@@ -25,6 +28,8 @@ public class Robot {
 	private static ArrayList<Sensor> sensorList;
 	private KalmanFilter kf;
 	private static VisionSystem vision;
+	private static Publisher steerPub;
+	private static Publisher brakePub;
 	
 	public static Robot getInstance() {
 		if (instance == null) {
@@ -52,6 +57,13 @@ public class Robot {
 			System.out.println("Initializing GPS Serial Connection");
 			Gps gps = new Gps(SensorChannel.GPS);
 			sensorList.add(gps);
+			
+			new Subscriber(SensorChannel.GPS.getMsgPath(), new MessageListener() {
+				@Override
+				public void actionPerformed(String topicName, Message m) {
+					updateGps((GpsMeasurement)m);
+				}
+			});
 		}
 
 
@@ -59,33 +71,59 @@ public class Robot {
 			System.out.println("Initializing IMU Serial Connection");
 			Imu imu = new Imu(SensorChannel.IMU);
 			sensorList.add(imu);
+			
+			new Subscriber(SensorChannel.IMU.getMsgPath(), new MessageListener() {
+				@Override
+				public void actionPerformed(String topicName, Message m) {
+					updateImu((ImuMeasurement)m);
+				}
+			});
 		}
 
 		if (config.ENCODER_DEFAULT) {
 			System.out.println("Initializing Encoder Serial Connection");
 			Encoder encoder = new Encoder(SensorChannel.ENCODER);
 			sensorList.add(encoder);
+			
+			new Subscriber(SensorChannel.ENCODER.getMsgPath(), new MessageListener() {
+				@Override
+				public void actionPerformed(String topicName, Message m) {
+					updateEnc((EncoderMeasurement)m);
+				}
+			});
 		}
 
 		if (config.DRIVE_DEFAULT) {
 			System.out.println("Initializing Drive Serial Connection");
 			DriveControls controls = new DriveControls(SensorChannel.DRIVE_CTRL);
 			sensorList.add(controls);
+			
+			// TODO add subscriber or publisher based on auto or not?
 		}
 
 		if (config.VISION_SYSTEM_DEFAULT) {
 			System.out.println("Initializing Vision System");
 			vision = new VisionSystem(SensorChannel.VISION);
 			sensorList.add(vision);
+			
+			// TODO add subscriber for vision messages
 		}
 
 		System.out.println();
 
 		// Start Autonomous Control
 		if (autonomous) {
-			System.out.println("Alice is in control!");
-			alice = new Thread(new Planner());
-			alice.start();
+			if (!config.DRIVE_DEFAULT) {
+				System.out.println("Initialize Drive Controls for Autonomous");
+			} else {
+				System.out.println("Alice is in control!");
+				alice = new Thread(new Planner());
+				alice.start();
+				
+				// Initialize publishers for sending commands
+				steerPub = new Publisher(CommandChannel.STEERING.getMsgPath());
+				brakePub = new Publisher(CommandChannel.BRAKE.getMsgPath());
+			}
 		}
 		
 		Gui.EnableLogging();
@@ -112,78 +150,23 @@ public class Robot {
 		return vision;
 	}
 	
-	/* Methods for Updating Planner, Gui, and Logger */
-	public static void UpdateGps(float latitude, float longitude) {
-		if (config.logging) {
-			// gui.UpdateGps(latitude, longitude);
-			RobotLogger rl = RobotLogger.getInstance();
-			long time_in_millis = new Date().getTime();
-			if(config.active){
-				rl.sensor.logGps(time_in_millis, latitude, longitude);
-			}
-		}
-
+	/* Methods for Updating Current State */
+	private void updateGps(GpsMeasurement m) {
 		// TODO Update planner
 	}
 
-	public static void UpdateImu(float aX, float aY, float aZ, float rX,
-			float rY, float rZ, float mX, float mY, float mZ) {
-		if (config.logging) {
-			RobotLogger rl = RobotLogger.getInstance();
-			float[] acc = {aX, aY, aZ};
-			float[] gyro = {rX, rY, rZ};
-			float[] compass = {mX, mY, mZ};
-			if(config.active){
-				rl.sensor.logImu(new Date().getTime(), acc, gyro, compass);
-			}
-		}
-
+	private void updateImu(ImuMeasurement m) {
 		// TODO Update planner
 	}
 
-	public static void UpdateSteering(char angle) {
-		if (config.logging) {
-			// TODO add logging
-		}
-
+	private void updateSteering(SteeringMeasurement m) {
 		// TODO update planner
 	}
 
-	public static void UpdateError(int error) {
-		if (config.logging) {
-			// TODO add logging
-		}
-
+	private void updateEnc(EncoderMeasurement m) {
 		// TODO update planner
 	}
-
-	public static void UpdateEnc(int encTime, int encReset, int encTick) {
-		if (config.logging) {
-			RobotLogger rl = RobotLogger.getInstance();
-			if(config.active){
-				RobotLogger.sensor.logEncoder(new Date().getTime(),encTick,encReset,encTime);
-			}
-		}
-
-		// TODO update planner
-	}
-
-	public static void UpdateBrake(char angle) {
-		if (config.logging) {
-			// TODO add logging
-		}
-
-		// TODO update planner
-	}
-
-	public static void UpdateAngle(int angle) {
-		if (config.logging) {
-			// TODO add logging
-		}
-
-		// TODO Update planner
-	}
-
+	
 	public boolean get_autonomous() {
 		return autonomous;
 	}

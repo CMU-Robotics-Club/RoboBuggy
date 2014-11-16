@@ -50,8 +50,6 @@ public class ImuMeasurement implements Message {
 
 	@Override
 	public String toLogString() {
-		// TODO Auto-generated method stub
-
 		String s = formatter.format(timestamp);
 		return s + ',' + Double.toString(aX) + ',' + Double.toString(aY) + ','
 				+ Double.toString(aZ) + ',' + Double.toString(rX) + ','
@@ -72,7 +70,6 @@ public class ImuMeasurement implements Message {
 		try {
 			timestamp = (Date) formatter.parse(yyyyMMdd);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

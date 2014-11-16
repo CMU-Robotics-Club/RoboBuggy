@@ -4,15 +4,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
-
-import com.roboclub.robobuggy.messages.ResetMessage;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
 import com.roboclub.robobuggy.sensors.SensorState;
 import com.roboclub.robobuggy.sensors.SensorType;
-
 import gnu.io.*;
 
 /**
@@ -163,20 +160,12 @@ public abstract class SerialConnection implements SerialPortEventListener {
 		public void actionPerformed(String topicName, Message m) {
 			disconnect();
 			
-			/*try {
-				Thread.sleep(10000);
-			} catch (Exception e) {}*/
-			
+			// Attempt to reconnect to port
 			try {
-				System.out.println("br: " + port.getBaudRate());
-				System.out.println("name: " + port_id.getName());
-				
-				int baudrate = port.getBaudRate();
-				
 				port = (SerialPort)port_id.open(port_id.getCurrentOwner(), TIMEOUT);
 				port.setInputBufferSize(BUFFER_SIZE);
 				
-				port.setSerialPortParams( baudrate,
+				port.setSerialPortParams(port.getBaudRate(),
 						SerialPort.DATABITS_8,
 		                SerialPort.STOPBITS_1,
 		                SerialPort.PARITY_NONE );

@@ -32,15 +32,12 @@ public abstract class Arduino extends SerialConnection implements Sensor {
 	protected static final char ERROR = (char)0xFE;
 	protected static final char MSG_ID = (char)0xFF;
 	
-	private String type;
-	
 	protected Arduino(SensorChannel sensor, String type) {
 		super("Arduino-"+type, BAUDRATE, null, sensor.getRstPath());
 		msgPub = new Publisher(sensor.getMsgPath());
 		statePub = new Publisher(sensor.getStatePath());
-		this.type = type;
 		
-		statePub.publish(new StateMessage(this.currState, "Arduino-"+this.type));
+		statePub.publish(new StateMessage(this.currState));
 	}
 
 	protected abstract boolean validId(char id);
@@ -82,8 +79,10 @@ public abstract class Arduino extends SerialConnection implements Sensor {
 				}
 			} catch (Exception e) {
 				System.out.println("Exception in port: " + this.getName());
-				this.currState = SensorState.FAULT;
-				statePub.publish(new StateMessage(this.currState, "Arduino-"+this.type));
+				if (this.currState != SensorState.FAULT) {
+					this.currState = SensorState.FAULT;
+					statePub.publish(new StateMessage(this.currState));
+				}
 			}
 		}
 	}
@@ -97,7 +96,6 @@ public abstract class Arduino extends SerialConnection implements Sensor {
 			try {
 				data = (char)input.read();
 			} catch (IOException e) {
-				System.out.println("Continue");
 				continue;
 			}
 			
@@ -111,7 +109,7 @@ public abstract class Arduino extends SerialConnection implements Sensor {
 			case 1:
 				test++;
 				if (test >= MSG_LEN) {
-					if (data == '\n') return true; //state++;
+					if (data == '\n') return true; //TODO remove for real state++;
 					else state = 0;
 					
 					test = 0;
@@ -122,10 +120,8 @@ public abstract class Arduino extends SerialConnection implements Sensor {
 					state++;
 					test++;
 				} else {
-					System.out.println((int)data);
 					state = 0;
 					test = 0;
-					System.out.println("Failed Here 3");
 				}
 				break;
 			case 3:

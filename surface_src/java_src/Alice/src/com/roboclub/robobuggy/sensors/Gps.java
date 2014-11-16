@@ -1,8 +1,6 @@
 package com.roboclub.robobuggy.sensors;
 
 import gnu.io.SerialPortEvent;
-
-import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.ros.Publisher;
@@ -37,9 +35,6 @@ public class Gps extends SerialConnection implements Sensor{
 	private static final int LONG_DIR = 5;
 	//how long the system should wait until a sensor switches to Disconnected
 	private static final long SENSOR_TIME_OUT = 5000;
-	
-	public double lat;
-	public double lon;
 
 	public Gps(SensorChannel sensor) {
 		super("GPS", BAUDRATE, HEADER, sensor.getRstPath());
@@ -47,7 +42,7 @@ public class Gps extends SerialConnection implements Sensor{
 		statePub = new Publisher(sensor.getStatePath());
 		sensorType = SensorType.GPS;
 		
-		statePub.publish(new StateMessage(this.currState, "GPS"));
+		statePub.publish(new StateMessage(this.currState));
 	}
 	
 	public long timeOfLastUpdate(){
@@ -74,7 +69,8 @@ public class Gps extends SerialConnection implements Sensor{
 	public SensorState getState() {
 		if(System.currentTimeMillis() - lastUpdateTime > SENSOR_TIME_OUT){
 			currState = SensorState.DISCONNECTED;
-			statePub.publish(new StateMessage(this.currState, "GPS"));
+			this.currState = SensorState.ERROR;
+			statePub.publish(new StateMessage(this.currState));
 		} 
 		
 		return currState;
@@ -91,7 +87,6 @@ public class Gps extends SerialConnection implements Sensor{
 		int state = 0;
 		String val = "";
 		
-		currState = SensorState.ON;
 		lastUpdateTime = System.currentTimeMillis();
 		try {
 			for (int i = 0; i < index; i++) {
@@ -109,10 +104,6 @@ public class Gps extends SerialConnection implements Sensor{
 					case LONG_DIR:
 						if (val.equalsIgnoreCase("W")) longitude = -1 * longitude;
 						msgPub.publish(new GpsMeasurement(latitude, longitude));
-						Robot.UpdateGps(latitude, longitude);
-						System.out.println("lat: " + latitude + " lon: " + longitude);
-						lat = latitude;
-						lon = longitude;
 						return;
 					}
 					
@@ -122,7 +113,15 @@ public class Gps extends SerialConnection implements Sensor{
 			}
 		} catch (Exception e) {
 			System.out.println("Failed to parse GPS message!");
-			currState = SensorState.ERROR;
+			if (this.currState != SensorState.FAULT) {
+				this.currState = SensorState.FAULT;
+				statePub.publish(new StateMessage(this.currState));
+			}
+		}
+		
+		if (this.currState != SensorState.ON) {
+			this.currState = SensorState.ON;
+			statePub.publish(new StateMessage(this.currState));
 		}
 	}
 	

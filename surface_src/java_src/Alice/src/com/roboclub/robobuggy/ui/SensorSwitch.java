@@ -37,7 +37,6 @@ public class SensorSwitch extends JPanel {
 	private static final long serialVersionUID = 8232116275431651229L;
 	private JButton sensor_btn;
 	private Publisher publisher;
-	private Subscriber subscriber;
 
 	public SensorSwitch(String name, SensorChannel sensor) {
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -55,8 +54,10 @@ public class SensorSwitch extends JPanel {
 		sensor_btn.addActionListener(new ResetHandler());
 		
 		publisher = new Publisher(sensor.getRstPath());
-		subscriber = new Subscriber(sensor.getStatePath(), new UpdateListener());
+		// Subscriber for sensor state changes
+		new Subscriber(sensor.getStatePath(), new UpdateListener());
 		
+		// Default to displaying sensors as not in use
 		updateButton(SensorState.NOT_IN_USE);
 	}
 

@@ -75,7 +75,8 @@ public class GpsPanel extends JPanel {
 		lowerPanel.add(label);
 		lowerPanel.add(lon);
 		
-		Subscriber gpsSub = new Subscriber(SensorChannel.GPS.getMsgPath(), new MessageListener() {
+		// Subscriber for Gps updates
+		new Subscriber(SensorChannel.GPS.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				double latitude = ((GpsMeasurement)m).latt;

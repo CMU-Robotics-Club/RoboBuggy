@@ -1,10 +1,14 @@
 package com.roboclub.robobuggy.sensors;
 
-import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.messages.BrakeCommand;
 import com.roboclub.robobuggy.messages.StateMessage;
+import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.messages.WheelAngleCommand;
+import com.roboclub.robobuggy.ros.CommandChannel;
+import com.roboclub.robobuggy.ros.Message;
+import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.SensorChannel;
+import com.roboclub.robobuggy.ros.Subscriber;
 
 /**
  * 
@@ -25,28 +29,27 @@ public class DriveControls extends Arduino {
 		super(sensor, "Steering");
 		sensorType = SensorType.GPS;
 		
-		/*// Test sweep
-		Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				int i = 0;
-				
-				while(true) {
-					try {
-						writeAngle(i);
-					} catch(Exception e) {
-						e.printStackTrace();
-						break;
+		// Subscriber for Steering commands
+		new Subscriber(CommandChannel.STEERING.getMsgPath(),
+				new MessageListener() {
+					@Override
+					public void actionPerformed(String topicName, Message m) {
+						if (currState == SensorState.ON) {
+							writeAngle(((WheelAngleCommand)m).angle);
+						}
 					}
-					i++;
-					
-					if (i >= 20) {
-						i = -20;
-					}
-				}
-			}
 		});
-		thread.start();*/
+		
+		//Subscriber for Brake Commands
+		new Subscriber(CommandChannel.BRAKE.getMsgPath(),
+				new MessageListener() {
+					@Override
+					public void actionPerformed(String topicName, Message m) {
+						if (currState == SensorState.ON) {
+							writeBrake(((BrakeCommand)m).down);
+						}
+					}
+		});
 	}
 	
 	/* Methods for Serial Communication with Arduino */
@@ -63,14 +66,8 @@ public class DriveControls extends Arduino {
 		}
 	}
 	
-	public void writeBrake(int angle) {
-		if (angle >= 0 && angle <= 180) {
-			if (isConnected()) {
-				byte[] msg = {0x06, 0, 0, 0, (byte)angle,'\n'};
-				msg[2] = (byte)angle;
-				super.serialWrite(msg);
-			}
-		}
+	public void writeBrake(boolean value) {
+		// TODO writing brake command
 	}
 	
 	/* Methods for reading from Serial */
@@ -89,31 +86,32 @@ public class DriveControls extends Arduino {
 
 	@Override
 	public void publish() {
-		currState = SensorState.ON;
 		lastUpdateTime = System.currentTimeMillis();
-		
-		statePub.publish(new StateMessage(this.currState, "Drive Control"));
-		
+		int value = parseInt(inputBuffer[1], inputBuffer[2],
+				inputBuffer[3], inputBuffer[4]);
 		try {
 			switch (inputBuffer[0]) {
 			case STEERING:
-				Robot.UpdateSteering(inputBuffer[4]);
-				msgPub.publish(new WheelAngleCommand((byte) inputBuffer[4]));
-				//System.out.println("Steering Angle:" + Integer.toHexString((int)inputBuffer[4]));
-				steeringAngle = (int)inputBuffer[4];
+				msgPub.publish(new SteeringMeasurement(value));
 				break;
 			case BRAKE:
-				Robot.UpdateBrake(inputBuffer[4]);
-				msgPub.publish(new BrakeCommand(true));
+				// TODO handle brake messages
 				break;
 			case ERROR:
-				Robot.UpdateError(parseInt(inputBuffer[1], inputBuffer[2],
-						inputBuffer[3], inputBuffer[4]));
+				// TODO handle error messages
 				break;
 			}
 		} catch (Exception e) {
 			System.out.println("Drive Exception on port: " + this.getName());
-			statePub.publish(new StateMessage(this.currState, "Drive Control"));
+			if (currState != SensorState.FAULT) {
+				currState = SensorState.FAULT;
+				statePub.publish(new StateMessage(this.currState));
+			}
+		}
+		
+		if (currState != SensorState.ON) {
+			currState = SensorState.ON;
+			statePub.publish(new StateMessage(this.currState));
 		}
 	}
 }

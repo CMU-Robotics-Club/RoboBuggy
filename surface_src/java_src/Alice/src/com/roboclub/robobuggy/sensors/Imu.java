@@ -1,8 +1,6 @@
 package com.roboclub.robobuggy.sensors;
 
 import gnu.io.SerialPortEvent;
-
-import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.ros.Publisher;
@@ -54,7 +52,7 @@ public class Imu extends SerialConnection implements Sensor {
 		statePub = new Publisher(sensor.getStatePath());
 		sensorType = SensorType.IMU;
 		
-		statePub.publish(new StateMessage(this.currState, "IMU"));
+		statePub.publish(new StateMessage(this.currState));
 	}
 
 	public boolean reset(){
@@ -70,8 +68,8 @@ public class Imu extends SerialConnection implements Sensor {
 	@Override
 	public SensorState getState() {
 		if (System.currentTimeMillis() - lastUpdateTime > SENSOR_TIME_OUT) {
-			currState = SensorState.FAULT;
-			statePub.publish(new StateMessage(this.currState, "IMU"));
+			currState = SensorState.ERROR;
+			statePub.publish(new StateMessage(this.currState));
 		} 
 		return currState;
 	}
@@ -142,9 +140,6 @@ public class Imu extends SerialConnection implements Sensor {
 						break;
 					case MZ:
 						mZ = Float.valueOf(val);
-						System.out.println("ax: " + aX + " ay: " + aY + " az: " + aZ + 
-								" rx: " + rX + " ry: " + rY + " mx: " + mX + " my: " + mY +
-								" mz: " + mZ);
 						angle = rY;
 						msgPub.publish(new ImuMeasurement(
 								aX, aY, aZ, rX, rY, rZ, mX, mY, mZ));
@@ -160,8 +155,15 @@ public class Imu extends SerialConnection implements Sensor {
 			}
 		} catch (Exception e) {
 			System.out.println("Failed to parse Imu Message");
-			currState = SensorState.ERROR;
-			statePub.publish(new StateMessage(this.currState, "IMU"));
+			if (this.currState != SensorState.FAULT) {
+				this.currState = SensorState.FAULT;
+				statePub.publish(new StateMessage(this.currState));
+			}
+		}
+		
+		if (this.currState != SensorState.ON) {
+			this.currState = SensorState.ON;
+			statePub.publish(new StateMessage(this.currState));
 		}
 	}
 	

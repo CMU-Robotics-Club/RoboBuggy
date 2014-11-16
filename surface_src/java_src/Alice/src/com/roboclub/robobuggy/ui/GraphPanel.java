@@ -34,23 +34,19 @@ public class GraphPanel extends JPanel {
 		this.add(pitch);
 		this.add(yaw);
 		
-		/*steering.updateGraph(0);
-		roll.updateGraph(0);
-		pitch.updateGraph(0);
-		yaw.updateGraph(0);*/
-		
-		Subscriber strSub = new Subscriber(SensorChannel.DRIVE_CTRL.getMsgPath(), new MessageListener() {
+		// Subscriber for drive control updates
+		new Subscriber(SensorChannel.DRIVE_CTRL.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				steering.updateGraph(((WheelAngleCommand)m).angle);
 			}
 		});
 		
-		Subscriber imuSub = new Subscriber(SensorChannel.IMU.getMsgPath(), new MessageListener() {
+		// Subscriber for Imu updates
+		new Subscriber(SensorChannel.IMU.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
-				// TODO Auto-generated method stub
-				
+				// TODO handle imu updates for graphs
 			}
 		});
 	}

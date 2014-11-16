@@ -1,15 +1,12 @@
 package com.roboclub.robobuggy.ui;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.messages.WheelAngleCommand;
@@ -41,7 +38,6 @@ public class DataPanel extends JPanel {
 	private JLabel encTicks;
 	private JLabel steeringAng;
 	private JLabel errorNum;
-	private static final Font dataFont = new Font("sanserif", Font.BOLD, 15);
 	
 	public DataPanel() {
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -112,19 +108,22 @@ public class DataPanel extends JPanel {
 		panel.add(label);
 		panel.add(mZ);
 		
-		Subscriber imuSub = new Subscriber(SensorChannel.IMU.getMsgPath(), new MessageListener() {
+		// Subscriber for Imu updates
+		new Subscriber(SensorChannel.IMU.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				ImuMeasurement tmp = (ImuMeasurement)m;
-				aX.setText(Double.toString(tmp.aX));
-				aY.setText(Double.toString(tmp.aY));
-				aZ.setText(Double.toString(tmp.aZ));
-				rX.setText(Double.toString(tmp.rX));
-				rY.setText(Double.toString(tmp.rY));
-				rZ.setText(Double.toString(tmp.rZ));
-				mX.setText(Double.toString(tmp.mX));
-				mY.setText(Double.toString(tmp.mY));
-				mZ.setText(Double.toString(tmp.mZ));
+				
+				// Limit measurement values to 10 characters
+				aX.setText(Double.toString(tmp.aX).substring(0, 10));
+				aY.setText(Double.toString(tmp.aY).substring(0, 10));
+				aZ.setText(Double.toString(tmp.aZ).substring(0, 10));
+				rX.setText(Double.toString(tmp.rX).substring(0, 10));
+				rY.setText(Double.toString(tmp.rY).substring(0, 10));
+				rZ.setText(Double.toString(tmp.rZ).substring(0, 10));
+				mX.setText(Double.toString(tmp.mX).substring(0, 10));
+				mY.setText(Double.toString(tmp.mY).substring(0, 10));
+				mZ.setText(Double.toString(tmp.mZ).substring(0, 10));
 			}
 		});
 		
@@ -133,7 +132,8 @@ public class DataPanel extends JPanel {
 		panel.add(label);
 		panel.add(encTicks);
 		
-		Subscriber encSub = new Subscriber(SensorChannel.ENCODER.getMsgPath(), new MessageListener() {
+		// Subscriber for encoder updates
+		new Subscriber(SensorChannel.ENCODER.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				encTicks.setText(Double.toString(((EncoderMeasurement)m).distance));
@@ -145,7 +145,8 @@ public class DataPanel extends JPanel {
 		panel.add(label);
 		panel.add(steeringAng);
 		
-		Subscriber strSub = new Subscriber(SensorChannel.DRIVE_CTRL.getMsgPath(), new MessageListener() {
+		// Subscriber for drive control updates
+		new Subscriber(SensorChannel.DRIVE_CTRL.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				steeringAng.setText(Integer.toString(((WheelAngleCommand)m).angle));

@@ -1,7 +1,7 @@
 package com.roboclub.robobuggy.sensors;
 
-import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
+import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.ros.SensorChannel;
 
 /**
@@ -63,36 +63,38 @@ public class Encoder extends Arduino {
 	
 	@Override
 	public void publish() {
-		currState = SensorState.ON;
 		lastUpdateTime = System.currentTimeMillis();
 		
+		int value = parseInt(inputBuffer[1], inputBuffer[2],
+				inputBuffer[3], inputBuffer[4]);
 		try {
 			switch (inputBuffer[0]) {
 			case ENC_TIME:
-				encTime = parseInt(inputBuffer[1], inputBuffer[2],
-						inputBuffer[3], inputBuffer[4]);
+				encTime = value;
 				break;
 			case ENC_RESET:
-				encReset = parseInt(inputBuffer[1], inputBuffer[2], 
-						inputBuffer[3], inputBuffer[4]);
+				encReset = value;
 				break;
 			case ENC_TICK:
-				encTicks = parseInt(inputBuffer[1], inputBuffer[2], 
-						inputBuffer[3], inputBuffer[4]);
-				Robot.UpdateEnc(encTime, encReset, encTicks);
-				System.out.println("Time: " + encTime + " Reset: " + encReset + " Ticks: " + encTicks);
+				encTicks = value;
+				// TODO update velocity estimation
 				break;
 			case ERROR:
-				Robot.UpdateError(parseInt(inputBuffer[1], inputBuffer[2], 
-						inputBuffer[3], inputBuffer[4]));
+				// TODO handle errors
 				break;
 			}
 		} catch (Exception e) {
 			System.out.println("Encoder Exception on port: " + this.getName());
-			currState = SensorState.FAULT;
+			if (this.currState != SensorState.FAULT) {
+				this.currState = SensorState.FAULT;
+				statePub.publish(new StateMessage(this.currState));
+			}
 		}
 		
-		
+		if (this.currState != SensorState.ON) {
+			this.currState = SensorState.ON;
+			statePub.publish(new StateMessage(this.currState));
+		}
 	}
 	
 	
