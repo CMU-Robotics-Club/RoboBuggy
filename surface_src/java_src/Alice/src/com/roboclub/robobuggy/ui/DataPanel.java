@@ -5,9 +5,18 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import com.roboclub.robobuggy.messages.EncoderMeasurement;
+import com.roboclub.robobuggy.messages.ImuMeasurement;
+import com.roboclub.robobuggy.messages.WheelAngleCommand;
+import com.roboclub.robobuggy.ros.Message;
+import com.roboclub.robobuggy.ros.MessageListener;
+import com.roboclub.robobuggy.ros.SensorChannel;
+import com.roboclub.robobuggy.ros.Subscriber;
 
 /**
  * @author Trevor Decker
@@ -103,15 +112,45 @@ public class DataPanel extends JPanel {
 		panel.add(label);
 		panel.add(mZ);
 		
+		Subscriber imuSub = new Subscriber(SensorChannel.IMU.getMsgPath(), new MessageListener() {
+			@Override
+			public void actionPerformed(String topicName, Message m) {
+				ImuMeasurement tmp = (ImuMeasurement)m;
+				aX.setText(Double.toString(tmp.aX));
+				aY.setText(Double.toString(tmp.aY));
+				aZ.setText(Double.toString(tmp.aZ));
+				rX.setText(Double.toString(tmp.rX));
+				rY.setText(Double.toString(tmp.rY));
+				rZ.setText(Double.toString(tmp.rZ));
+				mX.setText(Double.toString(tmp.mX));
+				mY.setText(Double.toString(tmp.mY));
+				mZ.setText(Double.toString(tmp.mZ));
+			}
+		});
+		
 		encTicks = new JLabel();
 		label = new JLabel("   Ticks: ");
 		panel.add(label);
 		panel.add(encTicks);
 		
+		Subscriber encSub = new Subscriber(SensorChannel.ENCODER.getMsgPath(), new MessageListener() {
+			@Override
+			public void actionPerformed(String topicName, Message m) {
+				encTicks.setText(Double.toString(((EncoderMeasurement)m).distance));
+			}
+		});
+		
 		steeringAng = new JLabel();
 		label = new JLabel("   Angle: ");
 		panel.add(label);
 		panel.add(steeringAng);
+		
+		Subscriber strSub = new Subscriber(SensorChannel.DRIVE_CTRL.getMsgPath(), new MessageListener() {
+			@Override
+			public void actionPerformed(String topicName, Message m) {
+				steeringAng.setText(Integer.toString(((WheelAngleCommand)m).angle));
+			}
+		});
 		
 		errorNum = new JLabel();
 		label = new JLabel("   Errors: ");
@@ -119,24 +158,5 @@ public class DataPanel extends JPanel {
 		panel.add(errorNum);
 		
 		return panel;
-	}
-	
-	// Update Sensor Data in Graph
-	public void UpdateAccel(Float aX_, Float aY_, Float aZ_) {
-		if (aX_ != null & aX != null) aX.setText(aX.toString());
-		if (aY_ != null & aY != null) aY.setText(aY.toString());
-		if (aZ_ != null & aZ != null) aZ.setText(aZ.toString());
-	}
-		
-	public void UpdateGyro(Float rX_, Float rY_, Float rZ_) {
-		if (rX_ != null & rX != null) rX.setText(rX_.toString());
-		if (rZ_ != null & rY != null) rY.setText(rY_.toString());
-		if (rY_ != null & rZ != null) rZ.setText(rZ_.toString());
-	}
-	
-	public void UpdateMagnet(Float mX_, Float mY_, Float mZ_) {
-		if (mX_ != null & mX != null) mX.setText(mX_.toString());
-		if (mY_ != null & mY != null) mY.setText(mY_.toString());
-		if (mZ_ != null & mZ != null) mZ.setText(mZ_.toString());
 	}
 }

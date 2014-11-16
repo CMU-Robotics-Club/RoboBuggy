@@ -41,9 +41,9 @@ public class AngleGraph extends JPanel {
 		this.add(panel, gbc);
 	}
 	
-	public void updateGraph(Double angle) {
+	public void updateGraph(int angle) {
 		this.graph.updateGraph(angle);
-		this.reading.setText(angle.toString());
+		this.reading.setText(Integer.toString(angle));
 	}
 	
 	private class Graph extends JPanel {
@@ -75,9 +75,10 @@ public class AngleGraph extends JPanel {
 			g.drawLine(startx, starty, endx, endy);
 		}
 		
-		public void updateGraph(double angle) {
-			endx = startx + (int)(RADIUS * Math.cos(Math.toRadians(angle)));
-			endy = starty + (int)(RADIUS * Math.sin(Math.toRadians(angle)));
+		public void updateGraph(int angle) {
+			endx = startx - (int)(RADIUS * Math.sin(Math.toRadians(angle)));
+			endy = starty - (int)(RADIUS * Math.cos(Math.toRadians(angle)));
+			this.repaint();
 		}
 	}
 }

@@ -50,7 +50,7 @@ public abstract class SerialConnection implements SerialPortEventListener {
 		connected = false;
 		currState = SensorState.DISCONNECTED;
 		lastUpdateTime = 0;
-		ctrlSub = new Subscriber(ctrlPath, new ResetListener());
+		ctrlSub = new Subscriber(ctrlPath, new ResetListener(this));
 		
 		findPort(baudrate, header, owner);
 	}
@@ -92,7 +92,6 @@ public abstract class SerialConnection implements SerialPortEventListener {
 					input.close();
 					output.close();
 				} catch (PortInUseException e) {
-					//TODO pass through for now
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -134,19 +133,44 @@ public abstract class SerialConnection implements SerialPortEventListener {
 		return "";
 	}
 
+	public void disconnect() {
+		if (connected) {
+			port.removeEventListener();
+			port.close();
+			try {
+				input.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			try {
+				output.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			connected = false;	
+		}
+		
+		currState = SensorState.DISCONNECTED;
+	}
+	
 	private class ResetListener implements MessageListener {
+		private SerialConnection parent;
+		public ResetListener(SerialConnection parent) {
+			this.parent = parent;
+		}
+		
 		@Override
 		public void actionPerformed(String topicName, Message m) {
-			if (connected && port != null) {
-				port.close();
-				connected = false;
-				currState = SensorState.DISCONNECTED;
-			}
+			disconnect();
+			
+			/*try {
+				Thread.sleep(10000);
+			} catch (Exception e) {}*/
 			
 			try {
-				if (port == null || port_id == null) {
-					return;
-				}
+				System.out.println("br: " + port.getBaudRate());
+				System.out.println("name: " + port_id.getName());
+				
 				int baudrate = port.getBaudRate();
 				
 				port = (SerialPort)port_id.open(port_id.getCurrentOwner(), TIMEOUT);
@@ -159,11 +183,13 @@ public abstract class SerialConnection implements SerialPortEventListener {
 				
 				input = port.getInputStream();
 				output = port.getOutputStream();
+				port.addEventListener(this.parent);
 				
 				connected = true;
 				currState = SensorState.ON;
 			} catch (Exception e) {
 				System.out.println("Failed to reconnect " + port_id.getCurrentOwner());
+				e.printStackTrace();
 			}
 		}
 	}

@@ -2,8 +2,15 @@ package com.roboclub.robobuggy.ui;
 
 import java.awt.Color;
 import java.awt.GridLayout;
+
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+
+import com.roboclub.robobuggy.messages.WheelAngleCommand;
+import com.roboclub.robobuggy.ros.Message;
+import com.roboclub.robobuggy.ros.MessageListener;
+import com.roboclub.robobuggy.ros.SensorChannel;
+import com.roboclub.robobuggy.ros.Subscriber;
 
 public class GraphPanel extends JPanel {
 	private static final long serialVersionUID = -5453262887347328140L;
@@ -27,9 +34,24 @@ public class GraphPanel extends JPanel {
 		this.add(pitch);
 		this.add(yaw);
 		
-		steering.updateGraph(0.0);
-		roll.updateGraph(0.0);
-		pitch.updateGraph(0.0);
-		yaw.updateGraph(0.0);
+		/*steering.updateGraph(0);
+		roll.updateGraph(0);
+		pitch.updateGraph(0);
+		yaw.updateGraph(0);*/
+		
+		Subscriber strSub = new Subscriber(SensorChannel.DRIVE_CTRL.getMsgPath(), new MessageListener() {
+			@Override
+			public void actionPerformed(String topicName, Message m) {
+				steering.updateGraph(((WheelAngleCommand)m).angle);
+			}
+		});
+		
+		Subscriber imuSub = new Subscriber(SensorChannel.IMU.getMsgPath(), new MessageListener() {
+			@Override
+			public void actionPerformed(String topicName, Message m) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 	}
 }

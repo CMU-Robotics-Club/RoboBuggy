@@ -23,20 +23,20 @@ public class ImuMeasurement implements Message {
 
 	public Date timestamp;
 
-	public float aX;
-	public float aY;
-	public float aZ;
-	public float rX;
-	public float rY;
-	public float rZ;
-	public float mX;
-	public float mY;
-	public float mZ;
+	public double aX;
+	public double aY;
+	public double aZ;
+	public double rX;
+	public double rY;
+	public double rZ;
+	public double mX;
+	public double mY;
+	public double mZ;
 
 	Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-	public ImuMeasurement(float aX, float aY, float aZ, float rX, float rY,
-			float rZ, float mX, float mY, float mZ) {
+	public ImuMeasurement(double aX, double aY, double aZ, double rX, double rY,
+			double rZ, double mX, double mY, double mZ) {
 		this.aX = aX;
 		this.aY = aY;
 		this.aZ = aZ;
@@ -53,11 +53,11 @@ public class ImuMeasurement implements Message {
 		// TODO Auto-generated method stub
 
 		String s = formatter.format(timestamp);
-		return s + ',' + Float.toString(aX) + ',' + Float.toString(aY) + ','
-				+ Float.toString(aZ) + ',' + Float.toString(rX) + ','
-				+ Float.toString(rY) + ',' + Float.toString(rZ) + ','
-				+ Float.toString(mX) + ',' + Float.toString(mY) + ','
-				+ Float.toString(mZ);
+		return s + ',' + Double.toString(aX) + ',' + Double.toString(aY) + ','
+				+ Double.toString(aZ) + ',' + Double.toString(rX) + ','
+				+ Double.toString(rY) + ',' + Double.toString(rZ) + ','
+				+ Double.toString(mX) + ',' + Double.toString(mY) + ','
+				+ Double.toString(mZ);
 	}
 
 	@Override

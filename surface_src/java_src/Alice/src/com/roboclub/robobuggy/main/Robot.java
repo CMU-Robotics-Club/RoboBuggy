@@ -26,73 +26,6 @@ public class Robot {
 	private KalmanFilter kf;
 	private static VisionSystem vision;
 	
-	//this moves away from the sensor list model but is needed for the control panel 
-	private Gps gps;
-	private Imu imu;
-	private Encoder encoder;
-	private DriveControls controls;
-	
-	//TODO fix
-	public SensorState getVisionState() {
-		return SensorState.NOT_IN_USE;
-	}
-	
-	public SensorState getControlInputState(){
-		if(controls == null){
-			return SensorState.NOT_IN_USE;
-		}
-		return controls.getState();
-	}
-	
-	public String getControlInputMsg(){
-		if(controls == null){
-			return "mega not init";
-		}
-		return Integer.toString(controls.steeringAngle);
-	}
-	
-	public SensorState getGpsState(){
-		if(gps == null){
-			return SensorState.NOT_IN_USE;
-		}
-		return gps.getState();
-	}
-	
-	public String getGpsMsg(){
-		if(gps == null){
-			return "GPS not init";
-		}
-		return "("+Double.toString(gps.lat) +","+ Double.toString(gps.lon)+")";
-	}
-	
-	public SensorState getEncoderState(){
-		if(encoder == null){
-			return SensorState.NOT_IN_USE;
-		}
-		return encoder.getState();
-	}
-	
-	public String getEncoderMsg(){
-		if(encoder == null){
-			return "encoder not init";
-		}
-		return "ticks:"+Integer.toString(encoder.getTicks());
-	}
-	
-	public SensorState getImuState(){
-		if(imu == null){
-			return SensorState.NOT_IN_USE;
-		}
-		return imu.getState();
-	}
-	
-	public String getImuMsg(){
-		if(imu == null){
-			return "encoder not init";
-		}
-		return "th:"+Double.toString(imu.angle);
-	}
-	
 	public static Robot getInstance() {
 		if (instance == null) {
 			instance = new Robot();
@@ -117,26 +50,26 @@ public class Robot {
 		// Initialize Sensor
 		if (config.GPS_DEFAULT) {
 			System.out.println("Initializing GPS Serial Connection");
-			gps = new Gps(SensorChannel.GPS);
+			Gps gps = new Gps(SensorChannel.GPS);
 			sensorList.add(gps);
 		}
 
 
 		if (config.IMU_DEFAULT) {
 			System.out.println("Initializing IMU Serial Connection");
-			imu = new Imu(SensorChannel.IMU);
+			Imu imu = new Imu(SensorChannel.IMU);
 			sensorList.add(imu);
 		}
 
 		if (config.ENCODER_DEFAULT) {
 			System.out.println("Initializing Encoder Serial Connection");
-			encoder = new Encoder(SensorChannel.ENCODER);
+			Encoder encoder = new Encoder(SensorChannel.ENCODER);
 			sensorList.add(encoder);
 		}
 
 		if (config.DRIVE_DEFAULT) {
 			System.out.println("Initializing Drive Serial Connection");
-			controls = new DriveControls(SensorChannel.DRIVE_CTRL);
+			DriveControls controls = new DriveControls(SensorChannel.DRIVE_CTRL);
 			sensorList.add(controls);
 		}
 
