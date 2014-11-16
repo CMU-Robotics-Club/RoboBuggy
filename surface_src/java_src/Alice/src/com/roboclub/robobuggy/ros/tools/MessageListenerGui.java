@@ -4,10 +4,10 @@ package com.roboclub.robobuggy.ros.tools;
  * @author Matt Sebek
  *
  * @version 0.5
- * 
+ *
  * CHANGELOG: NONE
- * 
- * DESCRIPTION: Disaply for seeing the contents of messages as they are broadcasted 
+ *
+ * DESCRIPTION: Disaply for seeing the contents of messages as they are broadcasted
  */
 
 import java.awt.BorderLayout; //for layout managers and more
@@ -47,7 +47,7 @@ public class MessageListenerGui extends JPanel implements ActionListener {
 			Subscriber s = new Subscriber("/sensor/encoder",
 					new MessageListener() {
 						@Override
-						public void actionPerformed(Message m) {
+						public void actionPerformed(String topicName, Message m) {
 							System.out.println("IT RAN I AM SO HAPPY");
 						}
 					});
@@ -104,11 +104,11 @@ public class MessageListenerGui extends JPanel implements ActionListener {
 		// Start a thread to service updates about messages
 		/*
 		 * EventQueue.invokeLater(new Runnable() { Subscriber s;
-		 *
+		 * 
 		 * @Override public void run() { // TODO Auto-generated method stub
 		 * System.out.println(";lkjasdl;kjasdf"); s = new
 		 * Subscriber("/sensor/encoder", new MessageListener() {
-		 *
+		 * 
 		 * @Override public void actionPerformed(Message m) {
 		 * System.out.println("received!"); String[] tmp = { "wasd", "wasd" };
 		 * model.addRow(tmp); } }); } });

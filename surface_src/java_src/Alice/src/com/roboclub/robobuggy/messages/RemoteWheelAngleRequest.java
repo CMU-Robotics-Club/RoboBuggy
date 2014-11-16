@@ -6,6 +6,7 @@ import com.roboclub.robobuggy.ros.Message;
 
 // Represents raw measurement from the IMU
 public class RemoteWheelAngleRequest implements Message {
+	public static final String version_id = "rc_wheel_angleV0.1";
 
 	public Date timestamp;
 	public double angle;
@@ -23,9 +24,9 @@ public class RemoteWheelAngleRequest implements Message {
 	}
 
 	@Override
-	public void fromLogString(String str) {
+	public Message fromLogString(String str) {
 		// TODO Auto-generated method stub
-
+		return null;
 	}
 
 }

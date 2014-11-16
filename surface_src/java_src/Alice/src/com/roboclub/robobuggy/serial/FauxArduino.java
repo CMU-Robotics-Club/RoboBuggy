@@ -8,14 +8,10 @@ import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
 
 /**
- * 
- * @author Matt Sebek
  *
+ * @author Matt Sebek
  * @version 0.5
- * 
- * CHANGELOG: NONE
- * 
- * DESCRIPTION: TODO
+ * @summary Fake sensor for testing purposes
  */
 
 public class FauxArduino {
@@ -33,7 +29,7 @@ public class FauxArduino {
 
 	private class wheelAngleCallback implements MessageListener {
 		@Override
-		public void actionPerformed(Message m) {
+		public void actionPerformed(String topicName, Message m) {
 			WheelAngleCommand wac = (WheelAngleCommand) m;
 			System.out.printf("Wheel commanded to position %d\n", wac.angle);
 		}
@@ -41,7 +37,7 @@ public class FauxArduino {
 
 	private class brakeCallback implements MessageListener {
 		@Override
-		public void actionPerformed(Message m) {
+		public void actionPerformed(String topicName, Message m) {
 			WheelAngleCommand wac = (WheelAngleCommand) m;
 			System.out.printf("Wheel commanded to position %d\n", wac.angle);
 		}

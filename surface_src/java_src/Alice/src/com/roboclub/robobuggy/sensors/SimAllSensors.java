@@ -76,7 +76,7 @@ public class SimAllSensors {
 	// Wheel Angle Actuator Callback
 	private class wheelAngleCallback implements MessageListener {
 		@Override
-		public void actionPerformed(Message m) {
+		public void actionPerformed(String topicName, Message m) {
 			WheelAngleCommand wac = (WheelAngleCommand) m;
 			System.out.printf("Wheel commanded to position %d\n", wac.angle);
 		}
@@ -85,7 +85,7 @@ public class SimAllSensors {
 	// Brake Actuator Callback
 	private class brakeCallback implements MessageListener {
 		@Override
-		public void actionPerformed(Message m) {
+		public void actionPerformed(String topicName, Message m) {
 			BrakeCommand bc = (BrakeCommand) m;
 			System.out.printf("Wheel commanded to position %d\n", bc.down);
 		}
