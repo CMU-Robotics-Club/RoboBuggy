@@ -8,7 +8,7 @@ import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.Subscriber;
-import com.roboclub.robobuggy.sensors.FauxArduino;
+import com.roboclub.robobuggy.serial.FauxArduino;
 
 public class SimRobot {
 	// published encoder, subscribes steering and brake
@@ -32,8 +32,8 @@ public class SimRobot {
 
 		@Override
 		public void actionPerformed(String topicName, Message m) {
-			System.out.println("received message; loggin!");
-			enc_log.log(m);
+			// System.out.println("received message; loggin!");
+			// enc_log.log(m);
 
 		}
 	}

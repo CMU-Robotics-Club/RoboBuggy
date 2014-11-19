@@ -52,9 +52,8 @@ public final class MessageLogWriter {
 			outputDir.mkdirs();
 		}
 
-		String outputFileName = getFileName(startTime);
-		File csvFile = new File(outputDir, outputFileName + "sensors.csv");
-		System.out.println("FileCreated: " + outputFileName);
+		File csvFile = new File(outputDir, outputFilename + "sensors.csv");
+		System.out.println("Logfile Created: " + outputFilename);
 
 		// TODO fix Gui.UpdateLogName( outputFileName );
 		try {
