@@ -5,14 +5,7 @@
  * @author Matt Sebek (msebek)
   *@author Ian Hartwig (ihartwig)
  */
-/*<<<<<<< HEAD
- #include <Arduino.h>
-#include <Servo.h>
-#include "receiver.h"
-*/
-//=======
 #include "pinreceiver.h"
-//>>>>>>> master
 #include "brake.h"
 #include "encoder.h"
 #include "watchdog.h"
