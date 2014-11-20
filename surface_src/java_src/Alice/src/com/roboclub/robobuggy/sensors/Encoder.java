@@ -18,31 +18,22 @@ import com.roboclub.robobuggy.ros.SensorChannel;
 public class Encoder extends Arduino {
 	private static final long TICKS_PER_REV = 5;
 	private static final double M_PER_REV = 5.0;
+	private static final int MAX_TICKS = 0xFFFF;
 	
 	private int encReset;
 	private int encTicks;
 	private int encTime;
-	private double dist;
-	private double velocity;
+	private double distLast;
 	
 	public Encoder(SensorChannel sensor) {
 		super(sensor, "Encoder");
 		sensorType = SensorType.ENCODER;
 	}
 	
-	public int getTicks(){
-		return encTicks;
-	}
-	
-	//is run after the encoder gets new data to update internal sate variables 
-	public void updated()
-	{
-		lastUpdateTime = System.currentTimeMillis();
-		currState = SensorState.ON; //TODO fix this 
-		
-		dist = ((double)(encTicks - encReset)/TICKS_PER_REV) / M_PER_REV;
-		velocity = dist / encTime;	
-		
+	private void estimateVelocity() {
+		double dist = ((double)(encTicks + (encReset*MAX_TICKS))/TICKS_PER_REV) / M_PER_REV;
+		double velocity = (dist - distLast)/ (double)encTime;
+		distLast = dist;
 		msgPub.publish(new EncoderMeasurement(dist, velocity));
 	}
 	
@@ -77,7 +68,7 @@ public class Encoder extends Arduino {
 				break;
 			case ENC_TICK:
 				encTicks = value;
-				// TODO update velocity estimation
+				estimateVelocity();
 				break;
 			case ERROR:
 				// TODO handle errors
@@ -89,6 +80,7 @@ public class Encoder extends Arduino {
 				this.currState = SensorState.FAULT;
 				statePub.publish(new StateMessage(this.currState));
 			}
+			return;
 		}
 		
 		if (this.currState != SensorState.ON) {

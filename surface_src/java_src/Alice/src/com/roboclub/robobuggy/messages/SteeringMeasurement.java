@@ -1,11 +1,14 @@
 package com.roboclub.robobuggy.messages;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.roboclub.robobuggy.ros.Message;
 
 public class SteeringMeasurement implements Message {
-	private int angle;
+	public int angle;
 	private Date timestamp;
 	
 	public SteeringMeasurement(int angle) {
@@ -15,14 +18,25 @@ public class SteeringMeasurement implements Message {
 	
 	@Override
 	public String toLogString() {
-		// TODO Auto-generated method stub
-		return null;
+		String s = formatter.format(timestamp);
+		return s + ',' + Double.toString(angle);
 	}
 
 	@Override
 	public void fromLogString(String str) {
-		// TODO Auto-generated method stub
-		
-	}
+		String delims = ",";
+		String[] ar = str.split(delims);
 
+		DateFormat formatter = null;
+		// Creating SimpleDateFormat with yyyyMMdd format e.g."20110914"
+		String yyyyMMdd = ar[0];
+		formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		try {
+			timestamp = (Date) formatter.parse(yyyyMMdd);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		angle = Integer.parseInt(ar[1]);
+	}
 }

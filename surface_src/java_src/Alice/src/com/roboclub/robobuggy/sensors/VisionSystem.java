@@ -120,12 +120,6 @@ public class VisionSystem implements Sensor {
 	}
 
 	@Override
-	public boolean reset() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public SensorType getSensorType() {
 		return this.sensorType;
 	}

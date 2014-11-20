@@ -2,11 +2,9 @@ package com.roboclub.robobuggy.ui;
 
 import java.awt.Color;
 import java.awt.GridLayout;
-
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
-
-import com.roboclub.robobuggy.messages.WheelAngleCommand;
+import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.SensorChannel;
@@ -38,7 +36,7 @@ public class GraphPanel extends JPanel {
 		new Subscriber(SensorChannel.DRIVE_CTRL.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
-				steering.updateGraph(((WheelAngleCommand)m).angle);
+				steering.updateGraph(((SteeringMeasurement)m).angle);
 			}
 		});
 		

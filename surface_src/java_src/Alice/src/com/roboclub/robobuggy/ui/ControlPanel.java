@@ -18,6 +18,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
+import com.roboclub.robobuggy.logging.RobotLogger;
+import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.main.config;
 import com.roboclub.robobuggy.ros.SensorChannel;
 
@@ -58,6 +60,7 @@ public class ControlPanel extends JPanel {
 		
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
 		this.setLayout(new GridBagLayout());
+		this.setBackground(Color.DARK_GRAY);
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.weightx = 1;
@@ -89,12 +92,16 @@ public class ControlPanel extends JPanel {
 				play_btn.setBackground(Color.RED);
 				play_btn.setText("STOP");
 				timer.start();
-
+				
+				RobotLogger.CreateLog();
+				
 				startTime = new Date();
 			} else {
 				System.out.println("System Paused");
 				play_btn.setBackground(Color.GREEN);
 				play_btn.setText("START");
+				
+				RobotLogger.CloseLog();
 				timer.stop();
 			}
 		}

@@ -4,12 +4,14 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
-import com.roboclub.robobuggy.messages.WheelAngleCommand;
+import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.SensorChannel;
@@ -29,13 +31,16 @@ import com.roboclub.robobuggy.ros.Subscriber;
 public class DataPanel extends JPanel {
 	private static final long serialVersionUID = 3950373392222628865L;
 
+	private static final int MAX_LENGTH = 10;
+	
 	private GpsPanel gpsPanel;
 	
 	/* Data Fields */
 	private JLabel aX, aY, aZ;
 	private JLabel rX, rY, rZ;
 	private JLabel mX, mY, mZ;
-	private JLabel encTicks;
+	private JLabel velocity;
+	private JLabel distance;
 	private JLabel steeringAng;
 	private JLabel errorNum;
 	
@@ -61,7 +66,7 @@ public class DataPanel extends JPanel {
 	private JPanel createDataPanel() {
 		JPanel panel = new JPanel();
 		panel.setBorder(BorderFactory.createLineBorder(Color.black));
-		panel.setLayout(new GridLayout(4,6));
+		panel.setLayout(new GridLayout(5,6));
 		
 		aX = new JLabel();
 		JLabel label = new JLabel("   aX: ");
@@ -112,31 +117,72 @@ public class DataPanel extends JPanel {
 		new Subscriber(SensorChannel.IMU.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
-				ImuMeasurement tmp = (ImuMeasurement)m;
+				ImuMeasurement msg = (ImuMeasurement)m;
 				
 				// Limit measurement values to 10 characters
-				aX.setText(Double.toString(tmp.aX).substring(0, 10));
-				aY.setText(Double.toString(tmp.aY).substring(0, 10));
-				aZ.setText(Double.toString(tmp.aZ).substring(0, 10));
-				rX.setText(Double.toString(tmp.rX).substring(0, 10));
-				rY.setText(Double.toString(tmp.rY).substring(0, 10));
-				rZ.setText(Double.toString(tmp.rZ).substring(0, 10));
-				mX.setText(Double.toString(tmp.mX).substring(0, 10));
-				mY.setText(Double.toString(tmp.mY).substring(0, 10));
-				mZ.setText(Double.toString(tmp.mZ).substring(0, 10));
+				String tmp = new String();
+				
+				tmp = Double.toString(msg.aX);
+				if (tmp.length() > MAX_LENGTH) tmp = tmp.substring(0, MAX_LENGTH);
+				aX.setText(tmp);
+				
+				tmp = Double.toString(msg.aY);
+				if (tmp.length() > MAX_LENGTH) tmp = tmp.substring(0, MAX_LENGTH);
+				aY.setText(tmp);
+
+				tmp = Double.toString(msg.aZ);
+				if (tmp.length() > MAX_LENGTH) tmp = tmp.substring(0, MAX_LENGTH);
+				aZ.setText(tmp);
+				
+				tmp = Double.toString(msg.rX);
+				if (tmp.length() > MAX_LENGTH) tmp = tmp.substring(0, MAX_LENGTH);
+				rX.setText(tmp);
+				
+				tmp = Double.toString(msg.rY);
+				if (tmp.length() > MAX_LENGTH) tmp = tmp.substring(0, MAX_LENGTH);
+				rY.setText(tmp);
+				
+				tmp = Double.toString(msg.rZ);
+				if (tmp.length() > MAX_LENGTH) tmp = tmp.substring(0, MAX_LENGTH);
+				rZ.setText(tmp);
+				
+				tmp = Double.toString(msg.mX);
+				if (tmp.length() > MAX_LENGTH) tmp = tmp.substring(0, MAX_LENGTH);
+				mX.setText(tmp);
+				
+				tmp = Double.toString(msg.mY);
+				if (tmp.length() > MAX_LENGTH) tmp = tmp.substring(0, MAX_LENGTH);
+				mY.setText(tmp);
+				
+				tmp = Double.toString(msg.mZ);
+				if (tmp.length() > MAX_LENGTH) tmp = tmp.substring(0, MAX_LENGTH);
+				mZ.setText(tmp);
 			}
 		});
 		
-		encTicks = new JLabel();
-		label = new JLabel("   Ticks: ");
+		velocity = new JLabel();
+		label = new JLabel("   Velocity: ");
 		panel.add(label);
-		panel.add(encTicks);
+		panel.add(velocity);
+		
+		distance = new JLabel();
+		label = new JLabel("   Distance: ");
+		panel.add(label);
+		panel.add(distance);
 		
 		// Subscriber for encoder updates
 		new Subscriber(SensorChannel.ENCODER.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
-				encTicks.setText(Double.toString(((EncoderMeasurement)m).distance));
+				EncoderMeasurement msg = (EncoderMeasurement)m;
+				
+				String tmp = Double.toString(msg.velocity);
+				if (tmp.length() > MAX_LENGTH) tmp = tmp.substring(0, MAX_LENGTH);
+				velocity.setText(tmp);
+				
+				tmp = Double.toString(msg.distance);
+				if (tmp.length() > MAX_LENGTH) tmp = tmp.substring(0, MAX_LENGTH);
+				distance.setText(tmp);
 			}
 		});
 		
@@ -149,7 +195,7 @@ public class DataPanel extends JPanel {
 		new Subscriber(SensorChannel.DRIVE_CTRL.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
-				steeringAng.setText(Integer.toString(((WheelAngleCommand)m).angle));
+				steeringAng.setText(Integer.toString(((SteeringMeasurement)m).angle));
 			}
 		});
 		

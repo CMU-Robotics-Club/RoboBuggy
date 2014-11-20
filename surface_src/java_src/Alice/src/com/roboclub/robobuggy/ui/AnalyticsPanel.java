@@ -1,5 +1,6 @@
 package com.roboclub.robobuggy.ui;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
@@ -13,6 +14,7 @@ public class AnalyticsPanel extends JPanel {
 	
 	public AnalyticsPanel() {
 		this.setLayout(new GridBagLayout());
+		this.setBackground(Color.DARK_GRAY);
 		
 		GridBagConstraints gbc = new GridBagConstraints();
 		
@@ -24,6 +26,7 @@ public class AnalyticsPanel extends JPanel {
 		gbc.weightx = 1;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
+		gbc.anchor = GridBagConstraints.CENTER;
 		this.add(dataPanel, gbc);
 		
 		gbc.gridy = 1;

@@ -59,15 +59,10 @@ public class Gps extends SerialConnection implements Sensor{
 				(Float.valueOf(lonNum.substring(3)) / 60.0f));
 	}
 	
-
-	public boolean reset(){
-		//TODO
-		return false;
-	}
-	
 	@Override
 	public SensorState getState() {
 		if(System.currentTimeMillis() - lastUpdateTime > SENSOR_TIME_OUT){
+			System.out.println("Here");
 			currState = SensorState.DISCONNECTED;
 			this.currState = SensorState.ERROR;
 			statePub.publish(new StateMessage(this.currState));
@@ -112,11 +107,12 @@ public class Gps extends SerialConnection implements Sensor{
 				} else val += inputBuffer[i];
 			}
 		} catch (Exception e) {
-			System.out.println("Failed to parse GPS message!");
+			//System.out.println("Failed to parse GPS message!");
 			if (this.currState != SensorState.FAULT) {
 				this.currState = SensorState.FAULT;
 				statePub.publish(new StateMessage(this.currState));
 			}
+			return;
 		}
 		
 		if (this.currState != SensorState.ON) {

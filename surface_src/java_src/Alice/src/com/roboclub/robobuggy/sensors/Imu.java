@@ -1,6 +1,7 @@
 package com.roboclub.robobuggy.sensors;
 
 import gnu.io.SerialPortEvent;
+
 import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.ros.Publisher;
@@ -44,6 +45,9 @@ public class Imu extends SerialConnection implements Sensor {
 	// how long the system should wait until a sensor switches to Disconnected
 	private static final long SENSOR_TIME_OUT = 5000;
 
+	private static final double GYRO_PER = 0.9;
+	private static final double ACCEL_PER = 1 - GYRO_PER;
+	
 	public double angle;
 	
 	public Imu(SensorChannel sensor) {
@@ -100,9 +104,25 @@ public class Imu extends SerialConnection implements Sensor {
 		return false;
 	}
 
+	@SuppressWarnings("unused")
+	private void estimateOrientation(double aX, double aY, double aZ, 
+			double rX, double rY, double rZ, double mX, double mY, double mZ) {
+		// TODO calculate roll, pitch, and yaw from imu data
+		
+		double rollA = Math.atan2(aX, Math.sqrt(Math.pow(aY,2) + Math.pow(aZ,2)));
+		double pitchA = Math.atan2(aY, Math.sqrt(Math.pow(aX,2) + Math.pow(aZ,2)));
+		
+		double rollR = Math.atan2(rY, Math.sqrt(Math.pow(rX,2) + Math.pow(rZ,2)));
+		double pitchR = Math.atan2(-rX, rZ);
+		
+		double yaw = 0.0;
+		
+		//msgPub.publish(new ImuMeasurement());
+	}
+	
 	@Override
 	public void publish() {
-		float aX = 0, aY = 0, aZ = 0, 
+		double aX = 0, aY = 0, aZ = 0, 
 				rX = 0, rY = 0, rZ = 0,
 				mX = 0, mY = 0, mZ = 0;
 		String val = "";
@@ -115,35 +135,34 @@ public class Imu extends SerialConnection implements Sensor {
 				if (inputBuffer[i] == '\n' || inputBuffer[i] == ',' || i == index) {
 					switch (state) {
 					case AX:
-						aX = Float.valueOf(val);
+						aX = Double.valueOf(val);
 						break;
 					case AY:
-						aY = Float.valueOf(val);
+						aY = Double.valueOf(val);
 						break;
 					case AZ:
-						aZ = Float.valueOf(val);
+						aZ = Double.valueOf(val);
 						break;
 					case RX:
-						rX = Float.valueOf(val);
+						rX = Double.valueOf(val);
 						break;
 					case RY:
-						rY = Float.valueOf(val);
+						rY = Double.valueOf(val);
 						break;
 					case RZ:
-						rZ = Float.valueOf(val);
+						rZ = Double.valueOf(val);
 						break;
 					case MX:
-						mX = Float.valueOf(val);
+						mX = Double.valueOf(val);
 						break;
 					case MY:
-						mY = Float.valueOf(val);
+						mY = Double.valueOf(val);
 						break;
 					case MZ:
-						mZ = Float.valueOf(val);
-						angle = rY;
-						msgPub.publish(new ImuMeasurement(
-								aX, aY, aZ, rX, rY, rZ, mX, mY, mZ));
+						mZ = Double.valueOf(val);
+						//TODO estimateOrientation(aX, aY, aZ, rX, rY, rZ, mX, mY, mZ);
 						
+						msgPub.publish(new ImuMeasurement(aX, aY, aZ, rX, rY, rZ, mX, mY, mZ));
 						break;
 					}
 					
@@ -159,6 +178,7 @@ public class Imu extends SerialConnection implements Sensor {
 				this.currState = SensorState.FAULT;
 				statePub.publish(new StateMessage(this.currState));
 			}
+			return;
 		}
 		
 		if (this.currState != SensorState.ON) {

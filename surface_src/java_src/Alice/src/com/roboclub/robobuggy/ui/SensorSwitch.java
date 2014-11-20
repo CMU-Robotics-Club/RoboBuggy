@@ -83,6 +83,7 @@ public class SensorSwitch extends JPanel {
 			sensor_btn.setEnabled(true);
 			sensor_btn.setText("FAULT");
 			sensor_btn.setBackground(Color.ORANGE);
+			break;
 		case ERROR:
 		default:
 			sensor_btn.setEnabled(true);

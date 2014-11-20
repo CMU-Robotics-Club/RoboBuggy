@@ -1,5 +1,8 @@
 package com.roboclub.robobuggy.ros;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
+
 /**
  * @author Matt Sebek
  *
@@ -11,7 +14,8 @@ package com.roboclub.robobuggy.ros;
  */
 
 public interface Message {
-	// TODO force messages to have a time
+	static final Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	
 	public String toLogString();
 
 	public void fromLogString(String str);

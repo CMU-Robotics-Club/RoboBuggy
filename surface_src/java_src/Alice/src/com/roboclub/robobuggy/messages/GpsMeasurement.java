@@ -1,5 +1,8 @@
 package com.roboclub.robobuggy.messages;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.roboclub.robobuggy.ros.Message;
@@ -19,26 +22,49 @@ public class GpsMeasurement implements Message {
 
 	public Date timestamp;
 
-	public float latt;
+	public double latitude;
 	public boolean north;
-	public float longt;
+	public double longitude;
 	public boolean west;
 
 	public GpsMeasurement(float latitude, float longitude) {
-		latt = latitude;
-		longt = longitude;
+		this.latitude = latitude;
+		this.longitude = longitude;
 	}
 
 	@Override
 	public String toLogString() {
-		// TODO Auto-generated method stub
-		return null;
+		String s = formatter.format(timestamp);
+		
+		s += ',' + Double.toString(latitude);
+		if (north) s += ",N";
+		else s += ",S";
+		
+		s += ',' + Double.toString(longitude);
+		if (west) s += ",W";
+		else s += ",E";
+		
+		return s;
 	}
 
 	@Override
 	public void fromLogString(String str) {
-		// TODO Auto-generated method stub
+		String delims = ",";
+		String[] ar = str.split(delims);
 
+		DateFormat formatter = null;
+		// Creating SimpleDateFormat with yyyyMMdd format e.g."20110914"
+		String yyyyMMdd = ar[0];
+		formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		try {
+			timestamp = (Date) formatter.parse(yyyyMMdd);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		latitude = Double.parseDouble(ar[1]);
+		north = ar[2].equalsIgnoreCase("N");
+		longitude = Double.parseDouble(ar[3]);
+		west = ar[3].equalsIgnoreCase("W");
 	}
-
 }

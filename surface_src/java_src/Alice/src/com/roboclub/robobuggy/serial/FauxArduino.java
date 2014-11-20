@@ -1,7 +1,7 @@
 package com.roboclub.robobuggy.serial;
 
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
-import com.roboclub.robobuggy.messages.WheelAngleCommand;
+import com.roboclub.robobuggy.messages.SteeringCommand;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.Publisher;
@@ -34,7 +34,7 @@ public class FauxArduino {
 	private class wheelAngleCallback implements MessageListener {
 		@Override
 		public void actionPerformed(String topicName, Message m) {
-			WheelAngleCommand wac = (WheelAngleCommand) m;
+			SteeringCommand wac = (SteeringCommand) m;
 			System.out.printf("Wheel commanded to position %d\n", wac.angle);
 		}
 	}
@@ -42,7 +42,7 @@ public class FauxArduino {
 	private class brakeCallback implements MessageListener {
 		@Override
 		public void actionPerformed(String topicName, Message m) {
-			WheelAngleCommand wac = (WheelAngleCommand) m;
+			SteeringCommand wac = (SteeringCommand) m;
 			System.out.printf("Wheel commanded to position %d\n", wac.angle);
 		}
 	}

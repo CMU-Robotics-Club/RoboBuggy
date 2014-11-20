@@ -79,8 +79,8 @@ public class GpsPanel extends JPanel {
 		new Subscriber(SensorChannel.GPS.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
-				double latitude = ((GpsMeasurement)m).latt;
-				double longitude = ((GpsMeasurement)m).longt;
+				double latitude = ((GpsMeasurement)m).latitude;
+				double longitude = ((GpsMeasurement)m).longitude;
 				lat.setText(Double.toString(latitude));
 				lon.setText(Double.toString(longitude));
 				

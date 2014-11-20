@@ -1,11 +1,9 @@
 package com.roboclub.robobuggy.messages;
 
 import java.text.DateFormat;
-import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import com.roboclub.robobuggy.ros.Message;
 
 /**
@@ -33,10 +31,10 @@ public class ImuMeasurement implements Message {
 	public double mY;
 	public double mZ;
 
-	Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
 	public ImuMeasurement(double aX, double aY, double aZ, double rX, double rY,
 			double rZ, double mX, double mY, double mZ) {
+		timestamp = new Date();
+		
 		this.aX = aX;
 		this.aY = aY;
 		this.aZ = aZ;
@@ -73,15 +71,15 @@ public class ImuMeasurement implements Message {
 			e.printStackTrace();
 		}
 
-		aX = Float.parseFloat(ar[1]);
-		aY = Float.parseFloat(ar[2]);
-		aZ = Float.parseFloat(ar[3]);
-		rX = Float.parseFloat(ar[4]);
-		rY = Float.parseFloat(ar[5]);
-		rZ = Float.parseFloat(ar[6]);
-		mX = Float.parseFloat(ar[7]);
-		mX = Float.parseFloat(ar[8]);
-		mX = Float.parseFloat(ar[9]);
+		aX = Double.parseDouble(ar[1]);
+		aY = Double.parseDouble(ar[2]);
+		aZ = Double.parseDouble(ar[3]);
+		rX = Double.parseDouble(ar[4]);
+		rY = Double.parseDouble(ar[5]);
+		rZ = Double.parseDouble(ar[6]);
+		mX = Double.parseDouble(ar[7]);
+		mX = Double.parseDouble(ar[8]);
+		mX = Double.parseDouble(ar[9]);
 
 	}
 }

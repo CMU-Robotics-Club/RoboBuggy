@@ -1,11 +1,14 @@
 package com.roboclub.robobuggy.main;
 
 import java.util.ArrayList;
+
 import com.roboclub.robobuggy.localization.KalmanFilter;
 import com.roboclub.robobuggy.logging.RobotLogger;
+import com.roboclub.robobuggy.messages.BrakeCommand;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
+import com.roboclub.robobuggy.messages.SteeringCommand;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.ros.CommandChannel;
 import com.roboclub.robobuggy.ros.Message;
@@ -98,7 +101,12 @@ public class Robot {
 			DriveControls controls = new DriveControls(SensorChannel.DRIVE_CTRL);
 			sensorList.add(controls);
 			
-			// TODO add subscriber or publisher based on auto or not?
+			new Subscriber(SensorChannel.DRIVE_CTRL.getMsgPath(), new MessageListener() {
+				@Override
+				public void actionPerformed(String topicName, Message m) {
+					updateSteering((SteeringMeasurement)m);
+				}
+			});
 		}
 
 		if (config.VISION_SYSTEM_DEFAULT) {
@@ -165,6 +173,23 @@ public class Robot {
 
 	private void updateEnc(EncoderMeasurement m) {
 		// TODO update planner
+	}
+	
+	/* Methods for Autonomous Control */
+	public void writeAngle(int angle) {
+		if (autonomous) {
+			steerPub.publish(new SteeringCommand(angle));
+		} else {
+			System.out.println("Can only control steering in Autonomous mode!");
+		}
+	}
+	
+	public void writeBrakes(boolean brakesDown) {
+		if (autonomous) {
+			brakePub.publish(new BrakeCommand(brakesDown));
+		} else {
+			System.out.println("Can only control steering in Autonomous mode!");
+		}
 	}
 	
 	public boolean get_autonomous() {

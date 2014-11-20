@@ -22,8 +22,8 @@ import gnu.io.SerialPortEvent;
 public abstract class Arduino extends SerialConnection implements Sensor {
 	protected static final int BAUDRATE = 9600;
 	protected static final int MSG_LEN = 6;
-	protected static final char ENC_TICK = (char)0x00;
-	protected static final char ENC_RESET = (char)0x01;
+	protected static final char ENC_RESET = (char)0x00;
+	protected static final char ENC_TICK = (char)0x01;
 	protected static final char ENC_TIME = (char)0x02;
 	protected static final char STEERING = (char)0x14;
 	protected static final char BRAKE = (char)0x15;
@@ -180,12 +180,6 @@ public abstract class Arduino extends SerialConnection implements Sensor {
 			
 		}
 		
-		return false;
-	}
-
-	@Override
-	public boolean reset() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	
