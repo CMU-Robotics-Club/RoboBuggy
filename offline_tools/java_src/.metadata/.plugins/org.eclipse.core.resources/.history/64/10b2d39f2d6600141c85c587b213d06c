@@ -1,7 +1,0 @@
-package pointsTracker;
-
-import javax.swing.JComponent;
-
-public class Display extends JComponent {
-	
-}
