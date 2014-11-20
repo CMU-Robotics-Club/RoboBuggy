@@ -13,6 +13,9 @@
 #include "steering.h"
 #include "rbserialmessages.h"
 
+#define TRUE 1
+#define FALSE 0
+
 // Turn debug output on/off
 #define DEBUG_EN
 #define DEBUG_SERIAL Serial1
@@ -90,11 +93,11 @@ static void auton_int_wrapper(){
 // TODO: FIX IT WHEN IT STOPS FAILING. MAKE CODE BREAK BETTER
 
 void watchdog_fail(){
-  if(g_brake_needs_reset == 0) {
+  if(g_brake_needs_reset == FALSE) {
     g_rbserialmessages.Send(RBSM_MID_ERROR, RBSM_EID_RC_LOST_SIGNAL);
     Serial1.println("Watchdog Fail! Brake dropped. Please reset brake.");
   }
-  g_brake_needs_reset = 1;
+  g_brake_needs_reset = TRUE;
 }
 
 
@@ -119,8 +122,8 @@ void setup()  {
   pinMode(LED_DANGER_PIN, OUTPUT);
 
   // Init loop state
-  g_brake_state_engaged = 0; // assume disengaged
-  g_brake_needs_reset = 1; // need brake reset at start
+  g_brake_state_engaged = FALSE; // assume disengaged
+  g_brake_needs_reset = TRUE; // need brake reset at start
   g_is_autonomous = false;
   raw_angle = 0;
   smoothed_angle = 0;
@@ -165,7 +168,7 @@ void loop() {
   
   while((read_status = g_rbserialmessages.Read(&new_command))
         != RBSM_ERROR_INSUFFICIENT_DATA) {
-    if(read_status == 0) {
+    if(read_status == FALSE) {
       // dipatch complete message
       switch(new_command.message_id) {
         case RBSM_MID_MEGA_STEER_ANGLE:
@@ -203,12 +206,12 @@ void loop() {
     // TODO make this code...less...something
     if(smoothed_thr > 120) {
       // read as engaged
-      g_brake_state_engaged = 1;
+      g_brake_state_engaged = TRUE;
       // brake has been reset
-      g_brake_needs_reset = 0;
+      g_brake_needs_reset = FALSE;
     } else {
       // read as disengaged
-      g_brake_state_engaged = 0;
+      g_brake_state_engaged = FALSE;
     }
   }
 
@@ -235,7 +238,7 @@ void loop() {
   
 
   // Set outputs
-  if(g_brake_state_engaged == 0 && g_brake_needs_reset == 0) {
+  if(g_brake_state_engaged == FALSE && g_brake_needs_reset == FALSE) {
     brake_raise();
   } else {
     brake_drop();
@@ -254,7 +257,7 @@ void loop() {
     steering_set(124); 
   }
 
-  if(g_brake_needs_reset == 1) {
+  if(g_brake_needs_reset == TRUE) {
     digitalWrite(LED_DANGER_PIN, HIGH);
   } else {
     digitalWrite(LED_DANGER_PIN, LOW);
