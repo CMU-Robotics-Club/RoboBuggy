@@ -24,13 +24,19 @@ public class Pin implements Shape{
 		screen_y = y;
 		lat_x = latx;
 		lat_y = laty;
+		
 		pinColor = Color.YELLOW;
-		pinWidth = 20;
+		pinWidth = 5;
 	}
 	
 	public void setPinLocation(Point loc) {
 		screen_x = loc.x;
 		screen_y = loc.y;
+	}
+	
+	public void setPinLatLng(Point latlng) {
+		lat_x = latlng.x;
+		lat_y = latlng.y;
 	}
 	
 	public String getCoordinates(){

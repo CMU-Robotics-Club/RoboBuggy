@@ -11,10 +11,14 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 
@@ -22,7 +26,7 @@ import javax.swing.JComponent;
  * @author John B. Matthews; distribution per GPL.
  * @modified_by Vivaan Bahl, originally taken from https://sites.google.com/site/drjohnbmatthews/graphpanel
  */
-public class GraphPanel extends JComponent implements KeyListener {
+public class GraphPanel extends JComponent {
 
     public int WIDE;
     public int HIGH;
@@ -40,6 +44,12 @@ public class GraphPanel extends JComponent implements KeyListener {
     private Color lineColor = Color.YELLOW;
     private int pinMode;
     
+    private static final double LATLNG_DELTA_Y = 0.0000035; //what change in longitude we see from a 1 pixel y delta
+    private static final double LATLNG_DELTA_X = 0.0000238; //what change in latitude we see from a 1 pixel x delta
+    private static final Point SCHENLEY_STOP_SIGN = new Point(679, 239);
+    private static final double SCHENLEY_STOP_SIGN_LATLNG_X = 40.440148;
+    private static final double SCHENLEY_STOP_SIGN_LATLNG_Y = -79.942296;
+    
     public static final int PIN_MODE_START = 0;
     public static final int PIN_MODE_MID = 1;
     public static final int PIN_MODE_END = 2;
@@ -53,17 +63,29 @@ public class GraphPanel extends JComponent implements KeyListener {
         this.setOpaque(true);
         this.addMouseListener(new MouseHandler());
         this.addMouseMotionListener(new MouseMotionHandler());
-		addKeyListener(this);
-		this.setFocusable(true);
-		this.requestFocus();
         this.setSize(WIDE, HIGH);
         pinMode = GraphPanel.PIN_MODE_OOPS;
     }
-
+    
+    public List<Pin> getPins() {
+    	return pins;
+    }
+    
     @Override
     public void paintComponent(Graphics g) {
+    	Graphics2D g2 = (Graphics2D)g;
+    	BufferedImage img = null;
+        try {
+			img = ImageIO.read(ClassLoader.getSystemResourceAsStream("courseMap.png"));
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			System.out.println("OOPS OOPS OOPS BAD STUFF HAPPENING");
+		}
+    	
         g.setColor(new Color(0x00f0f0f0));
         g.fillRect(0, 0, getWidth(), getHeight());
+        g2.drawImage(img, null, 0, 0);
+        drawLines(g2);
         for (Edge e : edges) {
             e.draw(g);
         }
@@ -75,8 +97,9 @@ public class GraphPanel extends JComponent implements KeyListener {
             g.drawRect(mouseRect.x, mouseRect.y,
                 mouseRect.width, mouseRect.height);
         }
-        Graphics2D g2 = (Graphics2D)g;
-        drawLines(g2);
+        
+        
+        
     }
     
     public void addPin(Pin p) {
@@ -115,31 +138,35 @@ public class GraphPanel extends JComponent implements KeyListener {
 			}
 		}
         
+        ((Display)this.getParent()).addPinToList(p);
         repaint();
     }
 
     private void drawLines(Graphics2D g2) {
 		// TODO Auto-generated method stub
     	g2.setColor(lineColor);
-    	g2.setStroke(new BasicStroke(10));
+    	g2.setStroke(new BasicStroke(3));
 		for (int i = 1; i < pins.size(); i++) {
 			Node n1 = nodes.get(i);
 			Node n2 = nodes.get(i - 1);
 			g2.drawLine(n1.getLocation().x, n1.getLocation().y, n2.getLocation().x, n2.getLocation().y);
 		}
+		g2.setStroke(new BasicStroke(2));
 	}
 
     
     
     public void setPinMode(int setTo) {
     	pinMode = setTo;
-    	System.out.println(pinMode);
     }
     
     public void removeSelected() {
     	selected = Node.getSelected(nodes, new ArrayList<Node>());
     	for(int i = 0; i < selected.size(); i++) {
+    		pins.remove(nodes.indexOf(selected.get(i)));
 			nodes.remove(selected.get(i));
+	
+			
 			repaint();
 		}
     	selected = new ArrayList<Node>();
@@ -147,26 +174,7 @@ public class GraphPanel extends JComponent implements KeyListener {
     }
     
     
-    @Override
-	public void keyPressed(KeyEvent arg0) { //Turns out this doesn't actually work yet... :D
-    	System.out.println("key pressed");
-    	if(arg0.getKeyCode() == KeyEvent.VK_A){
-    		System.out.println("backspaaaaaace");
-    		this.removeSelected();
-    	}
-	}
-
-	@Override
-	public void keyReleased(KeyEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void keyTyped(KeyEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+   
     
     //system code below...don't touch this
     
@@ -196,17 +204,26 @@ public class GraphPanel extends JComponent implements KeyListener {
             } else {
                 Node.selectNone(nodes);
                 selecting = true;
+                
+                
+                int dx = SCHENLEY_STOP_SIGN.x - mousePt.x;
+                int dy = SCHENLEY_STOP_SIGN.y - mousePt.y;
+                
+                double pinLat = SCHENLEY_STOP_SIGN_LATLNG_X - LATLNG_DELTA_X * (dx);
+                double pinLon = SCHENLEY_STOP_SIGN_LATLNG_Y - LATLNG_DELTA_Y * dy;
+                
+                
                 switch (pinMode) {
 				case GraphPanel.PIN_MODE_START:
-					addPin(new StartPin(mousePt.x, mousePt.y, 0, 0));
+					addPin(new StartPin(mousePt.x, mousePt.y, pinLat, pinLon));
 					break;
 					
 				case GraphPanel.PIN_MODE_MID:
-					addPin(new Pin(mousePt.x, mousePt.y, 0, 0));
+					addPin(new Pin(mousePt.x, mousePt.y, pinLat, pinLon));
 					break;
 					
 				case GraphPanel.PIN_MODE_END:
-					addPin(new EndPin(mousePt.x, mousePt.y, 0, 0));
+					addPin(new EndPin(mousePt.x, mousePt.y, pinLat, pinLon));
 					break;
 
 				default:
@@ -236,10 +253,22 @@ public class GraphPanel extends JComponent implements KeyListener {
                     e.getX() - mousePt.x,
                     e.getY() - mousePt.y);
                 Node.updatePosition(nodes, delta);
+                updatePinPositions();
                 mousePt = e.getPoint();
             }
             e.getComponent().repaint();
         }
+
+		private void updatePinPositions() {
+			// TODO Auto-generated method stub
+			for(Node n : nodes) {
+				Point point = n.getLocation();
+				int index = nodes.indexOf(n);
+				Pin p = pins.get(index);
+				p.setPinLocation(point);
+				repaint();
+			}
+		}
     }
 
     

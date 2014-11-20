@@ -1,20 +1,26 @@
 package pointsTracker;
 
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JComponent;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
 
-public class Display extends JComponent implements ActionListener{
+public class Display extends JComponent implements ActionListener, KeyListener {
 	
-	GraphPanel mapCover;
-
+	private GraphPanel mapCover;
+	private JScrollPane pinList;
+	private int bottomOfContent = 0;
+	private ArrayList<JComponent> pins;
 	// Note that a final field can be initialized in constructor
 	private final int DISPLAY_WIDTH;   
 	private final int DISPLAY_HEIGHT;
@@ -28,16 +34,61 @@ public class Display extends JComponent implements ActionListener{
 
 
 	public void init() {
-		mapCover = new GraphPanel(DISPLAY_WIDTH, DISPLAY_HEIGHT);
+		mapCover = new GraphPanel(DISPLAY_WIDTH - 200, DISPLAY_HEIGHT);
 		mapCover.setBounds(0, 60, mapCover.WIDE, mapCover.HIGH);
 		setSize(DISPLAY_WIDTH, DISPLAY_HEIGHT);
 		initRadioGroup();
 		add(mapCover);
 		
+		pins = new ArrayList<JComponent>();
 		
+		pinList = new JScrollPane();
+		pinList.setBounds(DISPLAY_WIDTH - 200, 60, 200, DISPLAY_HEIGHT - 60);
+		pinList.setEnabled(true);
+		pinList.setPreferredSize(new Dimension(pinList.getWidth(), DISPLAY_HEIGHT * 4));
+		add(pinList);
+		
+		
+		addKeyListener(this);
+		this.setFocusable(true);
+		this.requestFocus();
 		repaint();
 	}
-
+	
+	public void addPinToList(Pin p) {
+		System.out.println("adding pin to list");
+		// TODO Auto-generated method stub
+		int posToAdd = bottomOfContent;
+		JTextPane toAdd = new JTextPane();
+		toAdd.setBounds(0, 0, pinList.getWidth(), 100);
+		toAdd.setText("Starter text. If you see this, there's a problem.");
+		
+		if(p instanceof StartPin){
+			posToAdd = 0;
+			toAdd.setText("Start:\n    Point A, Point B\n    LatPoint A, LatPoint B");
+		}
+		else if(p instanceof EndPin) {
+			toAdd.setText("End:\n    Point A, Point B\n    LatPoint A, LatPoint B");
+		}
+		else {
+			toAdd.setText("Marker i:\n    Point A, Point B\n    LatPoint A, LatPoint B");
+		}
+		
+		pins.add(toAdd);
+		
+		redrawPinList();
+	}
+	
+	public void redrawPinList() {
+		pinList.removeAll();
+		int compHeight = 100;
+		for (int i = 0; i < pins.size(); i++) {
+			int posY = i * compHeight;
+			pins.get(i).setBounds(0, posY, pinList.getWidth(), compHeight);
+			pinList.add(pins.get(i));
+		}
+		pinList.repaint();
+	}
 
 	private void initRadioGroup() {
 		// TODO Auto-generated method stub
@@ -78,7 +129,14 @@ public class Display extends JComponent implements ActionListener{
 	}
 
 
-	public void paintComponent(Graphics g) {
+	public void paintComponent(Graphics g) { //VERY inefficient way, look into a better method of requesting focus
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		requestFocus();
 		mapCover.repaint();
 	}
 
@@ -94,7 +152,29 @@ public class Display extends JComponent implements ActionListener{
 		
 	}
 	
-	
+	 @Override
+		public void keyPressed(KeyEvent arg0) { //Turns out this doesn't actually work yet... :D
+	    	System.out.println("key pressed");
+	    	if(arg0.getKeyCode() == KeyEvent.VK_BACK_SPACE){
+	    		System.out.println("backspaaaaaace");
+	    		mapCover.removeSelected();
+	    	}
+		}
+
+		@Override
+		public void keyReleased(KeyEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void keyTyped(KeyEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+
+		
     
 
 
