@@ -1,0 +1,3 @@
+[submodule "surface_src/java_src/libs/junit"]
+	path = surface_src/java_src/libs/junit
+	url = https://github.com/junit-team/junit.git
