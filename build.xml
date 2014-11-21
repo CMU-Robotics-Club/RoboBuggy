@@ -17,7 +17,12 @@
 
     <target name="compile">
         <mkdir dir="${classes.dir}"/>
-        <javac srcdir="${src.dir}" destdir="${classes.dir}" />
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" >
+	<classpath>
+	  <pathelement location="surface_src/java_src/libs/junit/target/junit-4.12-SNAPSHOT.jar" />
+          <path refid="application"/>
+        </classpath>
+	</javac>
     </target>
 
     <target name="jar" depends="compile">
@@ -30,15 +35,16 @@
     </target>
 
     <target name="test" depends="jar">
-	  <junit printsummary="yes" haltonfailure="true" showoutput="true" >
-		<classpath>
+      <junit printsummary="yes" haltonfailure="true" showoutput="true" >
+	<classpath>
+	  <pathelement path="junit.jar" />
           <path refid="application"/>
         </classpath>
         
         <batchtest fork="yes">
           <fileset dir="${src.dir}" includes="*.java"/>
         </batchtest>
-		</junit> 
+      </junit> 
     </target>
 
     <target name="clean-build" depends="clean,jar"/>
