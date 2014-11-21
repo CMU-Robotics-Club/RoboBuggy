@@ -1,26 +1,23 @@
 package pointsTracker;
 
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JComponent;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
+import javax.swing.JTextArea;
 
 public class Display extends JComponent implements ActionListener, KeyListener {
 	
 	private GraphPanel mapCover;
-	private JScrollPane pinList;
-	private int bottomOfContent = 0;
-	private ArrayList<JComponent> pins;
+	private JScrollPane pinListContainer;
+	private JTextArea pinList;
 	// Note that a final field can be initialized in constructor
 	private final int DISPLAY_WIDTH;   
 	private final int DISPLAY_HEIGHT;
@@ -40,13 +37,15 @@ public class Display extends JComponent implements ActionListener, KeyListener {
 		initRadioGroup();
 		add(mapCover);
 		
-		pins = new ArrayList<JComponent>();
+		pinList = new JTextArea();
+		pinList.setText("No Markers Yet!");
+		pinList.setVisible(true);
 		
-		pinList = new JScrollPane();
-		pinList.setBounds(DISPLAY_WIDTH - 200, 60, 200, DISPLAY_HEIGHT - 60);
-		pinList.setEnabled(true);
-		pinList.setPreferredSize(new Dimension(pinList.getWidth(), DISPLAY_HEIGHT * 4));
-		add(pinList);
+		pinListContainer = new JScrollPane(pinList);
+		pinListContainer.setBounds(DISPLAY_WIDTH - 200, 60, 200, DISPLAY_HEIGHT - 60);
+		pinListContainer.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		pinListContainer.setEnabled(true);
+		add(pinListContainer);
 		
 		
 		addKeyListener(this);
@@ -55,37 +54,13 @@ public class Display extends JComponent implements ActionListener, KeyListener {
 		repaint();
 	}
 	
-	public void addPinToList(Pin p) {
-		System.out.println("adding pin to list");
-		// TODO Auto-generated method stub
-		int posToAdd = bottomOfContent;
-		JTextPane toAdd = new JTextPane();
-		toAdd.setBounds(0, 0, pinList.getWidth(), 100);
-		toAdd.setText("Starter text. If you see this, there's a problem.");
-		
-		if(p instanceof StartPin){
-			posToAdd = 0;
-			toAdd.setText("Start:\n    Point A, Point B\n    LatPoint A, LatPoint B");
-		}
-		else if(p instanceof EndPin) {
-			toAdd.setText("End:\n    Point A, Point B\n    LatPoint A, LatPoint B");
-		}
-		else {
-			toAdd.setText("Marker i:\n    Point A, Point B\n    LatPoint A, LatPoint B");
-		}
-		
-		pins.add(toAdd);
-		
-		redrawPinList();
-	}
-	
-	public void redrawPinList() {
+	public void updatePinList() {
+		List<Pin> pins = mapCover.getPins();
 		pinList.removeAll();
-		int compHeight = 100;
 		for (int i = 0; i < pins.size(); i++) {
-			int posY = i * compHeight;
-			pins.get(i).setBounds(0, posY, pinList.getWidth(), compHeight);
-			pinList.add(pins.get(i));
+			
+			
+			
 		}
 		pinList.repaint();
 	}

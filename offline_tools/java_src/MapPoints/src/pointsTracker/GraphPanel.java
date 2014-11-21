@@ -6,13 +6,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -138,7 +135,7 @@ public class GraphPanel extends JComponent {
 			}
 		}
         
-        ((Display)this.getParent()).addPinToList(p);
+        ((Display)this.getParent()).updatePinList();
         repaint();
     }
 
