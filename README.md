@@ -1,8 +1,9 @@
 RoboBuggy
 ==============
-![Repo Travis CI test passage result](https://travis-ci.org/CMU-Robotics-Club/RoboBuggy.svg?branch=master)
 
 ![Trevor pushing RoboBuggy at Fall rolls.](IMG_1679.JPG)
+
+![Repo Travis CI test passage result](https://travis-ci.org/CMU-Robotics-Club/RoboBuggy.svg?branch=master)
 
 To clone repo run git clone --recursive https://github.com/CMU-Robotics-Club/RoboBuggy.git
 
