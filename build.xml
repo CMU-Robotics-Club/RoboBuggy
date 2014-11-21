@@ -61,7 +61,7 @@
     <target name="test" depends="jar">
       <junit printsummary="yes" haltonfailure="true" showoutput="true" >
 	<classpath>
-	  <pathelement path="junit.jar" />
+	<pathelement location="surface_src/java_src/libs/junit/target/junit-4.12-SNAPSHOT.jar" /> 
           <path refid="application"/>
         </classpath>
         
