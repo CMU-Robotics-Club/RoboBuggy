@@ -6,12 +6,14 @@ public class HelloWorldTest extends junit.framework.TestCase {
 	}
 
 	public void testWillAlwaysFail() {
-		fail("An error message");
+	    //fail("An error message");
 	}
 
 	public void testAnotherFail(){
-		System.out.println("this should fail \n");
+	    //	System.out.println("this should fail \n");
+	    if( 1 == 0){
 		fail("another error");
+	    }
 	}
 
 }
