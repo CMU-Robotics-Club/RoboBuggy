@@ -39,7 +39,7 @@
 #define RX_AUTON_PIN 20
 #define RX_AUTON_INT 3
 #define ENCODER_PIN 7 // I think this is unused.
-#define VOLTAGE_READ_PIN 0
+#define VOLTAGE_READ_PIN A0 //Analog Zero
 
 // Output pins
 #define BRAKE_PIN 8
