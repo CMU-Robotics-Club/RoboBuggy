@@ -1,6 +1,6 @@
 RoboBuggy
 ==============
-[Repo Travis CI test passage result](https://travis-ci.org/CMU-Robotics-Club/RoboBuggy.svg?branch=master)
+![Repo Travis CI test passage result](https://travis-ci.org/CMU-Robotics-Club/RoboBuggy.svg?branch=master)
 
 ![Trevor pushing RoboBuggy at Fall rolls.](IMG_1679.JPG)
 
