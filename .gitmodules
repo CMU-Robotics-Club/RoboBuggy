@@ -7,3 +7,7 @@
 [submodule "surface_src/java_src/libs/opencv"]
 	path = surface_src/java_src/libs/opencv
 	url = https://github.com/Itseez/opencv.git
+[submodule "surface_src/java_src/libs/JavaHamcrest"]
+	path = surface_src/java_src/libs/JavaHamcrest
+	url = https://github.com/hamcrest/JavaHamcrest.git
+
