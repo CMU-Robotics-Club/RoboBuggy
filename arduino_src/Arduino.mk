@@ -1273,7 +1273,7 @@ error_on_caterina:
 # Use submake so we can guarantee the reset happens
 # before the upload, even with make -j
 upload:		$(TARGET_HEX) verify_size
-		$(MAKE) reset
+		#$(MAKE) reset
 		$(MAKE) do_upload
 
 raw_upload:	$(TARGET_HEX) verify_size

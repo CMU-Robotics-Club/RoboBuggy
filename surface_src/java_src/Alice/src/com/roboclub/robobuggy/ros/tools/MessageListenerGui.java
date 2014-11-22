@@ -15,6 +15,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener; //for action events
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -28,22 +30,26 @@ import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 
+import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
+import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
 
 public class MessageListenerGui extends JPanel implements ActionListener {
+	private static final long serialVersionUID = -3528970717084422491L;
+
 	private String newline = "\n";
-	private JTextField filterTextField;
+	private JTextField filterTextField = new JTextField(256);
 	private DefaultTableModel model;
 
 	private Subscriber allMessages;
 
-	private class Worker extends SwingWorker {
+	private class myWorker extends SwingWorker<Object, String> {
 
 		@Override
 		protected Object doInBackground() throws Exception {
-			System.out.println(";lkjasdl;kjasdf");
+			System.out.println("do in background fired!");
 			Subscriber s = new Subscriber("/sensor/encoder",
 					new MessageListener() {
 						@Override
@@ -58,22 +64,20 @@ public class MessageListenerGui extends JPanel implements ActionListener {
 		}
 	}
 
-	public MessageListenerGui() {
+	public MessageListenerGui(List<String> topic_to_listen_on) {
 		setLayout(new BorderLayout());
 
-		filterTextField = new JTextField(100);
-		filterTextField.addActionListener(this);
-
-		// Create some labels for the fields.
+		// Set up topic-add text box
 		JLabel textFieldLabel = new JLabel("Filter:");
 		textFieldLabel.setLabelFor(filterTextField);
+		filterTextField.addActionListener(this);
 
 		// Lay out the text controls and the labels.
 		JPanel controlPane = new JPanel();
 		GridBagLayout gridbag = new GridBagLayout();
 		GridBagConstraints c = new GridBagConstraints();
 		controlPane.setLayout(gridbag);
-		c.gridwidth = GridBagConstraints.REMAINDER; // last
+		c.gridwidth = GridBagConstraints.REMAINDER;
 		c.anchor = GridBagConstraints.WEST;
 		c.weightx = 1.0;
 		controlPane.add(filterTextField, c);
@@ -81,7 +85,7 @@ public class MessageListenerGui extends JPanel implements ActionListener {
 				.createTitledBorder("Type a prefix then press enter"),
 				BorderFactory.createEmptyBorder(5, 5, 5, 5)));
 
-		// Set up table for bottom pane
+		// Set up table to display messages in the bottom pane
 		model = new DefaultTableModel();
 		model.addColumn("Time");
 		model.addColumn("Message");
@@ -100,26 +104,15 @@ public class MessageListenerGui extends JPanel implements ActionListener {
 		mainPanel.add(controlPane, BorderLayout.PAGE_START);
 		mainPanel.add(tableScroll, BorderLayout.CENTER);
 		add(mainPanel, BorderLayout.LINE_START);
-
-		// Start a thread to service updates about messages
-		/*
-		 * EventQueue.invokeLater(new Runnable() { Subscriber s;
-		 * 
-		 * @Override public void run() { // TODO Auto-generated method stub
-		 * System.out.println(";lkjasdl;kjasdf"); s = new
-		 * Subscriber("/sensor/encoder", new MessageListener() {
-		 * 
-		 * @Override public void actionPerformed(Message m) {
-		 * System.out.println("received!"); String[] tmp = { "wasd", "wasd" };
-		 * model.addRow(tmp); } }); } });
-		 */
 	}
 
+	// Listen on filterTextField to have enter hit
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		System.out.println("Enter was hit!");
 		String input = filterTextField.getText();
-		System.out.println(input);
+		System.out.println("Adding topic..." + input);
+		SwingWorker<Object, String> temp = new myWorker();
+		temp.execute();
 	}
 
 	/**
@@ -130,9 +123,8 @@ public class MessageListenerGui extends JPanel implements ActionListener {
 		// Create and set up the window.
 		JFrame frame = new JFrame("Message Monitor");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
 		// Add content to the window.
-		frame.add(new MessageListenerGui());
+		frame.add(new MessageListenerGui(new ArrayList()));
 
 		// Display the window.
 		frame.pack();
@@ -151,9 +143,26 @@ public class MessageListenerGui extends JPanel implements ActionListener {
 		});
 	}
 
+	public static void open_message_window(List<String> topics_to_listen_on) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				// Turn off metal's use of bold fonts
+				UIManager.put("swing.boldMetal", Boolean.FALSE);
+				JFrame frame = new JFrame("ROS Message Monitor");
+				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				frame.add(new MessageListenerGui(topics_to_listen_on));
+
+				// Display the window.
+				frame.pack();
+				frame.setVisible(true);
+			}
+		});
+
+	}
+
 	public static void main(String[] args) {
-		// Schedule a job for the event dispatching thread:
-		// creating and showing this application's GUI.
+		// Start the GUI
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -162,5 +171,16 @@ public class MessageListenerGui extends JPanel implements ActionListener {
 				createAndShowGUI();
 			}
 		});
+
+		// Start a publisher!
+		Publisher p = new Publisher("/sensor/encoder");
+		while (true) {
+			p.publish(new EncoderMeasurement(41, 42));
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }

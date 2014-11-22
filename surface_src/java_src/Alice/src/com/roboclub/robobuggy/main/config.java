@@ -44,7 +44,9 @@ public static boolean VISION_SYSTEM_DEFAULT = true;
 public static byte BRAKES_PER_FULL_PRESSURE = 4;  
 
 public static boolean GUI_ON_DEFAULT = true;
-public static boolean DATA_PLAY_BACK_DEFAULT = false;//if false then try to read from live sensors 
+	public static boolean DATA_PLAY_BACK_DEFAULT = true;// if false then try to
+														// read from live
+														// sensors
 
 
 //current status values 
