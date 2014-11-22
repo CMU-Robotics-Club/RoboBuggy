@@ -3,7 +3,7 @@ package com.roboclub.robobuggy.sensors;
 import com.roboclub.robobuggy.messages.BrakeCommand;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
-import com.roboclub.robobuggy.messages.SteeringCommand;
+import com.roboclub.robobuggy.messages.WheelAngleCommand;
 import com.roboclub.robobuggy.ros.CommandChannel;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
@@ -35,7 +35,7 @@ public class DriveControls extends Arduino {
 					@Override
 					public void actionPerformed(String topicName, Message m) {
 						if (currState == SensorState.ON) {
-							writeAngle(((SteeringCommand)m).angle);
+							writeAngle(((WheelAngleCommand) m).angle);
 						}
 					}
 		});

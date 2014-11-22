@@ -18,7 +18,7 @@ import com.roboclub.robobuggy.ros.Message;
  */
 
 // Represents raw measurement from the IMU
-public class GpsMeasurement implements Message {
+public class GpsMeasurement extends BaseMessage implements Message {
 	public static final String version_id = "gpsV0.1";
 
 	public Date timestamp;
@@ -35,7 +35,7 @@ public class GpsMeasurement implements Message {
 
 	@Override
 	public String toLogString() {
-		String s = formatter.format(timestamp);
+		String s = super.formatter.format(timestamp);
 		
 		s += ',' + Double.toString(latitude);
 		if (north) s += ",N";
