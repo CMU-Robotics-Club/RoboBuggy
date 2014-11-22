@@ -162,7 +162,8 @@ public class Imu extends SerialConnection implements Sensor {
 						mZ = Double.valueOf(val);
 						//TODO estimateOrientation(aX, aY, aZ, rX, rY, rZ, mX, mY, mZ);
 						
-						msgPub.publish(new ImuMeasurement(aX, aY, aZ, rX, rY, rZ, mX, mY, mZ));
+						msgPub.publish(new ImuMeasurement(aX, aY, aZ, rX, rY,
+								rZ, mX, mY, mZ));
 						break;
 					}
 					
@@ -213,17 +214,29 @@ public class Imu extends SerialConnection implements Sensor {
 		}
 	}
 	
+	byte[] bigBuffer = new byte[1024];
 	public void serialEvent(SerialPortEvent event) {
+		int num_read = -1;
 		switch (event.getEventType()) {
 		case SerialPortEvent.DATA_AVAILABLE:
 			try {
-				char data = (char)input.read();
-				
+				//char data = (char)input.read();
+				num_read = input.read(bigBuffer);
+			} catch (Exception e) {
+				System.out.println(this.getName() + " exception!");
+				e.printStackTrace();
+			}
+			System.out.printf("%d\n", num_read);
+			for(int i = 0; i < num_read; i++) {
+				char data = (char) bigBuffer[i];
 				switch (state) {
 				case 0:
-					if (data == HEADER.charAt(index)) index++;
-					else index = 0;
-					
+					if (data == HEADER.charAt(index)) {
+						index++;
+					} else {
+						index = 0;
+					}
+
 					if (index == HEADER.length()) {
 						index = 0;
 						state++;
@@ -231,16 +244,14 @@ public class Imu extends SerialConnection implements Sensor {
 					break;
 				case 1:
 					inputBuffer[index++] = data;
-					
+
 					if (data == '\n' || index >= BUFFER_SIZE) {
 						publish();
 						index = 0;
 						state = 0;
 					}
 				}
-			} catch (Exception e) {
-				System.out.println(this.getName() + " exception!");
-				e.printStackTrace();
+
 			}
 			break;
 		default:
