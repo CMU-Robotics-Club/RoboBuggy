@@ -5,16 +5,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.IOException;
+import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JComponent;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
-public class Display extends JComponent implements ActionListener{
+public class Display extends JComponent implements ActionListener, KeyListener {
 	
-	GraphPanel mapCover;
-
+	private GraphPanel mapCover;
+	private JScrollPane pinListContainer;
+	private JTextArea pinList;
 	// Note that a final field can be initialized in constructor
 	private final int DISPLAY_WIDTH;   
 	private final int DISPLAY_HEIGHT;
@@ -28,16 +31,39 @@ public class Display extends JComponent implements ActionListener{
 
 
 	public void init() {
-		mapCover = new GraphPanel(DISPLAY_WIDTH, DISPLAY_HEIGHT);
+		mapCover = new GraphPanel(DISPLAY_WIDTH - 200, DISPLAY_HEIGHT);
 		mapCover.setBounds(0, 60, mapCover.WIDE, mapCover.HIGH);
 		setSize(DISPLAY_WIDTH, DISPLAY_HEIGHT);
 		initRadioGroup();
 		add(mapCover);
 		
+		pinList = new JTextArea();
+		pinList.setText("No Markers Yet!");
+		pinList.setVisible(true);
 		
+		pinListContainer = new JScrollPane(pinList);
+		pinListContainer.setBounds(DISPLAY_WIDTH - 200, 60, 200, DISPLAY_HEIGHT - 60);
+		pinListContainer.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		pinListContainer.setEnabled(true);
+		add(pinListContainer);
+		
+		
+		addKeyListener(this);
+		this.setFocusable(true);
+		this.requestFocus();
 		repaint();
 	}
-
+	
+	public void updatePinList() {
+		List<Pin> pins = mapCover.getPins();
+		pinList.removeAll();
+		for (int i = 0; i < pins.size(); i++) {
+			
+			
+			
+		}
+		pinList.repaint();
+	}
 
 	private void initRadioGroup() {
 		// TODO Auto-generated method stub
@@ -78,7 +104,14 @@ public class Display extends JComponent implements ActionListener{
 	}
 
 
-	public void paintComponent(Graphics g) {
+	public void paintComponent(Graphics g) { //VERY inefficient way, look into a better method of requesting focus
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		requestFocus();
 		mapCover.repaint();
 	}
 
@@ -94,7 +127,29 @@ public class Display extends JComponent implements ActionListener{
 		
 	}
 	
-	
+	 @Override
+		public void keyPressed(KeyEvent arg0) { //Turns out this doesn't actually work yet... :D
+	    	System.out.println("key pressed");
+	    	if(arg0.getKeyCode() == KeyEvent.VK_BACK_SPACE){
+	    		System.out.println("backspaaaaaace");
+	    		mapCover.removeSelected();
+	    	}
+		}
+
+		@Override
+		public void keyReleased(KeyEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void keyTyped(KeyEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+
+		
     
 
 
