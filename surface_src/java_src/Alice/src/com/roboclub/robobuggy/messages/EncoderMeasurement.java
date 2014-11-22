@@ -17,7 +17,9 @@ import com.roboclub.robobuggy.ros.Message;
  */
 
 // Represents raw measurement from the IMU
-public class EncoderMeasurement implements Message {
+public class EncoderMeasurement extends BaseMessage implements Message {
+
+	public static final String version_id = "encoderV0.0";
 
 	public Date timestamp;
 	public double distance;
@@ -30,30 +32,25 @@ public class EncoderMeasurement implements Message {
 		this.timestamp = new Date();
 	}
 
+	public EncoderMeasurement(Date timestamp, double distance, double velocity) {
+		this.timestamp = timestamp;
+		this.distance = distance;
+		this.velocity = velocity;
+	}
+
 	@Override
 	public String toLogString() {
-		String s = formatter.format(timestamp);
+		String s = super.formatter.format(timestamp);
 		return s + ',' + Double.toString(velocity) + ',' 
 				+ Double.toString(distance);
 	}
 
 	@Override
-	public void fromLogString(String str) {
-		String delims = ",";
-		String[] ar = str.split(delims);
-
-		DateFormat formatter = null;
-		// Creating SimpleDateFormat with yyyyMMdd format e.g."20110914"
-		String yyyyMMdd = ar[0];
-		formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		try {
-			timestamp = (Date) formatter.parse(yyyyMMdd);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-
+	public Message fromLogString(String str) {
+		String[] ar = str.split(",");
+		Date d = try_to_parse_date(ar[0]);
 		distance = Double.parseDouble(ar[1]);
 		velocity = Double.parseDouble(ar[2]);
+		return new EncoderMeasurement(timestamp, distance, velocity);
 	}
-
 }

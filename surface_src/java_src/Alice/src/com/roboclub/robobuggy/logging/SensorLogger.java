@@ -18,6 +18,7 @@ import com.roboclub.robobuggy.ros.Subscriber;
  * Logs data from the sensors
  * 
  * @author Joe Doyle
+ * @author Trevor Decker
  */
 public final class SensorLogger {
 	private final PrintStream _log;
@@ -36,6 +37,7 @@ public final class SensorLogger {
 						}
 						stream.println(line);
 					} catch (InterruptedException e) {
+						//TODO add to messages 
 						e.printStackTrace();
 					}
 				}

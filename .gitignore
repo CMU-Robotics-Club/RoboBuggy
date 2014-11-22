@@ -1,5 +1,6 @@
-.class
+*.class
 out/
+*.pyc
 
 # mac os x temp files
 .DS_Store

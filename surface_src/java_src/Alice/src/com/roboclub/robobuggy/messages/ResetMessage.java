@@ -18,8 +18,9 @@ public class ResetMessage implements Message {
 	}
 
 	@Override
-	public void fromLogString(String str) {
+	public Message fromLogString(String str) {
 		// TODO Auto-generated method stub
+		return null;
 		
 	}
 }

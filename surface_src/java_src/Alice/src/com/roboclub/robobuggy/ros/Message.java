@@ -14,9 +14,13 @@ import java.text.SimpleDateFormat;
  */
 
 public interface Message {
-	static final Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	
+
+	// toLogString returns a string representing the message.
+	// - does not have a new-line afterwards
+	// - if any work needs to be done (e.g. save an image to disk, then
+	// toLogString needs to start that work.
 	public String toLogString();
 
-	public void fromLogString(String str);
+	// Given the output of toLogString, re-hydrate a message from it.
+	public Message fromLogString(String str);
 }

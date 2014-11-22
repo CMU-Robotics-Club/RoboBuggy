@@ -22,7 +22,9 @@
 
 // Implementation Constants
 #define RBSM_BUFFER_OUT_LENGTH 11 // minimum to support double message
+#define RBSM_BUFFER_IN_LENGTH 6
 #define RBSM_NULL_TERM 0x00
+#define RBSM_PACKET_LENGTH 6
 
 // Protocol Constants
 #define RBSM_FOOTER 0x0A // \n
@@ -37,8 +39,10 @@
 #define RBSM_MID_ENC_TICKS_LAST 0
 #define RBSM_MID_ENC_TICKS_RESET 1
 #define RBSM_MID_ENC_TIMESTAMP 2
-#define RBSM_MID_MEGA_STEER_ANGLE 10
-#define RBSM_MID_MEGA_BRAKE_STATE 11
+#define RBSM_MID_MEGA_STEER_ANGLE 20
+#define RBSM_MID_MEGA_BRAKE_STATE 21
+#define RBSM_MID_MEGA_AUTON_STATE 22
+#define RBSM_MID_MEGA_BATTERY_LEVEL 23
 #define RBSM_MID_RESERVED 252 // 0xFC, message head
 #define RBSM_MID_ERROR 254
 #define RBSM_MID_DEVICE_ID 255
@@ -47,20 +51,40 @@
 #define RBSM_DID_MEGA 0
 #define RBSM_DID_DRIVE_ENCODER 1
 
+// Error Message Codes
+#define RBSM_EID_OK 0
+#define RBSM_EID_RBSM_LOST_STREAM 1
+#define RBSM_EID_RBSM_INVALID_MID 2
+#define RBSM_EID_RC_LOST_SIGNAL 20
+
+// Library Error Codes
+#define RBSM_ERROR_INSUFFICIENT_DATA -1
+#define RBSM_ERROR_INVALID_MESSAGE -2
+
+
+typedef struct rb_message {
+  char message_id;
+  uint32_t data;
+} rb_message_t;
+
 
 class RBSerialMessages {
  public:
   RBSerialMessages();
   int Begin(HardwareSerial *serial_stream);
   int Send(uint8_t id, uint32_t message);
-  // todo: define receive api
+  int Read(rb_message_t* read_message);
  private:
   HardwareSerial *serial_stream_;
   uint8_t buffer_out_[RBSM_BUFFER_OUT_LENGTH];
+  uint8_t buffer_in_[RBSM_BUFFER_IN_LENGTH];
+  uint8_t buffer_in_pos_;
+  bool buffer_in_stream_lock_;
   uint8_t AppendMessageToBuffer(uint8_t id,
                                 uint32_t message,
                                 uint8_t out_start_pos);
   uint8_t InitMessageBuffer();
+  int InitReadBuffer();
 };
 
 

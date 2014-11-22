@@ -19,6 +19,7 @@ import com.roboclub.robobuggy.ros.Message;
 
 // Represents raw measurement from the IMU
 public class GpsMeasurement implements Message {
+	public static final String version_id = "gpsV0.1";
 
 	public Date timestamp;
 
@@ -27,7 +28,7 @@ public class GpsMeasurement implements Message {
 	public double longitude;
 	public boolean west;
 
-	public GpsMeasurement(float latitude, float longitude) {
+	public GpsMeasurement(double latitude, double longitude) {
 		this.latitude = latitude;
 		this.longitude = longitude;
 	}
@@ -48,7 +49,7 @@ public class GpsMeasurement implements Message {
 	}
 
 	@Override
-	public void fromLogString(String str) {
+	public Message fromLogString(String str) {
 		String delims = ",";
 		String[] ar = str.split(delims);
 
@@ -66,5 +67,6 @@ public class GpsMeasurement implements Message {
 		north = ar[2].equalsIgnoreCase("N");
 		longitude = Double.parseDouble(ar[3]);
 		west = ar[3].equalsIgnoreCase("W");
+		return new GpsMeasurement(latitude, longitude);
 	}
 }

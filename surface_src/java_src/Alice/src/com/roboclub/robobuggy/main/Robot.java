@@ -8,8 +8,8 @@ import com.roboclub.robobuggy.messages.BrakeCommand;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
-import com.roboclub.robobuggy.messages.SteeringCommand;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
+import com.roboclub.robobuggy.messages.WheelAngleCommand;
 import com.roboclub.robobuggy.ros.CommandChannel;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
@@ -178,7 +178,7 @@ public class Robot {
 	/* Methods for Autonomous Control */
 	public void writeAngle(int angle) {
 		if (autonomous) {
-			steerPub.publish(new SteeringCommand(angle));
+			steerPub.publish(new WheelAngleCommand(angle));
 		} else {
 			System.out.println("Can only control steering in Autonomous mode!");
 		}

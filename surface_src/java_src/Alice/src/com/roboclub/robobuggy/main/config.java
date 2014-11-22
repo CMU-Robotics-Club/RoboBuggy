@@ -48,8 +48,6 @@ public class config {
 
 	public static boolean GUI_ON_DEFAULT = true;
 	public static boolean DATA_PLAY_BACK_DEFAULT = false;// if false then try to
-															// read from live
-															// sensors
 
 	// current status values
 	public static boolean GUI_ON;

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
@@ -15,10 +16,11 @@ import com.roboclub.robobuggy.main.config;
 /**
  * Logs data from the sensors
  * 
- * @author Joe Doyle && Trevor Decker
+ * @author Joe Doyle 
+ * @author Trevor Decker
  */
 public final class RobotLogger {
-	public final Logger message;
+	public  static Logger message;
 	public static SensorLogger sensor;
 	private static RobotLogger instance;
 	private static File logDir;
