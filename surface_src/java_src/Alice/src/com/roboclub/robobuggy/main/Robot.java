@@ -87,7 +87,7 @@ public class Robot {
 			System.out.println("Initializing Encoder Serial Connection");
 			Encoder encoder = new Encoder(SensorChannel.ENCODER);
 			sensorList.add(encoder);
-			
+		
 			new Subscriber(SensorChannel.ENCODER.getMsgPath(), new MessageListener() {
 				@Override
 				public void actionPerformed(String topicName, Message m) {

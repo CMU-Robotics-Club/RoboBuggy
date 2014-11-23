@@ -2,6 +2,7 @@ package com.roboclub.robobuggy.sensors;
 
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
+import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
 
 /**
@@ -27,7 +28,11 @@ public class Encoder extends Arduino {
 	
 	public Encoder(SensorChannel sensor) {
 		super(sensor, "Encoder");
+		msgPub = new Publisher(sensor.getMsgPath());
+		statePub = new Publisher(sensor.getStatePath());
 		sensorType = SensorType.ENCODER;
+		statePub.publish(new StateMessage(this.currState));
+
 	}
 	
 	private void estimateVelocity() {
@@ -55,6 +60,8 @@ public class Encoder extends Arduino {
 	@Override
 	public void publish() {
 		lastUpdateTime = System.currentTimeMillis();
+		
+		System.out.println("publishing encoder");
 		
 		int value = parseInt(inputBuffer[1], inputBuffer[2],
 				inputBuffer[3], inputBuffer[4]);

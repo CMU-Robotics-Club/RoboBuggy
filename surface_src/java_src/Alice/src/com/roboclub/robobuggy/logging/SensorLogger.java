@@ -49,7 +49,7 @@ public final class SensorLogger {
 		// the actual fix probably involved throttling the sensors to a
 		// reasonable update
 		// frequency
-		logging_thread.setPriority(6);
+		logging_thread.setPriority(10);//TODO this is terible 
 		logging_thread.start();
 		return ret;
 	};

@@ -8,6 +8,6 @@
 	"IMU" : true,
 	"GPS" : true,
 	"ENCODER" : true,
-	"VISION" : false,
+	"VISION" : true,
 	"BRAKES_PER_FULL_PRESSURE" : 4
 }

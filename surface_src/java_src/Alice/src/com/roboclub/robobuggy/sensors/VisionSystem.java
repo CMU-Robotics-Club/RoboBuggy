@@ -39,8 +39,10 @@ public class VisionSystem implements Sensor {
 	// TODO Consider moving to array for exandability
 	private VideoCapture frontFeed;
 	private VideoCapture rearFeed;
+	private VideoCapture overLookFeed;
 	private CameraPanel frontPanel;
 	private CameraPanel rearPanel;
+	private CameraPanel overLookPanel;
 	
 	public VisionSystem(SensorChannel sensor) {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -53,12 +55,13 @@ public class VisionSystem implements Sensor {
 		connected = true;
 		frontPanel = new CameraPanel("FRONT", frontFeed);
 		rearPanel = new CameraPanel("REAR", rearFeed);
+		overLookPanel = new CameraPanel("OVERLOOK",overLookFeed);
 	}
 
 	private boolean initCameras() {
 		frontFeed = new VideoCapture(config.FRONT_CAM_INDEX);
 		rearFeed = new VideoCapture(config.REAR_CAM_INDEX);
-		
+		overLookFeed = new VideoCapture(config.OVERLOOK_CAM_INDEX);
 		try {
 			Thread.sleep(1000);
 		} catch (Exception e) {
@@ -73,6 +76,9 @@ public class VisionSystem implements Sensor {
 		} else if (!rearFeed.isOpened()) {
 			System.out.println("Failed to open rear camera: " + 
 					config.REAR_CAM_INDEX);
+			return false;
+		}else if(!overLookFeed.isOpened()){
+			System.out.println("Failed to open overlook camera: "+config.OVERLOOK_CAM_INDEX);
 			return false;
 		}
 		
@@ -133,6 +139,7 @@ public class VisionSystem implements Sensor {
 		if (connected) {
 			frontPanel.setVisible(value);
 			rearPanel.setVisible(value);
+		    overLookPanel.setVisible(value);
 		}
 	}
 	

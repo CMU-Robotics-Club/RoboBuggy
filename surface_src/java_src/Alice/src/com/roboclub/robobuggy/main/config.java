@@ -15,8 +15,11 @@ public class config {
 	// port index of the front camera
 	public static int FRONT_CAM_INDEX = 2;
 
-	// port index of the rear (pushbar camera)
+	// port index of the rear (pushbar camera back)
 	public static int REAR_CAM_INDEX = 0;
+	
+	//port index of the overlook (pushbar camera front)
+	public static int OVERLOOK_CAM_INDEX = 1;//should be number 4
 
 	// location of the executable that should be run for the camera sub system
 	public static String VISION_SYSTEM_EXECUTABLE_LOCATION = "C:\\Users\\Robot\\Documents\\GitHub\\RoboBuggy\\surface_src\\VisionSystem\\Debug\\VisionSystem.exe";
@@ -84,6 +87,7 @@ public class config {
 					config.FRONT_CAM_INDEX);
 			REAR_CAM_INDEX = (int) obj.getOrDefault("BACK_CAM_INDEX",
 					config.REAR_CAM_INDEX);
+			OVERLOOK_CAM_INDEX = (int) obj.getOrDefault("OVERLOOK_CAM_INDEX",config.OVERLOOK_CAM_INDEX);
 			VISION_SYSTEM_EXECUTABLE_LOCATION = (String) obj.getOrDefault(
 					"VISION_SYSTEM_EXECUTABLE_LOCATION",
 					config.VISION_SYSTEM_EXECUTABLE_LOCATION);
