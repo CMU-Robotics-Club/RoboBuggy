@@ -220,13 +220,11 @@ public class Imu extends SerialConnection implements Sensor {
 		switch (event.getEventType()) {
 		case SerialPortEvent.DATA_AVAILABLE:
 			try {
-				//char data = (char)input.read();
 				num_read = input.read(bigBuffer);
 			} catch (Exception e) {
 				System.out.println(this.getName() + " exception!");
 				e.printStackTrace();
 			}
-			System.out.printf("%d\n", num_read);
 			for(int i = 0; i < num_read; i++) {
 				char data = (char) bigBuffer[i];
 				switch (state) {
