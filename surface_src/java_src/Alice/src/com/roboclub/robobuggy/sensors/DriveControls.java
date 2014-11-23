@@ -4,7 +4,7 @@ import com.roboclub.robobuggy.messages.BrakeCommand;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.messages.WheelAngleCommand;
-import com.roboclub.robobuggy.ros.CommandChannel;
+import com.roboclub.robobuggy.ros.ActuatorChannel;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.SensorChannel;
@@ -30,7 +30,7 @@ public class DriveControls extends Arduino {
 		sensorType = SensorType.GPS;
 		
 		// Subscriber for Steering commands
-		new Subscriber(CommandChannel.STEERING.getMsgPath(),
+		new Subscriber(ActuatorChannel.STEERING.getMsgPath(),
 				new MessageListener() {
 					@Override
 					public void actionPerformed(String topicName, Message m) {
@@ -41,7 +41,7 @@ public class DriveControls extends Arduino {
 		});
 		
 		//Subscriber for Brake Commands
-		new Subscriber(CommandChannel.BRAKE.getMsgPath(),
+		new Subscriber(ActuatorChannel.BRAKE.getMsgPath(),
 				new MessageListener() {
 					@Override
 					public void actionPerformed(String topicName, Message m) {
@@ -53,15 +53,16 @@ public class DriveControls extends Arduino {
 	}
 	
 	/* Methods for Serial Communication with Arduino */
-	public void writeAngle(int angle) {
+	public void writeAngle(float angle) {
 		if (angle >= 0 && angle <= 180) {
 			if(isConnected()) {
-				byte[] msg = {
+				/*byte[] msg = {
 						(byte)((angle >> 0x18) & 0xFF),
 						(byte)((angle >> 0x10) & 0xFF),
 						(byte)((angle >> 0x08) & 0xFF),
-						(byte)(angle & 0xFF),'\n'};
-				super.serialWrite(msg);
+						(byte)(angle & 0xFF),'\n'};*/
+				System.out.println("MATT BROKE THIS BECAUSE INTERFACE WITH LOW LEVEL CHANGED");
+				//super.serialWrite(null);
 			}
 		}
 	}
