@@ -34,14 +34,6 @@ import java.awt.GridLayout;
 public class GpsPanel extends JPanel {
 	private static final long serialVersionUID = 1399590586061060311L;
 	
-	/*private static final Point UR = new Point(-79.94010f, 40.442395f);
-	private static final Point UL = new Point(-79.948686f, 40.442395f);
-	private static final Point LL = new Point(-79.948686f, 40.438363f);
-	private static final double lon_width  = UR.getX() - UL.getX();
-	private static final double lat_height = UL.getY() - LL.getY();
-	private static int pixelX = -1;
-	private static int pixelY = -1;*/
-	
 	private MapPanel mapPanel;
 	private JLabel lat, lon;
 	

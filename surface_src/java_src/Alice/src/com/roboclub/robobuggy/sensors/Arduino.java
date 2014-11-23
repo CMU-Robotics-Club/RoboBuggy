@@ -55,40 +55,51 @@ public abstract class Arduino extends SerialConnection implements Sensor {
 		return val;
 	}
 	
+	byte[] bigBuffer = new byte[1024];
 	@Override
 	public void serialEvent(SerialPortEvent event) {
+		int num_read = -1;
 		switch (event.getEventType()) {
 		case SerialPortEvent.DATA_AVAILABLE:
 			try {
-				char data = (char)input.read();
-				
-				inputBuffer[index++] = data;
-				
-				switch (state) {
-				case 0:
-					if (validId(data)) state++;
-					else index = 0;
-					break;
-				case 1:
-					if (index >= MSG_LEN) {
-						if (data == '\n') publish();
-						index = 0;
-						state = 0;
-					}
-					break;
-				}
+				num_read = input.read(bigBuffer);
 			} catch (Exception e) {
-				System.out.println("Exception in port: " + this.getName());
 				if (this.currState != SensorState.FAULT) {
 					this.currState = SensorState.FAULT;
 					statePub.publish(new StateMessage(this.currState));
 				}
+				System.out.println(this.getName() + " exception!");
+				e.printStackTrace();
 			}
+			for(int i = 0; i < num_read; i++) {
+				char data = (char) bigBuffer[i];
+				inputBuffer[index++] = data;
+				
+				switch (state) {
+				case 0:
+					if (validId(data))
+						state++;
+					else
+						index = 0;
+					break;
+				case 1:
+					if (index >= MSG_LEN) {
+						if (data == '\n')
+							publish();
+						index = 0;
+						state = 0;
+				}
+					break;
+				}
+			}
+		default:
+			break;
 		}
 	}
 
 	@Override
-	protected boolean isCorrectPort(InputStream input, String header) {
+	protected boolean isCorrectPort(InputStream input, String header,
+			int message_len) {
 		char data;
 		int state = 0, test = 0;
 			

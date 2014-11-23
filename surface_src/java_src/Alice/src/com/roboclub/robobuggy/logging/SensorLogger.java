@@ -27,7 +27,8 @@ public final class SensorLogger {
 
 	private static final Queue<String> startLoggingThread(PrintStream stream) {
 		final LinkedBlockingQueue<String> ret = new LinkedBlockingQueue<>();
-		new Thread() {
+		// TODO
+		Thread logging_thread = new Thread() {
 			public void run() {
 				while (true) {
 					try {
@@ -42,7 +43,14 @@ public final class SensorLogger {
 					}
 				}
 			}
-		}.start();
+		};
+		// TODO this potentially prevents a problem where the logger gets CPU
+		// starved.
+		// the actual fix probably involved throttling the sensors to a
+		// reasonable update
+		// frequency
+		logging_thread.setPriority(6);
+		logging_thread.start();
 		return ret;
 	};
 
@@ -65,7 +73,8 @@ public final class SensorLogger {
 					+ logFile + ")!");
 		}
 		_logQueue = startLoggingThread(_log);
-		
+
+		// Subscribe to ALL THE PUBLISHERS
 		subscribers = new ArrayList<Subscriber>();
 		for (SensorChannel channel : SensorChannel.values()) {
 			subscribers.add(

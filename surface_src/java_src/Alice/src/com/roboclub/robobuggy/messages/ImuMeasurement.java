@@ -35,6 +35,7 @@ public class ImuMeasurement extends BaseMessage implements Message {
 
 	public ImuMeasurement(double aX2, double aY2, double aZ2, double rX2,
 			double rY2, double rZ2, double mX2, double mY2, double mZ2) {
+		this.timestamp = new Date();
 		this.aX = aX2;
 		this.aY = aY2;
 		this.aZ = aZ2;
