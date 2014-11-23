@@ -44,7 +44,13 @@ public class config {
 	public static boolean GPS_DEFAULT = true;
 	public static boolean ENCODER_DEFAULT = true;
 	public static boolean VISION_SYSTEM_DEFAULT = true;
-
+	
+	//for turning indvidual cams on and off
+	public static boolean FRONT_CAM_ON = false;
+	public static boolean REAR_CAM_ON = false;
+	public static boolean OVERLOOK_CAM_ON = false;
+	
+	
 	// number of times that we will allow for the brakes to be deployed and
 	// still have the buggy run
 	public static byte BRAKES_PER_FULL_PRESSURE = 4;

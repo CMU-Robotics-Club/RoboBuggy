@@ -23,8 +23,8 @@ public final class RobotLogger {
 	public  static Logger message;
 	public static SensorLogger sensor;
 	private static RobotLogger instance;
-	private static File logDir;
-	private static File logFolder;
+	public static File logDir;  //TODO describe the diffrence between LogDir and  logFolder 
+	public static File logFolder;
 
 	public static RobotLogger getInstance() {
 		if (instance == null) {
