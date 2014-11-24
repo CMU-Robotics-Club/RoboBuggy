@@ -5,10 +5,10 @@ import java.util.Date;
 import com.roboclub.robobuggy.ros.Message;
 
 public class ResetMessage implements Message {
-	public Date timestamp;
+	private Date timestamp;
 	
 	public ResetMessage() {
-		timestamp = new Date();
+		this.timestamp = new Date();
 	}
 
 	@Override

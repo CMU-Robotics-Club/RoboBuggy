@@ -1,7 +1,9 @@
 package com.roboclub.robobuggy.messages;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import com.roboclub.robobuggy.ros.Message;
 
 /**
@@ -9,9 +11,9 @@ import com.roboclub.robobuggy.ros.Message;
  *
  * @version 0.5
  * 
- * CHANGELOG: NONE
+ *          CHANGELOG: NONE
  * 
- * DESCRIPTION: TODO
+ *          DESCRIPTION: TODO
  */
 
 // Represents raw measurement from the IMU
@@ -38,17 +40,17 @@ public class EncoderMeasurement extends BaseMessage implements Message {
 
 	@Override
 	public String toLogString() {
-		return String.format("%s,%s\n", format_the_date(timestamp),
-				String.valueOf(distance), String.valueOf(velocity));
+		String s = super.formatter.format(timestamp);
+		return s + ',' + Double.toString(velocity) + ',' 
+				+ Double.toString(distance);
 	}
 
 	@Override
 	public Message fromLogString(String str) {
-		String[] spl = str.split(",");
-		Date d = try_to_parse_date(spl[0]);
-		double distance = Double.parseDouble(spl[1]);
-		double velocity = Double.parseDouble(spl[2]);
-		return new EncoderMeasurement(d, distance, velocity);
+		String[] ar = str.split(",");
+		Date d = try_to_parse_date(ar[0]);
+		distance = Double.parseDouble(ar[1]);
+		velocity = Double.parseDouble(ar[2]);
+		return new EncoderMeasurement(timestamp, distance, velocity);
 	}
-
 }

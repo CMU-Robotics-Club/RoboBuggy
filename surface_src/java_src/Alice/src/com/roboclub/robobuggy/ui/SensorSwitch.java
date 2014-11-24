@@ -13,7 +13,12 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import com.roboclub.robobuggy.messages.ResetMessage;
+import com.roboclub.robobuggy.messages.StateMessage;
+import com.roboclub.robobuggy.ros.Message;
+import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.Publisher;
+import com.roboclub.robobuggy.ros.SensorChannel;
+import com.roboclub.robobuggy.ros.Subscriber;
 import com.roboclub.robobuggy.sensors.SensorState;
 
 /**
@@ -33,11 +38,11 @@ public class SensorSwitch extends JPanel {
 	private JButton sensor_btn;
 	private Publisher publisher;
 
-	public SensorSwitch(String sensorName, String publisherName) {
+	public SensorSwitch(String name, SensorChannel sensor) {
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
 		this.setLayout(new GridLayout(1,2));
 
-		JLabel sensorName_lbl = new JLabel(sensorName, SwingConstants.CENTER);
+		JLabel sensorName_lbl = new JLabel(name, SwingConstants.CENTER);
 		sensorName_lbl.setFont(new Font("serif", Font.BOLD, 20));
 		this.add(sensorName_lbl);
 
@@ -46,10 +51,13 @@ public class SensorSwitch extends JPanel {
 		sensor_btn.setFont(new Font("serif", Font.BOLD, 20));
 		sensor_btn.setForeground(Color.WHITE);
 		this.add(sensor_btn);
-		sensor_btn.addActionListener(new OnButtonHandler());
+		sensor_btn.addActionListener(new ResetHandler());
 		
-		publisher = new Publisher(publisherName);
+		publisher = new Publisher(sensor.getRstPath());
+		// Subscriber for sensor state changes
+		new Subscriber(sensor.getStatePath(), new UpdateListener());
 		
+		// Default to displaying sensors as not in use
 		updateButton(SensorState.NOT_IN_USE);
 	}
 
@@ -75,6 +83,7 @@ public class SensorSwitch extends JPanel {
 			sensor_btn.setEnabled(true);
 			sensor_btn.setText("FAULT");
 			sensor_btn.setBackground(Color.ORANGE);
+			break;
 		case ERROR:
 		default:
 			sensor_btn.setEnabled(true);
@@ -83,11 +92,18 @@ public class SensorSwitch extends JPanel {
 		}
 	}
 
-	private class OnButtonHandler implements ActionListener {
+	private class ResetHandler implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			updateButton(SensorState.DISCONNECTED);
 			publisher.publish(new ResetMessage());
+		}
+	}
+	
+	private class UpdateListener implements MessageListener {
+		@Override
+		public void actionPerformed(String topicName, Message m) {
+			updateButton(((StateMessage)m).getState());
 		}
 	}
 }

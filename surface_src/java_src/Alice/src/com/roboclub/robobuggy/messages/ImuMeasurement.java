@@ -11,9 +11,9 @@ import com.roboclub.robobuggy.ros.Message;
  *
  * @version 0.5
  * 
- * CHANGELOG: NONE
+ *          CHANGELOG: NONE
  * 
- * DESCRIPTION: TODO
+ *          DESCRIPTION: TODO
  */
 
 // Represents raw measurement from the IMU
@@ -23,37 +23,38 @@ public class ImuMeasurement extends BaseMessage implements Message {
 
 	public Date timestamp;
 
-	public float aX;
-	public float aY;
-	public float aZ;
-	public float rX;
-	public float rY;
-	public float rZ;
-	public float mX;
-	public float mY;
-	public float mZ;
+	public double aX;
+	public double aY;
+	public double aZ;
+	public double rX;
+	public double rY;
+	public double rZ;
+	public double mX;
+	public double mY;
+	public double mZ;
 
-	public ImuMeasurement(float aX, float aY, float aZ, float rX, float rY,
-			float rZ, float mX, float mY, float mZ) {
-		this.aX = aX;
-		this.aY = aY;
-		this.aZ = aZ;
-		this.rX = rX;
-		this.rY = rY;
-		this.rZ = rZ;
-		this.mX = mX;
-		this.mY = mY;
-		this.mZ = mZ;
+	public ImuMeasurement(double aX2, double aY2, double aZ2, double rX2,
+			double rY2, double rZ2, double mX2, double mY2, double mZ2) {
+		this.timestamp = new Date();
+		this.aX = aX2;
+		this.aY = aY2;
+		this.aZ = aZ2;
+		this.rX = rX2;
+		this.rY = rY2;
+		this.rZ = rZ2;
+		this.mX = mX2;
+		this.mY = mY2;
+		this.mZ = mZ2;
 	}
 
 	@Override
 	public String toLogString() {
-		String s = formatter.format(timestamp);
-		return s + ',' + Float.toString(aX) + ',' + Float.toString(aY) + ','
-				+ Float.toString(aZ) + ',' + Float.toString(rX) + ','
-				+ Float.toString(rY) + ',' + Float.toString(rZ) + ','
-				+ Float.toString(mX) + ',' + Float.toString(mY) + ','
-				+ Float.toString(mZ);
+		String s = super.formatter.format(timestamp);
+		return s + ',' + Double.toString(aX) + ',' + Double.toString(aY) + ','
+				+ Double.toString(aZ) + ',' + Double.toString(rX) + ','
+				+ Double.toString(rY) + ',' + Double.toString(rZ) + ','
+				+ Double.toString(mX) + ',' + Double.toString(mY) + ','
+				+ Double.toString(mZ);
 	}
 
 	@Override
@@ -61,24 +62,23 @@ public class ImuMeasurement extends BaseMessage implements Message {
 		String delims = ",";
 		String[] ar = str.split(delims);
 
+		// Creating SimpleDateFormat with yyyyMMdd format e.g."20110914"
 		String yyyyMMdd = ar[0];
-		formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		try {
-			timestamp = formatter.parse(yyyyMMdd);
+			timestamp = super.formatter.parse(yyyyMMdd);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		Float aX = Float.parseFloat(ar[1]);
-		Float aY = Float.parseFloat(ar[2]);
-		Float aZ = Float.parseFloat(ar[3]);
-		Float rX = Float.parseFloat(ar[4]);
-		Float rY = Float.parseFloat(ar[5]);
-		Float rZ = Float.parseFloat(ar[6]);
-		Float mX = Float.parseFloat(ar[7]);
-		Float mY = Float.parseFloat(ar[8]);
-		Float mZ = Float.parseFloat(ar[9]);
+		Double aX = Double.parseDouble(ar[1]);
+		Double aY = Double.parseDouble(ar[2]);
+		Double aZ = Double.parseDouble(ar[3]);
+		Double rX = Double.parseDouble(ar[4]);
+		Double rY = Double.parseDouble(ar[5]);
+		Double rZ = Double.parseDouble(ar[6]);
+		Double mX = Double.parseDouble(ar[7]);
+		Double mY = Double.parseDouble(ar[8]);
+		Double mZ = Double.parseDouble(ar[9]);
 		return new ImuMeasurement(aX, aY, aZ, rX, rY, rZ, mX, mY, mZ);
 	}
 }

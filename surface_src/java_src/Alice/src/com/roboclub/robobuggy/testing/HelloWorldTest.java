@@ -1,8 +1,12 @@
-import org.junit.Test;
+package com.roboclub.robobuggy.testing;
+
+//import org.junit.Test;
  
 public class HelloWorldTest extends junit.framework.TestCase {
 
+	
 	public void testNothing() {
+		System.out.println("hi");
 	}
 
 	public void testWillAlwaysFail() {

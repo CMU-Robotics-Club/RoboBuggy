@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
@@ -16,7 +17,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
+
+import com.roboclub.robobuggy.logging.RobotLogger;
+import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.main.config;
+import com.roboclub.robobuggy.ros.SensorChannel;
 
 /**
  * 
@@ -55,6 +60,7 @@ public class ControlPanel extends JPanel {
 		
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
 		this.setLayout(new GridBagLayout());
+		this.setBackground(Color.DARK_GRAY);
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.weightx = 1;
@@ -86,12 +92,16 @@ public class ControlPanel extends JPanel {
 				play_btn.setBackground(Color.RED);
 				play_btn.setText("STOP");
 				timer.start();
-
+				
+				RobotLogger.CreateLog();
+				
 				startTime = new Date();
 			} else {
 				System.out.println("System Paused");
 				play_btn.setBackground(Color.GREEN);
 				play_btn.setText("START");
+				
+				RobotLogger.CloseLog();
 				timer.stop();
 			}
 		}
@@ -145,12 +155,13 @@ public class ControlPanel extends JPanel {
 		switchPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 		switchPanel.setLayout(new GridLayout(7,1));
 		
-		gps_switch = new SensorSwitch("GPS", "/sensors/gps");
-		vision_switch = new SensorSwitch("VISION", "/sensors/vision");
-		encoders_switch = new SensorSwitch("ENCODERS", "/sensors/encoders");
-		imu_switch = new SensorSwitch("IMU", "/sensors/imu");
-		controls_switch = new SensorSwitch("CONTROLS", "/sensors/controls");
-		autonomous_switch = new SensorSwitch("AUTO", "/drive");
+		gps_switch = new SensorSwitch("GPS", SensorChannel.GPS);
+		vision_switch = new SensorSwitch("VISION", SensorChannel.VISION);
+		encoders_switch = new SensorSwitch("ENCODERS", SensorChannel.ENCODER);
+		imu_switch = new SensorSwitch("IMU", SensorChannel.IMU);
+		controls_switch = new SensorSwitch("CONTROLS", SensorChannel.DRIVE_CTRL);
+		autonomous_switch = new SensorSwitch("AUTO", SensorChannel.GPS);
+		//TODO Add Autonomous Channel
 		
 		display = new JButton("DISPLAY");
 		display.setBackground(Color.BLUE);
@@ -166,8 +177,8 @@ public class ControlPanel extends JPanel {
 		
 		switchPanel.add(autonomous_switch);
 		switchPanel.add(gps_switch);
-		switchPanel.add(encoders_switch);
 		switchPanel.add(imu_switch);
+		switchPanel.add(encoders_switch);
 		switchPanel.add(controls_switch);
 		switchPanel.add(vision_switch);
 		switchPanel.add(display);

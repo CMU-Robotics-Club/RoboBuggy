@@ -1,7 +1,7 @@
 *.class
 out/
 *.pyc
-
+.metadata/
 # mac os x temp files
 .DS_Store
 

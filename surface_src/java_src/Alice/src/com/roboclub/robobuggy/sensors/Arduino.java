@@ -2,10 +2,10 @@ package com.roboclub.robobuggy.sensors;
 
 import java.io.IOException;
 import java.io.InputStream;
-
+import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.ros.Publisher;
+import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.serial.SerialConnection;
-
 import gnu.io.SerialPortEvent;
 
 /**
@@ -22,19 +22,22 @@ import gnu.io.SerialPortEvent;
 public abstract class Arduino extends SerialConnection implements Sensor {
 	protected static final int BAUDRATE = 9600;
 	protected static final int MSG_LEN = 6;
-	protected static final char ENC_TICK = (char)0x00;
-	protected static final char ENC_RESET = (char)0x01;
-	protected static final char ENC_TIME = (char)0x02;
-	protected static final char STEERING = (char)0x14;
-	protected static final char BRAKE = (char)0x15;
-	protected static final char AUTO = (char)0x16;
-	protected static final char BATTERY = (char)0x17;
-	protected static final char ERROR = (char)0xFE;
-	protected static final char MSG_ID = (char)0xFF;
+	protected static final char ENC_RESET = (char)0;
+	protected static final char ENC_TICK = (char)1;
+	protected static final char ENC_TIME = (char)2;
+	protected static final char STEERING = (char)20;
+	protected static final char BRAKE = (char)21;
+	protected static final char AUTO = (char)22;
+	protected static final char BATTERY = (char)23;
+	protected static final char ERROR = (char)254;
+	protected static final char MSG_ID = (char)255;
 	
-	protected Arduino(String type, String path) {
-		super("Arduino-"+type, BAUDRATE, null);
-		publisher = new Publisher(path);
+	protected Arduino(SensorChannel sensor, String type) {
+		super("Arduino-"+type, BAUDRATE, null, sensor.getRstPath());
+		msgPub = new Publisher(sensor.getMsgPath());
+		statePub = new Publisher(sensor.getStatePath());
+		
+		statePub.publish(new StateMessage(this.currState));
 	}
 
 	protected abstract boolean validId(char id);
@@ -52,36 +55,51 @@ public abstract class Arduino extends SerialConnection implements Sensor {
 		return val;
 	}
 	
+	byte[] bigBuffer = new byte[1024];
 	@Override
 	public void serialEvent(SerialPortEvent event) {
+		int num_read = -1;
 		switch (event.getEventType()) {
 		case SerialPortEvent.DATA_AVAILABLE:
 			try {
-				char data = (char)input.read();
-				
+				num_read = input.read(bigBuffer);
+			} catch (Exception e) {
+				if (this.currState != SensorState.FAULT) {
+					this.currState = SensorState.FAULT;
+					statePub.publish(new StateMessage(this.currState));
+				}
+				System.out.println(this.getName() + " exception!");
+				e.printStackTrace();
+			}
+			for(int i = 0; i < num_read; i++) {
+				char data = (char) bigBuffer[i];
 				inputBuffer[index++] = data;
 				
 				switch (state) {
 				case 0:
-					if (validId(data)) state++;
-					else index = 0;
+					if (validId(data))
+						state++;
+					else
+						index = 0;
 					break;
 				case 1:
 					if (index >= MSG_LEN) {
-						if (data == '\n') publish();
+						if (data == '\n')
+							publish();
 						index = 0;
 						state = 0;
-					}
+				}
 					break;
 				}
-			} catch (Exception e) {
-				System.out.println("Exception in port: " + this.getName());
 			}
+		default:
+			break;
 		}
 	}
 
 	@Override
-	protected boolean isCorrectPort(InputStream input, String header) {
+	protected boolean isCorrectPort(InputStream input, String header,
+			int message_len) {
 		char data;
 		int state = 0, test = 0;
 			
@@ -102,7 +120,7 @@ public abstract class Arduino extends SerialConnection implements Sensor {
 			case 1:
 				test++;
 				if (test >= MSG_LEN) {
-					if (data == '\n') state++;
+					if (data == '\n') return true; //TODO remove for real state++;
 					else state = 0;
 					
 					test = 0;
@@ -154,7 +172,7 @@ public abstract class Arduino extends SerialConnection implements Sensor {
 	
 	@Override
 	public SensorState getState() {
-		return currentState;
+		return currState;
 	}
 
 	@Override
@@ -169,18 +187,15 @@ public abstract class Arduino extends SerialConnection implements Sensor {
 
 	@Override
 	public boolean close() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean reset() {
-		// TODO Auto-generated method stub
+		if (connected) {
+			
+		}
+		
 		return false;
 	}
 	
 	@Override
 	public SensorType getSensorType() {
-		return thisSensorType;
+		return sensorType;
 	}
 }

@@ -2,10 +2,18 @@ package com.roboclub.robobuggy.ui;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import com.roboclub.robobuggy.messages.GpsMeasurement;
+import com.roboclub.robobuggy.ros.Message;
+import com.roboclub.robobuggy.ros.MessageListener;
+import com.roboclub.robobuggy.ros.SensorChannel;
+import com.roboclub.robobuggy.ros.Subscriber;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -25,14 +33,6 @@ import java.awt.GridLayout;
  */
 public class GpsPanel extends JPanel {
 	private static final long serialVersionUID = 1399590586061060311L;
-	
-	/*private static final Point UR = new Point(-79.94010f, 40.442395f);
-	private static final Point UL = new Point(-79.948686f, 40.442395f);
-	private static final Point LL = new Point(-79.948686f, 40.438363f);
-	private static final double lon_width  = UR.getX() - UL.getX();
-	private static final double lat_height = UL.getY() - LL.getY();
-	private static int pixelX = -1;
-	private static int pixelY = -1;*/
 	
 	private MapPanel mapPanel;
 	private JLabel lat, lon;
@@ -67,17 +67,21 @@ public class GpsPanel extends JPanel {
 		lowerPanel.add(label);
 		lowerPanel.add(lon);
 		
+		// Subscriber for Gps updates
+		new Subscriber(SensorChannel.GPS.getMsgPath(), new MessageListener() {
+			@Override
+			public void actionPerformed(String topicName, Message m) {
+				double latitude = ((GpsMeasurement)m).latitude;
+				double longitude = ((GpsMeasurement)m).longitude;
+				lat.setText(Double.toString(latitude));
+				lon.setText(Double.toString(longitude));
+				
+				mapPanel.update(latitude, longitude);
+			}
+		});
+		
 		gbc.gridy = 1;
 		this.add(lowerPanel, gbc);
-	}
-	
-	public void UpdatePos(Float lat_, Float lon_) {
-		if (lat_ != null & lat != null) {
-			lat.setText(lat_.toString());
-		}
-		if (lon_ != null & lon != null) {
-			lon.setText(lon_.toString());
-		}
 	}
 
 	private class MapPanel extends JPanel {
@@ -108,5 +112,9 @@ public class GpsPanel extends JPanel {
 			pixelX = (int)(WIDTH * (currLoc.getX() - UL.getX()) / lon_width);
 			pixelY = (int)(HEIGHT * (UL.getY() - currLoc.getY()) / lat_height);	
 		}*/
+		
+		public void update(double lat, double lon) {
+			//TODO paint current coordinates on map
+		}
 	}
 }

@@ -10,9 +10,9 @@ import com.roboclub.robobuggy.ros.internal.MessageServer;
  *
  * @version 0.5
  *
- *          CHANGELOG: NONE
+ * CHANGELOG: NONE
  *
- *          DESCRIPTION: TODO
+ * DESCRIPTION: TODO
  */
 
 public class Subscriber {
@@ -60,7 +60,7 @@ public class Subscriber {
 							local_inbox.wait();
 						} catch (InterruptedException ie) {
 							System.out
-									.println("much awoken for no reason, such wow");
+									.println("much awoken for no reason, such wow"); //TODO better message, bad humor, need creativity, #Trevor_not_ammused  
 						}
 					}
 

@@ -15,6 +15,7 @@ import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 
 import javax.imageio.ImageIO;
 import javax.swing.JDialog;
@@ -28,7 +29,9 @@ import org.opencv.highgui.Highgui;
 import org.opencv.highgui.VideoCapture;
 import org.opencv.imgproc.Imgproc;
 
+import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.main.config;
+import com.roboclub.robobuggy.ros.SensorChannel;
 
 public class VisionSystem implements Sensor {
 	private SensorType sensorType;
@@ -38,25 +41,53 @@ public class VisionSystem implements Sensor {
 	// TODO Consider moving to array for exandability
 	private VideoCapture frontFeed;
 	private VideoCapture rearFeed;
+	private VideoCapture overLookFeed;
 	private CameraPanel frontPanel;
 	private CameraPanel rearPanel;
+	private CameraPanel overLookPanel;
 	
-	public VisionSystem(String string) {
+	public VisionSystem(SensorChannel sensor) {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+		
+		try {
+			Process process = new ProcessBuilder("C:\\Users\\Robot\\Documents\\GitHub\\RoboBuggy\\surface_src\\java_src\\Alice\\jni\\VisionSystem.exe",
+					"-c",String.valueOf(config.FRONT_CAM_INDEX)).start();
+			Process p2 = new ProcessBuilder("C:\\Users\\Robot\\Documents\\GitHub\\RoboBuggy\\surface_src\\java_src\\Alice\\jni\\VisionSystem.exe","-c",String.valueOf(config.REAR_CAM_INDEX)).start();
+		} catch (Exception e) {
+			e.printStackTrace(); 
+		}
+		
 		
 		this.sensorType = SensorType.VISION;
 		this.connected = false;
 		
-		if(!initCameras()) return;
+		/*if(!initCameras()) return;
 		
 		connected = true;
-		frontPanel = new CameraPanel("FRONT", frontFeed);
-		rearPanel = new CameraPanel("REAR", rearFeed);
+		if(config.FRONT_CAM_ON){
+			frontPanel = new CameraPanel("FRONT", frontFeed);
+		}
+		if(config.REAR_CAM_ON){
+			rearPanel = new CameraPanel("REAR", rearFeed);
+		}
+		
+		if(config.OVERLOOK_CAM_ON){
+			overLookPanel = new CameraPanel("OVERLOOK",overLookFeed);
+		}*/
 	}
 
 	private boolean initCameras() {
-		frontFeed = new VideoCapture(config.FRONT_CAM_INDEX);
-		rearFeed = new VideoCapture(config.REAR_CAM_INDEX);
+		if(config.FRONT_CAM_ON){
+			frontFeed = new VideoCapture(config.FRONT_CAM_INDEX);
+		}
+		
+		if(config.REAR_CAM_ON){
+			rearFeed = new VideoCapture(config.REAR_CAM_INDEX);
+		}
+		
+		if(config.OVERLOOK_CAM_ON){
+			overLookFeed = new VideoCapture(config.OVERLOOK_CAM_INDEX);
+		}
 		
 		try {
 			Thread.sleep(1000);
@@ -65,15 +96,23 @@ public class VisionSystem implements Sensor {
 			return false;
 		}
 		
-		if (!frontFeed.isOpened()) {
+		if (config.FRONT_CAM_ON && !frontFeed.isOpened()) {
 			System.out.println("Failed to open front camera: " + 
 					config.FRONT_CAM_INDEX);
 			return false;
-		} else if (!rearFeed.isOpened()) {
+		} else if (config.REAR_CAM_ON && !rearFeed.isOpened()) {
 			System.out.println("Failed to open rear camera: " + 
 					config.REAR_CAM_INDEX);
 			return false;
+		}else if(config.OVERLOOK_CAM_ON && !overLookFeed.isOpened()){
+			System.out.println("Failed to open overlook camera: "+config.OVERLOOK_CAM_INDEX);
+			return false;
 		}
+		
+		//TODO move to a seperate folder in refactor 
+		//creates a folder for each of the open videoStreams
+	//	System.out.println(RobotLogger.logFolder.getAbsolutePath());
+		//TODO make work
 		
 		return true;
 	}
@@ -119,12 +158,6 @@ public class VisionSystem implements Sensor {
 	}
 
 	@Override
-	public boolean reset() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public SensorType getSensorType() {
 		return this.sensorType;
 	}
@@ -138,6 +171,7 @@ public class VisionSystem implements Sensor {
 		if (connected) {
 			frontPanel.setVisible(value);
 			rearPanel.setVisible(value);
+		    overLookPanel.setVisible(value);
 		}
 	}
 	
@@ -165,6 +199,9 @@ public class VisionSystem implements Sensor {
 							Imgproc.resize(frame, dst, size);
 							Highgui.imencode(".jpg", dst, mb);
 							img = ImageIO.read(new ByteArrayInputStream(mb.toArray()));
+							//TODO move to outside function this is such a hack 
+							 File outputfile = new File("saved.jpg");//TODO save to folder and make unique number
+							 ImageIO.write(img, "png", outputfile);
 							repaint();
 							
 						} catch (Exception e) {

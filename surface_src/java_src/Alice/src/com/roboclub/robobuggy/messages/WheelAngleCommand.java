@@ -9,9 +9,9 @@ import com.roboclub.robobuggy.ros.Message;
  *
  * @version 0.5
  * 
- * CHANGELOG: NONE
+ *          CHANGELOG: NONE
  * 
- * DESCRIPTION: TODO
+ *          DESCRIPTION: TODO
  */
 
 // Represents raw measurement from the IMU
@@ -19,10 +19,10 @@ public class WheelAngleCommand implements Message {
 	public static final String version_id = "autonomous_angleV0.0";
 
 	public Date timestamp;
-	public byte angle;
+	public int angle;
 
 	// Makes an encoder measurement with the time of Now.
-	public WheelAngleCommand(byte angle) {
+	public WheelAngleCommand(int angle) {
 		this.angle = angle;
 		this.timestamp = new Date();
 	}

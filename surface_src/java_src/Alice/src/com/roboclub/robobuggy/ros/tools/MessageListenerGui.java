@@ -38,7 +38,6 @@ import com.roboclub.robobuggy.ros.Subscriber;
 
 public class MessageListenerGui extends JPanel implements ActionListener {
 	private static final long serialVersionUID = -3528970717084422491L;
-
 	private String newline = "\n";
 	private JTextField filterTextField = new JTextField(256);
 	private DefaultTableModel model;

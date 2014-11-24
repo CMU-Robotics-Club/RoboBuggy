@@ -5,11 +5,11 @@ package com.roboclub.robobuggy.map;
  *
  * @version 0.5
  * 
- * CHANGELOG: NONE
+ *          CHANGELOG: NONE
  * 
- * DESCRIPTION: TODO
+ *          DESCRIPTION: TODO
  */
 
-public class Polynomial implements MapObject{
-//TODO
+public class Polynomial implements MapObject {
+	// TODO
 }

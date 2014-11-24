@@ -18,6 +18,7 @@ public class AngleGraph extends JPanel {
 	
 	public AngleGraph(String name) {
 		this.setLayout(new GridBagLayout());
+		this.setBackground(Color.DARK_GRAY);
 		
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = 0;
@@ -25,6 +26,7 @@ public class AngleGraph extends JPanel {
 		gbc.weighty = 1;
 		gbc.weightx = 1;
 		gbc.fill = GridBagConstraints.BOTH;
+		gbc.anchor = GridBagConstraints.CENTER; 
 		
 		graph = new Graph();
 		this.add(graph);
@@ -41,9 +43,9 @@ public class AngleGraph extends JPanel {
 		this.add(panel, gbc);
 	}
 	
-	public void updateGraph(Double angle) {
+	public void updateGraph(int angle) {
 		this.graph.updateGraph(angle);
-		this.reading.setText(angle.toString());
+		this.reading.setText(Integer.toString(angle));
 	}
 	
 	private class Graph extends JPanel {
@@ -68,6 +70,9 @@ public class AngleGraph extends JPanel {
 		
 		@Override
 		public void paintComponent(Graphics g) {
+			g.setColor(Color.DARK_GRAY);
+			g.fillRect(0, 0, WIDTH + 2*OFFSET, HEIGHT + 2*OFFSET);
+			
 			g.setColor(Color.WHITE);
 			g.fillOval(OFFSET, OFFSET, WIDTH, HEIGHT);
 			
@@ -75,9 +80,11 @@ public class AngleGraph extends JPanel {
 			g.drawLine(startx, starty, endx, endy);
 		}
 		
-		public void updateGraph(double angle) {
-			endx = startx + (int)(RADIUS * Math.cos(Math.toRadians(angle)));
-			endy = starty + (int)(RADIUS * Math.sin(Math.toRadians(angle)));
+		public void updateGraph(int angle) {
+			endx = startx - (int)(RADIUS * Math.sin(Math.toRadians(angle)));
+			endy = starty - (int)(RADIUS * Math.cos(Math.toRadians(angle)));
+			
+			this.repaint();
 		}
 	}
 }

@@ -1,12 +1,15 @@
 package com.roboclub.robobuggy.ui;
 
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.io.File;
+
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
+
 import com.roboclub.robobuggy.main.Robot;
 
 /**
@@ -46,6 +49,7 @@ public final class Gui extends JFrame {
 		this.setExtendedState(Frame.MAXIMIZED_BOTH);
 		Container pane = this.getContentPane();
 		pane.setLayout(new GridBagLayout());
+		pane.setBackground(Color.DARK_GRAY);
 
 		try {
 			this.setIconImage(ImageIO.read(new File("images/rc_logo.png")));

@@ -1,10 +1,10 @@
 package com.roboclub.robobuggy.sensors;
 
 import gnu.io.SerialPortEvent;
-
-import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
+import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.ros.Publisher;
+import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.serial.SerialConnection;
 
 /**
@@ -13,12 +13,12 @@ import com.roboclub.robobuggy.serial.SerialConnection;
  *
  * @version 0.5
  * 
- * CHANGELOG: NONE
+ *          CHANGELOG: NONE
  * 
- * DESCRIPTION: TODO
+ *          DESCRIPTION: TODO
  */
 
-public class Gps extends SerialConnection implements Sensor{
+public class Gps extends SerialConnection implements Sensor {
 	/* Constants for Serial Communication */
 	/** Header for picking correct serial port */
 	private static final String HEADER = "$GPGGA";
@@ -33,107 +33,113 @@ public class Gps extends SerialConnection implements Sensor{
 	private static final int LONG_NUM = 4;
 	/** Index of longitude direction as received during serial communication */
 	private static final int LONG_DIR = 5;
-	//how long the system should wait until a sensor switches to Disconnected
+	// how long the system should wait until a sensor switches to Disconnected
 	private static final long SENSOR_TIME_OUT = 5000;
-	
-	public double lat;
-	public double lon;
 
-	public Gps(String publishPath) {
-		super("GPS", BAUDRATE, HEADER);
-		publisher = new Publisher(publishPath);
-		thisSensorType = SensorType.GPS;
+	public Gps(SensorChannel sensor) {
+		super("GPS", BAUDRATE, HEADER, sensor.getRstPath());
+		msgPub = new Publisher(sensor.getMsgPath());
+		statePub = new Publisher(sensor.getStatePath());
+		sensorType = SensorType.GPS;
+
+		statePub.publish(new StateMessage(this.currState));
 	}
-	
-	public long timeOfLastUpdate(){
+
+	public long timeOfLastUpdate() {
 		return lastUpdateTime;
 	}
-	
-	private float parseLat(String latNum) {
-		return (Float.valueOf(latNum.substring(0,2)) + 
-				(Float.valueOf(latNum.substring(2)) / 60.0f));
-	}
-	
-	private float parseLon(String lonNum) {
-		return (Float.valueOf(lonNum.substring(0,3)) + 
-				(Float.valueOf(lonNum.substring(3)) / 60.0f));
-	}
-	
 
-	public boolean reset(){
-		//TODO implment
-		//TODO add to messages 
-		return false;
+	private float parseLat(String latNum) {
+		return (Float.valueOf(latNum.substring(0, 2)) + (Float.valueOf(latNum
+				.substring(2)) / 60.0f));
 	}
-	
+
+	private float parseLon(String lonNum) {
+		return (Float.valueOf(lonNum.substring(0, 3)) + (Float.valueOf(lonNum
+				.substring(3)) / 60.0f));
+	}
+
 	@Override
 	public SensorState getState() {
-		if(System.currentTimeMillis() - lastUpdateTime > SENSOR_TIME_OUT){
-			currentState = SensorState.DISCONNECTED;
-		} 
-		
-		return currentState;
+		if (System.currentTimeMillis() - lastUpdateTime > SENSOR_TIME_OUT) {
+			System.out.println("Here");
+			currState = SensorState.DISCONNECTED;
+			this.currState = SensorState.ERROR;
+			statePub.publish(new StateMessage(this.currState));
+		}
+
+		return currState;
 	}
 
 	@Override
 	public SensorType getSensorType() {
-		return thisSensorType;
+		return sensorType;
 	}
-	
+
 	@Override
 	public void publish() {
 		float latitude = 0, longitude = 0;
 		int state = 0;
 		String val = "";
-		
-		currentState = SensorState.ON;
+
 		lastUpdateTime = System.currentTimeMillis();
 		try {
 			for (int i = 0; i < index; i++) {
-				if (inputBuffer[i] == '\n' || inputBuffer[i] == ',' || i == index) {
+				if (inputBuffer[i] == '\n' || inputBuffer[i] == ','
+						|| i == index) {
 					switch (state) {
 					case LAT_NUM:
-						latitude =  parseLat(val);
+						latitude = parseLat(val);
 						break;
 					case LAT_DIR:
-						if (val.equalsIgnoreCase("S")) latitude = -1 * latitude;
+						if (val.equalsIgnoreCase("S"))
+							latitude = -1 * latitude;
 						break;
 					case LONG_NUM:
 						longitude = parseLon(val);
 						break;
 					case LONG_DIR:
-						if (val.equalsIgnoreCase("W")) longitude = -1 * longitude;
-						publisher.publish(new GpsMeasurement(latitude, longitude));
-						Robot.UpdateGps(latitude, longitude);
-					//	System.out.println("lat: " + latitude + " lon: " + longitude);
-						lat = latitude;
-						lon = longitude;
+						if (val.equalsIgnoreCase("W"))
+							longitude = -1 * longitude;
+						msgPub.publish(new GpsMeasurement(latitude, longitude));
 						return;
 					}
-					
-					val  = "";
+
+					val = "";
 					state++;
-				} else val += inputBuffer[i];
+				} else
+					val += inputBuffer[i];
 			}
 		} catch (Exception e) {
-			System.out.println("Failed to parse GPS message!");
-			currentState = SensorState.ERROR;
+			// System.out.println("Failed to parse GPS message!");
+			if (this.currState != SensorState.FAULT) {
+				this.currState = SensorState.FAULT;
+				statePub.publish(new StateMessage(this.currState));
+			}
+			return;
+		}
+
+		if (this.currState != SensorState.ON) {
+			this.currState = SensorState.ON;
+			statePub.publish(new StateMessage(this.currState));
 		}
 	}
-	
-	/*%*****		Serial Methods			*****%*/
+
+	/* %***** Serial Methods *****% */
 	@Override
 	public void serialEvent(SerialPortEvent event) {
 		switch (event.getEventType()) {
 		case SerialPortEvent.DATA_AVAILABLE:
 			try {
-				char data = (char)input.read();
-				
+				char data = (char) input.read();
+
 				switch (state) {
 				case 0:
-					if (data == HEADER.charAt(index)) index++;
-					else index = 0;
-					
+					if (data == HEADER.charAt(index))
+						index++;
+					else
+						index = 0;
+
 					if (index == HEADER.length()) {
 						index = 0;
 						state++;
@@ -141,7 +147,7 @@ public class Gps extends SerialConnection implements Sensor{
 					break;
 				case 1:
 					inputBuffer[index++] = data;
-					
+
 					if (index > MESSAGE_SIZE) {
 						publish();
 						index = 0;
