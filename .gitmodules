@@ -1,4 +1,0 @@
-[submodule "surface_src/java_src/libs/JavaHamcrest"]
-	path = surface_src/java_src/libs/JavaHamcrest
-	url = https://github.com/hamcrest/JavaHamcrest.git
-
