@@ -1,0 +1,12 @@
+<project name="ANT_MAKE_OPENCV" basedir="." default="make">
+<target name="clean">
+<delete dir="build" />
+<!--- TODO -->
+</target>
+
+
+<target name="make">
+<mkdir dir="build"/>
+<!--- TODO -->
+</target>
+</project>
