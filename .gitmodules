@@ -1,6 +1,3 @@
-[submodule "surface_src/java_src/libs/junit"]
-	path = surface_src/java_src/libs/junit
-	url = https://github.com/junit-team/junit.git
 [submodule "surface_src/java_src/libs/jfreechart-fse"]
 	path = surface_src/java_src/libs/jfreechart-fse
 	url = https://github.com/jfree/jfreechart-fse.git
