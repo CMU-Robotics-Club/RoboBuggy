@@ -76,7 +76,6 @@ public class Gps extends SerialConnection implements Sensor {
 		return sensorType;
 	}
 
-	@Override
 	public void publish() {
 		float latitude = 0, longitude = 0;
 		int state = 0;
