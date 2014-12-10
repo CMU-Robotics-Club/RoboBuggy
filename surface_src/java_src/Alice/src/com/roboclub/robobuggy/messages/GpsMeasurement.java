@@ -29,6 +29,7 @@ public class GpsMeasurement extends BaseMessage implements Message {
 	public boolean west;
 
 	public GpsMeasurement(double latitude, double longitude) {
+		this.timestamp = new Date();
 		this.latitude = latitude;
 		this.longitude = longitude;
 	}

@@ -1,5 +1,10 @@
 package com.roboclub.robobuggy.ros;
 
-public abstract class Node {
-
+public interface Node {
+	
+	boolean start(float hz);
+	
+	boolean shutdown();
+	
+	void spinOnce();
 }

@@ -16,13 +16,15 @@ import com.roboclub.robobuggy.ros.Message;
 
 // Represents raw measurement from the IMU
 public class WheelAngleCommand implements Message {
-	public static final String version_id = "autonomous_angleV0.0";
+	// V0.0 had int
+	// V0.1 has float. Note that round-off is hundreths of a degree.
+	public static final String version_id = "autonomous_angleV0.1";
 
 	public Date timestamp;
-	public int angle;
+	public float angle;
 
 	// Makes an encoder measurement with the time of Now.
-	public WheelAngleCommand(int angle) {
+	public WheelAngleCommand(float angle) {
 		this.angle = angle;
 		this.timestamp = new Date();
 	}

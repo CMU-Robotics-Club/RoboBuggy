@@ -8,7 +8,7 @@ import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.Subscriber;
-import com.roboclub.robobuggy.serial.FauxArduino;
+import com.roboclub.robobuggy.sensors.FauxArduino;
 
 public class SimRobot {
 	// published encoder, subscribes steering and brake
