@@ -1,4 +1,4 @@
-package com.roboclub.robobuggy.sensors;
+package com.roboclub.robobuggy.nodes;
 
 import gnu.io.SerialPortEvent;
 
@@ -6,6 +6,9 @@ import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
+import com.roboclub.robobuggy.sensors.Sensor;
+import com.roboclub.robobuggy.sensors.SensorState;
+import com.roboclub.robobuggy.sensors.SensorType;
 import com.roboclub.robobuggy.serial.SerialConnection;
 
 /**
@@ -19,7 +22,7 @@ import com.roboclub.robobuggy.serial.SerialConnection;
  * DESCRIPTION: TODO
  */
 
-public class Imu extends SerialConnection implements Sensor {
+public class ImuNode extends SerialConnection implements Sensor {
 	/** Header for choosing serial port */
 	private static final String HEADER = "#ACG=";
 	/** Baud rate for serial port */
@@ -50,7 +53,7 @@ public class Imu extends SerialConnection implements Sensor {
 	
 	public double angle;
 	
-	public Imu(SensorChannel sensor) {
+	public ImuNode(SensorChannel sensor) {
 		super("IMU", BAUDRATE, HEADER, sensor.getRstPath());
 		msgPub = new Publisher(sensor.getMsgPath());
 		statePub = new Publisher(sensor.getStatePath());

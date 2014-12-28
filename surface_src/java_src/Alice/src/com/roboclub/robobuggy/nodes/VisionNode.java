@@ -1,4 +1,4 @@
-package com.roboclub.robobuggy.sensors;
+package com.roboclub.robobuggy.nodes;
 
 /**
  * 
@@ -32,8 +32,11 @@ import org.opencv.imgproc.Imgproc;
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.main.config;
 import com.roboclub.robobuggy.ros.SensorChannel;
+import com.roboclub.robobuggy.sensors.Sensor;
+import com.roboclub.robobuggy.sensors.SensorState;
+import com.roboclub.robobuggy.sensors.SensorType;
 
-public class VisionSystem implements Sensor {
+public class VisionNode implements Sensor {
 	private SensorType sensorType;
 	private boolean connected;
 	private SensorState state;
@@ -46,7 +49,7 @@ public class VisionSystem implements Sensor {
 	private CameraPanel rearPanel;
 	private CameraPanel overLookPanel;
 	
-	public VisionSystem(SensorChannel sensor) {
+	public VisionNode(SensorChannel sensor) {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		
 		try {

@@ -1,4 +1,4 @@
-package com.roboclub.robobuggy.sensors;
+package com.roboclub.robobuggy.nodes;
 
 import com.roboclub.robobuggy.messages.BrakeCommand;
 import com.roboclub.robobuggy.messages.StateMessage;
@@ -9,6 +9,9 @@ import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
+import com.roboclub.robobuggy.sensors.Arduino;
+import com.roboclub.robobuggy.sensors.SensorState;
+import com.roboclub.robobuggy.sensors.SensorType;
 
 /**
  * 
@@ -21,11 +24,11 @@ import com.roboclub.robobuggy.ros.Subscriber;
  * DESCRIPTION: TODO
  */
 
-public class DriveControls extends Arduino {
+public class SteeringNode extends Arduino {
 	
    public int steeringAngle;
 	
-	public DriveControls(SensorChannel sensor) {
+	public SteeringNode(SensorChannel sensor) {
 		super(sensor, "Steering");
 		sensorType = SensorType.GPS;
 		
