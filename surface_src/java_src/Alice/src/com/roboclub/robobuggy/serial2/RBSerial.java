@@ -1,59 +1,61 @@
 package com.roboclub.robobuggy.serial2;
 
 public class RBSerial {
-	/*ENC_TICKS_LAST(0),
-	ENC_TICKS_RESET(1),
-	ENC_TIMESTAMP(2);*/
-	// TODO use enums instead, vs. below
 	
-	public static final int MSG_LEN = 6;
+	public class RBPair {
+		private int a;
+		private RBSerialMessage b;
 	
-	private static final char ENC_RESET = (char)0;
-	private static final char ENC_TICK = (char)1;
-	private static final char ENC_TIME = (char)2;
-	
-	private static final char STEERING = (char)20;
-	private static final char BRAKE = (char)21;
-	private static final char AUTO = (char)22;
-	private static final char BATTERY = (char)23;
-	
-	private static final char ERROR = (char)254;
-	private static final char MSG_ID = (char)255;
-	
-	private RBSerial(String name) {
-		this.msgPath = name;
-	}
-
-	
-	static Pair<int, RBSerialMessage> peel(byte[]) {
-		return new Pair
-	}
-	
-	/* Methods for reading from Serial */
-	@Override
-	public boolean validId(char value) {
-		switch (value) {
-			case ENC_TIME:
-			case ENC_RESET:
-			case ENC_TICK:
-			case ERROR:
-			case MSG_ID:
-				return true;
-			default:
-				return false;
+		RBPair(int num_bytes_read, RBSerialMessage new_message) {
+			a = num_bytes_read;
+			b = new_message;
+		}
+		
+		public int getNumber() {
+			return a;
+		}
+		
+		public RBSerialMessage getMessage() {
+			return b;
 		}
 	}
+	
+	// TODO move this
+	public static final int MSG_LEN = 6;
+	
+	private RBSerial() {
+	}
 
-	protected int parseInt(char x0, char x1, char x2, char x3) {
-		int val = 0;
-		val |= x0;
-		val = val << 0x8;
-		val |= x1;
-		val = val << 0x8;
-		val |= x2;
-		val = val << 0x8;
-		val |= x3;
+
+	// Returns null if the head does not have a message.
+	public static RBPair peel(byte[] buf, int start, int num_elements) {
+		// If there aren't enough bytes, fail immediately
+		if(num_elements < MSG_LEN) {
+			return new RBPair(0, null);
+		}
 		
+		// Peel an ID, or fail
+		byte header = buf[start];
+		if(!RBSerialMessage.isValidHeader(header)) {
+			return new RBPair(0, null);
+		}
+		
+		// Parse an int, or fail
+		int payload = parseInt(buf, start, num_elements);
+		
+		return new RBPair(MSG_LEN, new RBSerialMessage(header, payload));
+		
+	}
+	
+	private static int parseInt(byte[] buf, int start, int num_elements) {
+		int val = 0;
+		val |= buf[(start + 1) % buf.length];
+		val = val << 0x8;
+		val |= buf[(start + 2) % buf.length];
+		val = val << 0x8;
+		val |= buf[(start + 3) % buf.length];
+		val = val << 0x8;
+		val |= buf[(start + 4) % buf.length];
 		return val;
 	}
 	

@@ -1,5 +1,7 @@
 package com.roboclub.robobuggy.nodes;
 
+import gnu.io.SerialPort;
+
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.ros.Node;
@@ -9,6 +11,7 @@ import com.roboclub.robobuggy.sensors.SensorState;
 import com.roboclub.robobuggy.sensors.SensorType;
 import com.roboclub.robobuggy.serial2.RBSerial;
 import com.roboclub.robobuggy.serial2.SerialNode;
+import com.roboclub.robobuggy.serial2.RBSerial.RBPair;
 
 /**
  * @author Matt Sebek
@@ -29,20 +32,22 @@ public class EncoderNode2 extends SerialNode implements Node {
 	private int encTime;
 	private double distLast;
 
-	Publisher encoderPub;
+	Publisher messagePub;
 	Publisher statePub;
 
-	RBSerial input_parser = new RBSerial();
-	
 	public EncoderNode2(SensorChannel sensor) {
-		super(sensor, "Encoder");
-		msgPub = new Publisher(sensor.getMsgPath());
+		super("encoder");
+		messagePub = new Publisher(sensor.getMsgPath());
 		statePub = new Publisher(sensor.getStatePath());
-		sensorType = SensorType.ENCODER;
+		
 		statePub.publish(new StateMessage(this.currState));
 
 	}
 
+	public void setSerialPort(SerialPort sp) {
+		super.setSerialPort(sp);
+	}
+	
 	private void estimateVelocity() {
 		double dist = ((double)(encTicks)/TICKS_PER_REV) / M_PER_REV;
 		double velocity = (dist - distLast)/ (double)encTime;
@@ -56,7 +61,7 @@ public class EncoderNode2 extends SerialNode implements Node {
 		
 		// Check that whatever we give it is a message
 		
-		return false;
+		return true;
 	}
 
 	@Override
@@ -70,9 +75,15 @@ public class EncoderNode2 extends SerialNode implements Node {
 	}
 
 	@Override
-	public void peel(byte[] buffer, int start, int bytes_available) {
-		// TODO Auto-generated method stub
+	public int peel(byte[] buffer, int start, int bytes_available) {
 		
+		RBPair rbp = RBSerial.peel(buffer, start, bytes_available);
+		if(rbp.getNumber() == 0) {
+			// Could not read a message....try again in one byte
+			System.out.printf("corruption sigh");
+			return 1;
+		}
+		return 6;
 	}
 	
 	

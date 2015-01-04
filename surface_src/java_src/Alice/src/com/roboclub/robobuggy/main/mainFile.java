@@ -1,15 +1,24 @@
 package com.roboclub.robobuggy.main;
 
+import gnu.io.CommPort;
+import gnu.io.CommPortIdentifier;
+import gnu.io.SerialPort;
+
 import java.util.ArrayList;
 
 import com.roboclub.robobuggy.logging.RobotLogger;
+import com.roboclub.robobuggy.nodes.ImuNode2;
+import com.roboclub.robobuggy.ros.Message;
+import com.roboclub.robobuggy.ros.MessageListener;
+import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.SensorChannel;
-import com.roboclub.robobuggy.sensors.FauxGps;
-import com.roboclub.robobuggy.sensors.Sensor;
+import com.roboclub.robobuggy.ros.Subscriber;
 import com.roboclub.robobuggy.ui.Gui;
 
 public class mainFile {
 	static Robot buggy;
+
+	static int num = 0;
 	
 	public static void main(String args[]) {
 		//ArrayList<Integer> cameras = new ArrayList<Integer>();  //TODO have this set the cameras to use 
@@ -41,8 +50,34 @@ public class mainFile {
 		
 	}
 	
+	// Open a serial port
+	private static SerialPort connect(String portName) throws Exception
+    {
+        CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
+        if ( portIdentifier.isCurrentlyOwned() )
+        {
+            System.out.println("Error: Port is currently in use");
+            return null;
+        }
+        else
+        {
+            CommPort commPort = portIdentifier.open("potato", 2000);
+            
+            if ( commPort instanceof SerialPort )
+            {
+                SerialPort serialPort = (SerialPort) commPort;
+                serialPort.setSerialPortParams(57600,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
+                return serialPort;
+            }
+            else
+            {
+                System.out.println("Error: Only serial ports are handled by this example.");
+            }
+        }
+		return null;     
+    }	
 	public static void bringup_sim() {
-		ArrayList<Sensor> sensorList = new ArrayList<Sensor>();
+		ArrayList<Node> sensorList = new ArrayList<Node>();
 
 		// Turn on logger!
 		if(config.logging){
@@ -51,28 +86,42 @@ public class mainFile {
 		}
 
 		// Initialize Sensor
-		if (config.GPS_DEFAULT) {
+		/*if (config.GPS_DEFAULT) {
 			System.out.println("Initializing GPS Serial Connection");
 			FauxGps gps = new FauxGps(SensorChannel.GPS);
 			sensorList.add(gps);
 
-		}
+		}*/
 
 		Gui.EnableLogging();
 
-		/*if (config.IMU_DEFAULT) {
-			System.out.println("Initializing IMU Serial Connection");
-			Imu imu = new Imu(SensorChannel.IMU);
-			sensorList.add(imu);
-			
-			new Subscriber(SensorChannel.IMU.getMsgPath(), new MessageListener() {
-				@Override
-				public void actionPerformed(String topicName, Message m) {
-					//updateImu((ImuMeasurement)m);
-				}
-			});
+		// Bring up the IMU
+		System.out.println("Initializing IMU Serial Connection");
+		ImuNode2 imu = new ImuNode2(SensorChannel.IMU);
+		
+		// Get the serial port
+		SerialPort sp = null;
+		try {
+			sp = connect("COM9");
+		} catch (Exception e) {
+			System.out.println("Waaah");
+		}
+		
+		imu.setSerialPort(sp);
+		
+		sensorList.add(imu);
+	
+		new Subscriber(SensorChannel.IMU.getMsgPath(), new MessageListener() {
+			@Override
+			public void actionPerformed(String topicName, Message m) {
+				//System.out.println(m.toLogString());
+				num++;
+				if(num % 60 == 0) 
+					System.out.printf("%d\n", num / 60);
+			}
+		});
 
-		}*/
+		
 		
 	}
 }
