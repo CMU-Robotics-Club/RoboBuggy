@@ -1,6 +1,14 @@
+<!---
+  For building the Robobuggy project 
+  running tests
+  building javadocs 
+  packaging a jar 
+-->
+
+
 <project name="HelloWorld" basedir="." default="main">
 
-    <property name="src.dir"     value="surface_src/java_src/Alice/src/com/roboclub/robobuggy/testing"/>
+    <property name="src.dir"     value="surface_src/java_src/Alice/src/com/roboclub/robobuggy/testing"/> 
 
     <property name="build.dir"   value="build"/>
     <property name="classes.dir" value="${build.dir}/classes"/>
@@ -39,13 +47,24 @@
       <!--- end stuff for installing libs -->
 
 
-    <target name="compile" depends="mvn_windows, mvn_unix" >
+      <target name="compile" ><!-- depends="mvn_windows, mvn_unix" > -->
         <mkdir dir="${classes.dir}"/>
-        <javac srcdir="${src.dir}" destdir="${classes.dir}" >
-	<classpath>
-	<pathelement location="surface_src/java_src/libs/junit/target/junit-4.12-SNAPSHOT.jar" /> 
-          <path refid="application"/>
-        </classpath>
+        <javac  destdir="${classes.dir}" >
+	  <src path="surface_src/java_src/Alice/src/com/roboclub/robobuggy/actuators"/>
+	  <src path="surface_src/java_src/Alice/src/com/roboclub/robobuggy/localization"/>
+	  <src path="surface_src/java_src/Alice/src/com/roboclub/robobuggy/logging"/>
+	  <src path="surface_src/java_src/Alice/src/com/roboclub/robobuggy/main"/>
+	  <src path="surface_src/java_src/Alice/src/com/roboclub/robobuggy/map"/>
+	  <src path="surface_src/java_src/Alice/src/com/roboclub/robobuggy/messages"/>
+	  <src path="surface_src/java_src/Alice/src/com/roboclub/robobuggy/ros"/>
+	  <src path="surface_src/java_src/Alice/src/com/roboclub/robobuggy/sensors"/>
+	  <src path="surface_src/java_src/Alice/src/com/roboclub/robobuggy/serial"/>
+	  <src path="surface_src/java_src/Alice/src/com/roboclub/robobuggy/testing"/>
+	  <src path="surface_src/java_src/Alice/src/com/roboclub/robobuggy/ui"/>
+	  <classpath>
+	    <pathelement location="surface_src/java_src/libs/junit/target/junit-4.12-SNAPSHOT.jar" /> 
+            <path refid="application"/>
+          </classpath>
 	</javac>
     </target>
 
@@ -58,7 +77,10 @@
         </jar>
     </target>
 
-    <target name="test" depends="jar">
+    <target name="test" depends="jar,test_fast">
+    </target>
+
+<target name="test_fast" >
       <junit printsummary="yes" haltonfailure="true" showoutput="true" >
 	<classpath>
 	<pathelement location="surface_src/java_src/libs/junit/target/junit-4.12-SNAPSHOT.jar" /> 
@@ -69,7 +91,7 @@
           <fileset dir="${src.dir}" includes="*.java"/>
         </batchtest>
       </junit> 
-    </target>
+</target>
 
     <target name="clean-build" depends="clean,jar"/>
 
