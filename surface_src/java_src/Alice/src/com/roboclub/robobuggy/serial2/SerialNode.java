@@ -32,6 +32,21 @@ public abstract class SerialNode implements Node {
 		this.thread_name = thread_name;
 	}
 
+
+	public boolean send(byte[] bytes) {
+		if(serial_output == null) {
+			return false;
+		}
+	
+		try {
+			serial_output.write(bytes);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return true;
+		
+	}
 	
 	public void setSerialPort(SerialPort sp) {
 		this.sp = sp;
@@ -108,6 +123,10 @@ public abstract class SerialNode implements Node {
 					e.printStackTrace();
 				}
 				int messages_read = 0;
+				
+				// Try to send things?
+				
+				
 				while(true) {
 					int num_read = peel(buf, start, num_bytes);
 					if(num_read == 0) break;
