@@ -1,6 +1,7 @@
 package com.roboclub.robobuggy.main;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.roboclub.robobuggy.localization.KalmanFilter;
 import com.roboclub.robobuggy.logging.RobotLogger;
@@ -10,7 +11,7 @@ import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.messages.WheelAngleCommand;
-import com.roboclub.robobuggy.ros.CommandChannel;
+import com.roboclub.robobuggy.ros.ActuatorChannel;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.Publisher;
@@ -24,7 +25,7 @@ import com.roboclub.robobuggy.sensors.Sensor;
 import com.roboclub.robobuggy.sensors.VisionSystem;
 import com.roboclub.robobuggy.ui.Gui;
 
-public class Robot {
+public class Robot implements RosMaster {
 	private static Robot instance;
 	private static Thread alice;
 	private static boolean autonomous;
@@ -129,8 +130,8 @@ public class Robot {
 				alice.start();
 				
 				// Initialize publishers for sending commands
-				steerPub = new Publisher(CommandChannel.STEERING.getMsgPath());
-				brakePub = new Publisher(CommandChannel.BRAKE.getMsgPath());
+				steerPub = new Publisher(ActuatorChannel.STEERING.getMsgPath());
+				brakePub = new Publisher(ActuatorChannel.BRAKE.getMsgPath());
 			}
 		}
 		
@@ -196,32 +197,14 @@ public class Robot {
 		return autonomous;
 	}
 	
-	public static void main(String args[]) {
-		config.getInstance();//must be run at least once
-		for (int i = 0; i < args.length; i++) {
-			if (args[i].equalsIgnoreCase("-g")) {
-				config.GUI_ON = false;
-			} else if (args[i].equalsIgnoreCase("+g")){
-				config.GUI_ON = true;
-			} else if (args[i].equalsIgnoreCase("-r")) {
-				config.active = false;
-			} else if (args[i].equalsIgnoreCase("+r")){
-				config.active = true;
-			} else if (args[i].equalsIgnoreCase("-config")) {
-				if (i+1 < args.length) {
-					config.Set(args[++i]);
-				}
-			}
-		}
-		
-		if(config.GUI_ON){
-			Gui.getInstance();
-		}
-		//starts the robot
-		if(config.DATA_PLAY_BACK_DEFAULT){
-			new SimRobot();
-		}else{
-			Robot.getInstance();
-		}	
+	@Override
+	public List<Sensor> getAllSensors() {
+		return sensorList;
+	}
+
+	@Override
+	public boolean shutDown() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }
