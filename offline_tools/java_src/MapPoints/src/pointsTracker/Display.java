@@ -55,13 +55,29 @@ public class Display extends JComponent implements ActionListener, KeyListener {
 	}
 	
 	public void updatePinList() {
+		String total = "";
+		
 		List<Pin> pins = mapCover.getPins();
 		pinList.removeAll();
 		for (int i = 0; i < pins.size(); i++) {
+			String part = "";
+			Pin p = pins.get(i);
 			
+			if (p instanceof StartPin) {
+				part = "Start:";
+			}
+			else if (p instanceof EndPin) {
+				part = "End:";
+			}
+			else {
+				part = "Marker " + i;
+			}
 			
+			part = part + "\n" + p.getCoordinates();
 			
+			total = total + part + "\n\n";
 		}
+		pinList.setText(total);
 		pinList.repaint();
 	}
 
@@ -133,6 +149,7 @@ public class Display extends JComponent implements ActionListener, KeyListener {
 	    	if(arg0.getKeyCode() == KeyEvent.VK_BACK_SPACE){
 	    		System.out.println("backspaaaaaace");
 	    		mapCover.removeSelected();
+	    		updatePinList();
 	    	}
 		}
 

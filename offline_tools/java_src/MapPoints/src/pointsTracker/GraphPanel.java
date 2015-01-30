@@ -88,6 +88,7 @@ public class GraphPanel extends JComponent {
         }
         for (Node n : nodes) {
             n.draw(g);
+            g.drawString("" + nodes.indexOf(n), n.getLocation().x + 10, n.getLocation().y + 10);
         }
         if (selecting) {
             g.setColor(Color.darkGray);
@@ -113,6 +114,7 @@ public class GraphPanel extends JComponent {
     			pins.add(indexToAdd, p);
     	        nodes.add(indexToAdd, new Node(new Point(p.getScreenX(), p.getScreenY()), p.getPinWidth(), p.getPinColor(), Kind.Circular));
     	        // this is the only one that doesn't append to the end
+    	        ((Display)this.getParent()).updatePinList();
     	        return;
     		}
         	
@@ -171,7 +173,17 @@ public class GraphPanel extends JComponent {
     }
     
     
-   
+    private double[] latLngForPoint(Point toCompare) {
+    	int dx = SCHENLEY_STOP_SIGN.x - toCompare.x;
+        int dy = SCHENLEY_STOP_SIGN.y - toCompare.y;
+        
+        double pinLat = SCHENLEY_STOP_SIGN_LATLNG_X - LATLNG_DELTA_X * (dx);
+        double pinLon = SCHENLEY_STOP_SIGN_LATLNG_Y - LATLNG_DELTA_Y * dy;
+        double[] list = new double[2];
+        list[0] = pinLat;
+        list[1] = pinLon;
+        return list;
+    }
     
     //system code below...don't touch this
     
@@ -186,6 +198,7 @@ public class GraphPanel extends JComponent {
             selecting = false;
             mouseRect.setBounds(0, 0, 0, 0);
             e.getComponent().repaint();
+            ((Display)GraphPanel.this.getParent()).updatePinList();
         }
 
         @Override
@@ -203,11 +216,9 @@ public class GraphPanel extends JComponent {
                 selecting = true;
                 
                 
-                int dx = SCHENLEY_STOP_SIGN.x - mousePt.x;
-                int dy = SCHENLEY_STOP_SIGN.y - mousePt.y;
-                
-                double pinLat = SCHENLEY_STOP_SIGN_LATLNG_X - LATLNG_DELTA_X * (dx);
-                double pinLon = SCHENLEY_STOP_SIGN_LATLNG_Y - LATLNG_DELTA_Y * dy;
+                double[] list = latLngForPoint(mousePt);
+                double pinLat = list[0];
+                double pinLon = list[1];
                 
                 
                 switch (pinMode) {
@@ -263,6 +274,10 @@ public class GraphPanel extends JComponent {
 				int index = nodes.indexOf(n);
 				Pin p = pins.get(index);
 				p.setPinLocation(point);
+				double[] list = latLngForPoint(point);
+                double pinLat = list[0];
+                double pinLon = list[1];
+                p.setPinLatLng(pinLat, pinLon);
 				repaint();
 			}
 		}
