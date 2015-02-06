@@ -71,8 +71,8 @@ rb_message_t* RBSerialMessages::Read(rb_message_t* ptr){
     // maybe check if the footer matches buffer_in_, else throw the message cause it is sad.
 
 
-    return ptr;
-}
+    return ptr
+;}
 
 // Private /////////////////////////////////////////////////////////////////////
 uint8_t RBSerialMessages::AppendMessageToBuffer(uint8_t id,
