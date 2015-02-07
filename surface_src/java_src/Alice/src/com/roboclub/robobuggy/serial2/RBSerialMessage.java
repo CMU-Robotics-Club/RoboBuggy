@@ -13,7 +13,7 @@ public class RBSerialMessage {
 	public static final byte BATTERY = (byte)23;
 	
 	public static final byte ERROR = (byte)254;
-	public static final byte MSG_ID = (byte)255;
+	public static final byte DEVICE_ID = (byte)255;
 
 
 	private byte header_byte;
@@ -22,6 +22,14 @@ public class RBSerialMessage {
 	public RBSerialMessage(byte header, int data) {
 		header_byte = header;
 		data_bytes = data;
+	}
+
+	public byte getHeaderByte() {
+		return header_byte;
+	}
+
+	public int getDataWord() {
+		return data_bytes;
 	}
 	
 	public static boolean isValidHeader(byte headerByte) {
@@ -38,7 +46,7 @@ public class RBSerialMessage {
 			case BATTERY:
 				
 			case ERROR:
-			case MSG_ID:
+			case DEVICE_ID:
 				return true;
 		}
 	}

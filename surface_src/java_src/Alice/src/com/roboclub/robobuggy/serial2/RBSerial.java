@@ -2,24 +2,6 @@ package com.roboclub.robobuggy.serial2;
 
 public class RBSerial {
 	
-	public class RBPair {
-		private int a;
-		private RBSerialMessage b;
-	
-		RBPair(int num_bytes_read, RBSerialMessage new_message) {
-			a = num_bytes_read;
-			b = new_message;
-		}
-		
-		public int getNumber() {
-			return a;
-		}
-		
-		public RBSerialMessage getMessage() {
-			return b;
-		}
-	}
-	
 	// TODO move this
 	public static final int MSG_LEN = 6;
 	
@@ -60,7 +42,8 @@ public class RBSerial {
 	}
 	
 	
-	private void something() {
+	/*private void something() {
+		byte inputBuffer[] = new byte[5];
 		int value = parseInt(inputBuffer[1], inputBuffer[2],
 				inputBuffer[3], inputBuffer[4]);
 		try {
@@ -87,6 +70,5 @@ public class RBSerial {
 			}
 			return;
 		}
-	}
-	}
+	}*/
 }

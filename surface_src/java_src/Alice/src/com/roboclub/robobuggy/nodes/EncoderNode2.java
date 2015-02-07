@@ -11,7 +11,7 @@ import com.roboclub.robobuggy.sensors.SensorState;
 import com.roboclub.robobuggy.sensors.SensorType;
 import com.roboclub.robobuggy.serial2.RBSerial;
 import com.roboclub.robobuggy.serial2.SerialNode;
-import com.roboclub.robobuggy.serial2.RBSerial.RBPair;
+import com.roboclub.robobuggy.serial2.RBPair;
 
 /**
  * @author Matt Sebek
@@ -83,6 +83,7 @@ public class EncoderNode2 extends SerialNode implements Node {
 			System.out.printf("corruption sigh");
 			return 1;
 		}
+		System.out.println("goodread");
 		return 6;
 	}
 	

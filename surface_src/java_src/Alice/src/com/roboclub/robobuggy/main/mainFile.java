@@ -7,7 +7,10 @@ import gnu.io.SerialPort;
 import java.util.ArrayList;
 
 import com.roboclub.robobuggy.logging.RobotLogger;
+import com.roboclub.robobuggy.nodes.EncoderNode;
+import com.roboclub.robobuggy.nodes.EncoderNode2;
 import com.roboclub.robobuggy.nodes.ImuNode2;
+import com.roboclub.robobuggy.nodes.LoggingNode;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.Node;
@@ -95,9 +98,12 @@ public class mainFile {
 
 		Gui.EnableLogging();
 
+	
+		LoggingNode ln = new LoggingNode(SensorChannel.IMU.getMsgPath());
+		
 		// Bring up the IMU
 		System.out.println("Initializing IMU Serial Connection");
-		ImuNode2 imu = new ImuNode2(SensorChannel.IMU);
+		EncoderNode2 imu = new EncoderNode2(SensorChannel.ENCODER);
 		
 		// Get the serial port
 		SerialPort sp = null;
