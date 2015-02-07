@@ -1,5 +1,7 @@
 package com.roboclub.robobuggy.ros;
 
-public abstract class Node {
-
+public interface Node {
+	
+	boolean shutdown();
+	
 }

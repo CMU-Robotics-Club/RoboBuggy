@@ -34,9 +34,9 @@ public class Pin implements Shape{
 		screen_y = loc.y;
 	}
 	
-	public void setPinLatLng(Point latlng) {
-		lat_x = latlng.x;
-		lat_y = latlng.y;
+	public void setPinLatLng(double lat, double lon) {
+		lat_x = lat;
+		lat_y = lon;
 	}
 	
 	public String getCoordinates(){

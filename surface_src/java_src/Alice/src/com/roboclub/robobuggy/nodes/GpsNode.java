@@ -1,10 +1,14 @@
-package com.roboclub.robobuggy.sensors;
+package com.roboclub.robobuggy.nodes;
 
 import gnu.io.SerialPortEvent;
+
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
+import com.roboclub.robobuggy.sensors.Sensor;
+import com.roboclub.robobuggy.sensors.SensorState;
+import com.roboclub.robobuggy.sensors.SensorType;
 import com.roboclub.robobuggy.serial.SerialConnection;
 
 /**
@@ -18,7 +22,7 @@ import com.roboclub.robobuggy.serial.SerialConnection;
  *          DESCRIPTION: TODO
  */
 
-public class Gps extends SerialConnection implements Sensor {
+public class GpsNode extends SerialConnection implements Sensor {
 	/* Constants for Serial Communication */
 	/** Header for picking correct serial port */
 	private static final String HEADER = "$GPGGA";
@@ -36,7 +40,7 @@ public class Gps extends SerialConnection implements Sensor {
 	// how long the system should wait until a sensor switches to Disconnected
 	private static final long SENSOR_TIME_OUT = 5000;
 
-	public Gps(SensorChannel sensor) {
+	public GpsNode(SensorChannel sensor) {
 		super("GPS", BAUDRATE, HEADER, sensor.getRstPath());
 		msgPub = new Publisher(sensor.getMsgPath());
 		statePub = new Publisher(sensor.getStatePath());
@@ -76,7 +80,6 @@ public class Gps extends SerialConnection implements Sensor {
 		return sensorType;
 	}
 
-	@Override
 	public void publish() {
 		float latitude = 0, longitude = 0;
 		int state = 0;

@@ -94,8 +94,13 @@ int RBSerialMessages::Read(rb_message_t* read_message){
   // we didn't have enough data to read a whole packet
   return -1;
 
+<<<<<<< HEAD
   // maybe check if the footer matches buffer_in_, else throw the message cause it is sad.
 }
+=======
+    return ptr
+;}
+>>>>>>> 017a00bb127f6eb0ce6309c5651a6764db93621b
 
 
 // Private /////////////////////////////////////////////////////////////////////

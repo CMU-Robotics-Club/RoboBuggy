@@ -1,9 +1,12 @@
-package com.roboclub.robobuggy.sensors;
+package com.roboclub.robobuggy.nodes;
 
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
+import com.roboclub.robobuggy.sensors.Arduino;
+import com.roboclub.robobuggy.sensors.SensorState;
+import com.roboclub.robobuggy.sensors.SensorType;
 
 /**
  * 
@@ -16,7 +19,7 @@ import com.roboclub.robobuggy.ros.SensorChannel;
  * DESCRIPTION: TODO
  */
 
-public class Encoder extends Arduino {
+public class EncoderNode extends Arduino {
 	private static final long TICKS_PER_REV = 5;
 	private static final double M_PER_REV = 5.0;
 	private static final int MAX_TICKS = 0xFFFF;
@@ -26,7 +29,7 @@ public class Encoder extends Arduino {
 	private int encTime;
 	private double distLast;
 	
-	public Encoder(SensorChannel sensor) {
+	public EncoderNode(SensorChannel sensor) {
 		super(sensor, "Encoder");
 		msgPub = new Publisher(sensor.getMsgPath());
 		statePub = new Publisher(sensor.getStatePath());
