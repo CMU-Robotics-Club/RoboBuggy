@@ -40,7 +40,7 @@ public class EncoderNode2 extends SerialNode implements Node {
 		messagePub = new Publisher(sensor.getMsgPath());
 		statePub = new Publisher(sensor.getStatePath());
 		
-		statePub.publish(new StateMessage(this.currState));
+		//statePub.publish(new StateMessage(this.currState));
 
 	}
 
@@ -52,7 +52,7 @@ public class EncoderNode2 extends SerialNode implements Node {
 		double dist = ((double)(encTicks)/TICKS_PER_REV) / M_PER_REV;
 		double velocity = (dist - distLast)/ (double)encTime;
 		distLast = dist;
-		msgPub.publish(new EncoderMeasurement(dist, velocity));
+		messagePub.publish(new EncoderMeasurement(dist, velocity));
 	}
 	
 	@Override

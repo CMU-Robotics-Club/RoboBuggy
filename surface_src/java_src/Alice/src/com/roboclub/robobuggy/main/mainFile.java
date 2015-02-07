@@ -102,7 +102,7 @@ public class mainFile {
 		// Get the serial port
 		SerialPort sp = null;
 		try {
-			sp = connect("COM9");
+			sp = connect("COM7");
 		} catch (Exception e) {
 			System.out.println("Waaah");
 		}
