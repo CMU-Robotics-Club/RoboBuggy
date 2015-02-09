@@ -97,26 +97,27 @@ end
  layer6 = img(:,:,3) <= .9;
  newImg = layer1.*layer2.*layer3.*layer4.*layer5.*layer6;
  
- newImg2 = newImg;
- for i = 1:size(newImg,1)
-     for j = 1:size(newImg,2)
-         good = 1;
-         for dx = -8:8
-             for dy = -2:2
-                 if(i+dx > 0 && i+dx <= size(newImg,1) && j +dy > 0 && j+dy <= size(newImg,2))
-                     if(newImg(i+dx,j+dy) == 0)
-                        newImg2(i,j) = 0;
-                        good = 0;
-                     end
-                     
-                 end
-             end
-         end
-         if good == 1
-             newImg2(i,j) = 2;
-         end
-     end
- end
+ newImg2 = conv2(newImg,ones(16,5)) == 17*5;
+ 
+ %for i = 1:size(newImg,1)
+ %    for j = 1:size(newImg,2)
+ %        good = 1;
+ %        for dx = -8:8
+ %            for dy = -2:2
+ %                if(i+dx > 0 && i+dx <= size(newImg,1) && j +dy > 0 && j+dy <= size(newImg,2))
+ %                    if(newImg(i+dx,j+dy) == 0)
+ %                       newImg2(i,j) = 0;
+ %                       good = 0;
+ %                    end
+ %                    
+ %                end
+ %            end
+ %        end
+ %        if good == 1
+ %            newImg2(i,j) = 2;
+ %        end
+ %    end
+ %end
   for i = 1:size(newImg2,1)
       for j = 1:size(newImg2,2)
          if newImg2(i,j) == 2
