@@ -1,8 +1,0 @@
-% code to take sensor data and map it out on a graph
-
-initdraw
-
-
-fileName = 'sensors.txt';
-
-rawData = getRawData(fileName);
