@@ -27,7 +27,10 @@
 # make program = Download the hex file to the device, using avrdude.
 #                Please customize the avrdude settings below first!
 #
-# make aprogram PORT=/dev/tty.usbserial######
+# make aprogram AVRDUDE_A_PORT=/dev/tty.usbserial######
+#               = Download the hex file to the device using the arduino
+#                 bootloader. May need to modify the programing flags.
+#                                                      
 #
 # make debug = Start either simulavr or avarice as specified for debugging, 
 #              with avr-gdb or avr-insight as the front end for debugging.
@@ -42,7 +45,7 @@
 
 
 # MCU name
-MCU = atmega328p
+MCU = atmega2560
 
 
 # Processor frequency.
@@ -61,7 +64,7 @@ FORMAT = ihex
 TARGET = main
 
 # List C source files here. (C dependencies are automatically generated.)
-SRC = $(TARGET).c
+SRC = $(TARGET).c uart.c
 #ff.o sd.o diskio.o rtc.o
 
 # List Assembler source files here.
@@ -228,7 +231,7 @@ AVRDUDE_FLAGS += $(AVRDUDE_VERBOSE)
 AVRDUDE_FLAGS += $(AVRDUDE_ERASE_COUNTER)
 
 AVRDUDE_A_PORT = /dev/tty.asdf
-AVRDUDE_A_FLAGS = -v -c arduino -p $(MCU) -P $(AVRDUDE_A_PORT) -b 115200 -D
+AVRDUDE_A_FLAGS = -v -c wiring -p $(MCU) -P $(AVRDUDE_A_PORT) -b 115200 -D
 
 PYTHON = /usr/local/bin/python
 
