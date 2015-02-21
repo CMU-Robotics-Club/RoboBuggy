@@ -16,10 +16,10 @@
 
 #define DEBUG_DDR  DDRB
 #define DEBUG_PORT PORTB
-#define DEBUG_PINN PB7 // arduino 13
+#define DEBUG_PINN PB5 // arduino 13
 #define SERVO_DDR  DDRB
 #define SERVO_PORT PORTB
-#define SERVO_PINN PB5 // arduino 11
+#define SERVO_PINN PB1
 #define POT_ADC_CHANNEL 0
 
 #define SERVO_REFRESH_US 20000L
