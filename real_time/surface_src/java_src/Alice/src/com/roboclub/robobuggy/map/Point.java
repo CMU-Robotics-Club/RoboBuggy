@@ -1,5 +1,8 @@
 package com.roboclub.robobuggy.map;
 
+/* repersentation of a point on the map 
+ * for now this value will be sotred as a 2d(x,y) pair */
+
 public class Point implements MapObject {
 	private double x;
 	private double y;
