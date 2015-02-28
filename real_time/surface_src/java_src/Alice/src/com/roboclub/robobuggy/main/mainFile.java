@@ -106,6 +106,7 @@ public class mainFile {
 		System.out.println("Initializing IMU Serial Connection");
 		ImuNode2 imu = new ImuNode2(SensorChannel.IMU);
 		
+		//TODO why is this serial port needed for simulation mode
 		// Get the serial port
 		SerialPort sp = null;
 		String com = "COM9";
