@@ -56,11 +56,16 @@ public abstract class SerialNode implements Node {
 			sp.setSerialPortParams(baudRate,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
 		} catch (UnsupportedCommOperationException e) {
 			// TODO Auto-generated catch block
+			System.out.println("Unsupported communication operation over serial port.");
+			e.printStackTrace();
+			return;
+		} catch (NullPointerException e) {
+			System.out.println("Null Pointer Exception, unable to initialize the serial port. "
+					+ "Printing stack trace below: \n");
 			e.printStackTrace();
 			return;
 		}
-		
-		
+				
 		// Set port to be non-blocking....maybe.
 		sp.disableReceiveTimeout();
 		sp.disableReceiveThreshold();

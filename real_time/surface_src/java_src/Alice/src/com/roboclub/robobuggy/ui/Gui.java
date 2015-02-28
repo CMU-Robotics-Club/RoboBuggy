@@ -5,6 +5,7 @@ import java.awt.Container;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.WindowEvent;
 import java.io.File;
 
 import javax.imageio.ImageIO;
@@ -42,6 +43,7 @@ public final class Gui extends JFrame {
 	public Gui() {
 		System.out.println("Starting GUI");
 		populate();
+		System.out.println("Populated!");
 	}
 
 	public void populate() {
@@ -60,7 +62,7 @@ public final class Gui extends JFrame {
 		// Close ports and close window upon exit
 		this.addWindowListener(new java.awt.event.WindowAdapter() {
 			@Override
-			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+			public void windowClosing(WindowEvent windowEvent) {
 				Robot.ShutDown();
 			}
 		});
@@ -81,6 +83,12 @@ public final class Gui extends JFrame {
 		
 		this.pack();
 		this.setVisible(true);
+	}
+	
+	public static void close() {
+		System.out.println("Trying to close the window!");
+		instance.dispatchEvent(new WindowEvent(instance, WindowEvent.WINDOW_CLOSING));
+		System.out.println("Apparently we've closed the window!");
 	}
 
 	public static void EnableLogging() {

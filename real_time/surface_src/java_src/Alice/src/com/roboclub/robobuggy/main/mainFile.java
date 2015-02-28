@@ -42,7 +42,14 @@ public class mainFile {
 		
 		// Starts the robot
 		if(config.DATA_PLAY_BACK_DEFAULT){
-			bringup_sim();
+			try {
+				bringup_sim();
+			} catch (Exception e) {
+				Gui.close();
+				System.out.println("Unable to bringup simulated robot. Stacktrace omitted because it's really big.");
+				e.printStackTrace();
+				return;
+			}
 		} else {
 			Robot.getInstance();
 		}	
@@ -74,9 +81,9 @@ public class mainFile {
                 System.out.println("Error: Only serial ports are handled by this example.");
             }
         }
-		return null;     
+		return null;
     }	
-	public static void bringup_sim() {
+	public static void bringup_sim() throws Exception {
 		ArrayList<Node> sensorList = new ArrayList<Node>();
 
 		// Turn on logger!
@@ -101,10 +108,13 @@ public class mainFile {
 		
 		// Get the serial port
 		SerialPort sp = null;
+		String com = "COM9";
 		try {
-			sp = connect("COM9");
+			sp = connect(com);
 		} catch (Exception e) {
-			System.out.println("Waaah");
+			System.out.println("Unable to connect to necessary device on " + com);
+			e.printStackTrace();
+			throw new Exception("Device not found error");
 		}
 		
 		imu.setSerialPort(sp);
