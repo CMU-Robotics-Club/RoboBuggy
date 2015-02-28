@@ -20,11 +20,10 @@
 % 15 - 34.82
 % 16 - 25.6,
 % 17 - 23.55
-% i refuse to log any more
 
 %global times_human times_decimal;
 
-filePath = '/Users/vivaanbahl/Desktop/Robobuggy/Robobuggy/matlab_hax/data_src/2014-11-23-07-23-37/sensors.txt';
+filePath = '/Users/vivaanbahl/Desktop/Robobuggy/RoboBuggy/offline/offline_tools/matlab_hax/sensor_data_plotting/data_src/2014-11-23-07-23-37/sensors.txt';
 
 rawData = getRawData(filePath);
 
@@ -46,7 +45,7 @@ for x = 1:sensorLen,
     sensors{x}{1} = [];
 end
 
-for i = 1:2:101, %should be rows
+for i = 1:2:rows, %should be rows
     string1 = rawData{1}{i};
     string2 = rawData{1}{i + 1};
     string = strcat(string1, '+', string2);
@@ -147,6 +146,47 @@ for m = 1:sz(2)/singleTimeLen,
     
     
 end
+
+
+toPlot = [];
+timsiz = size(timesDec);
+
+for a = 1:sensorLen,
+   
+    for b = 1:timsiz(2),
+        
+        toPlot(b, a) = sensors{a}{1}(b);
+        
+    end
+    
+end
+
+plot(toPlot);
+legend('15.46', '18.43', '21.5,', '20.48', '16.38', '14.34', '19.46', '17.41', '13.31', '12.29', '22.53', '10.24', '11.26', '27.65', '34.82', '25.6,', '23.55');
+
+
+% SENSOR LIST
+% 1 - 15.46
+% 2 - 18.43
+% 3 - 21.5,
+% 4 - 20.48
+% 5 - 16.38
+% 6 - 14.34
+% 7 - 19.46
+% 8 - 17.41
+% 9 - 13.31
+% 10 - 12.29
+% 11 - 22.53
+% 12 - 10.24
+% 13 - 11.26
+% 14 - 27.65
+% 15 - 34.82
+% 16 - 25.6,
+% 17 - 23.55
+
+
+
+
 
 
 
