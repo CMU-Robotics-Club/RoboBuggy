@@ -1,0 +1,1 @@
+Timestamp,IMU_Acc_X,IMU_Acc_Y,IMU_Acc_Z,IMU_Gyro_X,IMU_Gyro_Y,IMU_Gyro_Z,IMU_Compass_X,IMU_Compass_Y,IMU_Compass_Z,Encoder_Ticks,Encoder_Ticks_Total,Encoder_Time,Servo_Angle_Command,Servo_Angle_Actual,GPS_Longitude,GPS_Latitude
