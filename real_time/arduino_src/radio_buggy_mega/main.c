@@ -4,29 +4,18 @@
 #include <avr/interrupt.h>
 #include <stdio.h>
 
+#include "servo.h"
 #include "uart.h"
 
 
-#define F_CPU 16000000UL
 #define BAUD 9600
-
-#define clockCyclesPerMicrosecond() ( F_CPU / 1000000L )
-#define clockCyclesToMicroseconds(a) ( (a) / clockCyclesPerMicrosecond() )
-#define microsecondsToClockCycles(a) ( (a) * clockCyclesPerMicrosecond() )
-
 #define DEBUG_DDR  DDRB
 #define DEBUG_PORT PORTB
 #define DEBUG_PINN PB7 // arduino 13
 #define SERVO_DDR  DDRB
 #define SERVO_PORT PORTB
-#define SERVO_PINN PB5 // arduino 11
+#define SERVO_PINN PB5 // arduino 11 TODO: this is not used here
 #define POT_ADC_CHANNEL 0
-
-#define SERVO_REFRESH_US 20000L
-#define SERVO_MID_US 1500
-#define SERVO_MIN_US 544
-#define SERVO_MAX_US 2400
-#define SERVO_TIMER_PRESCALER 8
 
 
 static int16_t map(int32_t x,
@@ -36,40 +25,6 @@ static int16_t map(int32_t x,
                    int32_t out_max)
 {
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-}
-
-
-void servo_init(void) {
-  // set up timers for PWM on OC1A (PB1, arduino pin 9)
-  // prescaler of 8
-  // PWM with top as ICR1 (to set cap)
-  // set ICR1 to the desired refresh time
-  TCCR1A |= (_BV(WGM11) | _BV(COM1A1));
-  TCCR1A &= ~(_BV(WGM10) | _BV(COM1A0));
-  TCCR1B |= (_BV(WGM13) | _BV(WGM12) | _BV(CS11));
-  TCCR1B &= ~(_BV(CS10) | _BV(CS12));
-  TCNT1 = 0;
-  OCR1A = SERVO_MID_US;
-  OCR1B = SERVO_MID_US;
-  ICR1 = microsecondsToClockCycles(SERVO_REFRESH_US) / SERVO_TIMER_PRESCALER;
-
-  // enable servo output
-  SERVO_PORT &= ~_BV(SERVO_PINN);
-  SERVO_DDR |= _BV(SERVO_PINN);
-}
-
-
-void servo_set_us(uint16_t value) {
-  // check limits
-  if(value < SERVO_MIN_US) {
-    value = SERVO_MIN_US;
-  }
-  if(value > SERVO_MAX_US) {
-    value = SERVO_MAX_US;
-  }
-
-  // modify hardware output
-  OCR1A = microsecondsToClockCycles(value) / SERVO_TIMER_PRESCALER;
 }
 
 
