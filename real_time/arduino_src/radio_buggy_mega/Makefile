@@ -64,7 +64,7 @@ FORMAT = ihex
 TARGET = main
 
 # List C source files here. (C dependencies are automatically generated.)
-SRC = $(TARGET).c uart.c
+SRC = $(TARGET).c uart.c system_clock.c
 #ff.o sd.o diskio.o rtc.o
 
 # List Assembler source files here.

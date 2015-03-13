@@ -5,6 +5,7 @@
 #include <stdio.h>
 
 #include "uart.h"
+#include "system_clock.h"
 
 
 #define F_CPU 16000000UL
@@ -110,13 +111,19 @@ int main(void) {
   // setup adc
   adc_init();
 
+  //set up system clock
+  system_clock_init();
+
   // loop forever
   while(1) {
     uint8_t pot_value = acd_read_blocking(POT_ADC_CHANNEL);
     uint16_t servo_setpoint = map(pot_value, 0, 255, SERVO_MIN_US, SERVO_MAX_US);
     printf("Read %d. Setting servo to %d.\n", pot_value, servo_setpoint);
     servo_set_us(servo_setpoint);
+    delay(2000); //test delay
+
   }
+
 
   return 0;
 }
