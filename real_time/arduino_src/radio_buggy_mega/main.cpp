@@ -54,8 +54,6 @@ int main(void) {
   
   // setup uart
   uart_init();
-  stdout = &uart_output;
-  stdin  = &uart_input;
 
   // enable global interrupts
   sei();

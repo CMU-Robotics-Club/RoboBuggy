@@ -2,7 +2,9 @@
 #define LIB_AVR_SERVO_H
 
 #ifdef __cplusplus
-extern "C"{
+extern "C" {
+#endif
+
 
 #include <avr/io.h>
 
@@ -29,6 +31,8 @@ extern "C"{
 void servo_init(void);
 void servo_set_us(uint16_t value);
 
+
+#ifdef __cplusplus
 }
 #endif
 

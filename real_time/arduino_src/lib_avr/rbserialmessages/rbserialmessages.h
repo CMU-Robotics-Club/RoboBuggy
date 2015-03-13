@@ -19,6 +19,8 @@
 
 // #include <Arduino.h>
 // #include "HardwareSerial.h"
+#include <avr/io.h>
+#include <stdio.h>
 
 // Implementation Constants
 #define RBSM_BUFFER_OUT_LENGTH 11 // minimum to support double message
@@ -77,8 +79,8 @@ class RBSerialMessages {
  private:
   FILE *in_file_;
   FILE *out_file_;
-  uint8_t buffer_out_[RBSM_BUFFER_OUT_LENGTH];
-  uint8_t buffer_in_[RBSM_BUFFER_IN_LENGTH];
+  char buffer_out_[RBSM_BUFFER_OUT_LENGTH];
+  char buffer_in_[RBSM_BUFFER_IN_LENGTH];
   uint8_t buffer_in_pos_;
   bool buffer_in_stream_lock_;
   uint8_t AppendMessageToBuffer(uint8_t id,
