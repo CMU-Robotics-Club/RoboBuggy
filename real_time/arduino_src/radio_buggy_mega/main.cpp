@@ -4,6 +4,7 @@
 #include <avr/interrupt.h>
 #include <stdio.h>
 
+#include "../lib_avr/rbserialmessages/rbserialmessages.h"
 #include "servo.h"
 #include "uart.h"
 

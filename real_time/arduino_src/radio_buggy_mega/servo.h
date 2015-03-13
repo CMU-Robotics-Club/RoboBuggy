@@ -1,6 +1,9 @@
 #ifndef LIB_AVR_SERVO_H
 #define LIB_AVR_SERVO_H
 
+#ifdef __cplusplus
+extern "C"{
+
 #include <avr/io.h>
 
 
@@ -25,5 +28,8 @@
 // public functions
 void servo_init(void);
 void servo_set_us(uint16_t value);
+
+}
+#endif
 
 #endif /* LIB_AVR_SERVO_H */
