@@ -4,31 +4,23 @@
 #include <avr/interrupt.h>
 #include <stdio.h>
 
+#include "../lib_avr/rbserialmessages/rbserialmessages.h"
+#include "servo.h"
 #include "uart.h"
 #include "system_clock.h"
 
 
-#define F_CPU 16000000UL
 #define BAUD 9600
-
-#define clockCyclesPerMicrosecond() ( F_CPU / 1000000L )
-#define clockCyclesToMicroseconds(a) ( (a) / clockCyclesPerMicrosecond() )
-#define microsecondsToClockCycles(a) ( (a) * clockCyclesPerMicrosecond() )
-
 #define DEBUG_DDR  DDRB
 #define DEBUG_PORT PORTB
 #define DEBUG_PINN PB7 // arduino 13
 #define SERVO_DDR  DDRB
 #define SERVO_PORT PORTB
-#define SERVO_PINN PB5 // arduino 11
+#define SERVO_PINN PB5 // arduino 11 TODO: this is not used here
 #define POT_ADC_CHANNEL 0
 
-#define SERVO_REFRESH_US 20000L
-#define SERVO_MID_US 1500
-#define SERVO_MIN_US 544
-#define SERVO_MAX_US 2400
-#define SERVO_TIMER_PRESCALER 8
-
+RBSerialMessages g_rbsm_endpoint;
+rb_message_t g_new_rbsm;
 
 static int16_t map(int32_t x,
                    int32_t in_min,
@@ -37,40 +29,6 @@ static int16_t map(int32_t x,
                    int32_t out_max)
 {
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-}
-
-
-void servo_init(void) {
-  // set up timers for PWM on OC1A (PB1, arduino pin 9)
-  // prescaler of 8
-  // PWM with top as ICR1 (to set cap)
-  // set ICR1 to the desired refresh time
-  TCCR1A |= (_BV(WGM11) | _BV(COM1A1));
-  TCCR1A &= ~(_BV(WGM10) | _BV(COM1A0));
-  TCCR1B |= (_BV(WGM13) | _BV(WGM12) | _BV(CS11));
-  TCCR1B &= ~(_BV(CS10) | _BV(CS12));
-  TCNT1 = 0;
-  OCR1A = SERVO_MID_US;
-  OCR1B = SERVO_MID_US;
-  ICR1 = microsecondsToClockCycles(SERVO_REFRESH_US) / SERVO_TIMER_PRESCALER;
-
-  // enable servo output
-  SERVO_PORT &= ~_BV(SERVO_PINN);
-  SERVO_DDR |= _BV(SERVO_PINN);
-}
-
-
-void servo_set_us(uint16_t value) {
-  // check limits
-  if(value < SERVO_MIN_US) {
-    value = SERVO_MIN_US;
-  }
-  if(value > SERVO_MAX_US) {
-    value = SERVO_MAX_US;
-  }
-
-  // modify hardware output
-  OCR1A = microsecondsToClockCycles(value) / SERVO_TIMER_PRESCALER;
 }
 
 
@@ -97,10 +55,9 @@ int main(void) {
   DEBUG_PORT |= _BV(DEBUG_PINN);
   DEBUG_DDR |= _BV(DEBUG_PINN);
   
-  // setup uart
+  // setup rbsm
   uart_init();
-  stdout = &uart_output;
-  stdin  = &uart_input;
+  g_rbsm_endpoint.Init(&uart_stdio, &uart_stdio);
 
   // enable global interrupts
   sei();
@@ -118,10 +75,26 @@ int main(void) {
   while(1) {
     uint8_t pot_value = acd_read_blocking(POT_ADC_CHANNEL);
     uint16_t servo_setpoint = map(pot_value, 0, 255, SERVO_MIN_US, SERVO_MAX_US);
-    printf("Read %d. Setting servo to %d.\n", pot_value, servo_setpoint);
     servo_set_us(servo_setpoint);
-    delay(2000); //test delay
+    delay(2000);
 
+    // test sending serial messages
+    g_rbsm_endpoint.Send(RBSM_MID_MEGA_STEER_ANGLE, (uint32_t)servo_setpoint);
+
+    // try to process new messages
+    DEBUG_PORT &= ~_BV(DEBUG_PINN);
+    switch(g_rbsm_endpoint.Read(&g_new_rbsm)) {
+
+      case 0:
+        // send this id back
+        g_rbsm_endpoint.Send(RBSM_MID_ERROR, g_new_rbsm.data);
+        break;
+
+      default:
+        // just ignore it
+        break;
+    }
+    DEBUG_PORT |= _BV(DEBUG_PINN);
   }
 
 

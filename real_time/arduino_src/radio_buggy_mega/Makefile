@@ -64,7 +64,7 @@ FORMAT = ihex
 TARGET = main
 
 # List C source files here. (C dependencies are automatically generated.)
-SRC = $(TARGET).c uart.c system_clock.c
+SRC = $(TARGET).c uart.c system_clock.c servo.c ../lib_avr/rbserialmessages/rbserialmessages.cpp
 #ff.o sd.o diskio.o rtc.o
 
 # List Assembler source files here.
@@ -125,7 +125,7 @@ CFLAGS += $(CDEFS) $(CINCS)
 CFLAGS += -O$(OPT)
 CFLAGS += -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums
 CFLAGS += -Wall -Wstrict-prototypes
-CFLAGS += -Wa,-adhlns=$(<:.c=.lst)
+CFLAGS += -Wa,-adhlns=$(patsubst %.c,%.lst,$(patsubst %.cpp,%.lst,$(<)))
 CFLAGS += $(patsubst %,-I%,$(EXTRAINCDIRS))
 CFLAGS += $(CSTANDARD)
 #CFLAGS += -DDEBUG
@@ -303,10 +303,10 @@ MSG_CLEANING = Cleaning project:
 
 
 # Define all object files.
-OBJ = $(SRC:.c=.o) $(ASRC:.S=.o) 
+OBJ = $(patsubst %.c,%.o,$(patsubst %.cpp,%.o,$(SRC))) $(ASRC:.S=.o)
 
 # Define all listing files.
-LST = $(SRC:.c=.lst) $(ASRC:.S=.lst) 
+LST = $(patsubst %.c,%.lst,$(patsubst %.cpp,%.lst,$(SRC))) $(ASRC:.S=.lst) 
 
 
 # Compiler flags to generate dependency files.
@@ -472,9 +472,16 @@ extcoff: $(TARGET).elf
 	@echo $(MSG_COMPILING) $<
 	$(CC) -c $(ALL_CFLAGS) $< -o $@ 
 
+%.o : %.cpp
+	@echo
+	@echo $(MSG_COMPILING) $<
+	$(CC) -c $(ALL_CFLAGS) $< -o $@ 
 
 # Compile: create assembler files from C source files.
 %.s : %.c
+	$(CC) -S $(ALL_CFLAGS) $< -o $@
+
+%.s : %.cpp
 	$(CC) -S $(ALL_CFLAGS) $< -o $@
 
 
@@ -486,6 +493,9 @@ extcoff: $(TARGET).elf
 
 # Create preprocessed source for use in sending a bug report.
 %.i : %.c
+	$(CC) -E -mmcu=$(MCU) -I. $(CFLAGS) $< -o $@ 
+
+%.i : %.cpp
 	$(CC) -E -mmcu=$(MCU) -I. $(CFLAGS) $< -o $@ 
 
 
@@ -504,8 +514,8 @@ clean_list :
 	$(REMOVE) $(TARGET).lss
 	$(REMOVE) $(OBJ)
 	$(REMOVE) $(LST)
-	$(REMOVE) $(SRC:.c=.s)
-	$(REMOVE) $(SRC:.c=.d)
+	$(REMOVE) $(patsubst %.c,%.s,$(patsubst %.cpp,%.s,$(SRC)))
+	$(REMOVE) $(patsubst %.c,%.d,$(patsubst %.cpp,%.d,$(SRC)))
 	$(REMOVE) .dep/*
 
 

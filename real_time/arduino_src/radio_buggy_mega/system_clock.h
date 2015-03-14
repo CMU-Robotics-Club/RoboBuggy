@@ -1,6 +1,11 @@
 #ifndef LIB_AVR_SYSTEM_CLOCK_H
 #define LIB_AVR_SYSTEM_CLOCK_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
@@ -19,5 +24,10 @@ void delay_microseconds(unsigned int us);
 void delay(unsigned long ms);
 unsigned long micros(void);
 unsigned long millis(void);
+
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
