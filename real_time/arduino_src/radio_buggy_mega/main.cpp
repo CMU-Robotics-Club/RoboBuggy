@@ -18,6 +18,8 @@
 #define SERVO_PINN PB5 // arduino 11 TODO: this is not used here
 #define POT_ADC_CHANNEL 0
 
+RBSerialMessages g_rbserialmessages;
+
 
 static int16_t map(int32_t x,
                    int32_t in_min,
@@ -52,8 +54,9 @@ int main(void) {
   DEBUG_PORT |= _BV(DEBUG_PINN);
   DEBUG_DDR |= _BV(DEBUG_PINN);
   
-  // setup uart
+  // setup rbsm
   uart_init();
+  g_rbserialmessages.Init(&uart_stdio, &uart_stdio);
 
   // enable global interrupts
   sei();
@@ -68,8 +71,10 @@ int main(void) {
   while(1) {
     uint8_t pot_value = acd_read_blocking(POT_ADC_CHANNEL);
     uint16_t servo_setpoint = map(pot_value, 0, 255, SERVO_MIN_US, SERVO_MAX_US);
-    printf("Read %d. Setting servo to %d.\n", pot_value, servo_setpoint);
     servo_set_us(servo_setpoint);
+
+    // test sending serial messages
+    g_rbserialmessages.Send(RBSM_MID_MEGA_STEER_ANGLE, (uint32_t)servo_setpoint);
   }
 
   return 0;

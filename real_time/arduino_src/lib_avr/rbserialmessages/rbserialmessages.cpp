@@ -40,7 +40,9 @@ int RBSerialMessages::Send(uint8_t id, uint32_t message) {
   buffer_pos = InitMessageBuffer();
   buffer_pos = AppendMessageToBuffer(id, message, buffer_pos);
   
-  fputs(buffer_out_, out_file_);
+  for(int i; i < buffer_pos; i++) {
+    fputc(buffer_out_[i], out_file_);
+  }
 
   // success
   return 0;
