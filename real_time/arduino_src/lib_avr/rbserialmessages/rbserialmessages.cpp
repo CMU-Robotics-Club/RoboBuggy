@@ -40,7 +40,7 @@ int RBSerialMessages::Send(uint8_t id, uint32_t message) {
   buffer_pos = InitMessageBuffer();
   buffer_pos = AppendMessageToBuffer(id, message, buffer_pos);
   
-  for(int i; i < buffer_pos; i++) {
+  for(int i = 0; i < buffer_pos; i++) {
     fputc(buffer_out_[i], out_file_);
   }
 
@@ -55,7 +55,7 @@ int RBSerialMessages::Send(uint8_t id, uint32_t message) {
 int RBSerialMessages::Read(rb_message_t* read_message){
   while(true) {
     // check if there is new data
-    uint8_t new_serial_byte = fgetc(in_file_);
+    int new_serial_byte = fgetc(in_file_);
     if(new_serial_byte == EOF) {
       break;
     }
@@ -63,14 +63,14 @@ int RBSerialMessages::Read(rb_message_t* read_message){
     // first, we need to try to lock on to the stream
     if(buffer_in_stream_lock_ == false) {
       printf("RBSerialMessages::Read: searching for lock...\n");
-      if(new_serial_byte == RBSM_FOOTER) {
+      if((uint8_t)new_serial_byte == RBSM_FOOTER) {
         buffer_in_stream_lock_ = true;
       }
     }
 
     // after we lock we need to read in to the buffer until full
     else {
-      buffer_in_[buffer_in_pos_] = new_serial_byte; 
+      buffer_in_[buffer_in_pos_] = (uint8_t)new_serial_byte; 
       buffer_in_pos_++;
       // handle the end of a packet
       if(buffer_in_pos_ == RBSM_PACKET_LENGTH) {
