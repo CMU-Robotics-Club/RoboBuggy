@@ -13,11 +13,13 @@ void output_angles()
   }
   else if (output_format == OUTPUT__FORMAT_TEXT)
   {
-    Serial.print("#YPR=");
+    /*Serial.print("#YPR=");
     Serial.print(TO_DEG(yaw)); Serial.print(",");
     Serial.print(TO_DEG(pitch)); Serial.print(",");
     Serial.print(TO_DEG(roll)); Serial.println();
-  /* Serial.print("#ACG=");
+	*/
+	// Output everything.
+   Serial.print("#ACG=");
    Serial.print(accel[0]); Serial.print(",");
    Serial.print(accel[1]); Serial.print(",");
    Serial.print(accel[2]); Serial.print(",");
@@ -29,7 +31,7 @@ void output_angles()
    Serial.print(TO_DEG(yaw)); Serial.print(",");
    Serial.print(TO_DEG(pitch)); Serial.print(",");
    Serial.print(TO_DEG(roll)); Serial.println();
-   */
+   
   }
 }
 

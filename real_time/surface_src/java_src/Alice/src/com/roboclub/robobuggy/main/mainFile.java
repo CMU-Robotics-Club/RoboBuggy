@@ -106,16 +106,16 @@ public class mainFile {
 		Gui.EnableLogging();
 
 	
-		LoggingNode ln = new LoggingNode(SensorChannel.IMU.getMsgPath());
+		LoggingNode ln = new LoggingNode(SensorChannel.IMU.getMsgPath(), "C:\\Users\\Matt\\buggy-log\\run1");
 		
 		// Bring up the IMU
 		System.out.println("Initializing IMU Serial Connection");
-		EncoderNode2 imu = new EncoderNode2(SensorChannel.ENCODER);
+		ImuNode2 imu = new ImuNode2(SensorChannel.IMU);
 		
 		//TODO why is this serial port needed for simulation mode
 		// Get the serial port
 		SerialPort sp = null;
-		String com = "COM9";
+		String com = "COM3";
 		try {
 			sp = connect(com);
 		} catch (Exception e) {
