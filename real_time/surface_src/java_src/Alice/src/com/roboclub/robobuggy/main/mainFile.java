@@ -7,7 +7,10 @@ import gnu.io.SerialPort;
 import java.util.ArrayList;
 
 import com.roboclub.robobuggy.logging.RobotLogger;
+import com.roboclub.robobuggy.nodes.EncoderNode;
+import com.roboclub.robobuggy.nodes.EncoderNode2;
 import com.roboclub.robobuggy.nodes.ImuNode2;
+import com.roboclub.robobuggy.nodes.LoggingNode;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.Node;
@@ -102,6 +105,9 @@ public class mainFile {
 
 		Gui.EnableLogging();
 
+	
+		LoggingNode ln = new LoggingNode(SensorChannel.IMU.getMsgPath(), "C:\\Users\\Matt\\buggy-log\\run1");
+		
 		// Bring up the IMU
 		System.out.println("Initializing IMU Serial Connection");
 		ImuNode2 imu = new ImuNode2(SensorChannel.IMU);
@@ -109,7 +115,7 @@ public class mainFile {
 		//TODO why is this serial port needed for simulation mode
 		// Get the serial port
 		SerialPort sp = null;
-		String com = "COM9";
+		String com = "COM3";
 		try {
 			sp = connect(com);
 		} catch (Exception e) {

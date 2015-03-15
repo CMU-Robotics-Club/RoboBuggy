@@ -18,9 +18,13 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
+import sun.util.logging.resources.logging;
+
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.main.config;
+import com.roboclub.robobuggy.messages.GuiLoggingButton;
+import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
 
 /**
@@ -51,7 +55,11 @@ public class ControlPanel extends JPanel {
 	SensorSwitch autonomous_switch;
 	JButton display;
 
+	Publisher logging_button_pub;
+	
 	public ControlPanel() {
+		logging_button_pub = new Publisher(SensorChannel.GUI_LOGGING_BUTTON.getMsgPath());
+		
 		timer = new Timer(10, new timerHandler());// updates every .01 seconds
 		timer.setDelay(100);
 		timer.setRepeats(true); // timer needs to be setup before startpause_btn
@@ -94,7 +102,7 @@ public class ControlPanel extends JPanel {
 				timer.start();
 				
 				RobotLogger.CreateLog();
-				
+				logging_button_pub.publish(new GuiLoggingButton(GuiLoggingButton.LoggingMessage.START));
 				startTime = new Date();
 			} else {
 				System.out.println("System Paused");
@@ -102,6 +110,7 @@ public class ControlPanel extends JPanel {
 				play_btn.setText("START");
 				
 				RobotLogger.CloseLog();
+				logging_button_pub.publish(new GuiLoggingButton(GuiLoggingButton.LoggingMessage.START));
 				timer.stop();
 			}
 		}

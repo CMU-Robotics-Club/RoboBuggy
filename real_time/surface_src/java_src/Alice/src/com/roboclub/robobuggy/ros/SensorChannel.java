@@ -6,7 +6,8 @@ public enum SensorChannel {
     RC("rc_angle"),
 	DRIVE_CTRL("steering"),
 	VISION("vision"),
-	ENCODER("encoder");
+	ENCODER("encoder"),
+	GUI_LOGGING_BUTTON("logging_button");
 	
 	private String rstPath;
 	private String msgPath;

@@ -11,7 +11,7 @@ import com.roboclub.robobuggy.sensors.SensorState;
 import com.roboclub.robobuggy.sensors.SensorType;
 import com.roboclub.robobuggy.serial2.RBSerial;
 import com.roboclub.robobuggy.serial2.SerialNode;
-import com.roboclub.robobuggy.serial2.RBSerial.RBPair;
+import com.roboclub.robobuggy.serial2.RBPair;
 
 /**
  * @author Matt Sebek
@@ -40,7 +40,7 @@ public class EncoderNode2 extends SerialNode implements Node {
 		messagePub = new Publisher(sensor.getMsgPath());
 		statePub = new Publisher(sensor.getStatePath());
 		
-		statePub.publish(new StateMessage(this.currState));
+		//statePub.publish(new StateMessage(this.currState));
 
 	}
 
@@ -52,7 +52,7 @@ public class EncoderNode2 extends SerialNode implements Node {
 		double dist = ((double)(encTicks)/TICKS_PER_REV) / M_PER_REV;
 		double velocity = (dist - distLast)/ (double)encTime;
 		distLast = dist;
-		msgPub.publish(new EncoderMeasurement(dist, velocity));
+		messagePub.publish(new EncoderMeasurement(dist, velocity));
 	}
 	
 	@Override
@@ -83,6 +83,7 @@ public class EncoderNode2 extends SerialNode implements Node {
 			System.out.printf("corruption sigh");
 			return 1;
 		}
+		System.out.println("goodread");
 		return 6;
 	}
 	
