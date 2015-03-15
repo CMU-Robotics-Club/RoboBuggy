@@ -64,7 +64,12 @@ FORMAT = ihex
 TARGET = main
 
 # List C source files here. (C dependencies are automatically generated.)
-SRC = $(TARGET).c uart.c system_clock.c servo.c ../lib_avr/rbserialmessages/rbserialmessages.cpp
+SRC = $(TARGET).c
+SRC += uart.c
+SRC += system_clock.c
+SRC += servo.c
+SRC += ../lib_avr/rbserialmessages/rbserialmessages.cpp
+SRC += ../lib_avr/servoreceiver/servoreceiver.cpp
 #ff.o sd.o diskio.o rtc.o
 
 # List Assembler source files here.
