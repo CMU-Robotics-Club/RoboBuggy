@@ -25,16 +25,19 @@
 #define RX_STEERING_PIN  PINE
 #define RX_STEERING_PINN PE4 // arduino 2
 #define RX_STEERING_INT  INT4_vect
+#define RX_STEERING_INTN 4
 #define RX_BRAKE_DDR  DDRD
 #define RX_BRAKE_PORT PORTD
 #define RX_BRAKE_PIN  PIND
 #define RX_BRAKE_PINN PD0 // arduino 21
 #define RX_BRAKE_INT  INT0_vect
+#define RX_BRAKE_INTN 0
 #define RX_AUTON_DDR  DDRD
 #define RX_AUTON_PORT PORTD
 #define RX_AUTON_PIN  PIND
 #define RX_AUTON_PINN PD1 // arduino 20
 #define RX_AUTON_INT  INT1_vect
+#define RX_AUTON_INTN 1
 
 RBSerialMessages g_rbsm_endpoint;
 rb_message_t g_new_rbsm;
@@ -111,7 +114,7 @@ int main(void) {
   system_clock_init();
 
   // set up rc receiver
-  g_steering_rx.Init(&RX_STEERING_PIN, RX_STEERING_PINN);
+  g_steering_rx.Init(&RX_STEERING_PIN, RX_STEERING_PINN, RX_STEERING_INTN);
 
   // loop forever
   while(1) {

@@ -8,6 +8,7 @@
 class ServoReceiver {
     volatile uint8_t *receiver_pin_reg_;
     uint8_t receiver_pin_num_;
+    uint8_t int_num_;
     int k_min_pulse_;
     int k_max_pulse_;
     volatile unsigned long up_switch_time_;
@@ -16,9 +17,10 @@ class ServoReceiver {
 
     public:
         ServoReceiver();
-        void Init(volatile uint8_t *pin_reg, uint8_t pin_num);
+        void Init(volatile uint8_t *pin_reg, uint8_t pin_num, uint8_t int_num);
         void OnInterruptReceiver();
-        unsigned long LastTimestamp();
+        unsigned long GetLastTimestamp();
+        unsigned long GetPulseWidth();
         int GetAngle();
         void PrintDebugInfo(FILE *out_stream);
 };
