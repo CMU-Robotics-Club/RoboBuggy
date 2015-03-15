@@ -1,9 +1,11 @@
 package com.roboclub.robobuggy.nodes;
 
 import com.roboclub.robobuggy.messages.ImuMeasurement;
+import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
+import com.roboclub.robobuggy.sensors.SensorState;
 import com.roboclub.robobuggy.serial2.SerialNode;
 
 /**
@@ -34,9 +36,15 @@ public class ImuNode2 extends SerialNode implements Node {
 		statePub = new Publisher(sensor.getStatePath());
 	
 		// TODO state stuff
-		//statePub.publish(new StateMessage(this.currState));
+		statePub.publish(new StateMessage(SensorState.DISCONNECTED));
 	}
 
+	@Override
+	public void setSerialPort(gnu.io.SerialPort sp) {
+		super.setSerialPort(sp);
+		statePub.publish(new StateMessage(SensorState.ON));
+	};
+	
 	/*
 	@SuppressWarnings("unused")
 	private void estimateOrientation(double aX, double aY, double aZ, 
