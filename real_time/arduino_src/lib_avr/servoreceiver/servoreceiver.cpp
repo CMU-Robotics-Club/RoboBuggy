@@ -1,6 +1,15 @@
 #include "servoreceiver.h"
 
 
+inline long map(long x,
+                long in_offset,
+                long in_scale,
+                long out_offset,
+                long out_scale) {
+  return ((x - in_offset) * out_scale / in_scale) + out_offset;
+}
+
+
 ServoReceiver::ServoReceiver(){
 
 }
@@ -17,6 +26,14 @@ void ServoReceiver::Init(volatile uint8_t *pin_reg,
     // set constants
     k_min_pulse_ = 500;  // min pulse width in us
     k_max_pulse_ = 2500; // max pulse width in us
+    k_offset_rc_in = 1510;
+    k_scale_rc_in = 350;
+    k_offset_steering_out = 1789;
+    k_scale_steering_out = -150;
+    k_offset_stored_angle = 0;
+    k_scale_stored_angle = 1000; // in hundredths of a degree for precision
+
+
     up_switch_time_ = 0; // us
     rc_value_ = 0;       // last recorded pulse width in us
     last_timestamp_ = 0; // us
@@ -145,8 +162,19 @@ Returns the angle measurement of the last read pulse width. As far as I can
 tell, this is an arbitrary scale and has an arbitrary offset.
 */
 int ServoReceiver::GetAngle(){
-    int ret_val = (int)(rc_value_ - 980)*3/17; //WHYYYYY
+    int ret_val = (int)(rc_value_ - AIL_RIGHTMOST)*3/17; //WHYYYYY
     return ret_val;
+}
+
+
+int ServoReceiver::GetAngleThousandths() {
+  // Scale the received signal into hundredths of a degree
+  int value = (int)map(rc_value_,
+                       k_offset_rc_in,
+                       k_scale_rc_in,
+                       k_offset_stored_angle,
+                       k_scale_stored_angle);
+  return value;
 }
 
 
