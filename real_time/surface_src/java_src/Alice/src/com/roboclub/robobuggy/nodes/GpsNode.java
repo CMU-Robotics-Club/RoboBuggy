@@ -104,7 +104,7 @@ public class GpsNode extends SerialConnection implements Sensor {
 					case LONG_DIR:
 						if (val.equalsIgnoreCase("W"))
 							longitude = -1 * longitude;
-						msgPub.publish(new GpsMeasurement(latitude, longitude));
+						msgPub.publish(new GpsMeasurement(
 						return;
 					}
 
