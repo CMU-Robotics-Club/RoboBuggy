@@ -1,19 +1,19 @@
 package com.roboclub.robobuggy.serial2;
 
 public class RBPair {
-	private int a;
-	private RBSerialMessage b;
+	private int num_bytes_read;
+	private RBSerialMessage rb_message;
 
 	RBPair(int num_bytes_read, RBSerialMessage new_message) {
-		a = num_bytes_read;
-		b = new_message;
+		this.num_bytes_read = num_bytes_read;
+		this.rb_message = new_message;
 	}
 		
-	public int getNumber() {
-		return a;
+	public int getNumberOfBytesRead() {
+		return num_bytes_read;
 	}
 		
 	public RBSerialMessage getMessage() {
-		return b;
+		return rb_message;
 	}
 }

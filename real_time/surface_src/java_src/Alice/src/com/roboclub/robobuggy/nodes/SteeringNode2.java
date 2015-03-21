@@ -120,7 +120,7 @@ public class SteeringNode2 extends SerialNode implements Node {
 	@Override
 	public int peel(byte[] buffer, int start, int bytes_available) {
 		RBPair rbp = RBSerial.peel(buffer, start, bytes_available);
-		int bytes_read = rbp.getNumber();
+		int bytes_read = rbp.get_num_bytes_read();
 		RBSerialMessage message = rbp.getMessage();
 	
 		byte b = message.getHeaderByte();

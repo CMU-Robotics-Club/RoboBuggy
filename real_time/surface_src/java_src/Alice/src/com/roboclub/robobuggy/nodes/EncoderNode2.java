@@ -1,13 +1,18 @@
 package com.roboclub.robobuggy.nodes;
 
+import java.util.Date;
+
 import gnu.io.SerialPort;
 
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
+import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
+import com.roboclub.robobuggy.sensors.SensorState;
 import com.roboclub.robobuggy.serial2.RBPair;
 import com.roboclub.robobuggy.serial2.RBSerial;
+import com.roboclub.robobuggy.serial2.RBSerialMessage;
 import com.roboclub.robobuggy.serial2.SerialNode;
 
 /**
@@ -20,15 +25,16 @@ import com.roboclub.robobuggy.serial2.SerialNode;
  */
 
 public class EncoderNode2 extends SerialNode implements Node {
-	private static final long TICKS_PER_REV = 5;
-	private static final double M_PER_REV = 5.0;
-	private static final int MAX_TICKS = 0xFFFF;
+	private static final double TICKS_PER_REV = 7.0;
 	
-	private int encReset;
-	private int encTicks;
-	private int encTime;
-	private double distLast;
+	// Measured as 2 feet. Though could be made more precise. 
+	private static final double M_PER_REV = 0.61;
 
+	private double totalDist = 0.0;
+	private int encTicks = 0;
+	private double distLast = 0.0;
+	private Date timeLast = new Date();
+	
 	Publisher messagePub;
 	Publisher statePub;
 
@@ -43,13 +49,16 @@ public class EncoderNode2 extends SerialNode implements Node {
 
 	public void setSerialPort(SerialPort sp) {
 		super.setSerialPort(sp);
+		statePub.publish(new StateMessage(SensorState.ON));
 	}
 	
 	private void estimateVelocity() {
-		double dist = ((double)(encTicks)/TICKS_PER_REV) / M_PER_REV;
-		double velocity = (dist - distLast)/ (double)encTime;
-		distLast = dist;
-		messagePub.publish(new EncoderMeasurement(dist, velocity));
+		Date currTime = new Date();
+		double dist = ((double)(encTicks)/TICKS_PER_REV) * M_PER_REV;
+		double velocity = (dist)/ ((currTime.getTime() - timeLast.getTime()) * 1000);
+		timeLast = currTime;
+		totalDist = dist;
+		messagePub.publish(new EncoderMeasurement(totalDist, velocity));
 	}
 	
 	@Override
@@ -73,14 +82,29 @@ public class EncoderNode2 extends SerialNode implements Node {
 
 	@Override
 	public int peel(byte[] buffer, int start, int bytes_available) {
-		
+		// The Encoder sends 3 types of messages
+		//  - Encoder ticks since last message (keep)
+		//  - Number of ticks since last reset
+		//  - Timestamp since reset
 		RBPair rbp = RBSerial.peel(buffer, start, bytes_available);
-		if(rbp.getNumber() == 0) {
-			// Could not read a message....try again in one byte
-			System.out.printf("corruption sigh");
-			return 1;
+		switch(rbp.getNumberOfBytesRead()) {
+			case 0: return 0;
+			case 1: return 1;
+			case 6: break;
+			default: {
+				System.out.println("HOW DID NOT A SIX GET HERE");
+			}
+		
 		}
-		System.out.println("goodread");
+		
+		RBSerialMessage message = rbp.getMessage();
+		if(message.getHeaderByte() == RBSerialMessage.ENC_TICK) {
+			// This is a delta-distance! Do a thing!
+			encTicks += message.getDataWord();
+			estimateVelocity();
+		}
+		
+		
 		return 6;
 	}
 	
