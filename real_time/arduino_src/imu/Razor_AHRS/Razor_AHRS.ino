@@ -147,9 +147,9 @@
   
   Byte order of binary output is little-endian: least significant byte comes first.
 */
-
+// BUGGY BUGGY BUGGY BUGGY Change this to fit the current buggy
 #include "config_nixie.h"
-//#include <config_transistor.h>
+//#include "config_transistor.h"
 
 // Select your startup output mode and format here!
 int output_mode  = DEF_OUTPUT_MODE;
