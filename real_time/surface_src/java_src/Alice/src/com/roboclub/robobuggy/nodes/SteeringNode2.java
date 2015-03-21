@@ -4,7 +4,7 @@ import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.serial2.RBSerial;
-import com.roboclub.robobuggy.serial2.RBSerial.RBPair;
+import com.roboclub.robobuggy.serial2.RBPair;
 import com.roboclub.robobuggy.serial2.RBSerialMessage;
 import com.roboclub.robobuggy.serial2.SerialNode;
 
@@ -28,7 +28,7 @@ public class SteeringNode2 extends SerialNode implements Node {
 	public SteeringNode2(SensorChannel sensor) {
 		super("Steering");
 		
-		brakePub = new Publisher();
+		//brakePub = new Publisher();
 		statePub = new Publisher(sensor.getStatePath());
 		// Subscriber for Steering commands
 		/*new Subscriber(ActuatorChannel.STEERING.getMsgPath(),

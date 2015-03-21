@@ -106,7 +106,7 @@ public class mainFile {
 		Gui.EnableLogging();
 
 	
-		LoggingNode ln = new LoggingNode(SensorChannel.IMU.getMsgPath(), "C:\\Users\\Matt\\buggy-log\\run1");
+//		LoggingNode ln = new LoggingNode(SensorChannel.IMU.getMsgPath(), "C:\\Users\\Matt\\buggy-log\\run1");
 		
 		// Bring up the IMU
 		System.out.println("Initializing IMU Serial Connection");

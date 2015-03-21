@@ -3,7 +3,6 @@ package com.roboclub.robobuggy.nodes;
 import java.util.Date;
 
 import com.roboclub.robobuggy.messages.GpsMeasurement;
-import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Publisher;
