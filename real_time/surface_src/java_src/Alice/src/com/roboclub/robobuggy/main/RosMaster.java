@@ -3,7 +3,6 @@ package com.roboclub.robobuggy.main;
 import java.util.List;
 
 import com.roboclub.robobuggy.ros.Node;
-import com.roboclub.robobuggy.sensors.Sensor;
 
 public interface RosMaster {
 

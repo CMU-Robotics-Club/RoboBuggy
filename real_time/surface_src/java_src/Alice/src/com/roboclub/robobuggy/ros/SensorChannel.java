@@ -4,7 +4,9 @@ public enum SensorChannel {
 	GPS("gps"),
 	IMU("imu"),
     RC("rc_angle"),
-	DRIVE_CTRL("steering"),
+    DRIVE_CTRL("drive_ctrl"),
+	STEERING("steering"),
+	BRAKE("brake"),
 	VISION("vision"),
 	ENCODER("encoder"),
 	GUI_LOGGING_BUTTON("logging_button");

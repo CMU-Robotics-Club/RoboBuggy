@@ -10,6 +10,7 @@ import com.roboclub.robobuggy.serial.SerialNode;
 
 /**
  * 
+ * @author Matt Sebek
  * @author Kevin Brennan
  *
  * @version 0.5
@@ -19,17 +20,19 @@ import com.roboclub.robobuggy.serial.SerialNode;
  * DESCRIPTION: TODO
  */
 
-public class SteeringNode extends SerialNode implements Node {
+public class DriveControlNode extends SerialNode implements Node {
 	
 	public Publisher brakePub;
 	public Publisher steeringPub;
 	public Publisher statePub;
 	
-	public SteeringNode(SensorChannel sensor) {
-		super("Steering");
+	public DriveControlNode(SensorChannel sensor) {
+		super("Drive Controls");
 		
-		//brakePub = new Publisher();
+		brakePub = new Publisher(SensorChannel.BRAKE.getMsgPath());
+		steeringPub = new Publisher(SensorChannel.STEERING.getMsgPath());
 		statePub = new Publisher(sensor.getStatePath());
+		
 		// Subscriber for Steering commands
 		/*new Subscriber(ActuatorChannel.STEERING.getMsgPath(),
 				new MessageListener() {

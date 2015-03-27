@@ -78,7 +78,7 @@ public class SerialFather implements Node {
 					connected = true;
 					port.addEventListener(this);
 					System.out.println("Connected to port: "
-							+ this.getName());
+							+ port.getName());
 					return;
 				}
 
