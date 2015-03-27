@@ -7,7 +7,7 @@ import java.util.Date;
 
 public abstract class BaseMessage {
 	public static DateFormat formatter = new SimpleDateFormat(
-			"yyyy-MM-dd HH:mm:ss:SSSS");
+			"yyyy-MM-dd HH:mm:ss.SSS");
 
 	public static String format_the_date(Date dt) {
 		return formatter.format(dt);
