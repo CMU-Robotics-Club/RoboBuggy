@@ -20,7 +20,6 @@ import java.io.File;
 import javax.imageio.ImageIO;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
@@ -28,15 +27,13 @@ import org.opencv.core.Size;
 import org.opencv.highgui.Highgui;
 import org.opencv.highgui.VideoCapture;
 import org.opencv.imgproc.Imgproc;
-
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.main.config;
 import com.roboclub.robobuggy.ros.SensorChannel;
-import com.roboclub.robobuggy.sensors.Sensor;
 import com.roboclub.robobuggy.sensors.SensorState;
 import com.roboclub.robobuggy.sensors.SensorType;
 
-public class VisionNode implements Sensor {
+public class VisionNode {
 	private SensorType sensorType;
 	private boolean connected;
 	private SensorState state;
@@ -119,24 +116,7 @@ public class VisionNode implements Sensor {
 		
 		return true;
 	}
-	
-	@Override
-	public SensorState getState() {
-		return this.state;
-	}
 
-	@Override
-	public boolean isConnected() {
-		return this.connected;
-	}
-
-	@Override
-	public long timeOfLastUpdate() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
 	public boolean close() {
 		if (connected) {
 			try {
@@ -158,16 +138,6 @@ public class VisionNode implements Sensor {
 		state = SensorState.DISCONNECTED;
 		
 		return false;
-	}
-
-	@Override
-	public SensorType getSensorType() {
-		return this.sensorType;
-	}
-
-	@Override
-	public void publish() {
-		// TODO Auto-generated method stub
 	}
 
 	public void setDisplay(boolean value) {

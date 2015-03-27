@@ -69,6 +69,7 @@ public class EncoderMeasurement extends BaseMessage implements Message {
 		distance = Double.parseDouble(ar[1]);
 		velocity = Double.parseDouble(ar[2]);
 		dataWord = Double.parseDouble(ar[3]);
-		return new EncoderMeasurement(timestamp, distance, velocity, dataWord);
+		//TODO calculate acceleration
+		return new EncoderMeasurement(timestamp, distance, velocity, dataWord, accel);
 	}
 }
