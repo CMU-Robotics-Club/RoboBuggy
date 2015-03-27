@@ -90,7 +90,7 @@ void adc_init(void) {
 }
 
 
-uint8_t acd_read_blocking(uint8_t channel) {
+uint8_t adc_read_blocking(uint8_t channel) {
   ADMUX = (ADMUX & 0xF0) | (channel & 0x0F);
   ADCSRA |= _BV(ADSC);
   while((ADCSRA & _BV(ADSC)) == 1) {}
@@ -235,6 +235,10 @@ int main(void) {
       g_brake_needs_reset = true;
     }
 
+
+    //For the old buggy, the voltage divider is 10k ohm on the adc side and 16k ohm on top.
+    g_current_voltage = map_signal(adc_read_blocking(0), 0, 255, 0, 12636); //in millivolts
+    //normally set to 13000, but the avcc is 4.86 volts, rather than 5.
     // Set outputs
     if(g_brake_state_engaged == false && g_brake_needs_reset == false) {
       brake_raise();
