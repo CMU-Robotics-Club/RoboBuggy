@@ -30,9 +30,12 @@ public class EncoderNode2 extends SerialNode implements Node {
 	// Measured as 2 feet. Though could be made more precise. 
 	private static final double M_PER_REV = 0.61;
 
-	private double totalDist = 0.0;
+	// accumulated
 	private int encTicks = 0;
-	private double distLast = 0.0;
+	
+	// last state
+	private double accDistLast = 0.0;
+	private double instVelocityLast = 0.0;
 	private Date timeLast = new Date();
 	
 	Publisher messagePub;
@@ -52,13 +55,16 @@ public class EncoderNode2 extends SerialNode implements Node {
 		statePub.publish(new StateMessage(SensorState.ON));
 	}
 	
-	private void estimateVelocity() {
+	private void estimateVelocity(int dataWord) {
 		Date currTime = new Date();
-		double dist = ((double)(encTicks)/TICKS_PER_REV) * M_PER_REV;
-		double velocity = (dist)/ ((currTime.getTime() - timeLast.getTime()) * 1000);
-		timeLast = currTime;
-		totalDist = dist;
-		messagePub.publish(new EncoderMeasurement(totalDist, velocity));
+		double accDist = ((double)(encTicks)) * M_PER_REV / TICKS_PER_REV;
+		double instVelocity = (accDist - accDistLast) * 1000 / (currTime.getTime() - timeLast.getTime());
+		double instAccel = (instVelocity - instVelocityLast) * 1000 / (currTime.getTime() - timeLast.getTime());
+		accDistLast = accDist;
+		instVelocityLast = instVelocity;
+		timeLast = currTime;	
+		
+		messagePub.publish(new EncoderMeasurement(currTime, dataWord, accDist, instVelocity, instAccel));
 	}
 	
 	@Override
@@ -101,12 +107,11 @@ public class EncoderNode2 extends SerialNode implements Node {
 		if(message.getHeaderByte() == RBSerialMessage.ENC_TICK) {
 			// This is a delta-distance! Do a thing!
 			encTicks += message.getDataWord();
-			estimateVelocity();
+			estimateVelocity(message.getDataWord());
 		}
 		
 		
 		return 6;
 	}
-	
-	
+
 }
