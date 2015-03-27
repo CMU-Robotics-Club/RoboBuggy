@@ -81,35 +81,40 @@ public class ImuNode2 extends SerialNode implements Node {
 	@Override
 	public int peel(byte[] buffer, int start, int bytes_available) {
 		// TODO replace 80 with max message length
-		if(bytes_available < 80) {
+		if(bytes_available < 30) {
 			// Not enough bytes...maybe?
 			return 0;
 		}
 		
-		// Check the prefix.
+		// Check the prefix. was previously #ACG
 		if(buffer[start] != '#') {
 			return 1;
 		}
-		if(buffer[start+1] != 'A') {
+		if(buffer[start+1] != 'Y') {
 			return 1;
 		}
-		if(buffer[start+2] != 'C') {
+		if(buffer[start+2] != 'P') {
 			return 1;
 		}
-		if(buffer[start+3] != 'G') {
+		if(buffer[start+3] != 'R') {
 			return 1;
 		}
 		if(buffer[start+4] != '=') {
 			return 1;
 		}
-		double[] vals = new double[9];
+		
+		
+		
+		
+		double[] vals = new double[3];
 		String b = new String(buffer, start+5, bytes_available-5);
 		int orig_length = b.length();
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < 2; i++) {
 			// TODO: need less than bytes_availble
 			int comma_index = b.indexOf(',');
 			try {
-				vals[i] = Double.parseDouble(b.substring(0, comma_index)); 
+				Double d = Double.parseDouble(b.substring(0, comma_index));
+				vals[i] = d;
 			} catch (NumberFormatException nfe) {
 				System.out.println("maligned input; skipping...");
 				return 1;
@@ -119,11 +124,11 @@ public class ImuNode2 extends SerialNode implements Node {
 		
 		// The last one, we use the hash as the symbol!
 		int hash_index = b.indexOf('#');
-		vals[8] = Double.parseDouble(b.substring(0, hash_index));
+		vals[2] = Double.parseDouble(b.substring(0, hash_index));
 		b = b.substring(hash_index);	
 			
-		msgPub.publish(new ImuMeasurement(vals[0], vals[1],vals[2], 
-				vals[3], vals[4], vals[5], vals[6], vals[7], vals[8]));
+		msgPub.publish(new ImuMeasurement(0, 0, 0, 
+				0, 0, 0, vals[0], vals[1], vals[2]));
 		return 4 + (orig_length - b.length());
 	}
 }

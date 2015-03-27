@@ -54,21 +54,23 @@
 // Put MIN/MAX and OFFSET readings for your board here!
 // Accelerometer
 // "accel x,y,z (min/max) = X_MIN/X_MAX  Y_MIN/Y_MAX  Z_MIN/Z_MAX"
-#define ACCEL_X_MIN ((float) -250)
-#define ACCEL_X_MAX ((float) 250)
-#define ACCEL_Y_MIN ((float) -250)
-#define ACCEL_Y_MAX ((float) 250)
-#define ACCEL_Z_MIN ((float) -250)
-#define ACCEL_Z_MAX ((float) 250)
+
+
+#define ACCEL_X_MIN ((float) -290)
+#define ACCEL_X_MAX ((float) 284)
+#define ACCEL_Y_MIN ((float) -300)
+#define ACCEL_Y_MAX ((float) 300)
+#define ACCEL_Z_MIN ((float) -300)
+#define ACCEL_Z_MAX ((float) 310)
 
 // Magnetometer (standard calibration mode)
 // "magn x,y,z (min/max) = X_MIN/X_MAX  Y_MIN/Y_MAX  Z_MIN/Z_MAX"
-#define MAGN_X_MIN ((float) -600)
-#define MAGN_X_MAX ((float) 600)
-#define MAGN_Y_MIN ((float) -600)
-#define MAGN_Y_MAX ((float) 600)
-#define MAGN_Z_MIN ((float) -600)
-#define MAGN_Z_MAX ((float) 600)
+#define MAGN_X_MIN ((float) -474)
+#define MAGN_X_MAX ((float) 658)
+#define MAGN_Y_MIN ((float) -605)
+#define MAGN_Y_MAX ((float) 511)
+#define MAGN_Z_MIN ((float) -9)
+#define MAGN_Z_MAX ((float) 927)
 
 // Magnetometer (extended calibration mode)
 // Uncommend to use extended magnetometer calibration (compensates hard & soft iron errors)
@@ -78,9 +80,9 @@
 
 // Gyroscope
 // "gyro x,y,z (current/average) = .../OFFSET_X  .../OFFSET_Y  .../OFFSET_Z
-#define GYRO_AVERAGE_OFFSET_X ((float) 0.0)
-#define GYRO_AVERAGE_OFFSET_Y ((float) 0.0)
-#define GYRO_AVERAGE_OFFSET_Z ((float) 0.0)
+#define GYRO_AVERAGE_OFFSET_X ((float) -29.9)
+#define GYRO_AVERAGE_OFFSET_Y ((float) 37.55)
+#define GYRO_AVERAGE_OFFSET_Z ((float) -5.32)
 
 /*
 // Calibration example:

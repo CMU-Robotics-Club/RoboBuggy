@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.nodes.EncoderNode;
 import com.roboclub.robobuggy.nodes.EncoderNode2;
+import com.roboclub.robobuggy.nodes.GpsNode2;
 import com.roboclub.robobuggy.nodes.ImuNode2;
 import com.roboclub.robobuggy.nodes.LoggingNode;
 import com.roboclub.robobuggy.ros.Message;
@@ -106,16 +107,18 @@ public class mainFile {
 		Gui.EnableLogging();
 
 	
-		LoggingNode ln = new LoggingNode(SensorChannel.IMU.getMsgPath(), "C:\\Users\\Matt\\buggy-log\\run1");
+//		LoggingNode ln = new LoggingNode(SensorChannel.IMU.getMsgPath(), "C:\\Users\\Matt\\buggy-log\\run1");
 		
 		// Bring up the IMU
 		System.out.println("Initializing IMU Serial Connection");
 		ImuNode2 imu = new ImuNode2(SensorChannel.IMU);
+		GpsNode2 gps = new GpsNode2(SensorChannel.GPS);
+		EncoderNode2 enc = new EncoderNode2(SensorChannel.ENCODER);
+	
 		
-		//TODO why is this serial port needed for simulation mode
-		// Get the serial port
+		// Set up the IMU
 		SerialPort sp = null;
-		String com = "COM3";
+		String com = "COM4";
 		try {
 			sp = connect(com);
 		} catch (Exception e) {
@@ -123,18 +126,37 @@ public class mainFile {
 			e.printStackTrace();
 			throw new Exception("Device not found error");
 		}
-		
 		imu.setSerialPort(sp);
-		
 		sensorList.add(imu);
+
+		// Set up the GPS
+		try {
+			sp = connect("COM7");
+		} catch (Exception e) {
+			System.out.println("Unable to connect to necessary device on " + com);
+			e.printStackTrace();
+			throw new Exception("Device not found error");
+		}
+		gps.setSerialPort(sp);
+		sensorList.add(gps);
 	
-		new Subscriber(SensorChannel.IMU.getMsgPath(), new MessageListener() {
+		// Set up the Encoder
+		try {
+			sp = connect("COM14");
+		} catch (Exception e) {
+			System.out.println("Unable to connect to necessary device on " + com);
+			e.printStackTrace();
+			throw new Exception("Device not found error");
+		}
+		enc.setSerialPort(sp);
+		sensorList.add(enc);
+	
+		
+		
+		new Subscriber(SensorChannel.ENCODER.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				//System.out.println(m.toLogString());
-				num++;
-				if(num % 60 == 0) 
-					System.out.printf("%d\n", num / 60);
 			}
 		});
 
