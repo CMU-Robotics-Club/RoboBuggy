@@ -17,12 +17,12 @@ import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
-import com.roboclub.robobuggy.sensors.DriveControls;
-import com.roboclub.robobuggy.sensors.Encoder;
-import com.roboclub.robobuggy.sensors.Gps;
-import com.roboclub.robobuggy.sensors.Imu;
+//import com.roboclub.robobuggy.sensors.DriveControls;
+//import com.roboclub.robobuggy.sensors.Encoder;
+//import com.roboclub.robobuggy.sensors.Gps;
+//import com.roboclub.robobuggy.sensors.Imu;
 import com.roboclub.robobuggy.sensors.Sensor;
-import com.roboclub.robobuggy.sensors.VisionSystem;
+//import com.roboclub.robobuggy.sensors.VisionSystem;
 import com.roboclub.robobuggy.ui.Gui;
 
 public class Robot implements RosMaster {
@@ -31,7 +31,7 @@ public class Robot implements RosMaster {
 	private static boolean autonomous;
 	private static ArrayList<Sensor> sensorList;
 	private KalmanFilter kf;
-	private static VisionSystem vision;
+//	private static VisionSystem vision;
 	private static Publisher steerPub;
 	private static Publisher brakePub;
 	
