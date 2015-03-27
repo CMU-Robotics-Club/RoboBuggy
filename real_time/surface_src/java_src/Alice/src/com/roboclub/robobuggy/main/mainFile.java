@@ -3,14 +3,11 @@ package com.roboclub.robobuggy.main;
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
-
 import java.util.ArrayList;
-
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.nodes.EncoderNode;
-import com.roboclub.robobuggy.nodes.EncoderNode2;
-import com.roboclub.robobuggy.nodes.GpsNode2;
-import com.roboclub.robobuggy.nodes.ImuNode2;
+import com.roboclub.robobuggy.nodes.GpsNode;
+import com.roboclub.robobuggy.nodes.ImuNode;
 import com.roboclub.robobuggy.nodes.LoggingNode;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
@@ -111,9 +108,9 @@ public class mainFile {
 		
 		// Bring up the IMU
 		System.out.println("Initializing IMU Serial Connection");
-		ImuNode2 imu = new ImuNode2(SensorChannel.IMU);
-		GpsNode2 gps = new GpsNode2(SensorChannel.GPS);
-		EncoderNode2 enc = new EncoderNode2(SensorChannel.ENCODER);
+		ImuNode imu = new ImuNode(SensorChannel.IMU);
+		GpsNode gps = new GpsNode(SensorChannel.GPS);
+		EncoderNode enc = new EncoderNode(SensorChannel.ENCODER);
 	
 		
 		// Set up the IMU

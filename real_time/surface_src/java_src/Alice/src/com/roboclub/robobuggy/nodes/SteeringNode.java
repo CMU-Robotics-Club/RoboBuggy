@@ -1,17 +1,12 @@
 package com.roboclub.robobuggy.nodes;
 
-import com.roboclub.robobuggy.messages.BrakeCommand;
-import com.roboclub.robobuggy.messages.StateMessage;
-import com.roboclub.robobuggy.messages.SteeringMeasurement;
-import com.roboclub.robobuggy.messages.WheelAngleCommand;
-import com.roboclub.robobuggy.ros.ActuatorChannel;
-import com.roboclub.robobuggy.ros.Message;
-import com.roboclub.robobuggy.ros.MessageListener;
+import com.roboclub.robobuggy.ros.Node;
+import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
-import com.roboclub.robobuggy.ros.Subscriber;
-import com.roboclub.robobuggy.sensors.Arduino;
-import com.roboclub.robobuggy.sensors.SensorState;
-import com.roboclub.robobuggy.sensors.SensorType;
+import com.roboclub.robobuggy.serial2.RBSerial;
+import com.roboclub.robobuggy.serial2.RBPair;
+import com.roboclub.robobuggy.serial2.RBSerialMessage;
+import com.roboclub.robobuggy.serial2.SerialNode;
 
 /**
  * 
@@ -24,16 +19,19 @@ import com.roboclub.robobuggy.sensors.SensorType;
  * DESCRIPTION: TODO
  */
 
-public class SteeringNode extends Arduino {
+public class SteeringNode extends SerialNode implements Node {
 	
-   public int steeringAngle;
+	public Publisher brakePub;
+	public Publisher steeringPub;
+	public Publisher statePub;
 	
 	public SteeringNode(SensorChannel sensor) {
-		super(sensor, "Steering");
-		sensorType = SensorType.GPS;
+		super("Steering");
 		
+		//brakePub = new Publisher();
+		statePub = new Publisher(sensor.getStatePath());
 		// Subscriber for Steering commands
-		new Subscriber(ActuatorChannel.STEERING.getMsgPath(),
+		/*new Subscriber(ActuatorChannel.STEERING.getMsgPath(),
 				new MessageListener() {
 					@Override
 					public void actionPerformed(String topicName, Message m) {
@@ -52,43 +50,25 @@ public class SteeringNode extends Arduino {
 							writeBrake(((BrakeCommand)m).down);
 						}
 					}
-		});
+		});*/
 	}
 	
 	/* Methods for Serial Communication with Arduino */
-	public void writeAngle(float angle) {
+	/*public void writeAngle(float angle) {
 		if (angle >= 0 && angle <= 180) {
 			if(isConnected()) {
 				/*byte[] msg = {
 						(byte)((angle >> 0x18) & 0xFF),
 						(byte)((angle >> 0x10) & 0xFF),
 						(byte)((angle >> 0x08) & 0xFF),
-						(byte)(angle & 0xFF),'\n'};*/
+						(byte)(angle & 0xFF),'\n'};
 				System.out.println("MATT BROKE THIS BECAUSE INTERFACE WITH LOW LEVEL CHANGED");
 				//super.serialWrite(null);
 			}
 		}
-	}
+	}*/
 	
-	public void writeBrake(boolean value) {
-		// TODO writing brake command
-	}
-	
-	/* Methods for reading from Serial */
-	@Override
-	protected boolean validId(char value) {
-		switch (value) {
-			case STEERING:
-			case BRAKE:
-			case ERROR:
-			case MSG_ID:
-				return true;
-			default:
-				return false;
-		}
-	}
-
-	@Override
+	/*@Override
 	public void publish() {
 		lastUpdateTime = System.currentTimeMillis();
 		int value = parseInt(inputBuffer[1], inputBuffer[2],
@@ -118,5 +98,42 @@ public class SteeringNode extends Arduino {
 			currState = SensorState.ON;
 			statePub.publish(new StateMessage(this.currState));
 		}
+	}*/
+
+	@Override
+	public boolean matchDataSample(byte[] sample) {
+		// TODO actually use this
+		return true;
+	}
+
+	@Override
+	public int matchDataMinSize() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int baudRate() {
+		return 9600;
+	}
+
+	@Override
+	public int peel(byte[] buffer, int start, int bytes_available) {
+		RBPair rbp = RBSerial.peel(buffer, start, bytes_available);
+		int bytes_read = rbp.get_num_bytes_read();
+		RBSerialMessage message = rbp.getMessage();
+	
+		byte b = message.getHeaderByte();
+		if(b == RBSerialMessage.BRAKE) {
+			
+		} else if (b == RBSerialMessage.STEERING){
+			
+			
+		} else if (b == RBSerialMessage.DEVICE_ID) {
+			// Do nothing really
+			
+		}
+		
+		return bytes_read;
 	}
 }

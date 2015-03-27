@@ -1,102 +1,111 @@
 package com.roboclub.robobuggy.nodes;
 
+import java.util.Date;
+
+import gnu.io.SerialPort;
+
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
+import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
-import com.roboclub.robobuggy.sensors.Arduino;
 import com.roboclub.robobuggy.sensors.SensorState;
-import com.roboclub.robobuggy.sensors.SensorType;
+import com.roboclub.robobuggy.serial2.RBPair;
+import com.roboclub.robobuggy.serial2.RBSerial;
+import com.roboclub.robobuggy.serial2.RBSerialMessage;
+import com.roboclub.robobuggy.serial2.SerialNode;
 
 /**
- * 
+ * @author Matt Sebek
  * @author Kevin Brennan
  *
- * @version 0.5
- * 
  * CHANGELOG: NONE
  * 
- * DESCRIPTION: TODO
+ * DESCRIPTION: Potential replacement for previous serial-reading framework.
  */
 
-public class EncoderNode extends Arduino {
-	private static final long TICKS_PER_REV = 5;
-	private static final double M_PER_REV = 5.0;
-	private static final int MAX_TICKS = 0xFFFF;
+public class EncoderNode extends SerialNode implements Node {
+	private static final double TICKS_PER_REV = 7.0;
 	
-	private int encReset;
-	private int encTicks;
-	private int encTime;
-	private double distLast;
-	
-	public EncoderNode(SensorChannel sensor) {
-		super(sensor, "Encoder");
-		msgPub = new Publisher(sensor.getMsgPath());
-		statePub = new Publisher(sensor.getStatePath());
-		sensorType = SensorType.ENCODER;
-		statePub.publish(new StateMessage(this.currState));
+	// Measured as 2 feet. Though could be made more precise. 
+	private static final double M_PER_REV = 0.61;
 
+	private double totalDist = 0.0;
+	private int encTicks = 0;
+	private double distLast = 0.0;
+	private Date timeLast = new Date();
+	
+	Publisher messagePub;
+	Publisher statePub;
+
+	public EncoderNode(SensorChannel sensor) {
+		super("encoder");
+		messagePub = new Publisher(sensor.getMsgPath());
+		statePub = new Publisher(sensor.getStatePath());
+		
+		//statePub.publish(new StateMessage(this.currState));
+
+	}
+
+	public void setSerialPort(SerialPort sp) {
+		super.setSerialPort(sp);
+		statePub.publish(new StateMessage(SensorState.ON));
 	}
 	
 	private void estimateVelocity() {
-		double dist = ((double)(encTicks)/TICKS_PER_REV) / M_PER_REV;
-		double velocity = (dist - distLast)/ (double)encTime;
-		distLast = dist;
-		msgPub.publish(new EncoderMeasurement(dist, velocity));
-	}
-	
-	/* Methods for reading from Serial */
-	@Override
-	public boolean validId(char value) {
-		switch (value) {
-			case ENC_TIME:
-			case ENC_RESET:
-			case ENC_TICK:
-			case ERROR:
-			case MSG_ID:
-				return true;
-			default:
-				return false;
-		}
+		Date currTime = new Date();
+		double dist = ((double)(encTicks)/TICKS_PER_REV) * M_PER_REV;
+		double velocity = (dist)/ ((currTime.getTime() - timeLast.getTime()) * 1000);
+		timeLast = currTime;
+		totalDist = dist;
+		messagePub.publish(new EncoderMeasurement(totalDist, velocity));
 	}
 	
 	@Override
-	public void publish() {
-		lastUpdateTime = System.currentTimeMillis();
+	public boolean matchDataSample(byte[] sample) {
+		// Peel what ever is not a message
 		
-		System.out.println("publishing encoder");
+		// Check that whatever we give it is a message
 		
-		int value = parseInt(inputBuffer[1], inputBuffer[2],
-				inputBuffer[3], inputBuffer[4]);
-		try {
-			switch (inputBuffer[0]) {
-			case ENC_TIME:
-				encTime = value;
-				break;
-			case ENC_RESET:
-				encReset = value;
-				break;
-			case ENC_TICK:
-				encTicks = value;
-				estimateVelocity();
-				break;
-			case ERROR:
-				// TODO handle errors
-				break;
+		return true;
+	}
+
+	@Override
+	public int matchDataMinSize() {
+		return 2*RBSerial.MSG_LEN;
+	}
+
+	@Override
+	public int baudRate() {
+		return 9600;
+	}
+
+	@Override
+	public int peel(byte[] buffer, int start, int bytes_available) {
+		// The Encoder sends 3 types of messages
+		//  - Encoder ticks since last message (keep)
+		//  - Number of ticks since last reset
+		//  - Timestamp since reset
+		RBPair rbp = RBSerial.peel(buffer, start, bytes_available);
+		switch(rbp.getNumberOfBytesRead()) {
+			case 0: return 0;
+			case 1: return 1;
+			case 6: break;
+			default: {
+				System.out.println("HOW DID NOT A SIX GET HERE");
 			}
-		} catch (Exception e) {
-			System.out.println("Encoder Exception on port: " + this.getName());
-			if (this.currState != SensorState.FAULT) {
-				this.currState = SensorState.FAULT;
-				statePub.publish(new StateMessage(this.currState));
-			}
-			return;
+		
 		}
 		
-		if (this.currState != SensorState.ON) {
-			this.currState = SensorState.ON;
-			statePub.publish(new StateMessage(this.currState));
+		RBSerialMessage message = rbp.getMessage();
+		if(message.getHeaderByte() == RBSerialMessage.ENC_TICK) {
+			// This is a delta-distance! Do a thing!
+			encTicks += message.getDataWord();
+			estimateVelocity();
 		}
+		
+		
+		return 6;
 	}
 	
 	

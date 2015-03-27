@@ -11,11 +11,11 @@ import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.messages.WheelAngleCommand;
-import com.roboclub.robobuggy.nodes.EncoderNode2;
+import com.roboclub.robobuggy.nodes.EncoderNode;
 import com.roboclub.robobuggy.nodes.GpsNode;
-import com.roboclub.robobuggy.nodes.GpsNode2;
-import com.roboclub.robobuggy.nodes.ImuNode2;
-import com.roboclub.robobuggy.nodes.SteeringNode2;
+import com.roboclub.robobuggy.nodes.GpsNode;
+import com.roboclub.robobuggy.nodes.ImuNode;
+import com.roboclub.robobuggy.nodes.SteeringNode;
 import com.roboclub.robobuggy.ros.ActuatorChannel;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
@@ -60,7 +60,7 @@ public class Robot implements RosMaster {
 		// Initialize Sensor
 		if (config.GPS_DEFAULT) {
 			System.out.println("Initializing GPS Serial Connection");
-			GpsNode2 gps = new GpsNode2(SensorChannel.GPS);
+			GpsNode gps = new GpsNode(SensorChannel.GPS);
 			sensorList.add(gps);
 			
 			new Subscriber(SensorChannel.GPS.getMsgPath(), new MessageListener() {
@@ -74,7 +74,7 @@ public class Robot implements RosMaster {
 
 		if (config.IMU_DEFAULT) {
 			System.out.println("Initializing IMU Serial Connection");
-			ImuNode2 imu = new ImuNode2(SensorChannel.IMU);
+			ImuNode imu = new ImuNode(SensorChannel.IMU);
 			sensorList.add(imu);
 			
 			new Subscriber(SensorChannel.IMU.getMsgPath(), new MessageListener() {
@@ -87,7 +87,7 @@ public class Robot implements RosMaster {
 
 		if (config.ENCODER_DEFAULT) {
 			System.out.println("Initializing Encoder Serial Connection");
-			EncoderNode2 encoder = new EncoderNode2(SensorChannel.ENCODER);
+			EncoderNode encoder = new EncoderNode(SensorChannel.ENCODER);
 			sensorList.add(encoder);
 		
 			new Subscriber(SensorChannel.ENCODER.getMsgPath(), new MessageListener() {
@@ -100,7 +100,7 @@ public class Robot implements RosMaster {
 
 		if (config.DRIVE_DEFAULT) {
 			System.out.println("Initializing Drive Serial Connection");
-			SteeringNode2 controls = new SteeringNode2(SensorChannel.DRIVE_CTRL);
+			SteeringNode controls = new SteeringNode(SensorChannel.DRIVE_CTRL);
 			sensorList.add(controls);
 			
 			new Subscriber(SensorChannel.DRIVE_CTRL.getMsgPath(), new MessageListener() {
