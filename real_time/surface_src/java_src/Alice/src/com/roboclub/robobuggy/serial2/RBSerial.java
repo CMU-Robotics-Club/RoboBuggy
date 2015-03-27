@@ -19,7 +19,7 @@ public class RBSerial {
 		// Peel an ID, or fail
 		byte header = buf[start];
 		if(!RBSerialMessage.isValidHeader(header)) {
-			return new RBPair(0, null);
+			return new RBPair(1, null);
 		}
 		
 		// Parse an int, or fail

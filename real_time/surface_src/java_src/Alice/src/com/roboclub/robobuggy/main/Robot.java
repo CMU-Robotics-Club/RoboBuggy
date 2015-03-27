@@ -11,27 +11,36 @@ import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.messages.WheelAngleCommand;
+import com.roboclub.robobuggy.nodes.EncoderNode2;
+import com.roboclub.robobuggy.nodes.GpsNode;
+import com.roboclub.robobuggy.nodes.GpsNode2;
+import com.roboclub.robobuggy.nodes.ImuNode2;
+import com.roboclub.robobuggy.nodes.SteeringNode2;
 import com.roboclub.robobuggy.ros.ActuatorChannel;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
+import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
+<<<<<<< HEAD
 //import com.roboclub.robobuggy.sensors.DriveControls;
 //import com.roboclub.robobuggy.sensors.Encoder;
 //import com.roboclub.robobuggy.sensors.Gps;
 //import com.roboclub.robobuggy.sensors.Imu;
 import com.roboclub.robobuggy.sensors.Sensor;
 //import com.roboclub.robobuggy.sensors.VisionSystem;
+=======
+import com.roboclub.robobuggy.sensors.Sensor;
+>>>>>>> 41782f8f7efd7036bac7437e3633382495bd6e55
 import com.roboclub.robobuggy.ui.Gui;
 
 public class Robot implements RosMaster {
 	private static Robot instance;
 	private static Thread alice;
 	private static boolean autonomous;
-	private static ArrayList<Sensor> sensorList;
+	private static ArrayList<Node> sensorList;
 	private KalmanFilter kf;
-//	private static VisionSystem vision;
 	private static Publisher steerPub;
 	private static Publisher brakePub;
 	
@@ -59,7 +68,7 @@ public class Robot implements RosMaster {
 		// Initialize Sensor
 		if (config.GPS_DEFAULT) {
 			System.out.println("Initializing GPS Serial Connection");
-			Gps gps = new Gps(SensorChannel.GPS);
+			GpsNode2 gps = new GpsNode2(SensorChannel.GPS);
 			sensorList.add(gps);
 			
 			new Subscriber(SensorChannel.GPS.getMsgPath(), new MessageListener() {
@@ -73,7 +82,7 @@ public class Robot implements RosMaster {
 
 		if (config.IMU_DEFAULT) {
 			System.out.println("Initializing IMU Serial Connection");
-			Imu imu = new Imu(SensorChannel.IMU);
+			ImuNode2 imu = new ImuNode2(SensorChannel.IMU);
 			sensorList.add(imu);
 			
 			new Subscriber(SensorChannel.IMU.getMsgPath(), new MessageListener() {
@@ -86,7 +95,7 @@ public class Robot implements RosMaster {
 
 		if (config.ENCODER_DEFAULT) {
 			System.out.println("Initializing Encoder Serial Connection");
-			Encoder encoder = new Encoder(SensorChannel.ENCODER);
+			EncoderNode2 encoder = new EncoderNode2(SensorChannel.ENCODER);
 			sensorList.add(encoder);
 		
 			new Subscriber(SensorChannel.ENCODER.getMsgPath(), new MessageListener() {
@@ -99,7 +108,7 @@ public class Robot implements RosMaster {
 
 		if (config.DRIVE_DEFAULT) {
 			System.out.println("Initializing Drive Serial Connection");
-			DriveControls controls = new DriveControls(SensorChannel.DRIVE_CTRL);
+			SteeringNode2 controls = new SteeringNode2(SensorChannel.DRIVE_CTRL);
 			sensorList.add(controls);
 			
 			new Subscriber(SensorChannel.DRIVE_CTRL.getMsgPath(), new MessageListener() {
@@ -112,8 +121,9 @@ public class Robot implements RosMaster {
 
 		if (config.VISION_SYSTEM_DEFAULT) {
 			System.out.println("Initializing Vision System");
-			vision = new VisionSystem(SensorChannel.VISION);
-			sensorList.add(vision);
+			//vision = new VisionSystem(SensorChannel.VISION);
+			System.out.println("JUST KIDDING VISION SYSTEM CANNOT WORK NOW");
+			//sensorList.add(vision);
 			
 			// TODO add subscriber for vision messages
 		}
@@ -143,21 +153,22 @@ public class Robot implements RosMaster {
 		return kf; 
 	}
 	
-	public static ArrayList<Sensor> getSensorList(){
+	public static ArrayList<Node> getSensorList(){
 		return sensorList;
 	}
 	
 	// shuts down the robot and all of its child sensors
 	public static void ShutDown() {
-		for (Sensor thisSensor : sensorList) {
-			thisSensor.close();
+		for (Node thisSensor : sensorList) {
+			thisSensor.shutdown();
 		}
 		System.exit(0);
 	}
 
-	public static VisionSystem GetVision() {
-		return vision;
-	}
+	/*public static VisionSystem GetVision() {
+		//return vision;
+		return null;
+	}*/
 	
 	/* Methods for Updating Current State */
 	private void updateGps(GpsMeasurement m) {
@@ -198,7 +209,7 @@ public class Robot implements RosMaster {
 	}
 	
 	@Override
-	public List<Sensor> getAllSensors() {
+	public List<Node> getAllSensors() {
 		return sensorList;
 	}
 
