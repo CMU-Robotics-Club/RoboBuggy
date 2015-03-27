@@ -10,10 +10,10 @@ import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.sensors.SensorState;
-import com.roboclub.robobuggy.serial2.RBPair;
-import com.roboclub.robobuggy.serial2.RBSerial;
-import com.roboclub.robobuggy.serial2.RBSerialMessage;
-import com.roboclub.robobuggy.serial2.SerialNode;
+import com.roboclub.robobuggy.serial.RBPair;
+import com.roboclub.robobuggy.serial.RBSerial;
+import com.roboclub.robobuggy.serial.RBSerialMessage;
+import com.roboclub.robobuggy.serial.SerialNode;
 
 /**
  * @author Matt Sebek
