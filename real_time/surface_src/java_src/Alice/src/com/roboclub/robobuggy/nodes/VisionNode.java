@@ -32,11 +32,10 @@ import org.opencv.imgproc.Imgproc;
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.main.config;
 import com.roboclub.robobuggy.ros.SensorChannel;
-import com.roboclub.robobuggy.sensors.Sensor;
 import com.roboclub.robobuggy.sensors.SensorState;
 import com.roboclub.robobuggy.sensors.SensorType;
 
-public class VisionNode implements Sensor {
+public class VisionNode {
 	private SensorType sensorType;
 	private boolean connected;
 	private SensorState state;
@@ -163,11 +162,6 @@ public class VisionNode implements Sensor {
 	@Override
 	public SensorType getSensorType() {
 		return this.sensorType;
-	}
-
-	@Override
-	public void publish() {
-		// TODO Auto-generated method stub
 	}
 
 	public void setDisplay(boolean value) {

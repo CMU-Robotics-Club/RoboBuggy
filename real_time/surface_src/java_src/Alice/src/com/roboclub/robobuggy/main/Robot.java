@@ -15,7 +15,7 @@ import com.roboclub.robobuggy.nodes.EncoderNode;
 import com.roboclub.robobuggy.nodes.GpsNode;
 import com.roboclub.robobuggy.nodes.GpsNode;
 import com.roboclub.robobuggy.nodes.ImuNode;
-import com.roboclub.robobuggy.nodes.SteeringNode;
+import com.roboclub.robobuggy.nodes.DriveControlNode;
 import com.roboclub.robobuggy.ros.ActuatorChannel;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
@@ -23,7 +23,6 @@ import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
-import com.roboclub.robobuggy.sensors.Sensor;
 import com.roboclub.robobuggy.ui.Gui;
 
 public class Robot implements RosMaster {
@@ -100,7 +99,7 @@ public class Robot implements RosMaster {
 
 		if (config.DRIVE_DEFAULT) {
 			System.out.println("Initializing Drive Serial Connection");
-			SteeringNode controls = new SteeringNode(SensorChannel.DRIVE_CTRL);
+			DriveControlNode controls = new DriveControlNode(SensorChannel.DRIVE_CTRL);
 			sensorList.add(controls);
 			
 			new Subscriber(SensorChannel.DRIVE_CTRL.getMsgPath(), new MessageListener() {
