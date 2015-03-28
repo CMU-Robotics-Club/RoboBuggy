@@ -5,6 +5,10 @@
 	<classpathentry kind="lib" path="library/opencv-249.jar"/>
 	<classpathentry kind="lib" path="library/orsoncharts-1.4-eval-nofx.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
-	<classpathentry kind="lib" path="library/RXTXcomm.jar"/>
+	<classpathentry kind="lib" path="library/RXTXcomm.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Alice/library"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

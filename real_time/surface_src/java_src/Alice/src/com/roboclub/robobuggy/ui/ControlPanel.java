@@ -166,8 +166,7 @@ public class ControlPanel extends JPanel {
 		encoders_switch = new SensorSwitch("ENCODERS", SensorChannel.ENCODER);
 		imu_switch = new SensorSwitch("IMU", SensorChannel.IMU);
 		controls_switch = new SensorSwitch("CONTROLS", SensorChannel.DRIVE_CTRL);
-		autonomous_switch = new SensorSwitch("AUTO", SensorChannel.GPS);
-		//TODO Add Autonomous Channel
+		autonomous_switch = new SensorSwitch("AUTO", SensorChannel.AUTO);
 		
 		display = new JButton("DISPLAY");
 		display.setBackground(Color.BLUE);

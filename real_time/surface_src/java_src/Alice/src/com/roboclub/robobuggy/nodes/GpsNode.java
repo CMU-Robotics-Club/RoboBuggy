@@ -30,11 +30,10 @@ public class GpsNode extends SerialNode implements Node {
 	public Publisher statePub;
 	
 	public GpsNode(SensorChannel sensor) {
-		super("IMU");
+		super("GPS");
 		msgPub = new Publisher(sensor.getMsgPath());
 		statePub = new Publisher(sensor.getStatePath());
 	
-		// TODO state stuff
 		statePub.publish(new StateMessage(SensorState.DISCONNECTED));
 	}
 
@@ -119,7 +118,7 @@ public class GpsNode extends SerialNode implements Node {
 		// Check for valid reading
 		int quality = Integer.parseInt(ar[6]);
 		if(quality == 0) {
-			System.out.println("No lock...");
+			//System.out.println("No lock...");
 			// TODO publish not-lock to someone
 			return 1;
 		}

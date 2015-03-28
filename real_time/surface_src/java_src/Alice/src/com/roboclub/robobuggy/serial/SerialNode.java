@@ -90,11 +90,13 @@ public abstract class SerialNode implements Node {
 		// Node will commence shutdown next loop.
 	
 		// Wait forever to join...hope that we're not seized up...
-		try {
-			io_thread.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			return false;
+		if (io_thread != null) {
+			try {
+				io_thread.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				return false;
+			}
 		}
 		return true;
 	}
@@ -128,34 +130,20 @@ public abstract class SerialNode implements Node {
 					// TODO handle this error reasonably.
 					e.printStackTrace();
 				}
-				int messages_read = 0;
-				
-				// Try to send things?
-				
 				
 				while(true) {
 					int num_read = peel(buf, start, num_bytes);
 					if(num_read == 0) break;
 					start += num_read;
 					num_bytes -= num_read;
-					messages_read++;
 				}
-				/*if(messages_read == 0) {
-					System.out.print('0');
-				}
-				if(messages_read == 2) {
-					System.out.print('2');
-				}
-				if(messages_read == 3) {
-					System.out.print('3');
-				}*/
+				
 				// Shift the array by the amount that we read.
 				// TODO this is stupid and should be fixed
 				for(int i = 0; i < num_bytes; i++) {
 					buf[i] = buf[start+i];
 				}
 				start = 0;
-			
 			
 				try {
 					Thread.sleep(asleep_time);

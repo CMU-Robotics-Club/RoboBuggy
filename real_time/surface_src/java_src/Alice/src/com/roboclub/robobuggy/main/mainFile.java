@@ -3,12 +3,14 @@ package com.roboclub.robobuggy.main;
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
+
 import java.util.ArrayList;
+
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.nodes.EncoderNode;
 import com.roboclub.robobuggy.nodes.GpsNode;
 import com.roboclub.robobuggy.nodes.ImuNode;
-import com.roboclub.robobuggy.nodes.LoggingNode;
+import com.roboclub.robobuggy.nodes.SteeringNode;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.Node;
@@ -107,18 +109,18 @@ public class mainFile {
 	
 //		LoggingNode ln = new LoggingNode(SensorChannel.IMU.getMsgPath(), "C:\\Users\\Matt\\buggy-log\\run1");
 		
-		// Bring up the IMU
-		System.out.println("Initializing IMU Serial Connection");
 		ImuNode imu = new ImuNode(SensorChannel.IMU);
 		GpsNode gps = new GpsNode(SensorChannel.GPS);
 		EncoderNode enc = new EncoderNode(SensorChannel.ENCODER);
-	
+		SteeringNode drive_ctrl = new SteeringNode(SensorChannel.DRIVE_CTRL);
 		
 		// Set up the IMU
 		SerialPort sp = null;
-		String com = "COM4";
+		String com = "COM18";//"COM4";
 		try {
+			System.out.println("Initializing IMU Serial Connection");
 			sp = connect(com);
+			System.out.println("IMU connected to " + com);
 		} catch (Exception e) {
 			System.out.println("Unable to connect to necessary device on " + com);
 			e.printStackTrace();
@@ -128,8 +130,11 @@ public class mainFile {
 		sensorList.add(imu);
 
 		// Set up the GPS
+		com = "COM16"; //"COM7";
 		try {
-			sp = connect("COM7");
+			System.out.println("Initializing GPS Serial Connection");
+			sp = connect(com);
+			System.out.println("GPS connected to " + com);
 		} catch (Exception e) {
 			System.out.println("Unable to connect to necessary device on " + com);
 			e.printStackTrace();
@@ -139,8 +144,11 @@ public class mainFile {
 		sensorList.add(gps);
 	
 		// Set up the Encoder
+		com = "COM15"; //"COM14";
 		try {
-			sp = connect("COM14");
+			System.out.println("Initializing ENCODER Serial Connection");
+			sp = connect(com);
+			System.out.println("ENCODER connected to " + com);
 		} catch (Exception e) {
 			System.out.println("Unable to connect to necessary device on " + com);
 			e.printStackTrace();
@@ -158,7 +166,18 @@ public class mainFile {
 			}
 		});
 
-		
-		
+		// Set up the DRIVE CONTROL
+		com = "COM17";
+		try {
+			System.out.println("Initializing DRIVE CONTROL Serial Connection");
+			sp = connect(com);
+			System.out.println("DRIVE CONTROL connected to " + com);
+		} catch (Exception e) {
+			System.out.println("Unable to connect to necessary device on " + com);
+			e.printStackTrace();
+			throw new Exception("Device not found error");
+		}
+		drive_ctrl.setSerialPort(sp);
+		sensorList.add(drive_ctrl);
 	}
 }

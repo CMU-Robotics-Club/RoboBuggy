@@ -43,14 +43,14 @@ public class EncoderNode extends SerialNode implements Node {
 	Publisher statePub;
 
 	public EncoderNode(SensorChannel sensor) {
-		super("encoder");
+		super("ENCODER");
 		messagePub = new Publisher(sensor.getMsgPath());
 		statePub = new Publisher(sensor.getStatePath());
 		
-		//statePub.publish(new StateMessage(this.currState));
-
+		statePub.publish(new StateMessage(SensorState.DISCONNECTED));
 	}
-
+	
+	@Override
 	public void setSerialPort(SerialPort sp) {
 		super.setSerialPort(sp);
 		statePub.publish(new StateMessage(SensorState.ON));

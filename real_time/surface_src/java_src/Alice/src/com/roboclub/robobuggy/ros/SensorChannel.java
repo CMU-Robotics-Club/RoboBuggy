@@ -9,6 +9,7 @@ public enum SensorChannel {
 	DRIVE_CTRL("drive_ctrl"),
 	VISION("vision"),
 	ENCODER("encoder"),
+	AUTO("auto"),
 	GUI_LOGGING_BUTTON("logging_button");
 	
 	private String rstPath;

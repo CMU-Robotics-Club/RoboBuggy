@@ -1,10 +1,14 @@
 package com.roboclub.robobuggy.nodes;
 
+import gnu.io.SerialPort;
+
 import com.roboclub.robobuggy.messages.BrakeMessage;
+import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
+import com.roboclub.robobuggy.sensors.SensorState;
 import com.roboclub.robobuggy.serial.RBPair;
 import com.roboclub.robobuggy.serial.RBSerial;
 import com.roboclub.robobuggy.serial.RBSerialMessage;
@@ -22,6 +26,11 @@ import com.roboclub.robobuggy.serial.SerialNode;
  */
 
 public class SteeringNode extends SerialNode implements Node {
+	/** Steering Angle Conversion Rate */
+	private final int ARD_TO_DEG = 100;
+	/** Steering Angle offset?? */
+	private final int OFFSET = -200;
+	
 	public Publisher brakePub;
 	public Publisher steeringPub;
 	public Publisher statePub;
@@ -32,6 +41,8 @@ public class SteeringNode extends SerialNode implements Node {
 		brakePub = new Publisher(SensorChannel.BRAKE.getMsgPath());
 		steeringPub = new Publisher(SensorChannel.STEERING.getMsgPath());
 		statePub = new Publisher(sensor.getStatePath());	
+		
+		statePub.publish(new StateMessage(SensorState.DISCONNECTED));
 		
 		// Subscriber for Steering commands
 		/*new Subscriber(ActuatorChannel.STEERING.getMsgPath(),
@@ -54,6 +65,12 @@ public class SteeringNode extends SerialNode implements Node {
 						}
 					}
 		});*/
+	}
+	
+	@Override
+	public void setSerialPort(SerialPort sp) {
+		super.setSerialPort(sp);
+		statePub.publish(new StateMessage(SensorState.ON));
 	}
 
 	@Override
@@ -93,9 +110,11 @@ public class SteeringNode extends SerialNode implements Node {
 		switch (message.getHeaderByte()) {
 			case RBSerialMessage.BRAKE: {
 				brakePub.publish(new BrakeMessage(message.getDataWord()));
-			}
-			case RBSerialMessage.STEERING: {
-				steeringPub.publish(new SteeringMeasurement(message.getDataWord()));
+				break;
+			} case RBSerialMessage.STEERING: {
+				steeringPub.publish(new SteeringMeasurement(
+						-(message.getDataWord() + OFFSET)/ARD_TO_DEG));
+				break;
 			}
 		}
 		

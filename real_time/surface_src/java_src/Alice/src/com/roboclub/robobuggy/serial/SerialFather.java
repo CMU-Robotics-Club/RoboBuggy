@@ -3,7 +3,6 @@ package com.roboclub.robobuggy.serial;
 import gnu.io.CommPortIdentifier;
 import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -11,9 +10,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-
 import com.roboclub.robobuggy.ros.Node;
-import com.roboclub.robobuggy.sensors.SensorState;
 
 // Properly initializes the serial things
 public class SerialFather implements Node {
@@ -22,9 +19,7 @@ public class SerialFather implements Node {
 
 
 	public SerialFather(List<SerialNode> lsn) {
-
-		// TODO parametize
-		Set baudrates = new TreeSet();
+		Set<Integer> baudrates = new TreeSet<Integer>();
 		int min_data_size = 1000000000; 
 		
 		for(SerialNode sn : lsn) {
@@ -45,7 +40,7 @@ public class SerialFather implements Node {
 	// TODO register connect/disconnect events
 	
 	// TODO do for all baud rates
-	private void findPort(int baudrate, String header, String owner,SerialNode sn) {
+	private void findPort(int baudrate, String header, String owner, SerialNode sn) {
 		SerialPort port;
 		CommPortIdentifier port_id;
 		int TIMEOUT = 0;
