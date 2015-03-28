@@ -56,8 +56,6 @@ public class mainFile {
 		} else {
 			Robot.getInstance();
 		}	
-		
-		
 	}
 	
 	// Open a serial port
@@ -130,7 +128,7 @@ public class mainFile {
 		sensorList.add(imu);
 
 		// Set up the GPS
-		com = "COM16"; //"COM7";
+		com = "COM16"; //"COM6";
 		try {
 			System.out.println("Initializing GPS Serial Connection");
 			sp = connect(com);
@@ -157,8 +155,6 @@ public class mainFile {
 		enc.setSerialPort(sp);
 		sensorList.add(enc);
 	
-		
-		
 		new Subscriber(SensorChannel.ENCODER.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
