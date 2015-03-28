@@ -31,10 +31,8 @@ import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.main.config;
 import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.sensors.SensorState;
-import com.roboclub.robobuggy.sensors.SensorType;
 
 public class VisionNode {
-	private SensorType sensorType;
 	private boolean connected;
 	private SensorState state;
 	
@@ -57,8 +55,6 @@ public class VisionNode {
 			e.printStackTrace(); 
 		}
 		
-		
-		this.sensorType = SensorType.VISION;
 		this.connected = false;
 		
 		/*if(!initCameras()) return;

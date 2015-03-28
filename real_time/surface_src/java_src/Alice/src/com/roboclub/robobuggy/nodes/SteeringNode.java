@@ -20,7 +20,6 @@ import com.roboclub.robobuggy.serial.SerialNode;
  */
 
 public class SteeringNode extends SerialNode implements Node {
-	
 	public Publisher brakePub;
 	public Publisher steeringPub;
 	public Publisher statePub;
@@ -28,8 +27,11 @@ public class SteeringNode extends SerialNode implements Node {
 	public SteeringNode(SensorChannel sensor) {
 		super("Steering");
 		
-		//brakePub = new Publisher();
+		brakePub = new Publisher(SensorChannel.BRAKE.getMsgPath());
+		steeringPub = new Publisher(SensorChannel.STEERING.getMsgPath());
 		statePub = new Publisher(sensor.getStatePath());
+		
+		
 		// Subscriber for Steering commands
 		/*new Subscriber(ActuatorChannel.STEERING.getMsgPath(),
 				new MessageListener() {
