@@ -104,10 +104,11 @@ public class EncoderNode extends SerialNode implements Node {
 		}
 		
 		RBSerialMessage message = rbp.getMessage();
-		if(message.getHeaderByte() == RBSerialMessage.ENC_TICK) {
+		if(message.getHeaderByte() == RBSerialMessage.ENC_TICKS_SINCE_LAST) {
 			// This is a delta-distance! Do a thing!
 			encTicks += message.getDataWord();
 			estimateVelocity(message.getDataWord());
+			System.out.println(encTicks);
 		}
 		
 		

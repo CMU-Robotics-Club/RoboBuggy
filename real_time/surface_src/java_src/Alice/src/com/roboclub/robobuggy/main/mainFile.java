@@ -57,8 +57,6 @@ public class mainFile {
 		} else {
 			Robot.getInstance();
 		}	
-		
-		
 	}
 	
 	// Open a serial port
@@ -131,7 +129,7 @@ public class mainFile {
 
 		// Set up the GPS
 		try {
-			sp = connect("COM7");
+			sp = connect("COM6");
 		} catch (Exception e) {
 			System.out.println("Unable to connect to necessary device on " + com);
 			e.printStackTrace();
