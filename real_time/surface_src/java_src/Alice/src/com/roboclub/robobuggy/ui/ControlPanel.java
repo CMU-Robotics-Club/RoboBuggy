@@ -18,10 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
-import sun.util.logging.resources.logging;
-
 import com.roboclub.robobuggy.logging.RobotLogger;
-import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.main.config;
 import com.roboclub.robobuggy.messages.GuiLoggingButton;
 import com.roboclub.robobuggy.ros.Publisher;

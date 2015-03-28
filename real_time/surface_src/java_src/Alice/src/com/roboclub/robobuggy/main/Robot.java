@@ -13,9 +13,8 @@ import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.messages.WheelAngleCommand;
 import com.roboclub.robobuggy.nodes.EncoderNode;
 import com.roboclub.robobuggy.nodes.GpsNode;
-import com.roboclub.robobuggy.nodes.GpsNode;
 import com.roboclub.robobuggy.nodes.ImuNode;
-import com.roboclub.robobuggy.nodes.DriveControlNode;
+import com.roboclub.robobuggy.nodes.SteeringNode;
 import com.roboclub.robobuggy.ros.ActuatorChannel;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
@@ -31,7 +30,6 @@ public class Robot implements RosMaster {
 	private static boolean autonomous;
 	private static ArrayList<Node> sensorList;
 	private KalmanFilter kf;
-	//private static VisionSystem vision;
 	private static Publisher steerPub;
 	private static Publisher brakePub;
 	
@@ -99,7 +97,7 @@ public class Robot implements RosMaster {
 
 		if (config.DRIVE_DEFAULT) {
 			System.out.println("Initializing Drive Serial Connection");
-			DriveControlNode controls = new DriveControlNode(SensorChannel.DRIVE_CTRL);
+			SteeringNode controls = new SteeringNode(SensorChannel.DRIVE_CTRL);
 			sensorList.add(controls);
 			
 			new Subscriber(SensorChannel.DRIVE_CTRL.getMsgPath(), new MessageListener() {

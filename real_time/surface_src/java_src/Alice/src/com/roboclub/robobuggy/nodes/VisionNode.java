@@ -20,7 +20,6 @@ import java.io.File;
 import javax.imageio.ImageIO;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
@@ -28,15 +27,12 @@ import org.opencv.core.Size;
 import org.opencv.highgui.Highgui;
 import org.opencv.highgui.VideoCapture;
 import org.opencv.imgproc.Imgproc;
-
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.main.config;
 import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.sensors.SensorState;
-import com.roboclub.robobuggy.sensors.SensorType;
 
 public class VisionNode {
-	private SensorType sensorType;
 	private boolean connected;
 	private SensorState state;
 	
@@ -59,8 +55,6 @@ public class VisionNode {
 			e.printStackTrace(); 
 		}
 		
-		
-		this.sensorType = SensorType.VISION;
 		this.connected = false;
 		
 		/*if(!initCameras()) return;
@@ -118,24 +112,7 @@ public class VisionNode {
 		
 		return true;
 	}
-	
-	
-	public SensorState getState() {
-		return this.state;
-	}
 
-	
-	public boolean isConnected() {
-		return this.connected;
-	}
-
-	
-	public long timeOfLastUpdate() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	
 	public boolean close() {
 		if (connected) {
 			try {
@@ -159,12 +136,7 @@ public class VisionNode {
 		return false;
 	}
 
-	 
-	public SensorType getSensorType() {
-		return this.sensorType;
-	}
-
-	public void setDisplay(boolean value) {
+public void setDisplay(boolean value) {
 		if (connected) {
 			frontPanel.setVisible(value);
 			rearPanel.setVisible(value);
