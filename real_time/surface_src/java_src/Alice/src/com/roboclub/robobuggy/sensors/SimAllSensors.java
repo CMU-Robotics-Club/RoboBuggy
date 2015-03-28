@@ -1,6 +1,6 @@
 package com.roboclub.robobuggy.sensors;
 
-import com.roboclub.robobuggy.messages.BrakeCommand;
+import com.roboclub.robobuggy.messages.BrakeMessage;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
@@ -87,7 +87,7 @@ public class SimAllSensors {
 	private class brakeCallback implements MessageListener {
 		@Override
 		public void actionPerformed(String topicName, Message m) {
-			BrakeCommand bc = (BrakeCommand) m;
+			BrakeMessage bc = (BrakeMessage) m;
 			System.out.printf("Wheel commanded to position %d\n", bc.down);
 		}
 	}

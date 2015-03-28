@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.roboclub.robobuggy.localization.KalmanFilter;
 import com.roboclub.robobuggy.logging.RobotLogger;
-import com.roboclub.robobuggy.messages.BrakeCommand;
+import com.roboclub.robobuggy.messages.BrakeMessage;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
@@ -187,7 +187,8 @@ public class Robot implements RosMaster {
 	
 	public void writeBrakes(boolean brakesDown) {
 		if (autonomous) {
-			brakePub.publish(new BrakeCommand(brakesDown));
+			// TODO new pub/sub for command messages
+			//brakePub.publish(new BrakeCommand(brakesDown));
 		} else {
 			System.out.println("Can only control steering in Autonomous mode!");
 		}

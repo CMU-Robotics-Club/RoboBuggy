@@ -1,5 +1,7 @@
 package com.roboclub.robobuggy.nodes;
 
+import com.roboclub.robobuggy.messages.BrakeMessage;
+import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
@@ -29,8 +31,7 @@ public class SteeringNode extends SerialNode implements Node {
 		
 		brakePub = new Publisher(SensorChannel.BRAKE.getMsgPath());
 		steeringPub = new Publisher(SensorChannel.STEERING.getMsgPath());
-		statePub = new Publisher(sensor.getStatePath());
-		
+		statePub = new Publisher(sensor.getStatePath());	
 		
 		// Subscriber for Steering commands
 		/*new Subscriber(ActuatorChannel.STEERING.getMsgPath(),
@@ -54,53 +55,6 @@ public class SteeringNode extends SerialNode implements Node {
 					}
 		});*/
 	}
-	
-	/* Methods for Serial Communication with Arduino */
-	/*public void writeAngle(float angle) {
-		if (angle >= 0 && angle <= 180) {
-			if(isConnected()) {
-				/*byte[] msg = {
-						(byte)((angle >> 0x18) & 0xFF),
-						(byte)((angle >> 0x10) & 0xFF),
-						(byte)((angle >> 0x08) & 0xFF),
-						(byte)(angle & 0xFF),'\n'};
-				System.out.println("MATT BROKE THIS BECAUSE INTERFACE WITH LOW LEVEL CHANGED");
-				//super.serialWrite(null);
-			}
-		}
-	}*/
-	
-	/*@Override
-	public void publish() {
-		lastUpdateTime = System.currentTimeMillis();
-		int value = parseInt(inputBuffer[1], inputBuffer[2],
-				inputBuffer[3], inputBuffer[4]);
-		try {
-			switch (inputBuffer[0]) {
-			case STEERING:
-				msgPub.publish(new SteeringMeasurement(value));
-				break;
-			case BRAKE:
-				// TODO handle brake messages
-				break;
-			case ERROR:
-				// TODO handle error messages
-				break;
-			}
-		} catch (Exception e) {
-			System.out.println("Drive Exception on port: " + this.getName());
-			if (currState != SensorState.FAULT) {
-				currState = SensorState.FAULT;
-				statePub.publish(new StateMessage(this.currState));
-				return;
-			}
-		}
-		
-		if (currState != SensorState.ON) {
-			currState = SensorState.ON;
-			statePub.publish(new StateMessage(this.currState));
-		}
-	}*/
 
 	@Override
 	public boolean matchDataSample(byte[] sample) {
@@ -121,21 +75,31 @@ public class SteeringNode extends SerialNode implements Node {
 
 	@Override
 	public int peel(byte[] buffer, int start, int bytes_available) {
+		// The drive controller sends 2 types of messages
+		//	- Steering angle
+		//	- Brake deployment or release
 		RBPair rbp = RBSerial.peel(buffer, start, bytes_available);
-		int bytes_read = rbp.getNumberOfBytesRead();
-		RBSerialMessage message = rbp.getMessage();
-	
-		byte b = message.getHeaderByte();
-		if(b == RBSerialMessage.BRAKE) {
-			
-		} else if (b == RBSerialMessage.STEERING){
-			
-			
-		} else if (b == RBSerialMessage.DEVICE_ID) {
-			// Do nothing really
-			
+		switch(rbp.getNumberOfBytesRead()) {
+			case 0: return 0;
+			case 1: return 1;
+			case 6: break;
+			default: {
+				System.out.println("HOW DID NOT A SIX GET HERE");
+			}
+		
 		}
 		
-		return bytes_read;
+		RBSerialMessage message = rbp.getMessage();
+		switch (message.getHeaderByte()) {
+			case RBSerialMessage.BRAKE: {
+				brakePub.publish(new BrakeMessage(message.getDataWord()));
+			}
+			case RBSerialMessage.STEERING: {
+				steeringPub.publish(new SteeringMeasurement(message.getDataWord()));
+			}
+		}
+		
+		
+		return 6;
 	}
 }
