@@ -111,6 +111,7 @@ public abstract class SerialNode implements Node {
 
 	// Peel is called once. user should read as many messages as possible
 	// returns the number of bytes read; or 1 on failure
+	// start is the offset into the array 
 	public abstract int peel(byte[] buffer, int start, int bytes_available);
 	
 	private class iothread implements Runnable {

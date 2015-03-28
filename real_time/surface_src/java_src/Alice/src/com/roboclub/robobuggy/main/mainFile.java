@@ -69,6 +69,7 @@ public class mainFile {
         }
         else
         {
+        	//TODO fix this so that it is not potato 
             CommPort commPort = portIdentifier.open("potato", 2000);
             
             if ( commPort instanceof SerialPort )

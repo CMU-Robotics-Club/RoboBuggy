@@ -4,6 +4,7 @@ import gnu.io.CommPortIdentifier;
 import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
@@ -34,10 +35,17 @@ public class SerialFather implements Node {
 		}
 	}
 	
+	//TODO test this function
+	private boolean isCorrectPort(SerialNode sn, InputStream input,String header,int bytesToRead ) throws IOException{
+		byte[] buffer = new byte[bytesToRead];
+		input.read(buffer, 0, bytesToRead);
+		return sn.peel(buffer, 0,bytesToRead) > 1;
+	}
+	
 	// TODO register connect/disconnect events
 	
 	// TODO do for all baud rates
-	private void findPort(int baudrate, String header, String owner) {
+	private void findPort(int baudrate, String header, String owner,SerialNode sn) {
 		SerialPort port;
 		CommPortIdentifier port_id;
 		int TIMEOUT = 0;
@@ -70,13 +78,14 @@ public class SerialFather implements Node {
 				output = port.getOutputStream();
 
 				// TODO wire through message length
-				if (isCorrectPort(input, header, 512)) {
+				if (isCorrectPort(sn,input,header,512)){
 					port.notifyOnDataAvailable(true);
 
 					inputBuffer = new char[BUFFER_SIZE];
 					index = 0;
 					connected = true;
-					port.addEventListener(this);
+					//TODO fix the event Listener
+//					port.addEventListener(this);
 					System.out.println("Connected to port: "
 							+ port.getName());
 					return;

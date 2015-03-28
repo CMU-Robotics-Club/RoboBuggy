@@ -119,23 +119,23 @@ public class VisionNode {
 		return true;
 	}
 	
-	@Override
+	
 	public SensorState getState() {
 		return this.state;
 	}
 
-	@Override
+	
 	public boolean isConnected() {
 		return this.connected;
 	}
 
-	@Override
+	
 	public long timeOfLastUpdate() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
+	
 	public boolean close() {
 		if (connected) {
 			try {
@@ -159,7 +159,7 @@ public class VisionNode {
 		return false;
 	}
 
-	@Override
+	 
 	public SensorType getSensorType() {
 		return this.sensorType;
 	}
