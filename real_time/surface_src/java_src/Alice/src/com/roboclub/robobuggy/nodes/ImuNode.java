@@ -6,7 +6,7 @@ import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.sensors.SensorState;
-import com.roboclub.robobuggy.serial.SerialNode;
+import com.roboclub.robobuggy.serial2.SerialNode;
 
 /**
  * @author Matt Sebek 
@@ -39,7 +39,6 @@ public class ImuNode extends SerialNode implements Node {
 		statePub.publish(new StateMessage(SensorState.DISCONNECTED));
 	}
 
-	@Override
 	public void setSerialPort(gnu.io.SerialPort sp) {
 		super.setSerialPort(sp);
 		statePub.publish(new StateMessage(SensorState.ON));
@@ -63,22 +62,18 @@ public class ImuNode extends SerialNode implements Node {
 	}*/
 	
 
-	@Override
 	public boolean matchDataSample(byte[] sample) {
 		return true;
 	}
 
-	@Override
 	public int matchDataMinSize() {
 		return 0;
 	}
 
-	@Override
 	public int baudRate() {
 		return 57600;
 	}
 
-	@Override
 	public int peel(byte[] buffer, int start, int bytes_available) {
 		// TODO replace 80 with max message length
 		if(bytes_available < 30) {
@@ -127,8 +122,7 @@ public class ImuNode extends SerialNode implements Node {
 		vals[2] = Double.parseDouble(b.substring(0, hash_index));
 		b = b.substring(hash_index);	
 			
-		msgPub.publish(new ImuMeasurement(0, 0, 0, 
-				0, 0, 0, vals[0], vals[1], vals[2]));
+		msgPub.publish(new ImuMeasurement(vals[0], vals[1], vals[2]));
 		return 4 + (orig_length - b.length());
 	}
 }
