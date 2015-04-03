@@ -88,8 +88,8 @@ public class LightingNode extends SerialNode implements Node {
 		vals[8] = Double.parseDouble(b.substring(0, hash_index));
 		b = b.substring(hash_index);	
 			
-		msgPub.publish(new ImuMeasurement(vals[0], vals[1],vals[2], 
-				vals[3], vals[4], vals[5], vals[6], vals[7], vals[8]));
+//		msgPub.publish(new ImuMeasurement(vals[0], vals[1],vals[2], 
+//				vals[3], vals[4], vals[5], vals[6], vals[7], vals[8]));
 		return 4 + (orig_length - b.length());
 	}
 }
