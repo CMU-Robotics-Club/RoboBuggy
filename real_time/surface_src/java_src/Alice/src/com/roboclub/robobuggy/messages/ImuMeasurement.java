@@ -21,41 +21,24 @@ public class ImuMeasurement extends BaseMessage implements Message {
 
 	public Date timestamp;
 
-	public double aX;
-	public double aY;
-	public double aZ;
-	public double rX;
-	public double rY;
-	public double rZ;
-	public double mX;
-	public double mY;
-	public double mZ;
+	public double yaw;
+	public double pitch;
+	public double roll;
 
-	public ImuMeasurement(double aX2, double aY2, double aZ2, double rX2,
-			double rY2, double rZ2, double mX2, double mY2, double mZ2) {
+	public ImuMeasurement(double y, double p, double r) {
 		this.timestamp = new Date();
-		this.aX = aX2;
-		this.aY = aY2;
-		this.aZ = aZ2;
-		this.rX = rX2;
-		this.rY = rY2;
-		this.rZ = rZ2;
-		this.mX = mX2;
-		this.mY = mY2;
-		this.mZ = mZ2;
+		this.yaw = y;
+		this.pitch = p;
+		this.roll = r;
 	}
 
-	@Override
 	public String toLogString() {
 		String s = super.formatter.format(timestamp);
-		return s + ',' + Double.toString(aX) + ',' + Double.toString(aY) + ','
-				+ Double.toString(aZ) + ',' + Double.toString(rX) + ','
-				+ Double.toString(rY) + ',' + Double.toString(rZ) + ','
-				+ Double.toString(mX) + ',' + Double.toString(mY) + ','
-				+ Double.toString(mZ);
+		return s + "," + Double.toString(yaw) + "," 
+				+ Double.toString(pitch) + "," 
+				+ Double.toString(roll);
 	}
 
-	@Override
 	public Message fromLogString(String str) {
 		String delims = ",";
 		String[] ar = str.split(delims);
@@ -68,15 +51,9 @@ public class ImuMeasurement extends BaseMessage implements Message {
 			e.printStackTrace();
 		}
 
-		Double aX = Double.parseDouble(ar[1]);
-		Double aY = Double.parseDouble(ar[2]);
-		Double aZ = Double.parseDouble(ar[3]);
-		Double rX = Double.parseDouble(ar[4]);
-		Double rY = Double.parseDouble(ar[5]);
-		Double rZ = Double.parseDouble(ar[6]);
-		Double mX = Double.parseDouble(ar[7]);
-		Double mY = Double.parseDouble(ar[8]);
-		Double mZ = Double.parseDouble(ar[9]);
-		return new ImuMeasurement(aX, aY, aZ, rX, rY, rZ, mX, mY, mZ);
+		Double y = Double.parseDouble(ar[1]);
+		Double p = Double.parseDouble(ar[2]);
+		Double r = Double.parseDouble(ar[3]);
+		return new ImuMeasurement(y, p, r);
 	}
 }

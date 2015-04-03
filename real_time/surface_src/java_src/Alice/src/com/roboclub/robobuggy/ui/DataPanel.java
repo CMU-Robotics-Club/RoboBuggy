@@ -69,17 +69,17 @@ public class DataPanel extends JPanel {
 		panel.setLayout(new GridLayout(5,6));
 		
 		aX = new JLabel();
-		JLabel label = new JLabel("   aX: ");
+		JLabel label = new JLabel("   yaw: ");
 		panel.add(label);
 		panel.add(aX);
 		
 		aY = new JLabel();
-		label = new JLabel("   aY: ");
+		label = new JLabel("   pitch: ");
 		panel.add(label);
 		panel.add(aY);
 		
 		aZ = new JLabel();
-		label = new JLabel("   aZ: ");
+		label = new JLabel("   roll: ");
 		panel.add(label);
 		panel.add(aZ);
 		
@@ -122,41 +122,18 @@ public class DataPanel extends JPanel {
 				// Limit measurement values to 10 characters
 				String tmp = new String();
 				
-				tmp = Double.toString(msg.aX);
+				tmp = Double.toString(msg.yaw);
 				if (tmp.length() > MAX_LENGTH) tmp = tmp.substring(0, MAX_LENGTH);
 				aX.setText(tmp);
 				
-				tmp = Double.toString(msg.aY);
+				tmp = Double.toString(msg.pitch);
 				if (tmp.length() > MAX_LENGTH) tmp = tmp.substring(0, MAX_LENGTH);
 				aY.setText(tmp);
 
-				tmp = Double.toString(msg.aZ);
+				tmp = Double.toString(msg.roll);
 				if (tmp.length() > MAX_LENGTH) tmp = tmp.substring(0, MAX_LENGTH);
 				aZ.setText(tmp);
 				
-				tmp = Double.toString(msg.rX);
-				if (tmp.length() > MAX_LENGTH) tmp = tmp.substring(0, MAX_LENGTH);
-				rX.setText(tmp);
-				
-				tmp = Double.toString(msg.rY);
-				if (tmp.length() > MAX_LENGTH) tmp = tmp.substring(0, MAX_LENGTH);
-				rY.setText(tmp);
-				
-				tmp = Double.toString(msg.rZ);
-				if (tmp.length() > MAX_LENGTH) tmp = tmp.substring(0, MAX_LENGTH);
-				rZ.setText(tmp);
-				
-				tmp = Double.toString(msg.mX);
-				if (tmp.length() > MAX_LENGTH) tmp = tmp.substring(0, MAX_LENGTH);
-				mX.setText(tmp);
-				
-				tmp = Double.toString(msg.mY);
-				if (tmp.length() > MAX_LENGTH) tmp = tmp.substring(0, MAX_LENGTH);
-				mY.setText(tmp);
-				
-				tmp = Double.toString(msg.mZ);
-				if (tmp.length() > MAX_LENGTH) tmp = tmp.substring(0, MAX_LENGTH);
-				mZ.setText(tmp);
 			}
 		});
 		
