@@ -16,7 +16,7 @@ import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 
-public class GpsPanel extends JPanel {
+public class LocPanel extends JPanel {
 	private class LocTuple {
 		private double latitude;
 		private double longitude;
@@ -43,7 +43,7 @@ public class GpsPanel extends JPanel {
 	private int frameHeight;
 	private Subscriber gpsSub;
 	
-	public GpsPanel(){
+	public LocPanel(){
 		locs = new ArrayList<LocTuple>();
 		imgNorthEast = new LocTuple(-79.93596322545625, 40.443946388131266);
 		imgSouthWest = new LocTuple(-79.95532877484377, 40.436597411027364);
