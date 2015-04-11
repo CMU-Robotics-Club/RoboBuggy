@@ -20,10 +20,19 @@
 #define SERVO_PINN PB5 // arduino 11 TODO: this is not used here
 #define CONNECTION_TIMEOUT_US 1000000L // 1000ms
 
-#define PWM_OFFSET_STEERING_OUT 1789
-#define PWM_SCALE_STEERING_OUT -150
-#define PWM_OFFSET_STORED_ANGLE 0
-#define PWM_SCALE_STORED_ANGLE 1000 // in hundredths of a degree for precision
+#if BUGGY == transistor 
+  #define PWM_OFFSET_STEERING_OUT 1900
+  #define PWM_SCALE_STEERING_OUT -165
+  #define PWM_OFFSET_STORED_ANGLE 0
+  #define PWM_SCALE_STORED_ANGLE 1000 // in hundredths of a degree for precision
+#elif BUGGY == nixie
+  #define PWM_OFFSET_STEERING_OUT 1789
+  #define PWM_SCALE_STEERING_OUT -150
+  #define PWM_OFFSET_STORED_ANGLE 0
+  #define PWM_SCALE_STORED_ANGLE 1000 // in hundredths of a degree for precision
+#else
+  #error "must complie with BUGGY_TRANSISTOR or BUGGY_NIXI flag"
+#endif
 
 #define RX_STEERING_DDR  DDRE
 #define RX_STEERING_PORT PORTE
