@@ -1,0 +1,14 @@
+<<<<<<< HEAD
+<resources>
+    <string name="app_name">OCV 15 Puzzle</string>
+    <string name="menu_toggle_tile_numbers">Show/hide tile numbers</string>
+    <string name="menu_start_new_game">Start new game</string>
+
+=======
+<resources>
+    <string name="app_name">OCV 15 Puzzle</string>
+    <string name="menu_toggle_tile_numbers">Show/hide tile numbers</string>
+    <string name="menu_start_new_game">Start new game</string>
+
+>>>>>>> 184953b77bdf777b290c0c4d236105030c50a6de
+</resources>

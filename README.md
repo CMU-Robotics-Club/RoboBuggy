@@ -1,8 +1,12 @@
 RoboBuggy
 ==============
 
-\[Insert awesome picture of buggy at rolls.\]
+![Trevor pushing RoboBuggy at Fall rolls.](IMG_1679.JPG)
 
-We have a wiki, y'all: [https://github.com/CMU-Robotics-Club/RoboBuggy/wiki](https://github.com/CMU-Robotics-Club/RoboBuggy/wiki)
+[<img src="https://travis-ci.org/CMU-Robotics-Club/RoboBuggy.svg?branch=master">](https://travis-ci.org/CMU-Robotics-Club/RoboBuggy/builds)
 
-Please use it to document your group's awesome work and/or store design documents.
+To clone repo run git clone https://github.com/CMU-Robotics-Club/RoboBuggy.git
+
+note java 8 is requriered 
+
+We have a wiki: [https://github.com/CMU-Robotics-Club/RoboBuggy/wiki](https://github.com/CMU-Robotics-Club/RoboBuggy/wiki)

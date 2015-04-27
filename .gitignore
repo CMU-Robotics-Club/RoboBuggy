@@ -1,9 +1,22 @@
-.class
+*.class
 out/
-
+*.pyc
+.metadata/
 # mac os x temp files
 .DS_Store
 
 # arduino build files
 build-*
 surface_src/java_src/Alice/src/com/roboclub/robobuggy/main/config.java
+
+# avr makefile build files
+*.eep
+*.elf
+*.hex
+*.lss
+*.lst
+*.map
+*.o
+*.sym
+.dep
+

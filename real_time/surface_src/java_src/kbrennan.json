@@ -1,0 +1,13 @@
+{
+	"LOG_FILE_LOCATION" : "C:\\Users\\ktb80_000\\buggy-log",
+	"LOGGING" : true,
+	"ACTIVE" : true,
+	"GUI" : true,
+	"AUTONOMOUS" : false,
+	"DRIVE" : true,
+	"IMU" : true,
+	"GPS" : true,
+	"ENCODER" : true,
+	"VISION" : true,
+	"BRAKES_PER_FULL_PRESSURE" : 4
+}

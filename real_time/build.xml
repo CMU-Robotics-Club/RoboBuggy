@@ -1,0 +1,100 @@
+<!---
+  For building the Robobuggy project 
+  running tests
+  building javadocs 
+  packaging a jar 
+-->
+
+
+<project name="HelloWorld" basedir="." default="main">
+
+    <property name="src.dir"     value="surface_src/java_src/Alice/src/com/roboclub/robobuggy/testing"/> 
+
+    <property name="build.dir"   value="build"/>
+    <property name="classes.dir" value="${build.dir}/classes"/>
+    <property name="jar.dir"     value="${build.dir}/jar"/>
+
+    <property name="main-class"  value="oata.HelloWorld"/>
+
+    <path id="application" location="${jar.dir}/${ant.project.name}.jar"/>
+
+
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+    </target>
+
+
+      <!--- stuff for installing libs -->
+      <condition property="isWindows">
+	<os family="windows" />
+      </condition>
+    
+      <condition property="isUnix">
+	<os family="unix" />
+      </condition>
+      
+      <target name="mvn_windows" if="isWindows">
+	<exec dir="./surface_src/java_src/libs/junit" executable="cmd">
+          <arg line="/c mvn clean install" />
+	</exec>
+      </target>
+      
+      <target name="mvn_unix" if="isUnix">
+	<exec dir="./surface_src/java_src/libs/junit" executable="sh">
+          <arg line="-c 'mvn clean install'" />
+	</exec>
+      </target>
+      <!--- end stuff for installing libs -->
+
+
+      <target name="compile" ><!-- depends="mvn_windows, mvn_unix" > -->
+        <mkdir dir="${classes.dir}"/>
+        <javac  destdir="${classes.dir}" >
+	  <src path="surface_src/java_src/Alice/src/com/roboclub/robobuggy/actuators"/>
+	  <src path="surface_src/java_src/Alice/src/com/roboclub/robobuggy/localization"/>
+	  <src path="surface_src/java_src/Alice/src/com/roboclub/robobuggy/logging"/>
+	  <src path="surface_src/java_src/Alice/src/com/roboclub/robobuggy/main"/>
+	  <src path="surface_src/java_src/Alice/src/com/roboclub/robobuggy/map"/>
+	  <src path="surface_src/java_src/Alice/src/com/roboclub/robobuggy/messages"/>
+	  <src path="surface_src/java_src/Alice/src/com/roboclub/robobuggy/ros"/>
+	  <src path="surface_src/java_src/Alice/src/com/roboclub/robobuggy/sensors"/>
+	  <src path="surface_src/java_src/Alice/src/com/roboclub/robobuggy/serial"/>
+	  <src path="surface_src/java_src/Alice/src/com/roboclub/robobuggy/testing"/>
+	  <src path="surface_src/java_src/Alice/src/com/roboclub/robobuggy/ui"/>
+	  <classpath>
+	    <pathelement location="surface_src/java_src/libs/junit/target/junit-4.12-SNAPSHOT.jar" /> 
+            <path refid="application"/>
+          </classpath>
+	</javac>
+    </target>
+
+    <target name="jar" depends="compile">
+        <mkdir dir="${jar.dir}"/>
+        <jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="${main-class}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="test" depends="jar,test_fast">
+    </target>
+
+<target name="test_fast" >
+      <junit printsummary="yes" haltonfailure="true" showoutput="true" >
+	<classpath>
+	<pathelement location="surface_src/java_src/libs/junit/target/junit-4.12-SNAPSHOT.jar" /> 
+          <path refid="application"/>
+        </classpath>
+        
+        <batchtest fork="yes">
+          <fileset dir="${src.dir}" includes="*.java"/>
+        </batchtest>
+      </junit> 
+</target>
+
+    <target name="clean-build" depends="clean,jar"/>
+
+    <target name="main" depends="clean,test"/>
+
+</project>
