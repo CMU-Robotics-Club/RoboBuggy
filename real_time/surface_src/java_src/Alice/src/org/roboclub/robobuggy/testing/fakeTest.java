@@ -3,7 +3,7 @@ import junit.framework.TestCase;
 
 
 public class fakeTest extends TestCase {
-
+/*
 	protected void setUp() throws Exception {
 		super.setUp();
 	}
@@ -11,8 +11,8 @@ public class fakeTest extends TestCase {
 	protected void tearDown() throws Exception {
 		super.tearDown();
 	}
-
+*/
 	public void testone(){
-		assert(true);
+		//≈ßassert(true);
 	}
 }
