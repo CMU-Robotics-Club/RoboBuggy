@@ -69,6 +69,8 @@
 	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/ui"/>
 	  <classpath>
 	    <pathelement location="real_time/surface_src/java_src/libs/junit/target/junit-4.12-SNAPSHOT.jar" /> 
+	    <pathelement location="real_time/surface_src/java_src/Alice/library/orsoncharts-1.4-eval-nofx.jar" />
+
             <path refid="application"/>
           </classpath>
 	</javac>
