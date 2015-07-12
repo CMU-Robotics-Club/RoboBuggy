@@ -1,6 +1,6 @@
 package org.roboclub.robobuggy.map;
 
-import coordinateFrame.SpacialDimensions;
+import org.roboclub.robobuggy.coordinateFrame.SpacialDimensions;
 import org.roboclub.robobuggy.linearAlgebra.Number;
 /**
  * 

@@ -3,9 +3,8 @@ package org.roboclub.robobuggy.map;
 import java.io.File;
 import java.util.ArrayList;
 
+import org.roboclub.robobuggy.coordinateFrame.FrameOfRefrence;
 import org.roboclub.robobuggy.main.LogicException;
-
-import coordinateFrame.FrameOfRefrence;
 
 /***
  * 

@@ -1,4 +1,4 @@
-package coordinateFrame;
+package org.roboclub.robobuggy.coordinateFrame;
 
 import org.roboclub.robobuggy.linearAlgebra.ANGULAR_UNITS;
 import org.roboclub.robobuggy.linearAlgebra.Angle;

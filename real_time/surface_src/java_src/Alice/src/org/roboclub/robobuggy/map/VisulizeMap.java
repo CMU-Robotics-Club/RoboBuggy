@@ -8,10 +8,9 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+import org.roboclub.robobuggy.coordinateFrame.FrameOfRefrence;
+import org.roboclub.robobuggy.coordinateFrame.Pose;
 import org.roboclub.robobuggy.main.LogicException;
-
-import coordinateFrame.FrameOfRefrence;
-import coordinateFrame.Pose;
 
 // TODO make dynamic when user resizes 
 // TODO add scale to mapping 

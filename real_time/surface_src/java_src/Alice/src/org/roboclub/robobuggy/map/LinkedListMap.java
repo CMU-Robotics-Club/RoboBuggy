@@ -4,11 +4,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import org.roboclub.robobuggy.coordinateFrame.FrameOfRefrence;
 import org.roboclub.robobuggy.linearAlgebra.Distince;
 import org.roboclub.robobuggy.linearAlgebra.Number;
 import org.roboclub.robobuggy.main.LogicException;
-
-import coordinateFrame.FrameOfRefrence;
 /***
  * 
  * @author Trevor Decker

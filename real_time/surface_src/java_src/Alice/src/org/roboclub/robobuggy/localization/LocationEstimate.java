@@ -1,8 +1,7 @@
 package org.roboclub.robobuggy.localization;
 
+import org.roboclub.robobuggy.coordinateFrame.Pose;
 import org.roboclub.robobuggy.linearAlgebra.Matrix;
-
-import coordinateFrame.Pose;
 
 /**
  * TODO document

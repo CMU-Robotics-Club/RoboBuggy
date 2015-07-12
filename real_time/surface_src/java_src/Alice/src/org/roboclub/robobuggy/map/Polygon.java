@@ -15,7 +15,7 @@ public class Polygon extends MapObject{
 	//TODO add constructor 
 	//TODO add adder/deleter
 	//TODO add getter setters 
-	//TODO add image stuff
+	//TODO add image stuff 
 	
 	@Override
 	boolean Equals(Object obj) {

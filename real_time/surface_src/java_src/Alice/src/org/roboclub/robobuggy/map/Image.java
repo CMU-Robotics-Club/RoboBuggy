@@ -8,8 +8,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import coordinateFrame.FrameOfRefrence;
-import coordinateFrame.Pose;
+import org.roboclub.robobuggy.coordinateFrame.FrameOfRefrence;
+import org.roboclub.robobuggy.coordinateFrame.Pose;
 
 //TODO make a part of polygon 
 
