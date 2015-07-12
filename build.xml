@@ -70,7 +70,7 @@
 	  <classpath>
 	    <pathelement location="real_time/surface_src/java_src/libs/junit/target/junit-4.12-SNAPSHOT.jar" /> 
 	    <pathelement location="real_time/surface_src/java_src/Alice/library/orsoncharts-1.4-eval-nofx.jar" />
-
+	    <pathelement location="real_time/surface_src/java_src/Alice/library/RXTXcomm.jar" />
             <path refid="application"/>
           </classpath>
 	</javac>
