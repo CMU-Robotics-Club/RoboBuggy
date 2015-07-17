@@ -12,6 +12,8 @@ import org.roboclub.robobuggy.main.LogicException;
 public class Matrix<TYPE extends Number> {
 	NDimensionalArray<TYPE> data; 
 	
+	//TODO add more constructors
+	
 	//TODO allow for a matrix that has multiple types ie angles and distinces 
 	//TODO remove the need for an example type to be given when constructor is used  
 	/**
@@ -22,6 +24,12 @@ public class Matrix<TYPE extends Number> {
 		TYPE sampleElment = null; //TODO fix
 		data = new NDimensionalArray<TYPE>(sampleElment, dimensions);
 	}
+	
+	//todo make a constructor that takes an n d array as an input
+	public Matrix(Number[][] input){
+		//TODO
+	}
+	
 	
 	/**
 	 * TODO document

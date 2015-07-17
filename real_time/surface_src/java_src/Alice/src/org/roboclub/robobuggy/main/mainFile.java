@@ -5,7 +5,6 @@ import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 
 import java.util.ArrayList;
-
 import org.roboclub.robobuggy.fauxNodes.FauxEncoderNode;
 import org.roboclub.robobuggy.fauxNodes.FauxGPSNode;
 import org.roboclub.robobuggy.fauxNodes.FauxIMUNode;

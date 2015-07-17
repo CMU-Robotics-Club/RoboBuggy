@@ -13,7 +13,6 @@ import com.roboclub.robobuggy.main.Robot;
  * 
  *          DESCRIPTION: tester class for the servo
  */
-
 public class TestServo {
 	private static boolean running;
 

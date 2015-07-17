@@ -186,5 +186,15 @@ public class Integer_Number implements Number{
 		return Integer.toString(value);
 		 
 	 }
+	 
+	 @Override
+	 public Integer_Number toInteger_Number(){
+		 return this;
+	 }
+	 
+	 @Override
+	 public Double_Number toDouble_Number(){
+		 return new Double_Number(value);
+	 }
 
 }
