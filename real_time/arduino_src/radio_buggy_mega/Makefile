@@ -235,7 +235,9 @@ AVRDUDE_FLAGS += $(AVRDUDE_NO_VERIFY)
 AVRDUDE_FLAGS += $(AVRDUDE_VERBOSE)
 AVRDUDE_FLAGS += $(AVRDUDE_ERASE_COUNTER)
 
-AVRDUDE_A_PORT = /dev/tty.asdf
+#Change this variable to usb port to which arduino is connected
+#It can be checked by using "ls /dev" and looking for "tty.usbxxxxxx####"
+AVRDUDE_A_PORT = /dev/tty.asdf 
 AVRDUDE_A_FLAGS = -v -c wiring -p $(MCU) -P $(AVRDUDE_A_PORT) -b 115200 -D
 
 PYTHON = /usr/local/bin/python
@@ -381,6 +383,7 @@ program: $(TARGET).hex $(TARGET).eep
 # Program the device without an ISP by using the bootloader
 aprogram: $(TARGET).hex $(TARGET).eep
 	$(PYTHON) ./arduinoReset.py $(AVRDUDE_A_PORT)
+	$(PYTHON) filewrite.py
 	$(AVRDUDE) $(AVRDUDE_A_FLAGS) $(AVRDUDE_WRITE_FLASH)
 
 
@@ -522,6 +525,7 @@ clean_list :
 	$(REMOVE) $(patsubst %.c,%.s,$(patsubst %.cpp,%.s,$(SRC)))
 	$(REMOVE) $(patsubst %.c,%.d,$(patsubst %.cpp,%.d,$(SRC)))
 	$(REMOVE) .dep/*
+	$(REMOVE) comp.h
 
 
 
