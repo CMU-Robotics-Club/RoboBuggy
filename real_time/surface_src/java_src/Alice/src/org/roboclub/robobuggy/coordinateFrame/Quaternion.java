@@ -30,7 +30,6 @@ public class Quaternion<NTYPE extends Number> implements RotationalRepersentatio
 	}
 
 	/**
-	 * TODO implment 
 	 * TODO document 
 	 * @param q02
 	 * @param q1
@@ -148,7 +147,7 @@ public class Quaternion<NTYPE extends Number> implements RotationalRepersentatio
 	/**
 	 * TODO document 
 	 */
-	public RotationalRepersentation preApplyRotation(RotationalRepersentation secondRotation) throws LogicException {
+	public RotationalRepersentation preApplyRotation(RotationalRepersentation secondRotation) throws LogicException, CloneNotSupportedException {
 		return this.addition(secondRotation.toQuaternion());
 	}
 
@@ -157,7 +156,7 @@ public class Quaternion<NTYPE extends Number> implements RotationalRepersentatio
 	 * TODO document
 	 */
 	public RotationalRepersentation postApplyRotation(
-			RotationalRepersentation secondRotation) throws LogicException {
+			RotationalRepersentation secondRotation) throws LogicException, CloneNotSupportedException {
 		return secondRotation.preApplyRotation(this);
 	}
 

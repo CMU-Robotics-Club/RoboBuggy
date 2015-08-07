@@ -1,6 +1,7 @@
 package org.roboclub.robobuggy.linearAlgebra;
 
 import org.roboclub.robobuggy.main.LogicException;
+import org.roboclub.robobuggy.main.MESSAGE_LEVEL;
 
 /**
  *
@@ -115,7 +116,7 @@ public class Double_Number implements Number {
 			return new Double_Number(value % otherDouble.value);
 		}
 		
-		throw new LogicException("trying to mod a double number by a number type that does not make sense");
+		throw new LogicException("trying to mod a double number by a number type that does not make sense",MESSAGE_LEVEL.exception);
 
 	}
 
@@ -131,7 +132,7 @@ public class Double_Number implements Number {
 			return true;
 		}
 		//otherNumber type does not make sense
-		throw new LogicException("trying check equality to an  integer number by a number type that does not make sense");
+		throw new LogicException("trying check equality to an  integer number by a number type that does not make sense",MESSAGE_LEVEL.exception);
 
 	}
 
@@ -147,7 +148,7 @@ public class Double_Number implements Number {
 			return true;
 		}
 		//otherNumber type does not make sense
-		throw new LogicException("trying check equality to an  integer number by a number type that does not make sense");
+		throw new LogicException("trying check equality to an  integer number by a number type that does not make sense",MESSAGE_LEVEL.exception);
 	}
 
 	@Override
@@ -164,7 +165,7 @@ public class Double_Number implements Number {
 			return true;
 		}
 		//otherNumber type does not make sense
-		throw new LogicException("trying check equality to an  integer number by a number type that does not make sense");
+		throw new LogicException("trying check equality to an  integer number by a number type that does not make sense",MESSAGE_LEVEL.exception);
 	}
 
 	@Override

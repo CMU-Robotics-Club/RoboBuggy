@@ -1,6 +1,7 @@
 package org.roboclub.robobuggy.linearAlgebra;
 
 import org.roboclub.robobuggy.main.LogicException;
+import org.roboclub.robobuggy.main.MESSAGE_LEVEL;
 
 /**
  * 
@@ -24,10 +25,11 @@ public class Integer_Number implements Number{
 
 	@Override
 	/**
-	 * TODO document
+	 * Evaluates to a number representation of this number added to the other number, 
+	 * order of addition should not matter
 	 */
-	public Integer_Number add(Number otherNumber) {
-		return new Integer_Number(value+((Integer_Number) otherNumber).getValue());
+	public Integer_Number add(Number otherNumber) throws LogicException {
+		return new Integer_Number(value+(otherNumber.toInteger_Number()).getValue());
 	}
 	
 	/**
@@ -95,7 +97,7 @@ public class Integer_Number implements Number{
 	 */
 	public Integer_Number mod(Number someNumber) throws LogicException {
 		if(someNumber.getClass() != Integer_Number.class){
-			throw new LogicException("trying to mod an integer number by a number type that does not make sense");
+			throw new LogicException("trying to mod an integer number by a number type that does not make sense",MESSAGE_LEVEL.exception);
 		}
 		Integer_Number otherInteger = (Integer_Number)someNumber;
 		return new Integer_Number(value % otherInteger.value);
@@ -114,7 +116,7 @@ public class Integer_Number implements Number{
 			return true;
 		}
 		//otherNumber type does not make sense
-		throw new LogicException("trying check equality to an  integer number by a number type that does not make sense");
+		throw new LogicException("trying check equality to an  integer number by a number type that does not make sense",MESSAGE_LEVEL.exception);
 	}
 
 	@Override
@@ -130,7 +132,7 @@ public class Integer_Number implements Number{
 			return true;
 		}
 		//otherNumber type does not make sense
-		throw new LogicException("trying check equality to an  integer number by a number type that does not make sense");
+		throw new LogicException("trying check equality to an  integer number by a number type that does not make sense",MESSAGE_LEVEL.exception);
 
 	}
 
@@ -147,7 +149,7 @@ public class Integer_Number implements Number{
 			return true;
 		}
 		//otherNumber type does not make sense
-		throw new LogicException("trying check equality to an  integer number by a number type that does not make sense");
+		throw new LogicException("trying check equality to an  integer number by a number type that does not make sense",MESSAGE_LEVEL.exception);
 
 	}
 
@@ -182,17 +184,28 @@ public class Integer_Number implements Number{
 
 	 
 	 @Override
+	 /**
+	  * TODO document
+	  */
 	 public String toString(){
 		return Integer.toString(value);
 		 
 	 }
 	 
 	 @Override
+	 /**
+	  * TODO document
+	  */
 	 public Integer_Number toInteger_Number(){
 		 return this;
 	 }
 	 
 	 @Override
+	 /**
+	  * Converts this integer_number to a double number, 
+	  * NOTE: will have the same value  
+	  * ie this.toDouble_Number().toIntgerNumber = this
+	  */
 	 public Double_Number toDouble_Number(){
 		 return new Double_Number(value);
 	 }

@@ -3,6 +3,7 @@ package org.roboclub.robobuggy.coordinateFrame;
 import org.roboclub.robobuggy.linearAlgebra.Distince;
 import org.roboclub.robobuggy.linearAlgebra.Vector;
 import org.roboclub.robobuggy.main.LogicException;
+import org.roboclub.robobuggy.main.MESSAGE_LEVEL;
 
 /**
  * TODO document
@@ -65,8 +66,12 @@ public interface PositionRepersentation {
 	 */
 	public SpacialDimensions[] getDimensions();
 	
-	public static PositionRepersentation zero() {
-		//TODO
-		return null;
+	/**
+	 * TODO document
+	 * @return
+	 * @throws LogicException 
+	 */
+	public static PositionRepersentation zero() throws LogicException {
+		throw new LogicException("zero has not yet been defined for this type of position", MESSAGE_LEVEL.exception);
 	}
 }

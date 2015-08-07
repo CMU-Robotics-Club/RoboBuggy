@@ -3,6 +3,7 @@ package org.roboclub.robobuggy.linearAlgebra;
 import java.util.ArrayList;
 
 import org.roboclub.robobuggy.main.LogicException;
+import org.roboclub.robobuggy.main.MESSAGE_LEVEL;
 
 
 /***
@@ -55,7 +56,7 @@ public class Vector<TYPE  extends Number> extends Matrix<TYPE> {
 	 */
 	public Number dotProduct(Vector<TYPE> otherVector,Number ZeroELement) throws LogicException{
 		if(otherVector.getLength() != getLength()){
-			throw new LogicException("Trying to take the dot product of two vectors of diffrent length");
+			throw new LogicException("Trying to take the dot product of two vectors of diffrent length",MESSAGE_LEVEL.exception);
 		}
 		
 		Number result = ZeroELement;
@@ -97,19 +98,19 @@ public class Vector<TYPE  extends Number> extends Matrix<TYPE> {
 	 */
 	public TYPE mult(Vector<TYPE> b) throws LogicException{
 		if(this.getNumRows() == 0){
-			throw new LogicException("it does not make sense to multiply a zero size vector");
+			throw new LogicException("it does not make sense to multiply a zero size vector",MESSAGE_LEVEL.exception);
 		}
 		//the vector has at least one element in it 
 		TYPE result = this.getIndex(0);
 		if(this.getNumRows() != b.getNumCols()){
-			throw new LogicException("dimension mismatch for vector multiplication");
+			throw new LogicException("dimension mismatch for vector multiplication",MESSAGE_LEVEL.exception);
 		}
 		if(this.getNumCols() != 1){
-			throw new LogicException("dimension mismatch for vector multiplication");
+			throw new LogicException("dimension mismatch for vector multiplication",MESSAGE_LEVEL.exception);
 		}
 		
 		if(b.getNumRows() != 1){
-			throw new LogicException("dimension mismatch for vector multiplication");
+			throw new LogicException("dimension mismatch for vector multiplication",MESSAGE_LEVEL.exception);
 		}
 		
 		for(int i = 0;i<b.getLength();i++){
@@ -147,7 +148,7 @@ public class Vector<TYPE  extends Number> extends Matrix<TYPE> {
 	 */
 	public void setIndex(int index,TYPE newValue) throws LogicException{
 		if(this.getLength() > index || index > -1){
-			throw new LogicException("index is out of range of vector");
+			throw new LogicException("index is out of range of vector",MESSAGE_LEVEL.exception);
 		}
 		if(this.getNumCols() == 1){
 			//must be a row vector

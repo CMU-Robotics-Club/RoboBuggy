@@ -40,7 +40,7 @@ public class LinkedListMap extends Map{
 	 * TODO document
 	 *   if no closestObject exists ie the map is empty return null
 	 */
-	public MapObject getClosestObject(FrameOfRefrence aPoint) throws LogicException {
+	public MapObject getClosestObject(FrameOfRefrence aPoint) throws LogicException, CloneNotSupportedException {
 		if(map.size() <1){
 			return null;
 		}
@@ -148,7 +148,7 @@ public class LinkedListMap extends Map{
 	 * TODO document
 	 */
 	public MapObject[] getClosestNObjects(FrameOfRefrence aFrame,
-			int numPoints) throws LogicException {
+			int numPoints) throws LogicException, CloneNotSupportedException {
 		//a sorted array of mapObjects (sorted based on distance from aPoint)
 				MapObject[] sortedObjects = new MapObject[numPoints];
 				//sets all of the points to null incase not enogth objects exsits on the map we do not want 0 objects to be returned

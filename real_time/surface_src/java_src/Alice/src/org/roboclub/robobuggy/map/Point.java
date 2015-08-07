@@ -10,6 +10,7 @@ import org.roboclub.robobuggy.linearAlgebra.Double_Number;
 import org.roboclub.robobuggy.linearAlgebra.Number;
 import org.roboclub.robobuggy.linearAlgebra.Vector;
 import org.roboclub.robobuggy.main.LogicException;
+import org.roboclub.robobuggy.main.MESSAGE_LEVEL;
 
 
 /***
@@ -53,7 +54,7 @@ public class Point extends MapObject{
 	boolean isGreater(Object obj) throws LogicException {
 		//it does not make sense for objects of different types to be greater then the other
 		if(obj.getClass() != this.getClass()){
-			throw new LogicException("calling is Greater on an object that is of a non comparable class type");
+			throw new LogicException("calling is Greater on an object that is of a non comparable class type",MESSAGE_LEVEL.exception);
 		}
 		Point other = (Point)obj;
 		return this.refrenceFrame.isGreater(other.refrenceFrame);
@@ -68,7 +69,7 @@ public class Point extends MapObject{
 	boolean isLess(Object obj) throws LogicException {
 		//it does not make sense for objects of different types to be greater then the other
 		if(obj.getClass() != this.getClass()){
-			throw new LogicException("calling is Less on an object that is of a non comparable class type");
+			throw new LogicException("calling is Less on an object that is of a non comparable class type",MESSAGE_LEVEL.exception);
 		}
 		Point other = (Point)obj;
 		return this.refrenceFrame.isLess(other.refrenceFrame);

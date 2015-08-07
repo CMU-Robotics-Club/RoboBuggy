@@ -40,8 +40,9 @@ public class Pose implements FrameOfRefrence{
 	/**
 	 * TODO document
 	 * @throws LogicException 
+	 * @throws CloneNotSupportedException 
 	 */
-	public FrameOfRefrence preApply(FrameOfRefrence otherFrame) throws LogicException{
+	public FrameOfRefrence preApply(FrameOfRefrence otherFrame) throws LogicException, CloneNotSupportedException{
 		//rotate then translate 
 		RotationalRepersentation newOrintation = this.orintation.preApplyRotation(otherFrame.getOrintation());
 		PositionRepersentation newPosition = position.applyRotation(otherFrame.getOrintation()).add(otherFrame.getPosition());
@@ -51,8 +52,9 @@ public class Pose implements FrameOfRefrence{
 	/**
 	 * TODO document
 	 * @throws LogicException 
+	 * @throws CloneNotSupportedException 
 	 */
-	public FrameOfRefrence postApply(FrameOfRefrence otherFrame) throws LogicException{
+	public FrameOfRefrence postApply(FrameOfRefrence otherFrame) throws LogicException, CloneNotSupportedException{
 		return otherFrame.preApply(this);
 	}
 	
@@ -100,12 +102,23 @@ public class Pose implements FrameOfRefrence{
 	}
 
 
+	/**
+	 * TODO document
+	 * TODO implement
+	 * @param refrenceFrame
+	 * @return
+	 */
 	public boolean isGreater(Pose refrenceFrame) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-
+	/**
+	 * TODO document
+	 * TODO implement
+	 * @param refrenceFrame
+	 * @return
+	 */
 	public boolean isLess(Pose refrenceFrame) {
 		// TODO Auto-generated method stub
 		return false;

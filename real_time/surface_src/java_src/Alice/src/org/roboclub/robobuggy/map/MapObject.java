@@ -59,8 +59,9 @@ public abstract class  MapObject extends  JComponent{
 	 * @param obj
 	 * @return
 	 * @throws LogicException 
+	 * @throws CloneNotSupportedException 
 	 */
-	public FrameOfRefrence getTransform(MapObject otherObject) throws LogicException {
+	public FrameOfRefrence getTransform(MapObject otherObject) throws LogicException, CloneNotSupportedException {
 		return this.refrenceFrame.postApply(otherObject.refrenceFrame.inverse());
 	}
 	
@@ -69,8 +70,9 @@ public abstract class  MapObject extends  JComponent{
 	 * @param aPoint
 	 * @return
 	 * @throws LogicException 
+	 * @throws CloneNotSupportedException 
 	 */
-	public Distince getMinDistince(FrameOfRefrence aPoint) throws LogicException{
+	public Distince getMinDistince(FrameOfRefrence aPoint) throws LogicException, CloneNotSupportedException{
 		return  getTransform((MapObject) aPoint).getPosition().getDistince();
 	}
 }

@@ -2,7 +2,7 @@ package org.roboclub.robobuggy.linearAlgebra;
 
 import org.roboclub.robobuggy.main.LogicException;
 
-public class DistincePerTime implements Number{
+public class DistincePerTime extends Measurement<Number>{
 
 	@Override
 	/**
@@ -111,26 +111,6 @@ public class DistincePerTime implements Number{
 	public boolean isEqual(Number somberNumber) throws LogicException {
 		// TODO Auto-generated method stub
 		return false;
-	}
-
-	@Override
-	/**
-	 * TODO document
-	 * TODO include
-	 */
-	public Number sqrt() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	/**
-	 * TODO document
-	 * TODO include
-	 */
-	public Number signum() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

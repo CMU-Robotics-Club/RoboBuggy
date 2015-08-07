@@ -1,6 +1,7 @@
 package org.roboclub.robobuggy.linearAlgebra;
 
 import org.roboclub.robobuggy.main.LogicException;
+import org.roboclub.robobuggy.main.MESSAGE_LEVEL;
 
 /**
  * TODO document 
@@ -53,7 +54,7 @@ public interface Number {
 	 * @throws LogicException 
 	 */
 	 public static Number zero() throws LogicException {
-		 throw new LogicException("This function needs to be over written");
+		 throw new LogicException("This function needs to be over written",MESSAGE_LEVEL.exception);
 
 	}
 	 
@@ -105,8 +106,9 @@ public interface Number {
 	
 	/**
 	 * TODO document 
+	 * @throws CloneNotSupportedException 
 	 */
-	abstract public Number signum();
+	abstract public Number signum() throws CloneNotSupportedException;
 	
 	/**
 	 * TODO document
@@ -127,10 +129,10 @@ public interface Number {
 	}
 
 	public default Integer_Number toInteger_Number() throws LogicException{
-		throw new LogicException("To Integer Number has not been implmented yet or does not make sense for this Number type");
+		throw new LogicException("To Integer Number has not been implmented yet or does not make sense for this Number type",MESSAGE_LEVEL.exception);
 	}
 	public default Double_Number toDouble_Number() throws LogicException{
-		throw new LogicException("To Integer Number has not been implmented yet or does not make sense for this Number type");
+		throw new LogicException("To Integer Number has not been implmented yet or does not make sense for this Number type",MESSAGE_LEVEL.exception);
 	}
 
 }

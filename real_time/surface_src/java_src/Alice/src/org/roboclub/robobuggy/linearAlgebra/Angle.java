@@ -4,6 +4,7 @@ import java.io.ObjectInputStream.GetField;
 import java.lang.reflect.InvocationTargetException;
 
 import org.roboclub.robobuggy.main.LogicException;
+import org.roboclub.robobuggy.main.MESSAGE_LEVEL;
 
 /**
  * TODO document
@@ -11,7 +12,7 @@ import org.roboclub.robobuggy.main.LogicException;
  * @version 0.0
  * 
  */
-public class Angle<NTYPE extends Number> implements Number{
+public class Angle<NTYPE extends  Number> extends Measurement{
 	NTYPE value;
 	ANGULAR_UNITS unit;
 	
@@ -26,12 +27,6 @@ public class Angle<NTYPE extends Number> implements Number{
 		setUNITS(units);
 		setMeassurmentValue(value);
 	}
-	
-	
-	public Angle() {
-		// TODO Auto-generated constructor stub
-	}
-
 
 	/***
 	 * produces a new unit object which represents the same angle but in degrees
@@ -49,7 +44,7 @@ public class Angle<NTYPE extends Number> implements Number{
 			result.setMeassurmentValue((new Double_Number(.2957795)).mult(getMeassurmentValue()));
 			break;
 		default:
-			throw new LogicException("unit type is not a angle");
+			throw new LogicException("unit type is not a angle",MESSAGE_LEVEL.exception);
 			
 		}
 		result.setUNITS(ANGULAR_UNITS.DEGREES);
@@ -81,7 +76,7 @@ public class Angle<NTYPE extends Number> implements Number{
 	 * @throws LogicException 
 	 */
 	public Angle add(Number otherNumber) throws LogicException {
-		throw new LogicException("it does not make sense to add a angle and a number, convert to angle first");
+		throw new LogicException("it does not make sense to add a angle and a number, convert to angle first",MESSAGE_LEVEL.exception);
 	}
 	
 	/**
@@ -102,7 +97,7 @@ public class Angle<NTYPE extends Number> implements Number{
 	 * @throws LogicException 
 	 */
 	public Angle sub(Number otherNumber) throws LogicException {
-		throw new LogicException("it does not make sense to subtract a angle and a number, convert to angle first");
+		throw new LogicException("it does not make sense to subtract a angle and a number, convert to angle first",MESSAGE_LEVEL.exception);
 	}
 	
 	/**
@@ -131,7 +126,7 @@ public class Angle<NTYPE extends Number> implements Number{
 	 * @throws LogicException 
 	 */
 	public Angle mult(Angle otherNumber) throws LogicException {
-		throw new LogicException("It does not make sense to multiply an angle by another angle, for now need to create a angle^2 class");
+		throw new LogicException("It does not make sense to multiply an angle by another angle, for now need to create a angle^2 class",MESSAGE_LEVEL.exception);
 	}
 	
 	/**
@@ -230,7 +225,7 @@ public class Angle<NTYPE extends Number> implements Number{
 			Angle otherAngle = (Angle)otherNumber;
 			return value.isLess(otherAngle.value);
 		}
-		throw new LogicException("can not compare the size of a angle and non angle number");
+		throw new LogicException("can not compare the size of a angle and non angle number",MESSAGE_LEVEL.exception);
 	}
 
 
@@ -243,7 +238,7 @@ public class Angle<NTYPE extends Number> implements Number{
 			Angle otherAngle = (Angle)otherNumber;
 			return value.isGreater(otherAngle.value);
 		}
-		throw new LogicException("can not compare the size of a angle and non angle number");
+		throw new LogicException("can not compare the size of a angle and non angle number",MESSAGE_LEVEL.exception);
 
 	}
 
@@ -258,7 +253,7 @@ public class Angle<NTYPE extends Number> implements Number{
 			Angle otherAngle = (Angle)otherNumber;
 			return value.isEqual(otherAngle.value);
 		}
-		throw new LogicException("can not compare the size of a angle and non angle number");
+		throw new LogicException("can not compare the size of a angle and non angle number",MESSAGE_LEVEL.exception);
 	}
 
 
@@ -284,7 +279,7 @@ public class Angle<NTYPE extends Number> implements Number{
 	 * Evaluates to the numbers representation of +1 if the Angle is positive,
 	 *  Evaluates to the numbers representation of the inverse of 1 if the number is negative 
 	 */
-	public Angle signum() {
+	public Angle signum() throws CloneNotSupportedException {
 		//TODO remove try catch 
 		Angle result = null;
 		try {
@@ -296,11 +291,9 @@ public class Angle<NTYPE extends Number> implements Number{
 		return result;
 	}
 
-
-	public static Number createNew() {
-		return new Angle<Number>();
-	}
-	
+	/** 
+	 * TODO document
+	 */
 	 public Number getZero() throws LogicException{
 		 System.out.println("running angle get zero");
 		 return zero();

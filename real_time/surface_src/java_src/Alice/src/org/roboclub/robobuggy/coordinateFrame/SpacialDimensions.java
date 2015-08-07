@@ -3,8 +3,9 @@ package org.roboclub.robobuggy.coordinateFrame;
 /**
  * 
  * @author Trevor Decker
- * @version 0.0
- * TODO document
+ * @version 1.0
+ * 
+ * Enum designed to keep track of what the name and type of dimension which a meassurment is in 
  *
  */
 public enum SpacialDimensions {x,y,z,notSpecified}

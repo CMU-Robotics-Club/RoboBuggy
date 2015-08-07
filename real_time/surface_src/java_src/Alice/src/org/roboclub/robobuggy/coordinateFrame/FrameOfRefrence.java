@@ -15,16 +15,18 @@ public interface FrameOfRefrence{
 	 * @param otherFrame
 	 * @return
 	 * @throws LogicException 
+	 * @throws CloneNotSupportedException 
 	 */
-	public abstract FrameOfRefrence preApply(FrameOfRefrence otherFrame) throws LogicException;
+	public abstract FrameOfRefrence preApply(FrameOfRefrence otherFrame) throws LogicException, CloneNotSupportedException;
 	
 	/**
 	 * TODO document
 	 * @param otherFrame
 	 * @return
 	 * @throws LogicException 
+	 * @throws CloneNotSupportedException 
 	 */
-	public abstract FrameOfRefrence postApply(FrameOfRefrence otherFrame) throws LogicException;
+	public abstract FrameOfRefrence postApply(FrameOfRefrence otherFrame) throws LogicException, CloneNotSupportedException;
 	
 	/**
 	 * TODO document
@@ -51,6 +53,10 @@ public interface FrameOfRefrence{
 	 */
 	public abstract HomogeneousMatrix toHomogeneousMatrix();
 
+	/**
+	 * TODO document
+	 * @return
+	 */
 	public abstract Pose toPose();
 
 

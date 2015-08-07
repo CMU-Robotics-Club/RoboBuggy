@@ -8,7 +8,6 @@ import org.roboclub.robobuggy.linearAlgebra.Number;
 
 /**
  * TODO document 
- * TODO implement
  * @author Trevor Decker
  * @version 0.0
  *
@@ -116,6 +115,10 @@ public class HomogeneousMatrix implements FrameOfRefrence {
 	}
 
 	@Override
+	/**
+	 * TODO document
+	 * TODO implement
+	 */
 	public Pose toPose() {
 		// TODO Auto-generated method stub
 		return null;

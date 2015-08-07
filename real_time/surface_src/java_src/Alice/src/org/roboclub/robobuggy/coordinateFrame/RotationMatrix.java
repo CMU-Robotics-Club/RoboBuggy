@@ -5,6 +5,7 @@ import org.roboclub.robobuggy.linearAlgebra.Double_Number;
 import org.roboclub.robobuggy.linearAlgebra.Matrix;
 import org.roboclub.robobuggy.linearAlgebra.Number;
 import org.roboclub.robobuggy.main.LogicException;
+import org.roboclub.robobuggy.main.MESSAGE_LEVEL;
 
 /**
  * 
@@ -118,7 +119,7 @@ public class RotationMatrix <TYPE extends Number>implements RotationalRepersenta
 	 * assuming if SO1 then only given x
 	 * assuming if SO2 then only given x,y 
 	 */
-	public Quaternion toQuaternion() throws LogicException {
+	public Quaternion toQuaternion() throws LogicException, CloneNotSupportedException {
 		Number ZERO = new Double_Number(0.0);
 		Number ONE = new Double_Number(1.0);
 		
@@ -168,7 +169,7 @@ public class RotationMatrix <TYPE extends Number>implements RotationalRepersenta
 		    q2 = q2.mult((r32.add(r23)).signum());
 		    q3 = q3.mult(new Double_Number(1.0));
 		} else {
-			throw new LogicException("quaternion conversion impossible state");
+			throw new LogicException("quaternion conversion impossible state",MESSAGE_LEVEL.exception);
 		}
 		Number r = (q0.mult(q0).add(q1.mult(q1)).add(q2.mult(q2)).add(q3.mult(q3))).sqrt();
 		q0 = q0.div(r);
@@ -200,6 +201,11 @@ public class RotationMatrix <TYPE extends Number>implements RotationalRepersenta
 		return new RotationMatrix(thisMatrix.transpose());
 	}
 
+	/**
+	 * TODO document
+	 * TODO implement
+	 * @return
+	 */
 	public static RotationalRepersentation zero() {
 		// TODO Auto-generated method stub
 		return null;

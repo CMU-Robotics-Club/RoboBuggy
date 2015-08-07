@@ -30,16 +30,18 @@ public abstract class Map {
 	 * @param aPoint
 	 * @return
 	 * @throws LogicException 
+	 * @throws CloneNotSupportedException 
 	 */
-	public abstract MapObject getClosestObject(FrameOfRefrence aPoint) throws LogicException;
+	public abstract MapObject getClosestObject(FrameOfRefrence aPoint) throws LogicException, CloneNotSupportedException;
 	
 	/***
 	 * TODO document
 	 * @param pointOfView
 	 * @return
 	 * @throws LogicException 
+	 * @throws CloneNotSupportedException 
 	 */
-	public abstract MapObject[] getClosestNObjects(FrameOfRefrence pointOfView,int numPoints) throws LogicException;
+	public abstract MapObject[] getClosestNObjects(FrameOfRefrence pointOfView,int numPoints) throws LogicException, CloneNotSupportedException;
 	
 	// @REQUIER num(Points) > 2
 	/*** 

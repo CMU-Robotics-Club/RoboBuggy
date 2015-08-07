@@ -8,6 +8,7 @@ import org.roboclub.robobuggy.linearAlgebra.Double_Number;
 import org.roboclub.robobuggy.linearAlgebra.Vector;
 import org.roboclub.robobuggy.linearAlgebra.Number;
 import org.roboclub.robobuggy.main.LogicException;
+import org.roboclub.robobuggy.main.MESSAGE_LEVEL;
 
 /**
  * @author Trevor Decker
@@ -42,7 +43,7 @@ public class Point implements PositionRepersentation{
 	*/
 	public Point(Vector values,ArrayList<SpacialDimensions> directions) throws LogicException{
 		if(values.getLength() != directions.size()){
-			throw new LogicException("number of values is not the same as the number of directions");
+			throw new LogicException("number of values is not the same as the number of directions",MESSAGE_LEVEL.exception);
 		}
 		coordinates = values;
 		this.directions = directions;
@@ -86,7 +87,7 @@ public class Point implements PositionRepersentation{
 	 */
 	public void setIndex(int index,Distince newValue,SpacialDimensions direction) throws LogicException{
 		if(index < 0){
-			throw new LogicException("can not set a negative index of a point");
+			throw new LogicException("can not set a negative index of a point",MESSAGE_LEVEL.exception);
 		}
 		if(index >= coordinates.getLength()){
 			//need to add a new element to the list
@@ -108,11 +109,11 @@ public class Point implements PositionRepersentation{
 	private boolean sameDirections(Point otherPoint) throws LogicException{
 		//validates that both points are of the correct size
 		if(otherPoint.directions.size() != this.directions.size()){
-			throw new LogicException("Points are of diffrent size");
+			throw new LogicException("Points are of diffrent size",MESSAGE_LEVEL.exception);
 		}
 		if(otherPoint.directions.size() != otherPoint.coordinates.getLength()
 				|| this.directions.size() != this.coordinates.getLength()){
-			throw new LogicException("Point has a diffrent number of coordinates then directions");
+			throw new LogicException("Point has a diffrent number of coordinates then directions",MESSAGE_LEVEL.exception);
 		}
 		for(int i = 0;i<this.directions.size();i++){
 			if(this.directions.get(i) != otherPoint.directions.get(i)){
@@ -133,7 +134,7 @@ public class Point implements PositionRepersentation{
 	 */
 	public Number dotProduct(Point otherPoint) throws LogicException{
 		if(!sameDirections(otherPoint)){
-			throw new LogicException("trying to take the dotProduct of two points with diffrent directions");
+			throw new LogicException("trying to take the dotProduct of two points with diffrent directions",MESSAGE_LEVEL.exception);
 		}
 		return this.coordinates.dotProduct(otherPoint.coordinates,new Double_Number(0.0));
 	}
@@ -146,10 +147,10 @@ public class Point implements PositionRepersentation{
 	 */
 	public Point crossProduct(Point otherPoint) throws LogicException{
 		if(!sameDirections(otherPoint)){
-			throw new LogicException("trying to take the crossProduct of two points with diffrent directions");
+			throw new LogicException("trying to take the crossProduct of two points with diffrent directions",MESSAGE_LEVEL.exception);
 		}		
 		if(!(this.coordinates.getLength() == 3)){
-			throw new LogicException("trying to take the crossProuct of two points that are not of size 3, which is not defined");
+			throw new LogicException("trying to take the crossProuct of two points that are not of size 3, which is not defined",MESSAGE_LEVEL.exception);
 		}
 		return new Point(this.coordinates.crossProduct(otherPoint.coordinates),directions);
 	}
@@ -192,7 +193,7 @@ public class Point implements PositionRepersentation{
 			}
 		}
 		if(dimensionIndex == -1){
-			throw new LogicException("Tried to get Dimesnion of a direction that was not defined for this point");
+			throw new LogicException("Tried to get Dimesnion of a direction that was not defined for this point",MESSAGE_LEVEL.exception);
 		}
 		return coordinates.getIndex(dimensionIndex);
 	}
@@ -227,18 +228,31 @@ public class Point implements PositionRepersentation{
 		return null;
 	}
 
+	/**
+	 * TODO document
+	 * TODO implement
+	 * @return
+	 */
 	public static Point zero() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
+	/**
+	 * TODO document
+	 * TODO implement
+	 */
 	public Distince getDimensionIndex(int index) throws LogicException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
+	/**
+	 * TODO document
+	 * TODO implement
+	 */
 	public SpacialDimensions[] getDimensions() {
 		// TODO Auto-generated method stub
 		return null;

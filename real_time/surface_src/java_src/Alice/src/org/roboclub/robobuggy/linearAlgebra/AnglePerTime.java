@@ -2,7 +2,7 @@ package org.roboclub.robobuggy.linearAlgebra;
 
 import org.roboclub.robobuggy.main.LogicException;
 
-public class AnglePerTime implements Number{
+public class AnglePerTime extends Measurement{
 
 	@Override
 	/**
@@ -113,24 +113,6 @@ public class AnglePerTime implements Number{
 		return false;
 	}
 
-	@Override
-	/**
-	 * TODO document
-	 * TODO include
-	 */
-	public Number sqrt() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	@Override
-	/**
-	 * TODO document
-	 * TODO include
-	 */
-	public Number signum() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }

@@ -3,6 +3,7 @@ package org.roboclub.robobuggy.linearAlgebra;
 import java.lang.reflect.Array;
 
 import org.roboclub.robobuggy.main.LogicException;
+import org.roboclub.robobuggy.main.MESSAGE_LEVEL;
 
 /***
  * 
@@ -122,7 +123,7 @@ public class NDimensionalArray<CELL_TYPE  extends Number> {
 		for(int i =0;i < this.dimensions.length;i++){
 			if(this.dimensions[i] == 0){
 				try {
-					throw new LogicException("currently can not have clone a matrix with one demension 0");
+					throw new LogicException("currently can not have clone a matrix with one demension 0",MESSAGE_LEVEL.exception);
 				} catch (LogicException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

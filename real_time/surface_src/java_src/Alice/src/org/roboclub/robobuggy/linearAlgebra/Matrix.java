@@ -1,6 +1,7 @@
 package org.roboclub.robobuggy.linearAlgebra;
 
 import org.roboclub.robobuggy.main.LogicException;
+import org.roboclub.robobuggy.main.MESSAGE_LEVEL;
 
 /***
  * 
@@ -207,10 +208,10 @@ public class Matrix<TYPE extends Number> {
 	 */
 	public Number determinate() throws LogicException{
 		if(this.getNumCols() != this.getNumRows()){
-			throw new LogicException("trying to find the determinate of a non square matrix which does not make sense");
+			throw new LogicException("trying to find the determinate of a non square matrix which does not make sense",MESSAGE_LEVEL.exception);
 		}
 		if(this.getNumCols() == 0){
-			throw new LogicException("trying to find the determinate of an empty matrix which does not make sense");
+			throw new LogicException("trying to find the determinate of an empty matrix which does not make sense",MESSAGE_LEVEL.exception);
 		}
 		//1x1 case
 		if(this.getNumRows() == 1){
@@ -249,7 +250,7 @@ public class Matrix<TYPE extends Number> {
 	 */
 	public Matrix<TYPE> inverse() throws LogicException{
 		//TODO
-		throw new LogicException("Matrix inverse has not been implemented yet");
+		throw new LogicException("Matrix inverse has not been implemented yet",MESSAGE_LEVEL.exception);
 	}
 	
 }

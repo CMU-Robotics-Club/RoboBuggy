@@ -1,6 +1,7 @@
 package org.roboclub.robobuggy.linearAlgebra;
 
 import org.roboclub.robobuggy.main.LogicException;
+import org.roboclub.robobuggy.main.MESSAGE_LEVEL;
 
 /**
  * 
@@ -105,7 +106,7 @@ public class Distince implements Number{
 				result.setMeassurmentValue(new Double_Number(1609.34).mult(getMeassurmentValue()));
 				break;
 			default:
-				throw new LogicException("unit type is not a distince");
+				throw new LogicException("unit type is not a distince",MESSAGE_LEVEL.exception);
 		}
 		result.setUNITS(DISTINCE_UNITS.METERS);
 		return result;
@@ -177,7 +178,7 @@ public class Distince implements Number{
 	 * @throws LogicException 
 	 */
 	public Distince add(Number otherNumber) throws LogicException {
-		throw new LogicException("it does not make sense to do arithmatic on a distince and a number");
+		throw new LogicException("it does not make sense to do arithmatic on a distince and a number",MESSAGE_LEVEL.exception);
 	}
 	
 	/**
@@ -195,7 +196,7 @@ public class Distince implements Number{
 	 * @throws LogicException 
 	 */
 	public Distince sub(Number otherNumber) throws LogicException {
-		throw new LogicException("it does not make sense to do arithmatic on a distince and a number");
+		throw new LogicException("it does not make sense to do arithmatic on a distince and a number",MESSAGE_LEVEL.exception);
 	}
 	
 	/**
@@ -222,7 +223,7 @@ public class Distince implements Number{
 	 * @throws LogicException 
 	 */
 	public Distince mult(Distince otherDistince) throws LogicException{
-		throw new LogicException("it does not make sense multipy a distince by a distince");
+		throw new LogicException("it does not make sense multipy a distince by a distince",MESSAGE_LEVEL.exception);
 	}
 
 
@@ -284,7 +285,7 @@ public class Distince implements Number{
 			Distince otherDistince = (Distince)otherNumber;
 			return value.isLess(otherDistince.value);
 		}
-		throw new LogicException("can not compare the size of a distince and non distince number");
+		throw new LogicException("can not compare the size of a distince and non distince number",MESSAGE_LEVEL.exception);
 	}
 	
 	@Override
@@ -296,7 +297,7 @@ public class Distince implements Number{
 			Distince otherDistince = (Distince)otherNumber;
 			return value.isGreater(otherDistince.value);
 		}
-		throw new LogicException("can not compare the size of a distince and non distince number");
+		throw new LogicException("can not compare the size of a distince and non distince number",MESSAGE_LEVEL.exception);
 	}
 	
 	@Override
@@ -308,7 +309,7 @@ public class Distince implements Number{
 			Distince otherDistince = (Distince)otherNumber;
 			return value.isEqual(otherDistince.value);
 		}
-		throw new LogicException("can not compare the size of a distince and non distince number");
+		throw new LogicException("can not compare the size of a distince and non distince number",MESSAGE_LEVEL.exception);
 	}
 	
 	@Override
@@ -324,7 +325,7 @@ public class Distince implements Number{
 	 * Evaluates to the numbers representation of +1 if the Distance is positive,
 	 *  Evaluates to the numbers representation of the inverse of 1 if the number is negative 
 	 */
-	public Distince signum() {
+	public Distince signum() throws CloneNotSupportedException {
 		return new Distince(this.unit, value.signum());
 	}
 
