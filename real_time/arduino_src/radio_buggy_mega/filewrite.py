@@ -14,7 +14,7 @@ import socket #Used for getting hostname
 import subprocess
 
 def main():
-    print("Now creating blah.h...\n")
+    print("Now creating comp.h...\n")
     file = open("comp.h", 'w')
     file.write("/* comp.h: A compilation-time created file containing compilation time and \n")
     file.write("closest version of git*/\n\n")
