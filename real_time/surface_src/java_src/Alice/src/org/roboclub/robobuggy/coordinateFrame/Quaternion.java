@@ -1,9 +1,9 @@
 package org.roboclub.robobuggy.coordinateFrame;
 
-import org.roboclub.robobuggy.linearAlgebra.Double_Number;
-import org.roboclub.robobuggy.linearAlgebra.Number;
 import org.roboclub.robobuggy.linearAlgebra.Vector;
 import org.roboclub.robobuggy.main.LogicException;
+import org.roboclub.robobuggy.numbers.Double_Number;
+import org.roboclub.robobuggy.numbers.Number;
 
 /***
  * for more info look around pg 33 of 	http://www.cds.caltech.edu/~murray/books/MLS/pdf/mls94-complete.pdf
@@ -31,15 +31,15 @@ public class Quaternion<NTYPE extends Number> implements RotationalRepersentatio
 
 	/**
 	 * TODO document 
-	 * @param q02
+	 * @param q0
 	 * @param q1
 	 * @param q2
 	 * @param q3
 	 * @throws LogicException 
 	 */
-	public Quaternion(NTYPE q02, NTYPE q1, NTYPE q2, NTYPE q3) throws LogicException {
+	public Quaternion(NTYPE q0, NTYPE q1, NTYPE q2, NTYPE q3) throws LogicException {
 		this.q0 = q0; //magnitude 
-		this.qv = new Vector<NTYPE>(3);
+		this.qv = new Vector<NTYPE>(q0,3);
 		this.qv.setIndex(0, q1);
 		this.qv.setIndex(1, q2);
 		this.qv.setIndex(1, q3);
@@ -49,8 +49,9 @@ public class Quaternion<NTYPE extends Number> implements RotationalRepersentatio
 	 * produces a new Quaternion that is the conjugate of this Quaternion 
 	 * @return
 	 * @throws LogicException 
+	 * @throws CloneNotSupportedException 
 	 */
-	public Quaternion conjugate() throws LogicException{
+	public Quaternion conjugate() throws LogicException, CloneNotSupportedException{
 		return new Quaternion(q0,qv.getIndex(0).inverse(),qv.getIndex(1).inverse(),qv.getIndex(2).inverse());
 	}
 	
@@ -58,8 +59,9 @@ public class Quaternion<NTYPE extends Number> implements RotationalRepersentatio
 	 * computes the reciprical of this quaterion this*this.reciprical() = identity quatrinon 
 	 * @return
 	 * @throws LogicException 
+	 * @throws CloneNotSupportedException 
 	 */
-	public Quaternion reciprical() throws LogicException{
+	public Quaternion reciprical() throws LogicException, CloneNotSupportedException{
 		
 		return new Quaternion(this.q0.div(this.norm().mult(this.norm())),this.conjugate().qv);
 	}
@@ -69,8 +71,9 @@ public class Quaternion<NTYPE extends Number> implements RotationalRepersentatio
 	 * computes the norm of this quaternion 
 	 * @return
 	 * @throws LogicException 
+	 * @throws CloneNotSupportedException 
 	 */
-	public NTYPE norm() throws LogicException{
+	public NTYPE norm() throws LogicException, CloneNotSupportedException{
 		return (NTYPE) (q0.mult(q0).add(qv.dotProduct(qv,q0.getZero()))).sqrt();
 	}
 	
@@ -115,8 +118,9 @@ public class Quaternion<NTYPE extends Number> implements RotationalRepersentatio
 	 * @param P
 	 * @return
 	 * @throws LogicException 
+	 * @throws CloneNotSupportedException 
 	 */
-	public Quaternion QuaternionMultiplication(Quaternion<NTYPE> P) throws LogicException{
+	public Quaternion QuaternionMultiplication(Quaternion<NTYPE> P) throws LogicException, CloneNotSupportedException{
 		NTYPE c0 = (NTYPE) q0.mult(P.q0).add(qv.dotProduct(P.qv,q0.getZero()).inverse());
 		Vector<NTYPE> C = (Vector) scaleVector(q0,P.qv).add(scaleVector(P.q0, qv)).add(qv.crossProduct(P.qv));				
 		return new Quaternion(c0,C);
@@ -148,7 +152,8 @@ public class Quaternion<NTYPE extends Number> implements RotationalRepersentatio
 	 * TODO document 
 	 */
 	public RotationalRepersentation preApplyRotation(RotationalRepersentation secondRotation) throws LogicException, CloneNotSupportedException {
-		return this.addition(secondRotation.toQuaternion());
+		//TODO implment
+		return null;
 	}
 
 	@Override
@@ -162,7 +167,7 @@ public class Quaternion<NTYPE extends Number> implements RotationalRepersentatio
 
 	@Override
 	/**
-	 * TODO document 
+	 * Method for converting this type of rotation to a quaternion
 	 */
 	public Quaternion toQuaternion() {
 		return this;

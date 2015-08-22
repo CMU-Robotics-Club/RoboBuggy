@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 
 import org.roboclub.robobuggy.main.LogicException;
 import org.roboclub.robobuggy.main.MESSAGE_LEVEL;
+import org.roboclub.robobuggy.numbers.Number;
 
 /***
  * 
@@ -31,12 +32,12 @@ public class NDimensionalArray<CELL_TYPE  extends Number> {
 	public NDimensionalArray(CELL_TYPE sampleElment,int ... dimensions) {
 		//TODO remove need for sampleElment
 		this.dimensions = dimensions;
+		this.offsetMultipliers = new int[dimensions.length];
 		int arraySize = 1;
 		for(int i =0;i<dimensions.length;i++){
 			offsetMultipliers[i] = arraySize;
 			arraySize *= dimensions[i];
 		}
-		
 		array = (CELL_TYPE[]) Array.newInstance(sampleElment.getClass(), arraySize);
 	}
 	
@@ -47,6 +48,19 @@ public class NDimensionalArray<CELL_TYPE  extends Number> {
 	 */
 	public CELL_TYPE get(int ... indices){
 		return array[getOffset(indices)];
+	}
+	
+	/**
+	 * Helper function for displaying the indices of a NdimensionalArray (for debugging)
+	 */
+	public void printIndices(int ... indices){
+		for(int i = 0;i<indices.length;i++){
+			System.out.print(indices[i]);
+			if(i<indices.length-1){
+				System.out.print(",");
+			}
+		}
+		System.out.println("");
 	}
 	
 	/***
@@ -89,6 +103,7 @@ public class NDimensionalArray<CELL_TYPE  extends Number> {
 	 */
 	private int getOffset(int ... indices){
 		int offset =0;
+		
 		for(int i = 0;i<dimensions.length;i++){
 			offset += offsetMultipliers[i]*indices[i];
 		}
@@ -106,8 +121,7 @@ public class NDimensionalArray<CELL_TYPE  extends Number> {
 	 * @throws LogicException 
 	 */
 	public NDimensionalArray<CELL_TYPE> add(NDimensionalArray<CELL_TYPE> b) throws LogicException{
-		assert(this.getDimensions() == b.getDimensions()); //TODO check this
-		NDimensionalArray<CELL_TYPE> result =this.clone();
+		NDimensionalArray<CELL_TYPE> result = this.shallowCopy();
 		for(int i = 0;i<array.length;i++){
 			@SuppressWarnings("unchecked")
 			CELL_TYPE newValue = (CELL_TYPE) this.getIndex(i).add(b.getIndex(i));
@@ -119,20 +133,16 @@ public class NDimensionalArray<CELL_TYPE  extends Number> {
 	/**
 	 * Creates a separate object that is equivalent to this object but stored in a different location in memory 
 	 */
-	public NDimensionalArray<CELL_TYPE> clone(){
+	public NDimensionalArray<CELL_TYPE> shallowCopy() throws LogicException{
 		for(int i =0;i < this.dimensions.length;i++){
 			if(this.dimensions[i] == 0){
-				try {
 					throw new LogicException("currently can not have clone a matrix with one demension 0",MESSAGE_LEVEL.exception);
-				} catch (LogicException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 			}
 		}
+		//copy the dimensions
 		int[] z = new int[this.dimensions.length];
 		for(int i = 0;i<this.dimensions.length;i++){
-			z[i] = 0;
+			z[i] = this.dimensions[i];
 		}
 		
 		CELL_TYPE sample = this.get(z);

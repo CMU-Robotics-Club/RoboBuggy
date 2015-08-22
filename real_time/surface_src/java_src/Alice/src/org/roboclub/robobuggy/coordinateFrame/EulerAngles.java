@@ -1,7 +1,7 @@
 package org.roboclub.robobuggy.coordinateFrame;
 
-import org.roboclub.robobuggy.linearAlgebra.ANGULAR_UNITS;
-import org.roboclub.robobuggy.linearAlgebra.Angle;
+import org.roboclub.robobuggy.measurments.ANGULAR_UNITS;
+import org.roboclub.robobuggy.measurments.Angle;
 
 /***
  * 
@@ -108,22 +108,23 @@ public class EulerAngles implements RotationalRepersentation{
 	*/
 	
 	/**
-	 * TODO document
-	 * @return
+	 * ask the system if it is currently in a singularity for this rotation representation type.
+	 * If true returned it means that this type of representations values should not be trusted 
 	 */
 	public boolean inSingularity(){
 		return inSingularity;
 	}
 	
 	/**
-	 * TODO document
+	 * Tells the system that it is currently in a singularity for this rotation representation type.
+	 * This means that this type of representations values should not be trusted 
 	 */
 	public void setInSingularity(){
 		inSingularity = true;
 		}
 	
 	/**
-	 * TODO document 
+	 * Evaluates to a rotational representation which encodes the rotation as a rotaionMatrix
 	 * TODO implement
 	 * @return
 	 */
@@ -133,7 +134,7 @@ public class EulerAngles implements RotationalRepersentation{
 	}
 	
 	/**
-	 * TODO document
+	 * Evaluates to a rotational representation which encodes the rotation as a quadternion
 	 * TODO implement
 	 * @return
 	 */
@@ -155,14 +156,6 @@ public class EulerAngles implements RotationalRepersentation{
 
 	@Override
 	/**
-	 * TODO document
-	 */
-	public EulerAngles toEulerAngles() {
-		return this;
-	}
-
-	@Override
-	/**
 	 * TODO implement
 	 * TODO document
 	 */
@@ -172,5 +165,12 @@ public class EulerAngles implements RotationalRepersentation{
 		return null;
 	}
 	
+	@Override
+	/**
+	 * Evaluates to a rotational representation which encodes the rotation as euler angles
+	 */
+	public EulerAngles toEulerAngles() {
+		return this;
+	}
 	
 }

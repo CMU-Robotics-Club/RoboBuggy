@@ -4,19 +4,20 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 import org.roboclub.robobuggy.coordinateFrame.FrameOfRefrence;
-import org.roboclub.robobuggy.linearAlgebra.DISTINCE_UNITS;
-import org.roboclub.robobuggy.linearAlgebra.Distince;
-import org.roboclub.robobuggy.linearAlgebra.Double_Number;
-import org.roboclub.robobuggy.linearAlgebra.Number;
 import org.roboclub.robobuggy.linearAlgebra.Vector;
 import org.roboclub.robobuggy.main.LogicException;
 import org.roboclub.robobuggy.main.MESSAGE_LEVEL;
+import org.roboclub.robobuggy.measurments.DISTINCE_UNITS;
+import org.roboclub.robobuggy.measurments.Distince;
+import org.roboclub.robobuggy.numbers.Double_Number;
+import org.roboclub.robobuggy.numbers.Number;
 
 
 /***
  * @author Trevor Decker
  * @version 0.0
- * Representation of a point on the map 
+ * Representation of a point on the map. 
+ * A point has a radius which is the same in all demensions
  */
 
 
@@ -26,9 +27,9 @@ public class Point extends MapObject{
 	private Distince radius = new Distince(DISTINCE_UNITS.METERS, new Double_Number(1.0)); // assuming the same in all directions
 	
 	/**
-	 * TODO document
+	 * Constructor for a Point which creates 
 	 */
-	Point(FrameOfRefrence orgin){
+	public Point(FrameOfRefrence orgin){
 		this.refrenceFrame = orgin.toPose();
 	}
 	

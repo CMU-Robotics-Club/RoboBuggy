@@ -1,4 +1,4 @@
-package org.roboclub.robobuggy.linearAlgebra;
+package org.roboclub.robobuggy.numbers;
 
 import org.roboclub.robobuggy.main.LogicException;
 import org.roboclub.robobuggy.main.MESSAGE_LEVEL;
@@ -13,27 +13,28 @@ import org.roboclub.robobuggy.main.MESSAGE_LEVEL;
  * code designed for the number interface 
  *
  */
-public class Integer_Number implements Number{
+public class Integer_Number extends Scalar{
 	private int value;
 	/**
-	 * TODO document 
-	 * @param numberValue
+	 * Constructs an object as a integer Number. 
+	 * A double which implements the Number class. 
+	 *  This is so that the number can be used with code designed for the number interface
+	 *  @param value : the value for the integer that this number represents
 	 */
 	public Integer_Number(int numberValue) {
 		this.value = numberValue;
 	}
 
-	@Override
 	/**
 	 * Evaluates to a number representation of this number added to the other number, 
 	 * order of addition should not matter
 	 */
-	public Integer_Number add(Number otherNumber) throws LogicException {
+	public Integer_Number add(Scalar otherNumber) throws LogicException {
 		return new Integer_Number(value+(otherNumber.toInteger_Number()).getValue());
 	}
 	
 	/**
-	 * TODO document 
+	 * returns the current value of this number 
 	 * @return
 	 */
 	public int getValue(){
@@ -42,7 +43,7 @@ public class Integer_Number implements Number{
 
 	@Override
 	/**
-	 * TODO document 
+	 * Subtracts this numbers value by the other numbers value 
 	 * @param Number other Number
 	 */
 	public Integer_Number sub(Number otherNumber) {
@@ -51,7 +52,7 @@ public class Integer_Number implements Number{
 
 	@Override
 	/**
-	 * TODO document
+	 * Multiplies this numbers value by the otherNumbers value 
 	 * @param Number other Number 
 	 */
 	public Integer_Number mult(Number otherNumber) {
@@ -60,7 +61,7 @@ public class Integer_Number implements Number{
 
 	@Override
 	/**
-	 * TODO document 
+	 * Divides this numbers value by the otherNumbers value 
 	 * @param Number otherNumber
 	 */
 	public Integer_Number div(Number otherNumber) {
@@ -68,14 +69,14 @@ public class Integer_Number implements Number{
 	}
 
 	/**
-	 * TODO document
+	 * Creates a Integer number representing zero
 	 */
 	public static Integer_Number zero() {
 		return new Integer_Number(0);
 	}
 	
 	/**
-	 * TODO document 
+	 * Creates a Integer number representing of the number 1
 	 */
 	public static Integer_Number One() {
 		return new Integer_Number(1);
@@ -92,7 +93,9 @@ public class Integer_Number implements Number{
 
 	@Override
 	/**
-	 * TODO document
+	 * Evaluates to a new integer_number whos value is this number mod some Number
+	 * If a conversion between this number's type and someNuber's type does not exist 
+	 * then a logic exception will be thrown 	 
 	 * @param Number someNumber
 	 */
 	public Integer_Number mod(Number someNumber) throws LogicException {
@@ -105,7 +108,9 @@ public class Integer_Number implements Number{
 
 	@Override
 	/**
-	 * TODO document
+	 * evaluates to true if this number represents a number less then some otherNumber
+	 * otherwise evaluates to false.  if the comparison of number types does not make 
+	 * sense then a logicException will be thrown
 	 * @param Number otherNumber
 	 */
 	public boolean isLess(Number otherNumber) throws LogicException {
@@ -121,7 +126,9 @@ public class Integer_Number implements Number{
 
 	@Override
 	/**
-	 * TODO document
+	 * evaluates to true if this number represents a number greater then some otherNumber
+	 * otherwise evaluates to false.  if the comparison of number types does not make 
+	 * sense then a logicException will be thrown
 	 * @param Number otherNumber
 	 */
 	public boolean isGreater(Number otherNumber) throws LogicException {
@@ -138,7 +145,9 @@ public class Integer_Number implements Number{
 
 	@Override
 	/**
-	 * TODO document
+	 * Evaluates if some other Number is of the same value and type as this Double number
+	 * currently will only evaluate to true iff the otherNumber is a integer number of the exact 
+	 * same value as this integer number
 	 * @param  Number otherNumber
 	 */
 	public boolean isEqual(Number otherNumber) throws LogicException {
@@ -155,7 +164,7 @@ public class Integer_Number implements Number{
 
 	@Override
 	/**
-	 * TODO document
+	 * evaluates to a integer number whose value is a close approximation of the squrt of this numbers value
 	 */
 	public Integer_Number sqrt() {
 		return new Integer_Number((int) Math.sqrt(value));
@@ -163,7 +172,9 @@ public class Integer_Number implements Number{
 
 	@Override
 	/**
-	 * TODO document
+	 * Evaluates to a representation of 1 if the number's value is greater then
+	 * or equal to 0 and evaluates to a representation of -1 if the numbers value is
+	 * less then 0
 	 */
 	public Integer_Number signum(){
 		if(value >= 0){
@@ -174,7 +185,7 @@ public class Integer_Number implements Number{
 	}
 	
 	/**
-	 * TODO document
+	 * Converts this number to a double_number of the same value
 	 * @return
 	 */
 	public Double_Number toDouble(){
@@ -185,7 +196,7 @@ public class Integer_Number implements Number{
 	 
 	 @Override
 	 /**
-	  * TODO document
+	  * evaluates to a string which displays the information encoded in this number
 	  */
 	 public String toString(){
 		return Integer.toString(value);
@@ -194,7 +205,7 @@ public class Integer_Number implements Number{
 	 
 	 @Override
 	 /**
-	  * TODO document
+	 * Converts this number to a Integer_number of the same value, here for completeness and use by abstract classes
 	  */
 	 public Integer_Number toInteger_Number(){
 		 return this;
@@ -209,5 +220,18 @@ public class Integer_Number implements Number{
 	 public Double_Number toDouble_Number(){
 		 return new Double_Number(value);
 	 }
+	 
+		@Override
+		/**
+		 * Overides the classes default equal function to fit the number equal function 
+		 */
+		public boolean equals(Object obj) {
+			try {
+				return isEqual((Number) obj);
+			} catch (LogicException e) {
+				e.printStackTrace();
+			}
+			return false;
+		};
 
 }

@@ -1,23 +1,18 @@
-package org.roboclub.robobuggy.linearAlgebra;
+package org.roboclub.robobuggy.measurments;
 
 import org.roboclub.robobuggy.main.LogicException;
+import org.roboclub.robobuggy.numbers.Number;
 
-public class Time implements Number{
-
+/**
+ * 
+ * @author Trevor Decker
+ * A measurement object for encoding the rate at which a distance changes per time
+ */
+public class DistincePerTime extends Measurement<Number>{
 	@Override
 	/**
-	 * TODO implement
 	 * TODO document
-	 */
-	public Number inverse() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	/**
-	 * TODO implement
-	 * TODO document
+	 * TODO include
 	 */
 	public Number add(Number otherNumber) throws LogicException {
 		// TODO Auto-generated method stub
@@ -26,8 +21,8 @@ public class Time implements Number{
 
 	@Override
 	/**
-	 * TODO implement
 	 * TODO document
+	 * TODO include
 	 */
 	public Number sub(Number otherNumber) throws LogicException {
 		// TODO Auto-generated method stub
@@ -36,8 +31,8 @@ public class Time implements Number{
 
 	@Override
 	/**
-	 * TODO implement
 	 * TODO document
+	 * TODO include
 	 */
 	public Number mult(Number otherNumber) throws LogicException {
 		// TODO Auto-generated method stub
@@ -46,8 +41,8 @@ public class Time implements Number{
 
 	@Override
 	/**
-	 * TODO implement
 	 * TODO document
+	 * TODO include
 	 */
 	public Number div(Number otherNumber) {
 		// TODO Auto-generated method stub
@@ -55,37 +50,28 @@ public class Time implements Number{
 	}
 
 	/**
-	 * TODO implement
 	 * TODO document
+	 * TODO include
 	 */
 	public static Number zero() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	
 	/**
-	 * TODO implement
 	 * TODO document
+	 * TODO include
 	 */
-	public static Number One() {
+	public static Number one() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	/**
-	 * TODO implement
 	 * TODO document
-	 */
-	public Number mod(Number someNumber) throws LogicException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	/**
-	 * TODO implement
-	 * TODO document
+	 * TODO include
 	 */
 	public boolean isLess(Number someNumber) throws LogicException {
 		// TODO Auto-generated method stub
@@ -94,8 +80,8 @@ public class Time implements Number{
 
 	@Override
 	/**
-	 * TODO implement
 	 * TODO document
+	 * TODO include
 	 */
 	public boolean isGreater(Number someNumber) throws LogicException {
 		// TODO Auto-generated method stub
@@ -104,32 +90,25 @@ public class Time implements Number{
 
 	@Override
 	/**
-	 * TODO implement
 	 * TODO document
+	 * TODO include
 	 */
 	public boolean isEqual(Number somberNumber) throws LogicException {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
+	
 	@Override
 	/**
-	 * TODO implement
-	 * TODO document
+	 * Overides the classes default equal function to fit the number equal function 
 	 */
-	public Number sqrt() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	/**
-	 * TODO implement
-	 * TODO document
-	 */
-	public Number signum() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public boolean equals(Object obj) {
+		try {
+			return isEqual((Number) obj);
+		} catch (LogicException e) {
+			e.printStackTrace();
+		}
+		return false;
+	};
 
 }

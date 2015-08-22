@@ -4,10 +4,10 @@ import java.awt.Graphics;
 
 import org.roboclub.robobuggy.coordinateFrame.FrameOfRefrence;
 import org.roboclub.robobuggy.coordinateFrame.Pose;
-import org.roboclub.robobuggy.linearAlgebra.Integer_Number;
-import org.roboclub.robobuggy.linearAlgebra.Number;
 import org.roboclub.robobuggy.linearAlgebra.Vector;
 import org.roboclub.robobuggy.main.LogicException;
+import org.roboclub.robobuggy.numbers.Integer_Number;
+import org.roboclub.robobuggy.numbers.Number;
 
 
 

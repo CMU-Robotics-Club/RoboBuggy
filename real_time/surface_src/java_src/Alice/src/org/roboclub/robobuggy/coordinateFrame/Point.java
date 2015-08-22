@@ -2,13 +2,14 @@ package org.roboclub.robobuggy.coordinateFrame;
 
 import java.util.ArrayList;
 
-import org.roboclub.robobuggy.linearAlgebra.DISTINCE_UNITS;
-import org.roboclub.robobuggy.linearAlgebra.Distince;
-import org.roboclub.robobuggy.linearAlgebra.Double_Number;
 import org.roboclub.robobuggy.linearAlgebra.Vector;
-import org.roboclub.robobuggy.linearAlgebra.Number;
 import org.roboclub.robobuggy.main.LogicException;
 import org.roboclub.robobuggy.main.MESSAGE_LEVEL;
+import org.roboclub.robobuggy.measurments.DISTINCE_UNITS;
+import org.roboclub.robobuggy.measurments.Distince;
+import org.roboclub.robobuggy.numbers.Double_Number;
+import org.roboclub.robobuggy.numbers.Integer_Number;
+import org.roboclub.robobuggy.numbers.Number;
 
 /**
  * @author Trevor Decker
@@ -17,7 +18,8 @@ import org.roboclub.robobuggy.main.MESSAGE_LEVEL;
  *
  */
 public class Point implements PositionRepersentation{
-	private Vector<Distince> coordinates = new Vector<Distince>(0);
+	Distince sample = new Distince(DISTINCE_UNITS.METERS,new Integer_Number(0));
+	private Vector<Distince> coordinates = new Vector<Distince>(sample,0);
 	//The direction that each coordinate is in 
 	private ArrayList<SpacialDimensions> directions = new ArrayList<SpacialDimensions>();
 	
@@ -140,7 +142,7 @@ public class Point implements PositionRepersentation{
 	}
 	
 	/**
-	 * TODO document
+	 * evaluates to the cross product of the vector going from the origin to this point and the vector from the origin to other point
 	 * Is only defined for Points of size 3 otherwise a logic exception will be thrown 
 	 * @param otherPoint
 	 * @return
@@ -221,7 +223,7 @@ public class Point implements PositionRepersentation{
 	@Override
 	/**
 	 * TODO implement
-	 * TODO document
+	 * evaluates to the distance between this points coordinates and the origin of the frame
 	 */
 	public Distince getDistince() {
 		// TODO Auto-generated method stub

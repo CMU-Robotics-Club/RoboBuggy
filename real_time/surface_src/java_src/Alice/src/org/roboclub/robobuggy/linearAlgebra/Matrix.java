@@ -2,6 +2,7 @@ package org.roboclub.robobuggy.linearAlgebra;
 
 import org.roboclub.robobuggy.main.LogicException;
 import org.roboclub.robobuggy.main.MESSAGE_LEVEL;
+import org.roboclub.robobuggy.numbers.Number;
 
 /***
  * 
@@ -12,21 +13,41 @@ import org.roboclub.robobuggy.main.MESSAGE_LEVEL;
  */
 public class Matrix<TYPE extends Number> {
 	NDimensionalArray<TYPE> data; 
-	
-	//TODO add more constructors
-	
+	TYPE sampleElement;
+		
 	//TODO allow for a matrix that has multiple types ie angles and distinces 
 	//TODO remove the need for an example type to be given when constructor is used  
 	/**
 	 * TODO document
 	 * @return
 	 */
-	public Matrix(int ... dimensions){
-		TYPE sampleElment = null; //TODO fix
+	public Matrix(TYPE sampleElment,int ... dimensions){
+		this.sampleElement = sampleElment;
 		data = new NDimensionalArray<TYPE>(sampleElment, dimensions);
 	}
 	
-	//todo make a constructor that takes an n d array as an input
+	/**
+	 * TODO document 
+	 * TODO implement
+	 * @param rows
+	 * @param cols
+	 * @param values
+	 * @throws LogicException 
+	 */
+	public Matrix(int rows, int cols, TYPE ... values) throws LogicException{
+		if(values.length == 0){
+			throw new LogicException("need at least one value to generate a matrix with this constructor",MESSAGE_LEVEL.exception);
+		}
+		this.sampleElement =  values[0];
+		//TODO finish implemention
+		
+	}
+	
+/**
+ * TODO document
+ * TODO implement
+ * @param input
+ */
 	public Matrix(Number[][] input){
 		//TODO
 	}
@@ -51,13 +72,14 @@ public class Matrix<TYPE extends Number> {
 	}
 	
 	/**
-	 * TODO document
+	 * This method has side effects
+	 * It sets the matrix (col,row) to value. Overriding the value that use to be at the adress
 	 * @param value
 	 * @param row
 	 * @param col
 	 */
 	public void set(TYPE value, int row,int col){
-		data.set(value, row,col);
+		data.set(value, col-1,row-1);
 	}
 	
 	/**
@@ -66,7 +88,7 @@ public class Matrix<TYPE extends Number> {
 	 * @return
 	 */
 	public Vector<TYPE> getRow(int row){
-		Vector<TYPE> result = new Vector<TYPE>(this.getNumCols());
+		Vector<TYPE> result = new Vector<TYPE>(sampleElement,this.getNumCols());
 		for(int i = 0;i<this.getNumCols();i++){
 			result.set(this.get(row, i), 0, i);
 		}
@@ -79,7 +101,7 @@ public class Matrix<TYPE extends Number> {
 	 * @return
 	 */
 	public Vector<TYPE> getCol(int col){
-		Vector<TYPE> result = new Vector<TYPE>(this.getNumRows());
+		Vector<TYPE> result = new Vector<TYPE>(sampleElement,this.getNumRows());
 		for(int i = 0;i<this.getNumRows();i++){
 			result.set(this.get(i, col), i, 0);
 		}
@@ -93,7 +115,7 @@ public class Matrix<TYPE extends Number> {
 	 * @return
 	 */
 	public Matrix<TYPE> getRows(int startRow,int endRow){
-		Matrix<TYPE> result = new Matrix<TYPE>(endRow-startRow,getNumCols());
+		Matrix<TYPE> result = new Matrix<TYPE>(this.sampleElement,endRow-startRow,getNumCols());
 		for(int row = 0;startRow+row<endRow;row++){
 			for(int col = 0;col<this.getNumCols();col++){
 				result.set(this.get(startRow+row, col), row, col);
@@ -109,7 +131,7 @@ public class Matrix<TYPE extends Number> {
 	 * @return
 	 */
 	public Matrix<TYPE> getCols(int startCol,int endCol){
-		Matrix<TYPE> result = new Matrix<TYPE>( getNumRows(),endCol-startCol);
+		Matrix<TYPE> result = new Matrix<TYPE>(this.sampleElement,getNumRows(),endCol-startCol);
 		for(int col = 0;startCol+col<endCol;col++){
 			for(int row = 0;row<this.getNumRows();row++){
 				result.set(this.get(row, startCol+col), row, col);
@@ -119,7 +141,9 @@ public class Matrix<TYPE extends Number> {
 	}
 	
 	/**
-	 * TODO document
+	 * evaluates to the matrix you would get by adding this matrix with 
+	 *  matrix b.  
+	 *  If matrix b and this matrix are of different sizes then a logic error will be thrown
 	 * @return
 	 * @throws LogicException 
 	 */
@@ -130,7 +154,7 @@ public class Matrix<TYPE extends Number> {
 	}
 	
 	/**
-	 * TODO document
+	 * Evaluates to the number of rows in this matrix 
 	 * @return
 	 */
 	public int getNumRows(){
@@ -139,7 +163,7 @@ public class Matrix<TYPE extends Number> {
 	}
 	
 	/**
-	 * TODO document
+	 * Evaluates to the number of columns in this matrix
 	 * @return
 	 */
 	public int getNumCols(){
@@ -148,37 +172,42 @@ public class Matrix<TYPE extends Number> {
 	}
 
 	/**
-	 * TODO document
+	 * evaluates to a copy of this matrix with all values scaled by s
+	 *           a transform between the current matrix number system
+	 *           and the number type of S must exist 
 	 * @param s value to scale by 
 	 * @throws LogicException 
 	 */
-	public void scale(Number s) throws LogicException {
-		for(int i = 0;i<getNumRows();i++){
-			for(int j = 0;j<getNumCols();j++){
-				set((TYPE) s.mult(get(i,j)), i, j);	
+	public Matrix<TYPE> scale(Number s) throws LogicException {
+		Matrix<TYPE> result = new Matrix<TYPE>(this.sampleElement,this.getNumCols(),getNumRows());
+		for(int col = 1;col<=getNumCols();col++){
+			for(int row = 1;row<=getNumRows();row++){
+			//	result.set((TYPE) s.mult(get(col,row)), col, row);	
 			}
-		}		
+		}
+		return result;
 	}
 	
 	/**
-	 * TODO document
+	 * Evaluates to the element at (col,row) of the matrix 
 	 * @param row
 	 * @param col
 	 * @return
 	 */
 	public TYPE get(int row,int col){
-		return data.get(row,col);
+		//data is 0 indexed while matrix is 1 indexed
+		return data.get(col-1,row-1);
 	}
 
 	/**
-	 * TODO document
+	 * Evaluates to the transpose of the matrix Ie a nxm matrix becomes mxn
 	 * @return
 	 */
 	public Matrix transpose() {
-		Matrix<TYPE> result = new Matrix<TYPE>(this.getNumCols(),getNumRows());
-		for(int i = 0;i<getNumRows();i++){
-			for(int j = 0;j<getNumCols();j++){
-				result.set(data.get(i,j), j,i);
+		Matrix<TYPE> result = new Matrix<TYPE>(this.sampleElement,this.getNumCols(),getNumRows());
+		for(int i = 1;i<=getNumRows();i++){
+			for(int j = 1;j<=getNumCols();j++){
+				result.set(get(j,i), j,i);
 			}
 		}	
 		return result;
@@ -192,7 +221,7 @@ public class Matrix<TYPE extends Number> {
 	 */
 	@Override
 	public Matrix<TYPE> clone(){
-		Matrix<TYPE> result = new Matrix<TYPE>(this.getNumRows(),getNumCols());
+		Matrix<TYPE> result = new Matrix<TYPE>(this.sampleElement,this.getNumRows(),getNumCols());
 		for(int row = 0;row<this.getNumRows();row++){
 			for(int col=0;col<this.getNumCols();col++){
 				result.set(this.get(row, col), row, col);
@@ -202,11 +231,13 @@ public class Matrix<TYPE extends Number> {
 	}
 	
 	/**
-	 * TODO document
+	 * Calculates the determinate of this matrix
+	 *    will return a logException if the matrix is not square 
 	 * @return
 	 * @throws LogicException 
+	 * @throws CloneNotSupportedException 
 	 */
-	public Number determinate() throws LogicException{
+	public Number determinate() throws LogicException, CloneNotSupportedException{
 		if(this.getNumCols() != this.getNumRows()){
 			throw new LogicException("trying to find the determinate of a non square matrix which does not make sense",MESSAGE_LEVEL.exception);
 		}
@@ -226,7 +257,7 @@ public class Matrix<TYPE extends Number> {
 		Number A = (TYPE) this.get(1,1).getOne();
 		for(int i = 0;i<this.getNumRows();i++){
 				for(int col =1;col<this.getNumCols();col++){
-					Matrix<TYPE> cofactor = new Matrix<TYPE>(this.getNumRows()-1,getNumCols()-1);
+					Matrix<TYPE> cofactor = new Matrix<TYPE>(this.sampleElement,this.getNumRows()-1,getNumCols()-1);
 
 					//Populates the cofactor skipping the 1st col and the ith row
 					for(int row = 0;row<i;row++){
@@ -249,8 +280,28 @@ public class Matrix<TYPE extends Number> {
 	 * @throws LogicException 
 	 */
 	public Matrix<TYPE> inverse() throws LogicException{
-		//TODO
 		throw new LogicException("Matrix inverse has not been implemented yet",MESSAGE_LEVEL.exception);
+	}
+	
+	@Override
+	/**
+	 * Creates a human readable string representation of the matrix,  is designed for displaying the matrix 
+	 *  in a text box,log file, or print statement
+	 */
+	public String toString(){
+		String result = "";
+		for(int row = 1;row<=getNumRows();row++){
+			for(int col = 1;col<=getNumCols();col++){
+				result+=get(col, row).toString();
+				if(col < getNumCols()){
+					result+=",";
+				}
+			}
+			if(row < getNumRows()){
+				result+= "\n";
+			}
+		}
+		return result;
 	}
 	
 }

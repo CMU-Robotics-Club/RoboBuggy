@@ -8,9 +8,9 @@ import javax.swing.JComponent;
 import org.roboclub.robobuggy.coordinateFrame.FrameOfRefrence;
 import org.roboclub.robobuggy.coordinateFrame.Pose;
 import org.roboclub.robobuggy.coordinateFrame.SpacialDimensions;
-import org.roboclub.robobuggy.linearAlgebra.Distince;
 import org.roboclub.robobuggy.main.LogicException;
 import org.roboclub.robobuggy.main.Order;
+import org.roboclub.robobuggy.measurments.Distince;
 
 /***
  * 

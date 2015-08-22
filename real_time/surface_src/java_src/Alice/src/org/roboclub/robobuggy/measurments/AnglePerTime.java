@@ -1,18 +1,14 @@
-package org.roboclub.robobuggy.linearAlgebra;
+package org.roboclub.robobuggy.measurments;
 
 import org.roboclub.robobuggy.main.LogicException;
+import org.roboclub.robobuggy.numbers.Number;
 
+/**
+ * 
+ * @author Trevor Decker
+ * A measurement object for encoding the rate at which an angle changes per time
+ */
 public class AnglePerTime extends Measurement{
-
-	@Override
-	/**
-	 * TODO document
-	 * TODO include
-	 */
-	public Number inverse() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	/**
@@ -56,29 +52,10 @@ public class AnglePerTime extends Measurement{
 
 	/**
 	 * TODO document
-	 * TODO include
-	 */
-	public static Number zero() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/**
-	 * TODO document
 	 * TODO include 
 	 * @return
 	 */
 	public static Number one() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	/**
-	 * TODO document
-	 * TODO include
-	 */
-	public Number mod(Number someNumber) throws LogicException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -112,6 +89,19 @@ public class AnglePerTime extends Measurement{
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	@Override
+	/**
+	 * Overides the classes default equal function to fit the number equal function 
+	 */
+	public boolean equals(Object obj) {
+		try {
+			return isEqual((Number) obj);
+		} catch (LogicException e) {
+			e.printStackTrace();
+		}
+		return false;
+	};
 
 
 

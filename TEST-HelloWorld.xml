@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite errors="1" failures="0" hostname="D-10-154-238-222.dhcp4.washington.edu" name="HelloWorld" skipped="0" tests="1" time="0.0" timestamp="2015-07-15T07:38:13">
+  <properties>
+    <property name="java.vendor" value="Oracle Corporation" />
+    <property name="sun.java.launcher" value="SUN_STANDARD" />
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers" />
+    <property name="os.name" value="Mac OS X" />
+    <property name="sun.boot.class.path" value="/Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/jre/lib/resources.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/jre/lib/rt.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/jre/lib/sunrsasign.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/jre/lib/jsse.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/jre/lib/jce.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/jre/lib/charsets.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/jre/lib/jfr.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/jre/classes" />
+    <property name="java.vm.specification.vendor" value="Oracle Corporation" />
+    <property name="ant.home" value="/usr/local/Cellar/ant/1.9.5/libexec" />
+    <property name="jar.dir" value="build/jar" />
+    <property name="java.runtime.version" value="1.8.0_40-b26" />
+    <property name="user.name" value="trevordecker" />
+    <property name="build.dir" value="build" />
+    <property name="user.language" value="en" />
+    <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/jre/lib" />
+    <property name="ant.project.default-target" value="main" />
+    <property name="ant.project.name" value="RoboBuggyAnt" />
+    <property name="java.version" value="1.8.0_40" />
+    <property name="user.timezone" value="America/Los_Angeles" />
+    <property name="sun.arch.data.model" value="64" />
+    <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16" />
+    <property name="java.endorsed.dirs" value="/Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/jre/lib/endorsed" />
+    <property name="sun.cpu.isalist" value="" />
+    <property name="sun.jnu.encoding" value="UTF-8" />
+    <property name="file.encoding.pkg" value="sun.io" />
+    <property name="file.separator" value="/" />
+    <property name="java.specification.name" value="Java Platform API Specification" />
+    <property name="classes.dir" value="build/classes" />
+    <property name="java.class.version" value="52.0" />
+    <property name="user.country" value="US" />
+    <property name="java.home" value="/Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/jre" />
+    <property name="java.vm.info" value="mixed mode" />
+    <property name="main-class" value="oata.HelloWorld" />
+    <property name="ant.file" value="/Users/trevordecker/Desktop/myWork/roboBuggy/RoboBuggy/build.xml" />
+    <property name="os.version" value="10.10.3" />
+    <property name="path.separator" value=":" />
+    <property name="java.vm.version" value="25.40-b25" />
+    <property name="ant.library.dir" value="/usr/local/Cellar/ant/1.9.5/libexec/lib" />
+    <property name="java.awt.printerjob" value="sun.lwawt.macosx.CPrinterJob" />
+    <property name="sun.io.unicode.encoding" value="UnicodeBig" />
+    <property name="awt.toolkit" value="sun.lwawt.macosx.LWCToolkit" />
+    <property name="socksNonProxyHosts" value="local|*.local|169.254/16|*.169.254/16" />
+    <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16" />
+    <property name="user.home" value="/Users/trevordecker" />
+    <property name="java.specification.vendor" value="Oracle Corporation" />
+    <property name="java.library.path" value="/Users/trevordecker/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:." />
+    <property name="java.vendor.url" value="http://java.oracle.com/" />
+    <property name="java.vm.vendor" value="Oracle Corporation" />
+    <property name="gopherProxySet" value="false" />
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment" />
+    <property name="sun.java.command" value="org.apache.tools.ant.launch.Launcher -cp  -lib /usr/local/share/ant" />
+    <property name="java.class.path" value="/usr/local/Cellar/ant/1.9.5/libexec/lib/ant-launcher.jar:/usr/local/share/ant:/usr/local/Cellar/ant/1.9.5/libexec/lib/ant-antlr.jar:/usr/local/Cellar/ant/1.9.5/libexec/lib/ant-apache-bcel.jar:/usr/local/Cellar/ant/1.9.5/libexec/lib/ant-apache-bsf.jar:/usr/local/Cellar/ant/1.9.5/libexec/lib/ant-apache-log4j.jar:/usr/local/Cellar/ant/1.9.5/libexec/lib/ant-apache-oro.jar:/usr/local/Cellar/ant/1.9.5/libexec/lib/ant-apache-regexp.jar:/usr/local/Cellar/ant/1.9.5/libexec/lib/ant-apache-resolver.jar:/usr/local/Cellar/ant/1.9.5/libexec/lib/ant-apache-xalan2.jar:/usr/local/Cellar/ant/1.9.5/libexec/lib/ant-commons-logging.jar:/usr/local/Cellar/ant/1.9.5/libexec/lib/ant-commons-net.jar:/usr/local/Cellar/ant/1.9.5/libexec/lib/ant-jai.jar:/usr/local/Cellar/ant/1.9.5/libexec/lib/ant-javamail.jar:/usr/local/Cellar/ant/1.9.5/libexec/lib/ant-jdepend.jar:/usr/local/Cellar/ant/1.9.5/libexec/lib/ant-jmf.jar:/usr/local/Cellar/ant/1.9.5/libexec/lib/ant-jsch.jar:/usr/local/Cellar/ant/1.9.5/libexec/lib/ant-junit.jar:/usr/local/Cellar/ant/1.9.5/libexec/lib/ant-junit4.jar:/usr/local/Cellar/ant/1.9.5/libexec/lib/ant-launcher.jar:/usr/local/Cellar/ant/1.9.5/libexec/lib/ant-netrexx.jar:/usr/local/Cellar/ant/1.9.5/libexec/lib/ant-swing.jar:/usr/local/Cellar/ant/1.9.5/libexec/lib/ant-testutil.jar:/usr/local/Cellar/ant/1.9.5/libexec/lib/ant.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/lib/tools.jar" />
+    <property name="ant.version" value="Apache Ant(TM) version 1.9.5 compiled on May 31 2015" />
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification" />
+    <property name="ant.file.type" value="file" />
+    <property name="java.vm.specification.version" value="1.8" />
+    <property name="sun.cpu.endian" value="little" />
+    <property name="sun.os.patch.level" value="unknown" />
+    <property name="java.io.tmpdir" value="/var/folders/x1/vnkv698d5jx5rtrr031ps7mm0000gn/T/" />
+    <property name="java.vendor.url.bug" value="http://bugreport.sun.com/bugreport/" />
+    <property name="os.arch" value="x86_64" />
+    <property name="java.awt.graphicsenv" value="sun.awt.CGraphicsEnvironment" />
+    <property name="isUnix" value="true" />
+    <property name="java.ext.dirs" value="/Users/trevordecker/Library/Java/Extensions:/Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/jre/lib/ext:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java" />
+    <property name="user.dir" value="/Users/trevordecker/Desktop/myWork/roboBuggy/RoboBuggy" />
+    <property name="line.separator" value="&#xa;" />
+    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM" />
+    <property name="basedir" value="/Users/trevordecker/Desktop/myWork/roboBuggy/RoboBuggy" />
+    <property name="ant.java.version" value="1.8" />
+    <property name="ant.core.lib" value="/usr/local/Cellar/ant/1.9.5/libexec/lib/ant.jar" />
+    <property name="file.encoding" value="UTF-8" />
+    <property name="ant.file.RoboBuggyAnt" value="/Users/trevordecker/Desktop/myWork/roboBuggy/RoboBuggy/build.xml" />
+    <property name="ant.file.type.RoboBuggyAnt" value="file" />
+    <property name="java.specification.version" value="1.8" />
+    <property name="src.dir" value="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/testing" />
+    <property name="ant.project.invoked-targets" value="main" />
+  </properties>
+  <error message="HelloWorld" type="java.lang.ClassNotFoundException">java.lang.ClassNotFoundException: HelloWorld
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+	at java.lang.Class.forName0(Native Method)
+	at java.lang.Class.forName(Class.java:348)
+</error>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

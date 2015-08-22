@@ -1,19 +1,20 @@
-package org.roboclub.robobuggy.linearAlgebra;
+package org.roboclub.robobuggy.measurments;
 
 import java.io.ObjectInputStream.GetField;
 import java.lang.reflect.InvocationTargetException;
 
 import org.roboclub.robobuggy.main.LogicException;
 import org.roboclub.robobuggy.main.MESSAGE_LEVEL;
+import org.roboclub.robobuggy.numbers.Double_Number;
+import org.roboclub.robobuggy.numbers.Number;
 
 /**
- * TODO document
  * @author Trevor Decker
+ * TODO document
  * @version 0.0
  * 
  */
 public class Angle<NTYPE extends  Number> extends Measurement{
-	NTYPE value;
 	ANGULAR_UNITS unit;
 	
 
@@ -36,12 +37,12 @@ public class Angle<NTYPE extends  Number> extends Measurement{
 	 */
 	public Angle toDegrees() throws LogicException{
 		Angle result = new Angle(this.unit, this.value);
-		switch(getUnits()){
+		switch((ANGULAR_UNITS)getUnits()){
 		case DEGREES:
 			//already in degree so do nothing 
 			break;
 		case RADIANS:
-			result.setMeassurmentValue((new Double_Number(.2957795)).mult(getMeassurmentValue()));
+			result.setMeassurmentValue(((Number) getMeassurmentValue()).mult(new Double_Number(0.2957795)));
 			break;
 		default:
 			throw new LogicException("unit type is not a angle",MESSAGE_LEVEL.exception);
@@ -59,16 +60,8 @@ public class Angle<NTYPE extends  Number> extends Measurement{
 	 */
 	public Angle toRadians() throws LogicException{
 		Angle result = toDegrees();
-		result.setMeassurmentValue(new Double_Number(.0174532925).mult(getMeassurmentValue()));
+		result.setMeassurmentValue(((Number) getMeassurmentValue()).mult(new Double_Number(0.0174532925)));
 		return null;
-	}
-	
-	/***
-	 * returns the Units that this measurement is currently using 
-	 * @return
-	 */
-	public ANGULAR_UNITS getUnits(){
-		return this.unit;
 	}
 
 	/**
@@ -170,51 +163,6 @@ public class Angle<NTYPE extends  Number> extends Measurement{
 		return new Angle(ANGULAR_UNITS.RADIANS,z);		
 		//this is a hack, in future versions any type of number should be usable as the type T
 	}
-	
-	/**
-	 * TODO document
-	 * @param newValue
-	 */
-	public void setMeassurmentValue(NTYPE newValue){
-		this.value = newValue;
-	}
-	
-
-	/***
-	 * returns the scaler(Number) numerical value that currently represents the measurement 
-	 * @return
-	 */
-	public Number getMeassurmentValue(){
-		return this.value;
-	}
-	
-	/***
-	 * Overrides the current value of this units units. Note that the measurement value stays the same.
-	 * Use setValue to change the measurement. 
-	 * @param newUnits
-	 */
-	public void setUNITS(ANGULAR_UNITS newUnits){
-		this.unit = newUnits;
-	}
-
-
-	@Override
-	/**
-	 * TODO document
-	 */
-	public Angle inverse() {
-		return new Angle(this.unit, value.inverse());
-}
-
-
-	@Override
-	/**
-	 * TODO document
-	 */
-	public Angle mod(Number someNumber) throws LogicException {
-		return new Angle(this.unit, value.mod(someNumber));
-	}
-
 
 	@Override
 	/**
@@ -255,49 +203,33 @@ public class Angle<NTYPE extends  Number> extends Measurement{
 		}
 		throw new LogicException("can not compare the size of a angle and non angle number",MESSAGE_LEVEL.exception);
 	}
-
-
-	@Override
+	
 	/**
 	 * TODO document 
 	 */
-	public Angle sqrt() {
-		//TODO remove try catch 
-		Angle result = null;
-		try {
-			result = (Angle) this.clone();
-		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
-		}
-		result.value = value.sqrt();
-		return result;
-	}
-
-
-	@Override
-	/**
-	 * Evaluates to the numbers representation of +1 if the Angle is positive,
-	 *  Evaluates to the numbers representation of the inverse of 1 if the number is negative 
-	 */
-	public Angle signum() throws CloneNotSupportedException {
-		//TODO remove try catch 
-		Angle result = null;
-		try {
-			result = (Angle) this.clone();
-		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
-		}
-		result.value = result.value.signum();		
-		return result;
+	public Angle<Number> clone(){
+		return new Angle<Number>(unit, value);
 	}
 
 	/** 
-	 * TODO document
+	 * Evaluates to a zero angle, will be measured radians 
 	 */
 	 public Number getZero() throws LogicException{
-		 System.out.println("running angle get zero");
 		 return zero();
 	 }
 
+		@Override
+		/**
+		 * Overides the classes default equal function to fit the number equal function 
+		 */
+		public boolean equals(Object obj) {
+			//try catch is needed since equals can not throw an error 
+			try {
+				return isEqual((Number) obj);
+			} catch (LogicException e) {
+				e.printStackTrace();
+			}
+			return false;
+		};
 
 }

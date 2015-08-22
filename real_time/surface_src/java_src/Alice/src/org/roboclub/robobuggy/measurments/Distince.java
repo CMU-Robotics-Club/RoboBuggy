@@ -1,7 +1,10 @@
-package org.roboclub.robobuggy.linearAlgebra;
+package org.roboclub.robobuggy.measurments;
 
 import org.roboclub.robobuggy.main.LogicException;
 import org.roboclub.robobuggy.main.MESSAGE_LEVEL;
+import org.roboclub.robobuggy.numbers.Double_Number;
+import org.roboclub.robobuggy.numbers.Number;
+import org.roboclub.robobuggy.numbers.Scalar;
 
 /**
  * 
@@ -11,9 +14,8 @@ import org.roboclub.robobuggy.main.MESSAGE_LEVEL;
  * and the units of that measurement, can convert between different units and
  *  do math operations which will automatically convert units for you. 
  */
-public class Distince implements Number{
+public class Distince extends  Measurement<Number>{
 	Number value;
-	DISTINCE_UNITS unit;
 
 
 	/***
@@ -21,32 +23,12 @@ public class Distince implements Number{
 	 * @param units
 	 * @param value
 	 */
-	public Distince(DISTINCE_UNITS units,Number value){
-		setUNITS(units);
+	public Distince(unit units,Number value){
+		setUNITS((DISTINCE_UNITS) units);
 		setMeassurmentValue(value);
 	}
-	
-	public void setMeassurmentValue(Number newValue){
-		this.value = newValue;
-	}
 
 
-	/***
-	 * returns the scaler(double) numerical value that currently represents the measurement 
-	 * @return
-	 */
-	public Number getMeassurmentValue(){
-		return this.value;
-	}
-
-	/***
-	 * Overrides the current value of this units units. Note that the measurement value stays the same.
-	 * Use setValue to change the measurement. 
-	 * @param newUnits
-	 */
-	public void setUNITS(DISTINCE_UNITS newUnits){
-		this.unit = newUnits;
-	}
 	
 	
 	/***
@@ -57,7 +39,7 @@ public class Distince implements Number{
 	 */
 	public Distince toMillimeters() throws LogicException{
 		Distince result = this.toMeters();
-		result.setMeassurmentValue(new Double_Number(1000).mult(getMeassurmentValue()));
+		result.setMeassurmentValue(((Number) getMeassurmentValue()).mult(new Double_Number(1000)));
 		result.setUNITS(DISTINCE_UNITS.MILLIMETERS);
 		return result;
 	}
@@ -70,7 +52,7 @@ public class Distince implements Number{
 	 */
 	public Distince toCentimeters() throws LogicException{
 		Distince result = this.toMeters();
-		result.setMeassurmentValue(new Double_Number(100).mult(getMeassurmentValue()));
+		result.setMeassurmentValue(((Number) getMeassurmentValue()).mult(new Double_Number(100)));
 		result.setUNITS(DISTINCE_UNITS.CENTIMETERS);
 		return result;	
 	}
@@ -83,27 +65,27 @@ public class Distince implements Number{
 	 */
 	public Distince toMeters() throws LogicException{
 		Distince result = new Distince(this.unit, this.value);
-		switch(getUnits()){
+		switch((DISTINCE_UNITS)getUnits()){
 			case CENTIMETERS:
-				result.setMeassurmentValue(new Double_Number(0.01).mult(getMeassurmentValue()));
+				result.setMeassurmentValue(((Number) getMeassurmentValue()).mult(new Double_Number(0.01)));
 				break;
 			case MILLIMETERS :
-				result.setMeassurmentValue(new Double_Number(0.001).mult(getMeassurmentValue()));
+				result.setMeassurmentValue(((Number) getMeassurmentValue()).mult(new Double_Number(0.001)));
 				break;
 			case METERS:
 				//DO noting becasue the units are already meters	
 				break;
 			case KILIOMETERS:
-				result.setMeassurmentValue(new Double_Number(1000).mult(getMeassurmentValue()));
+				result.setMeassurmentValue(((Number) getMeassurmentValue()).mult(new Double_Number(1000)));
 				break;
 			case INCHES:
-				result.setMeassurmentValue(new Double_Number(0.0254).mult(getMeassurmentValue()));
+				result.setMeassurmentValue(((Number) getMeassurmentValue()).mult(new Double_Number(0.0254)));
 				break;
 			case FEET:
-				result.setMeassurmentValue(new Double_Number(0.3048).mult(getMeassurmentValue()));
+				result.setMeassurmentValue(((Number) getMeassurmentValue()).mult(new Double_Number(0.3048)));
 				break;
 			case MILES:
-				result.setMeassurmentValue(new Double_Number(1609.34).mult(getMeassurmentValue()));
+				result.setMeassurmentValue(((Number) getMeassurmentValue()).mult(new Double_Number(1609.34)));
 				break;
 			default:
 				throw new LogicException("unit type is not a distince",MESSAGE_LEVEL.exception);
@@ -120,7 +102,7 @@ public class Distince implements Number{
 	 */
 	public Distince toKilometers() throws LogicException{
 		Distince result = this.toMeters();
-		result.setMeassurmentValue(new Double_Number(0.001).mult(getMeassurmentValue()));
+		result.setMeassurmentValue(((Number) getMeassurmentValue()).mult(new Double_Number(0.001)));
 		result.setUNITS(DISTINCE_UNITS.KILIOMETERS);
 		return result;
 	}
@@ -133,7 +115,7 @@ public class Distince implements Number{
 	 */
 	public Distince toInches() throws LogicException{
 		Distince result = this.toMeters();
-		result.setMeassurmentValue(new Double_Number(0.3700787).mult(getMeassurmentValue()));
+		result.setMeassurmentValue(((Number) getMeassurmentValue()).mult(new Double_Number(0.3700787)));
 		result.setUNITS(DISTINCE_UNITS.INCHES);
 		return result;
 	}
@@ -146,7 +128,7 @@ public class Distince implements Number{
 	 */
 	public Distince toFeet() throws LogicException{
 		Distince result = this.toMeters();
-		result.setMeassurmentValue(new Double_Number(0.28084).mult(getMeassurmentValue()));
+		result.setMeassurmentValue(((Number) getMeassurmentValue()).mult(new Double_Number(0.28084)));
 		result.setUNITS(DISTINCE_UNITS.FEET);
 		return result;
 	}
@@ -159,27 +141,12 @@ public class Distince implements Number{
 	 */
 	public Distince toMiles() throws LogicException{
 		Distince result = this.toMeters();
-		result.setMeassurmentValue(new Double_Number(0.000621371).mult(getMeassurmentValue()));
+		result.setMeassurmentValue(((Number) getMeassurmentValue()).mult(new Double_Number(0.000621371)));
 		result.setUNITS(DISTINCE_UNITS.MILES);
 		return result;
 	}
 	
-	/***
-	 * returns the Units that this measurement is currently using 
-	 * @return
-	 */
-	public DISTINCE_UNITS getUnits(){
-		return this.unit;
-	}
 
-	
-	/**
-	 * TODO document 
-	 * @throws LogicException 
-	 */
-	public Distince add(Number otherNumber) throws LogicException {
-		throw new LogicException("it does not make sense to do arithmatic on a distince and a number",MESSAGE_LEVEL.exception);
-	}
 	
 	/**
 	 * TODO document
@@ -189,14 +156,6 @@ public class Distince implements Number{
 	 */
 	public Distince add(Distince otherNumber) throws LogicException{
 		return new Distince(this.unit, this.value.add(otherNumber.value));
-	}
-
-	/**
-	 * TODO document
-	 * @throws LogicException 
-	 */
-	public Distince sub(Number otherNumber) throws LogicException {
-		throw new LogicException("it does not make sense to do arithmatic on a distince and a number",MESSAGE_LEVEL.exception);
 	}
 	
 	/**
@@ -213,7 +172,6 @@ public class Distince implements Number{
 	 */
 	public Distince mult(Number otherNumber) throws LogicException {
 		return new Distince(this.unit, this.value.mult(otherNumber));
-
 	}
 	
 	/**
@@ -235,46 +193,50 @@ public class Distince implements Number{
 	}
 	
 	/**
+	 * Todo implement
+	 * todo document
+	 * @param dt
+	 * @return
+	 */
+	public DistincePerTime div(Time dt){
+		return null;
+	}
+	
+	/**
 	 * TODO document
 	 */
 	public Number div(Distince otherDistince){
 		return this.value.div(otherDistince.value);
 	}
+	
+	/**
+	 * TODO implement
+	 * TODO document
+	 * @param num
+	 * @return
+	 */
+	public Distince div(Scalar num){
+		return null;
+	}
 
 	/**
-	 * TODO document
+	 * evaluates to an object representing zero distance
 	 */
 	public static Distince zero() {
-		//TODO come up with a better solution so that other numebr types can be used 
+		//TODO come up with a better solution so that other number types can be used 
 		Number z = Double_Number.zero();
 		return new Distince(DISTINCE_UNITS.METERS, z);
 	}
 
 	/**
-	 * TODO document 
+	 * evaluates to an object representing 1 distance using the portamento distance unit
 	 */
 	public static Distince one() {
-		//TODO come up with a better solution so that other numebr types can be used 
+		//TODO come up with a better solution so that other number types can be used 
 		Number one = Double_Number.one();
 		return new Distince(DISTINCE_UNITS.METERS, one);
 	}
 	
-	@Override
-	/**
-	 * TODO document
-	 */
-	public Distince inverse() {
-		return new Distince(this.unit, this.value.inverse());
-	}
-	
-	@Override
-	/**
-	 * TODO implement
-	 * TODO document 
-	 */
-	public Distince mod(Number someNumber) throws LogicException {
-		return new Distince(this.unit, this.value.mod(someNumber));
-	}
 	
 	@Override
 	/**
@@ -312,21 +274,18 @@ public class Distince implements Number{
 		throw new LogicException("can not compare the size of a distince and non distince number",MESSAGE_LEVEL.exception);
 	}
 	
-	@Override
-	/**
-	 * TODO document
-	 */
-	public Distince sqrt() {
-		return new Distince(this.unit, value.sqrt());
-	}
 	
 	@Override
 	/**
-	 * Evaluates to the numbers representation of +1 if the Distance is positive,
-	 *  Evaluates to the numbers representation of the inverse of 1 if the number is negative 
+	 * Overrides the classes default equal function to fit the number equal function 
 	 */
-	public Distince signum() throws CloneNotSupportedException {
-		return new Distince(this.unit, value.signum());
-	}
+	public boolean equals(Object obj) {
+		try {
+			return isEqual((Number) obj);
+		} catch (LogicException e) {
+			e.printStackTrace();
+		}
+		return false;
+	};
 
 }

@@ -1,9 +1,9 @@
 package org.roboclub.robobuggy.coordinateFrame;
 
-import org.roboclub.robobuggy.linearAlgebra.Distince;
 import org.roboclub.robobuggy.linearAlgebra.Vector;
 import org.roboclub.robobuggy.main.LogicException;
 import org.roboclub.robobuggy.main.MESSAGE_LEVEL;
+import org.roboclub.robobuggy.measurments.Distince;
 
 /**
  * TODO document
@@ -55,7 +55,7 @@ public interface PositionRepersentation {
 	
 
 	/**
-	 * TODO document
+	 * evaluates to the distance between this position representation and the origin of the frame
 	 * @return
 	 */
 	public Distince getDistince();

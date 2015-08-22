@@ -25,6 +25,7 @@ import org.roboclub.robobuggy.ui.Gui;
 
 /**
  * TODO document
+ * TODO clean up
  * @author Trevor Decker
  * @author Kevin B
  * @author Matt Sebeck 

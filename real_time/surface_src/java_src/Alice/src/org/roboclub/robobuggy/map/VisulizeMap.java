@@ -27,34 +27,29 @@ import org.roboclub.robobuggy.main.LogicException;
  *  Class for creating a JPanel with a map displayed on it
  */
 public class VisulizeMap{
-	private JFrame frame = new JFrame();
 	private Map thisMap; 
-	private FrameOfRefrence pointOfView;
+	private View pointOfView;
 	
-	
-	//gets the JFrame for the map 
-	/*** 
-	 * TDOO document 
-	 * TODO impment 
-	 * @return
+	/**
+	 * TODO implement
+	 * TODO document
 	 */
-	public JFrame getJFrame(){
-		return frame;
+	VisulizeMap(Map aMap,View aView){
+		//TODO
 	}
+	
+	/**
+	 * TODO implement
+	 * TODO document
+	 */
+	VisulizeMap(Map aMap){
+		//TODO
+	}
+	
 	
 	/**
 	 * TODO document
-	 * @param newFrame
-	 */
-	public void setJFrame(JFrame newFrame){
-		this.frame = newFrame;
-	}
-	
-	
-	
-	
-	/**
-	 * 
+	 * TODO implemnt
 	 * @throws LogicException
 	 */
 	public void draw() throws LogicException{

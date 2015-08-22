@@ -1,7 +1,7 @@
 package org.roboclub.robobuggy.map;
 
 import org.roboclub.robobuggy.coordinateFrame.SpacialDimensions;
-import org.roboclub.robobuggy.linearAlgebra.Number;
+import org.roboclub.robobuggy.numbers.Number;
 /**
  * 
  * @author Trevor Decker

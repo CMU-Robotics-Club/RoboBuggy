@@ -1,4 +1,4 @@
-package org.roboclub.robobuggy.linearAlgebra;
+package org.roboclub.robobuggy.numbers;
 
 import org.roboclub.robobuggy.main.LogicException;
 import org.roboclub.robobuggy.main.MESSAGE_LEVEL;
@@ -6,13 +6,13 @@ import org.roboclub.robobuggy.main.MESSAGE_LEVEL;
 /**
  *
  * @author Trevor Decker
- * @version 0.0
+ * @version 1.0
  *
  * A double which implements the Number class. 
  * This is so that the number can be used with 
  * code designed for the number interface
  */
-public class Double_Number implements Number {
+public class Double_Number extends Scalar {
 	private double value;
 	
 	/**
@@ -22,7 +22,7 @@ public class Double_Number implements Number {
 	 *  @param value : the value for the double that this number represents
 	 */
 	public Double_Number(double value){
-		value = value;
+		this.value = value;
 	}
 	
 	/**
@@ -103,7 +103,9 @@ public class Double_Number implements Number {
 
 	@Override
 	/**
-	 * TODO document
+	 * Evaluates to a new double_number whos value is this number mod some Number
+	 * If a conversion between this number's type and someNuber's type does not exist 
+	 * then a logic exception will be thrown 
 	 */
 	public Double_Number mod(Number someNumber) throws LogicException {
 		if(someNumber.getClass() == Integer_Number.class){
@@ -122,7 +124,9 @@ public class Double_Number implements Number {
 
 	@Override
 	/**
-	 * TODO document
+	 * evaluates to true if this number represents a number less then some otherNumber
+	 * otherwise evaluates to false.  if the comparison of number types does not make 
+	 * sense then a logicException will be thrown
 	 */
 	public boolean isLess(Number otherNumber) throws LogicException {
 		if(otherNumber.getClass() == Double_Number.class){
@@ -138,7 +142,9 @@ public class Double_Number implements Number {
 
 	@Override
 	/**
-	 * TODO document
+	 * evaluates to true if this number represents a number greater then some otherNumber
+	 * otherwise evaluates to false.  if the comparison of number types does not make 
+	 * sense then a logicException will be thrown
 	 */
 	public boolean isGreater(Number otherNumber) throws LogicException {
 		if(otherNumber.getClass() == Double_Number.class){
@@ -153,7 +159,7 @@ public class Double_Number implements Number {
 
 	@Override
 	/**
-	 * Evaluates if some other Number is of the same value and type as this Double number
+	 * Evaluates to true if some other Number is of the same value and type as this Double number
 	 * currently will only evaluate to true iff the otherNumber is a Double number of the exact 
 	 * same value as this Double number
 	 */
@@ -167,10 +173,23 @@ public class Double_Number implements Number {
 		//otherNumber type does not make sense
 		throw new LogicException("trying check equality to an  integer number by a number type that does not make sense",MESSAGE_LEVEL.exception);
 	}
+	
+	@Override
+	/**
+	 * Overides the classes default equal function to fit the number equal function 
+	 */
+	public boolean equals(Object obj) {
+		try {
+			return isEqual((Number) obj);
+		} catch (LogicException e) {
+			e.printStackTrace();
+		}
+		return false;
+	};
 
 	@Override
 	/**
-	 * TODO document
+	 * evaluates to a double number whose value is a close approximation of the squrt of this numbers value
 	 */
 	public Double_Number sqrt() {
 		return new Double_Number(Math.sqrt(value));
@@ -178,7 +197,9 @@ public class Double_Number implements Number {
 
 	@Override
 	/**
-	 * TODO document
+	 * Evaluates to a representation of 1.0 if the number's value is greater then
+	 * or equal to 0.0 and evaluates to a representation of -1.0 if the numbers value is
+	 * less then 0.0 
 	 */
 	public Double_Number signum() {
 		if(value >= 0.0){
@@ -189,11 +210,11 @@ public class Double_Number implements Number {
 	}
 	
 	/**
-	 * TODO document 
+	 * Converts this number to an integer by taking the floor of the "double's" value
 	 * @return
 	 */
 	public Integer_Number toInteger(){
-		return new Integer_Number((int) value);
+		return new Integer_Number((int) Math.floor(value));
 	}
 	
 

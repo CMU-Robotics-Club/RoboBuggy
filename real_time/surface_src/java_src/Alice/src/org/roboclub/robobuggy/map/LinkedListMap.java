@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import org.roboclub.robobuggy.coordinateFrame.FrameOfRefrence;
-import org.roboclub.robobuggy.linearAlgebra.Distince;
-import org.roboclub.robobuggy.linearAlgebra.Number;
 import org.roboclub.robobuggy.main.LogicException;
+import org.roboclub.robobuggy.measurments.Distince;
+import org.roboclub.robobuggy.numbers.Number;
 /***
  * 
  * @author Trevor Decker
@@ -15,12 +15,12 @@ import org.roboclub.robobuggy.main.LogicException;
  * 
  * an implemention of a map that uses a linked list store the map nodes 
  */
-//TODO change to a sorted linked list 
+
 public class LinkedListMap extends Map{
 	LinkedList<MapObject> map;
 	
 	/***
-	 * TODO documnet
+	 * Constructor for the map which creates an empty map
 	 */
 	 public LinkedListMap() {
 		 map = new LinkedList<MapObject>();
@@ -37,8 +37,12 @@ public class LinkedListMap extends Map{
 	
 	@Override
 	/***
-	 * TODO document
-	 *   if no closestObject exists ie the map is empty return null
+	 * evaluates to the single object which is deemed closest to a given point
+	 * if multiple objects are equally close only one of them will be returned
+	 * if no closestObject exists ie the map is empty return null
+	 * @param aPoint
+	 * @return
+	 * @throws LogicException 	
 	 */
 	public MapObject getClosestObject(FrameOfRefrence aPoint) throws LogicException, CloneNotSupportedException {
 		if(map.size() <1){
@@ -104,7 +108,9 @@ public class LinkedListMap extends Map{
 
 	@Override
 	/***
-	 * TODO document
+	 * Adds an object to the map
+	 * Work(1)
+	 * Span(1)
 	 */
 	public void AddObject(MapObject anObject) {
 		map.add(anObject);		
@@ -112,7 +118,9 @@ public class LinkedListMap extends Map{
 
 	@Override
 	/***
-	 * TODO document
+	 * removes all objects that are equivalent to anObject
+	 * Work(sizeOfMap)
+	 * Span(sizeOfMap)
 	 */
 	public void removeObject(MapObject anObject) {		
 		for(int i = 0;i< map.size();i++){
@@ -160,7 +168,7 @@ public class LinkedListMap extends Map{
 				{
 					//add this element to the sortedObjects list (if it is within range)
 					int offset = 0;
-					Number mapObjectDistince = map.get(i).getMinDistince(aFrame).toMeters().getMeassurmentValue(); 
+					Number mapObjectDistince = (Number) map.get(i).getMinDistince(aFrame).toMeters().getMeassurmentValue(); 
 					while(offset < numPoints && sortedObjects[offset] != null && sortedObjects[offset].getMinDistince(aFrame).isLess(mapObjectDistince))
 					{
 						offset++;
