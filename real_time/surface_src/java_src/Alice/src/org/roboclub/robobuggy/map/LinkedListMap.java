@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import org.roboclub.robobuggy.coordinateFrame.FrameOfRefrence;
 import org.roboclub.robobuggy.main.LogicException;
 import org.roboclub.robobuggy.measurments.Distince;
+import org.roboclub.robobuggy.numbers.Double_Number;
 import org.roboclub.robobuggy.numbers.Number;
 /***
  * 
@@ -168,8 +169,8 @@ public class LinkedListMap extends Map{
 				{
 					//add this element to the sortedObjects list (if it is within range)
 					int offset = 0;
-					Number mapObjectDistince = (Number) map.get(i).getMinDistince(aFrame).toMeters().getMeassurmentValue(); 
-					while(offset < numPoints && sortedObjects[offset] != null && sortedObjects[offset].getMinDistince(aFrame).isLess(mapObjectDistince))
+					double mapObjectDistince = map.get(i).getMinDistince(aFrame).toMeters(); 
+					while(offset < numPoints && sortedObjects[offset] != null && sortedObjects[offset].getMinDistince(aFrame).isLess(new Double_Number(mapObjectDistince)))
 					{
 						offset++;
 					}

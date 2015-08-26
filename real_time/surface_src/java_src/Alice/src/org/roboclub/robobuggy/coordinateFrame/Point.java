@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import org.roboclub.robobuggy.linearAlgebra.Vector;
 import org.roboclub.robobuggy.main.LogicException;
 import org.roboclub.robobuggy.main.MESSAGE_LEVEL;
-import org.roboclub.robobuggy.measurments.DISTINCE_UNITS;
 import org.roboclub.robobuggy.measurments.Distince;
 import org.roboclub.robobuggy.numbers.Double_Number;
 import org.roboclub.robobuggy.numbers.Integer_Number;
 import org.roboclub.robobuggy.numbers.Number;
+import org.roboclub.robobuggy.testing.Distince_test;
 
 /**
  * @author Trevor Decker
@@ -18,7 +18,7 @@ import org.roboclub.robobuggy.numbers.Number;
  *
  */
 public class Point implements PositionRepersentation{
-	Distince sample = new Distince(DISTINCE_UNITS.METERS,new Integer_Number(0));
+	Distince sample = Distince.meter(0);
 	private Vector<Distince> coordinates = new Vector<Distince>(sample,0);
 	//The direction that each coordinate is in 
 	private ArrayList<SpacialDimensions> directions = new ArrayList<SpacialDimensions>();

@@ -7,10 +7,10 @@ import org.roboclub.robobuggy.coordinateFrame.FrameOfRefrence;
 import org.roboclub.robobuggy.linearAlgebra.Vector;
 import org.roboclub.robobuggy.main.LogicException;
 import org.roboclub.robobuggy.main.MESSAGE_LEVEL;
-import org.roboclub.robobuggy.measurments.DISTINCE_UNITS;
 import org.roboclub.robobuggy.measurments.Distince;
 import org.roboclub.robobuggy.numbers.Double_Number;
 import org.roboclub.robobuggy.numbers.Number;
+import org.roboclub.robobuggy.numbers.Scalar;
 
 
 /***
@@ -24,7 +24,7 @@ import org.roboclub.robobuggy.numbers.Number;
 public class Point extends MapObject{
 	Color backgroundColor;
 	Color outlineColor;
-	private Distince radius = new Distince(DISTINCE_UNITS.METERS, new Double_Number(1.0)); // assuming the same in all directions
+	private Distince radius =  Distince.meter(1.0); // assuming the same in all directions
 	
 	/**
 	 * Constructor for a Point which creates 
@@ -104,20 +104,20 @@ public class Point extends MapObject{
 		//TODO make sure that point is in the same order as x_unit and y_unit
 		
 		//project the point to image plane
-		Number x = (Number)Double_Number.zero();
+		Scalar x = (Scalar)Double_Number.zero();
 		for(int i = 0;i<x_unit.getLength();i++){
 			try {
-				x = x.add(this.refrenceFrame.getPosition().getDimensionIndex(i).mult(x_unit.getIndex(i)));
+				x = (Scalar) x.add(this.refrenceFrame.getPosition().getDimensionIndex(i).mult(x_unit.getIndex(i)));
 			} catch (LogicException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 
-		Number y = Double_Number.zero();
+		Scalar y = Double_Number.zero();
 		for(int i = 0;i<x_unit.getLength();i++){
 			try {
-				y = y.add(this.refrenceFrame.getPosition().getDimensionIndex(i).mult(y_unit.getIndex(i)));
+				y = (Scalar) y.add(this.refrenceFrame.getPosition().getDimensionIndex(i).mult(y_unit.getIndex(i)));
 			} catch (LogicException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -129,9 +129,9 @@ public class Point extends MapObject{
 			xint = x.toInteger_Number().getValue();
 			int yint = y.toInteger_Number().getValue();
 	        g.setColor(backgroundColor);
-			g.drawOval(xint, yint, this.radius.toInteger_Number().getValue(), this.radius.toInteger_Number().getValue());
+			g.drawOval(xint, yint, (int)this.radius.toMeters(), (int)this.radius.toMeters());
 	        g.setColor(outlineColor);
-			g.fillOval(xint, yint, this.radius.toInteger_Number().getValue(), this.radius.toInteger_Number().getValue());
+			g.fillOval(xint, yint, (int)this.radius.toMeters(), (int)this.radius.toMeters());
 
 		} catch (LogicException e) {
 			// TODO Auto-generated catch block

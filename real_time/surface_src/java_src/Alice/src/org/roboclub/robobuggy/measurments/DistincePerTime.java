@@ -8,107 +8,56 @@ import org.roboclub.robobuggy.numbers.Number;
  * @author Trevor Decker
  * A measurement object for encoding the rate at which a distance changes per time
  */
-public class DistincePerTime extends Measurement<Number>{
-	@Override
-	/**
-	 * TODO document
-	 * TODO include
-	 */
-	public Number add(Number otherNumber) throws LogicException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	/**
-	 * TODO document
-	 * TODO include
-	 */
-	public Number sub(Number otherNumber) throws LogicException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	/**
-	 * TODO document
-	 * TODO include
-	 */
-	public Number mult(Number otherNumber) throws LogicException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	/**
-	 * TODO document
-	 * TODO include
-	 */
-	public Number div(Number otherNumber) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/**
-	 * TODO document
-	 * TODO include
-	 */
-	public static Number zero() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+public class DistincePerTime extends Measurement{
+	//the internal measurment of distincePerTime unit is meters per seconds
 	
-	/**
-	 * TODO document
-	 * TODO include
-	 */
-	public static Number one() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	/**
-	 * TODO document
-	 * TODO include
-	 */
-	public boolean isLess(Number someNumber) throws LogicException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	/**
-	 * TODO document
-	 * TODO include
-	 */
-	public boolean isGreater(Number someNumber) throws LogicException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	/**
-	 * TODO document
-	 * TODO include
-	 */
-	public boolean isEqual(Number somberNumber) throws LogicException {
-		// TODO Auto-generated method stub
-		return false;
+	private DistincePerTime(double input){
+		value = input;
 	}
 	
-	@Override
-	/**
-	 * Overides the classes default equal function to fit the number equal function 
-	 */
-	public boolean equals(Object obj) {
-		try {
-			return isEqual((Number) obj);
-		} catch (LogicException e) {
-			e.printStackTrace();
-		}
-		return false;
-	};
+	public static DistincePerTime metersPerSecond(double input){
+		return new DistincePerTime(input);
+	}
+	
+	public double toMetersPerSecond(){
+		return	value;
+	}
+	
+	public String toString(){
+		return toMetersPerSecond() + " Meters per Second";
+	}
+	
+	public DistincePerTime add(DistincePerTime otherMeasurment){
+		return new DistincePerTime(this.value + otherMeasurment.value); 	
+	}
+	
+	public DistincePerTime subtract(DistincePerTime otherMeasurment){
+		return new DistincePerTime(this.value - otherMeasurment.value);
+	}
+	
+	public DistincePerTime multiply(double scale){
+		return new DistincePerTime(this.value*scale);
+	}
+	
+	public DistincePerTime divide(double scale){
+		return new DistincePerTime(this.value/scale);
+	}
+	
+	public double divide(DistincePerTime otherMeasurment){
+		return this.value/otherMeasurment.value;
+	}
+	
+	public Time divide(Distince otherMeasurment){
+		double frequency =  this.toMetersPerSecond()/otherMeasurment.toMeters();
+		return Time.second(1/frequency);
+	}
+	
+	public AreaPerTime multiply(Distince otherMeasurment){
+		return AreaPerTime.metersSquarePerSecond(this.toMetersPerSecond()*otherMeasurment.toMeters());
+	}
+	
+	public VolumePerTime multiply(Area otherMeasurment){
+		return VolumePerTime.meterCubePerSecond(this.toMetersPerSecond()*otherMeasurment.toMetersSq());
+	}
 
 }

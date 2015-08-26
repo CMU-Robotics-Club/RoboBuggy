@@ -105,13 +105,8 @@ public class Polynomials extends MapObject{
 		int[] xPoints = new int[nPoints];
 		int[] yPoints = new int[nPoints];
 		for(int n = nStart;n<nPoints-nStart;n++){
-			try {
-				xPoints[n] = xPoly.evaluateAt(new Integer_Number(n)).toInteger_Number().getValue();
-				yPoints[n] = yPoly.evaluateAt(new Integer_Number(n)).toInteger_Number().getValue();
-			} catch (LogicException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			xPoints[n] =((Integer_Number)xPoly.evaluateAt(new Integer_Number(n))).getValue();
+			yPoints[n] = ((Integer_Number)yPoly.evaluateAt(new Integer_Number(n))).getValue();
 		}
 		g.drawPolyline(xPoints, yPoints, nPoints);
 	}

@@ -8,7 +8,6 @@ import org.roboclub.robobuggy.linearAlgebra.Matrix;
 import org.roboclub.robobuggy.linearAlgebra.Vector;
 import org.roboclub.robobuggy.map.LinkedListMap;
 import org.roboclub.robobuggy.map.Point;
-import org.roboclub.robobuggy.measurments.DISTINCE_UNITS;
 import org.roboclub.robobuggy.measurments.Distince;
 import org.roboclub.robobuggy.numbers.Double_Number;
 
@@ -19,11 +18,11 @@ public class LinkedListMap_Test extends TestCase {
 	public void test1() throws Exception{
 		LinkedListMap map1 = new LinkedListMap();
 		//TODO make it much simpler to create a point (add convince constructors) this is ridiculous
-		Distince sampleDistince = new Distince(DISTINCE_UNITS.METERS,Double_Number.zero());
+		Distince sampleDistince = Distince.meter(0.0);
 		Vector<Distince> coordinates = new Vector<Distince>(sampleDistince,3);
-		coordinates.set(new Distince(DISTINCE_UNITS.METERS, new Double_Number(0.0)),1,1);
-		coordinates.set(new Distince(DISTINCE_UNITS.METERS, new Double_Number(0.0)),1,2);
-		coordinates.set(new Distince(DISTINCE_UNITS.METERS, new Double_Number(0.0)),1,3);		
+		coordinates.set(Distince.meter(0.0),1,1);
+		coordinates.set(Distince.meter(0.0),1,2);
+		coordinates.set(Distince.meter(0.0),1,3);		
 		org.roboclub.robobuggy.coordinateFrame.Point position = new org.roboclub.robobuggy.coordinateFrame.Point(coordinates);
 		Double_Number sample_doubleNumber = Double_Number.zero();
 		Matrix<Double_Number> Matrix_D = new Matrix<Double_Number>(sample_doubleNumber,3,3);

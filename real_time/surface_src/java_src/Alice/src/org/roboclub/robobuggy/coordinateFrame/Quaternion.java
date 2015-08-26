@@ -2,6 +2,7 @@ package org.roboclub.robobuggy.coordinateFrame;
 
 import org.roboclub.robobuggy.linearAlgebra.Vector;
 import org.roboclub.robobuggy.main.LogicException;
+import org.roboclub.robobuggy.main.MESSAGE_LEVEL;
 import org.roboclub.robobuggy.numbers.Double_Number;
 import org.roboclub.robobuggy.numbers.Number;
 
@@ -72,9 +73,11 @@ public class Quaternion<NTYPE extends Number> implements RotationalRepersentatio
 	 * @return
 	 * @throws LogicException 
 	 * @throws CloneNotSupportedException 
+	 * TODO implement
 	 */
 	public NTYPE norm() throws LogicException, CloneNotSupportedException{
-		return (NTYPE) (q0.mult(q0).add(qv.dotProduct(qv,q0.getZero()))).sqrt();
+		//return (NTYPE) (q0.mult(q0).add(qv.dotProduct(qv,q0.getZero()))).sqrt();
+		throw new LogicException("method is not implemented yet", MESSAGE_LEVEL.warning);
 	}
 	
 	/***

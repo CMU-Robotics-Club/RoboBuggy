@@ -1,5 +1,8 @@
 package org.roboclub.robobuggy.measurments;
 
+import javax.print.attribute.standard.MediaSize.Other;
+
+import org.omg.PortableInterceptor.DISCARDING;
 import org.roboclub.robobuggy.main.LogicException;
 import org.roboclub.robobuggy.main.MESSAGE_LEVEL;
 import org.roboclub.robobuggy.numbers.Double_Number;
@@ -14,278 +17,142 @@ import org.roboclub.robobuggy.numbers.Scalar;
  * and the units of that measurement, can convert between different units and
  *  do math operations which will automatically convert units for you. 
  */
-public class Distince extends  Measurement<Number>{
-	Number value;
-
-
-	/***
-	 * Creates an object that represents a measurement and the units used to make that measurement  
-	 * @param units
-	 * @param value
-	 */
-	public Distince(unit units,Number value){
-		setUNITS((DISTINCE_UNITS) units);
-		setMeassurmentValue(value);
-	}
-
-
+public class Distince extends  Measurement{
+	//the internal representation of distance is in meters 
+	//so all distance will be converted to meters
 	
 	
-	/***
-	 * produces a new unit object which represents the same distance but in millimeters
-	 * if the calling object is not a distance then an error is thrown 
-	 * @return
-	 * @throws LogicException 
+	/**
+	 * TODO document
+	 * @param meters
 	 */
-	public Distince toMillimeters() throws LogicException{
-		Distince result = this.toMeters();
-		result.setMeassurmentValue(((Number) getMeassurmentValue()).mult(new Double_Number(1000)));
-		result.setUNITS(DISTINCE_UNITS.MILLIMETERS);
-		return result;
+	private Distince(double meters){
+		value = meters;
+	}
+	
+	public String toString(){
+		return toMeters() + " Meters";
+	}
+	
+	/**
+	 * TODO document
+	 * @param meters
+	 */
+	public static Distince inch(double measurment){
+		 return new Distince(0.0254*measurment);
 	}
 
-	/***
-	 * produces a new unit object which represents the same distance but in centimeters
-	 * if the calling object is not a distance then an error is thrown 
-	 * @return
-	 * @throws LogicException 
+	/**
+	 * TODO document
+	 * @param meters
 	 */
-	public Distince toCentimeters() throws LogicException{
-		Distince result = this.toMeters();
-		result.setMeassurmentValue(((Number) getMeassurmentValue()).mult(new Double_Number(100)));
-		result.setUNITS(DISTINCE_UNITS.CENTIMETERS);
-		return result;	
+	public static Distince feet(double measurment){
+		 return new Distince(0.3048*measurment);
+	}
+	
+	/**
+	 * TODO document
+	 * @param meters
+	 */
+	public static Distince meter(double measurment){
+		 return new Distince(measurment);
+	}
+	
+	/**
+	 * TODO document
+	 * @param meters
+	 */
+	public static Distince centiMeter(double measurment){
+		 return new Distince(0.01*measurment);
+	}
+	
+	/**
+	 * TODO document
+	 * @param meters
+	 */
+	public static Distince kilometer(double measurment){
+		 return new Distince(1000*measurment);
+	}
+	
+	/**
+	 * TODO document
+	 * @param meters
+	 */
+	public static Distince mile(double measurment){
+		 return new Distince(1609.34*measurment);
+	}
+	
+	/**
+	 * TODO document
+	 * @param meters
+	 */
+	public double toMeters(){
+		return value;
 	}
 
-	/***
-	 * produces a new unit object which represents the same distance but in meters
-	 * if the calling object is not a distance then an error is thrown 
-	 * @return
-	 * @throws LogicException 
+	/**
+	 * TODO document
+	 * @param meters
 	 */
-	public Distince toMeters() throws LogicException{
-		Distince result = new Distince(this.unit, this.value);
-		switch((DISTINCE_UNITS)getUnits()){
-			case CENTIMETERS:
-				result.setMeassurmentValue(((Number) getMeassurmentValue()).mult(new Double_Number(0.01)));
-				break;
-			case MILLIMETERS :
-				result.setMeassurmentValue(((Number) getMeassurmentValue()).mult(new Double_Number(0.001)));
-				break;
-			case METERS:
-				//DO noting becasue the units are already meters	
-				break;
-			case KILIOMETERS:
-				result.setMeassurmentValue(((Number) getMeassurmentValue()).mult(new Double_Number(1000)));
-				break;
-			case INCHES:
-				result.setMeassurmentValue(((Number) getMeassurmentValue()).mult(new Double_Number(0.0254)));
-				break;
-			case FEET:
-				result.setMeassurmentValue(((Number) getMeassurmentValue()).mult(new Double_Number(0.3048)));
-				break;
-			case MILES:
-				result.setMeassurmentValue(((Number) getMeassurmentValue()).mult(new Double_Number(1609.34)));
-				break;
-			default:
-				throw new LogicException("unit type is not a distince",MESSAGE_LEVEL.exception);
+	public double toInches(){
+		return 39.3701*value;
+	}
+	
+	/**
+	 * TODO document
+	 * @param meters
+	 */
+	public double toMiles(){
+		return 0.000621371*value;
+	}
+	
+	/**
+	 * TODO document
+	 * @param meters
+	 */
+	public double toCentiMeters(){
+		return 100*value;
+	}
+	/**
+	 * TODO document
+	 * @param meters
+	 */
+	public double toKiloMeters(){
+		return 1000*value;
+	}
+	
+	public Distince multiply(double multiplyer){
+		return new Distince(multiplyer*this.value);
+	}
+		
+	public Area multiply(Distince otherDistince){
+		return Area.metersSq(this.toMeters()*otherDistince.toMeters());
+	}
+	
+	public Volume multiply(Area otherMeasurment){
+		return Volume.metersCube(this.toMeters()*otherMeasurment.toMetersSq());
+	}
+	
+	public AreaPerTime multiply(DistincePerTime otherMeasurment){
+		return AreaPerTime.metersSquarePerSecond(this.toMeters()*otherMeasurment.toMetersPerSecond());
+	}
+	
+	public VolumePerTime multiply(AreaPerTime otherMeasurment){
+		return VolumePerTime.meterCubePerSecond(this.toMeters()*otherMeasurment.toMeterSquarePerSecond());
 		}
-		result.setUNITS(DISTINCE_UNITS.METERS);
-		return result;
-	}
-
-	/***
-	 * produces a new unit object which represents the same distance but in kilometers
-	 * if the calling object is not a distance then an error is thrown 
-	 * @return
-	 * @throws LogicException 
-	 */
-	public Distince toKilometers() throws LogicException{
-		Distince result = this.toMeters();
-		result.setMeassurmentValue(((Number) getMeassurmentValue()).mult(new Double_Number(0.001)));
-		result.setUNITS(DISTINCE_UNITS.KILIOMETERS);
-		return result;
-	}
-
-	/***
-	 * produces a new unit object which represents the same distance but in Inches
-	 * if the calling object is not a distance then an error is thrown 
-	 * @return
-	 * @throws LogicException 
-	 */
-	public Distince toInches() throws LogicException{
-		Distince result = this.toMeters();
-		result.setMeassurmentValue(((Number) getMeassurmentValue()).mult(new Double_Number(0.3700787)));
-		result.setUNITS(DISTINCE_UNITS.INCHES);
-		return result;
-	}
-
-	/***
-	 * produces a new unit object which represents the same distance but in feet
-	 * if the calling object is not a distance then an error is thrown 
-	 * @return
-	 * @throws LogicException 
-	 */
-	public Distince toFeet() throws LogicException{
-		Distince result = this.toMeters();
-		result.setMeassurmentValue(((Number) getMeassurmentValue()).mult(new Double_Number(0.28084)));
-		result.setUNITS(DISTINCE_UNITS.FEET);
-		return result;
-	}
-
-	/***
-	 * produces a new unit object which represents the same distance but in miles
-	 * if the calling object is not a distance then an error is thrown 
-	 * @return
-	 * @throws LogicException 
-	 */
-	public Distince toMiles() throws LogicException{
-		Distince result = this.toMeters();
-		result.setMeassurmentValue(((Number) getMeassurmentValue()).mult(new Double_Number(0.000621371)));
-		result.setUNITS(DISTINCE_UNITS.MILES);
-		return result;
-	}
 	
-
-	
-	/**
-	 * TODO document
-	 * @param otherNumber
-	 * @return
-	 * @throws LogicException 
-	 */
-	public Distince add(Distince otherNumber) throws LogicException{
-		return new Distince(this.unit, this.value.add(otherNumber.value));
-	}
-	
-	/**
-	 * TODO document
-	 * @throws LogicException 
-	 */
-	public Distince sub(Distince otherDistince) throws LogicException{
-		return new Distince(this.unit, this.value.sub(otherDistince.value));
-	}
-
-	/**
-	 * TODO document 
-	 * @throws LogicException 
-	 */
-	public Distince mult(Number otherNumber) throws LogicException {
-		return new Distince(this.unit, this.value.mult(otherNumber));
-	}
-	
-	/**
-	 * TODO document
-	 * @param otherDistince
-	 * @return
-	 * @throws LogicException 
-	 */
-	public Distince mult(Distince otherDistince) throws LogicException{
-		throw new LogicException("it does not make sense multipy a distince by a distince",MESSAGE_LEVEL.exception);
-	}
-
-
-	/**
-	 * TODO document
-	 */
-	public Distince div(Number otherNumber) {
-		return new Distince(this.unit, this.value.div(otherNumber));
-	}
-	
-	/**
-	 * Todo implement
-	 * todo document
-	 * @param dt
-	 * @return
-	 */
-	public DistincePerTime div(Time dt){
-		return null;
-	}
-	
-	/**
-	 * TODO document
-	 */
-	public Number div(Distince otherDistince){
-		return this.value.div(otherDistince.value);
-	}
-	
-	/**
-	 * TODO implement
-	 * TODO document
-	 * @param num
-	 * @return
-	 */
-	public Distince div(Scalar num){
-		return null;
-	}
-
-	/**
-	 * evaluates to an object representing zero distance
-	 */
-	public static Distince zero() {
-		//TODO come up with a better solution so that other number types can be used 
-		Number z = Double_Number.zero();
-		return new Distince(DISTINCE_UNITS.METERS, z);
-	}
-
-	/**
-	 * evaluates to an object representing 1 distance using the portamento distance unit
-	 */
-	public static Distince one() {
-		//TODO come up with a better solution so that other number types can be used 
-		Number one = Double_Number.one();
-		return new Distince(DISTINCE_UNITS.METERS, one);
+	public DistincePerTime divide(Time time){
+		return DistincePerTime.metersPerSecond(this.toMeters()/time.toSeconds());
 	}
 	
 	
-	@Override
-	/**
-	 * TODO documnet
-	 */
-	public boolean isLess(Number otherNumber) throws LogicException {
-		if(otherNumber.getClass() == Distince.class){
-			Distince otherDistince = (Distince)otherNumber;
-			return value.isLess(otherDistince.value);
-		}
-		throw new LogicException("can not compare the size of a distince and non distince number",MESSAGE_LEVEL.exception);
+	public Distince divide(double scale){
+		return new Distince(this.value/scale);
 	}
 	
-	@Override
-	/**
-	 * TODO document 
-	 */
-	public boolean isGreater(Number otherNumber) throws LogicException {
-		if(otherNumber.getClass() == Distince.class){
-			Distince otherDistince = (Distince)otherNumber;
-			return value.isGreater(otherDistince.value);
-		}
-		throw new LogicException("can not compare the size of a distince and non distince number",MESSAGE_LEVEL.exception);
-	}
-	
-	@Override
-	/**
-	 * TODO document
-	 */
-	public boolean isEqual(Number otherNumber) throws LogicException {
-		if(otherNumber.getClass() == Distince.class){
-			Distince otherDistince = (Distince)otherNumber;
-			return value.isEqual(otherDistince.value);
-		}
-		throw new LogicException("can not compare the size of a distince and non distince number",MESSAGE_LEVEL.exception);
+	public double divide(Distince otherMeasurment){
+		return this.value/otherMeasurment.value;
 	}
 	
 	
-	@Override
-	/**
-	 * Overrides the classes default equal function to fit the number equal function 
-	 */
-	public boolean equals(Object obj) {
-		try {
-			return isEqual((Number) obj);
-		} catch (LogicException e) {
-			e.printStackTrace();
-		}
-		return false;
-	};
-
 }

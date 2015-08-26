@@ -1,91 +1,65 @@
 package org.roboclub.robobuggy.measurments;
 
+import javax.print.attribute.standard.MediaSize.Other;
+
 import org.roboclub.robobuggy.main.LogicException;
 import org.roboclub.robobuggy.numbers.Number;
 
-public class Time extends Measurement<Number>{
-
-	@Override
-	/**
-	 * TODO implement
-	 * TODO document
-	 */
-	public Number add(Number otherNumber) throws LogicException {
-		// TODO Auto-generated method stub
-		return null;
+public class Time extends Measurement{
+	//The internal repersentation of time is in seconds 
+	
+	
+	private Time(double seconds){
+		value = seconds;
+	}
+	
+	public static Time second(double seconds){
+		return new Time(seconds);
+	}
+	
+	public double toSeconds(){
+		return value;
+	}
+	
+	public String toString(){
+		return toSeconds() + " Seconds";
 	}
 
-	@Override
-	/**
-	 * TODO implement
-	 * TODO document
-	 */
-	public Number sub(Number otherNumber) throws LogicException {
-		return null;
+	public Time add(Time otherTime){
+		return new Time(this.value + otherTime.value);
 	}
-
-	@Override
-	/**
-	 * TODO implement
-	 * TODO document
-	 */
-	public Number mult(Number otherNumber) throws LogicException {
-		return null;
+	
+	public Time subtract(Time otherTime){
+		return new Time(this.value - otherTime.value);
 	}
-
-	@Override
-	/**
-	 * TODO implement
-	 * TODO document
-	 */
-	public Number div(Number otherNumber) {
-		return null;
+	
+	public Time multiply(double scale){
+		return new Time(this.value*scale);
 	}
-
-	/**
-	 * TODO implement
-	 * TODO document
-	 */
-	public static Number zero() {
-		return null;
+	
+	public Time divide(double scale){
+		return new Time(this.value/scale);
 	}
-
-	/**
-	 * TODO implement
-	 * TODO document
-	 */
-	public static Number One() {
-		// TODO Auto-generated method stub
-		return null;
+	
+	public double divide(Time otherTime){
+		return this.value/otherTime.value;
 	}
-
-	@Override
-	/**
-	 * TODO implement
-	 * TODO document
-	 */
-	public boolean isLess(Number someNumber) throws LogicException {
-		// TODO Auto-generated method stub
-		return false;
+	
+	public Angle multiply(AnglePerTime apt){
+		return Angle.radins(this.toSeconds()*apt.toRadianPerSecond());
 	}
-
-	@Override
-	/**
-	 * TODO implement
-	 * TODO document
-	 */
-	public boolean isGreater(Number someNumber) throws LogicException {
-		// TODO Auto-generated method stub
-		return false;
+	
+	public Area multiply(AreaPerTime apt){
+		return Area.metersSq(this.toSeconds()*apt.toMeterSquarePerSecond());
 	}
-
-	@Override
-	/**
-	 * TODO implement
-	 * TODO document
-	 */
-	public boolean isEqual(Number somberNumber) throws LogicException {
-		// TODO Auto-generated method stub
-		return false;
+	
+	public Distince multiply(DistincePerTime dpt){
+		return Distince.meter(this.toSeconds()*dpt.toMetersPerSecond());
 	}
+	
+	public Volume multiply(VolumePerTime vpt){
+		return Volume.metersCube(this.toSeconds()*vpt.toMeterCubePerSecond());
+	}
+	
+	
 }

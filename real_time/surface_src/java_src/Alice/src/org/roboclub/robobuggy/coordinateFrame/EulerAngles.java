@@ -1,6 +1,5 @@
 package org.roboclub.robobuggy.coordinateFrame;
 
-import org.roboclub.robobuggy.measurments.ANGULAR_UNITS;
 import org.roboclub.robobuggy.measurments.Angle;
 
 /***

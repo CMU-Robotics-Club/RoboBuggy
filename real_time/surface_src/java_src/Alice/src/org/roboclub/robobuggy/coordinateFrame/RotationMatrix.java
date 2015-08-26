@@ -119,6 +119,8 @@ public class RotationMatrix <TYPE extends Number>implements RotationalRepersenta
 	 * assuming if SO2 then only given x,y 
 	 */
 	public Quaternion toQuaternion() throws LogicException, CloneNotSupportedException {
+	throw new LogicException("method has not been implemented yet", MESSAGE_LEVEL.warning);
+		/*
 		Number ZERO = new Double_Number(0.0);
 		Number ONE = new Double_Number(1.0);
 		
@@ -176,6 +178,7 @@ public class RotationMatrix <TYPE extends Number>implements RotationalRepersenta
 		q2 = q2.div(r);
 		q3 = q3.div(r);
 		return new Quaternion(q0, q1, q2, q3);
+		*/
 	}
 	
 	/**

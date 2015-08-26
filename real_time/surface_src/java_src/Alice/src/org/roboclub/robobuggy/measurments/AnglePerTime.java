@@ -9,100 +9,55 @@ import org.roboclub.robobuggy.numbers.Number;
  * A measurement object for encoding the rate at which an angle changes per time
  */
 public class AnglePerTime extends Measurement{
+	//internal repersentation of anlge per time is radian per second
 
-	@Override
-	/**
-	 * TODO document
-	 * TODO include
-	 */
-	public Number add(Number otherNumber) throws LogicException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	/**
-	 * TODO document
-	 * TODO include
-	 */
-	public Number sub(Number otherNumber) throws LogicException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	/**
-	 * TODO document
-	 * TODO include
-	 */
-	public Number mult(Number otherNumber) throws LogicException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	/**
-	 * TODO document
-	 * TODO include
-	 */
-	public Number div(Number otherNumber) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/**
-	 * TODO document
-	 * TODO include 
-	 * @return
-	 */
-	public static Number one() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	/**
-	 * TODO document
-	 * TODO include
-	 */
-	public boolean isLess(Number someNumber) throws LogicException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	/**
-	 * TODO document
-	 * TODO include
-	 */
-	public boolean isGreater(Number someNumber) throws LogicException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	/**
-	 * TODO document
-	 * TODO include
-	 */
-	public boolean isEqual(Number somberNumber) throws LogicException {
-		// TODO Auto-generated method stub
-		return false;
+	private AnglePerTime(double input){
+		value = input;
 	}
 	
-	@Override
-	/**
-	 * Overides the classes default equal function to fit the number equal function 
-	 */
-	public boolean equals(Object obj) {
-		try {
-			return isEqual((Number) obj);
-		} catch (LogicException e) {
-			e.printStackTrace();
+	public static AnglePerTime radianPerSecond(double input){
+		return new AnglePerTime(input);
+	}
+	
+	public static AnglePerTime degreePerSecond(double input){
+		return new AnglePerTime(Math.PI*input/180);
 		}
-		return false;
-	};
-
-
+	
+	public double toDegreePerSecond(){
+		return 180*value/Math.PI;
+	}
+	
+	public double toRadianPerSecond(){
+		return value;
+	}
+	
+	public String toString(){
+		return this.toDegreePerSecond() + "Degrees Per Second";
+	}
+	
+	public AnglePerTime add(AnglePerTime measurment){
+		return new AnglePerTime(this.value + measurment.value);
+	}
+	
+	public AnglePerTime sub(AnglePerTime measurment){
+		return new AnglePerTime(this.value - measurment.value);
+	}
+	
+	public AnglePerTime mult(double scale){
+		return new AnglePerTime(this.value*scale);
+	}
+	
+	public AnglePerTime div(double scale){
+		return new AnglePerTime(this.value/scale);
+	}
+	
+	public double div(AnglePerTime measurment){
+		return this.value/ measurment.value;
+	}
+	
+	public Angle mult(Time measurment){
+		return Angle.radins(toRadianPerSecond()*measurment.toSeconds());
+		
+	}
 
 }
