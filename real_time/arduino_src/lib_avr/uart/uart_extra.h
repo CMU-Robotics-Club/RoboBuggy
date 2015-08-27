@@ -28,11 +28,18 @@ LICENSE:
 Note:
   This library uses Peter Fleury and Andy Gock's UART Library. See their
   included license files for additional license terms.
+
+Note:
+  Use the following compiler flags to selectively compile in UART functions:
+  -DUSART0_ENABLED
+  -DUSART1_ENABLED
+  -DUSART2_ENABLED
+  -DUSART3_ENABLED
     
 ************************************************************************/
 
 
-#if defined(USART0_ENABLED) /* && ( defined(AT90_UART) || defined(ATMEGA_USART) || defined(ATMEGA_USART0) ) */
+#if defined(USART0_ENABLED) /* Assume we will never enable UART that doesn't exist. */
 
 /** @brief  Match uart0_getc to avr-libc getc() type. */
 inline int uart0_getc_stream(FILE *stream) {
@@ -61,7 +68,7 @@ inline void uart0_fdevopen(FILE *stream) {
 #endif
 
 
-#if defined(USART1_ENABLED) /* && defined(ATMEGA_USART1) */
+#if defined(USART1_ENABLED)
 
 /** @brief  Match uart1_getc to avr-libc getc() type. */
 inline int uart1_getc_stream(FILE *stream) {
@@ -84,7 +91,7 @@ inline void uart1_fdevopen(FILE *stream) {
 #endif
 
 
-#if defined(USART2_ENABLED) /* && defined(ATMEGA_USART2) */
+#if defined(USART2_ENABLED)
 
 /** @brief  Match uart2_getc to avr-libc getc() type. */
 inline int uart2_getc_stream(FILE *stream) {
@@ -107,7 +114,7 @@ inline void uart2_fdevopen(FILE *stream) {
 #endif
 
 
-#if defined(USART3_ENABLED) /* && defined(ATMEGA_USART3) */
+#if defined(USART3_ENABLED)
 
 /** @brief  Match uart3_getc to avr-libc getc() type. */
 inline int uart3_getc_stream(FILE *stream) {
