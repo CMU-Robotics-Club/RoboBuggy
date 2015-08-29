@@ -15,9 +15,9 @@ import org.roboclub.robobuggy.numbers.Number;
  * TODO implement
  *
  */
-public class Quaternion<NTYPE extends Number> implements RotationalRepersentation{
-	NTYPE q0;
-	Vector<NTYPE> qv;
+public class Quaternion implements RotationalRepersentation{
+	double q0;
+	Vector<double> qv;
 	
 
 	/**
@@ -25,7 +25,7 @@ public class Quaternion<NTYPE extends Number> implements RotationalRepersentatio
 	 * @param q0
 	 * @param qV
 	 */
-	public Quaternion(NTYPE q0, Vector<NTYPE> qV) {
+	public Quaternion(double q0, Vector<double> qV) {
 		this.q0 = q0;
 		this.qv = qV;
 	}

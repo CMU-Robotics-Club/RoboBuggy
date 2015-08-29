@@ -7,6 +7,10 @@ public class AreaPerTime extends Measurement{
 		value = measurment;
 	}
 	
+	public String toString(){
+		return value + " meters^2 / second";
+	}
+	
 	public static AreaPerTime metersSquarePerSecond(double measurment){
 		return new AreaPerTime(measurment);
 	}
