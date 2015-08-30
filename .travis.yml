@@ -5,3 +5,4 @@ jdk:
 notifications:
 #Email notifications are disabled to not annoy anybody 
 email: false
+sudo: false
