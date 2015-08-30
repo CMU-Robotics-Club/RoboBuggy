@@ -1,8 +1,8 @@
 package org.roboclub.robobuggy.coordinateFrame;
 
 import org.roboclub.robobuggy.main.LogicException;
-import org.roboclub.robobuggy.measurments.Angle;
-import org.roboclub.robobuggy.measurments.Distince;
+import org.roboclub.robobuggy.measurements.Angle;
+import org.roboclub.robobuggy.measurements.Distince;
 
 
 /**

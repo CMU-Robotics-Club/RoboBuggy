@@ -1,4 +1,4 @@
-package org.roboclub.robobuggy.measurments;
+package org.roboclub.robobuggy.measurements;
 
 import java.io.ObjectInputStream.GetField;
 import java.lang.reflect.InvocationTargetException;

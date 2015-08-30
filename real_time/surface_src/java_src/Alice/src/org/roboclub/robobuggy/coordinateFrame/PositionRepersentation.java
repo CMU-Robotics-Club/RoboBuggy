@@ -3,20 +3,18 @@ package org.roboclub.robobuggy.coordinateFrame;
 import org.roboclub.robobuggy.linearAlgebra.Vector;
 import org.roboclub.robobuggy.main.LogicException;
 import org.roboclub.robobuggy.main.MESSAGE_LEVEL;
-import org.roboclub.robobuggy.measurments.Distince;
+import org.roboclub.robobuggy.measurements.Distince;
 
 /**
- * TODO document
+ * interface for classes that represent position in N d space  
  * @author Trevor Decker
  * @version 0.0
  *
  */
 public interface PositionRepersentation {
-	
-	
-	
+		
 	/**
-	 * TODO document 
+	 * Sets the specific dimension to be a a specific distance
 	 * @param direction
 	 * @param newValue
 	 * @throws LogicException 

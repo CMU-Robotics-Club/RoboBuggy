@@ -1,4 +1,4 @@
-package org.roboclub.robobuggy.measurments;
+package org.roboclub.robobuggy.measurements;
 
 public class VolumePerTime extends Measurement{
 	//the internal default unit for volume per time is meter^3 per second

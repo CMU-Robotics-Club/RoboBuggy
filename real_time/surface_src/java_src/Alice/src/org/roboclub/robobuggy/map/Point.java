@@ -7,7 +7,7 @@ import org.roboclub.robobuggy.coordinateFrame.FrameOfRefrence;
 import org.roboclub.robobuggy.linearAlgebra.Vector;
 import org.roboclub.robobuggy.main.LogicException;
 import org.roboclub.robobuggy.main.MESSAGE_LEVEL;
-import org.roboclub.robobuggy.measurments.Distince;
+import org.roboclub.robobuggy.measurements.Distince;
 import org.roboclub.robobuggy.numbers.Double_Number;
 import org.roboclub.robobuggy.numbers.Number;
 import org.roboclub.robobuggy.numbers.Scalar;

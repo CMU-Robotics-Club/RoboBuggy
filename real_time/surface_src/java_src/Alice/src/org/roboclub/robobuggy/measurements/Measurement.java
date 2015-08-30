@@ -1,4 +1,4 @@
-package org.roboclub.robobuggy.measurments;
+package org.roboclub.robobuggy.measurements;
 
 import org.roboclub.robobuggy.numbers.Scalar;
 import org.roboclub.robobuggy.main.LogicException;

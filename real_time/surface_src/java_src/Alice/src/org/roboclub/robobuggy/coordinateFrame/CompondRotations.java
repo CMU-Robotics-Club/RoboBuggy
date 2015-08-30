@@ -2,13 +2,13 @@ package org.roboclub.robobuggy.coordinateFrame;
 
 import java.util.ArrayList;
 
-import org.roboclub.robobuggy.measurments.Angle;
+import org.roboclub.robobuggy.measurements.Angle;
 
 
 /**
  * Represents a string of rotations being applied to create a net rotation 
- * Euler angles would be a specific ordering of thease rotations 
- * be carful that singularits can exsits with this orintation repersentation 
+ * Euler angles would be a specific ordering of these rotations 
+ * be careful that singularity  can exist with this orientation representation 
  * @author Trevor Decker
  *
  */

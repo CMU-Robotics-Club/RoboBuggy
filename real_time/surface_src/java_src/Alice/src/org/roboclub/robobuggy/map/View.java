@@ -10,7 +10,7 @@ import org.roboclub.robobuggy.coordinateFrame.SpacialDimensions;
 import org.roboclub.robobuggy.linearAlgebra.Matrix;
 import org.roboclub.robobuggy.linearAlgebra.Vector;
 import org.roboclub.robobuggy.main.LogicException;
-import org.roboclub.robobuggy.measurments.Distince;
+import org.roboclub.robobuggy.measurements.Distince;
 import org.roboclub.robobuggy.numbers.Double_Number;
 import org.roboclub.robobuggy.numbers.Integer_Number;
 

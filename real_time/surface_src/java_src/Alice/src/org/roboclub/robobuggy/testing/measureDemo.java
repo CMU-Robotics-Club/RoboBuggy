@@ -1,10 +1,10 @@
 package org.roboclub.robobuggy.testing;
 
 import org.roboclub.robobuggy.main.LogicException;
-import org.roboclub.robobuggy.measurments.Area;
-import org.roboclub.robobuggy.measurments.AreaPerTime;
-import org.roboclub.robobuggy.measurments.Distince;
-import org.roboclub.robobuggy.measurments.Time;
+import org.roboclub.robobuggy.measurements.Area;
+import org.roboclub.robobuggy.measurements.AreaPerTime;
+import org.roboclub.robobuggy.measurements.Distince;
+import org.roboclub.robobuggy.measurements.Time;
 
 import junit.framework.TestCase;
 

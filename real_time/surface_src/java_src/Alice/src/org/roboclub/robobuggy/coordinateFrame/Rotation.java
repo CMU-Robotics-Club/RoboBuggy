@@ -1,6 +1,6 @@
 package org.roboclub.robobuggy.coordinateFrame;
 
-import org.roboclub.robobuggy.measurments.Angle;
+import org.roboclub.robobuggy.measurements.Angle;
 
 public class Rotation {
 	Angle roationAmount;
