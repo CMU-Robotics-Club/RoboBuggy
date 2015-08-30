@@ -59,7 +59,7 @@
 	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/logging"/>
 	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/main"/>
 	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/map"/>
-	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/measurments"/>
+	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/measurements"/>
 	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/messages"/>
 	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/nodes"/>
 	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/numbers"/>
