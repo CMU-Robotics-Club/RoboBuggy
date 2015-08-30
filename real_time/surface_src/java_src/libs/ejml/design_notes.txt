@@ -1,0 +1,80 @@
+Block Size
+---------------------------
+- Transpose
+  * Q6600 ran fast at 200 for 10k matrices.  didn't check higher
+  * Pentium-M degrades performance slightly for 2k matrix.
+  * Selected 60 as a compromise between Q6600 and pentium-m performance.
+- Block Cholesky
+  * 20 seems to be optimal, 60 slows it down a lot.
+
+
+Matrix Size optimization and Decompositions/Linear Solvers
+---------------------------
+
+Once a new instance of a Linear Solver or Decomposition has been created no more dynamics adjustments should
+happen for the input matrix size.  This is done to simply the code and testing for correctness by reducing
+the number of permutations.
+
+
+Block Cholesky Decomposition
+---------------------------
+The DenseMatrix64F based CholeskyDecompositionBlock class is easier to tune and offers equivalent
+performance to BlockMatrix64F based BlockCholeskyOuter class. CholeskyDecompositionBlock achieves
+optimal performance with munch smaller block sizes, but its performance actually degrades when
+larger blocks that are optimal for BlockMatrix64F algorithms are used.  CholeskyDecompositionBlock
+also works directly with DenseMatrix64F and avoids the need to convert matrix types.
+
+Block matrix solver is much faster than the row-major solver.
+
+However selecting the default class for Cholesky decomposition is not obvious because using
+CholeskyDecompositionBlock would require an additional tuning parameter making the library
+even more difficult to use.
+
+Block QR Decomposition
+--------------------------
+
+Saving the W matrix instead of recomputing it each time was tried.  For smaller matrices it has
+a noticeable speed improvement when solving.  Anything over 2k it seems to be negligible and almost double 
+the memory required.  Block QR Decomposition is only used on larger matrices so there is no point in
+saving W for later reuse when solving.  Based on profiling results W can save about 5% of runtime when solving
+a system.
+
+Block Matrix Multiply
+---------------------------
+- Block matrix multiplication does have fewer cache misses.
+- Converting from row major to block and multiplying causes too many cache misses.
+- Two different types of block matrix were created.
+  * single continuous array
+  * N*M arrays
+- After making the code ugly and barely readable they had comparable performance to multReorder(),
+  when multiplying two block matrices together.
+- The code currently committed and that resides in experimental has
+  not been optimized as much, but is readable.
+
+Unrolled Matrix Multiplication
+---------------------------
+- Tried to unroll either a row or column in either of the inputs
+- Does result in improve performance of small square matrices
+- Does not always translate to tall or wide matrices
+  * can be much slower than other orders
+- Did not integrate into library because of added complexity
+
+Combine matrix for DenseMatrix64
+---------------------------
+combine() is a function in SimpleMatrix that combines two matrices together and grows if needed.
+No equivalent is directly provided in CommonOps since it is horribly memory inefficient.  Why
+use DenseMatrix64 if you are going to do that.
+
+QR Decomposition: Column Major vs. Transpose
+---------------------------
+Two variants of QR decomposition currently exist in the code.  One converts the input matrix
+into a 2D array in a column major format and the other creates a transposed matrix.  QR
+decomposition has fewer cache misses when internally it reformats matrices like this.
+
+The column major 2D array format is about 10% faster than the transpose algorithm due
+to less array traversal overhead.  However, it requires specialized code and increases
+maintenance overhead.  It will also not benefit from improvements to more common operations.
+
+Deleting the 2D array format was being considered for sake of simplifying the code base.
+However, it is actually an idea format for QR with column pivots and results in simpler
+faster code.  So it was decided to keep both variants.

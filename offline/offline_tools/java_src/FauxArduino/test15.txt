@@ -1,0 +1,4 @@
+Starting to read from file!
+Looks like there was a problem somewhere in reading the file?.
+Brake        : Current Date: Tue Jun 09 23:44:26 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:44:26 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, aX: 123.070000, aY: -5.540000, aZ: -4.260000,

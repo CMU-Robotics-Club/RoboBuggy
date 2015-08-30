@@ -1,0 +1,655 @@
+Starting to read from file!
+Brake        : Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, aX: 123.070000, aY: -5.540000, aZ: -4.260000,
+Brake        : Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, aX: 123.050000, aY: -5.570000, aZ: -4.270000,
+Steering:      Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Steer Angle: 45.000000
+LoggingButton: Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Case: START
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, aX: 123.050000, aY: -5.600000, aZ: -4.250000,
+Steering:      Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Steer Angle: 45.000000
+Encoder:       Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+Brake        : Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, aX: 123.060000, aY: -5.640000, aZ: -4.270000,
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, aX: 123.070000, aY: -5.630000, aZ: -4.260000,
+Steering:      Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, aX: 123.060000, aY: -5.600000, aZ: -4.270000,
+Brake        : Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Case: 'brakeV0.1', Val: false
+Brake        : Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, aX: 123.060000, aY: -5.580000, aZ: -4.280000,
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, aX: 123.050000, aY: -5.590000, aZ: -4.270000,
+Brake        : Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Steer Angle: 45.000000
+Encoder:       Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, aX: 123.040000, aY: -5.650000, aZ: -4.260000,
+Steering:      Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Steer Angle: 45.000000
+Brake        : Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, aX: 123.040000, aY: -5.670000, aZ: -4.260000,
+Steering:      Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, aX: 123.030000, aY: -5.670000, aZ: -4.260000,
+Brake        : Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, aX: 123.040000, aY: -5.680000, aZ: -4.280000,
+Steering:      Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, aX: 123.040000, aY: -5.650000, aZ: -4.280000,
+Brake        : Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Case: 'brakeV0.1', Val: false
+Encoder:       Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+Steering:      Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, aX: 123.020000, aY: -5.650000, aZ: -4.270000,
+Brake        : Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, aX: 123.030000, aY: -5.690000, aZ: -4.280000,
+Steering:      Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, aX: 123.020000, aY: -5.690000, aZ: -4.270000,
+Brake        : Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, aX: 123.020000, aY: -5.660000, aZ: -4.300000,
+Brake        : Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, aX: 123.010000, aY: -5.610000, aZ: -4.310000,
+Steering:      Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Steer Angle: 45.000000
+Encoder:       Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, aX: 123.010000, aY: -5.610000, aZ: -4.320000,
+Brake        : Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, aX: 123.000000, aY: -5.630000, aZ: -4.320000,
+Brake        : Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, aX: 123.020000, aY: -5.660000, aZ: -4.290000,
+Steering:      Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Steer Angle: 45.000000
+Brake        : Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, aX: 123.160000, aY: -5.680000, aZ: -4.290000,
+Encoder:       Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+Brake        : Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, aX: 123.140000, aY: -5.680000, aZ: -4.280000,
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, aX: 123.200000, aY: -5.650000, aZ: -4.270000,
+Brake        : Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, aX: 123.190000, aY: -5.630000, aZ: -4.270000,
+Steering:      Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Steer Angle: 45.000000
+Brake        : Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, aX: 123.240000, aY: -5.640000, aZ: -4.260000,
+Steering:      Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, aX: 123.230000, aY: -5.660000, aZ: -4.260000,
+Brake        : Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Case: 'brakeV0.1', Val: false
+Encoder:       Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, aX: 123.350000, aY: -5.670000, aZ: -4.270000,
+Steering:      Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Steer Angle: 45.000000
+Brake        : Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, aX: 123.350000, aY: -5.640000, aZ: -4.250000,
+Steering:      Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:37 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.310000, aY: -5.610000, aZ: -4.250000,
+Brake        : Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.290000, aY: -5.620000, aZ: -4.270000,
+Steering:      Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Steer Angle: 45.000000
+Brake        : Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Case: 'brakeV0.1', Val: false
+Encoder:       Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.280000, aY: -5.630000, aZ: -4.270000,
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.250000, aY: -5.640000, aZ: -4.270000,
+Steering:      Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.230000, aY: -5.660000, aZ: -4.270000,
+Brake        : Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.240000, aY: -5.640000, aZ: -4.250000,
+Brake        : Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.230000, aY: -5.630000, aZ: -4.250000,
+Steering:      Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.210000, aY: -5.600000, aZ: -4.260000,
+GPS:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Other Date: Sun Apr 12 10:23:18 EDT 2015, Lat: 40.43345961666769, N Long: 8.585144008398057 W 2.000000 7.000000 1.180000 295.600000
+Brake        : Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Case: 'brakeV0.1', Val: false
+Encoder:       Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.200000, aY: -5.590000, aZ: -4.260000,
+Brake        : Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.190000, aY: -5.610000, aZ: -4.270000,
+Brake        : Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.190000, aY: -5.650000, aZ: -4.270000,
+Steering:      Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.170000, aY: -5.670000, aZ: -4.250000,
+Brake        : Current Date: Tue Jun 09 23:53:12 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Case: 'brakeV0.1', Val: false
+Encoder:       Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.170000, aY: -5.670000, aZ: -4.240000,
+Brake        : Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.160000, aY: -5.660000, aZ: -4.240000,
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.160000, aY: -5.640000, aZ: -4.230000,
+Brake        : Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Steer Angle: 45.000000
+Steering:      Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.160000, aY: -5.650000, aZ: -4.200000,
+Brake        : Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.160000, aY: -5.680000, aZ: -4.170000,
+Steering:      Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.160000, aY: -5.740000, aZ: -4.210000,
+Brake        : Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Case: 'brakeV0.1', Val: false
+Encoder:       Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+Steering:      Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.170000, aY: -5.680000, aZ: -4.230000,
+Brake        : Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.150000, aY: -5.690000, aZ: -4.240000,
+Steering:      Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.150000, aY: -5.630000, aZ: -4.240000,
+Brake        : Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Steer Angle: 45.000000
+Encoder:       Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.130000, aY: -5.640000, aZ: -4.240000,
+Brake        : Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.120000, aY: -5.700000, aZ: -4.230000,
+Steering:      Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.110000, aY: -5.710000, aZ: -4.220000,
+Brake        : Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.110000, aY: -5.730000, aZ: -4.220000,
+Brake        : Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.110000, aY: -5.670000, aZ: -4.210000,
+Steering:      Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.110000, aY: -5.710000, aZ: -4.200000,
+Brake        : Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Case: 'brakeV0.1', Val: false
+Encoder:       Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+Brake        : Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.180000, aY: -5.700000, aZ: -4.210000,
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.170000, aY: -5.650000, aZ: -4.230000,
+Brake        : Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.240000, aY: -5.640000, aZ: -4.230000,
+Steering:      Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Steer Angle: 45.000000
+Steering:      Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Steer Angle: 45.000000
+Brake        : Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Case: 'brakeV0.1', Val: false
+Encoder:       Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+Steering:      Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.220000, aY: -5.750000, aZ: -4.200000,
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.390000, aY: -5.720000, aZ: -4.200000,
+Brake        : Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.390000, aY: -5.700000, aZ: -4.240000,
+Steering:      Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Steer Angle: 45.000000
+Brake        : Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.440000, aY: -5.700000, aZ: -4.240000,
+Steering:      Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.430000, aY: -5.570000, aZ: -4.250000,
+Brake        : Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.480000, aY: -5.610000, aZ: -4.230000,
+Steering:      Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.470000, aY: -5.640000, aZ: -4.260000,
+Encoder:       Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+Brake        : Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.450000, aY: -5.700000, aZ: -4.250000,
+Brake        : Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.450000, aY: -5.710000, aZ: -4.220000,
+Steering:      Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.460000, aY: -5.710000, aZ: -4.220000,
+Brake        : Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.470000, aY: -5.600000, aZ: -4.260000,
+Encoder:       Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+Brake        : Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.460000, aY: -5.560000, aZ: -4.260000,
+Brake        : Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.460000, aY: -5.540000, aZ: -4.280000,
+Steering:      Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Steer Angle: 45.000000
+Brake        : Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.420000, aY: -5.700000, aZ: -4.280000,
+Steering:      Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.400000, aY: -5.800000, aZ: -4.260000,
+Brake        : Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Case: 'brakeV0.1', Val: false
+Encoder:       Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.410000, aY: -5.800000, aZ: -4.230000,
+Steering:      Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.410000, aY: -5.860000, aZ: -4.230000,
+Brake        : Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:38 EDT 2015, aX: 123.430000, aY: -5.720000, aZ: -4.250000,
+Brake        : Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.450000, aY: -5.590000, aZ: -4.260000,
+Steering:      Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Steer Angle: 45.000000
+Steering:      Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Steer Angle: 45.000000
+Brake        : Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.420000, aY: -5.530000, aZ: -4.290000,
+Encoder:       Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+Steering:      Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.400000, aY: -5.630000, aZ: -4.310000,
+Brake        : Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.370000, aY: -5.760000, aZ: -4.300000,
+Steering:      Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Steer Angle: 45.000000
+Brake        : Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.340000, aY: -5.920000, aZ: -4.290000,
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.380000, aY: -5.760000, aZ: -4.270000,
+Steering:      Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Steer Angle: 45.000000
+GPS:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Other Date: Sun Apr 12 10:23:19 EDT 2015, Lat: 40.433459600003225, N Long: 8.585143994490306 W 2.000000 7.000000 1.180000 295.800000
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.340000, aY: -5.770000, aZ: -4.290000,
+Brake        : Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Steer Angle: 45.000000
+Encoder:       Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+Brake        : Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.350000, aY: -5.730000, aZ: -4.320000,
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.320000, aY: -5.750000, aZ: -4.310000,
+Steering:      Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.310000, aY: -5.890000, aZ: -4.290000,
+Brake        : Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:13 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.320000, aY: -5.890000, aZ: -4.250000,
+Brake        : Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.320000, aY: -5.960000, aZ: -4.270000,
+Encoder:       Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+Steering:      Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.310000, aY: -5.870000, aZ: -4.300000,
+Brake        : Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.330000, aY: -5.740000, aZ: -4.300000,
+Brake        : Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.320000, aY: -5.720000, aZ: -4.300000,
+Brake        : Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.300000, aY: -5.760000, aZ: -4.290000,
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.300000, aY: -5.860000, aZ: -4.270000,
+Brake        : Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Steer Angle: 45.000000
+Encoder:       Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+Steering:      Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.320000, aY: -5.890000, aZ: -4.270000,
+Brake        : Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.390000, aY: -5.910000, aZ: -4.290000,
+Steering:      Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.390000, aY: -5.820000, aZ: -4.280000,
+Brake        : Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.510000, aY: -5.750000, aZ: -4.300000,
+Brake        : Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.510000, aY: -5.790000, aZ: -4.360000,
+Encoder:       Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+Steering:      Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.480000, aY: -5.900000, aZ: -4.250000,
+Brake        : Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.490000, aY: -5.960000, aZ: -4.240000,
+Brake        : Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.550000, aY: -5.920000, aZ: -4.230000,
+Steering:      Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.550000, aY: -5.770000, aZ: -4.270000,
+Brake        : Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Case: 'brakeV0.1', Val: false
+Encoder:       Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+Steering:      Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.670000, aY: -5.720000, aZ: -4.310000,
+Brake        : Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.650000, aY: -5.650000, aZ: -4.240000,
+Steering:      Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Steer Angle: 45.000000
+Brake        : Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.620000, aY: -5.780000, aZ: -4.260000,
+Brake        : Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.620000, aY: -5.810000, aZ: -4.260000,
+Encoder:       Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.610000, aY: -5.830000, aZ: -4.220000,
+Brake        : Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.610000, aY: -5.880000, aZ: -4.240000,
+Steering:      Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Steer Angle: 45.000000
+Brake        : Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.600000, aY: -5.690000, aZ: -4.290000,
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.600000, aY: -5.740000, aZ: -4.190000,
+Steering:      Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.580000, aY: -5.710000, aZ: -4.290000,
+Brake        : Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Steer Angle: 45.000000
+Encoder:       Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+Brake        : Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.580000, aY: -5.860000, aZ: -4.190000,
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.580000, aY: -5.860000, aZ: -4.230000,
+Steering:      Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.570000, aY: -5.830000, aZ: -4.260000,
+Brake        : Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.570000, aY: -5.770000, aZ: -4.310000,
+Brake        : Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.540000, aY: -5.650000, aZ: -4.270000,
+Steering:      Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Steer Angle: 45.000000
+Encoder:       Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.530000, aY: -5.690000, aZ: -4.300000,
+Brake        : Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.500000, aY: -5.710000, aZ: -4.150000,
+Steering:      Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Steer Angle: 45.000000
+Brake        : Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.490000, aY: -5.770000, aZ: -4.200000,
+Steering:      Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.470000, aY: -5.790000, aZ: -4.280000,
+Brake        : Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.460000, aY: -5.710000, aZ: -4.260000,
+Steering:      Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Steer Angle: 45.000000
+Brake        : Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Case: 'brakeV0.1', Val: false
+Encoder:       Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.450000, aY: -5.750000, aZ: -4.170000,
+Brake        : Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.430000, aY: -5.750000, aZ: -4.160000,
+Steering:      Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:39 EDT 2015, aX: 123.430000, aY: -5.870000, aZ: -4.170000,
+Brake        : Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 123.400000, aY: -5.820000, aZ: -4.200000,
+Brake        : Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 123.400000, aY: -5.740000, aZ: -4.210000,
+Steering:      Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Steer Angle: 45.000000
+Encoder:       Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 123.400000, aY: -5.700000, aZ: -4.210000,
+Brake        : Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 123.380000, aY: -5.460000, aZ: -4.190000,
+Brake        : Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 123.360000, aY: -5.380000, aZ: -4.210000,
+Steering:      Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 123.320000, aY: -5.360000, aZ: -4.250000,
+Brake        : Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Case: 'brakeV0.1', Val: false
+GPS:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Other Date: Sun Apr 12 10:23:20 EDT 2015, Lat: 40.4334595944484, N Long: 8.585143969456356 W 2.000000 7.000000 1.180000 295.900000
+Encoder:       Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+Steering:      Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 123.270000, aY: -5.160000, aZ: -4.240000,
+Brake        : Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 123.280000, aY: -5.260000, aZ: -4.240000,
+Steering:      Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 123.260000, aY: -5.370000, aZ: -4.240000,
+Brake        : Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 123.320000, aY: -5.460000, aZ: -4.180000,
+Brake        : Current Date: Tue Jun 09 23:53:14 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 123.340000, aY: -5.390000, aZ: -4.200000,
+Brake        : Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Steer Angle: 45.000000
+Encoder:       Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 123.320000, aY: -5.300000, aZ: -4.230000,
+Brake        : Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 123.320000, aY: -5.250000, aZ: -4.270000,
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 123.340000, aY: -5.370000, aZ: -4.220000,
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 123.320000, aY: -5.440000, aZ: -4.200000,
+Steering:      Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Steer Angle: 45.000000
+Brake        : Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 123.380000, aY: -5.440000, aZ: -4.160000,
+Brake        : Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Case: 'brakeV0.1', Val: false
+Encoder:       Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 123.360000, aY: -5.400000, aZ: -4.180000,
+Steering:      Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 123.340000, aY: -5.210000, aZ: -4.180000,
+Brake        : Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 123.300000, aY: -5.160000, aZ: -4.180000,
+Brake        : Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 123.270000, aY: -5.070000, aZ: -4.240000,
+Steering:      Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 123.210000, aY: -4.980000, aZ: -4.280000,
+Brake        : Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Case: 'brakeV0.1', Val: false
+Encoder:       Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 123.110000, aY: -4.770000, aZ: -4.340000,
+Steering:      Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Steer Angle: 45.000000
+Brake        : Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 123.030000, aY: -4.680000, aZ: -4.350000,
+Steering:      Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 122.920000, aY: -4.500000, aZ: -4.390000,
+Brake        : Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 122.790000, aY: -4.500000, aZ: -4.380000,
+Steering:      Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Steer Angle: 45.000000
+Brake        : Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Case: 'brakeV0.1', Val: false
+Encoder:       Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 122.600000, aY: -4.330000, aZ: -4.410000,
+Steering:      Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 122.400000, aY: -4.210000, aZ: -4.440000,
+Brake        : Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 122.170000, aY: -4.070000, aZ: -4.470000,
+Steering:      Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Steer Angle: 45.000000
+Brake        : Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 121.960000, aY: -4.310000, aZ: -4.460000,
+Steering:      Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 121.680000, aY: -4.610000, aZ: -4.340000,
+Brake        : Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Case: 'brakeV0.1', Val: false
+Brake        : Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 121.420000, aY: -4.350000, aZ: -4.240000,
+Encoder:       Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+Steering:      Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Steer Angle: 45.000000
+Brake        : Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 121.210000, aY: -4.280000, aZ: -4.130000,
+Steering:      Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 120.980000, aY: -4.310000, aZ: -4.330000,
+Brake        : Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 120.690000, aY: -4.240000, aZ: -4.200000,
+Steering:      Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Steer Angle: 45.000000
+Encoder:       Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 120.600000, aY: -4.680000, aZ: -4.140000,
+Brake        : Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 120.530000, aY: -5.380000, aZ: -4.290000,
+Brake        : Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 120.460000, aY: -6.180000, aZ: -3.990000,
+Steering:      Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Steer Angle: 45.000000
+Brake        : Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 120.640000, aY: -6.820000, aZ: -3.960000,
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 120.500000, aY: -6.610000, aZ: -3.890000,
+Steering:      Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 120.750000, aY: -6.590000, aZ: -3.960000,
+Encoder:       Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+Brake        : Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Steer Angle: 45.000000
+Brake        : Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 120.860000, aY: -6.410000, aZ: -3.970000,
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 120.910000, aY: -6.090000, aZ: -3.940000,
+Steering:      Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 120.950000, aY: -6.020000, aZ: -4.080000,
+Brake        : Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 120.930000, aY: -6.000000, aZ: -4.090000,
+Brake        : Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 120.920000, aY: -6.310000, aZ: -3.960000,
+Encoder:       Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+Steering:      Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 120.930000, aY: -6.520000, aZ: -4.010000,
+Brake        : Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:40 EDT 2015, aX: 121.020000, aY: -6.500000, aZ: -3.930000,
+Brake        : Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.060000, aY: -6.750000, aZ: -3.900000,
+Brake        : Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.240000, aY: -6.570000, aZ: -3.900000,
+Steering:      Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Steer Angle: 45.000000
+Steering:      Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Steer Angle: 45.000000
+Encoder:       Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.310000, aY: -6.300000, aZ: -3.930000,
+Brake        : Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.390000, aY: -6.230000, aZ: -4.000000,
+Brake        : Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.380000, aY: -6.180000, aZ: -4.010000,
+GPS:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Other Date: Sun Apr 12 10:23:21 EDT 2015, Lat: 40.43345958611203, N Long: 8.585143944422404 W 2.000000 7.000000 1.180000 296.000000
+Steering:      Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.390000, aY: -6.280000, aZ: -3.990000,
+Brake        : Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.410000, aY: -6.430000, aZ: -4.000000,
+Encoder:       Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+Brake        : Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.400000, aY: -6.350000, aZ: -4.050000,
+Steering:      Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.420000, aY: -6.140000, aZ: -4.010000,
+Brake        : Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.450000, aY: -6.100000, aZ: -4.000000,
+Brake        : Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:15 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.460000, aY: -6.040000, aZ: -4.030000,
+Steering:      Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.490000, aY: -5.950000, aZ: -4.060000,
+Encoder:       Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+Brake        : Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Case: 'brakeV0.1', Val: false
+Brake        : Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.520000, aY: -5.990000, aZ: -4.120000,
+Steering:      Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Steer Angle: 45.000000
+Steering:      Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.530000, aY: -5.890000, aZ: -4.130000,
+Brake        : Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.550000, aY: -5.860000, aZ: -4.190000,
+Steering:      Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Steer Angle: 45.000000
+Brake        : Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.580000, aY: -5.920000, aZ: -4.200000,
+Encoder:       Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+Steering:      Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.620000, aY: -5.760000, aZ: -4.220000,
+Brake        : Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.630000, aY: -5.670000, aZ: -4.280000,
+Steering:      Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Steer Angle: 45.000000
+Brake        : Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.580000, aY: -5.730000, aZ: -4.280000,
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.520000, aY: -6.050000, aZ: -4.100000,
+Steering:      Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.490000, aY: -6.460000, aZ: -4.030000,
+Brake        : Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Case: 'brakeV0.1', Val: false
+Encoder:       Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+Steering:      Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.500000, aY: -6.440000, aZ: -4.060000,
+Brake        : Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.530000, aY: -6.320000, aZ: -4.160000,
+Steering:      Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.520000, aY: -5.950000, aZ: -4.150000,
+Brake        : Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.530000, aY: -5.960000, aZ: -4.210000,
+Brake        : Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.510000, aY: -5.990000, aZ: -4.220000,
+Encoder:       Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+Brake        : Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.490000, aY: -6.100000, aZ: -4.160000,
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.510000, aY: -6.230000, aZ: -4.170000,
+Brake        : Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.500000, aY: -6.190000, aZ: -4.100000,
+Brake        : Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.510000, aY: -6.130000, aZ: -4.120000,
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.510000, aY: -5.940000, aZ: -4.140000,
+Encoder:       Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+Steering:      Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Steer Angle: 45.000000
+Brake        : Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.500000, aY: -5.910000, aZ: -4.170000,
+Steering:      Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Steer Angle: 45.000000
+Brake        : Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.480000, aY: -5.950000, aZ: -4.210000,
+Steering:      Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.480000, aY: -6.090000, aZ: -4.160000,
+Brake        : Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.480000, aY: -6.180000, aZ: -4.160000,
+Brake        : Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.480000, aY: -6.030000, aZ: -4.250000,
+Encoder:       Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+Steering:      Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.520000, aY: -5.960000, aZ: -4.240000,
+Brake        : Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.510000, aY: -5.910000, aZ: -4.260000,
+Brake        : Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.580000, aY: -5.980000, aZ: -4.240000,
+Steering:      Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.560000, aY: -6.050000, aZ: -4.240000,
+Brake        : Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Case: 'brakeV0.1', Val: false
+Encoder:       Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+Steering:      Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.570000, aY: -6.080000, aZ: -4.240000,
+Brake        : Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.550000, aY: -6.060000, aZ: -4.250000,
+Steering:      Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.560000, aY: -5.980000, aZ: -4.270000,
+Brake        : Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.540000, aY: -5.940000, aZ: -4.270000,
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.550000, aY: -5.930000, aZ: -4.270000,
+Brake        : Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Case: 'brakeV0.1', Val: false
+Encoder:       Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, aX: 121.530000, aY: -5.960000, aZ: -4.250000,
+Brake        : Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Steer Angle: 45.000000
+Brake        : Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:41 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 121.520000, aY: -5.990000, aZ: -4.240000,
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 121.540000, aY: -5.980000, aZ: -4.250000,
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 121.520000, aY: -5.960000, aZ: -4.240000,
+Brake        : Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Steer Angle: 45.000000
+Encoder:       Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+Steering:      Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 121.520000, aY: -5.940000, aZ: -4.220000,
+Brake        : Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 121.510000, aY: -5.950000, aZ: -4.220000,
+Steering:      Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 121.510000, aY: -5.930000, aZ: -4.230000,
+Brake        : Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 121.500000, aY: -5.960000, aZ: -4.250000,
+Steering:      Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Steer Angle: 45.000000
+Brake        : Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Case: 'brakeV0.1', Val: false
+GPS:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Other Date: Sun Apr 12 10:23:22 EDT 2015, Lat: 40.43345957222084, N Long: 8.585143919388454 W 2.000000 7.000000 1.180000 296.000000
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 121.480000, aY: -5.990000, aZ: -4.270000,
+Steering:      Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Steer Angle: 45.000000
+Encoder:       Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 121.480000, aY: -5.970000, aZ: -4.260000,
+Brake        : Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 121.500000, aY: -5.950000, aZ: -4.240000,
+Steering:      Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Steer Angle: 45.000000
+Brake        : Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 121.490000, aY: -5.920000, aZ: -4.230000,
+Steering:      Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 121.500000, aY: -5.910000, aZ: -4.250000,
+Brake        : Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:16 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 121.480000, aY: -5.900000, aZ: -4.290000,
+Steering:      Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Steer Angle: 45.000000
+Encoder:       Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+Brake        : Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 121.480000, aY: -5.910000, aZ: -4.280000,
+Steering:      Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 121.460000, aY: -5.940000, aZ: -4.250000,
+Brake        : Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 121.460000, aY: -5.970000, aZ: -4.230000,
+Brake        : Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 121.470000, aY: -5.950000, aZ: -4.240000,
+Brake        : Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Steer Angle: 45.000000
+IMU:           Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 121.440000, aY: -5.930000, aZ: -4.240000,
+Steering:      Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Steer Angle: 3.000000
+Encoder:       Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+IMU:           Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 121.440000, aY: -5.940000, aZ: -4.230000,
+Brake        : Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Steer Angle: 3.000000
+IMU:           Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 121.430000, aY: -5.950000, aZ: -4.230000,
+Brake        : Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 121.430000, aY: -6.010000, aZ: -4.210000,
+Steering:      Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Steer Angle: 3.000000
+IMU:           Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 121.430000, aY: -6.040000, aZ: -4.210000,
+Brake        : Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Case: 'brakeV0.1', Val: false
+Encoder:       Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+Steering:      Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Steer Angle: 3.000000
+IMU:           Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 121.580000, aY: -6.050000, aZ: -4.230000,
+Brake        : Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 121.690000, aY: -6.070000, aZ: -4.240000,
+Steering:      Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Steer Angle: 3.000000
+IMU:           Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 121.780000, aY: -6.110000, aZ: -4.240000,
+Brake        : Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Steer Angle: 3.000000
+IMU:           Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 121.860000, aY: -6.140000, aZ: -4.240000,
+IMU:           Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 121.930000, aY: -6.160000, aZ: -4.250000,
+Brake        : Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 122.000000, aY: -6.140000, aZ: -4.250000,
+Encoder:       Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+Steering:      Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Steer Angle: 3.000000
+Brake        : Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 122.060000, aY: -6.110000, aZ: -4.260000,
+Steering:      Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Steer Angle: 3.000000
+IMU:           Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 122.100000, aY: -6.100000, aZ: -4.260000,
+Brake        : Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 122.140000, aY: -6.080000, aZ: -4.260000,
+Brake        : Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Steer Angle: 3.000000
+IMU:           Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 122.140000, aY: -6.110000, aZ: -4.270000,
+Brake        : Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Case: 'brakeV0.1', Val: false
+Steering:      Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Steer Angle: 3.000000
+Encoder:       Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Magic1: 0.000000, Distance: 0.348571,Velocity: 0.000000, Accel: 0.000000
+IMU:           Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 122.170000, aY: -6.080000, aZ: -4.260000,
+Steering:      Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Steer Angle: 3.000000
+IMU:           Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 122.150000, aY: -6.070000, aZ: -4.280000,
+Brake        : Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Case: 'brakeV0.1', Val: false
+IMU:           Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, aX: 122.140000, aY: -6.050000, aZ: -4.290000,
+Steering:      Current Date: Tue Jun 09 23:53:17 EDT 2015, Date: Sun Apr 12 06:22:42 EDT 2015, Steer Angle: 3.000000

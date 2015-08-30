@@ -1,0 +1,478 @@
+Change log for EJML
+
+Date format: year/month/day
+
+----- Version 0.28
+
+2015/
+
+- Equations
+  * Fixed bug where bounds for a submatrix-scalar assignment was being checked using col,row instead of row,col
+    Thanks lenhhoxung for reporting this bug
+
+----- Version 0.27
+
+2015/04/01
+
+- Added SimpleMatrix.randomNormal() for drawing numbers from a normal distribution with zero mean
+- Added EjmlUnitTests.assertEquals() and similar for SimpleMatrix
+- Removed DenseMatrix64F.setReshape()
+  * Matrix.set(matrix) will now reshape the matrix that's being assigned
+- Triangle quality now just uses diagonal elements to scale results
+- Support for complex matrices
+  * Thanks IHMC (http://ihmc.us) for funding parts of this addition
+  * Basic operations (e.g. multiplication, addition, ... etc)
+  * LU Decomposition + Linear Solver
+  * QR Decomposition + Linear Solver
+  * Cholesky Decomposition + Linear Solver
+  * Square Matrices: inverse, solve, determinant
+  * Overdetermined: solve
+- ComplexMath64F
+  * Added sqrt(Complex64F)
+- Tweaked matrix inheritance to better support the addition of complex matrices
+- Added RandomMatrices setGaussian() and createGaussian()
+- Changed how SimpleMatrix computes its threshold for singular values
+  * Farley Lai noticed this issue
+- Added SingularOps.singularThreshold()
+- Added no argument rank and nullity for SVD using default threshold.
+- SimpleMatrix.loadCSV() now supports derived types
+- Added primitive 32bit data structures to make adding 32bit support in the future smoother
+- Equation
+  * 1x1 matrix can be assigned to a double scalar
+  * When referencing a single element in a matrix it will be extracted as a scalar and not a 1x1 matrix.
+  * Added sqrt() to parser
+  * lookupDouble() will now work on 1x1 matrices
+- CommonOps
+  * Added dot(a,b) for dot product between two vectors
+  * Added extractRow and extractColumn
+- FixedOps
+  * Added extractRow and extractColumn.  Thanks nknize for inspiring this modification with a pull request
+  * Added subtract and subtractEquals.  Thanks nknize for the pull request
+- Added determinant to Cholesky decomposition interface
+- Added getDecomposition() to LinearSolver to provide access to internal classes,
+  which can be useful in some specialized cases.  Alternatives were very ugly.
+
+----- Version 0.26
+
+2014/9/14
+
+- Switched most of the build system over to Gradle
+- Equations
+  * Symbolic way to perform linear algebra
+  * Similar to Matlab/Octave
+- SimpleMatrix
+  * Added plus( double )
+  * Added elementDiv()
+- Linear Solvers
+  * Exposed inner decomposition algorithms and some data structures
+- CommonOps
+  * Trace will now work on non-square matrices
+  * changeSign() has a two argument version
+  * left and right double-matrix division.
+      *** WARNING **** The meaning of CommonOps.divide(double,Matrix) and similar has changed
+  * Added subtract() matrix-double and double-matrix
+- QRP yet again uses a relative threshold.  No idea why it was set to a global one
+- Matrix Multiplication now fully supports multiplication by rows or columns with zero
+- Element-wise pow, exp, log to CommonOps and SimpleMatrix
+- High level interface for LDL
+- Renamed Principle to Principal in PCA
+  * Thanks sergei.skarupo for being the first person to point out this error
+- Fixed case where SolvePseudoInverseSvd would blow up if input matrix was zero
+- SVD and EVD can gracefully handle matrix with size 0
+
+----- Version 0.25
+
+2014/6/13
+
+- Fixed bug in CovarianceRandomDraw where it was modifying the input matrix
+  * Thanks Alexandre Bouchard for finding this bug
+- Added suffix to low level implementations so that you can tell by looking at the class name the type
+  of matrix it takes in as input
+  * D64 = DenseMatrix64F
+  * B64 = BlockMatrix64F
+- Moved interfaces into their own package.  Before they resided in dense.
+- Fixed bad matrix dimension check in LinearSolverChol
+  * Added unit tests which can catch the error
+  * Thanks Illya Kokshenev for finding and reporting
+- SimpleMatrix
+  * inverse and solve now check to see if output contains uncountable numbers.
+  * Thanks sylvain.rouard for the suggestion
+
+----- Version 0.24
+
+2013/12/26
+
+- CHANGED LICENSE FROM LGPL to Apache 2.0
+  * Don't agree with Free Software Foundation's interpretation for how the LGPL applies to Java jars.
+  * Even if it did behave the way I wanted it to, it wouldn't do much other than scare some people away.
+- Added fixed sized square matrices and vectors
+  * Auto code generator for standard operations
+  * Matrix 2x2, 3x3, 4x4, 5x5, 6x6
+  * Vector 2, 3, 4, 5, 6
+- Created an interface for Matrix64F and renamed the old one into ReshapeMatrix64F
+- CommonOps:  Added checks which ensure the input matrix is not modified for det() and inv()
+
+----- Version 0.23
+
+2013/06/21
+
+- Modified Matrix64F so that it can be serialized using beans.  Added setNumRows() and setNumCols()
+- Added user configurable threshold in SolvePseudoInverseSvd
+
+----- Version 0.22
+
+2013/04/09
+
+- Fixed bug in MatrixFeatures.isPositiveDefinite() where the input was being modified
+  * Added a check for isModified() flag in this and several other functions
+  * Thanks Eriklan Dodinh for reporting the bug
+- MatrixIO.loadCSV() now will throw IOException() if an incorrect matrix size is specified
+  * Thanks Ioannis P. for reporting this bug
+- LUDecompositionNR now returns false for singular matrices.
+  * Thanks Luke Nezda for reporting the bug
+- Moved LUDecompositionNR into experimental directory since its use is not recommended, but is still a good algorithm.
+- Clarified ordering of coefficients in polynomial root example
+  * Thanks Rahul for getting confused by the lack of documentation
+
+----- Version 0.21
+
+2012/12/04
+
+- Removed Android build option from ant because there is no need for such an option
+- Changed behavior of CommonOps.rref() so that numUnknowns <= 0 causes it to be set to a reasonable default
+- Fixed bug in SimpleSVD where getSingularValue() did not return ordered singular values
+- SingularOps.nullVector() now lets you specify if it is the left or right null space
+- Added SafeSvd, which is a wrapper class that ensures that the input to SVD is not modified
+
+----- Version 0.20
+
+2012/08/22
+
+- Fixed bug in SingularOps.nullity where it did not handle wide matrices correctly. 
+  * Thanks arnavkumar for pointing out the bug
+- Reworked null-space
+  * SingularOps.nullSpace() is now nullVector()
+  * SingularOps.nullSpace now returns the entire null space not just one vector
+  * Thanks arnavkumar for pointing out the non-standard implementation
+- Changed behavior of MatrixFeatures.isDiagonalPositive() so that it will return false if NaN is found
+- Under certain conditions SvdImplicitQrDecompose will use BidiagonalDecompositionTall instead of the default
+  algorithm.
+- Moved factories and related interfaces into their own package outside of the "alg" package, which was intended for
+  specific implementations.
+- DecompositionFactory has been cleaned up by reducing the number of functions, making input parameters more consistent,
+  and improved JavaDoc
+- Changed CommonOps.set(matrix,value) to CommonOps.fill(matrix,value)
+- Added function QRPDecomposition.setSingularThreshold() so that the user has more control over this important threshold
+  * The singular threshold in QRP is now absolute and not automatically relative.
+  * To replicate the original behavior do the following:
+       decomp.setSingularThreshold( CommonOps.elementMaxAbs(A)*UtilEjml.EPS )
+- SvdImplicitQrDecompose now takes in a parameter which specifies if tall bidiagonal decomposition can be used over
+  concerns of its stability.  These concerns are mostly theoretical since a few simple tests show the stability to be
+  almost the same.
+- SimpleBase now implements Serializable
+- Accessors in SingularValueDecomposition now can take in an optional storage matrix.
+- Removed support for LinearSolver with Gauss-Jordan elimination
+  * The provided implementation was very slow and didn't utilize any of the advantages of GJ
+- Added support for transforming an augmented matrix into Reduced Row Echelon Form (RREF)
+  * Implementation using Gauss-Jordan with row pivots
+  * Added CommonOps.rref()
+
+----- Version 0.19
+
+2012/04/23
+
+- Added example showing file IO to examples directory
+- Changed MatrixIO.saveXML and MatrixIO.loadXML to saveBin and loadBin because it uses a binary format not XML
+- Added save/load CSV to SimpleBase
+- Implemented VectorVectorMult.rank1Update
+  * Before the function did nothing
+- Fixed bug in LinearSolverQrHouseCol where it was not handled a change in matrix size correctly
+- Added new variant of SingularOps.descendingOrder() which takes an array of singular values as input
+- Added reshape(row,cols) because adding false to reshape(row,cols) all the time was annoying me.
+- Added multInner() and multOuter() for performing inner and outer matrix products.  Faster than
+  using generalized algorithms.
+- Changed behavior of VectorVectorMult.innerProdA so that it does not require 'A' to be square
+- Improved Pseudo Inverse
+  * Refactored by changing package and renaming
+  * Added QR pivot based pseudo inverse classes
+- Improved QR Pivot so that it has better stability
+  * Normalization is done on a column by column basis instead of by the whole matrix.
+- QR decomposition using extracted columns now invokes more generalized code for householder operations
+  * Should improve performance for larger matrices, and slightly degrade for small
+- Added SimpleMatrix.setRow() SimpleMatrix.setColumn()
+  * Writes elements in an array to a row/column.
+- Moved decomposition and linear solver factories and interfaces into a factories package.
+  * Was placed in alg.dense package, which is for specific implementations
+
+----- Version 0.18
+
+2011/12/04
+
+- Added support for reading and writing CSV formatted matrices
+  * Requested by various people.
+- Changed SolvePseudoInverse to use SVD, making it much more robust and will never fail now.
+  * Same behavior as matlab pinv() function
+  * Requested by mwolff.
+  * Updated CommonOps.pinv() to use SolvePseudoInverse
+  * Added pinv() to SimpleMatrix
+- Added getSingularValue() to SimpleSVD class.
+- Rewrote JavaDOC for reshape() because it was miss leading
+  * sh10151 pointed this out
+- Removed one of the CommonOps.insert() functions since it was identical to CommonOps.extract()
+- Created optimized versions of CommonOps.extract
+  * Seems to boost performance on small matrices but not large
+- Added QR decomposition with column pivots
+- Added solver which uses QR with column pivots
+- BidiagonalDecompositionTall now passes all of its unit tests
+
+----- Version 0.17
+
+2011/06/28
+
+- Moved general and symmetric EVD to DecompositionFactory from EigenOps
+- Moved show() from MatrixIO to MatrixVisualization to help with Android development.
+  * added "jar nogui" to ant build script which will exclude GUI related files.
+- Added CommonOps.elementDiv()
+  * Thanks to leokury for the suggestion
+- Many functions now handle NaN more intelligently in MatrixFeatures
+  * Thanks to kaspar.thommen for pointing out these flaws.
+- Adding Maven support
+  * Can now download from the central repository
+  * Requested by soren
+- Added sumRows() and sumCols() to CommonOps
+  * Requested by b.broeksema
+- Fixed bug in inducedP2 where the max singular value was not always returned
+  * Found by Antonino Freno
+
+----- Version 0.16
+
+2011/02/23
+
+- Removed SVD code based on NR
+- Fixed bug in BlockMatrix64HouseholderQR.applyQ()
+ * improved unit test to detect the bug
+- Changed contract for LinearSolver and added functions to determine if the input
+  is being modified or not.
+- Genericified LinearSolver
+  * Removed LinearBlockSolver
+- Genericified DecompositionInterface
+  * Removed block decomposition interfaces
+- Clarified behavior of functions in MatrixFeatures.
+- Added EjmlUnitTests
+  * converted many internal unit tests to use this class
+- Changed MatrixIO to take a PrintStream as an input
+- Adding support for toString()
+- EVD and SVD now modify their inputs by default
+- Added unit test for PCA
+- Added in-place converting to and from row-major to block matrices.
+- Trangular block solver can handle unaligned input
+- Modified isIdentical and added isEquals to MatrixFeatures.
+  * Resulting from a discussion with Kaspar Thommen
+- SimpleMatrix has been made more easy to extend by adding a protected function that declares
+  new instances of SimpleMatrix. Now function calls will return the correct type.
+- TridiagonalSimilarDecomposition is now an interface and related code has been made more
+  general purpose.
+- Added a QR decomposition that supports bidiagonalization for tall matrices
+  * Results in significantly faster SVD when U is not needed.
+  * Not used yet in SVD because QR decomposition without column pivots is unstable for singular matrices.
+- Modified BidiagonalizeDecomposition interface
+- SVD and EVD QR algorithm take in diagonal and off diagonal as inputs not the matrix.
+- Added dense matrix copy triangle and isEqualsTriangle
+- Changed logo to more accurately represent a Householder reflector.
+- Pushed SimpleMatrix into its own package.
+  * To make it easy to extend, SimpleMatrix now extends SimpleBase
+  * Added dot() and isVector() is SimpleMatrix.
+- LinearSolverFactory and DecompositionFactory now take in the matrix's size
+- SimpleMatrix now accepts variable arguments.
+
+----- Version 0.15
+
+2010/11/20
+
+- Minor speed ups in LU, determinant, transpose
+- Fixed a bug in MatrixComponent.  Negative elements were not handled correctly.
+- More clearly defined what LinearSolver.quality() is and made it invariant of the matrix's scale.
+- Added wrap to DenseMatrix64F for handling raw data.
+- Added PrincipleComponentAnalysis example
+- Changed DecompositionInterface
+- Added unsafe_get() and unsafe_set() to Matrix64F and implementing classes.
+- Cholesky and QR decompositions for a block matrix and associated helper functions.
+- Simplistic functions have had the hand inlining removed. Suggested by Kaspar Thommen.
+  * After marking it was found that sometimes more complex functions had their performance
+    significantly degraded after they started to use very light weight wrappers.
+  * In some cases it seems to slightly improve performance when setters/getters are used.
+  * Yes these changes were statistically significant.
+- Changed behavior of CommonOps.extract() to make its behavior match other submatrix operations better
+- Added the ability to create a new matrix if a null dst is provided in several CommonOps functions.
+- Moved examples into their own java package.  Makes selectively running those unit tests easier in IntelliJ
+- Added elementMult() to SimpleMatrix. Suggested by Nikita Rokotyan.
+- Fixed bug in the different QR decomposition implementations for compact QR.
+  * Added compact QR to generic tests
+- Fixed bug in LinearSolverFactory.symmetric() where LU instead of cholesky was being created.
+- EjmlParameters.MEMORY provides a way for it to select algorithms which are fast but memory hogs or
+  slower but more memory efficient.
+
+----- Version 0.14
+
+2010/08/07
+
+- Removed left over debugging print statement from SvdImplicitQrAlgorithm.
+- For reflectors (used in QR) code has been added that can switch between two normalization
+  methods.  This can significant speed things up and improve accuracy.
+- Added underflow stability benchmarks for some decompositions
+- Correct some issues in SVD and Symm EVD
+- Seed up SVD by removing need for some divisions
+- Symm EVD now uses the Wilkinson shift
+- Fixed a bug in kron().
+- Added several new functions to SimpleMatrix and cleaned up function names.
+- Fixed a bug in QR decomposition where compact flag was incorrectly handled.
+- Added QRExample* to example source code to demonstrate using extract and insert
+- All QR decompositions now works on matrices with any shape
+- Added set() to MatrixIterator
+- Added additional checks to matrix multiply that makes sure 'c' is not the same matrix as 'a' or ''b'
+  - Suggested by xcolwell
+- Moved IO functions to MatrixIO
+  - Provide a way to save/read DenseMatrix64F and SimpleMatrix to/from a file.
+- Fixed and added more block matrix operations.
+- Creates a new class to store transpose algorithms.
+   * Including a new block one that is about 40% faster on large non-square matrices.
+- Added quality() to LinearSolver to provide a quick way to validate results.
+- Added MatrixIO.show() for visually showing a matrix's state.
+
+----- Version 0.13
+
+2010/07/08
+
+- Fixed SingularOps.descendingOrder() bug.
+   * Thanks xcolwell for reporting it.
+- Fixed a bug in RandomMatrices.createOrthogonal()
+- Cleaned up Matrix64F and D1Matrix64F
+- Updated java doc for several classes
+- Added SVD and EVD to SimpleMatrix
+- SVD can now selectively compute U and V
+- SVD is computed all at once.
+   - Seems to perform slightly faster than original code and is simpler.
+   - There is a loss in performance for 2 by 2 matrices.  
+- SVD getU() and getV() can now indicate if the transpose is returned or not.
+- SVD fixed issue dealing with very small numbers canceling out and causing a divided by zero error
+- SVD changed exceptional shift to use a random rotation
+- Moved quality() functions inside of DecompositionFactory
+- Symmetric EVD
+  * Fixed rare problem that could happen if two eigenvalues are identical and off diagonal element is small it will never converge.
+  * Added code to make it more robust to very small numbers
+- Generic EVD
+  * Fixed long standing issue with eigenvectors and repeat eigenvalues
+  * Made unit test tolerant to small round off errors causing an eigen value to become imaginary
+- Added a version string to UtilEjml
+
+
+
+----- Version 0.12
+
+2010/06/17
+
+- Added PolynomialFit example code.
+- Updated comments to reflect the addition of LinearSolvers
+- Added MatrixIterator to provide another way of accessing elements inside a matrix
+- Can just compute eigenvalues.
+- Fixed an array index out of bounds error when computing general eigenvectors
+- Improved accuracy of general EVD when computing eigenvalues and eigenvectors
+  when dealing with nearly identical eigenvalues.  Thanks to Ex'ratt for finding this and the previous problem.
+- Auto code for unrolling determinant by minor.
+- Auto code generator for unrolling inverse by minor
+- Created experimental code directory
+  
+----- Version 0.11
+
+2010/04/07
+
+- Updated LevenbergMarquardt example.
+- Added the ability to save the old data in reshape() if the matrix grows in size.
+- Added Kronecker product
+- Added LinearSolverFactory
+- Changed constructor in DenseMatrix64F so that var-args can be used.
+- Can add random numbers to a matrix
+- Added null space to SingularOps
+- Added a function in SingularOps to rearrange the SVD such that the singular values are in descending order.
+
+----- Version 0.10.1
+
+2010/02/18
+
+- Fixed a bug with large symmetric matrices where eigen pairs would be incorrectly associated with each other.
+- Made the general eigenvalue decomposition algorithm less buggy.  It can now handle the case where
+  eigenvalues appear in a different order the second time, but doesn't solve for repeat values correctly.
+
+----- Version 0.10
+
+2010/02/16
+
+- fixed a LU pivot matrix bug
+- SVD Implicit QR algorithm (much faster than old)
+- Optimized rank1update for large matrices
+- Various refactoring and other tweaks.
+
+----- Version 0.9
+
+2010/01/29
+
+- Added the QR Algorithm for eigenvalue decomposition for Symmetric matrices.
+- improved eigenvalue unit tests exposing some problems with generic EVD
+- various refactoring
+
+----- Version 0.8
+
+2010/01/15
+
+- Usability improvements
+- Fixed matrix multiply switching rules for some of the operators
+- Added automatic switching to matrix vector multiply to some operators in CommonOps
+- More random matrices: orthonormal, orthogonal, normal span, and with specific singular values.
+- More matrix norms, including induced norms and all the p vector norms.
+- Eigenvalue decomposition for general matrices.
+- More functions in EigenOps and preexisting ones improved
+- LU now works for rectangular matrices
+- LU now generates a pivot matrix (I guess it is really PLU)
+- various refactoring
+
+----- Version 0.7
+
+2009/11/10
+
+- Created a linear solver interface.
+- QR Update.
+  * Two implementations.  One is more straight forward and the other is much faster.
+- Created a linear solver interface that allows data points to be added and removed.
+- Made decomposition and linear solver algorithms use lazy initialization.
+
+----- Version 0.6
+
+2009/10/26
+
+- Added QR Decomposition
+- Added Leibniz formula for determinants.
+  * This required a permutation algorithm to be added also.
+- Fixed various bugs
+- Improved SimpleMatrix to make it more useful
+
+
+----- Version 0.5
+
+2009/9/19
+
+- Added another type of matrix multiplication that creates a temporary column
+  * This significant improved performance in some areas
+
+----- Version 0.4
+
+2009/9/5
+
+- Added two more Cholesky decomposition algorithm; block and LDL.
+- Moved significant magic numbers in to EjmlParamters to provide a central place for configuration.
+- Various other refactorings and bug fixes.
+
+----- Version 0.3
+
+2009/8/27
+
+- This is the initial public distribution.  Has most of the final functionality.

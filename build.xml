@@ -1,0 +1,137 @@
+<!---
+  For building the Robobuggy project 
+  running tests
+  building javadocs 
+  packaging a jar 
+-->
+<project name="RoboBuggyAnt" basedir="." default="main">
+
+    <property name="src.dir"     value="real_time/surface_src/java_src/Alice/src"/> 
+    <property name="test.dir"    value="org/roboclub/robobuggy/testing"/>
+
+    <property name="build.dir"   value="build"/>
+    <property name="classes.dir" value="${build.dir}/classes"/>
+    <property name="jar.dir"     value="${build.dir}/jar"/>
+
+    <property name="main-class"  value="oata.HelloWorld"/>  <!-- TODO fix -->
+
+    <path id="application" location="${jar.dir}/${ant.project.name}.jar"/>
+
+
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+    </target>
+
+
+      <!--- stuff for installing libs -->
+      <condition property="isWindows">
+	<os family="windows" />
+      </condition>
+    
+      <condition property="isUnix">
+	<os family="unix" />
+      </condition>
+      
+      <target name="mvn_windows" if="isWindows">
+	<exec dir="./real_time/surface_src/java_src/libs/junit" executable="cmd">
+          <arg line="/c mvn clean install" />
+	</exec>
+      </target>
+      
+      <target name="mvn_unix" if="isUnix">
+	<exec dir="./real_time/surface_src/java_src/libs/junit" executable="sh">
+          <arg line="-c 'mvn clean install'" />
+	</exec>
+      </target>
+      <!--- end stuff for installing libs -->
+
+
+      <target name="compile" ><!-- depends="mvn_windows, mvn_unix" > -->
+        <mkdir dir="${classes.dir}"/>
+        <javac  destdir="${classes.dir}" includeantruntime="false"  >
+	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/actuators"/>
+	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/coordinateFrame"/>
+	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/coordinateFrame2"/>
+	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/drivers"/>
+	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/fauxNodes"/>
+	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/linearAlgebra"/>
+	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/localization"/>
+	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/logging"/>
+	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/main"/>
+	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/map"/>
+	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/measurements"/>
+	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/messages"/>
+	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/nodes"/>
+	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/numbers"/>
+	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/pathPlanner"/>
+	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/ros"/>
+	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/ros/internal"/>
+	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/ros/tools"/>
+	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/sensors"/>
+	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/serial"/>
+	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/simulation"/> 
+	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/testing"/>
+	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/ui"/> 
+	  <classpath>
+	    <pathelement location="real_time/surface_src/java_src/libs/junit/target/junit-4.12-SNAPSHOT.jar" /> 
+	    <pathelement location="real_time/surface_src/java_src/Alice/library/orsoncharts-1.4-eval-nofx.jar" />
+	    <pathelement location="real_time/surface_src/java_src/Alice/library/RXTXcomm.jar" />
+	    <pathelement location="real_time/surface_src/java_src/Alice/library/opencv-249.jar" />
+	    <pathelement location="real_time/surface_src/java_src/Alice/library/junit-4.11.jar" />
+            <path refid="application"/>
+          </classpath>
+	</javac>
+    </target>
+
+    <target name="jar" depends="compile">
+        <mkdir dir="${jar.dir}"/>
+        <jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="${main-class}"/>
+            </manifest>
+        </jar>
+    </target>
+
+
+    <target name="test" depends="compile" >
+      <junit haltonfailure="false"  showOutput="true" printsummary="withOutAndErr">
+        <classpath>
+	  <pathelement location="real_time/surface_src/java_src/Alice/library/junit-4.11.jar" />        
+	  <pathelement location="build/classes/org/roboclub/robobuggy/testing/HelloWorld.class" />
+        </classpath>
+	<test name="TestExample" />
+
+      </junit>
+    </target>
+
+	
+
+      
+<!--
+      <junit printsummary="yes" haltonfailure="true" showoutput="true" >
+	<classpath location=".">
+	<pathelement location="real_time/surface_src/java_src/libs/junit/target/junit-4.12-SNAPSHOT.jar" /> 
+	<pathelement location="real_time/surface_src/java_src/Alice/library/junit-4.11.jar" />
+          <path refid="application"/>
+        </classpath>
+        
+        <batchtest fork="yes">
+          <fileset dir="${src.dir}" includes="*.java"/>
+        </batchtest>
+        <test name="HelloWorld" />
+        <formatter type="xml" />
+      </junit>
+      <junitreport todir=".">
+            <fileset dir=".">
+              <include name="TEST-*.xml" />
+            </fileset>
+            <report todir="." />
+      </junitreport> 
+</target>
+-->
+
+    <target name="clean-build" depends="clean,jar"/>
+
+    <target name="main" depends="clean,test"/>
+
+</project>

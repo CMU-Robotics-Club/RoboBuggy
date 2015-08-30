@@ -1,0 +1,208 @@
+allprojects {
+    apply plugin: 'idea'
+    apply plugin: 'eclipse'
+
+    group = 'org.ejml'
+    version = '0.27'
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'osgi'
+    apply plugin: 'maven'
+    apply plugin: 'signing'
+
+    sourceCompatibility = 1.6
+
+    javadoc.failOnError = false
+
+    repositories {
+        mavenCentral()
+        mavenLocal()
+
+        maven {
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+    }
+
+    sourceSets {
+        main {
+            java {
+                srcDir 'src'
+            }
+            resources {
+                srcDir 'resources/src'
+            }
+        }
+
+        test {
+            java {
+                srcDir 'test'
+                srcDir 'generate'
+                srcDir 'benchmarks/src'
+                srcDir 'benchmarks/test'
+            }
+            resources {
+                srcDir 'resources/test'
+            }
+        }
+    }
+
+    dependencies {
+        testCompile group: 'junit', name: 'junit', version: '4.11'
+    }
+
+    jar {
+        manifest { // the manifest of the default jar is of type OsgiManifest
+            instruction 'Bundle-Vendor', 'EJML'
+//            instruction 'Bundle-Description', 'EJML'
+            instruction 'Bundle-DocURL', 'http://ejml.org/'
+        }
+    }
+
+    task javadocJar(type: Jar) {
+        classifier = 'javadoc'
+        from javadoc
+    }
+
+    task sourcesJar(type: Jar) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    artifacts {
+        archives javadocJar, sourcesJar
+    }
+
+    // if Maven central isn't setup in gradle.properties skip all of this
+    if( project.hasProperty('ossrhUsername') ) {
+        signing {
+            sign configurations.archives
+        }
+
+        uploadArchives {
+            repositories {
+                mavenDeployer {
+                    beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                    repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                        authentication(userName: ossrhUsername, password: ossrhPassword)
+                    }
+
+                    snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                        authentication(userName: ossrhUsername, password: ossrhPassword)
+                    }
+
+                    pom.project {
+                        name 'EJML'
+                        packaging 'pom'
+                        // optionally artifactId can be defined here
+                        description 'A fast and easy to use dense matrix linear algebra library written in Java.'
+                        url 'http://ejml.org/'
+
+                        scm {
+                            connection 'git@github.com:lessthanoptimal/ejml.git'
+                            developerConnection 'git@github.com:lessthanoptimal/ejml.git'
+                            url 'https://github.com/lessthanoptimal/ejml'
+                        }
+
+                        licenses {
+                            license {
+                                name 'The Apache Software License, Version 2.0'
+                                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                            }
+                        }
+
+                        developers {
+                            developer {
+                                id 'pabeles'
+                                name 'Peter Abeles'
+                                email 'peter.abeles@gmail.com'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+def allModules = [
+        ':main:core',
+        ':main:dense64',
+        ':main:denseC64',
+        ':main:equation',
+        ':main:simple'
+]
+
+// Creates a directory with all the comiled jars
+task createLibraryDirectory( dependsOn: allModules.collect{ it+":jar"}+allModules.collect{ it+":sourcesJar"}) << {
+
+    // Create lists of .class jars and source jars
+    ext.listJars = files(allModules.collect{ project(it).tasks.jar.archivePath })
+    ext.listSource = files(allModules.collect{ project(it).tasks.sourcesJar.archivePath })
+
+    file('libraries').deleteDir()
+    file('libraries').mkdir()
+
+    copy {
+        from ext.listJars
+        from ext.listSource
+        into 'libraries'
+
+        // append on BoofCV so it's clear which jars are part of BoofCV and which are not
+        rename { String fileName ->
+            "EJML-" + fileName
+        }
+    }
+}
+
+idea {
+    project {
+        jdkName = '1.6 (64bit)'
+        languageLevel = '1.6'
+    }
+}
+
+def javadocProjects = [
+        ':main:denseC64',
+        ':main:dense64',
+        ':main:core',
+        ':main:equation'
+]
+task alljavadoc(type: Javadoc) {
+    // only include source code in src directory to avoid including 3rd party code which some projects do as a hack
+    source = javadocProjects.collect { project(it).fileTree('src').include('**/*.java') }
+//    source = javadocProjects.collect { project(it).sourceSets.main.allJava }
+    classpath = files(javadocProjects.collect { project(it).sourceSets.main.compileClasspath })
+
+    destinationDir = file("${buildDir}/docs/javadoc")
+    configure(options) {
+        docTitle = "Efficient Java Matrix Library (EJML) v$project.version"
+        links = [ 'http://docs.oracle.com/javase/7/docs/api/' ]
+        header = file('docs/header.txt').text
+        bottom = file('docs/bottom.txt').text // the quotes messes up javadoc still create bug report
+    }
+}
+
+task oneJarBin(type: Jar, dependsOn: javadocProjects.collect { it + ":compileJava" }) {
+    baseName = 'EJML'
+
+    from files(javadocProjects.collect { project(it).sourceSets.main.output })
+}
+
+// Disable the creation of jars for distribution.  If you don't do this it will crash
+[':main',':examples'].each {String a ->
+    project(a) {
+        if( project.hasProperty('ossrhUsername') ) {
+            signArchives.enabled = false
+        }
+        sourcesJar.enabled = false
+        javadocJar.enabled = false
+        jar.enabled = false
+        uploadArchives.enabled = false
+        install.enabled = false
+    }
+}
+
+

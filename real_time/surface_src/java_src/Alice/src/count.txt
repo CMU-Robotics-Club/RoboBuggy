@@ -1,0 +1,730 @@
+org/roboclub/robobuggy/actuators/Servo.java: * TODO document 
+org/roboclub/robobuggy/actuators/Servo.java: * TODO implment 
+org/roboclub/robobuggy/actuators/Servo.java:	// TODO
+org/roboclub/robobuggy/actuators/brake.java:		// TODO create connection with arduino that controls brakes
+org/roboclub/robobuggy/actuators/brake.java:		// TODO raise fatal error if connection to arduino is not achieved
+org/roboclub/robobuggy/actuators/brake.java:		// TODO set state based on actual status of the break
+org/roboclub/robobuggy/actuators/brake.java:		// TODO send command to break
+org/roboclub/robobuggy/actuators/brake.java:		// TODO implment
+org/roboclub/robobuggy/actuators/light.java:		// TODO setup arduino com
+org/roboclub/robobuggy/coordinateFrame/EulerAngles.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/EulerAngles.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/EulerAngles.java:	 * TODO document 
+org/roboclub/robobuggy/coordinateFrame/EulerAngles.java:	 * TODO implement
+org/roboclub/robobuggy/coordinateFrame/EulerAngles.java:		//TODO
+org/roboclub/robobuggy/coordinateFrame/EulerAngles.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/EulerAngles.java:	 * TODO implement
+org/roboclub/robobuggy/coordinateFrame/EulerAngles.java:		//TODO
+org/roboclub/robobuggy/coordinateFrame/EulerAngles.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/EulerAngles.java:	 * TODO implement
+org/roboclub/robobuggy/coordinateFrame/EulerAngles.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/coordinateFrame/EulerAngles.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/EulerAngles.java:	 * TODO implement
+org/roboclub/robobuggy/coordinateFrame/EulerAngles.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/EulerAngles.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/coordinateFrame/FrameOfRefrence.java: * TODO document
+org/roboclub/robobuggy/coordinateFrame/FrameOfRefrence.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/FrameOfRefrence.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/FrameOfRefrence.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/FrameOfRefrence.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/FrameOfRefrence.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/FrameOfRefrence.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/FrameOfRefrence.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/HomogeneousMatrix.java: * TODO document 
+org/roboclub/robobuggy/coordinateFrame/HomogeneousMatrix.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/HomogeneousMatrix.java:	 * TODO implement
+org/roboclub/robobuggy/coordinateFrame/HomogeneousMatrix.java:		// TODO Auto-generated constructor stub
+org/roboclub/robobuggy/coordinateFrame/HomogeneousMatrix.java:	 * TODO document 
+org/roboclub/robobuggy/coordinateFrame/HomogeneousMatrix.java:		//TODO make no side effects
+org/roboclub/robobuggy/coordinateFrame/HomogeneousMatrix.java:	 * TODO document 
+org/roboclub/robobuggy/coordinateFrame/HomogeneousMatrix.java:		//TODO make no side effects
+org/roboclub/robobuggy/coordinateFrame/HomogeneousMatrix.java:	 * TODO document 
+org/roboclub/robobuggy/coordinateFrame/HomogeneousMatrix.java:		//TODO remvoe try catch 
+org/roboclub/robobuggy/coordinateFrame/HomogeneousMatrix.java:			// TODO Auto-generated catch block
+org/roboclub/robobuggy/coordinateFrame/HomogeneousMatrix.java:	 * TODO document 
+org/roboclub/robobuggy/coordinateFrame/HomogeneousMatrix.java:	 * TODO implement
+org/roboclub/robobuggy/coordinateFrame/HomogeneousMatrix.java:			//TODO implment
+org/roboclub/robobuggy/coordinateFrame/HomogeneousMatrix.java:	 * TODO document 
+org/roboclub/robobuggy/coordinateFrame/HomogeneousMatrix.java:		//TODO make so that matrix has rotation and distince encoded not just doubles
+org/roboclub/robobuggy/coordinateFrame/HomogeneousMatrix.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/HomogeneousMatrix.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/HomogeneousMatrix.java:		return new Point(this.thisMatrix.getCol(dimension-1)); //TODO remove the last row 
+org/roboclub/robobuggy/coordinateFrame/HomogeneousMatrix.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/HomogeneousMatrix.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/HomogeneousMatrix.java:	 * TODO implement
+org/roboclub/robobuggy/coordinateFrame/HomogeneousMatrix.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/coordinateFrame/Point.java: * TODO document
+org/roboclub/robobuggy/coordinateFrame/Point.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/Point.java:	 * TODO document 
+org/roboclub/robobuggy/coordinateFrame/Point.java:	 * TODO document 
+org/roboclub/robobuggy/coordinateFrame/Point.java:	 * TODO document 
+org/roboclub/robobuggy/coordinateFrame/Point.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/Point.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/Point.java:	 * TODO implement 
+org/roboclub/robobuggy/coordinateFrame/Point.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/Point.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/coordinateFrame/Point.java:	 * TODO implement
+org/roboclub/robobuggy/coordinateFrame/Point.java:	 * TODO document 
+org/roboclub/robobuggy/coordinateFrame/Point.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/coordinateFrame/Point.java:	 * TODO implement
+org/roboclub/robobuggy/coordinateFrame/Point.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/Point.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/coordinateFrame/Point.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/Point.java:	 * TODO implement
+org/roboclub/robobuggy/coordinateFrame/Point.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/coordinateFrame/Point.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/Point.java:	 * TODO implement
+org/roboclub/robobuggy/coordinateFrame/Point.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/coordinateFrame/Point.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/Point.java:	 * TODO implement
+org/roboclub/robobuggy/coordinateFrame/Point.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/coordinateFrame/Pose.java: * TODO document
+org/roboclub/robobuggy/coordinateFrame/Pose.java:	 * TODO document 
+org/roboclub/robobuggy/coordinateFrame/Pose.java:	 * TODO document 
+org/roboclub/robobuggy/coordinateFrame/Pose.java:	 * TODO implement
+org/roboclub/robobuggy/coordinateFrame/Pose.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/Pose.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/Pose.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/Pose.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/Pose.java:	 * TODO document 
+org/roboclub/robobuggy/coordinateFrame/Pose.java:	 * TODO implement
+org/roboclub/robobuggy/coordinateFrame/Pose.java:		//TODO
+org/roboclub/robobuggy/coordinateFrame/Pose.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/Pose.java:	 * TODO implement
+org/roboclub/robobuggy/coordinateFrame/Pose.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/Pose.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/Pose.java:	 * TODO implement
+org/roboclub/robobuggy/coordinateFrame/Pose.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/coordinateFrame/Pose.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/Pose.java:	 * TODO implement
+org/roboclub/robobuggy/coordinateFrame/Pose.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/coordinateFrame/PositionRepersentation.java: * TODO document
+org/roboclub/robobuggy/coordinateFrame/PositionRepersentation.java:	 * TODO document 
+org/roboclub/robobuggy/coordinateFrame/PositionRepersentation.java:	 * TODO document 
+org/roboclub/robobuggy/coordinateFrame/PositionRepersentation.java:	 * TODO document 
+org/roboclub/robobuggy/coordinateFrame/PositionRepersentation.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/PositionRepersentation.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/PositionRepersentation.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/PositionRepersentation.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/PositionRepersentation.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/Quaternion.java: * TODO document 
+org/roboclub/robobuggy/coordinateFrame/Quaternion.java: * TODO implement
+org/roboclub/robobuggy/coordinateFrame/Quaternion.java:	 * TODO document 
+org/roboclub/robobuggy/coordinateFrame/Quaternion.java:	 * TODO implement
+org/roboclub/robobuggy/coordinateFrame/Quaternion.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/Quaternion.java:	 * TODO implement
+org/roboclub/robobuggy/coordinateFrame/Quaternion.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/Quaternion.java:	 * TODO document 
+org/roboclub/robobuggy/coordinateFrame/Quaternion.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/Quaternion.java:	 * TODO document 
+org/roboclub/robobuggy/coordinateFrame/Quaternion.java:	 * TODO only works for Double_Numbers right now, make work for any number type
+org/roboclub/robobuggy/coordinateFrame/RotationMatrix.java: * TODO documnet 
+org/roboclub/robobuggy/coordinateFrame/RotationMatrix.java:	 * TODO document 
+org/roboclub/robobuggy/coordinateFrame/RotationMatrix.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/RotationMatrix.java:	 * NOTE assuming that order of coordinate frames is in the same order TODO keep track of this in future releases 
+org/roboclub/robobuggy/coordinateFrame/RotationMatrix.java:		//TODO remove try catch 
+org/roboclub/robobuggy/coordinateFrame/RotationMatrix.java:	 * TODO document 
+org/roboclub/robobuggy/coordinateFrame/RotationMatrix.java:	 *  NOTE assuming that order of coordinate frames is in the same order TODO keep track of this in future releases 
+org/roboclub/robobuggy/coordinateFrame/RotationMatrix.java:		//TODO remove try catch 
+org/roboclub/robobuggy/coordinateFrame/RotationMatrix.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/RotationMatrix.java:	 * TODO document 
+org/roboclub/robobuggy/coordinateFrame/RotationMatrix.java:	 * TODO implement
+org/roboclub/robobuggy/coordinateFrame/RotationMatrix.java:	 * TODO document 
+org/roboclub/robobuggy/coordinateFrame/RotationMatrix.java:		//TODO think about effects of upcasting 
+org/roboclub/robobuggy/coordinateFrame/RotationMatrix.java:		//TODO speedup by extracting doubles earlier  
+org/roboclub/robobuggy/coordinateFrame/RotationMatrix.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/RotationMatrix.java:	 * TODO implement
+org/roboclub/robobuggy/coordinateFrame/RotationMatrix.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/coordinateFrame/RotationalRepersentation.java: * TODO document 
+org/roboclub/robobuggy/coordinateFrame/RotationalRepersentation.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/RotationalRepersentation.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/RotationalRepersentation.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/RotationalRepersentation.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/RotationalRepersentation.java:	 * TODO document
+org/roboclub/robobuggy/coordinateFrame/RotationalRepersentation.java:	 * TODO document 
+org/roboclub/robobuggy/drivers/Alice.java: * TODO document 
+org/roboclub/robobuggy/drivers/Alice.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/drivers/Alice.java:	//TODO 
+org/roboclub/robobuggy/drivers/Driver.java: * TODO 
+org/roboclub/robobuggy/drivers/Teleop.java: * TODO document 
+org/roboclub/robobuggy/drivers/Teleop.java: * TODO implement
+org/roboclub/robobuggy/drivers/Teleop.java:	 * TODO implement 
+org/roboclub/robobuggy/drivers/Teleop.java:	 * TODO document 
+org/roboclub/robobuggy/drivers/Teleop.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/drivers/Teleop.java:	//TODO
+org/roboclub/robobuggy/drivers/testAuton.java: * TODO document 
+org/roboclub/robobuggy/drivers/testAuton.java:		 * TODO document 
+org/roboclub/robobuggy/drivers/testAuton.java:		 * TODO document 
+org/roboclub/robobuggy/fauxNodes/FauxNode.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/fauxNodes/FauxNode.java:			// TODO Auto-generated catch block
+org/roboclub/robobuggy/linearAlgebra/ANGULAR_UNITS.java: * TODO document 
+org/roboclub/robobuggy/linearAlgebra/Angle.java: * TODO document
+org/roboclub/robobuggy/linearAlgebra/Angle.java:	 * TODO document 
+org/roboclub/robobuggy/linearAlgebra/Angle.java:	 * TODO document 
+org/roboclub/robobuggy/linearAlgebra/Angle.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Angle.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Angle.java:	 * TODO document 
+org/roboclub/robobuggy/linearAlgebra/Angle.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Angle.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Angle.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Angle.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Angle.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Angle.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Angle.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Angle.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Angle.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Angle.java:	 * TODO implement
+org/roboclub/robobuggy/linearAlgebra/Angle.java:	 * TODO document 
+org/roboclub/robobuggy/linearAlgebra/Angle.java:		//TODO remove try catch 
+org/roboclub/robobuggy/linearAlgebra/Angle.java:		//TODO remove try catch 
+org/roboclub/robobuggy/linearAlgebra/Angle.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:	 * TODO include
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:	 * TODO include
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:	 * TODO include
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:	 * TODO include
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:	 * TODO include
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:	 * TODO include
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:	 * TODO include 
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:	 * TODO include
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:	 * TODO include
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:	 * TODO include
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:	 * TODO include
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:	 * TODO include
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:	 * TODO include
+org/roboclub/robobuggy/linearAlgebra/AnglePerTime.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/Distince.java:	 * TODO document 
+org/roboclub/robobuggy/linearAlgebra/Distince.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Distince.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Distince.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Distince.java:	 * TODO document 
+org/roboclub/robobuggy/linearAlgebra/Distince.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Distince.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Distince.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Distince.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Distince.java:		//TODO come up with a better solution so that other numebr types can be used 
+org/roboclub/robobuggy/linearAlgebra/Distince.java:	 * TODO document 
+org/roboclub/robobuggy/linearAlgebra/Distince.java:		//TODO come up with a better solution so that other numebr types can be used 
+org/roboclub/robobuggy/linearAlgebra/Distince.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Distince.java:	 * TODO implement
+org/roboclub/robobuggy/linearAlgebra/Distince.java:	 * TODO document 
+org/roboclub/robobuggy/linearAlgebra/Distince.java:	 * TODO documnet
+org/roboclub/robobuggy/linearAlgebra/Distince.java:	 * TODO document 
+org/roboclub/robobuggy/linearAlgebra/Distince.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Distince.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:	 * TODO include
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:	 * TODO include
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:	 * TODO include
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:	 * TODO include
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:	 * TODO include
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:	 * TODO include
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:	 * TODO include
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:	 * TODO include
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:	 * TODO include
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:	 * TODO include
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:	 * TODO include
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:	 * TODO include
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:	 * TODO include
+org/roboclub/robobuggy/linearAlgebra/DistincePerTime.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/Double_Number.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Double_Number.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Double_Number.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Double_Number.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Double_Number.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Double_Number.java:	 * TODO document 
+org/roboclub/robobuggy/linearAlgebra/Integer_Number.java:	 * TODO document 
+org/roboclub/robobuggy/linearAlgebra/Integer_Number.java:	 * TODO document 
+org/roboclub/robobuggy/linearAlgebra/Integer_Number.java:	 * TODO document 
+org/roboclub/robobuggy/linearAlgebra/Integer_Number.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Integer_Number.java:	 * TODO document 
+org/roboclub/robobuggy/linearAlgebra/Integer_Number.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Integer_Number.java:	 * TODO document 
+org/roboclub/robobuggy/linearAlgebra/Integer_Number.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Integer_Number.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Integer_Number.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Integer_Number.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Integer_Number.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Integer_Number.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Integer_Number.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Integer_Number.java:	  * TODO document
+org/roboclub/robobuggy/linearAlgebra/Integer_Number.java:	  * TODO document
+org/roboclub/robobuggy/linearAlgebra/Matrix.java:	//TODO add more constructors
+org/roboclub/robobuggy/linearAlgebra/Matrix.java:	//TODO allow for a matrix that has multiple types ie angles and distinces 
+org/roboclub/robobuggy/linearAlgebra/Matrix.java:	//TODO remove the need for an example type to be given when constructor is used  
+org/roboclub/robobuggy/linearAlgebra/Matrix.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Matrix.java:		TYPE sampleElment = null; //TODO fix
+org/roboclub/robobuggy/linearAlgebra/Matrix.java:		//TODO
+org/roboclub/robobuggy/linearAlgebra/Matrix.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Matrix.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Matrix.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Matrix.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Matrix.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Matrix.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Matrix.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Matrix.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Matrix.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Matrix.java:	 * TODO implement
+org/roboclub/robobuggy/linearAlgebra/Matrix.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Matrix.java:		//TODO
+org/roboclub/robobuggy/linearAlgebra/NDimensionalArray.java:		//TODO remove need for sampleElment
+org/roboclub/robobuggy/linearAlgebra/NDimensionalArray.java:		assert(this.getDimensions() == b.getDimensions()); //TODO check this
+org/roboclub/robobuggy/linearAlgebra/NDimensionalArray.java:					// TODO Auto-generated catch block
+org/roboclub/robobuggy/linearAlgebra/Number.java: * TODO document 
+org/roboclub/robobuggy/linearAlgebra/Number.java:	 * TODO document 
+org/roboclub/robobuggy/linearAlgebra/Number.java:	 * TODO document 
+org/roboclub/robobuggy/linearAlgebra/Number.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Number.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Number.java:	 * TODO document 
+org/roboclub/robobuggy/linearAlgebra/Number.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Number.java:	 * TODO document 
+org/roboclub/robobuggy/linearAlgebra/Number.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Number.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Number.java:	 * TODO document 
+org/roboclub/robobuggy/linearAlgebra/Number.java:	 * TODO document 
+org/roboclub/robobuggy/linearAlgebra/Number.java:	 * TODO document 
+org/roboclub/robobuggy/linearAlgebra/Number.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Number.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Time.java:	 * TODO implement
+org/roboclub/robobuggy/linearAlgebra/Time.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Time.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/Time.java:	 * TODO implement
+org/roboclub/robobuggy/linearAlgebra/Time.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Time.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/Time.java:	 * TODO implement
+org/roboclub/robobuggy/linearAlgebra/Time.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Time.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/Time.java:	 * TODO implement
+org/roboclub/robobuggy/linearAlgebra/Time.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Time.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/Time.java:	 * TODO implement
+org/roboclub/robobuggy/linearAlgebra/Time.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Time.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/Time.java:	 * TODO implement
+org/roboclub/robobuggy/linearAlgebra/Time.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Time.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/Time.java:	 * TODO implement
+org/roboclub/robobuggy/linearAlgebra/Time.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Time.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/Time.java:	 * TODO implement
+org/roboclub/robobuggy/linearAlgebra/Time.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Time.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/Time.java:	 * TODO implement
+org/roboclub/robobuggy/linearAlgebra/Time.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Time.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/Time.java:	 * TODO implement
+org/roboclub/robobuggy/linearAlgebra/Time.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Time.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/Time.java:	 * TODO implement
+org/roboclub/robobuggy/linearAlgebra/Time.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Time.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/Time.java:	 * TODO implement
+org/roboclub/robobuggy/linearAlgebra/Time.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Time.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/Time.java:	 * TODO implement
+org/roboclub/robobuggy/linearAlgebra/Time.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Time.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/linearAlgebra/Vector.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Vector.java:	 * TODO document 
+org/roboclub/robobuggy/linearAlgebra/Vector.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Vector.java:	 * TODO document  
+org/roboclub/robobuggy/linearAlgebra/Vector.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Vector.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Vector.java:	 * TODO document
+org/roboclub/robobuggy/linearAlgebra/Vector.java:	 * TODO document 
+org/roboclub/robobuggy/linearAlgebra/Vector.java:	 * TODO document 
+org/roboclub/robobuggy/linearAlgebra/Vector.java:	 * TODO document
+org/roboclub/robobuggy/localization/HighTrustFilter.java: * TODO implement
+org/roboclub/robobuggy/localization/HighTrustFilter.java:	 * TODO implement
+org/roboclub/robobuggy/localization/HighTrustFilter.java:	 * TODO document 
+org/roboclub/robobuggy/localization/HighTrustFilter.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/localization/HighTrustFilter.java:	 * TODO implement
+org/roboclub/robobuggy/localization/HighTrustFilter.java:	 * TODO document
+org/roboclub/robobuggy/localization/HighTrustFilter.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/localization/HighTrustFilter.java:	 * TODO implement
+org/roboclub/robobuggy/localization/HighTrustFilter.java:	 * TODO document 
+org/roboclub/robobuggy/localization/HighTrustFilter.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/localization/KalmanFilter.java: * TODO document
+org/roboclub/robobuggy/localization/KalmanFilter.java:	 * TODO document 
+org/roboclub/robobuggy/localization/KalmanFilter.java:	 * TODO implement
+org/roboclub/robobuggy/localization/KalmanFilter.java:     * TODO document
+org/roboclub/robobuggy/localization/KalmanFilter.java:     * TODO implement
+org/roboclub/robobuggy/localization/KalmanFilter.java:        //TODO
+org/roboclub/robobuggy/localization/KalmanFilter.java:     * TODO document
+org/roboclub/robobuggy/localization/KalmanFilter.java:     * TODO implement
+org/roboclub/robobuggy/localization/KalmanFilter.java:     * TODO implement 
+org/roboclub/robobuggy/localization/KalmanFilter.java:        // TODO
+org/roboclub/robobuggy/localization/KalmanFilter.java:	 * TODO implement
+org/roboclub/robobuggy/localization/KalmanFilter.java:	 * TODO document
+org/roboclub/robobuggy/localization/KalmanFilter.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/localization/KalmanFilter.java:	 * TODO implement
+org/roboclub/robobuggy/localization/KalmanFilter.java:	 * TODO document
+org/roboclub/robobuggy/localization/KalmanFilter.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/localization/KalmanFilter.java:	 * TODO implement
+org/roboclub/robobuggy/localization/KalmanFilter.java:	 * TODO document 
+org/roboclub/robobuggy/localization/KalmanFilter.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/localization/LocalizationFilter.java: * TODO implement
+org/roboclub/robobuggy/localization/LocalizationFilter.java:	 * TODO document
+org/roboclub/robobuggy/localization/LocalizationFilter.java:	 * TODO document 
+org/roboclub/robobuggy/localization/LocalizationFilter.java:	 * TODO document
+org/roboclub/robobuggy/localization/LocationEstimate.java: * TODO document
+org/roboclub/robobuggy/localization/LocationEstimate.java: * TODO implement
+org/roboclub/robobuggy/localization/LocationEstimate.java:	Matrix Confidence; //TODO workin into the pose (maybe) 
+org/roboclub/robobuggy/localization/SensorMeasurment.java: * TODO document 
+org/roboclub/robobuggy/localization/SensorMeasurment.java: * TODO implement
+org/roboclub/robobuggy/localization/SensorMeasurment.java: * TODO think about makeing an interface
+org/roboclub/robobuggy/localization/SensorMeasurment.java:	//TODO talk to MattS about how to fold this into the rest of the system 
+org/roboclub/robobuggy/logging/MessageLogReader.java: * TODO: Error conditions/What to do when we have an exception should be
+org/roboclub/robobuggy/logging/MessageLogReader.java:	 * // TODO for optimal performance, make this lazy/streams based
+org/roboclub/robobuggy/logging/MessageLogWriter.java: * TODO: Error conditions/What to do when we have an exception should be
+org/roboclub/robobuggy/logging/MessageLogWriter.java:	 * TODO document
+org/roboclub/robobuggy/logging/MessageLogWriter.java:	 * TODO document
+org/roboclub/robobuggy/logging/MessageLogWriter.java:	 * TODO document
+org/roboclub/robobuggy/logging/MessageLogWriter.java:	 *  TODO think about error cases more
+org/roboclub/robobuggy/logging/MessageLogWriter.java:		// TODO fix Gui.UpdateLogName( outputFileName );
+org/roboclub/robobuggy/logging/MessageLogWriter.java:	 *  TODO break out to a separate class
+org/roboclub/robobuggy/logging/MessageLogWriter.java:		 * TODO document 
+org/roboclub/robobuggy/logging/MessageLogWriter.java:		 * TODO document 
+org/roboclub/robobuggy/logging/MessageLogWriter.java:	 * TODO document 
+org/roboclub/robobuggy/logging/RobotLogger.java:	public static File logDir;  //TODO describe the diffrence between LogDir and  logFolder 
+org/roboclub/robobuggy/logging/RobotLogger.java:	 * TODO document 
+org/roboclub/robobuggy/logging/RobotLogger.java:	 * TODO document
+org/roboclub/robobuggy/logging/RobotLogger.java:		// TODO send signal to vision to start a new log also
+org/roboclub/robobuggy/logging/RobotLogger.java:	 * TODO document 
+org/roboclub/robobuggy/logging/RobotLogger.java:				// TODO Auto-generated catch block
+org/roboclub/robobuggy/logging/RobotLogger.java:				// TODO fix Gui.UpdateLogName(msgFile.getName());
+org/roboclub/robobuggy/logging/RobotLogger.java:	 * TODO document 
+org/roboclub/robobuggy/logging/SensorLogger.java:	 * TODO document
+org/roboclub/robobuggy/logging/SensorLogger.java:		// TODO
+org/roboclub/robobuggy/logging/SensorLogger.java:						//TODO add to messages 
+org/roboclub/robobuggy/logging/SensorLogger.java:		// TODO this potentially prevents a problem where the logger gets CPU
+org/roboclub/robobuggy/logging/SensorLogger.java:		logging_thread.setPriority(10);//TODO this is terible 
+org/roboclub/robobuggy/logging/SensorLogger.java:	 * TODO document 
+org/roboclub/robobuggy/main/LogicException.java: * TODO document 
+org/roboclub/robobuggy/main/LogicException.java: *TODO implemnt
+org/roboclub/robobuggy/main/Robot.java: * TODO document
+org/roboclub/robobuggy/main/Robot.java:	 * TODO document
+org/roboclub/robobuggy/main/Robot.java:	 * TODO document 
+org/roboclub/robobuggy/main/Robot.java:			// TODO add subscriber for vision messages
+org/roboclub/robobuggy/main/Robot.java:	 * TODO document 
+org/roboclub/robobuggy/main/Robot.java:	 * TODO document 
+org/roboclub/robobuggy/main/Robot.java:	 * TODO implement 
+org/roboclub/robobuggy/main/Robot.java:		// TODO Update planner
+org/roboclub/robobuggy/main/Robot.java:	 * TODO document
+org/roboclub/robobuggy/main/Robot.java:	 * TODO implement
+org/roboclub/robobuggy/main/Robot.java:		// TODO Update planner
+org/roboclub/robobuggy/main/Robot.java:	 * TODO document
+org/roboclub/robobuggy/main/Robot.java:	 * TODO implement
+org/roboclub/robobuggy/main/Robot.java:		// TODO update planner
+org/roboclub/robobuggy/main/Robot.java:	 * TODO document 
+org/roboclub/robobuggy/main/Robot.java:	 * TODO implement
+org/roboclub/robobuggy/main/Robot.java:		// TODO update planner
+org/roboclub/robobuggy/main/Robot.java:	 * TODO document
+org/roboclub/robobuggy/main/Robot.java:	 * TODO document 
+org/roboclub/robobuggy/main/Robot.java:	 * TODO implment
+org/roboclub/robobuggy/main/Robot.java:			// TODO new pub/sub for command messages
+org/roboclub/robobuggy/main/Robot.java:	 * TODO document 
+org/roboclub/robobuggy/main/Robot.java:	 * TODO implment
+org/roboclub/robobuggy/main/Robot.java:	 * TODO document 
+org/roboclub/robobuggy/main/Robot.java:	 * TODO implement
+org/roboclub/robobuggy/main/Robot.java:	 * TODO document
+org/roboclub/robobuggy/main/Robot.java:	 * TODO implement 
+org/roboclub/robobuggy/main/Robot.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/main/RosMaster.java: * TODO document 
+org/roboclub/robobuggy/main/SimRobot.java: * TODO document 
+org/roboclub/robobuggy/main/SimRobot.java:	 *   TODO: pass the subscribe/pub paths in as arguments?
+org/roboclub/robobuggy/main/SimRobot.java:	 * TODO documnet 
+org/roboclub/robobuggy/main/SimRobot.java:	 * TODO break out
+org/roboclub/robobuggy/main/SimRobot.java:		 * TODO document 
+org/roboclub/robobuggy/main/SimRobot.java:		 * TODO implment 
+org/roboclub/robobuggy/main/SimRobot.java:		 * TODO docuemt 
+org/roboclub/robobuggy/main/SimRobot.java:		 * TODO implement 
+org/roboclub/robobuggy/main/SimRobot.java:	 * TODO document 
+org/roboclub/robobuggy/main/SimRobot.java:		// TODO Update planner
+org/roboclub/robobuggy/main/SimRobot.java:	 * TODO documet 
+org/roboclub/robobuggy/main/SimRobot.java:			// TODO add logging
+org/roboclub/robobuggy/main/config.java: *TODO add jason parser for config
+org/roboclub/robobuggy/main/config.java:	 * TODO document 
+org/roboclub/robobuggy/main/config.java:	 * TODO document
+org/roboclub/robobuggy/main/mainFile.java: * TODO document
+org/roboclub/robobuggy/main/mainFile.java:	 * TODO document
+org/roboclub/robobuggy/main/mainFile.java:		//ArrayList<Integer> cameras = new ArrayList<Integer>();  //TODO have this set the cameras to use 
+org/roboclub/robobuggy/main/mainFile.java:	 * TODO document 
+org/roboclub/robobuggy/main/mainFile.java:        	//TODO fix this so that it is not potato 
+org/roboclub/robobuggy/main/mainFile.java:	 * TODO documnet 
+org/roboclub/robobuggy/map/Coefficnet.java: * TODO document 
+org/roboclub/robobuggy/map/Coefficnet.java:	 * TODO document
+org/roboclub/robobuggy/map/Coefficnet.java:	 * TODO document
+org/roboclub/robobuggy/map/Coefficnet.java:			//TODO fix implicit assumption that other obj is of number type NTYPE
+org/roboclub/robobuggy/map/Coefficnet.java:	 * TODO document
+org/roboclub/robobuggy/map/Coefficnet.java:	 * TODO implement
+org/roboclub/robobuggy/map/Coefficnet.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/map/Coefficnet.java:	 * TODO document
+org/roboclub/robobuggy/map/Coefficnet.java:	 * TODO implement
+org/roboclub/robobuggy/map/Coefficnet.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/map/Image.java://TODO make a part of polygon 
+org/roboclub/robobuggy/map/Image.java: * TODO document
+org/roboclub/robobuggy/map/Image.java: * TODO 
+org/roboclub/robobuggy/map/Image.java:	 * TODO document
+org/roboclub/robobuggy/map/Image.java:	 * TODO implement
+org/roboclub/robobuggy/map/Image.java:				// TODO Auto-generated catch block
+org/roboclub/robobuggy/map/Image.java:		//TODO
+org/roboclub/robobuggy/map/Image.java:	 * TODO document
+org/roboclub/robobuggy/map/Image.java:	 * TODO implement
+org/roboclub/robobuggy/map/Image.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/map/Image.java:	 * TODO document
+org/roboclub/robobuggy/map/Image.java:	 * TODO implement
+org/roboclub/robobuggy/map/Image.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/map/Image.java:	 * TODO document 
+org/roboclub/robobuggy/map/Image.java:	 * TODO implement
+org/roboclub/robobuggy/map/Image.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/map/Image.java:	 * TODO document 
+org/roboclub/robobuggy/map/Image.java:	 * TODO implement 
+org/roboclub/robobuggy/map/Image.java:		//TODO 
+org/roboclub/robobuggy/map/Image.java:	 *  TODO implement 
+org/roboclub/robobuggy/map/Image.java:	    //TODO add refrence frame stuff for the image
+org/roboclub/robobuggy/map/LinkedListMap.java://TODO change to a sorted linked list 
+org/roboclub/robobuggy/map/LinkedListMap.java:	 * TODO documnet
+org/roboclub/robobuggy/map/LinkedListMap.java:	 * TODO document
+org/roboclub/robobuggy/map/LinkedListMap.java:	 * TODO document
+org/roboclub/robobuggy/map/LinkedListMap.java:	 * TODO implement
+org/roboclub/robobuggy/map/LinkedListMap.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/map/LinkedListMap.java:	 * TODO document
+org/roboclub/robobuggy/map/LinkedListMap.java:	 * TODO implement
+org/roboclub/robobuggy/map/LinkedListMap.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/map/LinkedListMap.java:	 * TODO document
+org/roboclub/robobuggy/map/LinkedListMap.java:	 * TODO implement
+org/roboclub/robobuggy/map/LinkedListMap.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/map/LinkedListMap.java:	 * TODO document
+org/roboclub/robobuggy/map/LinkedListMap.java:	 * TODO document
+org/roboclub/robobuggy/map/LinkedListMap.java:	 * TODO document
+org/roboclub/robobuggy/map/LinkedListMap.java:	 * TODO implment
+org/roboclub/robobuggy/map/LinkedListMap.java:	 * TODO documnet
+org/roboclub/robobuggy/map/LinkedListMap.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/map/LinkedListMap.java:	 * TODO implment
+org/roboclub/robobuggy/map/LinkedListMap.java:	 * TODO documnet 
+org/roboclub/robobuggy/map/LinkedListMap.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/map/LinkedListMap.java:	 * TODO document
+org/roboclub/robobuggy/map/LinkedListMap.java:				//TODO make a binary search 
+org/roboclub/robobuggy/map/Map.java: * TODO document
+org/roboclub/robobuggy/map/Map.java: *	TODO
+org/roboclub/robobuggy/map/Map.java:	 * TODO document
+org/roboclub/robobuggy/map/Map.java:	 * TODO document
+org/roboclub/robobuggy/map/Map.java:	 * TODO document
+org/roboclub/robobuggy/map/Map.java:	 * TODO document
+org/roboclub/robobuggy/map/Map.java:	 * TODO documnet
+org/roboclub/robobuggy/map/Map.java:	 * TODO document
+org/roboclub/robobuggy/map/Map.java:	 * TODO document
+org/roboclub/robobuggy/map/Map.java:	 * TODO document
+org/roboclub/robobuggy/map/Map.java:	 * TODO document 
+org/roboclub/robobuggy/map/Map.java:	 * TODO document
+org/roboclub/robobuggy/map/MapObject.java:	 //TODO document
+org/roboclub/robobuggy/map/MapObject.java:	 * TODO document
+org/roboclub/robobuggy/map/MapObject.java:	 * TODO document 
+org/roboclub/robobuggy/map/MapObject.java:	 * TODO document
+org/roboclub/robobuggy/map/Point.java:	 * TODO document
+org/roboclub/robobuggy/map/Point.java:		//TODO
+org/roboclub/robobuggy/map/Point.java:	 * TODO document 
+org/roboclub/robobuggy/map/Point.java:	 * TODO document
+org/roboclub/robobuggy/map/Point.java:		//TODO
+org/roboclub/robobuggy/map/Point.java:		//TODO
+org/roboclub/robobuggy/map/Point.java:	 *  TODO implement 
+org/roboclub/robobuggy/map/Point.java:		//TODO make sure that point is in the same order as x_unit and y_unit
+org/roboclub/robobuggy/map/Point.java:				// TODO Auto-generated catch block
+org/roboclub/robobuggy/map/Point.java:				// TODO Auto-generated catch block
+org/roboclub/robobuggy/map/Point.java:			// TODO Auto-generated catch block
+org/roboclub/robobuggy/map/Point.java:	 * TODO documnet
+org/roboclub/robobuggy/map/Point.java:	 * TODO documnet 
+org/roboclub/robobuggy/map/Polygon.java://TODO
+org/roboclub/robobuggy/map/Polygon.java:	//TODO add constructor 
+org/roboclub/robobuggy/map/Polygon.java:	//TODO add adder/deleter
+org/roboclub/robobuggy/map/Polygon.java:	//TODO add getter setters 
+org/roboclub/robobuggy/map/Polygon.java:	//TODO add image stuff 
+org/roboclub/robobuggy/map/Polygon.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/map/Polygon.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/map/Polygon.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/map/Polygon.java:	 *  TODO implement 
+org/roboclub/robobuggy/map/Polynomial.java:		//TODO
+org/roboclub/robobuggy/map/Polynomial.java:		//TODO
+org/roboclub/robobuggy/map/Polynomial.java:		//TODO
+org/roboclub/robobuggy/map/Polynomial.java:		//TODO
+org/roboclub/robobuggy/map/Polynomials.java:	 * TODO document
+org/roboclub/robobuggy/map/Polynomials.java:	 * TODO document 
+org/roboclub/robobuggy/map/Polynomials.java:			//TODO make sure order of polys is the same 
+org/roboclub/robobuggy/map/Polynomials.java:	 * TODO document
+org/roboclub/robobuggy/map/Polynomials.java:	 * TODO implement
+org/roboclub/robobuggy/map/Polynomials.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/map/Polynomials.java:	 * TODO document
+org/roboclub/robobuggy/map/Polynomials.java:	 * TODO implement
+org/roboclub/robobuggy/map/Polynomials.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/map/Polynomials.java:	 *  TODO implement 
+org/roboclub/robobuggy/map/Polynomials.java:		//TODO make sure that polys is in the same order as x_unit and y_unit
+org/roboclub/robobuggy/map/Polynomials.java:		int nStart = -50;  //TODO set dynamically
+org/roboclub/robobuggy/map/Polynomials.java:		int nPoints = 100; //TODO set dynamically
+org/roboclub/robobuggy/map/Polynomials.java:				// TODO Auto-generated catch block
+org/roboclub/robobuggy/map/VisulizeMap.java:// TODO make dynamic when user resizes 
+org/roboclub/robobuggy/map/VisulizeMap.java:// TODO add scale to mapping 
+org/roboclub/robobuggy/map/VisulizeMap.java:// TODO add moving options
+org/roboclub/robobuggy/map/VisulizeMap.java:// TODO add save image 
+org/roboclub/robobuggy/map/VisulizeMap.java:	 * TODO impment 
+org/roboclub/robobuggy/map/VisulizeMap.java:	 * TODO document
+org/roboclub/robobuggy/map/VisulizeMap.java:		//TODO handle occlusion I think it should be a mask which tells objects where it should not draw
+org/roboclub/robobuggy/map/VisulizeMap.java:		//TODO actually draw
+org/roboclub/robobuggy/map/VisulizeMap.java:	//TODO add update 
+org/roboclub/robobuggy/map/VisulizeMap.java:	//TODO add gui controls 
+org/roboclub/robobuggy/map/VisulizeMap.java:	 * TODO document
+org/roboclub/robobuggy/map/VisulizeMap.java:	 * TODO implment 
+org/roboclub/robobuggy/map/VisulizeMap.java:		frame.setVisible(true); //TODO move this to an option so that the jframe can be created even if it is not displayed 
+org/roboclub/robobuggy/map/VisulizeMap.java:	 * TODO implment
+org/roboclub/robobuggy/map/VisulizeMap.java:		//TODO consider only updateing the mapobjects that are currently in view 
+org/roboclub/robobuggy/map/VisulizeMap.java:		//TODO fix frame so that objects don't overlap 
+org/roboclub/robobuggy/map/VisulizeMap.java:			frame.add(thisMapObject);  //TODO update objects that are already on the frame 
+org/roboclub/robobuggy/map/VisulizeMap.java:		frame.setSize(500, 500); //TODO make dynamic
+org/roboclub/robobuggy/messages/BaseMessage.java:			// TODO fail rather than print stack trace and do nothing.
+org/roboclub/robobuggy/messages/BrakeMessage.java: *          DESCRIPTION: TODO
+org/roboclub/robobuggy/messages/CameraMeasurement.java: *          DESCRIPTION: TODO
+org/roboclub/robobuggy/messages/EncoderMeasurement.java: *          DESCRIPTION: TODO
+org/roboclub/robobuggy/messages/EncoderMeasurement.java:		//TODO calculate acceleration
+org/roboclub/robobuggy/messages/GpsMeasurement.java: *          DESCRIPTION: TODO
+org/roboclub/robobuggy/messages/GuiLoggingButton.java: *          DESCRIPTION: TODO
+org/roboclub/robobuggy/messages/ImuMeasurement.java: *          DESCRIPTION: TODO
+org/roboclub/robobuggy/messages/RemoteWheelAngleRequest.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/messages/RemoteWheelAngleRequest.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/messages/ResetMessage.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/messages/ResetMessage.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/messages/StateMessage.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/messages/StateMessage.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/messages/WheelAngleCommand.java: *          DESCRIPTION: TODO
+org/roboclub/robobuggy/messages/WheelAngleCommand.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/messages/WheelAngleCommand.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/nodes/GpsNode.java:		// TODO replace 80 with max message length
+org/roboclub/robobuggy/nodes/GpsNode.java:			// TODO publish not-lock to someone
+org/roboclub/robobuggy/nodes/ImuNode.java: * DESCRIPTION: TODO
+org/roboclub/robobuggy/nodes/ImuNode.java:		// TODO state stuff
+org/roboclub/robobuggy/nodes/ImuNode.java:		// TODO calculate roll, pitch, and yaw from imu data
+org/roboclub/robobuggy/nodes/ImuNode.java:		// TODO replace 80 with max message length
+org/roboclub/robobuggy/nodes/ImuNode.java:			// TODO: need less than bytes_availble
+org/roboclub/robobuggy/nodes/LightingNode.java: * DESCRIPTION: TODO
+org/roboclub/robobuggy/nodes/LightingNode.java:		// TODO state stuff
+org/roboclub/robobuggy/nodes/LightingNode.java:		// TODO replace 80 with max message length
+org/roboclub/robobuggy/nodes/LightingNode.java:			// TODO: need less than bytes_availble
+org/roboclub/robobuggy/nodes/LoggingNode.java:	// TODO get folder name from file.
+org/roboclub/robobuggy/nodes/LoggingNode.java:					// TODO Auto-generated catch block
+org/roboclub/robobuggy/nodes/LoggingNode.java:		// TODO Actually shutdown stuff.
+org/roboclub/robobuggy/nodes/SteeringNode.java: * DESCRIPTION: TODO
+org/roboclub/robobuggy/nodes/SteeringNode.java:		// TODO actually use this
+org/roboclub/robobuggy/nodes/SteeringNode.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/nodes/SteeringNode.java:	 * TODO document
+org/roboclub/robobuggy/nodes/VisionNode.java: * DESCRIPTION: TODO
+org/roboclub/robobuggy/nodes/VisionNode.java:	// TODO Consider moving to array for exandability
+org/roboclub/robobuggy/nodes/VisionNode.java:		//TODO move to a seperate folder in refactor 
+org/roboclub/robobuggy/nodes/VisionNode.java:		//TODO make work
+org/roboclub/robobuggy/nodes/VisionNode.java:							//TODO move to outside function this is such a hack 
+org/roboclub/robobuggy/nodes/VisionNode.java:							 File outputfile = new File("saved.jpg");//TODO save to folder and make unique number
+org/roboclub/robobuggy/ros/Message.java: *          DESCRIPTION: TODO
+org/roboclub/robobuggy/ros/MessageListener.java: *          DESCRIPTION: TODO
+org/roboclub/robobuggy/ros/Node.java: * TODO document 
+org/roboclub/robobuggy/ros/Publisher.java: *          DESCRIPTION: TODO
+org/roboclub/robobuggy/ros/Publisher.java:	 * TODO document
+org/roboclub/robobuggy/ros/Publisher.java:	 * TODO document 
+org/roboclub/robobuggy/ros/SensorChannel.java: * TODO document 
+org/roboclub/robobuggy/ros/Subscriber.java: * DESCRIPTION: TODO
+org/roboclub/robobuggy/ros/Subscriber.java:									.println("much awoken for no reason, such wow"); //TODO better message, bad humor, need creativity, #Trevor_not_ammused  
+org/roboclub/robobuggy/ros/internal/MessageServer.java: * DESCRIPTION: TODO
+org/roboclub/robobuggy/ros/internal/MessageServer.java:	// TODO: confirm threadsafety.
+org/roboclub/robobuggy/ros/internal/MessageServer.java:				// TODO: if the string ends in '/', then add logic that walks
+org/roboclub/robobuggy/ros/internal/MessageServer.java:		// TODO: this is broken for multithreading. consider the right way to do
+org/roboclub/robobuggy/ros/tools/MessageListenerGui.java:				// TODO fix this.
+org/roboclub/robobuggy/sensors/SensorState.java: * DESCRIPTION: TODO
+org/roboclub/robobuggy/sensors/SimAllSensors.java:			//TODO set the correct values 
+org/roboclub/robobuggy/sensors/SimAllSensors.java:			//TODO fix imuPub for sim
+org/roboclub/robobuggy/sensors/SimAllSensors.java:				// TODO Auto-generated catch block
+org/roboclub/robobuggy/serial/RBPair.java: * @author TODO
+org/roboclub/robobuggy/serial/RBSerial.java: * @author TODO
+org/roboclub/robobuggy/serial/RBSerial.java:	// TODO move this
+org/roboclub/robobuggy/serial/RBSerial.java:				// TODO handle errors
+org/roboclub/robobuggy/serial/RBSerialMessage.java: * @author TODO
+org/roboclub/robobuggy/serial/SerialFather.java: * @author TODO
+org/roboclub/robobuggy/serial/SerialFather.java:	//TODO test this function
+org/roboclub/robobuggy/serial/SerialFather.java:	// TODO register connect/disconnect events
+org/roboclub/robobuggy/serial/SerialFather.java:	// TODO do for all baud rates
+org/roboclub/robobuggy/serial/SerialFather.java:				// TODO wire through message length
+org/roboclub/robobuggy/serial/SerialFather.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/serial/SerialNode.java: * TODO document 
+org/roboclub/robobuggy/serial/SerialNode.java:			// TODO Auto-generated catch block
+org/roboclub/robobuggy/serial/SerialNode.java:			// TODO Auto-generated catch block
+org/roboclub/robobuggy/serial/SerialNode.java:					// TODO handle this error reasonably.
+org/roboclub/robobuggy/serial/SerialNode.java:				// TODO this is stupid and should be fixed
+org/roboclub/robobuggy/simulation/FauxRunner.java:		// TODO Auto-generated method stub
+org/roboclub/robobuggy/simulation/FauxRunner.java:		//TODO: Make this take in a file argument instead of being hardcoded
+org/roboclub/robobuggy/testing/Angle_test.java:		//TODO add more tests, like a lot more tests
+org/roboclub/robobuggy/testing/Distince_test.java:	//TODO
+org/roboclub/robobuggy/testing/Matrix_test.java:		//TODO add more tests 
+org/roboclub/robobuggy/ui/ConsolePanel.java:	JTextArea ta = new JTextArea("",30,118); //TODO don't hardcode size 
+org/roboclub/robobuggy/ui/ConsolePanel.java:			//TODO actually print text to the display  
+org/roboclub/robobuggy/ui/ConsolePanel.java:			//TODO shorten the current text so that it does not become too large 
+org/roboclub/robobuggy/ui/ControlPanel.java: *          DESCRIPTION: TODO
+org/roboclub/robobuggy/ui/ControlPanel.java:				// TODO Auto-generated method stub
+org/roboclub/robobuggy/ui/DataChartPanel.java:		//TODO 
+org/roboclub/robobuggy/ui/DataPanel.java: * DESCRIPTION: TODO
+org/roboclub/robobuggy/ui/GpsPanel.java: * DESCRIPTION: TODO
+org/roboclub/robobuggy/ui/GpsPanel.java:	 * TODO document
+org/roboclub/robobuggy/ui/GpsPanel.java:		 * TODO document
+org/roboclub/robobuggy/ui/GpsPanel.java:		 * TODO document
+org/roboclub/robobuggy/ui/GpsPanel.java:		 * TODO document
+org/roboclub/robobuggy/ui/GpsPanel.java:	 * TODO document
+org/roboclub/robobuggy/ui/GpsPanel.java:	 * TODO document
+org/roboclub/robobuggy/ui/GpsPanel.java:	 * TODO document
+org/roboclub/robobuggy/ui/GpsPanel.java:	 * TODO document
+org/roboclub/robobuggy/ui/GraphPanel.java:				// TODO handle imu updates for graphs
+org/roboclub/robobuggy/ui/Gui.java: * DESCRIPTION: TODO
+org/roboclub/robobuggy/ui/MapPanel.java:		//TODO
+org/roboclub/robobuggy/ui/SensorSwitch.java: * DESCRIPTION: TODO
