@@ -1,4 +1,4 @@
-package org.roboclub.robobuggy.coordinateFrames2;
+package org.roboclub.robobuggy.coordinateFrame2;
 
 public class StateVector{
 	double[] vector;

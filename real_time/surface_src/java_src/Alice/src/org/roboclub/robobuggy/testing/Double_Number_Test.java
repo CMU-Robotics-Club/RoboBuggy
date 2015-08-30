@@ -5,7 +5,7 @@ import org.roboclub.robobuggy.numbers.Double_Number;
 import junit.framework.TestCase;
 
 public class Double_Number_Test extends TestCase {
-
+/*
 	public void Assert(boolean result){
 		if(result == false){
 			fail();
@@ -28,5 +28,5 @@ public class Double_Number_Test extends TestCase {
 		System.out.println("finished Testing Double_Number");
 
 	}
-
+*/
 }

@@ -38,7 +38,7 @@ public interface RotationalRepersentation {
 	 * TODO document
 	 * @return
 	 */
-	public EulerAngles toEulerAngles();
+	public CompondRotations toEulerAngles();
 	
 	/**
 	 * TODO document

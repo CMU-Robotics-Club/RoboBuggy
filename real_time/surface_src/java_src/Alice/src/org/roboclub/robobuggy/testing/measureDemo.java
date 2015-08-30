@@ -9,7 +9,7 @@ import org.roboclub.robobuggy.measurments.Time;
 import junit.framework.TestCase;
 
 public class measureDemo extends TestCase {
-
+/*
 	public void test1() throws LogicException{
 		System.out.println("start");
 		Distince d1 = Distince.meter(1.0);
@@ -22,4 +22,5 @@ public class measureDemo extends TestCase {
 		AreaPerTime apt1 = a1.div(t1);
 		System.out.println(apt1);
 }
+*/
 }

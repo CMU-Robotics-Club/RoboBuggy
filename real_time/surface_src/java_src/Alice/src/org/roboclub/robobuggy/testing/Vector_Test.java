@@ -5,6 +5,7 @@ import org.roboclub.robobuggy.numbers.Integer_Number;
 
 import junit.framework.TestCase;
 
+/*
 public class Vector_Test extends TestCase {
 	public void Assert(boolean result){
 		if(result == false){
@@ -35,4 +36,6 @@ public class Vector_Test extends TestCase {
 		//TODO wrtie more tests
 		System.out.println("Finished Testing Vector");
 	}
+	
 }
+*/

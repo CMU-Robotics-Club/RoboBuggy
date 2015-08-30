@@ -13,7 +13,7 @@ import org.roboclub.robobuggy.map.View;
 import junit.framework.TestCase;
 
 public class View_Test extends TestCase {
-
+/*
 		public void Assert(boolean result){
 			if(result == false){
 				fail();
@@ -44,4 +44,5 @@ public class View_Test extends TestCase {
 			}
 			System.out.println("finsihed testing visulizeMap");
 		}
+		*/
 }

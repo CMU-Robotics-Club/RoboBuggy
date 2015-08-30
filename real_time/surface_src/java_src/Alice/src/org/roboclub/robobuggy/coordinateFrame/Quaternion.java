@@ -16,8 +16,8 @@ import org.roboclub.robobuggy.numbers.Number;
  *
  */
 public class Quaternion implements RotationalRepersentation{
-	double q0;
-	Vector<double> qv;
+	Double_Number q0;
+	Vector<Double_Number> qv;
 	
 
 	/**
@@ -25,7 +25,7 @@ public class Quaternion implements RotationalRepersentation{
 	 * @param q0
 	 * @param qV
 	 */
-	public Quaternion(double q0, Vector<double> qV) {
+	public Quaternion(Double_Number q0, Vector<Double_Number> qV) {
 		this.q0 = q0;
 		this.qv = qV;
 	}
@@ -38,9 +38,9 @@ public class Quaternion implements RotationalRepersentation{
 	 * @param q3
 	 * @throws LogicException 
 	 */
-	public Quaternion(NTYPE q0, NTYPE q1, NTYPE q2, NTYPE q3) throws LogicException {
+	public Quaternion(Double_Number q0, Double_Number q1, Double_Number q2, Double_Number q3) throws LogicException {
 		this.q0 = q0; //magnitude 
-		this.qv = new Vector<NTYPE>(q0,3);
+		this.qv = new Vector<Double_Number>(q0,3);
 		this.qv.setIndex(0, q1);
 		this.qv.setIndex(1, q2);
 		this.qv.setIndex(1, q3);
@@ -64,7 +64,7 @@ public class Quaternion implements RotationalRepersentation{
 	 */
 	public Quaternion reciprical() throws LogicException, CloneNotSupportedException{
 		
-		return new Quaternion(this.q0.div(this.norm().mult(this.norm())),this.conjugate().qv);
+		return new Quaternion((Double_Number) this.q0.div(this.norm().mult(this.norm())),this.conjugate().qv);
 	}
 	
 	
@@ -75,7 +75,7 @@ public class Quaternion implements RotationalRepersentation{
 	 * @throws CloneNotSupportedException 
 	 * TODO implement
 	 */
-	public NTYPE norm() throws LogicException, CloneNotSupportedException{
+	public Double_Number norm() throws LogicException, CloneNotSupportedException{
 		//return (NTYPE) (q0.mult(q0).add(qv.dotProduct(qv,q0.getZero()))).sqrt();
 		throw new LogicException("method is not implemented yet", MESSAGE_LEVEL.warning);
 	}
@@ -87,7 +87,7 @@ public class Quaternion implements RotationalRepersentation{
 	 * @throws LogicException 
 	 */
 	public Quaternion addition(Quaternion Q) throws LogicException{
-		return new Quaternion(q0.add(Q.q0), (Vector) qv.add(Q.qv));
+		return new Quaternion((Double_Number) q0.add(Q.q0), (Vector) qv.add(Q.qv));
 	}
 	
 	/*** 
@@ -97,7 +97,7 @@ public class Quaternion implements RotationalRepersentation{
 	 * @throws LogicException 
 	 */
 	public Quaternion ScalerMultiplication(Number scaler) throws LogicException{
-		return new Quaternion (scaler.mult(q0),qv.getIndex(0),qv.getIndex(1),qv.getIndex(2));
+		return new Quaternion ((Double_Number) scaler.mult(q0),qv.getIndex(0),qv.getIndex(1),qv.getIndex(2));
 	}
 	
 	
@@ -108,7 +108,7 @@ public class Quaternion implements RotationalRepersentation{
 	 * @return
 	 * @throws LogicException 
 	 */
-	private Vector scaleVector(NTYPE scale,Vector A) throws LogicException{
+	private Vector scaleVector(Double_Number scale,Vector A) throws LogicException{
 		Vector B = (Vector) A.clone();
 		for(int i = 0;i<A.getLength();i++){
 			B.setIndex(i,scale.mult(A.getIndex(i)));
@@ -123,9 +123,9 @@ public class Quaternion implements RotationalRepersentation{
 	 * @throws LogicException 
 	 * @throws CloneNotSupportedException 
 	 */
-	public Quaternion QuaternionMultiplication(Quaternion<NTYPE> P) throws LogicException, CloneNotSupportedException{
-		NTYPE c0 = (NTYPE) q0.mult(P.q0).add(qv.dotProduct(P.qv,q0.getZero()).inverse());
-		Vector<NTYPE> C = (Vector) scaleVector(q0,P.qv).add(scaleVector(P.q0, qv)).add(qv.crossProduct(P.qv));				
+	public Quaternion QuaternionMultiplication(Quaternion P) throws LogicException, CloneNotSupportedException{
+		Double_Number c0 = (Double_Number) q0.mult(P.q0).add(qv.dotProduct(P.qv,q0.getZero()).inverse());
+		Vector<Double_Number> C = (Vector) scaleVector(q0,P.qv).add(scaleVector(P.q0, qv)).add(qv.crossProduct(P.qv));				
 		return new Quaternion(c0,C);
 	}
 	
@@ -146,7 +146,7 @@ public class Quaternion implements RotationalRepersentation{
 	 * TODO document
 	 * @return
 	 */
-	public EulerAngles toEulerAngles(){
+	public CompondRotations toEulerAngles(){
 		return null;
 	}
 
@@ -183,7 +183,7 @@ public class Quaternion implements RotationalRepersentation{
 	 * @throws LogicException 
 	 */
 	public static RotationalRepersentation zero() throws LogicException {
-		return new Quaternion<Number>(Double_Number.zero(), Double_Number.zero(), Double_Number.zero(), Double_Number.zero());
+		return new Quaternion(Double_Number.zero(), Double_Number.zero(), Double_Number.zero(), Double_Number.zero());
 	}
 	
 	

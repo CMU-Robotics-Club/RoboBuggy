@@ -49,8 +49,9 @@
       <target name="compile" ><!-- depends="mvn_windows, mvn_unix" > -->
         <mkdir dir="${classes.dir}"/>
         <javac  destdir="${classes.dir}" includeantruntime="false"  >
-	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/coordinateFrame"/>
 	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/actuators"/>
+	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/coordinateFrame"/>
+	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/coordinateFrame2"/>
 	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/drivers"/>
 	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/fauxNodes"/>
 	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/linearAlgebra"/>
@@ -58,8 +59,11 @@
 	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/logging"/>
 	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/main"/>
 	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/map"/>
+	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/measurments"/>
 	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/messages"/>
 	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/nodes"/>
+	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/numbers"/>
+	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/pathPlanner"/>
 	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/ros"/>
 	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/ros/internal"/>
 	  <src path="real_time/surface_src/java_src/Alice/src/org/roboclub/robobuggy/ros/tools"/>

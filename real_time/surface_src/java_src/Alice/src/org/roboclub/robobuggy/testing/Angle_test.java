@@ -9,6 +9,7 @@ import junit.framework.TestCase;
 
 public class Angle_test extends TestCase {
 
+	/*
 	public void test1() throws LogicException{
 			//TODO
 	}
@@ -17,7 +18,7 @@ public class Angle_test extends TestCase {
 	public void test2() throws LogicException, CloneNotSupportedException{
 		//TODO
 	}
-
+*/
 	
 
 }

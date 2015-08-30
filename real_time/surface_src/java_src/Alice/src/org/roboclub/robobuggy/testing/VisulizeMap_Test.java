@@ -4,6 +4,7 @@ import javax.swing.JFrame;
 
 import junit.framework.TestCase;
 
+/*
 public class VisulizeMap_Test extends TestCase {
 	public void Assert(boolean result){
 		if(result == false){
@@ -19,3 +20,4 @@ public class VisulizeMap_Test extends TestCase {
 	}
 
 }
+*/

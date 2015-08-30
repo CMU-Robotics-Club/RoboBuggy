@@ -72,7 +72,7 @@ public class RotationMatrix <TYPE extends Number>implements RotationalRepersenta
 	 * TODO document 
 	 * TODO implement
 	 */
-	public EulerAngles toEulerAngles() {
+	public CompondRotations toEulerAngles() {
 /*
 		//http://staff.city.ac.uk/~sbbh653/publications/euler.pdf
 //		double angle = Math.atan2(R.get(1,0), R.get(0,0));

@@ -12,36 +12,36 @@ import org.roboclub.robobuggy.measurments.Angle;
  * @author Trevor Decker
  *
  */
-public class compondRotations {
+public class CompondRotations {
 	ArrayList<Rotation> rotations;
 	
 	//creates a compondRotation that only has a single rotation about 1 axis
-	public compondRotations(Angle rotationAmount,SpacialDimensions axisOfRotation){
+	public CompondRotations(Angle rotationAmount,SpacialDimensions axisOfRotation){
 		rotations = new ArrayList<Rotation>();
 		rotations.add(new Rotation(rotationAmount,axisOfRotation));
 	}
 	
-	public compondRotations(Rotation aRotation){
+	public CompondRotations(Rotation aRotation){
 		rotations = new ArrayList<Rotation>();
 		rotations.add(aRotation);
 	}
 	
 	//creates a seieres of compond Rotations based on intput array of rotation_amounts, and rotation_axis
-	public compondRotations(ArrayList<Rotation> rotations){
+	public CompondRotations(ArrayList<Rotation> rotations){
 		this.rotations = rotations;
 	}
 
 	//warning has side effects
-	public void postApplyRotation(compondRotations otherRotation){
+	public void postApplyRotation(CompondRotations otherRotation){
 		this.rotations.addAll(otherRotation.rotations);
 	}
 	
 	//this method does not have side effects
-	public compondRotations preApplyRotation(compondRotations otherRotation) throws CloneNotSupportedException{
+	public CompondRotations preApplyRotation(CompondRotations otherRotation) throws CloneNotSupportedException{
 		ArrayList<Rotation> R1 = (ArrayList<Rotation>) otherRotation.clone();
 		ArrayList<Rotation> R2 = (ArrayList<Rotation>) this.rotations.clone();
 		R1.addAll(R2);
-		return new compondRotations(R1);
+		return new CompondRotations(R1);
 	}
 	
 	
