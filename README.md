@@ -87,6 +87,16 @@ AI: [real_time/surface_src](real_time/surface_src)
 
 IO Controller: [real_time/arduino_src/radio_buggy_mega](real_time/arduino_src/radio_buggy_mega)
 
+## File Structure 
+
+THe software system is seperated into two main sections:
+* offline -> where code which is not executed in realtime on the buggy is stored
+* realTime -> where code which is being run in realtime on the buggy is stored 
+
+Theis folder also contains: 
+* Pictures for this readmde file
+* configuration files
+
 ## Sponsors
 
 Special thanks to Microsoft for providing Alice a host interface on a Surface Pro 3!
