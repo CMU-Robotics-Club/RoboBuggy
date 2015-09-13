@@ -1,3 +1,0 @@
-ffmpeg -i run1.MP4 -ss 0:01:00 -t: 0:02:20 -acodec copy -vcodec copy run1_2.
-mp4
-
