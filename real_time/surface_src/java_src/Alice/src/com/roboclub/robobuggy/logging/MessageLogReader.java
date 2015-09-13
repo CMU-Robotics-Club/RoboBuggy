@@ -1,15 +1,6 @@
 package com.roboclub.robobuggy.logging;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintStream;
 import java.text.SimpleDateFormat;
-import java.util.LinkedList;
-import java.util.List;
-
-import com.roboclub.robobuggy.ros.Message;
 
 /**
  * Read the data from the file.

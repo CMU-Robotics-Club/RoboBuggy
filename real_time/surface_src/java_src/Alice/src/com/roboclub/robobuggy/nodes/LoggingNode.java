@@ -27,7 +27,7 @@ public class LoggingNode implements Node {
 	// Get the folder that we're going to use
 
 	// TODO get folder name from file.
-	public LoggingNode(String topicName, String directoryPath) {
+	public LoggingNode(String topicName, final String directoryPath) {
 		this.topicName = topicName;
 		this.directoryPath  = directoryPath;
 		// Start the subscriber

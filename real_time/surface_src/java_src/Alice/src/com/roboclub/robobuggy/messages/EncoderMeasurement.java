@@ -1,8 +1,5 @@
 package com.roboclub.robobuggy.messages;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import com.roboclub.robobuggy.ros.Message;
 
@@ -69,6 +66,7 @@ public class EncoderMeasurement extends BaseMessage implements Message {
 		distance = Double.parseDouble(ar[1]);
 		velocity = Double.parseDouble(ar[2]);
 		dataWord = Double.parseDouble(ar[3]);
-		return new EncoderMeasurement(timestamp, distance, velocity, dataWord);
+		//TODO calculate acceleration
+		return new EncoderMeasurement(timestamp, distance, velocity, dataWord, accel);
 	}
 }

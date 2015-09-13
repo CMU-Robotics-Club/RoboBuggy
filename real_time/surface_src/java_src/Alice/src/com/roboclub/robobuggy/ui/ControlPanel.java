@@ -17,12 +17,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
-
-import sun.util.logging.resources.logging;
-
 import com.roboclub.robobuggy.logging.RobotLogger;
-import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.main.config;
+import com.roboclub.robobuggy.messages.GuiLoggingButton;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
 
@@ -168,8 +165,7 @@ public class ControlPanel extends JPanel {
 		encoders_switch = new SensorSwitch("ENCODERS", SensorChannel.ENCODER);
 		imu_switch = new SensorSwitch("IMU", SensorChannel.IMU);
 		controls_switch = new SensorSwitch("CONTROLS", SensorChannel.DRIVE_CTRL);
-		autonomous_switch = new SensorSwitch("AUTO", SensorChannel.GPS);
-		//TODO Add Autonomous Channel
+		autonomous_switch = new SensorSwitch("AUTO", SensorChannel.AUTO);
 		
 		display = new JButton("DISPLAY");
 		display.setBackground(Color.BLUE);

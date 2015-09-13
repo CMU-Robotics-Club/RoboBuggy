@@ -1,19 +1,21 @@
-package com.roboclub.robobuggy.serial2;
+package com.roboclub.robobuggy.serial;
 
 public class RBSerialMessage {
 
 	
-	public static final byte ENC_RESET = (byte)0;
-	public static final byte ENC_TICK = (byte)1;
-	public static final byte ENC_TIME = (byte)2;
+	public static final byte ENC_TICKS_SINCE_LAST = (byte)0;
+	public static final byte ENC_TICK_SINCE_RESET = (byte)1;
+	public static final byte ENC_MS_SINCE_RESET = (byte)2;
 	
 	public static final byte STEERING = (byte)20;
 	public static final byte BRAKE = (byte)21;
 	public static final byte AUTO = (byte)22;
 	public static final byte BATTERY = (byte)23;
-	
-	public static final byte ERROR = (byte)254;
-	public static final byte DEVICE_ID = (byte)255;
+
+	public static final byte ERROR = (byte) -2;
+	public static final byte DEVICE_ID = (byte) -1;
+	//public static final byte ERROR = (byte)254;
+	//public static final byte DEVICE_ID = (byte)255;
 
 
 	private byte header_byte;
@@ -36,9 +38,9 @@ public class RBSerialMessage {
 		switch (headerByte) {
 			default:
 				return false; 
-			case ENC_RESET:
-			case ENC_TIME:
-			case ENC_TICK:
+			case ENC_MS_SINCE_RESET:
+			case ENC_TICK_SINCE_RESET:
+			case ENC_TICKS_SINCE_LAST:
 
 			case STEERING:
 			case BRAKE:

@@ -33,7 +33,7 @@ public class GraphPanel extends JPanel {
 		this.add(yaw);
 		
 		// Subscriber for drive control updates
-		new Subscriber(SensorChannel.DRIVE_CTRL.getMsgPath(), new MessageListener() {
+		new Subscriber(SensorChannel.STEERING.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				steering.updateGraph(((SteeringMeasurement)m).angle);

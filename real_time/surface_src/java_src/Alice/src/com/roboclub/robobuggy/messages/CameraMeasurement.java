@@ -31,6 +31,6 @@ public class CameraMeasurement extends BaseMessage implements Message {
 		String[] spl = str.split(",");
 		Date d = try_to_parse_date(spl[0]);
 		boolean brake_state = Boolean.parseBoolean(spl[1]);
-		return new BrakeCommand(d, brake_state);
+		return new BrakeMessage(d, brake_state);
 	}
 }
