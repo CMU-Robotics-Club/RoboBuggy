@@ -1,5 +1,7 @@
 package com.roboclub.robobuggy.sensors;
 
+import java.util.Date;
+
 import com.roboclub.robobuggy.messages.BrakeCommand;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
@@ -61,7 +63,12 @@ public class SimAllSensors {
 		// Publish to every sensor
 		while (true) {
 			encoderPub.publish(new EncoderMeasurement(10, 2));
-			gpsPub.publish(new GpsMeasurement(42.00f, -76.00f));
+			//TODO get actual values 
+			Date messageTimestamp = new Date();
+			Date gpsTimestamp = new Date();
+			double horizontal_dilution_of_precision = 0;
+			double antenna_altitude = 0;
+			gpsPub.publish(new GpsMeasurement(messageTimestamp, gpsTimestamp, 42.00f, false, -76.00f, false, 0, 0, horizontal_dilution_of_precision, antenna_altitude));
 			imuPub.publish(new ImuMeasurement(0, 0, 1, 2, 3, 4, 5, 6, 7));
 			reqAnglePub.publish(new RemoteWheelAngleRequest(0.5));
 			try {

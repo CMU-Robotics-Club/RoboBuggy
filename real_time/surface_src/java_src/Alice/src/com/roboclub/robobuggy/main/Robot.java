@@ -23,16 +23,7 @@ import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
-<<<<<<< HEAD
-//import com.roboclub.robobuggy.sensors.DriveControls;
-//import com.roboclub.robobuggy.sensors.Encoder;
-//import com.roboclub.robobuggy.sensors.Gps;
-//import com.roboclub.robobuggy.sensors.Imu;
 import com.roboclub.robobuggy.sensors.Sensor;
-//import com.roboclub.robobuggy.sensors.VisionSystem;
-=======
-import com.roboclub.robobuggy.sensors.Sensor;
->>>>>>> 41782f8f7efd7036bac7437e3633382495bd6e55
 import com.roboclub.robobuggy.ui.Gui;
 
 public class Robot implements RosMaster {

@@ -1,5 +1,7 @@
 package com.roboclub.robobuggy.sensors;
 
+import java.util.Date;
+
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.ros.Publisher;
@@ -82,7 +84,20 @@ public class FauxGps implements Sensor {
 					throw new RuntimeException(
 							"Sleep should not be throwing");
 				}
-				msgPub.publish(new GpsMeasurement(latitude, longitude));
+				//TODO get actual values 
+				Date messageTimeStamp = new Date();
+				Date gpsTimeStamp = new Date();
+				boolean north = true;
+				boolean west = true; 
+				double east = 0;
+				double lattitude = 0;
+				double longitude = 0;
+				int quality_value = 0;
+				int num_satellites = 0;
+				 double horizontal_dilution_of_precision =0;
+				 double antenna_altitude = 0;
+				 
+				 msgPub.publish(new GpsMeasurement(messageTimeStamp,gpsTimeStamp,latitude, north, longitude,west, quality_value,num_satellites,horizontal_dilution_of_precision,antenna_altitude));
 			}
 		}
 	}

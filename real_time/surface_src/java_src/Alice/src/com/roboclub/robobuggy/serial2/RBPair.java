@@ -16,4 +16,9 @@ public class RBPair {
 	public RBSerialMessage getMessage() {
 		return rb_message;
 	}
+
+	public int get_num_bytes_read() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
