@@ -143,10 +143,14 @@ int main(void) {
   DEBUG_PORT &= ~_BV(DEBUG_PINN);
   DEBUG_DDR |= _BV(DEBUG_PINN);
 
-  uart0_init(BAUD);
+  // prepare uart0 (onboard usb) for rbsm
+  uart0_init(UART_BAUD_SELECT(BAUD, F_CPU));
   uart0_fdevopen(&g_uart_rbsm);
-  uart1_init(BAUD);
-  uart1_fdevopen(&g_uart_debug);
+
+  // prepare uart2 (because servo conflicts with uart1) for debug output
+  uart2_init(UART_BAUD_SELECT(BAUD, F_CPU));
+  uart2_fdevopen(&g_uart_debug);
+  // map stdio for printf
   stdin = stdout = stderr = &g_uart_debug;
 
   printf("Testing debug print out.\r\n");
