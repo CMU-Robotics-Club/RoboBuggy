@@ -1,6 +1,6 @@
 package com.roboclub.robobuggy.sensors;
 
-import com.roboclub.robobuggy.messages.BrakeMessage;
+
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.WheelAngleCommand;
 import com.roboclub.robobuggy.ros.ActuatorChannel;
