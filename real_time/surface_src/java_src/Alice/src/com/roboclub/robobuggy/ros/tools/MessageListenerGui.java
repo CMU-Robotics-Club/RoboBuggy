@@ -38,11 +38,8 @@ import com.roboclub.robobuggy.ros.Subscriber;
 
 public class MessageListenerGui extends JPanel implements ActionListener {
 	private static final long serialVersionUID = -3528970717084422491L;
-	private String newline = "\n";
 	private JTextField filterTextField = new JTextField(256);
 	private DefaultTableModel model;
-
-	private Subscriber allMessages;
 
 	private class myWorker extends SwingWorker<Object, String> {
 
@@ -123,7 +120,7 @@ public class MessageListenerGui extends JPanel implements ActionListener {
 		JFrame frame = new JFrame("Message Monitor");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// Add content to the window.
-		frame.add(new MessageListenerGui(new ArrayList()));
+		frame.add(new MessageListenerGui(new ArrayList<String>()));
 
 		// Display the window.
 		frame.pack();

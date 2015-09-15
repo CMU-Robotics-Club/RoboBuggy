@@ -117,7 +117,7 @@ CDEFS = -DF_CPU=$(F_CPU)UL -DUSART0_ENABLED -DUSART2_ENABLED
 # Place -I options here
 CINCS =
 
-
+BUGGY = no_buggy
 
 #---------------- Compiler Options ----------------
 #  -g*:          generate debugging information
@@ -134,6 +134,7 @@ CFLAGS += -Wall -Wstrict-prototypes
 CFLAGS += -Wa,-adhlns=$(patsubst %.c,%.lst,$(patsubst %.cpp,%.lst,$(<)))
 CFLAGS += $(patsubst %,-I%,$(EXTRAINCDIRS))
 CFLAGS += $(CSTANDARD)
+CFLAGS += -DBUGGY=$(BUGGY)
 #CFLAGS += -DDEBUG
 
 #---------------- Assembler Options ----------------
@@ -323,8 +324,6 @@ GENDEPFLAGS = -MD -MP -MF .dep/$(@F).d
 # Add target processor to flags.
 ALL_CFLAGS = -mmcu=$(MCU) -I. $(CFLAGS) $(GENDEPFLAGS)
 ALL_ASFLAGS = -mmcu=$(MCU) -I. -x assembler-with-cpp $(ASFLAGS)
-
-
 
 
 

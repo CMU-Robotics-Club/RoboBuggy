@@ -1,8 +1,4 @@
 package com.roboclub.robobuggy.testing;
-
-//package com.roboclub.robobuggy.testing;
-
-//import org.junit.Test;
  
 public class HelloWorldTest extends junit.framework.TestCase {
 
