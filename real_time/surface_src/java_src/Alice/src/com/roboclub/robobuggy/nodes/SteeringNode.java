@@ -1,17 +1,18 @@
 package com.roboclub.robobuggy.nodes;
 
-import com.roboclub.robobuggy.messages.BrakeCommand;
+import gnu.io.SerialPort;
+
+import com.roboclub.robobuggy.messages.BrakeMessage;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
-import com.roboclub.robobuggy.messages.WheelAngleCommand;
-import com.roboclub.robobuggy.ros.ActuatorChannel;
-import com.roboclub.robobuggy.ros.Message;
-import com.roboclub.robobuggy.ros.MessageListener;
+import com.roboclub.robobuggy.ros.Node;
+import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
-import com.roboclub.robobuggy.ros.Subscriber;
-import com.roboclub.robobuggy.sensors.Arduino;
 import com.roboclub.robobuggy.sensors.SensorState;
-import com.roboclub.robobuggy.sensors.SensorType;
+import com.roboclub.robobuggy.serial.RBPair;
+import com.roboclub.robobuggy.serial.RBSerial;
+import com.roboclub.robobuggy.serial.RBSerialMessage;
+import com.roboclub.robobuggy.serial.SerialNode;
 
 /**
  * 
@@ -24,16 +25,27 @@ import com.roboclub.robobuggy.sensors.SensorType;
  * DESCRIPTION: TODO
  */
 
-public class SteeringNode extends Arduino {
+public class SteeringNode extends SerialNode implements Node {
+	/** Steering Angle Conversion Rate */
+	private final int ARD_TO_DEG = 100;
+	/** Steering Angle offset?? */
+	private final int OFFSET = -200;
 	
-   public int steeringAngle;
+	public Publisher brakePub;
+	public Publisher steeringPub;
+	public Publisher statePub;
 	
 	public SteeringNode(SensorChannel sensor) {
-		super(sensor, "Steering");
-		sensorType = SensorType.GPS;
+		super("Steering");
+		
+		brakePub = new Publisher(SensorChannel.BRAKE.getMsgPath());
+		steeringPub = new Publisher(SensorChannel.STEERING.getMsgPath());
+		statePub = new Publisher(sensor.getStatePath());	
+		
+		statePub.publish(new StateMessage(SensorState.DISCONNECTED));
 		
 		// Subscriber for Steering commands
-		new Subscriber(ActuatorChannel.STEERING.getMsgPath(),
+		/*new Subscriber(ActuatorChannel.STEERING.getMsgPath(),
 				new MessageListener() {
 					@Override
 					public void actionPerformed(String topicName, Message m) {
@@ -52,71 +64,61 @@ public class SteeringNode extends Arduino {
 							writeBrake(((BrakeCommand)m).down);
 						}
 					}
-		});
+		});*/
 	}
 	
-	/* Methods for Serial Communication with Arduino */
-	public void writeAngle(float angle) {
-		if (angle >= 0 && angle <= 180) {
-			if(isConnected()) {
-				/*byte[] msg = {
-						(byte)((angle >> 0x18) & 0xFF),
-						(byte)((angle >> 0x10) & 0xFF),
-						(byte)((angle >> 0x08) & 0xFF),
-						(byte)(angle & 0xFF),'\n'};*/
-				System.out.println("MATT BROKE THIS BECAUSE INTERFACE WITH LOW LEVEL CHANGED");
-				//super.serialWrite(null);
-			}
-		}
-	}
-	
-	public void writeBrake(boolean value) {
-		// TODO writing brake command
-	}
-	
-	/* Methods for reading from Serial */
 	@Override
-	protected boolean validId(char value) {
-		switch (value) {
-			case STEERING:
-			case BRAKE:
-			case ERROR:
-			case MSG_ID:
-				return true;
-			default:
-				return false;
-		}
+	public void setSerialPort(SerialPort sp) {
+		super.setSerialPort(sp);
+		statePub.publish(new StateMessage(SensorState.ON));
 	}
 
 	@Override
-	public void publish() {
-		lastUpdateTime = System.currentTimeMillis();
-		int value = parseInt(inputBuffer[1], inputBuffer[2],
-				inputBuffer[3], inputBuffer[4]);
-		try {
-			switch (inputBuffer[0]) {
-			case STEERING:
-				msgPub.publish(new SteeringMeasurement(value));
-				break;
-			case BRAKE:
-				// TODO handle brake messages
-				break;
-			case ERROR:
-				// TODO handle error messages
-				break;
+	public boolean matchDataSample(byte[] sample) {
+		// TODO actually use this
+		return true;
+	}
+
+	@Override
+	public int matchDataMinSize() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int baudRate() {
+		return 9600;
+	}
+
+	@Override
+	public int peel(byte[] buffer, int start, int bytes_available) {
+		// The drive controller sends 2 types of messages
+		//	- Steering angle
+		//	- Brake deployment or release
+		RBPair rbp = RBSerial.peel(buffer, start, bytes_available);
+		switch(rbp.getNumberOfBytesRead()) {
+			case 0: return 0;
+			case 1: return 1;
+			case 6: break;
+			default: {
+				System.out.println("HOW DID NOT A SIX GET HERE");
 			}
-		} catch (Exception e) {
-			System.out.println("Drive Exception on port: " + this.getName());
-			if (currState != SensorState.FAULT) {
-				currState = SensorState.FAULT;
-				statePub.publish(new StateMessage(this.currState));
-				return;
+		
+		}
+		
+		RBSerialMessage message = rbp.getMessage();
+		switch (message.getHeaderByte()) {
+			case RBSerialMessage.BRAKE: {
+				brakePub.publish(new BrakeMessage(message.getDataWord()));
+				break;
+			} case RBSerialMessage.STEERING: {
+				steeringPub.publish(new SteeringMeasurement(
+						-(message.getDataWord() + OFFSET)/ARD_TO_DEG));
+				break;
 			}
 		}
 		
-		if (currState != SensorState.ON) {
-			currState = SensorState.ON;
-			statePub.publish(new StateMessage(this.currState));
-		}
+		
+		return 6;
 	}
 }

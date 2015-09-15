@@ -20,10 +20,19 @@
 #define SERVO_PINN PB5 // arduino 11 TODO: this is not used here
 #define CONNECTION_TIMEOUT_US 1000000L // 1000ms
 
-#define PWM_OFFSET_STEERING_OUT 1789
-#define PWM_SCALE_STEERING_OUT -150
-#define PWM_OFFSET_STORED_ANGLE 0
-#define PWM_SCALE_STORED_ANGLE 1000 // in hundredths of a degree for precision
+#if BUGGY == transistor 
+  #define PWM_OFFSET_STEERING_OUT 1900
+  #define PWM_SCALE_STEERING_OUT -165
+  #define PWM_OFFSET_STORED_ANGLE 0
+  #define PWM_SCALE_STORED_ANGLE 1000 // in hundredths of a degree for precision
+#elif BUGGY == nixie
+  #define PWM_OFFSET_STEERING_OUT 1789
+  #define PWM_SCALE_STEERING_OUT -150
+  #define PWM_OFFSET_STORED_ANGLE 0
+  #define PWM_SCALE_STORED_ANGLE 1000 // in hundredths of a degree for precision
+#else
+  #error "must complie with BUGGY_TRANSISTOR or BUGGY_NIXI flag"
+#endif
 
 #define RX_STEERING_DDR  DDRE
 #define RX_STEERING_PORT PORTE
@@ -90,7 +99,7 @@ void adc_init(void) {
 }
 
 
-uint8_t acd_read_blocking(uint8_t channel) {
+uint8_t adc_read_blocking(uint8_t channel) {
   ADMUX = (ADMUX & 0xF0) | (channel & 0x0F);
   ADCSRA |= _BV(ADSC);
   while((ADCSRA & _BV(ADSC)) == 1) {}
@@ -214,20 +223,10 @@ int main(void) {
     }
 
     // detect dropped conections
-    // note: interrupts must be disabled while checking system clock so that
-    //       timestamps are not updated under our feet
-    cli();
     unsigned long time_now = micros();
-    unsigned long time1 = g_steering_rx.GetLastTimestamp();
-    unsigned long time2 = g_brake_rx.GetLastTimestamp();
-    unsigned long time3 = g_auton_rx.GetLastTimestamp();
-    unsigned long delta1 = time_now - time1;
-    unsigned long delta2 = time_now - time2;
-    unsigned long delta3 = time_now - time3;
-    sei();
-    if(delta1 > CONNECTION_TIMEOUT_US ||
-       delta2 > CONNECTION_TIMEOUT_US ||
-       delta3 > CONNECTION_TIMEOUT_US) {
+    if(time_now - g_steering_rx.GetLastTimestamp() > CONNECTION_TIMEOUT_US ||
+       time_now - g_brake_rx.GetLastTimestamp() > CONNECTION_TIMEOUT_US ||
+       time_now - g_auton_rx.GetLastTimestamp() > CONNECTION_TIMEOUT_US) {
       // we haven't heard from the RC receiver in too long
       if(g_brake_needs_reset == false) {
         g_rbsm_endpoint.Send(RBSM_MID_ERROR, RBSM_EID_RC_LOST_SIGNAL);
@@ -235,6 +234,12 @@ int main(void) {
       g_brake_needs_reset = true;
     }
 
+    // For the old buggy, the voltage divider is 10k ohm on the adc side and
+    // 16k ohm on top.
+    // Calculated map normally set to 13000, but the avcc is 4.86 volts
+    // rather than 5.
+    g_current_voltage = map_signal(adc_read_blocking(0), 0, 255, 0, 12636); // in millivolts
+    
     // Set outputs
     if(g_brake_state_engaged == false && g_brake_needs_reset == false) {
       brake_raise();

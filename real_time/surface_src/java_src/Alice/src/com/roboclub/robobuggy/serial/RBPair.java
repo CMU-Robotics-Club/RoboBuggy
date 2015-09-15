@@ -1,4 +1,4 @@
-package com.roboclub.robobuggy.serial2;
+package com.roboclub.robobuggy.serial;
 
 public class RBPair {
 	private int num_bytes_read;
