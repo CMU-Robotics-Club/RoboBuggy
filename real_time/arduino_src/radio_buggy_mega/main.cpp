@@ -6,12 +6,15 @@
 
 #include "../lib_avr/rbserialmessages/rbserialmessages.h"
 #include "../lib_avr/servoreceiver/servoreceiver.h"
+#include "../lib_avr/uart/uart_extra.h"
 #include "servo.h"
-#include "uart.h"
+// #include "uart.h"
 #include "system_clock.h"
 
-
+#define USART0_ENABLED
+#define USART1_ENABLED
 #define BAUD 9600
+
 #define DEBUG_DDR  DDRB
 #define DEBUG_PORT PORTB
 #define DEBUG_PINN PB7 // arduino 13
@@ -78,6 +81,9 @@ rb_message_t g_new_rbsm;
 ServoReceiver g_steering_rx;
 ServoReceiver g_brake_rx;
 ServoReceiver g_auton_rx;
+
+FILE g_uart_rbsm;
+FILE g_uart_debug;
 
 
 inline long map_signal(long x,
@@ -146,9 +152,21 @@ int main(void) {
   DEBUG_PORT &= ~_BV(DEBUG_PINN);
   DEBUG_DDR |= _BV(DEBUG_PINN);
 
+  // prepare uart0 (onboard usb) for rbsm
+  uart0_init(UART_BAUD_SELECT(BAUD, F_CPU));
+  uart0_fdevopen(&g_uart_rbsm);
+
+  // prepare uart2 (because servo conflicts with uart1) for debug output
+  uart2_init(UART_BAUD_SELECT(BAUD, F_CPU));
+  uart2_fdevopen(&g_uart_debug);
+  // map stdio for printf
+  stdin = stdout = stderr = &g_uart_debug;
+
+  printf("Testing debug print out.\r\n");
+
   // setup hardware
   sei(); // enable interrupts
-  uart_init();
+  // uart_init();
   system_clock_init();
   servo_init();
   adc_init();
@@ -156,7 +174,7 @@ int main(void) {
   LED_DANGER_DDR |= _BV(LED_DANGER_PINN);
   
   // setup rbsm
-  g_rbsm_endpoint.Init(&uart_stdio, &uart_stdio);
+  g_rbsm_endpoint.Init(&g_uart_rbsm, &g_uart_rbsm);
 
   // set up rc receivers
   g_steering_rx.Init(&RX_STEERING_PIN, RX_STEERING_PINN, RX_STEERING_INTN);
