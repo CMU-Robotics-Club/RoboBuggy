@@ -30,7 +30,7 @@ import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 
-import com.roboclub.robobuggy.messages.EncoderMeasurement;
+//import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.Publisher;
@@ -169,7 +169,8 @@ public class MessageListenerGui extends JPanel implements ActionListener {
 		});
 
 		// Start a publisher!
-		Publisher p = new Publisher("/sensor/encoder");
+                // TODO: restore this (and correct the dependencies) to actually run this tool.
+		/*Publisher p = new Publisher("/sensor/encoder");
 		while (true) {
 			p.publish(new EncoderMeasurement(41, 42));
 			try {
@@ -177,6 +178,6 @@ public class MessageListenerGui extends JPanel implements ActionListener {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-		}
+		}*/
 	}
 }

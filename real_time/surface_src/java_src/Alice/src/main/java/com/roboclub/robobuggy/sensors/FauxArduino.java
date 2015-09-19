@@ -3,6 +3,7 @@ package com.roboclub.robobuggy.sensors;
 
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.WheelAngleCommand;
+import com.roboclub.robobuggy.messages.BrakeMessage;
 import com.roboclub.robobuggy.ros.ActuatorChannel;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
@@ -29,7 +30,7 @@ public class FauxArduino {
 
 	private Subscriber steeringSub = new Subscriber(ActuatorChannel.STEERING.getMsgPath(),
 			new wheelAngleCallback());
-	
+
 	private Subscriber brakeSub = new Subscriber(ActuatorChannel.BRAKE.getMsgPath(),
 			new brakeCallback());
 
@@ -94,7 +95,7 @@ public class FauxArduino {
 				}
 			}
 		})).start();
-		
+
 		System.out.println("and they're off!");
 	}
 }

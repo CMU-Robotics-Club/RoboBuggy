@@ -1,0 +1,43 @@
+/* Secret targets installed by adding 'java' plugin:
+    compileJava
+    processResources
+    classes
+    jar
+    assemble
+    compileTestJava
+    processTestResources
+    testClasses
+    test
+    check
+    build
+    */
+
+// TODO msebek: figure out why these exist.
+//sourceCompatibility = 1.5 // the java version?
+//version = '1.0'           // the app version.
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Gradle Quickstart',
+                    'Implementation-Version': '1.0'
+    }
+}
+
+repositories {
+    // TODO msebek: figure out why this should be here.
+    mavenCentral() // wth is here?
+}
+
+dependencies {
+    compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
+    testCompile group: 'junit', name: 'junit', version: '4.+'
+}
+
+
+// TODO msebek: figure out why this is here.
+uploadArchives {
+    repositories {
+        flatDir {
+            dirs 'repos'
+        }
+    }
+}

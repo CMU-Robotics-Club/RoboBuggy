@@ -1,0 +1,17 @@
+
+// To build the projects, call 'gradle build'
+
+// To run the gui, call 'gradle run' in Alice
+
+subprojects {
+    apply plugin: "java"
+    apply plugin: "eclipse"
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        testCompile "junit:junit4+"
+    }
+}
