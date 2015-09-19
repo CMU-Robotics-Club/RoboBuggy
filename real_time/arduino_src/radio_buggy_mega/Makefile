@@ -332,7 +332,7 @@ ALL_ASFLAGS = -mmcu=$(MCU) -I. -x assembler-with-cpp $(ASFLAGS)
 # Default target.
 all: begin gccversion sizebefore build sizeafter end
 
-build: elf hex eep lss sym
+build: elf hex eep lss sym fingerprint.h
 
 elf: $(TARGET).elf
 hex: $(TARGET).hex
@@ -383,7 +383,6 @@ program: $(TARGET).hex $(TARGET).eep
 # Program the device without an ISP by using the bootloader
 aprogram: $(TARGET).hex $(TARGET).eep
 	$(PYTHON) ./arduinoReset.py $(AVRDUDE_A_PORT)
-	$(PYTHON) filewrite.py
 	$(AVRDUDE) $(AVRDUDE_A_FLAGS) $(AVRDUDE_WRITE_FLASH)
 
 
@@ -473,9 +472,12 @@ extcoff: $(TARGET).elf
 	@echo $(MSG_LINKING) $@
 	$(CC) $(ALL_CFLAGS) $^ --output $@ $(LDFLAGS)
 
+fingerprint:
+	$(PYTHON) fingerprint.py
+
 
 # Compile: create object files from C source files.
-%.o : %.c
+%.o : %.c fingerprint
 	@echo
 	@echo $(MSG_COMPILING) $<
 	$(CC) -c $(ALL_CFLAGS) $< -o $@ 
@@ -525,7 +527,7 @@ clean_list :
 	$(REMOVE) $(patsubst %.c,%.s,$(patsubst %.cpp,%.s,$(SRC)))
 	$(REMOVE) $(patsubst %.c,%.d,$(patsubst %.cpp,%.d,$(SRC)))
 	$(REMOVE) .dep/*
-	$(REMOVE) comp.h
+	$(REMOVE) fingerprint.h
 
 
 

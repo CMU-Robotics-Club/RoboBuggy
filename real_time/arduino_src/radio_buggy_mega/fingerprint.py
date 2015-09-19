@@ -1,4 +1,4 @@
-""" filewrite.py: 
+""" fingerprint.py: 
 * Description: This is a python script to create a .h file defining the time 
 *   of compilation and who compiled.  Also details whether files had been
 *   modified since the last commit
@@ -14,10 +14,10 @@ import socket #Used for getting hostname
 import subprocess
 
 def main():
-    print("Now creating comp.h...\n")
-    file = open("comp.h", 'w')
-    file.write("/* comp.h: A compilation-time created file containing compilation time and \n")
-    file.write("closest version of git*/\n\n")
+    print("Now creating fingerprint.h...\n")
+    file = open("fingerprint.h", 'w')
+    file.write("/* fingerprint.h: A compilation-time created file containing compilation time, \n")
+    file.write("closest version of git, and other information of */\n\n")
     time = datetime.datetime.now()
     file.write("#define COMPDATE \"%02d:%02d:%04d\" //day:month:year\n" %(time.day, time.month, time.year))
     file.write("#define COMPTIME \"%02d:%02d:%02d\" //hour:minute:second\n" %(time.hour, time.minute, time.second))
@@ -39,7 +39,7 @@ def main():
     
     file.write("#define BRANCHNAME \"%s\"\n" %branch)
 
-    hString = str(subprocess.check_output(["git", "show", "--pretty=format:'%h'", "-n", "1"])).rstrip().replace("'", "")
+    hString = str(subprocess.check_output(["git", "log", "-1", "--pretty=format:'%h'"])).rstrip().replace("'", "")
 
     file.write("#define COMMITHASH \"%s\"\n" %(hString))
     file.write("#define CLEANSTATUS %s" %str(clean).lower())
