@@ -1,6 +1,6 @@
 package com.roboclub.robobuggy.sensors;
 
-import com.roboclub.robobuggy.messages.BrakeCommand;
+
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.WheelAngleCommand;
 import com.roboclub.robobuggy.ros.ActuatorChannel;
@@ -44,7 +44,7 @@ public class FauxArduino {
 	private class brakeCallback implements MessageListener {
 		@Override
 		public void actionPerformed(String topicName, Message m) {
-			BrakeCommand wac = (BrakeCommand) m;
+			BrakeMessage wac = (BrakeMessage) m;
 			System.out.printf("Brake commanded to position %d\n", wac.down);
 		}
 	}
