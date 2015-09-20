@@ -1,9 +1,0 @@
-*.autosave
-*.pyc
-*.user
-*~
-.*.swp
-.DS_Store
-.sw[a-z]
-tags
-tegra/

@@ -1,2 +1,22 @@
 language: java
-install: ant 
+sudo: false # run on travis's container infrastructure
+
+jdk:
+    - oraclejdk8
+
+# TODO msebek: consolidate this logic into one script, then have both builders call it.
+install:
+    - curl -L https://services.gradle.org/distributions/gradle-2.7-bin.zip -o gradle-2.7-bin.zip
+    - unzip gradle-2.7-bin.zip
+    - export BUGGY_ROOT=`pwd`
+    - export GRADLE_HOME=$BUGGY_ROOT/gradle-2.7
+    - export GRADLE_BIN=$GRADLE_HOME/bin
+    - export PATH=$PATH:$GRADLE_BIN
+
+script:
+    - echo 'the end is nigh, silly drivers'
+    - ls; pwd; java -version
+    - echo $PATH
+    - echo $HOME
+    - echo $BUGGY_ROOT
+    - (cd real_time/surface_src/java_src/Alice && $GRADLE_BIN/gradle build)
