@@ -1,0 +1,23 @@
+#image: niaquinto/gradle
+image: java
+
+# TODO msebek: i hope there is a better way to install this.
+#      it might involve making a new docker image.
+before_script:
+        - curl -L https://services.gradle.org/distributions/gradle-2.7-bin.zip -o gradle-2.7-bin.zip
+        - apt-get install -y unzip
+        - unzip gradle-2.7-bin.zip
+        - echo 'export BUGGY_ROOT=`pwd`' >> $HOME/.bashrc
+        - echo 'export GRADLE_HOME=$BUGGY_ROOT/gradle-2.7' >> $HOME/.bashrc
+        - echo 'export GRADLE_BIN=$GRADLE_HOME/bin' >> $HOME/.bashrc
+        - echo 'export PATH=$PATH:$GRADLE_BIN' >> $HOME/.bashrc
+        - source $HOME/.bashrc
+job1:
+    script:
+        - echo 'the end is nigh, silly drivers'
+        - echo ls; pwd; java -version
+        - echo $PATH
+        - echo $HOME
+        - echo $BUGGY_ROOT
+        - (cd real_time/surface_src/java_src/Alice && $GRADLE_BIN/gradle build)
+
