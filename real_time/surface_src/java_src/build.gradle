@@ -12,6 +12,6 @@ subprojects {
     }
 
     dependencies {
-        testCompile "junit:junit4+"
+        testCompile 'junit:junit:4.12'
     }
 }

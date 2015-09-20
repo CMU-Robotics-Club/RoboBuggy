@@ -1,6 +1,8 @@
+**/*.swp
+**/*~
 .gradle
-build
-*.swp
-*.classpath
-*.settings
-*.project
+**/build/
+**/bin/
+**/.classpath
+**/.settings
+**/.project
