@@ -15,3 +15,8 @@ subprojects {
         testCompile 'junit:junit:4.12'
     }
 }
+
+// This task only needs to be run if the gradle version changes.
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.7'
+}

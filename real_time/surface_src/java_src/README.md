@@ -16,9 +16,8 @@ Building and Running
 
 To build:
     <Install Java JDK (NOT THE JRE) x86 Latest (greater than 1.8:60)>
-    <Install gradle 2.7 from http://gradle.org/ >
     $> cd Alice
-    $> gradle build # Note that buggyros will get build automatically
+    $> gradlew build # Note that buggyros will get build automatically
 
     # for more information, see https://docs.gradle.org/current/userguide/java_plugin.html
 
@@ -37,8 +36,8 @@ If the Eclipse build SEEMS broken:
     (go into eclipse > right click on each project > "Refresh" )
 
     (if that doesn't work, bring the big guns)
-    $> gradle cleanEclipse
-    $> gradle eclipse
+    $> gradlew cleanEclipse
+    $> gradlew eclipse
 
     # for more information, see https://docs.gradle.org/current/userguide/eclipse_plugin.html
 
