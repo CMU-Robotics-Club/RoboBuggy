@@ -10,6 +10,7 @@
 #include "servo.h"
 // #include "uart.h"
 #include "system_clock.h"
+#include "fingerprint.h"
 
 #define USART0_ENABLED
 #define USART1_ENABLED

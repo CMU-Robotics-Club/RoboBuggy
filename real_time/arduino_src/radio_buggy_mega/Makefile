@@ -239,7 +239,7 @@ AVRDUDE_FLAGS += $(AVRDUDE_ERASE_COUNTER)
 
 #Change this variable to usb port to which arduino is connected
 #It can be checked by using "ls /dev" and looking for "tty.usbxxxxxx####"
-AVRDUDE_A_PORT = /dev/tty.asdf 
+AVRDUDE_A_PORT = /dev/tty.usbmodem1411
 AVRDUDE_A_FLAGS = -v -c wiring -p $(MCU) -P $(AVRDUDE_A_PORT) -b 115200 -D
 
 PYTHON = /usr/local/bin/python
@@ -330,9 +330,9 @@ ALL_ASFLAGS = -mmcu=$(MCU) -I. -x assembler-with-cpp $(ASFLAGS)
 
 
 # Default target.
-all: begin gccversion sizebefore build sizeafter end
+all: begin gccversion sizebefore fingerprint build sizeafter end
 
-build: elf hex eep lss sym fingerprint.h
+build: elf hex eep lss sym
 
 elf: $(TARGET).elf
 hex: $(TARGET).hex
@@ -477,7 +477,7 @@ fingerprint:
 
 
 # Compile: create object files from C source files.
-%.o : %.c fingerprint
+%.o : %.c 
 	@echo
 	@echo $(MSG_COMPILING) $<
 	$(CC) -c $(ALL_CFLAGS) $< -o $@ 
