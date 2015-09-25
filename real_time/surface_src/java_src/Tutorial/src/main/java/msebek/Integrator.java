@@ -10,18 +10,25 @@ public class Integrator implements Node {
 
 	Publisher p;
 	Subscriber s;
+	int sum = 0;
 	
 	public Integrator() {
-		// Create a subscriber that listens on the channel of NumberSource.java
-		//  Every time a message comes in, get this integer, and add it to the sum.
-		// Publish this sum on to the channel IntegralSink is listening to.
+		this.p = new Publisher("integratedValues");
+
+		this.s = new Subscriber("values", new MessageListener() {
+			@Override
+			public void actionPerformed(String topicName, Message m) {
+				IntegerMessage im = (IntegerMessage) m;
+				sum += im.val;
+				p.publish(new IntegerMessage(sum));
+			}
+		});
 	}
 
 	
 	@Override
 	public boolean shutdown() {
-		// No resources-needing-closing required; shutdown.
-		//   (but if you opened a file or something, close it cleanly)
+		// No resources-needing-closing required.
 		return true;
 	}
 	
