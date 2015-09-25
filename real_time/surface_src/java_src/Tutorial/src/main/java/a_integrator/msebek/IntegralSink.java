@@ -1,4 +1,4 @@
-package startercode;
+package a_integrator.msebek;
 
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;

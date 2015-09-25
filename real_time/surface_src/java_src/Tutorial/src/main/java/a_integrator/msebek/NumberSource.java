@@ -1,4 +1,4 @@
-package startercode;
+package a_integrator.msebek;
 
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Publisher;

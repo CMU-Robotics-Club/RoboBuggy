@@ -20,7 +20,7 @@ uploadArchives {
     }
 }
 
-// This adds a run target.
-// TODO update this.
 apply plugin: 'application'
-mainClassName = 'startercode.MainFile'
+
+// In order to run your code, change this.
+mainClassName = 'a_integrator\startercode'

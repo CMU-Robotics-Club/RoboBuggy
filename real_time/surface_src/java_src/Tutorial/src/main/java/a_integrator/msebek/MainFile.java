@@ -1,4 +1,4 @@
-package startercode;
+package a_integrator.msebek;
 
 public class MainFile {
 	
