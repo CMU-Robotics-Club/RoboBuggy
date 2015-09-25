@@ -11,8 +11,6 @@
 // #include "uart.h"
 #include "system_clock.h"
 
-#define USART0_ENABLED
-#define USART1_ENABLED
 #define BAUD 9600
 
 #define DEBUG_DDR  DDRB
