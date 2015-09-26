@@ -477,7 +477,7 @@ fingerprint:
 
 
 # Compile: create object files from C source files.
-%.o : %.c 
+%.o : %.c
 	@echo
 	@echo $(MSG_COMPILING) $<
 	$(CC) -c $(ALL_CFLAGS) $< -o $@ 

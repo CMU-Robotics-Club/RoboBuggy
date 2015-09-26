@@ -24,25 +24,24 @@ def main():
     file.write("#define HOSTNAME \"%s\"\n" %socket.gethostname().split(".")[0])
 
 
+    branch = str(subprocess.check_output(["git", "symbolic-ref", "--short", "HEAD"])).replace("\n", "")
+
+    file.write("#define BRANCHNAME \"%s\"\n" %branch)
+
     result = str(subprocess.check_output(["git", "status"]))
 
-    prev = ""
-    branch = ""
     clean = False
 
-    for string in result.split():
-        if (prev == "branch"):
-            branch = string
-        if (string == "clean"):
+    for line in result.rsplit("\n"):
+        if "working directory clean" in line:
             clean = True
-        prev = string
-    
-    file.write("#define BRANCHNAME \"%s\"\n" %branch)
+
 
     hString = str(subprocess.check_output(["git", "log", "-1", "--pretty=format:'%h'"])).rstrip().replace("'", "")
 
-    file.write("#define COMMITHASH \"%s\"\n" %(hString))
-    file.write("#define CLEANSTATUS %s" %str(clean).lower())
+    file.write("#define HEXCOMMITHASH 0x%s \n" %(hString))
+    file.write("#define STRCOMMITHASH \"%s\"\n" %(hString))
+    file.write("#define CLEANSTATUS %s\n" %str(clean).lower())
 
 
     file.close()
