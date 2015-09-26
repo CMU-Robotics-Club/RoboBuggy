@@ -477,35 +477,35 @@ fingerprint:
 
 
 # Compile: create object files from C source files.
-%.o : %.c
+%.o : %.c fingerprint
 	@echo
 	@echo $(MSG_COMPILING) $<
 	$(CC) -c $(ALL_CFLAGS) $< -o $@ 
 
-%.o : %.cpp
+%.o : %.cpp fingerprint
 	@echo
 	@echo $(MSG_COMPILING) $<
 	$(CC) -c $(ALL_CFLAGS) $< -o $@ 
 
 # Compile: create assembler files from C source files.
-%.s : %.c
+%.s : %.c fingerprint
 	$(CC) -S $(ALL_CFLAGS) $< -o $@
 
-%.s : %.cpp
+%.s : %.cpp fingerprint
 	$(CC) -S $(ALL_CFLAGS) $< -o $@
 
 
 # Assemble: create object files from assembler source files.
-%.o : %.S
+%.o : %.S fingerprint
 	@echo
 	@echo $(MSG_ASSEMBLING) $<
 	$(CC) -c $(ALL_ASFLAGS) $< -o $@
 
 # Create preprocessed source for use in sending a bug report.
-%.i : %.c
+%.i : %.c fingerprint
 	$(CC) -E -mmcu=$(MCU) -I. $(CFLAGS) $< -o $@ 
 
-%.i : %.cpp
+%.i : %.cpp fingerprint
 	$(CC) -E -mmcu=$(MCU) -I. $(CFLAGS) $< -o $@ 
 
 
