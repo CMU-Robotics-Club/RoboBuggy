@@ -12,8 +12,6 @@
 #include "system_clock.h"
 #include "fingerprint.h"
 
-#define USART0_ENABLED
-#define USART1_ENABLED
 #define BAUD 9600
 
 #define DEBUG_DDR  DDRB
