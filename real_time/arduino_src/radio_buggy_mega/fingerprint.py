@@ -19,14 +19,15 @@ def main():
     file.write("/* fingerprint.h: A compilation-time created file containing compilation time, \n")
     file.write("closest version of git, and other information of */\n\n")
     time = datetime.datetime.now()
-    file.write("#define COMPDATE \"%02d:%02d:%04d\" //day:month:year\n" %(time.day, time.month, time.year))
-    file.write("#define COMPTIME \"%02d:%02d:%02d\" //hour:minute:second\n" %(time.hour, time.minute, time.second))
-    file.write("#define HOSTNAME \"%s\"\n" %socket.gethostname().split(".")[0])
+    file.write("#ifndef FINGERPRINT_H\n#define FINGERPRINT_H\n\n")
+    file.write("#define FP_COMPDATE \"%02d:%02d:%04d\" //day:month:year\n" %(time.day, time.month, time.year))
+    file.write("#define FP_COMPTIME \"%02d:%02d:%02d\" //hour:minute:second\n" %(time.hour, time.minute, time.second))
+    file.write("#define FP_HOSTNAME \"%s\"\n" %socket.gethostname().split(".")[0])
 
 
     branch = str(subprocess.check_output(["git", "symbolic-ref", "--short", "HEAD"])).replace("\n", "")
 
-    file.write("#define BRANCHNAME \"%s\"\n" %branch)
+    file.write("#define FP_BRANCHNAME \"%s\"\n" %branch)
 
     result = str(subprocess.check_output(["git", "status"]))
 
@@ -39,9 +40,10 @@ def main():
 
     hString = str(subprocess.check_output(["git", "log", "-1", "--pretty=format:'%h'"])).rstrip().replace("'", "")
 
-    file.write("#define HEXCOMMITHASH 0x%s \n" %(hString))
-    file.write("#define STRCOMMITHASH \"%s\"\n" %(hString))
-    file.write("#define CLEANSTATUS %s\n" %str(clean).lower())
+    file.write("#define FP_HEXCOMMITHASH 0x%s \n" %(hString))
+    file.write("#define FP_STRCOMMITHASH \"%s\"\n" %(hString))
+    file.write("#define FP_CLEANSTATUS %s\n" %str(clean).lower())
+    file.write("\n#endif")
 
 
     file.close()
