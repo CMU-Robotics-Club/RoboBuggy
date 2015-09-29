@@ -83,17 +83,14 @@ _System block diagram._
 
 Our system architecture keeps a human in the loop all the time, even just to hit the emergency stop button. The human driver can either be sending drive commands (for AI training) or monitoring the AI. The command signals from the AI and human are mixed together (depending on operating mode) in the IO controller. Here we also do last level safety checks like stop on disconnection. The IO controller interfaces directly with the electromechanical systems to make braking, steering, and sensing happen. Find more information in the source directories below.
 
-AI: [real_time/surface_src](real_time/surface_src)
-
-IO Controller: [real_time/arduino_src/radio_buggy_mega](real_time/arduino_src/radio_buggy_mega)
 
 ## File Structure 
 
-THe software system is seperated into two main sections:
+The software system is seperated into two main directories (sections):
 * offline -> where code which is not executed in realtime on the buggy is stored
-* realTime -> where code which is being run in realtime on the buggy is stored 
+* real_time -> where code which is being run in realtime on the buggy is stored 
 
-Theis folder also contains: 
+This folder also contains: 
 * Pictures for this readmde file
 * configuration files
 
