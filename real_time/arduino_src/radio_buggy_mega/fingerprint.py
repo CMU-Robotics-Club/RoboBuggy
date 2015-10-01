@@ -34,8 +34,9 @@ def main():
     clean = False
 
     for line in result.rsplit("\n"):
-        if "working directory clean" in line:
+        if "up-to-date" in line:
             clean = True
+
 
 
     hString = str(subprocess.check_output(["git", "log", "-1", "--pretty=format:'%h'"])).rstrip().replace("'", "")
