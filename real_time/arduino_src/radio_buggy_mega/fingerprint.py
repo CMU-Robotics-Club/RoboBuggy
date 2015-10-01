@@ -29,14 +29,12 @@ def main():
 
     file.write("#define FP_BRANCHNAME \"%s\"\n" %branch)
 
-    result = str(subprocess.check_output(["git", "status"]))
 
-    clean = False
-
-    for line in result.rsplit("\n"):
-        if "up-to-date" in line:
-            clean = True
-
+    try:
+        subprocess.check_output(["git", "diff-index", "--quiet", "HEAD"])
+        clean = True
+    except:
+        clean = False
 
 
     hString = str(subprocess.check_output(["git", "log", "-1", "--pretty=format:'%h'"])).rstrip().replace("'", "")
