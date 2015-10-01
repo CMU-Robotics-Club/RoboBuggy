@@ -10,6 +10,7 @@
 #include "servo.h"
 // #include "uart.h"
 #include "system_clock.h"
+#include "fingerprint.h"
 
 #define BAUD 9600
 
