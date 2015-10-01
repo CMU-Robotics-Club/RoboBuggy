@@ -1,7 +1,7 @@
 """ fingerprint.py: 
 * Description: This is a python script to create a .h file defining the time 
-*   of compilation and who compiled.  Also details whether files had been
-*   modified since the last commit
+*   of compilation and who compiled.  Also details whether tracked files 
+*   have been modified since the last commit
 *
 *
 *   By Sean Buckley
@@ -31,6 +31,8 @@ def main():
 
 
     try:
+        #subprocess.check_output fails on non-zero return status
+        #Below call should return 0 if clean, 1 if tracked files have changed
         subprocess.check_output(["git", "diff-index", "--quiet", "HEAD"])
         clean = True
     except:
