@@ -162,18 +162,18 @@ public class mainFile {
 			}
 		});
 
-		// Set up the DRIVE CONTROL
-		com = "COM9"; //"COM17";
-		try {
-			System.out.println("Initializing DRIVE CONTROL Serial Connection");
-			sp = connect(com);
-			System.out.println("DRIVE CONTROL connected to " + com);
-		} catch (Exception e) {
-			System.out.println("Unable to connect to necessary device on " + com);
-			e.printStackTrace();
-			throw new Exception("Device not found error");
-		}
-		drive_ctrl.setSerialPort(sp);
-		sensorList.add(drive_ctrl);
-	}
+//		// Set up the DRIVE CONTROL
+//		com = "COM9"; //"COM17";
+//		try {
+//			System.out.println("Initializing DRIVE CONTROL Serial Connection");
+//			sp = connect(com);
+//			System.out.println("DRIVE CONTROL connected to " + com);
+//		} catch (Exception e) {
+//			System.out.println("Unable to connect to necessary device on " + com);
+//			e.printStackTrace();
+//			throw new Exception("Device not found error");
+//		}
+//		drive_ctrl.setSerialPort(sp);
+//		sensorList.add(drive_ctrl);
+//	}
 }
