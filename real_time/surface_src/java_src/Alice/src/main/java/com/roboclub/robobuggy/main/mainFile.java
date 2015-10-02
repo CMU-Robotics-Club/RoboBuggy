@@ -4,6 +4,7 @@ import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import com.roboclub.robobuggy.logging.RobotLogger;
@@ -20,12 +21,14 @@ import com.roboclub.robobuggy.ui.Gui;
 
 public class mainFile {
 	static Robot buggy;
-
 	static int num = 0;
 	
 	public static void main(String args[]) {
 		//ArrayList<Integer> cameras = new ArrayList<Integer>();  //TODO have this set the cameras to use 
 		config.getInstance();//must be run at least once
+		
+		System.out.println(Paths.get("").toAbsolutePath().toString());
+		System.err.println(Paths.get("").toAbsolutePath().toString());
 		
 		for (int i = 0; i < args.length; i++) {
 			if (args[i].equalsIgnoreCase("-g")) {

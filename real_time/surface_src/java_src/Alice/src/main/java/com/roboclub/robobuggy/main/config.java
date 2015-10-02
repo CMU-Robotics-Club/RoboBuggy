@@ -25,7 +25,7 @@ public class config {
 	public static String VISION_SYSTEM_EXECUTABLE_LOCATION = "C:\\Users\\Robot\\Documents\\GitHub\\RoboBuggy\\surface_src\\VisionSystem\\Debug\\VisionSystem.exe";
 	// "C:\\Users\\abc\\buggy-log\\VisionSystem.exe";
 
-	public static String LOG_FILE_LOCATION = "C:\\Users\\Matt\\buggy-log";
+	public static String LOG_FILE_LOCATION = "logs";
 
 	// default logging state, should the buggy start logging as soon as this
 	// program is started
@@ -59,7 +59,6 @@ public class config {
 	// iff false, connect to serial sensors 
 	public static boolean DATA_PLAY_BACK_DEFAULT = true;
 	
-
 	// current status values
 	public static boolean GUI_ON;
 	public static boolean active;
