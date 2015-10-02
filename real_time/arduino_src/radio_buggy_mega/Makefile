@@ -237,6 +237,8 @@ AVRDUDE_FLAGS += $(AVRDUDE_NO_VERIFY)
 AVRDUDE_FLAGS += $(AVRDUDE_VERBOSE)
 AVRDUDE_FLAGS += $(AVRDUDE_ERASE_COUNTER)
 
+#Change this variable to usb port to which arduino is connected
+#It can be checked by using "ls /dev" and looking for "tty.usbxxxxxx####"
 AVRDUDE_A_PORT = /dev/tty.asdf
 AVRDUDE_A_FLAGS = -v -c wiring -p $(MCU) -P $(AVRDUDE_A_PORT) -b 115200 -D
 
@@ -470,37 +472,40 @@ extcoff: $(TARGET).elf
 	@echo $(MSG_LINKING) $@
 	$(CC) $(ALL_CFLAGS) $^ --output $@ $(LDFLAGS)
 
+fingerprint:
+	$(PYTHON) fingerprint.py
+
 
 # Compile: create object files from C source files.
-%.o : %.c
+%.o : %.c fingerprint
 	@echo
 	@echo $(MSG_COMPILING) $<
 	$(CC) -c $(ALL_CFLAGS) $< -o $@ 
 
-%.o : %.cpp
+%.o : %.cpp fingerprint
 	@echo
 	@echo $(MSG_COMPILING) $<
 	$(CC) -c $(ALL_CFLAGS) $< -o $@ 
 
 # Compile: create assembler files from C source files.
-%.s : %.c
+%.s : %.c fingerprint
 	$(CC) -S $(ALL_CFLAGS) $< -o $@
 
-%.s : %.cpp
+%.s : %.cpp fingerprint
 	$(CC) -S $(ALL_CFLAGS) $< -o $@
 
 
 # Assemble: create object files from assembler source files.
-%.o : %.S
+%.o : %.S fingerprint
 	@echo
 	@echo $(MSG_ASSEMBLING) $<
 	$(CC) -c $(ALL_ASFLAGS) $< -o $@
 
 # Create preprocessed source for use in sending a bug report.
-%.i : %.c
+%.i : %.c fingerprint
 	$(CC) -E -mmcu=$(MCU) -I. $(CFLAGS) $< -o $@ 
 
-%.i : %.cpp
+%.i : %.cpp fingerprint
 	$(CC) -E -mmcu=$(MCU) -I. $(CFLAGS) $< -o $@ 
 
 
@@ -522,6 +527,7 @@ clean_list :
 	$(REMOVE) $(patsubst %.c,%.s,$(patsubst %.cpp,%.s,$(SRC)))
 	$(REMOVE) $(patsubst %.c,%.d,$(patsubst %.cpp,%.d,$(SRC)))
 	$(REMOVE) .dep/*
+	$(REMOVE) fingerprint.h
 
 
 
