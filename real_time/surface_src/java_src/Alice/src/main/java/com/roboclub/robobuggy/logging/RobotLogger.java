@@ -28,12 +28,14 @@ public final class RobotLogger {
 	public static RobotLogger getInstance() {
 		if (instance == null) {
 			logDir = new File(config.LOG_FILE_LOCATION);
-
-			if (!logDir.exists()) {
-				logDir.mkdirs();
-				System.out.println("Created directory: "
-						+ logDir.getAbsolutePath());
-			}
+			
+			logDir.mkdirs();
+			
+//			if (!logDir.exists()) {
+//				logDir.mkdirs();
+//				System.out.println("Created directory: "
+//						+ logDir.getAbsolutePath());
+//			}
 			try {
 				instance = new RobotLogger(logDir);
 			} catch (Exception e) {
