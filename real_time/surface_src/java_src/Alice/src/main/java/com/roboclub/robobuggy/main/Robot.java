@@ -82,7 +82,7 @@ public class Robot implements RosMaster {
 
 		if (config.ENCODER_DEFAULT) {
 			System.out.println("Initializing Encoder Serial Connection");
-			EncoderNode encoder = new EncoderNode(SensorChannel.ENCODER);
+			EncoderNode encoder = new EncoderNode(SensorChannel.ENCODER,SensorChannel.STEERING);
 			sensorList.add(encoder);
 		
 			new Subscriber(SensorChannel.ENCODER.getMsgPath(), new MessageListener() {

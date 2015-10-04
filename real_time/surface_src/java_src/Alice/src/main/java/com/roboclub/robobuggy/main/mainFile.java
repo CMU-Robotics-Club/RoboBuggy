@@ -112,26 +112,26 @@ public class mainFile {
 		
 		ImuNode imu = new ImuNode(SensorChannel.IMU);
 		GpsNode gps = new GpsNode(SensorChannel.GPS);
-		EncoderNode enc = new EncoderNode(SensorChannel.ENCODER);
+		EncoderNode enc = new EncoderNode(SensorChannel.ENCODER,SensorChannel.STEERING);
 		SteeringNode drive_ctrl = new SteeringNode(SensorChannel.DRIVE_CTRL);
 		
 		// Set up the IMU
 		SerialPort sp = null;
-		String com = "COM6";//"COM18";
-//		try {
-//			System.out.println("Initializing IMU Serial Connection");
-//			sp = connect(com);
-//			System.out.println("IMU connected to " + com);
-//		} catch (Exception e) {
-//			System.out.println("Unable to connect to necessary device on " + com);
-//			e.printStackTrace();
-//			throw new Exception("Device not found error");
-//		}
-//		imu.setSerialPort(sp);
-//		sensorList.add(imu);
+		String com = config.COM_PORT_IMU;
+		try {
+			System.out.println("Initializing IMU Serial Connection");
+			sp = connect(com);
+			System.out.println("IMU connected to " + com);
+		} catch (Exception e) {
+			System.out.println("Unable to connect to necessary device on " + com);
+			e.printStackTrace();
+			throw new Exception("Device not found error");
+		}
+		imu.setSerialPort(sp);
+		sensorList.add(imu);
 
 		// Set up the GPS
-		com = "COM8"; //"COM16";
+		com = config.COM_PORT_GPS_INTEGRATED;
 		try {
 			System.out.println("Initializing GPS Serial Connection");
 			sp = connect(com);
@@ -145,18 +145,18 @@ public class mainFile {
 		sensorList.add(gps);
 	
 		// Set up the Encoder
-//		com = "COM3"; //"COM15";
-//		try {
-//			System.out.println("Initializing ENCODER Serial Connection");
-//			sp = connect(com);
-//			System.out.println("ENCODER connected to " + com);
-//		} catch (Exception e) {
-//			System.out.println("Unable to connect to necessary device on " + com);
-//			e.printStackTrace();
-//			throw new Exception("Device not found error");
-//		}
-//		enc.setSerialPort(sp);
-//		sensorList.add(enc);
+		com = config.COM_PORT_ENCODER;
+		try {
+			System.out.println("Initializing ENCODER Serial Connection");
+			sp = connect(com);
+			System.out.println("ENCODER connected to " + com);
+		} catch (Exception e) {
+			System.out.println("Unable to connect to necessary device on " + com);
+			e.printStackTrace();
+			throw new Exception("Device not found error");
+		}
+		enc.setSerialPort(sp);
+		sensorList.add(enc);
 	
 		new Subscriber(SensorChannel.ENCODER.getMsgPath(), new MessageListener() {
 			@Override
@@ -166,7 +166,7 @@ public class mainFile {
 		});
 
 		// Set up the DRIVE CONTROL
-//		com = "COM9"; //"COM17";
+//		com = config.COM_PORT_DRIVE_CONTROL;
 //		try {
 //			System.out.println("Initializing DRIVE CONTROL Serial Connection");
 //			sp = connect(com);
