@@ -50,11 +50,12 @@ public class RBSerialMessage {
 			case ENC_MS_SINCE_RESET:
 			case ENC_TICK_SINCE_RESET:
 			case ENC_TICKS_SINCE_LAST:
-
+				
 			case STEERING:
 			case BRAKE:
 			case AUTO:
 			case BATTERY:
+			case RBSM_MID_MEGA_STEER_FEEDBACK:
 				
 			case ERROR:
 			case DEVICE_ID:

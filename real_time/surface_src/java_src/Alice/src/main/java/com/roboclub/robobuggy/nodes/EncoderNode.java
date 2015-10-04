@@ -97,7 +97,8 @@ public class EncoderNode extends SerialNode implements Node {
 
 	@Override
 	public int baudRate() {
-		return 9600;
+		return 115200;
+		//return 9600;
 	}
 
 	@Override
@@ -119,9 +120,9 @@ public class EncoderNode extends SerialNode implements Node {
 		}
 		
 		RBSerialMessage message = rbp.getMessage();
-		if(message.getHeaderByte() == RBSerialMessage.ENC_TICKS_SINCE_LAST) {
+		if(message.getHeaderByte() == RBSerialMessage.ENC_TICK_SINCE_RESET) {
 			// This is a delta-distance! Do a thing!
-			encTicks += message.getDataWord();
+			encTicks = message.getDataWord() & 0xFFF;
 			estimateVelocity(message.getDataWord());
 			System.out.println(encTicks);
 		}
