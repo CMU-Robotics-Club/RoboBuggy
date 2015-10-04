@@ -112,7 +112,7 @@ public class mainFile {
 		
 		ImuNode imu = new ImuNode(SensorChannel.IMU);
 		GpsNode gps = new GpsNode(SensorChannel.GPS);
-		EncoderNode enc = new EncoderNode(SensorChannel.ENCODER);
+		EncoderNode enc = new EncoderNode(SensorChannel.ENCODER,SensorChannel.STEERING);
 		SteeringNode drive_ctrl = new SteeringNode(SensorChannel.DRIVE_CTRL);
 		
 		// Set up the IMU

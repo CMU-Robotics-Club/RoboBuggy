@@ -6,6 +6,7 @@ import gnu.io.SerialPort;
 
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
+import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
@@ -16,6 +17,7 @@ import com.roboclub.robobuggy.serial.RBSerialMessage;
 import com.roboclub.robobuggy.serial.SerialNode;
 
 /**
+ * @author Trevor Decker
  * @author Matt Sebek
  * @author Kevin Brennan
  *
@@ -23,6 +25,8 @@ import com.roboclub.robobuggy.serial.SerialNode;
  * 
  * DESCRIPTION: Potential replacement for previous serial-reading framework.
  */
+
+//TODO change file name to be mega comm or something like that 
 
 public class EncoderNode extends SerialNode implements Node {
 	private static final double TICKS_PER_REV = 7.0;
@@ -33,27 +37,36 @@ public class EncoderNode extends SerialNode implements Node {
 
 	// accumulated
 	private int encTicks = 0;
+	private int potValue = -1;
 	
 	// last state
 	private double accDistLast = 0.0;
 	private double instVelocityLast = 0.0;
 	private Date timeLast = new Date();
 	
-	Publisher messagePub;
-	Publisher statePub;
+	Publisher messagePub_enc;
+	Publisher messagePub_pot;
+	Publisher statePub_enc;
+	Publisher statePub_pot;
 
-	public EncoderNode(SensorChannel sensor) {
+
+	public EncoderNode(SensorChannel sensor_enc,SensorChannel sensor_pot) {
 		super("ENCODER");
-		messagePub = new Publisher(sensor.getMsgPath());
-		statePub = new Publisher(sensor.getStatePath());
+		messagePub_enc = new Publisher(sensor_enc.getMsgPath());
+		messagePub_pot = new Publisher(sensor_pot.getMsgPath());
+		statePub_enc = new Publisher(sensor_enc.getStatePath());
+		statePub_pot = new Publisher(sensor_pot.getStatePath());
+
 		
-		statePub.publish(new StateMessage(SensorState.DISCONNECTED));
+		statePub_enc.publish(new StateMessage(SensorState.DISCONNECTED));
+		statePub_pot.publish(new StateMessage(SensorState.DISCONNECTED));
 	}
 	
 	@Override
 	public void setSerialPort(SerialPort sp) {
 		super.setSerialPort(sp);
-		statePub.publish(new StateMessage(SensorState.ON));
+		statePub_enc.publish(new StateMessage(SensorState.ON));
+		statePub_pot.publish(new StateMessage(SensorState.ON));
 	}
 	
 	private void estimateVelocity(int dataWord) {
@@ -65,7 +78,7 @@ public class EncoderNode extends SerialNode implements Node {
 		instVelocityLast = instVelocity;
 		timeLast = currTime;	
 		
-		messagePub.publish(new EncoderMeasurement(currTime, dataWord, accDist, instVelocity, instAccel));
+		messagePub_enc.publish(new EncoderMeasurement(currTime, dataWord, accDist, instVelocity, instAccel));
 	}
 	
 	@Override
@@ -100,6 +113,7 @@ public class EncoderNode extends SerialNode implements Node {
 			case 6: break;
 			default: {
 				System.out.println("HOW DID NOT A SIX GET HERE");
+				//TODO add error
 			}
 		
 		}
@@ -110,6 +124,13 @@ public class EncoderNode extends SerialNode implements Node {
 			encTicks += message.getDataWord();
 			estimateVelocity(message.getDataWord());
 			System.out.println(encTicks);
+		}
+		
+		if(message.getHeaderByte() == RBSerialMessage.RBSM_MID_MEGA_STEER_FEEDBACK) {
+			// This is a delta-distance! Do a thing!
+			potValue = message.getDataWord();
+			System.out.println(potValue);
+			messagePub_pot.publish(new SteeringMeasurement(potValue));
 		}
 		
 		
