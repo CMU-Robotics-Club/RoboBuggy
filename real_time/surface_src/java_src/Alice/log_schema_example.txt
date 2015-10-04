@@ -1,0 +1,31 @@
+{
+    "name": "Robobuggy Data Logs",
+    "schema_version": 1.0,
+    "date_recorded": "10/4/2015",
+    "sensor_data":
+    [
+        {
+            "timestamp": "17:34:44.123",
+            "data": {
+                "name": "imu",
+                "params": {
+                    "roll": "-120.3141",
+                    "pitch": "0.123456",
+                    "yaw": "3.14159"
+                }
+            }
+        },
+        {
+            "timestamp": "17:37:31.999",
+            "data": {
+                "name": "gps",
+                "params": {
+                    "lat": "40.4344535",
+                    "lon": "-79.3848573",
+                    "quality": "1",
+                    "alt": "34",
+                }
+            }
+        }
+    ]
+}
