@@ -12,7 +12,7 @@
 #include "system_clock.h"
 #include "fingerprint.h"
 
-#define BAUD 9600
+#define BAUD 115200
 
 #define DEBUG_DDR  DDRB
 #define DEBUG_PORT PORTB
