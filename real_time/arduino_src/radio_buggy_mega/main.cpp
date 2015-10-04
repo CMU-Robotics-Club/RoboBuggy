@@ -327,7 +327,7 @@ int main(void) {
     g_rbsm.Send(RBSM_MID_MEGA_BATTERY_LEVEL, g_current_voltage);
     g_rbsm.Send(RBSM_MID_MEGA_STEER_FEEDBACK, (long int)g_steering_feedback);
     g_rbsm.Send(RBSM_MID_ENC_TICKS_RESET, g_encoder_ticks);
-    g_rbsm.Send(RBSM_MID_ENC_TIMESTAMP, micros());
+    g_rbsm.Send(RBSM_MID_ENC_TIMESTAMP, millis());
   }
 
 
