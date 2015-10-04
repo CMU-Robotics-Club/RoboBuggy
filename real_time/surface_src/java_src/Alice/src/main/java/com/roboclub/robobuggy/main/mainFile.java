@@ -7,6 +7,7 @@ import gnu.io.SerialPort;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import com.roboclub.robobuggy.sensors.SensorManager;
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.nodes.EncoderNode;
 import com.roboclub.robobuggy.nodes.GpsNode;
@@ -61,102 +62,114 @@ public class mainFile {
 		}	
 	}
 	
-	// Open a serial port
-	private static SerialPort connect(String portName) throws Exception
-    {
-        CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
-        if ( portIdentifier.isCurrentlyOwned() )
-        {
-            System.out.println("Error: Port is currently in use");
-            return null;
-        }
-        else
-        {
-        	//TODO fix this so that it is not potato 
-            CommPort commPort = portIdentifier.open("potato", 2000);
-            
-            if ( commPort instanceof SerialPort )
-            {
-                SerialPort serialPort = (SerialPort) commPort;
-                serialPort.setSerialPortParams(57600,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
-                return serialPort;
-            }
-            else
-            {
-                System.out.println("Error: Only serial ports are handled by this example.");
-            }
-        }
-		return null;
-    }	
+//	// Open a serial port
+//	private static SerialPort connect(String portName) throws Exception
+//    {
+//        CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
+//        if ( portIdentifier.isCurrentlyOwned() )
+//        {
+//            System.out.println("Error: Port is currently in use");
+//            return null;
+//        }
+//        else
+//        {
+//        	//TODO fix this so that it is not potato 
+//            CommPort commPort = portIdentifier.open("potato", 2000);
+//            
+//            if ( commPort instanceof SerialPort )
+//            {
+//                SerialPort serialPort = (SerialPort) commPort;
+//                serialPort.setSerialPortParams(57600,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
+//                return serialPort;
+//            }
+//            else
+//            {
+//                System.out.println("Error: Only serial ports are handled by this example.");
+//            }
+//        }
+//		return null;
+//    }	
+	
+	
 	public static void bringup_sim() throws Exception {
-		ArrayList<Node> sensorList = new ArrayList<Node>();
-
+//		ArrayList<Node> sensorList = new ArrayList<Node>();
+//
 		// Turn on logger!
 		if(config.logging){
 			System.out.println("Starting Logging");
 			RobotLogger.getInstance();
 		}
-
-		// Initialize Sensor
-		/*if (config.GPS_DEFAULT) {
-			System.out.println("Initializing GPS Serial Connection");
-			FauxGps gps = new FauxGps(SensorChannel.GPS);
-			sensorList.add(gps);
-
-		}*/
+//
+//		// Initialize Sensor
+//		/*if (config.GPS_DEFAULT) {
+//			System.out.println("Initializing GPS Serial Connection");
+//			FauxGps gps = new FauxGps(SensorChannel.GPS);
+//			sensorList.add(gps);
+//
+//		}*/
+		
+		
 
 		Gui.EnableLogging();
-
-	
-//		LoggingNode ln = new LoggingNode(SensorChannel.IMU.getMsgPath(), "C:\\Users\\Matt\\buggy-log\\run1");
+		SensorManager sm = SensorManager.getInstance();
 		
-		ImuNode imu = new ImuNode(SensorChannel.IMU);
-		GpsNode gps = new GpsNode(SensorChannel.GPS);
-		EncoderNode enc = new EncoderNode(SensorChannel.ENCODER,SensorChannel.STEERING);
-		SteeringNode drive_ctrl = new SteeringNode(SensorChannel.DRIVE_CTRL);
-		
-		// Set up the IMU
-		SerialPort sp = null;
-		String com = config.COM_PORT_IMU;
-		try {
-			System.out.println("Initializing IMU Serial Connection");
-			sp = connect(com);
-			System.out.println("IMU connected to " + com);
-		} catch (Exception e) {
-			System.out.println("Unable to connect to necessary device on " + com);
-			e.printStackTrace();
-			throw new Exception("Device not found error");
-		}
-		imu.setSerialPort(sp);
-		sensorList.add(imu);
-
-		// Set up the GPS
-		com = config.COM_PORT_GPS_INTEGRATED;
-		try {
-			System.out.println("Initializing GPS Serial Connection");
-			sp = connect(com);
-			System.out.println("GPS connected to " + com);
-		} catch (Exception e) {
-			System.out.println("Unable to connect to necessary device on " + com);
-			e.printStackTrace();
-			throw new Exception("Device not found error");
-		}
-		gps.setSerialPort(sp);
-		sensorList.add(gps);
+		String path = "logs/2015-10-04-07-15-51/sensors.txt";
+		sm.newFauxSensors(path,
+				SensorChannel.IMU
+				,SensorChannel.GPS
+				,SensorChannel.DRIVE_CTRL
+				,SensorChannel.ENCODER
+				);
 	
-		// Set up the Encoder
-		com = config.COM_PORT_ENCODER;
-		try {
-			System.out.println("Initializing ENCODER Serial Connection");
-			sp = connect(com);
-			System.out.println("ENCODER connected to " + com);
-		} catch (Exception e) {
-			System.out.println("Unable to connect to necessary device on " + com);
-			e.printStackTrace();
-			throw new Exception("Device not found error");
-		}
-		enc.setSerialPort(sp);
-		sensorList.add(enc);
+////		LoggingNode ln = new LoggingNode(SensorChannel.IMU.getMsgPath(), "C:\\Users\\Matt\\buggy-log\\run1");
+//		
+//		ImuNode imu = new ImuNode(SensorChannel.IMU);
+//		GpsNode gps = new GpsNode(SensorChannel.GPS);
+//		EncoderNode enc = new EncoderNode(SensorChannel.ENCODER,SensorChannel.STEERING);
+//		SteeringNode drive_ctrl = new SteeringNode(SensorChannel.DRIVE_CTRL);
+//		
+//		// Set up the IMU
+//		SerialPort sp = null;
+//		String com = config.COM_PORT_IMU;
+//		try {
+//			System.out.println("Initializing IMU Serial Connection");
+//			sp = connect(com);
+//			System.out.println("IMU connected to " + com);
+//		} catch (Exception e) {
+//			System.out.println("Unable to connect to necessary device on " + com);
+//			e.printStackTrace();
+//			throw new Exception("Device not found error");
+//		}
+//		imu.setSerialPort(sp);
+//		sensorList.add(imu);
+//
+//		// Set up the GPS
+//		com = config.COM_PORT_GPS_INTEGRATED;
+//		try {
+//			System.out.println("Initializing GPS Serial Connection");
+//			sp = connect(com);
+//			System.out.println("GPS connected to " + com);
+//		} catch (Exception e) {
+//			System.out.println("Unable to connect to necessary device on " + com);
+//			e.printStackTrace();
+//			throw new Exception("Device not found error");
+//		}
+//		gps.setSerialPort(sp);
+//		sensorList.add(gps);
+//	
+//		// Set up the Encoder
+//		com = config.COM_PORT_ENCODER;
+//		try {
+//			System.out.println("Initializing ENCODER Serial Connection");
+//			sp = connect(com);
+//			System.out.println("ENCODER connected to " + com);
+//		} catch (Exception e) {
+//			System.out.println("Unable to connect to necessary device on " + com);
+//			e.printStackTrace();
+//			throw new Exception("Device not found error");
+//		}
+//		enc.setSerialPort(sp);
+//		sensorList.add(enc);
 	
 		new Subscriber(SensorChannel.ENCODER.getMsgPath(), new MessageListener() {
 			@Override
