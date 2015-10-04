@@ -55,6 +55,17 @@
 #define RX_AUTON_INT  INT1_vect
 #define RX_AUTON_INTN 1
 
+#define ENCODER_DDR  DDRD
+#define ENCODER_PORT PORTD
+#define ENCODER_PIN  PIND
+#define ENCODER_PINN PD2 // arduino 19
+#define ENCODER_INT  INT2_vect
+#define ENCODER_INTN 2
+#define ENCODER_TIMEOUT_US 500 // 50mph w/ 6" wheel = 280 ticks/sec; 4000us/tick
+
+#define BATTERY_ADC 0
+#define STEERING_POT_ADC 9
+
 #define LED_DANGER_DDR  DDRB
 #define LED_DANGER_PORT PORTB
 #define LED_DANGER_PINN PB6 // arduino 12
@@ -70,12 +81,15 @@ static bool g_brake_state_engaged; // 0 = disengaged, !0 = engaged.
 static bool g_brake_needs_reset; // 0 = nominal, !0 = needs reset
 static bool g_is_autonomous;
 static unsigned long g_current_voltage;
+static unsigned long g_steering_feedback;
+static volatile unsigned long g_encoder_ticks;
+static volatile unsigned long g_encoder_time_last;
 static int smoothed_thr;
 static int smoothed_auton;
 static int steer_angle;
 static int auto_steering_angle;
 
-RBSerialMessages g_rbsm_endpoint;
+RBSerialMessages g_rbsm;
 rb_message_t g_new_rbsm;
 ServoReceiver g_steering_rx;
 ServoReceiver g_brake_rx;
@@ -105,7 +119,9 @@ void adc_init(void) {
 
 
 uint8_t adc_read_blocking(uint8_t channel) {
-  ADMUX = (ADMUX & 0xF0) | (channel & 0x0F);
+  // in single ended mode, highest bit of ADC channel is in ADCSRB
+  ADMUX = (ADMUX & 0xE0) | (channel & 0x07);
+  ADCSRB = (ADCSRB & 0xF7) | (channel & 0x08);
   ADCSRA |= _BV(ADSC);
   while((ADCSRA & _BV(ADSC)) == 1) {}
   return ADCH;
@@ -151,6 +167,12 @@ int main(void) {
   DEBUG_PORT &= ~_BV(DEBUG_PINN);
   DEBUG_DDR |= _BV(DEBUG_PINN);
 
+  // setup encoder pin and interrupt
+  ENCODER_DDR &= ~_BV(ENCODER_PINN);
+  EIMSK |= _BV(INT2);
+  EICRA |= _BV(ISC20);
+  EICRA &= ~_BV(ISC21);
+
   // prepare uart0 (onboard usb) for rbsm
   uart0_init(UART_BAUD_SELECT(BAUD, F_CPU));
   uart0_fdevopen(&g_uart_rbsm);
@@ -173,7 +195,7 @@ int main(void) {
   LED_DANGER_DDR |= _BV(LED_DANGER_PINN);
   
   // setup rbsm
-  g_rbsm_endpoint.Init(&g_uart_rbsm, &g_uart_rbsm);
+  g_rbsm.Init(&g_uart_rbsm, &g_uart_rbsm);
 
   // set up rc receivers
   g_steering_rx.Init(&RX_STEERING_PIN, RX_STEERING_PINN, RX_STEERING_INTN);
@@ -256,7 +278,7 @@ int main(void) {
        delta3 > CONNECTION_TIMEOUT_US) {
       // we haven't heard from the RC receiver in too long
       if(g_brake_needs_reset == false) {
-        g_rbsm_endpoint.Send(RBSM_MID_ERROR, RBSM_EID_RC_LOST_SIGNAL);
+        g_rbsm.Send(RBSM_MID_ERROR, RBSM_EID_RC_LOST_SIGNAL);
       }
       g_brake_needs_reset = true;
     }
@@ -265,8 +287,13 @@ int main(void) {
     // 16k ohm on top.
     // Calculated map normally set to 13000, but the avcc is 4.86 volts
     // rather than 5.
-    g_current_voltage = map_signal(adc_read_blocking(0), 0, 255, 0, 12636); // in millivolts
+    g_current_voltage = adc_read_blocking(BATTERY_ADC);
+    g_current_voltage = map_signal(g_current_voltage, 0, 255, 0, 12636); // in millivolts
     
+    // Read/convert steering pot
+    g_steering_feedback = adc_read_blocking(STEERING_POT_ADC);
+    g_steering_feedback = map_signal(g_steering_feedback, 0, 255, -10000, 10000);
+
     // Set outputs
     if(g_brake_state_engaged == false && g_brake_needs_reset == false) {
       brake_raise();
@@ -276,11 +303,11 @@ int main(void) {
 
     if(g_is_autonomous){
       steering_set(auto_steering_angle);
-      g_rbsm_endpoint.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)(auto_steering_angle));
+      g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)(auto_steering_angle));
     }
     else if(!g_is_autonomous){
       steering_set(steer_angle);
-      g_rbsm_endpoint.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
+      g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
     }
     else{
       // dbg_println("Somehow not in either autonomous or teleop");
@@ -293,15 +320,14 @@ int main(void) {
       LED_DANGER_PORT &= ~_BV(LED_DANGER_PINN);
     }
 
-    // Send telemetry messages
-    g_rbsm_endpoint.Send(RBSM_MID_DEVICE_ID, RBSM_DID_DRIVE_ENCODER);
-    // g_rbsm_endpoint.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
-    g_rbsm_endpoint.Send(RBSM_MID_MEGA_BRAKE_STATE, 
-                            (long unsigned)g_brake_state_engaged);
-    g_rbsm_endpoint.Send(RBSM_MID_MEGA_AUTON_STATE,
-                            (long unsigned)g_is_autonomous);
-    g_rbsm_endpoint.Send(RBSM_MID_MEGA_BATTERY_LEVEL, g_current_voltage);
-
+    // Send the rest of the telemetry messages
+    g_rbsm.Send(RBSM_MID_DEVICE_ID, RBSM_DID_MEGA);
+    g_rbsm.Send(RBSM_MID_MEGA_BRAKE_STATE,(long unsigned)g_brake_state_engaged);
+    g_rbsm.Send(RBSM_MID_MEGA_AUTON_STATE, (long unsigned)g_is_autonomous);
+    g_rbsm.Send(RBSM_MID_MEGA_BATTERY_LEVEL, g_current_voltage);
+    g_rbsm.Send(RBSM_MID_MEGA_STEER_FEEDBACK, (long int)g_steering_feedback);
+    g_rbsm.Send(RBSM_MID_ENC_TICKS_RESET, g_encoder_ticks);
+    g_rbsm.Send(RBSM_MID_ENC_TIMESTAMP, micros());
   }
 
 
@@ -321,4 +347,13 @@ ISR(RX_BRAKE_INT) {
 
 ISR(RX_AUTON_INT) {
   g_auton_rx.OnInterruptReceiver();
+}
+
+ISR(ENCODER_INT) {
+  unsigned long time_now = micros();
+  // debounce encoder tick count
+  if(time_now - g_encoder_time_last > ENCODER_TIMEOUT_US) {
+    g_encoder_ticks++;
+  }
+  g_encoder_time_last = time_now;
 }
