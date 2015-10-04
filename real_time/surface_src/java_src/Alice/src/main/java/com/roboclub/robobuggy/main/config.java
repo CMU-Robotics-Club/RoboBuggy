@@ -38,12 +38,18 @@ public class config {
 	public static boolean AUTONOMUS_DEFAULT = false;
 
 	// sensor default settings (true for on false for off)
-
 	public static boolean DRIVE_DEFAULT = true;
 	public static boolean IMU_DEFAULT = true;
 	public static boolean GPS_DEFAULT = true;
 	public static boolean ENCODER_DEFAULT = true;
 	public static boolean VISION_SYSTEM_DEFAULT = true;
+	
+	//sensor com ports
+	public static String COM_PORT_IMU = "COM6";
+	public static String COM_PORT_GPS_INTEGRATED = "COM5";
+	public static String COM_PORT_GPS_STANDALONE = "COM8";
+	public static String COM_PORT_ENCODER = "COM3";
+	public static String COM_PORT_DRIVE_CONTROL = "COM9";
 	
 	//for turning indvidual cams on and off
 	public static boolean FRONT_CAM_ON = false;

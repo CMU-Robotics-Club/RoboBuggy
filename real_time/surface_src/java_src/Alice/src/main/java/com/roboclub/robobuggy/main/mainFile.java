@@ -117,7 +117,7 @@ public class mainFile {
 		
 		// Set up the IMU
 		SerialPort sp = null;
-		String com = "COM6";//"COM18";
+		String com = config.COM_PORT_IMU;
 		try {
 			System.out.println("Initializing IMU Serial Connection");
 			sp = connect(com);
@@ -131,7 +131,7 @@ public class mainFile {
 		sensorList.add(imu);
 
 		// Set up the GPS
-		com = "COM5"; //"COM16";
+		com = config.COM_PORT_GPS_INTEGRATED;
 		try {
 			System.out.println("Initializing GPS Serial Connection");
 			sp = connect(com);
@@ -145,7 +145,7 @@ public class mainFile {
 		sensorList.add(gps);
 	
 		// Set up the Encoder
-		com = "COM3"; //"COM15";
+		com = config.COM_PORT_ENCODER;
 		try {
 			System.out.println("Initializing ENCODER Serial Connection");
 			sp = connect(com);
@@ -166,7 +166,7 @@ public class mainFile {
 		});
 
 		// Set up the DRIVE CONTROL
-//		com = "COM9"; //"COM17";
+//		com = config.COM_PORT_DRIVE_CONTROL;
 //		try {
 //			System.out.println("Initializing DRIVE CONTROL Serial Connection");
 //			sp = connect(com);
