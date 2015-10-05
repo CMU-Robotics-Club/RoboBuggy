@@ -8,10 +8,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import com.roboclub.robobuggy.logging.RobotLogger;
-import com.roboclub.robobuggy.nodes.EncoderNode;
+import com.roboclub.robobuggy.nodes.RBSMNode;
 import com.roboclub.robobuggy.nodes.GpsNode;
 import com.roboclub.robobuggy.nodes.ImuNode;
-import com.roboclub.robobuggy.nodes.SteeringNode;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.Node;
@@ -24,7 +23,6 @@ public class mainFile {
 	static int num = 0;
 	
 	public static void main(String args[]) {
-		//ArrayList<Integer> cameras = new ArrayList<Integer>();  //TODO have this set the cameras to use 
 		config.getInstance();//must be run at least once
 		
 		System.out.println(Paths.get("").toAbsolutePath().toString());
@@ -97,23 +95,12 @@ public class mainFile {
 			RobotLogger.getInstance();
 		}
 
-		// Initialize Sensor
-		/*if (config.GPS_DEFAULT) {
-			System.out.println("Initializing GPS Serial Connection");
-			FauxGps gps = new FauxGps(SensorChannel.GPS);
-			sensorList.add(gps);
-
-		}*/
-
 		Gui.EnableLogging();
 
-	
-//		LoggingNode ln = new LoggingNode(SensorChannel.IMU.getMsgPath(), "C:\\Users\\Matt\\buggy-log\\run1");
-		
+		//setup objects for each of the driver nodes 
 		ImuNode imu = new ImuNode(SensorChannel.IMU);
 		GpsNode gps = new GpsNode(SensorChannel.GPS);
-		EncoderNode enc = new EncoderNode(SensorChannel.ENCODER,SensorChannel.STEERING);
-		SteeringNode drive_ctrl = new SteeringNode(SensorChannel.DRIVE_CTRL);
+		RBSMNode enc = new RBSMNode(SensorChannel.ENCODER,SensorChannel.STEERING);
 		
 		// Set up the IMU
 		SerialPort sp = null;
@@ -164,19 +151,5 @@ public class mainFile {
 				//System.out.println(m.toLogString());
 			}
 		});
-
-		// Set up the DRIVE CONTROL
-//		com = config.COM_PORT_DRIVE_CONTROL;
-//		try {
-//			System.out.println("Initializing DRIVE CONTROL Serial Connection");
-//			sp = connect(com);
-//			System.out.println("DRIVE CONTROL connected to " + com);
-//		} catch (Exception e) {
-//			System.out.println("Unable to connect to necessary device on " + com);
-//			e.printStackTrace();
-//			throw new Exception("Device not found error");
-//		}
-//		drive_ctrl.setSerialPort(sp);
-//		sensorList.add(drive_ctrl);
 	}
 }
