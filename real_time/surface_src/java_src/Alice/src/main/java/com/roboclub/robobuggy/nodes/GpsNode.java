@@ -1,5 +1,6 @@
 package com.roboclub.robobuggy.nodes;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.roboclub.robobuggy.messages.GpsMeasurement;
@@ -77,6 +78,12 @@ public class GpsNode extends SerialNode implements Node {
 		return DD + MM/60.0 + SS / 3600.0;
 	}
 	
+	private double convertMinSecToFloat_Longitude(String dddmmmmm) {
+		double ddd = Float.parseFloat(dddmmmmm.substring(0, 3));
+		double mins = Float.parseFloat(dddmmmmm.substring(3));
+		return ddd + mins / 60.0;
+	}
+	
 	@Override
 	public int peel(byte[] buffer, int start, int bytes_available) {
 		// TODO replace 80 with max message length
@@ -134,7 +141,7 @@ public class GpsNode extends SerialNode implements Node {
 			System.out.println("uhoh, you can't go not north or south!");
 			throw new RuntimeException();
 		}
-		double longitude = convertMinutesSecondsToFloat(ar[4]);
+		double longitude = convertMinSecToFloat_Longitude(ar[4]);
 		boolean west;
 		if(ar[5].equals("W")) {
 			west = true;
