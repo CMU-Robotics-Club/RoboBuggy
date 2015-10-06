@@ -45,6 +45,7 @@
 #define RBSM_MID_MEGA_BRAKE_STATE 21
 #define RBSM_MID_MEGA_AUTON_STATE 22
 #define RBSM_MID_MEGA_BATTERY_LEVEL 23
+#define RBSM_MID_COMP_HASH 30
 #define RBSM_MID_RESERVED 252 // 0xFC, message head
 #define RBSM_MID_ERROR 254
 #define RBSM_MID_DEVICE_ID 255
@@ -64,13 +65,15 @@
 #define RBSM_ERROR_INVALID_MESSAGE -2
 
 
-typedef struct rb_message {
+typedef struct rb_message 
+{
   char message_id;
   uint32_t data;
 } rb_message_t;
 
 
-class RBSerialMessages {
+class RBSerialMessages 
+{
  public:
   RBSerialMessages();
   int Init(FILE *in_file, FILE *out_file);
