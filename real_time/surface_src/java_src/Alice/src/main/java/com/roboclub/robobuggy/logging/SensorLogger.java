@@ -81,7 +81,6 @@ public final class SensorLogger {
 				new Subscriber(channel.getMsgPath(), new MessageListener() {
 					@Override
 					public void actionPerformed(String topicName, Message m) {
-						System.out.println("Got from " + topicName);
 						_logQueue.offer(topicName + "," + m.toLogString());
 					}
 				}));
