@@ -2,6 +2,7 @@
     "name": "Robobuggy Data Logs",
     "schema_version": X.Y,
     "date_recorded": "mm/dd/yyyy",
+    "software_version": x.y.z,
     "sensor_data":
     [
         {
@@ -17,5 +18,11 @@
             }
         },
         ...
-    ]
+    ],
+    "data_breakdown": {
+        "sensor1": X_times,
+        "sensor2": y_times,
+        ...
+        "sensorN": z_times
+    }
 }
