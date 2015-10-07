@@ -2,6 +2,7 @@
     "name": "Robobuggy Data Logs",
     "schema_version": 1.0,
     "date_recorded": "10/04/2015",
+    "software_version": 1.0.0,
     "sensor_data":
     [
         {
@@ -27,5 +28,9 @@
                 }
             }
         }
-    ]
+    ],
+    "data_breakdown": {
+        "imu": 1,
+        "gps": 1
+    }
 }
