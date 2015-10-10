@@ -23,8 +23,8 @@
 #define CONNECTION_TIMEOUT_US 1000000L // 1000ms
 
 #if BUGGY == transistor 
-  #define PWM_OFFSET_STEERING_OUT 1900
-  #define PWM_SCALE_STEERING_OUT -165
+  #define PWM_OFFSET_STEERING_OUT 1850
+  #define PWM_SCALE_STEERING_OUT -220
   #define PWM_OFFSET_STORED_ANGLE 0
   #define PWM_SCALE_STORED_ANGLE 1000 // in hundredths of a degree for precision
 #elif BUGGY == nixie
