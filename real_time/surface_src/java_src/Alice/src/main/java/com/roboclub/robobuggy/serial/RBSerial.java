@@ -33,13 +33,13 @@ public class RBSerial {
 	
 	private static int parseInt(byte[] buf, int start, int num_elements) {
 		int val = 0;
-		val |= buf[(start + 1) % buf.length];
+		val += (int)buf[(start + 1) % buf.length ] &0xff;
 		val = val << 0x8;
-		val |= buf[(start + 2) % buf.length];
+		val += (int)buf[(start + 2) % buf.length] &0xff;
 		val = val << 0x8;
-		val |= buf[(start + 3) % buf.length];
+		val += (int)buf[(start + 3) % buf.length] &0xff;
 		val = val << 0x8;
-		val |= buf[(start + 4) % buf.length];
+		val += (int)buf[(start + 4) % buf.length] &0xff;
 		return val;
 	}
 	
