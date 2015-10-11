@@ -101,7 +101,7 @@ public class mainFile {
 		ImuNode imu = new ImuNode(SensorChannel.IMU);
 		GpsNode gps = new GpsNode(SensorChannel.GPS);
 		RBSMNode enc = new RBSMNode(SensorChannel.ENCODER,SensorChannel.STEERING);
-		
+		System.out.println("create");
 		// Set up the IMU
 		SerialPort sp = null;
 		String com = config.COM_PORT_IMU;

@@ -68,6 +68,7 @@ public class RBSMNode extends SerialNode implements Node
 		
 		statePub_enc.publish(new StateMessage(SensorState.DISCONNECTED));
 		statePub_pot.publish(new StateMessage(SensorState.DISCONNECTED));
+		System.out.println("rbsmnode start");
 	}
 	
 	@Override
@@ -117,11 +118,13 @@ public class RBSMNode extends SerialNode implements Node
 	@Override
 	public int peel(byte[] buffer, int start, int bytes_available) 
 	{
+		System.out.println("peeling");
 		// The Encoder sends 3 types of messages
 		//  - Encoder ticks since last message (keep)
 		//  - Number of ticks since last reset
 		//  - Timestamp since reset
 		RBPair rbp = RBSerial.peel(buffer, start, bytes_available);
+		System.out.println("I hate this");
 		switch(rbp.getNumberOfBytesRead()) 
 		{
 			case 0: return 0;
@@ -135,6 +138,7 @@ public class RBSMNode extends SerialNode implements Node
 		
 		}
 		
+		System.out.println("trs");
 		RBSerialMessage message = rbp.getMessage();
 		if(message.getHeaderByte() == RBSerialMessage.ENC_TICK_SINCE_RESET) 
 		{
