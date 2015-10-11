@@ -26,7 +26,8 @@ import com.roboclub.robobuggy.serial.SerialNode;
  * DESCRIPTION: node for talking to the the low level controller via rbsm
  */
 
-public class RBSMNode extends SerialNode implements Node {
+public class RBSMNode extends SerialNode implements Node 
+{
 	private static final double TICKS_PER_REV = 7.0;
 	
 	// Measured as 2 feet. Though could be made more precise. 
@@ -54,7 +55,8 @@ public class RBSMNode extends SerialNode implements Node {
 	Publisher statePub_enc;
 	Publisher statePub_pot;
 
-	public RBSMNode(SensorChannel sensor_enc,SensorChannel sensor_pot) {
+	public RBSMNode(SensorChannel sensor_enc,SensorChannel sensor_pot) 
+	{
 		super("ENCODER");
 		messagePub_enc = new Publisher(sensor_enc.getMsgPath());
 		messagePub_pot = new Publisher(sensor_pot.getMsgPath());
@@ -69,13 +71,15 @@ public class RBSMNode extends SerialNode implements Node {
 	}
 	
 	@Override
-	public void setSerialPort(SerialPort sp) {
+	public void setSerialPort(SerialPort sp) 
+	{
 		super.setSerialPort(sp);
 		statePub_enc.publish(new StateMessage(SensorState.ON));
 		statePub_pot.publish(new StateMessage(SensorState.ON));
 	}
 	
-	private void estimateVelocity(int dataWord) {
+	private void estimateVelocity(int dataWord) 
+	{
 		Date currTime = new Date();
 		double accDist = ((double)(encTicks)) * M_PER_REV / TICKS_PER_REV;
 		double instVelocity = (accDist - accDistLast) * 1000 / (currTime.getTime() - timeLast.getTime());
@@ -88,7 +92,8 @@ public class RBSMNode extends SerialNode implements Node {
 	}
 	
 	@Override
-	public boolean matchDataSample(byte[] sample) {
+	public boolean matchDataSample(byte[] sample) 
+	{
 		// Peel what ever is not a message
 		
 		// Check that whatever we give it is a message
@@ -97,28 +102,33 @@ public class RBSMNode extends SerialNode implements Node {
 	}
 
 	@Override
-	public int matchDataMinSize() {
+	public int matchDataMinSize() 
+	{
 		return 2*RBSerial.MSG_LEN;
 	}
 
 	@Override
 	//must be the same as the baud rate of the arduino 
-	public int baudRate() {
+	public int baudRate() 
+	{
 		return 115200;
 	}
 
 	@Override
-	public int peel(byte[] buffer, int start, int bytes_available) {
+	public int peel(byte[] buffer, int start, int bytes_available) 
+	{
 		// The Encoder sends 3 types of messages
 		//  - Encoder ticks since last message (keep)
 		//  - Number of ticks since last reset
 		//  - Timestamp since reset
 		RBPair rbp = RBSerial.peel(buffer, start, bytes_available);
-		switch(rbp.getNumberOfBytesRead()) {
+		switch(rbp.getNumberOfBytesRead()) 
+		{
 			case 0: return 0;
 			case 1: return 1;
 			case 6: break;
-			default: {
+			default: 
+			{
 				System.out.println("HOW DID NOT A SIX GET HERE");
 				//TODO add error
 			}
@@ -126,18 +136,25 @@ public class RBSMNode extends SerialNode implements Node {
 		}
 		
 		RBSerialMessage message = rbp.getMessage();
-		if(message.getHeaderByte() == RBSerialMessage.ENC_TICK_SINCE_RESET) {
+		if(message.getHeaderByte() == RBSerialMessage.ENC_TICK_SINCE_RESET) 
+		{
 			// This is a delta-distance! Do a thing!
 			encTicks = message.getDataWord() & 0xFFF;
 			estimateVelocity(message.getDataWord());
 			System.out.println(encTicks);
 		}
 		
-		if(message.getHeaderByte() == RBSerialMessage.RBSM_MID_MEGA_STEER_FEEDBACK) {
+		else if(message.getHeaderByte() == RBSerialMessage.RBSM_MID_MEGA_STEER_FEEDBACK) 
+		{
 			// This is a delta-distance! Do a thing!
 			potValue = message.getDataWord();
 			System.out.println(potValue);
 			messagePub_pot.publish(new SteeringMeasurement(-(potValue + OFFSET)/ARD_TO_DEG));
+		}
+
+		else if (message.getHeaderByte() == RBSerialMessage.FP_HASH)
+		{
+			System.out.println(message.getDataWord());
 		}
 		
 		

@@ -170,14 +170,6 @@ int main(void)
   // map stdio for printf
   stdin = stdout = stderr = &g_uart_debug;
 
-  printf("Hello world! This is debug information\r\n");
-  printf("Compilation date: %s\r\n", FP_COMPDATE);
-  printf("Compilation time: %s\r\n", FP_COMPTIME);
-  printf("Branch name: %s\r\n", FP_BRANCHNAME);
-  printf("Most recent commit: %s\r\n", FP_STRCOMMITHASH);
-  printf("Branch clean? %s\r\n", FP_CLEANSTATUS);
-  printf("\nEnd of compilation information\r\n");
-
   // setup hardware
   sei(); // enable interrupts
   // uart_init();
@@ -194,6 +186,14 @@ int main(void)
   g_steering_rx.Init(&RX_STEERING_PIN, RX_STEERING_PINN, RX_STEERING_INTN);
   g_brake_rx.Init(&RX_BRAKE_PIN, RX_BRAKE_PINN, RX_BRAKE_INTN);
   g_auton_rx.Init(&RX_AUTON_PIN, RX_AUTON_PINN, RX_AUTON_INTN);
+
+  printf("Hello world! This is debug information\r\n");
+  printf("Compilation date: %s\r\n", FP_COMPDATE);
+  printf("Compilation time: %s\r\n", FP_COMPTIME);
+  printf("Branch name: %s\r\n", FP_BRANCHNAME);
+  printf("Most recent commit: %s\r\n", FP_STRCOMMITHASH);
+  printf("Branch clean? %d\r\n", FP_CLEANSTATUS);
+  printf("\nEnd of compilation information\r\n");
 
   // loop forever
   while(1) 

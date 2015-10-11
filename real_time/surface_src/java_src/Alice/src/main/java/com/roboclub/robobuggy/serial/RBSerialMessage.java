@@ -14,6 +14,8 @@ public class RBSerialMessage {
 	public static final byte AUTO = (byte)22;
 	public static final byte BATTERY = (byte)23;
 	public static final byte RBSM_MID_MEGA_STEER_FEEDBACK = (byte)24; //potentiometer 
+
+	public static final byte FP_HASH = (byte)30;
 	
 	public static final byte LIGHTING_ID = (byte)50;
 	
@@ -56,6 +58,8 @@ public class RBSerialMessage {
 			case AUTO:
 			case BATTERY:
 			case RBSM_MID_MEGA_STEER_FEEDBACK:
+
+			case FP_HASH:
 				
 			case ERROR:
 			case DEVICE_ID:
