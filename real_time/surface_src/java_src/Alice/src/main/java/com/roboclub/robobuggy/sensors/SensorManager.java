@@ -34,6 +34,7 @@ public class SensorManager {
 	private LinkedHashMap<String, Node> realSensors;
 	private LinkedHashMap<String, LinkedHashMap<SensorChannel, FauxNode>> simulatedSensors;
 	private LinkedHashMap<String, BaseCalculatedNode> calculatedSensors;
+	private static SensorManager sm;
 	
 	private SensorManager() {
 		realSensors = new LinkedHashMap<String, Node>();
@@ -178,13 +179,10 @@ public class SensorManager {
 		}
 	}
 	
-	//Google says this is a good idea
-	//but I really don't know anything about Java ...
-	private static class Holder {
-		static final SensorManager instance = new SensorManager();
-	}
-	
 	public static SensorManager getInstance() {
-		return Holder.instance;
+		if (sm == null) {
+			sm = new SensorManager();
+		}
+		return sm;
 	}
 }
