@@ -26,6 +26,7 @@ public class config {
 	// "C:\\Users\\abc\\buggy-log\\VisionSystem.exe";
 
 	public static String LOG_FILE_LOCATION = "logs";
+	public static String LOG_STOP_MESSAGE = "STOP_LOGGING";
 
 	// default logging state, should the buggy start logging as soon as this
 	// program is started

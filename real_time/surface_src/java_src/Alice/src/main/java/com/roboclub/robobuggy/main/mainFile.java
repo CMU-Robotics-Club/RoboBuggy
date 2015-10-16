@@ -105,6 +105,7 @@ public class mainFile {
 		// Set up the IMU
 		SerialPort sp = null;
 		String com = config.COM_PORT_IMU;
+		/*
 		try {
 			System.out.println("Initializing IMU Serial Connection");
 			sp = connect(com);
@@ -144,6 +145,7 @@ public class mainFile {
 		}
 		enc.setSerialPort(sp);
 		sensorList.add(enc);
+		*/
 	
 		new Subscriber(SensorChannel.ENCODER.getMsgPath(), new MessageListener() {
 			@Override
@@ -151,8 +153,7 @@ public class mainFile {
 				//System.out.println(m.toLogString());
 			}
 		});
-<<<<<<< HEAD
-
+		
 //		// Set up the DRIVE CONTROL
 //		com = "COM9"; //"COM17";
 //		try {
@@ -167,7 +168,5 @@ public class mainFile {
 //		drive_ctrl.setSerialPort(sp);
 //		sensorList.add(drive_ctrl);
 //	}
-=======
 	}
->>>>>>> origin/master
 }
