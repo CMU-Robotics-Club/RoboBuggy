@@ -23,16 +23,19 @@ import com.roboclub.robobuggy.serial.SerialNode;
  *
  * CHANGELOG: NONE
  * 
- * DESCRIPTION: Potential replacement for previous serial-reading framework.
+ * DESCRIPTION: node for talking to the the low level controller via rbsm
  */
 
-//TODO change file name to be mega comm or something like that 
-
-public class EncoderNode extends SerialNode implements Node {
+public class RBSMNode extends SerialNode implements Node {
 	private static final double TICKS_PER_REV = 7.0;
 	
 	// Measured as 2 feet. Though could be made more precise. 
 	private static final double M_PER_REV = 0.61;
+	
+	/** Steering Angle Conversion Rate */
+	private final int ARD_TO_DEG = 100;
+	/** Steering Angle offset?? */
+	private final int OFFSET = -200;
 
 
 	// accumulated
@@ -46,14 +49,17 @@ public class EncoderNode extends SerialNode implements Node {
 	
 	Publisher messagePub_enc;
 	Publisher messagePub_pot;
+	Publisher brakePub; 
+	
 	Publisher statePub_enc;
 	Publisher statePub_pot;
 
-
-	public EncoderNode(SensorChannel sensor_enc,SensorChannel sensor_pot) {
+	public RBSMNode(SensorChannel sensor_enc,SensorChannel sensor_pot) {
 		super("ENCODER");
 		messagePub_enc = new Publisher(sensor_enc.getMsgPath());
 		messagePub_pot = new Publisher(sensor_pot.getMsgPath());
+		brakePub = new Publisher(SensorChannel.BRAKE.getMsgPath());
+
 		statePub_enc = new Publisher(sensor_enc.getStatePath());
 		statePub_pot = new Publisher(sensor_pot.getStatePath());
 
@@ -96,9 +102,9 @@ public class EncoderNode extends SerialNode implements Node {
 	}
 
 	@Override
+	//must be the same as the baud rate of the arduino 
 	public int baudRate() {
 		return 115200;
-		//return 9600;
 	}
 
 	@Override
@@ -131,7 +137,7 @@ public class EncoderNode extends SerialNode implements Node {
 			// This is a delta-distance! Do a thing!
 			potValue = message.getDataWord();
 			System.out.println(potValue);
-			messagePub_pot.publish(new SteeringMeasurement(potValue));
+			messagePub_pot.publish(new SteeringMeasurement(-(potValue + OFFSET)/ARD_TO_DEG));
 		}
 		
 		

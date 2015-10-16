@@ -69,7 +69,7 @@ public class mainFile {
 				,SensorChannel.DRIVE_CTRL
 				,SensorChannel.ENCODER
 				);
-		
+				
 		new Subscriber(SensorChannel.ENCODER.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
