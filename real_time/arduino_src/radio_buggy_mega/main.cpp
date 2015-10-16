@@ -10,6 +10,7 @@
 #include "servo.h"
 // #include "uart.h"
 #include "system_clock.h"
+#include "fingerprint.h"
 
 #define BAUD 9600
 
@@ -239,10 +240,20 @@ int main(void) {
     }
 
     // detect dropped conections
+    // note: interrupts must be disabled while checking system clock so that
+    //       timestamps are not updated under our feet
+    cli();
     unsigned long time_now = micros();
-    if(time_now - g_steering_rx.GetLastTimestamp() > CONNECTION_TIMEOUT_US ||
-       time_now - g_brake_rx.GetLastTimestamp() > CONNECTION_TIMEOUT_US ||
-       time_now - g_auton_rx.GetLastTimestamp() > CONNECTION_TIMEOUT_US) {
+    unsigned long time1 = g_steering_rx.GetLastTimestamp();
+    unsigned long time2 = g_brake_rx.GetLastTimestamp();
+    unsigned long time3 = g_auton_rx.GetLastTimestamp();
+    unsigned long delta1 = time_now - time1;
+    unsigned long delta2 = time_now - time2;
+    unsigned long delta3 = time_now - time3;
+    sei();
+    if(delta1 > CONNECTION_TIMEOUT_US ||
+       delta2 > CONNECTION_TIMEOUT_US ||
+       delta3 > CONNECTION_TIMEOUT_US) {
       // we haven't heard from the RC receiver in too long
       if(g_brake_needs_reset == false) {
         g_rbsm_endpoint.Send(RBSM_MID_ERROR, RBSM_EID_RC_LOST_SIGNAL);

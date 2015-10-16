@@ -25,7 +25,7 @@ public class config {
 	public static String VISION_SYSTEM_EXECUTABLE_LOCATION = "C:\\Users\\Robot\\Documents\\GitHub\\RoboBuggy\\surface_src\\VisionSystem\\Debug\\VisionSystem.exe";
 	// "C:\\Users\\abc\\buggy-log\\VisionSystem.exe";
 
-	public static String LOG_FILE_LOCATION = "C:\\Users\\Matt\\buggy-log";
+	public static String LOG_FILE_LOCATION = "logs";
 
 	// default logging state, should the buggy start logging as soon as this
 	// program is started
@@ -38,12 +38,18 @@ public class config {
 	public static boolean AUTONOMUS_DEFAULT = false;
 
 	// sensor default settings (true for on false for off)
-
 	public static boolean DRIVE_DEFAULT = true;
 	public static boolean IMU_DEFAULT = true;
 	public static boolean GPS_DEFAULT = true;
 	public static boolean ENCODER_DEFAULT = true;
 	public static boolean VISION_SYSTEM_DEFAULT = true;
+	
+	//sensor com ports
+	public static String COM_PORT_IMU = "COM6";
+	public static String COM_PORT_GPS_INTEGRATED = "COM5";
+	public static String COM_PORT_GPS_STANDALONE = "COM8";
+	public static String COM_PORT_ENCODER = "COM3";
+	public static String COM_PORT_DRIVE_CONTROL = "COM9";
 	
 	//for turning indvidual cams on and off
 	public static boolean FRONT_CAM_ON = false;
@@ -59,7 +65,6 @@ public class config {
 	// iff false, connect to serial sensors 
 	public static boolean DATA_PLAY_BACK_DEFAULT = true;
 	
-
 	// current status values
 	public static boolean GUI_ON;
 	public static boolean active;

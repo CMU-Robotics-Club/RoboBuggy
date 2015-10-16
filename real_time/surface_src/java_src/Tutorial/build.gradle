@@ -1,0 +1,26 @@
+// TODO figure out what is supposed to go here
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Gradle Quickstart',
+                    'Implementation-Version': 1.0
+    }
+}
+
+dependencies {
+    compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
+
+    compile project (':BuggyRos')
+}
+
+uploadArchives {
+    repositories {
+        flatDir {
+            dirs 'repos'
+        }
+    }
+}
+
+apply plugin: 'application'
+
+// In order to run your code, change this.
+mainClassName = 'a_integrator.startercode.MainFile'
