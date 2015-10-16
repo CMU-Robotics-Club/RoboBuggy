@@ -1,21 +1,11 @@
 package com.roboclub.robobuggy.main;
 
-import gnu.io.CommPort;
-import gnu.io.CommPortIdentifier;
-import gnu.io.SerialPort;
-
 import java.nio.file.Paths;
-import java.util.ArrayList;
 
 import com.roboclub.robobuggy.sensors.SensorManager;
 import com.roboclub.robobuggy.logging.RobotLogger;
-import com.roboclub.robobuggy.nodes.EncoderNode;
-import com.roboclub.robobuggy.nodes.GpsNode;
-import com.roboclub.robobuggy.nodes.ImuNode;
-import com.roboclub.robobuggy.nodes.SteeringNode;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
-import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 import com.roboclub.robobuggy.ui.Gui;

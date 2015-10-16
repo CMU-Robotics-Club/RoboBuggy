@@ -18,11 +18,11 @@ import com.roboclub.robobuggy.fauxNodes.FauxGPSNode;
 import com.roboclub.robobuggy.fauxNodes.FauxIMUNode;
 import com.roboclub.robobuggy.fauxNodes.FauxNode;
 import com.roboclub.robobuggy.fauxNodes.FauxSteeringNode;
-import com.roboclub.robobuggy.nodes.EncoderNode;
+//import com.roboclub.robobuggy.nodes.EncoderNode;
 import com.roboclub.robobuggy.nodes.GpsNode;
 import com.roboclub.robobuggy.nodes.ImuNode;
 import com.roboclub.robobuggy.nodes.RealNodeEnum;
-import com.roboclub.robobuggy.nodes.SteeringNode;
+//import com.roboclub.robobuggy.nodes.SteeringNode;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.simulation.FauxRunner;
@@ -97,11 +97,11 @@ public class SensorManager {
 //			enc.setSerialPort(sp);
 //			realSensors.put(port, enc);
 //			break;
-		case DRIVE_CTRL:
-			SteeringNode steer = new SteeringNode(sensor);
-			steer.setSerialPort(sp);
-			realSensors.put(port, steer);
-			break;			
+//		case DRIVE_CTRL:
+//			SteeringNode steer = new SteeringNode(sensor);
+//			steer.setSerialPort(sp);
+//			realSensors.put(port, steer);
+//			break;			
 		default:
 			System.out.println("Invalid Sensor Type");
 			throw new Exception("Stop trying to initialize sensors that don't exist!");
