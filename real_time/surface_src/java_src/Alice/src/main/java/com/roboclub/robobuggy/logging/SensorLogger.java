@@ -53,7 +53,7 @@ public final class SensorLogger {
 							break;
 						}
 						if (line.contains(config.LOG_STOP_MESSAGE)) {
-							stream.println("{ \"timestamp\":\"" + new SimpleDateFormat("MM/dd/yyyy").format());
+							stream.println("{ \"timestamp\":\"" + new SimpleDateFormat("HH:mm:ss.SSS").format(new Date()));
 							stream.println("    ],\n" + getDataBreakdown() + "}");
 							break;
 						}

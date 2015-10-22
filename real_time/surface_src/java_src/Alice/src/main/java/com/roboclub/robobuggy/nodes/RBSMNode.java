@@ -4,6 +4,7 @@ import java.util.Date;
 
 import gnu.io.SerialPort;
 
+import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
@@ -142,6 +143,12 @@ public class RBSMNode extends SerialNode implements Node {
 		
 		
 		return 6;
+	}
+
+	@Override
+	public JSONObject translatePeelMessageToJObject(String message) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

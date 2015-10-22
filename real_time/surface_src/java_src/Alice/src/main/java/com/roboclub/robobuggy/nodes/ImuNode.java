@@ -1,5 +1,6 @@
 package com.roboclub.robobuggy.nodes;
 
+import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.ros.Node;
@@ -124,5 +125,11 @@ public class ImuNode extends SerialNode implements Node {
 			
 		msgPub.publish(new ImuMeasurement(vals[0], vals[1], vals[2]));
 		return 4 + (orig_length - b.length());
+	}
+
+	@Override
+	public JSONObject translatePeelMessageToJObject(String message) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
