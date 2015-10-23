@@ -19,7 +19,7 @@ import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.main.config;
-import com.roboclub.robobuggy.messages.GuiLoggingButton;
+import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
 
@@ -98,7 +98,7 @@ public class ControlPanel extends JPanel {
 				timer.start();
 				
 				RobotLogger.CreateLog();
-				logging_button_pub.publish(new GuiLoggingButton(GuiLoggingButton.LoggingMessage.START));
+				logging_button_pub.publish(new GuiLoggingButtonMessage(GuiLoggingButtonMessage.LoggingMessage.START));
 				startTime = new Date();
 			} else {
 				System.out.println("System Paused");
@@ -106,7 +106,7 @@ public class ControlPanel extends JPanel {
 				play_btn.setText("START");
 				
 				RobotLogger.CloseLog();
-				logging_button_pub.publish(new GuiLoggingButton(GuiLoggingButton.LoggingMessage.START));
+				logging_button_pub.publish(new GuiLoggingButtonMessage(GuiLoggingButtonMessage.LoggingMessage.STOP));
 				timer.stop();
 			}
 		}

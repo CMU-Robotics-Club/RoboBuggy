@@ -11,6 +11,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.main.config;
+import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
 import com.roboclub.robobuggy.nodes.GpsNode;
 import com.roboclub.robobuggy.nodes.ImuNode;
 import com.roboclub.robobuggy.nodes.LoggingNode;
@@ -25,6 +26,7 @@ import com.roboclub.robobuggy.serial.SerialNode;
  * Logs data from the sensors
  * 
  * @author Joe Doyle
+ * @author Vivaan Bahl
  * @author Trevor Decker
  */
 public final class SensorLogger {
@@ -57,7 +59,7 @@ public final class SensorLogger {
 						if (line == null) {
 							break;
 						}
-						if (line.contains(config.LOG_STOP_MESSAGE)) {
+						if (line.contains(new GuiLoggingButtonMessage(GuiLoggingButtonMessage.LoggingMessage.STOP).toLogString())) {
 							stream.println("{ \"timestamp\":\"" + new SimpleDateFormat("HH:mm:ss.SSS").format(new Date()));
 							stream.println("    ],\n" + getDataBreakdown() + "}");
 							break;

@@ -158,9 +158,14 @@ public class RBSMNode extends SerialNode implements Node {
 		
 		if(sensorName.equals("steering")) {
 			data.put("name", "Steering");
+			params.put("angle", Integer.valueOf(messageData[2]));
 		}
 		else if (sensorName.equals("encoder")) {
 			data.put("name", "Encoder");
+			params.put("dataword", Float.valueOf(messageData[2]));
+			params.put("distance", Float.valueOf(messageData[3]));
+			params.put("velocity", Float.valueOf(messageData[4]));
+			params.put("acceleration", Float.valueOf(messageData[5]));
 		}
 		else {
 			System.err.println("WAT");
@@ -168,7 +173,6 @@ public class RBSMNode extends SerialNode implements Node {
 		
 		data.put("params", params);
 		// TODO Auto-generated method stub
-		// TODO someone please explain to me how the encoder formats data...
 		return data;
 	}
 

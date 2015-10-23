@@ -8,10 +8,11 @@ import java.io.IOException;
 
 import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.messages.BaseMessage;
-import com.roboclub.robobuggy.messages.GuiLoggingButton;
+import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.Node;
+import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 
@@ -25,12 +26,15 @@ public class LoggingNode implements Node {
 	
 	Subscriber s;
 	Subscriber logging_button_sub;
+	
+	public Publisher loggingButtonPub;
 	// Get the folder that we're going to use
 
 	// TODO get folder name from file.
 	public LoggingNode(String topicName, final String directoryPath) {
 		this.topicName = topicName;
-		this.directoryPath  = directoryPath;
+		loggingButtonPub = new Publisher(SensorChannel.GUI_LOGGING_BUTTON.toString());
+//		this.directoryPath  = directoryPath;
 		// Start the subscriber
 		s = new Subscriber(topicName, new MessageListener() {
 			@Override
@@ -53,7 +57,7 @@ public class LoggingNode implements Node {
 		logging_button_sub = new Subscriber(SensorChannel.GUI_LOGGING_BUTTON.getMsgPath(), new MessageListener() {
 			@Override 
 			public void actionPerformed(String topicName, Message m) {
-				GuiLoggingButton glb = (GuiLoggingButton) m;
+				GuiLoggingButtonMessage glb = (GuiLoggingButtonMessage) m;
 				switch (glb.lm) {
 				case START:
 					String d = BaseMessage.format_the_date(glb.timestamp).replace(':', '-'); 
@@ -115,7 +119,7 @@ public class LoggingNode implements Node {
 		// TODO Auto-generated method stub
 		JSONObject data = new JSONObject();
 		JSONObject params = new JSONObject();
-		if (message.contains(GuiLoggingButton.LoggingMessage.START.toString())) {
+		if (message.contains(GuiLoggingButtonMessage.LoggingMessage.START.toString())) {
 			params.put("logging_status", "start");
 		}
 		else {
