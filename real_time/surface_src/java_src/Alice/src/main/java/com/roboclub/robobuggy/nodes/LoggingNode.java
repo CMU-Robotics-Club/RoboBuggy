@@ -110,9 +110,21 @@ public class LoggingNode implements Node {
 		return false;
 	}
 
+	@SuppressWarnings("unchecked")
 	public static JSONObject translatePeelMessageToJObject(String message) {
 		// TODO Auto-generated method stub
-		return null;
+		JSONObject data = new JSONObject();
+		JSONObject params = new JSONObject();
+		if (message.contains(GuiLoggingButton.LoggingMessage.START.toString())) {
+			params.put("logging_status", "start");
+		}
+		else {
+			params.put("logging_status", "stop");
+		}
+		data.put("timestamp", message.split(",")[1]);
+		data.put("name", "logging button");
+		data.put("params", params);
+		return data;
 	}
 	
 }

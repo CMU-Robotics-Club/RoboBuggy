@@ -3,6 +3,8 @@ package com.roboclub.robobuggy.nodes;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import jdk.nashorn.internal.scripts.JS;
+
 import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
@@ -166,8 +168,21 @@ public class GpsNode extends SerialNode implements Node {
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	public static JSONObject translatePeelMessageToJObject(String message) {
 		// TODO Auto-generated method stub
-		return null;
+		JSONObject data = new JSONObject();
+		JSONObject params = new JSONObject();
+		String[] messageData = message.split(",");
+		params.put("latitude", Float.valueOf(messageData[4]));
+		params.put("lat_direction", messageData[5]);
+		params.put("longitude", Float.valueOf(messageData[6]));
+		params.put("long_direction", messageData[7]);
+		params.put("gps_quality", messageData[8]);
+		params.put("HDOP", Float.valueOf(messageData[9]));
+		data.put("timestamp", messageData[1]);
+		data.put("name", "GPS");
+		data.put("params", params);
+		return data;
 	}
 }

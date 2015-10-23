@@ -128,8 +128,20 @@ public class ImuNode extends SerialNode implements Node {
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	public static JSONObject translatePeelMessageToJObject(String message) {
 		// TODO Auto-generated method stub
-		return null;
+		// message has it organized as yaw pitch roll
+		JSONObject data = new JSONObject();
+		JSONObject params = new JSONObject();
+		String[] ypr = message.split(",");
+		//0 and 1 will be the name and time
+		params.put("yaw", Float.valueOf(ypr[2]));
+		params.put("pitch", Float.valueOf(ypr[3]));
+		params.put("roll", Float.valueOf(ypr[4]));
+		data.put("timestamp", ypr[1]);
+		data.put("name", "IMU");
+		data.put("params", params);
+		return data;
 	}
 }

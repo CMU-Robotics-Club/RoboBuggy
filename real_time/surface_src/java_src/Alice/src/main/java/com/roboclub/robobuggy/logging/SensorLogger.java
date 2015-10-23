@@ -78,21 +78,28 @@ public final class SensorLogger {
 				switch (sensor) {
 				case "imu":
 					sensorEntryObject = ImuNode.translatePeelMessageToJObject(line);
+					imuHits++;
 					break;
 				
 				case "gps":
 					sensorEntryObject = GpsNode.translatePeelMessageToJObject(line);
+					gpsHits++;
 					break;
 					
+				case "steering":
+					steeringHits++;
 				case "encoder":
 					sensorEntryObject = RBSMNode.translatePeelMessageToJObject(line);
+					encoderHits++;
 					break;
 					
 				case "logging_button":
 					sensorEntryObject = LoggingNode.translatePeelMessageToJObject(line);
+					logButtonHits++;
 					break;
 
 				default:
+					//put brakes in here?
 					sensorEntryObject = SerialNode.translatePeelMessageToJObject(line);
 					break;
 				}
@@ -100,6 +107,7 @@ public final class SensorLogger {
 				return sensorEntryObject.toJSONString();
 			}
 
+			@SuppressWarnings("unchecked")
 			private String getDataBreakdown() {
 				// TODO Auto-generated method stub
 				JSONObject dataBreakdownObj = new JSONObject();

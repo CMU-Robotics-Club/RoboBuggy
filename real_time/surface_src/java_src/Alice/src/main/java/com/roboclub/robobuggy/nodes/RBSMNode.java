@@ -76,7 +76,7 @@ public class RBSMNode extends SerialNode implements Node {
 		statePub_pot.publish(new StateMessage(SensorState.ON));
 	}
 	
-	private void estimateVelocity(int dataWord) {
+	private EncoderMeasurement estimateVelocity(int dataWord) {
 		Date currTime = new Date();
 		double accDist = ((double)(encTicks)) * M_PER_REV / TICKS_PER_REV;
 		double instVelocity = (accDist - accDistLast) * 1000 / (currTime.getTime() - timeLast.getTime());
@@ -85,7 +85,7 @@ public class RBSMNode extends SerialNode implements Node {
 		instVelocityLast = instVelocity;
 		timeLast = currTime;	
 		
-		messagePub_enc.publish(new EncoderMeasurement(currTime, dataWord, accDist, instVelocity, instAccel));
+		return new EncoderMeasurement(currTime, dataWord, accDist, instVelocity, instAccel);
 	}
 	
 	@Override
@@ -130,7 +130,7 @@ public class RBSMNode extends SerialNode implements Node {
 		if(message.getHeaderByte() == RBSerialMessage.ENC_TICK_SINCE_RESET) {
 			// This is a delta-distance! Do a thing!
 			encTicks = message.getDataWord() & 0xFFF;
-			estimateVelocity(message.getDataWord());
+			messagePub_enc.publish(estimateVelocity(message.getDataWord()));
 			System.out.println(encTicks);
 		}
 		
@@ -146,9 +146,30 @@ public class RBSMNode extends SerialNode implements Node {
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	public static JSONObject translatePeelMessageToJObject(String message) {
+		String[] messageData = message.split(",");
+		String sensorName = messageData[0];
+		sensorName = sensorName.substring(sensorName.indexOf("/") + 1);
+		JSONObject data = new JSONObject();
+		JSONObject params = new JSONObject();
+		
+		data.put("timestamp", messageData[1]);
+		
+		if(sensorName.equals("steering")) {
+			data.put("name", "Steering");
+		}
+		else if (sensorName.equals("encoder")) {
+			data.put("name", "Encoder");
+		}
+		else {
+			System.err.println("WAT");
+		}
+		
+		data.put("params", params);
 		// TODO Auto-generated method stub
-		return null;
+		// TODO someone please explain to me how the encoder formats data...
+		return data;
 	}
 
 }
