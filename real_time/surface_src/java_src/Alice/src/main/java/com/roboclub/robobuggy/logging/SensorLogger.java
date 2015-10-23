@@ -11,10 +11,15 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.main.config;
+import com.roboclub.robobuggy.nodes.GpsNode;
+import com.roboclub.robobuggy.nodes.ImuNode;
+import com.roboclub.robobuggy.nodes.LoggingNode;
+import com.roboclub.robobuggy.nodes.RBSMNode;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
+import com.roboclub.robobuggy.serial.SerialNode;
 
 /**
  * Logs data from the sensors
@@ -67,9 +72,32 @@ public final class SensorLogger {
 
 			private String parseData(String line) {
 				// TODO Auto-generated method stub
-				JSONObject sensorEntryObject = new JSONObject();
+				String sensor = line.substring(line.indexOf("/") + 1, line.indexOf(","));				
+				JSONObject sensorEntryObject;
+
+				switch (sensor) {
+				case "imu":
+					sensorEntryObject = ImuNode.translatePeelMessageToJObject(line);
+					break;
 				
-				return null;
+				case "gps":
+					sensorEntryObject = GpsNode.translatePeelMessageToJObject(line);
+					break;
+					
+				case "encoder":
+					sensorEntryObject = RBSMNode.translatePeelMessageToJObject(line);
+					break;
+					
+				case "logging_button":
+					sensorEntryObject = LoggingNode.translatePeelMessageToJObject(line);
+					break;
+
+				default:
+					sensorEntryObject = SerialNode.translatePeelMessageToJObject(line);
+					break;
+				}
+				
+				return sensorEntryObject.toJSONString();
 			}
 
 			private String getDataBreakdown() {

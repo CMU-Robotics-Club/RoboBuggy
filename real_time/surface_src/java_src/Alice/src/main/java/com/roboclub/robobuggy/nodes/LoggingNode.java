@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.messages.BaseMessage;
 import com.roboclub.robobuggy.messages.GuiLoggingButton;
 import com.roboclub.robobuggy.ros.Message;
@@ -109,4 +110,9 @@ public class LoggingNode implements Node {
 		return false;
 	}
 
+	public static JSONObject translatePeelMessageToJObject(String message) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 }

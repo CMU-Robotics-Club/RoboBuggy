@@ -112,7 +112,9 @@ public abstract class SerialNode implements Node {
 	// Return the expected baud rate of the current device
 	public abstract int baudRate();
 	
-	public abstract JSONObject translatePeelMessageToJObject(String message);
+	public static JSONObject translatePeelMessageToJObject(String message) {
+		return new JSONObject();
+	}
 
 	// Peel is called once. user should read as many messages as possible
 	// returns the number of bytes read; or 1 on failure

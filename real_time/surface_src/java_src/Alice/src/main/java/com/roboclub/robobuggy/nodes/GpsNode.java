@@ -165,8 +165,8 @@ public class GpsNode extends SerialNode implements Node {
 				+ ar[8].length() + ar[9].length();
 	}
 
-	@Override
-	public JSONObject translatePeelMessageToJObject(String message) {
+	
+	public static JSONObject translatePeelMessageToJObject(String message) {
 		// TODO Auto-generated method stub
 		return null;
 	}

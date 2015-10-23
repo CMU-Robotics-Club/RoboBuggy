@@ -94,9 +94,10 @@ public class LightingNode extends SerialNode implements Node {
 		return 4 + (orig_length - b.length());
 	}
 
-	@Override
-	public JSONObject translatePeelMessageToJObject(String message) {
+	
+	public static JSONObject translatePeelMessageToJObject(String message) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 }
