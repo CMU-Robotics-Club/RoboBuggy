@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.nodes.RBSMNode;
+import com.roboclub.robobuggy.nodes.RealNodeEnum;
 import com.roboclub.robobuggy.nodes.GpsNode;
 import com.roboclub.robobuggy.nodes.ImuNode;
 import com.roboclub.robobuggy.ros.Message;
@@ -16,6 +17,7 @@ import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
+import com.roboclub.robobuggy.sensors.SensorManager;
 import com.roboclub.robobuggy.ui.Gui;
 
 public class mainFile {
@@ -59,6 +61,29 @@ public class mainFile {
         }   
     }
     
+    //going to start by just connecting to the IMU
+    public static void bringup_sim() throws Exception {
+        if(config.logging){
+            System.out.println("Starting Logging");
+            RobotLogger.getInstance();
+        }
+        
+        Gui.EnableLogging();
+        SensorManager sm = SensorManager.getInstance();
+        
+        //our config file is going to store the baud rate and port for each sensor
+        //initialize a new real sensor with type, baud rate, and port
+        //sensormanager will continue to look on same port for the sensor
+        sm.newRealSensor(RealNodeEnum.IMU, SensorChannel.IMU, 57600, config.COM_PORT_IMU);
+        
+        new Subscriber(SensorChannel.ENCODER.getMsgPath(), new MessageListener() {
+            @Override
+            public void actionPerformed(String topicName, Message m) {
+                //System.out.println(m.toLogString());
+            }
+        });
+    }
+    
     // Open a serial port
     private static SerialPort connect(String portName) throws Exception
     {
@@ -85,7 +110,8 @@ public class mainFile {
             }
         }
         return null;
-    }   
+    }
+    /*
     public static void bringup_sim() throws Exception {
         ArrayList<Node> sensorList = new ArrayList<Node>();
 
@@ -167,4 +193,5 @@ public class mainFile {
 //      sensorList.add(drive_ctrl);
 //  }
     }
+    */
 }
