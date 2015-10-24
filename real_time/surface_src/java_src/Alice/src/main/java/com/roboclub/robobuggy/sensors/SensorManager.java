@@ -22,6 +22,7 @@ import com.roboclub.robobuggy.fauxNodes.FauxSteeringNode;
 //import com.roboclub.robobuggy.nodes.EncoderNode;
 import com.roboclub.robobuggy.nodes.GpsNode;
 import com.roboclub.robobuggy.nodes.ImuNode;
+import com.roboclub.robobuggy.nodes.RBSMNode;
 import com.roboclub.robobuggy.nodes.RealNodeEnum;
 //import com.roboclub.robobuggy.nodes.SteeringNode;
 import com.roboclub.robobuggy.ros.Node;
@@ -44,37 +45,51 @@ public class SensorManager {
 	}
 
 	// Open a serial port
-	private static SerialPort connect(String portName, int baudRate) throws Exception
-    {
-        CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
-        
-        if ( portIdentifier.isCurrentlyOwned() ) {
-            throw new Exception("Error: Port currently in use");
-        } else { 
-            CommPort commPort = portIdentifier.open(portName, 2000);
-            
-            if ( commPort instanceof SerialPort ) {
-                SerialPort serialPort = (SerialPort) commPort;
-                serialPort.setSerialPortParams(baudRate,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
-                return serialPort;
-            }
-        }
-		throw new Exception("Error: Unable to connect to port " + portName);
+	// Returns null if unable to connect, otherwise SerialPort
+	private static SerialPort connect(String portName, int baudRate) {
+		try {
+	        CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
+	        
+	        if ( portIdentifier.isCurrentlyOwned() ) {
+	        	System.err.println("Error: Port currently in use");
+	        } else { 
+	            CommPort commPort = portIdentifier.open(portName, 2000);
+	            
+	            if ( commPort instanceof SerialPort ) {
+	                SerialPort serialPort = (SerialPort) commPort;
+	                serialPort.setSerialPortParams(baudRate,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
+	                return serialPort;
+	            }
+	        }
+		} catch (Exception e) {
+			System.err.println("Error: Unable to connect to port" + portName);
+		}
+		
+		return null;
     }
 	
-	public String newRealSensor(RealNodeEnum nodeType, SensorChannel sensor, int baudRate, String port) throws Exception {
+	public String newRealSensor(RealNodeEnum nodeType, int baudRate, String port, SensorChannel... sensor) throws Exception {
 		// Each sensor will get added to a list of real nodes, returning a UUID.
 		//throw an error if unable to connect
-		SerialPort sp = connect(port, baudRate);
 		
 		//assumes successful connection
 		String portKey = UUID.randomUUID().toString();
 		
-		switch (nodeType){
+		switch (nodeType) {
 		case IMU:
-			ImuNode imu = new ImuNode(sensor);
-			imu.setSerialPort(sp);
-			realSensors.put(portKey,  imu);
+			ImuNode imu = new ImuNode(sensor[0]);
+			imu.setSerialPort(connect(port, imu.baudRate()));
+			realSensors.put(portKey, imu);
+			break;
+		case GPS:
+			GpsNode gps = new GpsNode(sensor[0]);
+			gps.setSerialPort(connect(port, gps.baudRate()));
+			realSensors.put(portKey, gps);
+			break;
+		case RBSM:
+			RBSMNode rbsm = new RBSMNode(sensor[0], sensor[1]);
+			rbsm.setSerialPort(connect(port, rbsm.baudRate()));
+			realSensors.put(portKey, rbsm);
 			break;
 		default:
 			System.out.println("Attempting to add unsupported sensor");

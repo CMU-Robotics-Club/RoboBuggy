@@ -74,43 +74,11 @@ public class mainFile {
         //our config file is going to store the baud rate and port for each sensor
         //initialize a new real sensor with type, baud rate, and port
         //sensormanager will continue to look on same port for the sensor
-        sm.newRealSensor(RealNodeEnum.IMU, SensorChannel.IMU, 57600, config.COM_PORT_IMU);
-        
-        new Subscriber(SensorChannel.ENCODER.getMsgPath(), new MessageListener() {
-            @Override
-            public void actionPerformed(String topicName, Message m) {
-                //System.out.println(m.toLogString());
-            }
-        });
+        sm.newRealSensor(RealNodeEnum.IMU, 57600, config.COM_PORT_IMU, SensorChannel.IMU);
+        sm.newRealSensor(RealNodeEnum.GPS, 9600, config.COM_PORT_GPS_INTEGRATED, SensorChannel.GPS);
+        sm.newRealSensor(RealNodeEnum.RBSM, 115200, config.COM_PORT_ENCODER, SensorChannel.ENCODER, SensorChannel.STEERING);
     }
     
-    // Open a serial port
-    private static SerialPort connect(String portName) throws Exception
-    {
-        CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
-        if ( portIdentifier.isCurrentlyOwned() )
-        {
-            System.out.println("Error: Port is currently in use");
-            return null;
-        }
-        else
-        {
-            //TODO fix this so that it is not potato 
-            CommPort commPort = portIdentifier.open("potato", 2000);
-            
-            if ( commPort instanceof SerialPort )
-            {
-                SerialPort serialPort = (SerialPort) commPort;
-                serialPort.setSerialPortParams(57600,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
-                return serialPort;
-            }
-            else
-            {
-                System.out.println("Error: Only serial ports are handled by this example.");
-            }
-        }
-        return null;
-    }
     /*
     public static void bringup_sim() throws Exception {
         ArrayList<Node> sensorList = new ArrayList<Node>();
