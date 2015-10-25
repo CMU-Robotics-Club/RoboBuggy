@@ -40,7 +40,7 @@ public final class SensorLogger {
 		String name = "\"name\": \"Robobuggy Data Logs\",";
 		String schema_version = "\"schema_version\": 1.0,";
 		String date_recorded = "\"date_recorded\": \"" + new SimpleDateFormat("MM/dd/yyyy").format(new Date()) + "\",";
-		String swVersion = "\"software_version\": " + getCurrentSoftwareVersion() + "\",";
+		String swVersion = "\"software_version\": \"" + getCurrentSoftwareVersion() + "\",";
 		String sensorDataHeader = "\"sensor_data\": [";
 		stream.println("{" + "\n    " + name + "\n    " + schema_version + "\n    " + date_recorded + "\n    " + swVersion + "\n    " + sensorDataHeader);
 		
@@ -62,7 +62,7 @@ public final class SensorLogger {
 						if (line.contains("STOP")) {
 							stream.println("        " + LoggingNode.translatePeelMessageToJObject(line).toJSONString());
 							logButtonHits++;
-							stream.println("    ],\n    " + getDataBreakdown() + "\n}");
+							stream.println("    ],\n    \"data_breakdown\" : " + getDataBreakdown() + "\n}");
 							break;
 						}
 						stream.println("        " + parseData(line) + ",");
