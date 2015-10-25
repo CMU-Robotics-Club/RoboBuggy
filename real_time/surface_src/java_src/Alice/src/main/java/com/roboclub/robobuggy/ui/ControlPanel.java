@@ -54,7 +54,7 @@ public class ControlPanel extends JPanel {
 	Publisher logging_button_pub;
 	
 	public ControlPanel() {
-		logging_button_pub = new Publisher(SensorChannel.GUI_LOGGING_BUTTON.getMsgPath());
+		logging_button_pub = new Publisher(Gui.GuiPubSubTopics.GUI_LOG_BUTTON_UPDATED.toString());
 		
 		timer = new Timer(10, new timerHandler());// updates every .01 seconds
 		timer.setDelay(100);

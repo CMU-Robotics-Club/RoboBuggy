@@ -41,8 +41,8 @@ public final class SensorLogger {
 		String schema_version = "\"schema_version\": 1.0,";
 		String date_recorded = "\"date_recorded\": \"" + new SimpleDateFormat("MM/dd/yyyy").format(new Date()) + "\",";
 		String swVersion = "\"software_version\": " + getCurrentSoftwareVersion() + "\",";
-		String sensorDataHeader = "\"sensor_data\":\n[";
-		stream.println("{\n" + name + schema_version + date_recorded + swVersion + "\n" + sensorDataHeader);
+		String sensorDataHeader = "\"sensor_data\": [";
+		stream.println("{" + "\n    " + name + "\n    " + schema_version + "\n    " + date_recorded + "\n    " + swVersion + "\n    " + sensorDataHeader);
 		
 		Thread logging_thread = new Thread() {
 			int logButtonHits = 0;
@@ -59,12 +59,13 @@ public final class SensorLogger {
 						if (line == null) {
 							break;
 						}
-						if (line.contains(new GuiLoggingButtonMessage(GuiLoggingButtonMessage.LoggingMessage.STOP).toLogString())) {
-							stream.println("{ \"timestamp\":\"" + new SimpleDateFormat("HH:mm:ss.SSS").format(new Date()));
-							stream.println("    ],\n" + getDataBreakdown() + "}");
+						if (line.contains("STOP")) {
+							stream.println("        " + LoggingNode.translatePeelMessageToJObject(line).toJSONString());
+							logButtonHits++;
+							stream.println("    ],\n    " + getDataBreakdown() + "\n}");
 							break;
 						}
-						stream.println(parseData(line));
+						stream.println("        " + parseData(line) + ",");
 					} catch (InterruptedException e) {
 						//TODO add to messages 
 						e.printStackTrace();

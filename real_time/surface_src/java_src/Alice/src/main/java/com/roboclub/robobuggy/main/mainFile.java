@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import com.roboclub.robobuggy.logging.RobotLogger;
+import com.roboclub.robobuggy.nodes.LoggingNode;
 import com.roboclub.robobuggy.nodes.RBSMNode;
 import com.roboclub.robobuggy.nodes.GpsNode;
 import com.roboclub.robobuggy.nodes.ImuNode;
@@ -101,6 +102,7 @@ public class mainFile {
 		ImuNode imu = new ImuNode(SensorChannel.IMU);
 		GpsNode gps = new GpsNode(SensorChannel.GPS);
 		RBSMNode enc = new RBSMNode(SensorChannel.ENCODER,SensorChannel.STEERING);
+		LoggingNode logButton = new LoggingNode();
 		
 		// Set up the IMU
 		SerialPort sp = null;
