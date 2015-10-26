@@ -158,7 +158,7 @@ public class RBSMNode extends SerialNode implements Node {
 		
 		if(sensorName.equals("steering")) {
 			data.put("name", "Steering");
-			params.put("angle", Integer.valueOf(messageData[2]));
+			params.put("angle", Float.valueOf(messageData[2]));
 		}
 		else if (sensorName.equals("encoder")) {
 			data.put("name", "Encoder");
