@@ -68,7 +68,7 @@ public class SensorManager {
 		return null;
     }
 	
-	public String newRealSensor(RealNodeEnum nodeType, int baudRate, String port, SensorChannel... sensor) throws Exception {
+	public String newRealSensor(RealNodeEnum nodeType, String port, SensorChannel... sensor) throws Exception {
 		// Each sensor will get added to a list of real nodes, returning a UUID.
 		//throw an error if unable to connect
 		
@@ -166,6 +166,12 @@ public class SensorManager {
 			simulatedSensors.get(path).get(sensor).enable();
 		} else {
 			System.out.println("Trying to enable a Faux node on an invalid path / sensor");
+		}
+	}
+	
+	public void disableRealNode(String key) {
+		if (realSensors.containsKey(key)) {
+			realSensors.remove(key);
 		}
 	}
 	
