@@ -19,27 +19,25 @@ import com.roboclub.robobuggy.fauxNodes.FauxGPSNode;
 import com.roboclub.robobuggy.fauxNodes.FauxIMUNode;
 import com.roboclub.robobuggy.fauxNodes.FauxNode;
 import com.roboclub.robobuggy.fauxNodes.FauxSteeringNode;
-//import com.roboclub.robobuggy.nodes.EncoderNode;
 import com.roboclub.robobuggy.nodes.GpsNode;
 import com.roboclub.robobuggy.nodes.ImuNode;
 import com.roboclub.robobuggy.nodes.RBSMNode;
 import com.roboclub.robobuggy.nodes.RealNodeEnum;
-//import com.roboclub.robobuggy.nodes.SteeringNode;
-import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.SensorChannel;
+import com.roboclub.robobuggy.serial.SerialNode;
 import com.roboclub.robobuggy.simulation.FauxRunner;
 
 public class SensorManager {
 	
 	//Need to manage real, simulated, and calculated sensors
 	
-	private LinkedHashMap<String, Node> realSensors;
+	private LinkedHashMap<String, SerialNode> realSensors;
 	private LinkedHashMap<String, LinkedHashMap<SensorChannel, FauxNode>> simulatedSensors;
 	private LinkedHashMap<String, BaseCalculatedNode> calculatedSensors;
 	private static SensorManager sm;
 	
 	private SensorManager() {
-		realSensors = new LinkedHashMap<String, Node>();
+		realSensors = new LinkedHashMap<String, SerialNode>();
 		simulatedSensors = new LinkedHashMap<String, LinkedHashMap<SensorChannel, FauxNode>>();
 		calculatedSensors = new LinkedHashMap<String, BaseCalculatedNode>();	
 	}
@@ -171,7 +169,7 @@ public class SensorManager {
 	
 	public void disableRealNode(String key) {
 		if (realSensors.containsKey(key)) {
-			realSensors.remove(key);
+			realSensors.get(key).sp.close();
 		}
 	}
 	
