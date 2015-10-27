@@ -1,21 +1,9 @@
 package com.roboclub.robobuggy.main;
 
-import gnu.io.CommPort;
-import gnu.io.CommPortIdentifier;
-import gnu.io.SerialPort;
-
-import java.nio.file.Paths;
-import java.util.ArrayList;
-
 import com.roboclub.robobuggy.logging.RobotLogger;
-import com.roboclub.robobuggy.nodes.RBSMNode;
-import com.roboclub.robobuggy.nodes.GpsNode;
-import com.roboclub.robobuggy.nodes.ImuNode;
-import com.roboclub.robobuggy.ros.Message;
-import com.roboclub.robobuggy.ros.MessageListener;
-import com.roboclub.robobuggy.ros.Node;
+import com.roboclub.robobuggy.nodes.RealNodeEnum;
 import com.roboclub.robobuggy.ros.SensorChannel;
-import com.roboclub.robobuggy.ros.Subscriber;
+import com.roboclub.robobuggy.sensors.SensorManager;
 import com.roboclub.robobuggy.ui.Gui;
 
 public class mainFile {
@@ -24,10 +12,7 @@ public class mainFile {
     
     public static void main(String args[]) {
         config.getInstance();//must be run at least once
-        
-        System.out.println(Paths.get("").toAbsolutePath().toString());
-        System.err.println(Paths.get("").toAbsolutePath().toString());
-        
+                
         for (int i = 0; i < args.length; i++) {
             if (args[i].equalsIgnoreCase("-g")) {
                 config.GUI_ON = false;
@@ -59,112 +44,21 @@ public class mainFile {
         }   
     }
     
-    // Open a serial port
-    private static SerialPort connect(String portName) throws Exception
-    {
-        CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
-        if ( portIdentifier.isCurrentlyOwned() )
-        {
-            System.out.println("Error: Port is currently in use");
-            return null;
-        }
-        else
-        {
-            //TODO fix this so that it is not potato 
-            CommPort commPort = portIdentifier.open("potato", 2000);
-            
-            if ( commPort instanceof SerialPort )
-            {
-                SerialPort serialPort = (SerialPort) commPort;
-                serialPort.setSerialPortParams(57600,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
-                return serialPort;
-            }
-            else
-            {
-                System.out.println("Error: Only serial ports are handled by this example.");
-            }
-        }
-        return null;
-    }   
+    //going to start by just connecting to the IMU
     public static void bringup_sim() throws Exception {
-        ArrayList<Node> sensorList = new ArrayList<Node>();
-
-        // Turn on logger!
         if(config.logging){
             System.out.println("Starting Logging");
             RobotLogger.getInstance();
         }
-
-        Gui.EnableLogging();
-
-        //setup objects for each of the driver nodes 
-        ImuNode imu = new ImuNode(SensorChannel.IMU);
-        GpsNode gps = new GpsNode(SensorChannel.GPS);
-        RBSMNode enc = new RBSMNode(SensorChannel.ENCODER,SensorChannel.STEERING);
         
-        // Set up the IMU
-        SerialPort sp = null;
-        String com = config.COM_PORT_IMU;
-        try {
-            System.out.println("Initializing IMU Serial Connection");
-            sp = connect(com);
-            System.out.println("IMU connected to " + com);
-        } catch (Exception e) {
-            System.out.println("Unable to connect to necessary device on " + com);
-            e.printStackTrace();
-            throw new Exception("Device not found error");
-        }
-        imu.setSerialPort(sp);
-        sensorList.add(imu);
-
-        // Set up the GPS
-        com = config.COM_PORT_GPS_INTEGRATED;
-        try {
-            System.out.println("Initializing GPS Serial Connection");
-            sp = connect(com);
-            System.out.println("GPS connected to " + com);
-        } catch (Exception e) {
-            System.out.println("Unable to connect to necessary device on " + com);
-            e.printStackTrace();
-            throw new Exception("Device not found error");
-        }
-        gps.setSerialPort(sp);
-        sensorList.add(gps);
-    
-        // Set up the Encoder
-        com = config.COM_PORT_ENCODER;
-        try {
-            System.out.println("Initializing ENCODER Serial Connection");
-            sp = connect(com);
-            System.out.println("ENCODER connected to " + com);
-        } catch (Exception e) {
-            System.out.println("Unable to connect to necessary device on " + com);
-            e.printStackTrace();
-            throw new Exception("Device not found error");
-        }
-        enc.setSerialPort(sp);
-        sensorList.add(enc);
-    
-        new Subscriber(SensorChannel.ENCODER.getMsgPath(), new MessageListener() {
-            @Override
-            public void actionPerformed(String topicName, Message m) {
-                //System.out.println(m.toLogString());
-            }
-        });
-
-//      // Set up the DRIVE CONTROL
-//      com = "COM9"; //"COM17";
-//      try {
-//          System.out.println("Initializing DRIVE CONTROL Serial Connection");
-//          sp = connect(com);
-//          System.out.println("DRIVE CONTROL connected to " + com);
-//      } catch (Exception e) {
-//          System.out.println("Unable to connect to necessary device on " + com);
-//          e.printStackTrace();
-//          throw new Exception("Device not found error");
-//      }
-//      drive_ctrl.setSerialPort(sp);
-//      sensorList.add(drive_ctrl);
-//  }
+        Gui.EnableLogging();
+        SensorManager sm = SensorManager.getInstance();
+        
+        //initialize a new real sensor with type, port, and channel(s)
+        //sensormanager will (eventually) continue to look on same port for the sensor
+        //returns a key to the new sensor -- remove with this key.
+        String ImuKey = sm.newRealSensor(RealNodeEnum.IMU, config.COM_PORT_IMU, SensorChannel.IMU);
+        String GpsKey = sm.newRealSensor(RealNodeEnum.GPS, config.COM_PORT_GPS_INTEGRATED, SensorChannel.GPS);
+        String RBSMKey = sm.newRealSensor(RealNodeEnum.RBSM, config.COM_PORT_ENCODER, SensorChannel.ENCODER, SensorChannel.STEERING);
     }
 }
