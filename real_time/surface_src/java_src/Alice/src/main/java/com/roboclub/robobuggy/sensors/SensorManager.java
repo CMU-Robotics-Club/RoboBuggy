@@ -28,7 +28,8 @@ import com.roboclub.robobuggy.serial.SerialNode;
 import com.roboclub.robobuggy.simulation.FauxRunner;
 
 public class SensorManager {
-	
+
+	private final static int TIMEOUT = 2000;
 	//Need to manage real, simulated, and calculated sensors
 	
 	private LinkedHashMap<String, SerialNode> realSensors;
@@ -51,7 +52,7 @@ public class SensorManager {
 	        if ( portIdentifier.isCurrentlyOwned() ) {
 	        	System.err.println("Error: Port currently in use");
 	        } else { 
-	            CommPort commPort = portIdentifier.open(portName, 2000);
+	            CommPort commPort = portIdentifier.open(portName, TIMEOUT);
 	            
 	            if ( commPort instanceof SerialPort ) {
 	                SerialPort serialPort = (SerialPort) commPort;
