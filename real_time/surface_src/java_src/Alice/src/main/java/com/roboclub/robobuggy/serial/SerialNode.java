@@ -17,7 +17,7 @@ public abstract class SerialNode implements Node {
 	String thread_name;
 
 	// Initialize after getting a serial port
-	SerialPort sp;
+	public SerialPort sp;
 	InputStream serial_input;
 	OutputStream serial_output;
 	
