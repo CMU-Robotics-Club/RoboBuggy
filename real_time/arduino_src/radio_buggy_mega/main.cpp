@@ -27,6 +27,8 @@
   #define PWM_SCALE_STEERING_OUT -220
   #define PWM_OFFSET_STORED_ANGLE 0
   #define PWM_SCALE_STORED_ANGLE 1000 // in hundredths of a degree for precision
+  #define POT_OFFSET_STEERING_IN 127
+  #define POT_SCALE_STEERING_IN 127
 #elif BUGGY == nixie
   #define PWM_OFFSET_STEERING_OUT 1789
   #define PWM_SCALE_STEERING_OUT -150
@@ -292,7 +294,11 @@ int main(void) {
     
     // Read/convert steering pot
     g_steering_feedback = adc_read_blocking(STEERING_POT_ADC);
-    g_steering_feedback = map_signal(g_steering_feedback, 0, 255, -10000, 10000);
+    g_steering_feedback = map_signal(g_steering_feedback,
+                                     POT_OFFSET_STEERING_IN,
+                                     POT_SCALE_STEERING_IN,
+                                     PWM_OFFSET_STORED_ANGLE,
+                                     PWM_SCALE_STORED_ANGLE);
 
     // Set outputs
     if(g_brake_state_engaged == false && g_brake_needs_reset == false) {
@@ -310,7 +316,6 @@ int main(void) {
       g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
     }
     else{
-      // dbg_println("Somehow not in either autonomous or teleop");
       steering_set(PWM_OFFSET_STORED_ANGLE); // default to centered
     }
 
