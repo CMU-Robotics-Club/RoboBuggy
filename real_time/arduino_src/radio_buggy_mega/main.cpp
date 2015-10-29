@@ -22,6 +22,12 @@
 #define SERVO_PINN PB5 // arduino 11 TODO: this is not used here
 #define CONNECTION_TIMEOUT_US 1000000L // 1000ms
 
+/**
+ * These values map the physical input/output (voltage/ms of pwm pulse) to a
+ * fixed physical angle. When software commands a steering angle of 10 deg
+ * (1000 hundredths), the PWM_SCALE_STEERING_OUT and POT_SCALE_STEERING_IN
+ * should be adjusted until a 10 deg input/output is seen/observed.
+ */
 #if BUGGY == transistor 
   #define PWM_OFFSET_STEERING_OUT 1850
   #define PWM_SCALE_STEERING_OUT -220
