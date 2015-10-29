@@ -1,19 +1,11 @@
 package com.roboclub.robobuggy.main;
 
-import gnu.io.CommPort;
-import gnu.io.CommPortIdentifier;
-import gnu.io.SerialPort;
-
 import java.nio.file.Paths;
-import java.util.ArrayList;
 
+import com.roboclub.robobuggy.sensors.SensorManager;
 import com.roboclub.robobuggy.logging.RobotLogger;
-import com.roboclub.robobuggy.nodes.RBSMNode;
-import com.roboclub.robobuggy.nodes.GpsNode;
-import com.roboclub.robobuggy.nodes.ImuNode;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
-import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 import com.roboclub.robobuggy.ui.Gui;
@@ -23,6 +15,7 @@ public class mainFile {
 	static int num = 0;
 	
 	public static void main(String args[]) {
+		//ArrayList<Integer> cameras = new ArrayList<Integer>();  //TODO have this set the cameras to use 
 		config.getInstance();//must be run at least once
 		
 		System.out.println(Paths.get("").toAbsolutePath().toString());
@@ -59,36 +52,7 @@ public class mainFile {
 		}	
 	}
 	
-	// Open a serial port
-	private static SerialPort connect(String portName) throws Exception
-    {
-        CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
-        if ( portIdentifier.isCurrentlyOwned() )
-        {
-            System.out.println("Error: Port is currently in use");
-            return null;
-        }
-        else
-        {
-        	//TODO fix this so that it is not potato 
-            CommPort commPort = portIdentifier.open("potato", 2000);
-            
-            if ( commPort instanceof SerialPort )
-            {
-                SerialPort serialPort = (SerialPort) commPort;
-                serialPort.setSerialPortParams(57600,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
-                return serialPort;
-            }
-            else
-            {
-                System.out.println("Error: Only serial ports are handled by this example.");
-            }
-        }
-		return null;
-    }	
 	public static void bringup_sim() throws Exception {
-		ArrayList<Node> sensorList = new ArrayList<Node>();
-
 		// Turn on logger!
 		if(config.logging){
 			System.out.println("Starting Logging");
@@ -96,55 +60,16 @@ public class mainFile {
 		}
 
 		Gui.EnableLogging();
-
-		//setup objects for each of the driver nodes 
-		ImuNode imu = new ImuNode(SensorChannel.IMU);
-		GpsNode gps = new GpsNode(SensorChannel.GPS);
-		RBSMNode enc = new RBSMNode(SensorChannel.ENCODER,SensorChannel.STEERING);
+		SensorManager sm = SensorManager.getInstance();
 		
-		// Set up the IMU
-		SerialPort sp = null;
-		String com = config.COM_PORT_IMU;
-		try {
-			System.out.println("Initializing IMU Serial Connection");
-			sp = connect(com);
-			System.out.println("IMU connected to " + com);
-		} catch (Exception e) {
-			System.out.println("Unable to connect to necessary device on " + com);
-			e.printStackTrace();
-			throw new Exception("Device not found error");
-		}
-		imu.setSerialPort(sp);
-		sensorList.add(imu);
-
-		// Set up the GPS
-		com = config.COM_PORT_GPS_INTEGRATED;
-		try {
-			System.out.println("Initializing GPS Serial Connection");
-			sp = connect(com);
-			System.out.println("GPS connected to " + com);
-		} catch (Exception e) {
-			System.out.println("Unable to connect to necessary device on " + com);
-			e.printStackTrace();
-			throw new Exception("Device not found error");
-		}
-		gps.setSerialPort(sp);
-		sensorList.add(gps);
-	
-		// Set up the Encoder
-		com = config.COM_PORT_ENCODER;
-		try {
-			System.out.println("Initializing ENCODER Serial Connection");
-			sp = connect(com);
-			System.out.println("ENCODER connected to " + com);
-		} catch (Exception e) {
-			System.out.println("Unable to connect to necessary device on " + com);
-			e.printStackTrace();
-			throw new Exception("Device not found error");
-		}
-		enc.setSerialPort(sp);
-		sensorList.add(enc);
-	
+		String path = "logs/2015-10-04-07-15-51/sensors.txt";
+		sm.newFauxSensors(path,
+				SensorChannel.IMU
+				,SensorChannel.GPS
+				,SensorChannel.DRIVE_CTRL
+				,SensorChannel.ENCODER
+				);
+				
 		new Subscriber(SensorChannel.ENCODER.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
