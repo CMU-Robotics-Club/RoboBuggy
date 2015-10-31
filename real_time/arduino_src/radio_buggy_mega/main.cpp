@@ -33,8 +33,8 @@
   #define PWM_SCALE_STEERING_OUT -220
   #define PWM_OFFSET_STORED_ANGLE 0
   #define PWM_SCALE_STORED_ANGLE 1000 // in hundredths of a degree for precision
-  #define POT_OFFSET_STEERING_IN 127
-  #define POT_SCALE_STEERING_IN 127
+  #define POT_OFFSET_STEERING_IN 121
+  #define POT_SCALE_STEERING_IN -10
 #elif BUGGY == nixie
   #define PWM_OFFSET_STEERING_OUT 1789
   #define PWM_SCALE_STEERING_OUT -150
