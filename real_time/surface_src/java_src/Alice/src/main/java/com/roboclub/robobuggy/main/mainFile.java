@@ -18,43 +18,60 @@ import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 import com.roboclub.robobuggy.ui.Gui;
 
-public class mainFile {
+public class mainFile 
+{
 	static Robot buggy;
 	static int num = 0;
 	
-	public static void main(String args[]) {
+	public static void main(String args[]) 
+	{
 		config.getInstance();//must be run at least once
 		
 		System.out.println(Paths.get("").toAbsolutePath().toString());
 		System.err.println(Paths.get("").toAbsolutePath().toString());
 		
-		for (int i = 0; i < args.length; i++) {
-			if (args[i].equalsIgnoreCase("-g")) {
+		for (int i = 0; i < args.length; i++) 
+		{
+			if (args[i].equalsIgnoreCase("-g")) 
+			{
 				config.GUI_ON = false;
-			} else if (args[i].equalsIgnoreCase("+g")) {
+			} 
+			else if (args[i].equalsIgnoreCase("+g")) 
+			{
 				config.GUI_ON = true;
-			} else if (args[i].equalsIgnoreCase("-r")) {
+			} 
+			else if (args[i].equalsIgnoreCase("-r")) 
+			{
 				config.active = false;
-			} else if (args[i].equalsIgnoreCase("+r")) {
+			} 
+			else if (args[i].equalsIgnoreCase("+r")) 
+			{
 				config.active = true;
 			}
 		}
 		
-		if(config.GUI_ON){
+		if(config.GUI_ON)
+		{
 			Gui.getInstance();
 		}
 		
 		// Starts the robot
-		if(config.DATA_PLAY_BACK_DEFAULT){
-			try {
+		if(false) //Changed this line
+		{
+			try 
+			{
 				bringup_sim();
-			} catch (Exception e) {
+			} 
+			catch (Exception e) 
+			{
 				Gui.close();
 				System.out.println("Unable to bringup simulated robot. Stacktrace omitted because it's really big.");
 				e.printStackTrace();
 				return;
 			}
-		} else {
+		} 
+		else 
+		{
 			Robot.getInstance();
 		}	
 	}
@@ -86,11 +103,13 @@ public class mainFile {
         }
 		return null;
     }	
-	public static void bringup_sim() throws Exception {
+	public static void bringup_sim() throws Exception 
+	{
 		ArrayList<Node> sensorList = new ArrayList<Node>();
 
 		// Turn on logger!
-		if(config.logging){
+		if(config.logging)
+		{
 			System.out.println("Starting Logging");
 			RobotLogger.getInstance();
 		}
@@ -101,15 +120,17 @@ public class mainFile {
 		ImuNode imu = new ImuNode(SensorChannel.IMU);
 		GpsNode gps = new GpsNode(SensorChannel.GPS);
 		RBSMNode enc = new RBSMNode(SensorChannel.ENCODER,SensorChannel.STEERING);
-		System.out.println("create");
 		// Set up the IMU
 		SerialPort sp = null;
 		String com = config.COM_PORT_IMU;
-		try {
+		try 
+		{
 			System.out.println("Initializing IMU Serial Connection");
 			sp = connect(com);
 			System.out.println("IMU connected to " + com);
-		} catch (Exception e) {
+		} 
+		catch (Exception e) 
+		{
 			System.out.println("Unable to connect to necessary device on " + com);
 			e.printStackTrace();
 			throw new Exception("Device not found error");
@@ -119,11 +140,14 @@ public class mainFile {
 
 		// Set up the GPS
 		com = config.COM_PORT_GPS_INTEGRATED;
-		try {
+		try 
+		{
 			System.out.println("Initializing GPS Serial Connection");
 			sp = connect(com);
 			System.out.println("GPS connected to " + com);
-		} catch (Exception e) {
+		} 
+		catch (Exception e) 
+		{
 			System.out.println("Unable to connect to necessary device on " + com);
 			e.printStackTrace();
 			throw new Exception("Device not found error");
@@ -133,11 +157,14 @@ public class mainFile {
 	
 		// Set up the Encoder
 		com = config.COM_PORT_ENCODER;
-		try {
+		try 
+		{
 			System.out.println("Initializing ENCODER Serial Connection");
 			sp = connect(com);
 			System.out.println("ENCODER connected to " + com);
-		} catch (Exception e) {
+		} 
+		catch (Exception e) 
+		{
 			System.out.println("Unable to connect to necessary device on " + com);
 			e.printStackTrace();
 			throw new Exception("Device not found error");
@@ -145,9 +172,11 @@ public class mainFile {
 		enc.setSerialPort(sp);
 		sensorList.add(enc);
 	
-		new Subscriber(SensorChannel.ENCODER.getMsgPath(), new MessageListener() {
+		new Subscriber(SensorChannel.ENCODER.getMsgPath(), new MessageListener() 
+		{
 			@Override
-			public void actionPerformed(String topicName, Message m) {
+			public void actionPerformed(String topicName, Message m) 
+			{
 				//System.out.println(m.toLogString());
 			}
 		});

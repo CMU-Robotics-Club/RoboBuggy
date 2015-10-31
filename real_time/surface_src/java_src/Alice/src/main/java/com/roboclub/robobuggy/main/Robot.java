@@ -65,9 +65,10 @@ public class Robot implements RosMaster {
 			});
 		}
 
+		System.out.println("Doing IMU nonsense");
 
 		if (config.IMU_DEFAULT) {
-			System.out.println("Initializing IMU Serial Connection");
+			System.out.println("Initializing IMU Serial Connection fdsa");
 			ImuNode imu = new ImuNode(SensorChannel.IMU);
 			sensorList.add(imu);
 			
@@ -78,6 +79,8 @@ public class Robot implements RosMaster {
 				}
 			});
 		}
+
+		System.out.println("Are we going to initialize encoder?");
 
 		if (config.ENCODER_DEFAULT) {
 			System.out.println("Initializing Encoder Serial Connection");
