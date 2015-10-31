@@ -118,7 +118,6 @@ public class RBSMNode extends SerialNode implements Node
 	@Override
 	public int peel(byte[] buffer, int start, int bytes_available) 
 	{
-		System.out.println("Stuff is going on\n\n\n\n");
 		// The Encoder sends 3 types of messages
 		//  - Encoder ticks since last message (keep)
 		//  - Number of ticks since last reset

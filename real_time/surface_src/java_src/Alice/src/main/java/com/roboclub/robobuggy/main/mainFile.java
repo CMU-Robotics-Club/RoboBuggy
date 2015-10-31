@@ -56,7 +56,7 @@ public class mainFile
 		}
 		
 		// Starts the robot
-		if(false) //Changed this line
+		if(config.DATA_PLAY_BACK_DEFAULT) //Changed this line
 		{
 			try 
 			{
