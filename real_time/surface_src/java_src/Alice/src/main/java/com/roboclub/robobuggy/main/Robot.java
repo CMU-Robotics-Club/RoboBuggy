@@ -2,11 +2,13 @@ package com.roboclub.robobuggy.main;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import com.roboclub.robobuggy.localization.KalmanFilter;
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
+import com.roboclub.robobuggy.messages.LogicExceptionMeasurment;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.messages.WheelAngleCommand;
 import com.roboclub.robobuggy.nodes.RBSMNode;
@@ -19,6 +21,7 @@ import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
+import com.roboclub.robobuggy.sensors.SensorState;
 import com.roboclub.robobuggy.ui.Gui;
 
 public class Robot implements RosMaster {
@@ -49,7 +52,18 @@ public class Robot implements RosMaster {
 			RobotLogger.getInstance();
 		}
 		
-		System.out.println();
+
+		// Initialize Logic errors
+		LogicException.setupLogicException(SensorChannel.LOGIC_EXCEPTION);
+		new Subscriber(SensorChannel.LOGIC_EXCEPTION.getMsgPath(), new MessageListener() {
+				@Override
+				public void actionPerformed(String topicName, Message m) {
+					updateLogicException((LogicExceptionMeasurment)m);
+				}
+			});
+		//sends startup note
+		new LogicException("Logic Exception Setup properly" ,  MESSAGE_LEVEL.note);
+		
 		
 		// Initialize Sensor
 		if (config.GPS_DEFAULT) {
@@ -91,6 +105,7 @@ public class Robot implements RosMaster {
 				}
 			});
 		}
+		
 
 		if (config.VISION_SYSTEM_DEFAULT) {
 			System.out.println("Initializing Vision System");
@@ -149,6 +164,10 @@ public class Robot implements RosMaster {
 	
 	/* Methods for Updating Current State */
 	private void updateGps(GpsMeasurement m) {
+		// TODO Update planner
+	}
+	
+	private void updateLogicException(LogicExceptionMeasurment m) {
 		// TODO Update planner
 	}
 
