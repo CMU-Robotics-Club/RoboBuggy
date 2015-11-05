@@ -1,23 +1,12 @@
 package com.roboclub.robobuggy.main;
 
-import gnu.io.CommPort;
-import gnu.io.CommPortIdentifier;
-import gnu.io.SerialPort;
-
-import java.nio.file.Paths;
-import java.util.ArrayList;
-
 import com.roboclub.robobuggy.logging.RobotLogger;
-import com.roboclub.robobuggy.nodes.RBSMNode;
-import com.roboclub.robobuggy.nodes.GpsNode;
-import com.roboclub.robobuggy.nodes.ImuNode;
-import com.roboclub.robobuggy.ros.Message;
-import com.roboclub.robobuggy.ros.MessageListener;
-import com.roboclub.robobuggy.ros.Node;
+import com.roboclub.robobuggy.nodes.RealNodeEnum;
 import com.roboclub.robobuggy.ros.SensorChannel;
-import com.roboclub.robobuggy.ros.Subscriber;
+import com.roboclub.robobuggy.sensors.SensorManager;
 import com.roboclub.robobuggy.ui.Gui;
 
+<<<<<<< HEAD
 public class mainFile 
 {
 	static Robot buggy;
@@ -95,12 +84,53 @@ public class mainFile
                 SerialPort serialPort = (SerialPort) commPort;
                 serialPort.setSerialPortParams(57600,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
                 return serialPort;
-            }
-            else
-            {
-                System.out.println("Error: Only serial ports are handled by this example.");
+=======
+public class mainFile {
+    static Robot buggy;
+    static int num = 0;
+    
+    public static void main(String args[]) {
+        config.getInstance();//must be run at least once
+                
+        for (int i = 0; i < args.length; i++) {
+            if (args[i].equalsIgnoreCase("-g")) {
+                config.GUI_ON = false;
+            } else if (args[i].equalsIgnoreCase("+g")) {
+                config.GUI_ON = true;
+            } else if (args[i].equalsIgnoreCase("-r")) {
+                config.active = false;
+            } else if (args[i].equalsIgnoreCase("+r")) {
+                config.active = true;
+>>>>>>> master
             }
         }
+        
+        if(config.GUI_ON){
+            Gui.getInstance();
+        }
+        
+        // Starts the robot
+        if(config.DATA_PLAY_BACK_DEFAULT){
+            try {
+                bringup_sim();
+            } catch (Exception e) {
+                Gui.close();
+                System.out.println("Unable to bringup simulated robot. Stacktrace omitted because it's really big.");
+                e.printStackTrace();
+                return;
+            }
+        } else {
+            Robot.getInstance();
+        }   
+    }
+    
+    //going to start by just connecting to the IMU
+    public static void bringup_sim() throws Exception {
+        if(config.logging){
+            System.out.println("Starting Logging");
+            RobotLogger.getInstance();
+        }
+<<<<<<< HEAD
 		return null;
     }	
 	public static void bringup_sim() throws Exception 
@@ -181,4 +211,17 @@ public class mainFile
 			}
 		});
 	}
+=======
+        
+        Gui.EnableLogging();
+        SensorManager sm = SensorManager.getInstance();
+        
+        //initialize a new real sensor with type, port, and channel(s)
+        //sensormanager will (eventually) continue to look on same port for the sensor
+        //returns a key to the new sensor -- remove with this key.
+        String ImuKey = sm.newRealSensor(RealNodeEnum.IMU, config.COM_PORT_IMU, SensorChannel.IMU);
+        String GpsKey = sm.newRealSensor(RealNodeEnum.GPS, config.COM_PORT_GPS_INTEGRATED, SensorChannel.GPS);
+        String RBSMKey = sm.newRealSensor(RealNodeEnum.RBSM, config.COM_PORT_ENCODER, SensorChannel.ENCODER, SensorChannel.STEERING);
+    }
+>>>>>>> master
 }
