@@ -36,6 +36,8 @@
   #error "must complie with BUGGY_TRANSISTOR or BUGGY_NIXI flag"
 #endif
 
+#define PWM_STATE_THRESHOLD 120
+
 #define RX_STEERING_DDR  DDRE
 #define RX_STEERING_PORT PORTE
 #define RX_STEERING_PIN  PINE
@@ -65,7 +67,6 @@
 #define BRAKE_INDICATOR_PORT PORTE
 #define BRAKE_INDICATOR_PINN PE3 // arduino 5
 
-#define STATE_THRESHOLD 120 //This is a temporary change to eliminate magic number
 
 // Global state
 static bool g_brake_state_engaged; // 0 = disengaged, !0 = engaged.
@@ -234,7 +235,7 @@ int main(void)
     // find the new brake state, if available
     smoothed_thr = g_brake_rx.GetAngle();
     // TODO make this code...less...something
-    if(smoothed_thr > STATE_THRESHOLD) 
+    if(smoothed_thr > PWM_STATE_THRESHOLD) 
     {
       // read as engaged
       g_brake_state_engaged = true;
@@ -250,7 +251,7 @@ int main(void)
     // find the new autonomous state, if available
     smoothed_auton = g_auton_rx.GetAngle();
     // TODO make this code...less...something
-    if(smoothed_auton > STATE_THRESHOLD) 
+    if(smoothed_auton > PWM_STATE_THRESHOLD) 
     { 
       // read as engaged
       g_is_autonomous = true;
