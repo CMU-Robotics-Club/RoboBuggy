@@ -8,7 +8,7 @@ import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
-import com.roboclub.robobuggy.messages.LogicExceptionMeasurment;
+import com.roboclub.robobuggy.messages.RobobuggyLogicExceptionMeasurment;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.messages.WheelAngleCommand;
 import com.roboclub.robobuggy.nodes.RBSMNode;
@@ -21,7 +21,6 @@ import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
-import com.roboclub.robobuggy.sensors.SensorState;
 import com.roboclub.robobuggy.ui.Gui;
 
 public class Robot implements RosMaster {
@@ -54,15 +53,15 @@ public class Robot implements RosMaster {
 		
 
 		// Initialize Logic errors
-		LogicException.setupLogicException(SensorChannel.LOGIC_EXCEPTION);
+		RobobuggyLogicException.setupLogicException(SensorChannel.LOGIC_EXCEPTION);
 		new Subscriber(SensorChannel.LOGIC_EXCEPTION.getMsgPath(), new MessageListener() {
 				@Override
 				public void actionPerformed(String topicName, Message m) {
-					updateLogicException((LogicExceptionMeasurment)m);
+					updateLogicException((RobobuggyLogicExceptionMeasurment)m);
 				}
 			});
 		//sends startup note
-		new LogicException("Logic Exception Setup properly" ,  MESSAGE_LEVEL.note);
+		new RobobuggyLogicException("Logic Exception Setup properly" ,  MESSAGE_LEVEL.NOTE);
 		
 		
 		// Initialize Sensor
@@ -147,6 +146,7 @@ public class Robot implements RosMaster {
 	
 	// shuts down the robot and all of its child sensors
 	public static void ShutDown() {
+		new RobobuggyLogicException("shutting down Robot", MESSAGE_LEVEL.NOTE);
 		if (sensorList != null && !sensorList.isEmpty()) {
 			for (Node sensor : sensorList) {
 				if (sensor != null) {
@@ -167,7 +167,7 @@ public class Robot implements RosMaster {
 		// TODO Update planner
 	}
 	
-	private void updateLogicException(LogicExceptionMeasurment m) {
+	private void updateLogicException(RobobuggyLogicExceptionMeasurment m) {
 		// TODO Update planner
 	}
 

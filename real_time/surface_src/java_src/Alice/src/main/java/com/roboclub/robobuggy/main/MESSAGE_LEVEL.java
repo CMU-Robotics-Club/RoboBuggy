@@ -8,5 +8,5 @@ package com.roboclub.robobuggy.main;
  *
  */
 public enum MESSAGE_LEVEL {
-exception,warning,note
+EXCEPTION,WARNING,NOTE
 }

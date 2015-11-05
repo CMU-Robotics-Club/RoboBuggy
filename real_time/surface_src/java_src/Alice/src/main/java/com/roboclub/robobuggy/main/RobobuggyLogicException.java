@@ -1,6 +1,6 @@
 package com.roboclub.robobuggy.main;
 
-import com.roboclub.robobuggy.messages.LogicExceptionMeasurment;
+import com.roboclub.robobuggy.messages.RobobuggyLogicExceptionMeasurment;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
 
@@ -14,7 +14,7 @@ import com.roboclub.robobuggy.ros.SensorChannel;
  *  error in one place. So for example we can handle displaying the appropriate error to 
  *  the user, possibly logging the error, or possible causing a warning light to turn on.  
  */
-public class LogicException extends Exception {
+public class RobobuggyLogicException extends Exception {
 	private static Publisher errorPub;
 	
 	//must be run before LogicException can be called 
@@ -22,12 +22,12 @@ public static void setupLogicException(SensorChannel sensor){
 	errorPub = new Publisher(sensor.getMsgPath());
 }
 	
-public LogicException(String error,MESSAGE_LEVEL level){
+public RobobuggyLogicException(String error,MESSAGE_LEVEL level){
 	System.out.println(error);
-	errorPub.publish(new LogicExceptionMeasurment(error, level));
+	errorPub.publish(new RobobuggyLogicExceptionMeasurment(error, level));
 	
 	//only halt the program if it is an exception 
-	if(level == MESSAGE_LEVEL.exception){
+	if(level == MESSAGE_LEVEL.EXCEPTION){
 		assert(false);
 	}
 }
