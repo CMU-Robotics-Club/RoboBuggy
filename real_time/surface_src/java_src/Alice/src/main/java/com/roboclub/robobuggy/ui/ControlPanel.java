@@ -37,6 +37,7 @@ import com.roboclub.robobuggy.ros.SensorChannel;
 
 public class ControlPanel extends JPanel {
 	private static final long serialVersionUID = -924045896215455343L;
+	private static final int TIME_ZONE_OFFSET = 18000000;//5 hours
 
 	private static JButton play_btn;
 	private JFormattedTextField time_lbl;
@@ -60,7 +61,8 @@ public class ControlPanel extends JPanel {
 		timer.setDelay(100);
 		timer.setRepeats(true); // timer needs to be setup before startpause_btn
 
-		startTime = new Date(0);
+		//should be the time that we start the sytem at 
+		startTime = new Date();
 		
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
 		this.setLayout(new GridBagLayout());
@@ -81,7 +83,8 @@ public class ControlPanel extends JPanel {
 	private class timerHandler implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent ae) {
-			time_lbl.setValue(new Date().getTime() - startTime.getTime());
+			Date currentTime = new Date();
+			time_lbl.setValue(currentTime.getTime() - startTime.getTime()+ TIME_ZONE_OFFSET);
 		}
 	}
 
