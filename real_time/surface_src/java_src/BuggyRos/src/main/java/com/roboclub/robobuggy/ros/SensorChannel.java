@@ -3,9 +3,10 @@ package com.roboclub.robobuggy.ros;
 public enum SensorChannel {
 	GPS("gps"),
 	IMU("imu"),
-    RC("rc_angle"),
-    STEERING("steering"),
-    BRAKE("brake"),
+	RC("rc_angle"),
+	STEERING("steering"),
+	BRAKE("brake"),
+	LOGIC_EXCEPTION("logic_exception"),
 	DRIVE_CTRL("drive_ctrl"),
 	VISION("vision"),
 	ENCODER("encoder"),

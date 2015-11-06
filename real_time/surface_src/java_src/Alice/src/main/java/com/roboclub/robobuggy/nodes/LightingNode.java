@@ -1,5 +1,6 @@
 package com.roboclub.robobuggy.nodes;
 
+import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Publisher;
@@ -92,4 +93,11 @@ public class LightingNode extends SerialNode implements Node {
 //				vals[3], vals[4], vals[5], vals[6], vals[7], vals[8]));
 		return 4 + (orig_length - b.length());
 	}
+
+	
+	public static JSONObject translatePeelMessageToJObject(String message) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
