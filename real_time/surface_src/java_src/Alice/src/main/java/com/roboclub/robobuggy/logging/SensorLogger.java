@@ -138,7 +138,7 @@ public final class SensorLogger {
 	private static String getCurrentSoftwareVersion() {
 		// TODO Auto-generated method stub
 		//TODO update this to actually grab current sw version
-		return "1.0.0";
+		return config.SW_VERSION_HIGHLEVEL;
 	}
 
 	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");

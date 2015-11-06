@@ -17,6 +17,8 @@ public interface Message {
 	// - if any work needs to be done (e.g. save an image to disk, then
 	// toLogString needs to start that work.
 	public String toLogString();
+	
+	public String getCorrespondingSensor();
 
 	// Given the output of toLogString, re-hydrate a message from it.
 	public Message fromLogString(String str);

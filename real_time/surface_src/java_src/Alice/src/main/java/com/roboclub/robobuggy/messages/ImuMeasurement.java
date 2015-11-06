@@ -2,6 +2,8 @@ package com.roboclub.robobuggy.messages;
 
 import java.text.ParseException;
 import java.util.Date;
+
+import com.roboclub.robobuggy.main.config;
 import com.roboclub.robobuggy.ros.Message;
 
 /**
@@ -55,5 +57,11 @@ public class ImuMeasurement extends BaseMessage implements Message {
 		Double p = Double.parseDouble(ar[2]);
 		Double r = Double.parseDouble(ar[3]);
 		return new ImuMeasurement(y, p, r);
+	}
+
+	@Override
+	public String getCorrespondingSensor() {
+		// TODO Auto-generated method stub
+		return config.SENSOR_NAME_IMU;
 	}
 }

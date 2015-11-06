@@ -27,6 +27,22 @@ public class config {
 
 	public static String LOG_FILE_LOCATION = "logs";
 	public static String LOG_STOP_MESSAGE = "STOP_LOGGING";
+	public static String SW_VERSION_HIGHLEVEL = "1.0.0";
+	
+	
+	//names of the various sensors
+	public static String SENSOR_NAME_BRAKE = "brake";
+	public static String SENSOR_NAME_CAMERA = "camera";
+	public static String SENSOR_NAME_ENCODER = "encoder";
+	public static String SENSOR_NAME_GPS = "gps";
+	public static String SENSOR_NAME_GUI_LOGGING_BUTTON = "logging_button";
+	public static String SENSOR_NAME_IMU = "imu";
+	public static String SENSOR_NAME_STEERING = "steering";
+	
+	//other message types
+	public static String MESSAGE_TYPE_RESET = "reset";
+	public static String MESSAGE_TYPE_STATUS = "status";
+	
 
 	// default logging state, should the buggy start logging as soon as this
 	// program is started
