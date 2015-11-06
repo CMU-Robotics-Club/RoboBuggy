@@ -174,13 +174,13 @@ public class GpsNode extends SerialNode implements Node {
 		JSONObject data = new JSONObject();
 		JSONObject params = new JSONObject();
 		String[] messageData = message.split(",");
-		params.put("latitude", Float.valueOf(messageData[3]));
+		params.put("latitude", Double.valueOf(messageData[3]));
 		params.put("lat_direction", messageData[4]);
-		params.put("longitude", Float.valueOf(messageData[5]));
+		params.put("longitude", Double.valueOf(messageData[5]));
 		params.put("long_direction", messageData[6]);
 		params.put("gps_quality", messageData[7]);
 		params.put("num_satellites", messageData[8]);
-		params.put("HDOP", Float.valueOf(messageData[9]));
+		params.put("HDOP", Double.valueOf(messageData[9]));
 		params.put("antenna_altitude", Float.valueOf(messageData[10]));
 		data.put("timestamp", messageData[1]);
 		data.put("name", "GPS");
