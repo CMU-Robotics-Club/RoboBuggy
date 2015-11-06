@@ -8,7 +8,6 @@ import jdk.nashorn.internal.scripts.JS;
 import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
-import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
@@ -170,7 +169,7 @@ public class GpsNode extends SerialNode implements Node {
 
 	
 	@SuppressWarnings("unchecked")
-	public static JSONObject translatePeelMessageToJObject(GpsMeasurement message) {
+	public static JSONObject translatePeelMessageToJObject(String message) {
 		// TODO Auto-generated method stub
 		JSONObject data = new JSONObject();
 		JSONObject params = new JSONObject();
