@@ -5,6 +5,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.roboclub.robobuggy.main.MESSAGE_LEVEL;
+import com.roboclub.robobuggy.main.RobobuggyLogicException;
+
 public abstract class BaseMessage {
 	public static DateFormat formatter = new SimpleDateFormat(
 			"yyyy-MM-dd HH:mm:ss.SSS");
@@ -17,9 +20,7 @@ public abstract class BaseMessage {
 		try {
 			return formatter.parse(maybe_date);
 		} catch (ParseException e) {
-			e.printStackTrace();
-			// TODO fail rather than print stack trace and do nothing.
-			// throw e;
+			new RobobuggyLogicException("could not parse date stack trace: "+ e.getStackTrace().toString(), MESSAGE_LEVEL.WARNING);
 			return null;
 		}
 	}
