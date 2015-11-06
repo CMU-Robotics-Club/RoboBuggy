@@ -2,11 +2,13 @@ package com.roboclub.robobuggy.main;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import com.roboclub.robobuggy.localization.KalmanFilter;
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
+import com.roboclub.robobuggy.messages.RobobuggyLogicExceptionMeasurment;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.messages.WheelAngleCommand;
 import com.roboclub.robobuggy.nodes.RBSMNode;
@@ -49,7 +51,18 @@ public class Robot implements RosMaster {
 			RobotLogger.getInstance();
 		}
 		
-		System.out.println();
+
+		// Initialize Logic errors
+		RobobuggyLogicException.setupLogicException(SensorChannel.LOGIC_EXCEPTION);
+		new Subscriber(SensorChannel.LOGIC_EXCEPTION.getMsgPath(), new MessageListener() {
+				@Override
+				public void actionPerformed(String topicName, Message m) {
+					updateLogicException((RobobuggyLogicExceptionMeasurment)m);
+				}
+			});
+		//sends startup note
+		new RobobuggyLogicException("Logic Exception Setup properly" ,  MESSAGE_LEVEL.NOTE);
+		
 		
 		// Initialize Sensor
 		if (config.GPS_DEFAULT) {
@@ -92,6 +105,7 @@ public class Robot implements RosMaster {
 				}
 			});
 		}
+		
 
 		if (config.VISION_SYSTEM_DEFAULT) {
 			System.out.println("Initializing Vision System");
@@ -133,6 +147,7 @@ public class Robot implements RosMaster {
 	
 	// shuts down the robot and all of its child sensors
 	public static void ShutDown() {
+		new RobobuggyLogicException("shutting down Robot", MESSAGE_LEVEL.NOTE);
 		if (sensorList != null && !sensorList.isEmpty()) {
 			for (Node sensor : sensorList) {
 				if (sensor != null) {
@@ -150,6 +165,10 @@ public class Robot implements RosMaster {
 	
 	/* Methods for Updating Current State */
 	private void updateGps(GpsMeasurement m) {
+		// TODO Update planner
+	}
+	
+	private void updateLogicException(RobobuggyLogicExceptionMeasurment m) {
 		// TODO Update planner
 	}
 
