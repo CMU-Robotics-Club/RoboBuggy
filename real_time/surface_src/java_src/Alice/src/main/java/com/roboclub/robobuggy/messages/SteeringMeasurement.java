@@ -1,8 +1,6 @@
 package com.roboclub.robobuggy.messages;
 
 import java.util.Date;
-
-import com.roboclub.robobuggy.main.config;
 import com.roboclub.robobuggy.ros.Message;
 
 public class SteeringMeasurement extends BaseMessage implements Message {
@@ -27,11 +25,5 @@ public class SteeringMeasurement extends BaseMessage implements Message {
 		timestamp = try_to_parse_date(ar[0]);
 		angle = Integer.parseInt(ar[1]);
 		return new SteeringMeasurement(angle);
-	}
-
-	@Override
-	public String getCorrespondingSensor() {
-		// TODO Auto-generated method stub
-		return config.SENSOR_NAME_STEERING;
 	}
 }

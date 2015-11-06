@@ -29,10 +29,4 @@ public class RemoteWheelAngleRequest implements Message {
 		return null;
 	}
 
-	@Override
-	public String getCorrespondingSensor() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

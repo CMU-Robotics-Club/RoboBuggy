@@ -42,10 +42,4 @@ public class WheelAngleCommand implements Message {
 
 	}
 
-	@Override
-	public String getCorrespondingSensor() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

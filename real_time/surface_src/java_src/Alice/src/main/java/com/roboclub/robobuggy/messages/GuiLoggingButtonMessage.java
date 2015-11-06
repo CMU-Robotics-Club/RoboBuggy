@@ -1,8 +1,6 @@
 package com.roboclub.robobuggy.messages;
 
 import java.util.Date;
-
-import com.roboclub.robobuggy.main.config;
 import com.roboclub.robobuggy.ros.Message;
 
 /**
@@ -50,11 +48,5 @@ public class GuiLoggingButtonMessage extends BaseMessage implements Message {
 		Date d = try_to_parse_date(ar[0]);
 		LoggingMessage lm = LoggingMessage.valueOf(ar[1]);
 		return new GuiLoggingButtonMessage(timestamp, lm);
-	}
-
-	@Override
-	public String getCorrespondingSensor() {
-		// TODO Auto-generated method stub
-		return config.SENSOR_NAME_GUI_LOGGING_BUTTON;
 	}
 }

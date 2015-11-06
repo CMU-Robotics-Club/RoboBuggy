@@ -1,8 +1,6 @@
 package com.roboclub.robobuggy.messages;
 
 import java.util.Date;
-
-import com.roboclub.robobuggy.main.config;
 import com.roboclub.robobuggy.ros.Message;
 
 /**
@@ -70,11 +68,5 @@ public class EncoderMeasurement extends BaseMessage implements Message {
 		dataWord = Double.parseDouble(ar[3]);
 		//TODO calculate acceleration
 		return new EncoderMeasurement(timestamp, distance, velocity, dataWord, accel);
-	}
-
-	@Override
-	public String getCorrespondingSensor() {
-		// TODO Auto-generated method stub
-		return config.SENSOR_NAME_ENCODER;
 	}
 }

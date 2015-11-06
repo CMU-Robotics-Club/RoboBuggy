@@ -2,7 +2,6 @@ package com.roboclub.robobuggy.messages;
 
 import java.util.Date;
 
-import com.roboclub.robobuggy.main.config;
 import com.roboclub.robobuggy.ros.Message;
 
 public class ResetMessage implements Message {
@@ -23,11 +22,5 @@ public class ResetMessage implements Message {
 		// TODO Auto-generated method stub
 		return null;
 		
-	}
-
-	@Override
-	public String getCorrespondingSensor() {
-		// TODO Auto-generated method stub
-		return config.MESSAGE_TYPE_RESET;
 	}
 }

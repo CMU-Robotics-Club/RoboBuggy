@@ -2,7 +2,6 @@ package com.roboclub.robobuggy.messages;
 
 import java.util.Date;
 
-import com.roboclub.robobuggy.main.config;
 import com.roboclub.robobuggy.ros.Message;
 
 /**
@@ -33,11 +32,5 @@ public class CameraMeasurement extends BaseMessage implements Message {
 		Date d = try_to_parse_date(spl[0]);
 		//todo actually send a message that is usefull
 		return new CameraMeasurement();
-	}
-
-	@Override
-	public String getCorrespondingSensor() {
-		// TODO Auto-generated method stub
-		return config.SENSOR_NAME_CAMERA;
 	}
 }

@@ -2,7 +2,6 @@ package com.roboclub.robobuggy.messages;
 
 import java.util.Date;
 
-import com.roboclub.robobuggy.main.config;
 import com.roboclub.robobuggy.ros.Message;
 
 /**
@@ -103,11 +102,5 @@ public class GpsMeasurement extends BaseMessage implements Message {
 		double antenna_altitude = Double.parseDouble(ar[7]);
 		return new GpsMeasurement(messageTimestamp, gpsTimestamp, latitude, north, longitude,
 				west, quality_value, num_satellites, horizontal_diluation, antenna_altitude);
-	}
-
-	@Override
-	public String getCorrespondingSensor() {
-		// TODO Auto-generated method stub
-		return config.SENSOR_NAME_GPS;
 	}
 }
