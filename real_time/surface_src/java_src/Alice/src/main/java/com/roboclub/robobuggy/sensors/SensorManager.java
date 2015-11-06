@@ -21,6 +21,7 @@ import com.roboclub.robobuggy.fauxNodes.FauxNode;
 import com.roboclub.robobuggy.fauxNodes.FauxSteeringNode;
 import com.roboclub.robobuggy.nodes.GpsNode;
 import com.roboclub.robobuggy.nodes.ImuNode;
+import com.roboclub.robobuggy.nodes.LoggingNode;
 import com.roboclub.robobuggy.nodes.RBSMNode;
 import com.roboclub.robobuggy.nodes.RealNodeEnum;
 import com.roboclub.robobuggy.ros.SensorChannel;
@@ -89,6 +90,9 @@ public class SensorManager {
 			RBSMNode rbsm = new RBSMNode(sensor[0], sensor[1]);
 			rbsm.setSerialPort(connect(port, rbsm.baudRate()));
 			realSensors.put(portKey, rbsm);
+			break;
+		case LOGGING_BUTTON:
+			LoggingNode loggingButton = new LoggingNode();
 			break;
 		default:
 			System.out.println("Attempting to add unsupported sensor");

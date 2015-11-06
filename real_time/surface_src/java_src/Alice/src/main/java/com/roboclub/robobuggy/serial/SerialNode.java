@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.ros.Node;
 
 // Properly initializes the serial things
@@ -110,6 +111,10 @@ public abstract class SerialNode implements Node {
 
 	// Return the expected baud rate of the current device
 	public abstract int baudRate();
+	
+	public static JSONObject translatePeelMessageToJObject(String message) {
+		return new JSONObject();
+	}
 
 	// Peel is called once. user should read as many messages as possible
 	// returns the number of bytes read; or 1 on failure
