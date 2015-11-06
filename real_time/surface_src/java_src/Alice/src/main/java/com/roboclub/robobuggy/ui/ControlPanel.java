@@ -19,7 +19,7 @@ import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.main.config;
-import com.roboclub.robobuggy.messages.GuiLoggingButton;
+import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
 
@@ -37,6 +37,7 @@ import com.roboclub.robobuggy.ros.SensorChannel;
 
 public class ControlPanel extends JPanel {
 	private static final long serialVersionUID = -924045896215455343L;
+	private static final int TIME_ZONE_OFFSET = 18000000;//5 hours
 
 	private static JButton play_btn;
 	private JFormattedTextField time_lbl;
@@ -54,13 +55,14 @@ public class ControlPanel extends JPanel {
 	Publisher logging_button_pub;
 	
 	public ControlPanel() {
-		logging_button_pub = new Publisher(SensorChannel.GUI_LOGGING_BUTTON.getMsgPath());
+		logging_button_pub = new Publisher(Gui.GuiPubSubTopics.GUI_LOG_BUTTON_UPDATED.toString());
 		
 		timer = new Timer(10, new timerHandler());// updates every .01 seconds
 		timer.setDelay(100);
 		timer.setRepeats(true); // timer needs to be setup before startpause_btn
 
-		startTime = new Date(0);
+		//should be the time that we start the sytem at 
+		startTime = new Date();
 		
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
 		this.setLayout(new GridBagLayout());
@@ -81,7 +83,8 @@ public class ControlPanel extends JPanel {
 	private class timerHandler implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent ae) {
-			time_lbl.setValue(new Date().getTime() - startTime.getTime());
+			Date currentTime = new Date();
+			time_lbl.setValue(currentTime.getTime() - startTime.getTime()+ TIME_ZONE_OFFSET);
 		}
 	}
 
@@ -98,7 +101,7 @@ public class ControlPanel extends JPanel {
 				timer.start();
 				
 				RobotLogger.CreateLog();
-				logging_button_pub.publish(new GuiLoggingButton(GuiLoggingButton.LoggingMessage.START));
+				logging_button_pub.publish(new GuiLoggingButtonMessage(GuiLoggingButtonMessage.LoggingMessage.START));
 				startTime = new Date();
 			} else {
 				System.out.println("System Paused");
@@ -106,7 +109,7 @@ public class ControlPanel extends JPanel {
 				play_btn.setText("START");
 				
 				RobotLogger.CloseLog();
-				logging_button_pub.publish(new GuiLoggingButton(GuiLoggingButton.LoggingMessage.START));
+				logging_button_pub.publish(new GuiLoggingButtonMessage(GuiLoggingButtonMessage.LoggingMessage.STOP));
 				timer.stop();
 			}
 		}

@@ -5,6 +5,8 @@ A project of the [Robotics Club at Carnegie Mellon University](https://roboticsc
 
 [<img src="https://travis-ci.org/CMU-Robotics-Club/RoboBuggy.svg?branch=master">](https://travis-ci.org/CMU-Robotics-Club/RoboBuggy/builds)
 
+[![Codacy Badge](https://api.codacy.com/project/badge/grade/4026f13cbb954454a4a9abe37fd49587)](https://www.codacy.com/app/Mr-Trevor-Decker/RoboBuggy)
+
 > Buggy (also called Sweepstakes) is a race held annually since 1920 at Carnegie Mellon. Teams of 5 atheletes (the pushers) push an un-motorized vehicle (a buggy) containing a driver around a 0.84 mile course in a relay format where the vehicle serves as the baton. Roughly half of the course is uphill, during which the pushers run and shove the buggy uphill. During the other - downhill - half, drivers are on their own to navigate tight turns at speeds of up to 35mph.
 
 Borrowed from the [CMU Buggy Alumni Association](http://cmubuggy.org/reference/What_is_buggy%3F). Visit them to find out more.
@@ -83,17 +85,14 @@ _System block diagram._
 
 Our system architecture keeps a human in the loop all the time, even just to hit the emergency stop button. The human driver can either be sending drive commands (for AI training) or monitoring the AI. The command signals from the AI and human are mixed together (depending on operating mode) in the IO controller. Here we also do last level safety checks like stop on disconnection. The IO controller interfaces directly with the electromechanical systems to make braking, steering, and sensing happen. Find more information in the source directories below.
 
-AI: [real_time/surface_src](real_time/surface_src)
-
-IO Controller: [real_time/arduino_src/radio_buggy_mega](real_time/arduino_src/radio_buggy_mega)
 
 ## File Structure 
 
-THe software system is seperated into two main sections:
+The software system is seperated into two main directories (sections):
 * offline -> where code which is not executed in realtime on the buggy is stored
-* realTime -> where code which is being run in realtime on the buggy is stored 
+* real_time -> where code which is being run in realtime on the buggy is stored 
 
-Theis folder also contains: 
+This folder also contains: 
 * Pictures for this readmde file
 * configuration files
 

@@ -32,6 +32,10 @@ public final class Gui extends JFrame {
 	private AnalyticsPanel anlyPanel;
 	
 	private static Gui instance;
+	
+	public enum GuiPubSubTopics {
+		GUI_LOG_BUTTON_UPDATED,
+	}
 
 	public static Gui getInstance() {
 		if (instance == null) {
