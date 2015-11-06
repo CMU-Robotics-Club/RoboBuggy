@@ -46,7 +46,7 @@ public class LoggingNode implements Node {
 	
 
 	@SuppressWarnings("unchecked")
-	public static JSONObject translatePeelMessageToJObject(String message) {
+	public static JSONObject translatePeelMessageToJObject(GuiLoggingButtonMessage message) {
 		// TODO Auto-generated method stub
 		JSONObject data = new JSONObject();
 		JSONObject params = new JSONObject();

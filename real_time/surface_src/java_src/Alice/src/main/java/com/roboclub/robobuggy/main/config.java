@@ -31,13 +31,13 @@ public class config {
 	
 	
 	//names of the various sensors
-	public static String SENSOR_NAME_BRAKE = "brake";
-	public static String SENSOR_NAME_CAMERA = "camera";
-	public static String SENSOR_NAME_ENCODER = "encoder";
-	public static String SENSOR_NAME_GPS = "gps";
-	public static String SENSOR_NAME_GUI_LOGGING_BUTTON = "logging_button";
-	public static String SENSOR_NAME_IMU = "imu";
-	public static String SENSOR_NAME_STEERING = "steering";
+	public static final String SENSOR_NAME_BRAKE = "brake";
+	public static final String SENSOR_NAME_CAMERA = "camera";
+	public static final String SENSOR_NAME_ENCODER = "encoder";
+	public static final String SENSOR_NAME_GPS = "gps";
+	public static final String SENSOR_NAME_GUI_LOGGING_BUTTON = "logging_button";
+	public static final String SENSOR_NAME_IMU = "imu";
+	public static final String SENSOR_NAME_STEERING = "steering";
 	
 	//other message types
 	public static String MESSAGE_TYPE_RESET = "reset";

@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import com.orsoncharts.util.json.JSONObject;
+import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.Node;
 
 // Properly initializes the serial things
@@ -112,7 +113,7 @@ public abstract class SerialNode implements Node {
 	// Return the expected baud rate of the current device
 	public abstract int baudRate();
 	
-	public static JSONObject translatePeelMessageToJObject(String message) {
+	public static JSONObject translatePeelMessageToJObject(Message message) {
 		return new JSONObject();
 	}
 

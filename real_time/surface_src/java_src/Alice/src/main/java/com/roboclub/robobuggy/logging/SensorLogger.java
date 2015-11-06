@@ -11,7 +11,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.main.config;
+import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
+import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.nodes.GpsNode;
 import com.roboclub.robobuggy.nodes.ImuNode;
 import com.roboclub.robobuggy.nodes.LoggingNode;
@@ -31,11 +33,11 @@ import com.roboclub.robobuggy.serial.SerialNode;
  */
 public final class SensorLogger {
 	private final PrintStream _log;
-	private final Queue<String> _logQueue;
+	private final Queue<Message> _logQueue;
 	private final ArrayList<Subscriber> subscribers;
 
-	private static final Queue<String> startLoggingThread(PrintStream stream) {
-		final LinkedBlockingQueue<String> ret = new LinkedBlockingQueue<>();
+	private static final Queue<Message> startLoggingThread(PrintStream stream) {
+		final LinkedBlockingQueue<Message> ret = new LinkedBlockingQueue<>();
 		
 		String name = "\"name\": \"Robobuggy Data Logs\",";
 		String schema_version = "\"schema_version\": 1.0,";
@@ -55,17 +57,19 @@ public final class SensorLogger {
 			public void run() {
 				while (true) {
 					try {
-						String line = ret.take();
-						if (line == null) {
+						Message message = ret.take();
+						
+						if (message == null) {
 							break;
 						}
-						if (line.contains("STOP")) {
-							stream.println("        " + LoggingNode.translatePeelMessageToJObject(line).toJSONString());
+												
+						if (message.toLogString().contains("STOP")) {
+							stream.println("        " + LoggingNode.translatePeelMessageToJObject(message).toJSONString());
 							logButtonHits++;
 							stream.println("    ],\n    \"data_breakdown\" : " + getDataBreakdown() + "\n}");
 							break;
 						}
-						stream.println("        " + parseData(line) + ",");
+						stream.println("        " + parseData(message) + ",");
 					} catch (InterruptedException e) {
 						//TODO add to messages 
 						e.printStackTrace();
@@ -73,38 +77,37 @@ public final class SensorLogger {
 				}
 			}
 
-			private String parseData(String line) {
+			private String parseData(Message message) {
 				// TODO Auto-generated method stub
-				String sensor = line.substring(line.indexOf("/") + 1, line.indexOf(","));				
 				JSONObject sensorEntryObject;
 
-				switch (sensor) {
-				case "imu":
-					sensorEntryObject = ImuNode.translatePeelMessageToJObject(line);
-					imuHits++;
-					break;
-				
-				case "gps":
-					sensorEntryObject = GpsNode.translatePeelMessageToJObject(line);
-					gpsHits++;
-					break;
+				switch (message.getCorrespondingSensor()) {
+					case config.SENSOR_NAME_IMU:
+						sensorEntryObject = ImuNode.translatePeelMessageToJObject((ImuMeasurement)message);
+						imuHits++;
+						break;
 					
-				case "steering":
-					steeringHits++;
-				case "encoder":
-					sensorEntryObject = RBSMNode.translatePeelMessageToJObject(line);
-					encoderHits++;
-					break;
-					
-				case "logging_button":
-					sensorEntryObject = LoggingNode.translatePeelMessageToJObject(line);
-					logButtonHits++;
-					break;
-
-				default:
-					//put brakes in here?
-					sensorEntryObject = SerialNode.translatePeelMessageToJObject(line);
-					break;
+					case config.SENSOR_NAME_GPS:
+						sensorEntryObject = GpsNode.translatePeelMessageToJObject((GpsMeasurement)message);
+						gpsHits++;
+						break;
+						
+					case config.SENSOR_NAME_STEERING:
+						steeringHits++;
+					case config.SENSOR_NAME_ENCODER:
+						sensorEntryObject = RBSMNode.translatePeelMessageToJObject(message);
+						encoderHits++;
+						break;
+						
+					case config.SENSOR_NAME_GUI_LOGGING_BUTTON:
+						sensorEntryObject = LoggingNode.translatePeelMessageToJObject(message);
+						logButtonHits++;
+						break;
+	
+					default:
+						//put brakes in here?
+						sensorEntryObject = SerialNode.translatePeelMessageToJObject(message);
+						break;
 				}
 				
 				return sensorEntryObject.toJSONString();
@@ -168,7 +171,7 @@ public final class SensorLogger {
 				new Subscriber(channel.getMsgPath(), new MessageListener() {
 					@Override
 					public void actionPerformed(String topicName, Message m) {
-						_logQueue.offer(topicName + "," + m.toLogString());
+						_logQueue.offer(m);
 					}
 				}));
 		}

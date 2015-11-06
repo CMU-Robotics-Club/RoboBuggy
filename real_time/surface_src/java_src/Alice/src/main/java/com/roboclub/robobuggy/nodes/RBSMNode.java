@@ -8,6 +8,7 @@ import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
+import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
@@ -147,7 +148,7 @@ public class RBSMNode extends SerialNode implements Node {
 
 	
 	@SuppressWarnings("unchecked")
-	public static JSONObject translatePeelMessageToJObject(String message) {
+	public static JSONObject translatePeelMessageToJObject(Message message) {
 		String[] messageData = message.split(",");
 		String sensorName = messageData[0];
 		sensorName = sensorName.substring(sensorName.indexOf("/") + 1);

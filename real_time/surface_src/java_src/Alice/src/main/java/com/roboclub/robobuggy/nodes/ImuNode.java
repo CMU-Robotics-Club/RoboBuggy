@@ -1,8 +1,10 @@
 package com.roboclub.robobuggy.nodes;
 
 import com.orsoncharts.util.json.JSONObject;
+import com.roboclub.robobuggy.logging.IMUMeasurement;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
+import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
@@ -129,7 +131,7 @@ public class ImuNode extends SerialNode implements Node {
 
 	
 	@SuppressWarnings("unchecked")
-	public static JSONObject translatePeelMessageToJObject(String message) {
+	public static JSONObject translatePeelMessageToJObject(ImuMeasurement message) {
 		// TODO Auto-generated method stub
 		// message has it organized as yaw pitch roll
 		JSONObject data = new JSONObject();
