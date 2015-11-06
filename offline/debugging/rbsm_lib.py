@@ -5,7 +5,7 @@ class RBSerialMessage:
 
   def __init__(self, device_path):
     self.RBSM_FOOTER = 0x0A
-    self.RBSM_BAUD_RATE = 9600
+    self.RBSM_BAUD_RATE = 115200
     self.RBSM_PACKET_LENGTH = 6
 
     self.device_path = device_path
