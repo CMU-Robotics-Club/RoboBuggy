@@ -6,6 +6,7 @@ import gnu.io.SerialPort;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.UUID;
 
 import com.roboclub.robobuggy.calculatedNodes.BaseCalculatedNode;
 import com.roboclub.robobuggy.calculatedNodes.CalculatedEncoderNode;
@@ -18,97 +19,89 @@ import com.roboclub.robobuggy.fauxNodes.FauxGPSNode;
 import com.roboclub.robobuggy.fauxNodes.FauxIMUNode;
 import com.roboclub.robobuggy.fauxNodes.FauxNode;
 import com.roboclub.robobuggy.fauxNodes.FauxSteeringNode;
-//import com.roboclub.robobuggy.nodes.EncoderNode;
 import com.roboclub.robobuggy.nodes.GpsNode;
 import com.roboclub.robobuggy.nodes.ImuNode;
+import com.roboclub.robobuggy.nodes.LoggingNode;
+import com.roboclub.robobuggy.nodes.RBSMNode;
 import com.roboclub.robobuggy.nodes.RealNodeEnum;
-//import com.roboclub.robobuggy.nodes.SteeringNode;
-import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.SensorChannel;
+import com.roboclub.robobuggy.serial.SerialNode;
 import com.roboclub.robobuggy.simulation.FauxRunner;
 
 public class SensorManager {
-	
+
+	private final static int TIMEOUT = 2000;
 	//Need to manage real, simulated, and calculated sensors
 	
-	private LinkedHashMap<String, Node> realSensors;
+	private LinkedHashMap<String, SerialNode> realSensors;
 	private LinkedHashMap<String, LinkedHashMap<SensorChannel, FauxNode>> simulatedSensors;
 	private LinkedHashMap<String, BaseCalculatedNode> calculatedSensors;
 	private static SensorManager sm;
 	
 	private SensorManager() {
-		realSensors = new LinkedHashMap<String, Node>();
+		realSensors = new LinkedHashMap<String, SerialNode>();
 		simulatedSensors = new LinkedHashMap<String, LinkedHashMap<SensorChannel, FauxNode>>();
 		calculatedSensors = new LinkedHashMap<String, BaseCalculatedNode>();	
 	}
 
 	// Open a serial port
-	private static SerialPort connect(String portName) throws Exception
-    {
-        CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
-        if ( portIdentifier.isCurrentlyOwned() ) {
-            System.out.println("Error: Port is currently in use");
-            return null;
-        } else {
-        	//TODO fix this so that it is not potato 
-            CommPort commPort = portIdentifier.open("potato", 2000);
-            
-            if ( commPort instanceof SerialPort ) {
-                SerialPort serialPort = (SerialPort) commPort;
-                serialPort.setSerialPortParams(57600,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
-                return serialPort;
-            } else {
-                System.out.println("Error: Only serial ports are handled by this example.");
-            }
-        }
-		return null;
-    }	
-	
-	//TODO: Come up with a better way to determine which sensor to create
-	public void newRealSensor(RealNodeEnum node, SensorChannel sensor, String port) throws Exception {
-		if (realSensors.containsKey(port)) {
-			throw new Exception("Trying to connect on a port which exists already!");
+	// Returns null if unable to connect, otherwise SerialPort
+	private static SerialPort connect(String portName, int baudRate) {
+		try {
+	        CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
+	        
+	        if ( portIdentifier.isCurrentlyOwned() ) {
+	        	System.err.println("Error: Port currently in use");
+	        } else { 
+	            CommPort commPort = portIdentifier.open(portName, TIMEOUT);
+	            
+	            if ( commPort instanceof SerialPort ) {
+	                SerialPort serialPort = (SerialPort) commPort;
+	                serialPort.setSerialPortParams(baudRate,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
+	                return serialPort;
+	            }
+	        }
+		} catch (Exception e) {
+			System.err.println("Error: Unable to connect to port" + portName);
 		}
 		
-		SerialPort sp = null;
-		try {
-			System.out.println("Initializing serial connection on port " + port);
-			sp = connect(port);
-			System.out.println("Connected on port " + port);
-		} catch (Exception  e) {
-			System.out.println("Unable to connect to " + sensor.toString() + " on port " + port);
-			e.printStackTrace();
-			throw new Exception("Device not found error");
-		}
-
-		switch (node) {
+		return null;
+    }
+	
+	public String newRealSensor(RealNodeEnum nodeType, String port, SensorChannel... sensor) throws Exception {
+		// Each sensor will get added to a list of real nodes, returning a UUID.
+		//throw an error if unable to connect
+		
+		//assumes successful connection
+		String portKey = UUID.randomUUID().toString();
+		
+		switch (nodeType) {
 		case IMU:
-			ImuNode imu = new ImuNode(sensor);
-			imu.setSerialPort(sp);
-			realSensors.put(port, imu);
+			ImuNode imu = new ImuNode(sensor[0]);
+			imu.setSerialPort(connect(port, imu.baudRate()));
+			realSensors.put(portKey, imu);
 			break;
 		case GPS:
-			GpsNode gps = new GpsNode(sensor);
-			gps.setSerialPort(sp);
-			realSensors.put(port, gps);			
+			GpsNode gps = new GpsNode(sensor[0]);
+			gps.setSerialPort(connect(port, gps.baudRate()));
+			realSensors.put(portKey, gps);
 			break;
-//disabling this temporarily because I need to figure out how to handle multiple channels
-//		case ENCODER:
-//			EncoderNode enc = new EncoderNode(sensor);
-//			enc.setSerialPort(sp);
-//			realSensors.put(port, enc);
-//			break;
-//		case DRIVE_CTRL:
-//			SteeringNode steer = new SteeringNode(sensor);
-//			steer.setSerialPort(sp);
-//			realSensors.put(port, steer);
-//			break;			
+		case RBSM:
+			RBSMNode rbsm = new RBSMNode(sensor[0], sensor[1]);
+			rbsm.setSerialPort(connect(port, rbsm.baudRate()));
+			realSensors.put(portKey, rbsm);
+			break;
+		case LOGGING_BUTTON:
+			LoggingNode loggingButton = new LoggingNode();
+			break;
 		default:
-			System.out.println("Invalid Sensor Type");
-			throw new Exception("Stop trying to initialize sensors that don't exist!");
+			System.out.println("Attempting to add unsupported sensor");
+			return null;
 		}
+		
+		return portKey;
 	}
-	
+		
 	//Due to how I wrote the code, you'll need to initialize all of the sensors you want at once.
 	//Disable the ones you don't want later if you want, I guess?
 	//TODO: go and fix this
@@ -176,6 +169,12 @@ public class SensorManager {
 			simulatedSensors.get(path).get(sensor).enable();
 		} else {
 			System.out.println("Trying to enable a Faux node on an invalid path / sensor");
+		}
+	}
+	
+	public void disableRealNode(String key) {
+		if (realSensors.containsKey(key)) {
+			realSensors.get(key).sp.close();
 		}
 	}
 	

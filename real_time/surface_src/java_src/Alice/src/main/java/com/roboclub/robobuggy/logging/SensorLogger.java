@@ -9,15 +9,24 @@ import java.util.Date;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import com.orsoncharts.util.json.JSONObject;
+import com.roboclub.robobuggy.main.config;
+import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
+import com.roboclub.robobuggy.nodes.GpsNode;
+import com.roboclub.robobuggy.nodes.ImuNode;
+import com.roboclub.robobuggy.nodes.LoggingNode;
+import com.roboclub.robobuggy.nodes.RBSMNode;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
+import com.roboclub.robobuggy.serial.SerialNode;
 
 /**
  * Logs data from the sensors
  * 
  * @author Joe Doyle
+ * @author Vivaan Bahl
  * @author Trevor Decker
  */
 public final class SensorLogger {
@@ -27,8 +36,22 @@ public final class SensorLogger {
 
 	private static final Queue<String> startLoggingThread(PrintStream stream) {
 		final LinkedBlockingQueue<String> ret = new LinkedBlockingQueue<>();
-		// TODO
+		
+		String name = "\"name\": \"Robobuggy Data Logs\",";
+		String schema_version = "\"schema_version\": 1.0,";
+		String date_recorded = "\"date_recorded\": \"" + new SimpleDateFormat("MM/dd/yyyy").format(new Date()) + "\",";
+		String swVersion = "\"software_version\": \"" + getCurrentSoftwareVersion() + "\",";
+		String sensorDataHeader = "\"sensor_data\": [";
+		stream.println("{" + "\n    " + name + "\n    " + schema_version + "\n    " + date_recorded + "\n    " + swVersion + "\n    " + sensorDataHeader);
+		
 		Thread logging_thread = new Thread() {
+			int logButtonHits = 0;
+			int gpsHits = 0;
+			int imuHits = 0;
+			int encoderHits = 0;
+			int brakeHits = 0;
+			int steeringHits = 0;
+			
 			public void run() {
 				while (true) {
 					try {
@@ -36,12 +59,70 @@ public final class SensorLogger {
 						if (line == null) {
 							break;
 						}
-						stream.println(line);
+						if (line.contains("STOP")) {
+							stream.println("        " + LoggingNode.translatePeelMessageToJObject(line).toJSONString());
+							logButtonHits++;
+							stream.println("    ],\n    \"data_breakdown\" : " + getDataBreakdown() + "\n}");
+							break;
+						}
+						stream.println("        " + parseData(line) + ",");
 					} catch (InterruptedException e) {
 						//TODO add to messages 
 						e.printStackTrace();
 					}
 				}
+			}
+
+			private String parseData(String line) {
+				// TODO Auto-generated method stub
+				String sensor = line.substring(line.indexOf("/") + 1, line.indexOf(","));				
+				JSONObject sensorEntryObject;
+
+				switch (sensor) {
+				case "imu":
+					sensorEntryObject = ImuNode.translatePeelMessageToJObject(line);
+					imuHits++;
+					break;
+				
+				case "gps":
+					sensorEntryObject = GpsNode.translatePeelMessageToJObject(line);
+					gpsHits++;
+					break;
+					
+				case "steering":
+					steeringHits++;
+				case "encoder":
+					sensorEntryObject = RBSMNode.translatePeelMessageToJObject(line);
+					encoderHits++;
+					break;
+					
+				case "logging_button":
+					sensorEntryObject = LoggingNode.translatePeelMessageToJObject(line);
+					logButtonHits++;
+					break;
+
+				default:
+					//put brakes in here?
+					sensorEntryObject = SerialNode.translatePeelMessageToJObject(line);
+					break;
+				}
+				
+				return sensorEntryObject.toJSONString();
+			}
+
+			@SuppressWarnings("unchecked")
+			private String getDataBreakdown() {
+				// TODO Auto-generated method stub
+				JSONObject dataBreakdownObj = new JSONObject();
+				
+				dataBreakdownObj.put("logging_button", logButtonHits);
+				dataBreakdownObj.put("gps", gpsHits);
+				dataBreakdownObj.put("IMU", imuHits);
+				dataBreakdownObj.put("encoder", encoderHits);
+				dataBreakdownObj.put("brake", brakeHits);
+				dataBreakdownObj.put("steering", steeringHits);
+				
+				return dataBreakdownObj.toJSONString();
 			}
 		};
 		// TODO this potentially prevents a problem where the logger gets CPU
@@ -53,6 +134,12 @@ public final class SensorLogger {
 		logging_thread.start();
 		return ret;
 	};
+
+	private static String getCurrentSoftwareVersion() {
+		// TODO Auto-generated method stub
+		//TODO update this to actually grab current sw version
+		return "1.0.0";
+	}
 
 	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 

@@ -4,5 +4,6 @@ public enum RealNodeEnum {
 	ENCODER,
 	GPS,
 	IMU,
-	DRIVE_CTRL
+	RBSM,
+	LOGGING_BUTTON,
 }
