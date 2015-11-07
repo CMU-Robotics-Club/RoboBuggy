@@ -14,7 +14,7 @@ import com.roboclub.robobuggy.ros.Message;
  */
 
 // Represents raw measurement from the IMU
-public class GuiLoggingButton extends BaseMessage implements Message {
+public class GuiLoggingButtonMessage extends BaseMessage implements Message {
 
 	public enum LoggingMessage {
 		START, STOP		
@@ -26,12 +26,12 @@ public class GuiLoggingButton extends BaseMessage implements Message {
 	public LoggingMessage lm; 
 	
 	// Makes an encoder measurement with the time of Now.
-	public GuiLoggingButton(LoggingMessage lm) {
+	public GuiLoggingButtonMessage(LoggingMessage lm) {
 		this.lm = lm;
 		this.timestamp = new Date();
 	}
 
-	public GuiLoggingButton(Date timestamp, LoggingMessage lm) {
+	public GuiLoggingButtonMessage(Date timestamp, LoggingMessage lm) {
 		this.timestamp = timestamp;
 		this.lm = lm;
 	}
@@ -47,6 +47,6 @@ public class GuiLoggingButton extends BaseMessage implements Message {
 		String[] ar = str.split(",");
 		Date d = try_to_parse_date(ar[0]);
 		LoggingMessage lm = LoggingMessage.valueOf(ar[1]);
-		return new GuiLoggingButton(timestamp, lm);
+		return new GuiLoggingButtonMessage(timestamp, lm);
 	}
 }

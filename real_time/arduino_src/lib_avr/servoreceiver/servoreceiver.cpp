@@ -26,7 +26,7 @@ void ServoReceiver::Init(volatile uint8_t *pin_reg,
     // set constants
     k_min_pulse_ = 500;  // min pulse width in us
     k_max_pulse_ = 2500; // max pulse width in us
-    k_offset_rc_in = 1510;
+    k_offset_rc_in = 1500;
     k_scale_rc_in = 350;
     k_offset_steering_out = 1789;
     k_scale_steering_out = -150;

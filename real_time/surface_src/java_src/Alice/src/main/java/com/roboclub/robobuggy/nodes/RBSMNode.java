@@ -4,6 +4,7 @@ import java.util.Date;
 
 import gnu.io.SerialPort;
 
+import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
@@ -79,8 +80,12 @@ public class RBSMNode extends SerialNode implements Node
 		statePub_pot.publish(new StateMessage(SensorState.ON));
 	}
 	
+<<<<<<< HEAD
 	private void estimateVelocity(int dataWord) 
 	{
+=======
+	private EncoderMeasurement estimateVelocity(int dataWord) {
+>>>>>>> master
 		Date currTime = new Date();
 		double accDist = ((double)(encTicks)) * M_PER_REV / TICKS_PER_REV;
 		double instVelocity = (accDist - accDistLast) * 1000 / (currTime.getTime() - timeLast.getTime());
@@ -89,7 +94,7 @@ public class RBSMNode extends SerialNode implements Node
 		instVelocityLast = instVelocity;
 		timeLast = currTime;	
 		
-		messagePub_enc.publish(new EncoderMeasurement(currTime, dataWord, accDist, instVelocity, instAccel));
+		return new EncoderMeasurement(currTime, dataWord, accDist, instVelocity, instAccel);
 	}
 	
 	@Override
@@ -141,7 +146,7 @@ public class RBSMNode extends SerialNode implements Node
 		{
 			// This is a delta-distance! Do a thing!
 			encTicks = message.getDataWord() & 0xFFF;
-			estimateVelocity(message.getDataWord());
+			messagePub_enc.publish(estimateVelocity(message.getDataWord()));
 			System.out.println(encTicks);
 		}
 		
@@ -160,6 +165,37 @@ public class RBSMNode extends SerialNode implements Node
 		
 		
 		return 6;
+	}
+
+	
+	@SuppressWarnings("unchecked")
+	public static JSONObject translatePeelMessageToJObject(String message) {
+		String[] messageData = message.split(",");
+		String sensorName = messageData[0];
+		sensorName = sensorName.substring(sensorName.indexOf("/") + 1);
+		JSONObject data = new JSONObject();
+		JSONObject params = new JSONObject();
+		
+		data.put("timestamp", messageData[1]);
+		
+		if(sensorName.equals("steering")) {
+			data.put("name", "Steering");
+			params.put("angle", Float.valueOf(messageData[2]));
+		}
+		else if (sensorName.equals("encoder")) {
+			data.put("name", "Encoder");
+			params.put("dataword", Float.valueOf(messageData[2]));
+			params.put("distance", Float.valueOf(messageData[3]));
+			params.put("velocity", Float.valueOf(messageData[4]));
+			params.put("acceleration", Float.valueOf(messageData[5]));
+		}
+		else {
+			System.err.println("WAT");
+		}
+		
+		data.put("params", params);
+		// TODO Auto-generated method stub
+		return data;
 	}
 
 }
