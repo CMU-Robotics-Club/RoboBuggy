@@ -80,12 +80,8 @@ public class RBSMNode extends SerialNode implements Node
 		statePub_pot.publish(new StateMessage(SensorState.ON));
 	}
 	
-<<<<<<< HEAD
-	private void estimateVelocity(int dataWord) 
+	private EncoderMeasurement estimateVelocity(int dataWord) 
 	{
-=======
-	private EncoderMeasurement estimateVelocity(int dataWord) {
->>>>>>> master
 		Date currTime = new Date();
 		double accDist = ((double)(encTicks)) * M_PER_REV / TICKS_PER_REV;
 		double instVelocity = (accDist - accDistLast) * 1000 / (currTime.getTime() - timeLast.getTime());
