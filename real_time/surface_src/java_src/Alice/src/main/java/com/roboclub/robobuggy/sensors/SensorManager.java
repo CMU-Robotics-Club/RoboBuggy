@@ -4,7 +4,6 @@ import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.UUID;
 
@@ -14,11 +13,6 @@ import com.roboclub.robobuggy.calculatedNodes.CalculatedGPSNode;
 import com.roboclub.robobuggy.calculatedNodes.CalculatedIMUNode;
 import com.roboclub.robobuggy.calculatedNodes.CalculatedNodeEnum;
 import com.roboclub.robobuggy.calculatedNodes.NodeCalculator;
-import com.roboclub.robobuggy.fauxNodes.FauxEncoderNode;
-import com.roboclub.robobuggy.fauxNodes.FauxGPSNode;
-import com.roboclub.robobuggy.fauxNodes.FauxIMUNode;
-import com.roboclub.robobuggy.fauxNodes.FauxNode;
-import com.roboclub.robobuggy.fauxNodes.FauxSteeringNode;
 import com.roboclub.robobuggy.nodes.GpsNode;
 import com.roboclub.robobuggy.nodes.ImuNode;
 import com.roboclub.robobuggy.nodes.LoggingNode;
@@ -26,7 +20,7 @@ import com.roboclub.robobuggy.nodes.RBSMNode;
 import com.roboclub.robobuggy.nodes.RealNodeEnum;
 import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.serial.SerialNode;
-import com.roboclub.robobuggy.simulation.FauxRunner;
+import com.roboclub.robobuggy.simulation.SensorPlayer;
 
 public class SensorManager {
 
@@ -34,13 +28,11 @@ public class SensorManager {
 	//Need to manage real, simulated, and calculated sensors
 	
 	private LinkedHashMap<String, SerialNode> realSensors;
-	private LinkedHashMap<String, LinkedHashMap<SensorChannel, FauxNode>> simulatedSensors;
 	private LinkedHashMap<String, BaseCalculatedNode> calculatedSensors;
 	private static SensorManager sm;
 	
 	private SensorManager() {
 		realSensors = new LinkedHashMap<String, SerialNode>();
-		simulatedSensors = new LinkedHashMap<String, LinkedHashMap<SensorChannel, FauxNode>>();
 		calculatedSensors = new LinkedHashMap<String, BaseCalculatedNode>();	
 	}
 
@@ -106,31 +98,7 @@ public class SensorManager {
 	//Disable the ones you don't want later if you want, I guess?
 	//TODO: go and fix this
 	public void newFauxSensors(String path, SensorChannel... sensors) {
-		//A pretty terrible solution for now, this will assume that there will only be one type of
-		//simulated sensor per log file. This is an okay assumption for the data we are currently
-		//outputting, but if we change the log file to log multiple sensors with the granularity
-		//we are doing right now, this will need some updating
-		LinkedHashMap<SensorChannel, FauxNode> fauxSensors = new LinkedHashMap<SensorChannel, FauxNode>();
-		for (SensorChannel sensor : sensors) {
-			switch (sensor) {
-			case IMU:
-				fauxSensors.put(sensor, new FauxIMUNode(sensor));
-				break;
-			case GPS:
-				fauxSensors.put(sensor, new FauxGPSNode(sensor));
-				break;
-			case ENCODER:
-				fauxSensors.put(sensor, new FauxEncoderNode(sensor));
-				break;
-			case DRIVE_CTRL:
-				fauxSensors.put(sensor, new FauxSteeringNode(sensor));
-				break;
-			default:
-				break;
-			}
-		}
-		new Thread(new FauxRunner(new ArrayList<FauxNode>(fauxSensors.values()), path)).start();
-		simulatedSensors.put(path, fauxSensors);
+		new Thread(new SensorPlayer(path)).start();
 	}
 	
 	// I believe this will only allow for a single calculated sensor per type. This may need to be updated in the future
@@ -153,22 +121,6 @@ public class SensorManager {
 			break;
 		default:
 			break;
-		}
-	}
-	
-	public void disableFauxNode(String path, SensorChannel sensor) {
-		if (simulatedSensors.containsKey(path) && simulatedSensors.get(path).containsKey(sensor)) {
-			simulatedSensors.get(path).get(sensor).disable();
-		} else {
-			System.out.println("Trying to disable a Faux node on an invalid path / sensor");
-		}
-	}
-	
-	public void enableFauxNode(String path, SensorChannel sensor) {
-		if (simulatedSensors.containsKey(path) && simulatedSensors.get(path).containsKey(sensor)) {
-			simulatedSensors.get(path).get(sensor).enable();
-		} else {
-			System.out.println("Trying to enable a Faux node on an invalid path / sensor");
 		}
 	}
 	
