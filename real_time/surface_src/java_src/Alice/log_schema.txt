@@ -1,0 +1,28 @@
+{
+    "name": "Robobuggy Data Logs",
+    "schema_version": X.Y,
+    "date_recorded": "mm/dd/yyyy",
+    "software_version": x.y.z,
+    "sensor_data":
+    [
+        {
+            "timestamp":"HH:mm:ss.SSS",
+            "data: {
+                "name": "sensorX",
+                "params": {
+                    "param1": "val1",
+                    "param2": "val2",
+                    ...
+                    "paramN": "valN"
+                }
+            }
+        },
+        ...
+    ],
+    "data_breakdown": {
+        "sensor1": X_times,
+        "sensor2": y_times,
+        ...
+        "sensorN": z_times
+    }
+}
