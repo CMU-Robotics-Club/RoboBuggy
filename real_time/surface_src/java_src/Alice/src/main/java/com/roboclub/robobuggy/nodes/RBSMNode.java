@@ -126,13 +126,19 @@ public class RBSMNode extends SerialNode implements Node
 		RBPair rbp = RBSerial.peel(buffer, start, bytes_available);
 		switch(rbp.getNumberOfBytesRead()) 
 		{
-			case 0: return 0;
-			case 1: return 1;
-			case 6: break;
+			case 0:
+				return 0;
+				break;
+			case 1: 
+				return 1;
+				break;
+			case 6: 
+				break;
 			default: 
 			{
 				System.out.println("HOW DID NOT A SIX GET HERE");
 				//TODO add error
+				break;
 			}
 		
 		}
