@@ -1,1 +1,1 @@
-include 'BuggyRos', 'Alice'
+include 'BuggyRos', 'Alice', 'Tutorial'
