@@ -128,10 +128,8 @@ public class RBSMNode extends SerialNode implements Node
 		{
 			case 0:
 				return 0;
-				break;
 			case 1: 
 				return 1;
-				break;
 			case 6: 
 				break;
 			default: 
