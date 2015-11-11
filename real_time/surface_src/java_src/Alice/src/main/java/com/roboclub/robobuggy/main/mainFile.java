@@ -41,7 +41,8 @@ public class mainFile {
             }
         } else {
             Robot.getInstance();
-        }   
+        }
+        
     }
     
     //going to start by just connecting to the IMU

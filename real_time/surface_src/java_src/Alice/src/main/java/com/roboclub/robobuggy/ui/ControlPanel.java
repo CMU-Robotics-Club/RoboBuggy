@@ -17,7 +17,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
+
 import com.roboclub.robobuggy.logging.RobotLogger;
+import com.roboclub.robobuggy.logging.autoLogging.autoLogging;
 import com.roboclub.robobuggy.main.config;
 import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
 import com.roboclub.robobuggy.ros.Publisher;
@@ -100,6 +102,8 @@ public class ControlPanel extends JPanel {
 				play_btn.setText("STOP");
 				timer.start();
 				
+				autoLogging autoLoger = autoLogging.getLogger();
+				autoLoger.stopLogSync();
 				RobotLogger.CreateLog();
 				logging_button_pub.publish(new GuiLoggingButtonMessage(GuiLoggingButtonMessage.LoggingMessage.START));
 				startTime = new Date();

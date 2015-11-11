@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.roboclub.robobuggy.localization.KalmanFilter;
 import com.roboclub.robobuggy.logging.RobotLogger;
+import com.roboclub.robobuggy.logging.autoLogging.autoLogging;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
@@ -45,13 +46,6 @@ public class Robot implements RosMaster {
 		System.out.println("Starting Robot");
 		autonomous = config.AUTONOMUS_DEFAULT;
 
-		//creates a log file even if no data is used
-		if(config.logging){
-			System.out.println("Starting Logging");
-			RobotLogger.getInstance();
-		}
-		
-
 		// Initialize Logic errors
 		RobobuggyLogicException.setupLogicException(SensorChannel.LOGIC_EXCEPTION);
 		new Subscriber(SensorChannel.LOGIC_EXCEPTION.getMsgPath(), new MessageListener() {
@@ -60,6 +54,15 @@ public class Robot implements RosMaster {
 					updateLogicException((RobobuggyLogicExceptionMeasurment)m);
 				}
 			});
+		
+		//creates a log file even if no data is used
+		if(config.logging){
+			System.out.println("Starting Logging");
+			RobotLogger.getInstance();
+		}
+		
+
+
 		//sends startup note
 		new RobobuggyLogicException("Logic Exception Setup properly" ,  MESSAGE_LEVEL.NOTE);
 		
@@ -154,6 +157,9 @@ public class Robot implements RosMaster {
 				}
 			}
 		}
+		//cleaning up logging 
+		RobotLogger.CloseLog();
+		//closeing system 
 		System.exit(0);
 	}
 

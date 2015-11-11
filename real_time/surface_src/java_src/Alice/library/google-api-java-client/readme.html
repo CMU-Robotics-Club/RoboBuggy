@@ -1,0 +1,210 @@
+<html>
+<title>Assembly for the Google APIs Client Library for Java 1.20.0</title>
+<body>
+  <h2>Assembly for the Google APIs Client Library for Java 1.20.0</h2>
+
+  <h3>Overview</h3>
+  <p>
+    High-level details about this library can be found at <a
+      href="http://code.google.com/p/google-api-java-client">http://code.google.com/p/google-api-java-client</a>
+  </p>
+  <ul>
+    <li><a
+      href='http://code.google.com/p/google-api-java-client/wiki/ReleaseNotes#Version_1.20.0'>Release
+        Notes</a></li>
+    <li><a
+      href='http://javadoc.google-api-java-client.googlecode.com/hg/1.20.0/index.html'>JavaDoc</a></li>
+    <li><a
+      href='http://code.google.com/p/google-api-java-client/wiki/DeveloperGuide'>Developer's
+        Guide</a></li>
+    <li><a href='http://groups.google.com/group/google-api-java-client'>Support</a></li>
+  </ul>
+
+  <h3>Dependencies and Licenses</h3>
+  The license can be found
+  <a href='LICENSE.txt'>here</a>.
+  <br /> Dependent jars can be found in the
+  <a href='libs'>libs</a> folder and the corresponding source jars can be found
+  in the
+  <a href='libs-sources'>libs-sources</a> folder.
+  <br />
+  <br /> The dependency structure and licenses for the different libraries can
+  be found here:
+  <ul>
+    <li>google-api-client: <a href='dependencies/google-api-client-dependencies.html'>google-api-client-dependencies.html</a></li>
+    <li>google-api-client-android: <a
+      href='dependencies/google-api-client-android-dependencies.html'>google-api-client-android-dependencies.html</a></li>
+    <li>google-api-client-appengine: <a
+      href='dependencies/google-api-client-appengine-dependencies.html'>google-api-client-appengine-dependencies.html</a></li>
+    <li>google-api-client-servlet: <a
+      href='dependencies/google-api-client-servlet-dependencies.html'>google-api-client-servlet-dependencies.html</a></li>
+    <li>google-api-client-java6: <a
+      href='dependencies/google-api-client-java6-dependencies.html'>google-api-client-java6-dependencies.html</a></li>
+    <li>google-oauth-client: <a href='dependencies/google-oauth-client-dependencies.html'>google-oauth-client-dependencies.html</a></li>
+    <li>google-oauth-client-appengine: <a
+      href='dependencies/google-oauth-client-appengine-dependencies.html'>google-oauth-client-appengine-dependencies.html</a></li>
+    <li>google-oauth-client-servlet: <a
+      href='dependencies/google-oauth-client-servlet-dependencies.html'>google-oauth-client-servlet-dependencies.html</a></li>
+    <li>google-oauth-client-java6: <a
+      href='dependencies/google-oauth-client-java6-dependencies.html'>google-oauth-client-java6-dependencies.html</a></li>
+    <li>google-oauth-client-java7: <a
+      href='dependencies/google-oauth-client-java7-dependencies.html'>google-oauth-client-java7-dependencies.html</a></li>
+    <li>google-oauth-client-jetty: <a
+      href='dependencies/google-oauth-client-jetty-dependencies.html'>google-oauth-client-jetty-dependencies.html</a></li>
+    <li>google-http-client: <a href='dependencies/google-http-client-dependencies.html'>google-http-client-dependencies.html</a></li>
+    <li>google-http-client-android: <a
+      href='dependencies/google-http-client-android-dependencies.html'>google-http-client-android-dependencies.html</a></li>
+    <li>google-http-client-appengine: <a
+      href='dependencies/google-http-client-appengine-dependencies.html'>google-http-client-appengine-dependencies.html</a></li>
+    <li>google-http-client-protobuf: <a
+      href='dependencies/google-http-client-protobuf-dependencies.html'>google-http-client-protobuf-dependencies.html</a></li>
+    <li>google-http-client-gson: <a
+      href='dependencies/google-http-client-gson-dependencies.html'>google-http-client-gson-dependencies.html</a></li>
+    <li>google-http-client-jackson: <a
+      href='dependencies/google-http-client-jackson-dependencies.html'>google-http-client-jackson-dependencies.html</a></li>
+    <li>google-http-client-jackson2: <a
+      href='dependencies/google-http-client-jackson2-dependencies.html'>google-http-client-jackson2-dependencies.html</a></li>
+  </ul>
+
+  <h3>Maven Usage</h3>
+  For information on how to add these libraries to your Maven project please see
+  <a href='http://code.google.com/p/google-api-java-client/wiki/Setup#Maven'>http://code.google.com/p/google-api-java-client/wiki/Setup#Maven</a>.
+
+  <h3>Eclipse</h3>
+  A .classpath file snippet that can be included in your project's .classpath
+  has been provided
+  <a href='.classpath'>here</a>. Please only use the classpathentry's you
+  actually need (see below for details).
+
+  <h3>ProGuard</h3>
+  <p>
+    A ProGuard configuration file <a href="proguard-google-api-client.txt">proguard-google-api-client.txt</a>
+    is included for common settings for using the library. On Android projects,
+    you may want to add a reference to
+    <code>proguard-google-api-client.txt</code>
+    in the
+    <code>project.properties</code>
+    file under the
+    <code>proguard.config</code>
+    property.
+  </p>
+  <p>
+    Please read <a
+      href="http://code.google.com/p/google-http-java-client/wiki/Setup#ProGuard">Setup
+      ProGuard</a> for more details.
+  </p>
+
+  <h3>Dependencies for all Platforms</h3>
+  The following are the jars from the
+  <a href='libs'>libs</a> folder needed for applications on all platform:
+  <ul>
+    <li>google-api-client-1.20.0.jar</li>
+    <li>google-oauth-client-1.20.0.jar</li>
+    <li>google-http-client-1.20.0.jar</li>
+    <li>jsr305-1.3.9.jar</li>
+    <li>google-api-client-protobuf-${project.api.version}.jar (when using
+      protobuf-java)
+      <ul>
+        <li>google-http-client-protobuf-1.20.0.jar</li>
+        <li>protobuf-java-2.4.1.jar</li>
+      </ul>
+    </li>
+    <li>google-api-client-gson-${project.api.version}.jar (when using
+      GSON)
+      <ul>
+        <li>google-http-client-gson-1.20.0.jar</li>
+        <li>gson-2.1.jar</li>
+      </ul>
+    </li>
+    <li>google-api-client-jackson2-${project.api.version}.jar (when using
+      Jackson 2)
+      <ul>
+        <li>google-http-client-jackson2-1.20.0.jar</li>
+        <li>jackson-core-2.1.3.jar</li>
+      </ul>
+    </li>
+    <li>google-http-client-jackson-1.20.0.jar (when using
+      Jackson 1)
+      <ul>
+        <li>jackson-core-asl-1.9.11.jar</li>
+      </ul>
+    </li>
+    <li>google-api-client-xml-1.20.0.jar (when using XML)
+      <ul>
+        <li>google-http-client-xml-1.20.0.jar</li>
+        <li>xpp3-1.1.4c.jar (when NOT on Android)</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h3>Android Dependencies</h3>
+  The following are the jars from the
+  <a href='libs'>libs</a> folder required for Android applications:
+  <ul>
+    <li>google-api-client-android-1.20.0.jar (for SDK >= 2.1)</li>
+    <li>google-http-client-android-1.20.0.jar</li>
+  </ul>
+  The
+  <a href='libs'>libs</a> folder also contains properties files that specify the
+  location of source jars for Android projects in Eclipse.
+  <br /> Please see the
+  <a href='http://code.google.com/p/google-api-java-client/wiki/Android'>Android
+    wiki</a> for the Android Developer's Guide.
+
+  <h3>Google App Engine Dependencies</h3>
+  The following are the jars from the
+  <a href='libs'>libs</a> folder required for Google App Engine applications or
+  a newer compatible version:
+  <ul>
+    <li>google-api-client-appengine-1.20.0.jar</li>
+    <li>google-api-client-servlet-1.20.0.jar</li>
+    <li>google-oauth-client-appengine-1.20.0.jar</li>
+    <li>google-oauth-client-servlet-1.20.0.jar</li>
+    <li>google-http-client-appengine-1.20.0.jar</li>
+    <li>jdo2-api-2.3-eb.jar</li>
+    <li>transaction-api-1.1.jar</li>
+  </ul>
+  Please see the
+  <a href='http://code.google.com/p/google-api-java-client/wiki/GoogleAppEngine'>GoogleAppEngine
+    wiki</a> for the Google App Engine Developer's Guide.
+
+  <h3>Servlet Dependencies</h3>
+  The following are the jars from the
+  <a href='libs'>libs</a> folder required for Servlet applications or a newer
+  compatible version:
+  <ul>
+    <li>google-api-client-servlet-1.20.0.jar</li>
+    <li>google-oauth-client-servlet-1.20.0.jar</li>
+    <li>commons-logging-1.1.1.jar</li>
+    <li>httpclient-4.0.1.jar</li>
+    <li>httpcore-4.0.1.jar</li>
+    <li>jdo2-api-2.3-eb.jar</li>
+    <li>transaction-api-1.1.jar</li>
+  </ul>
+
+  <h3>General Purpose Java 5 Environment Dependencies</h3>
+  The following are the jars from the
+  <a href='libs'>libs</a> folder required for general purpose Java 5
+  applications or a newer compatible version:
+  <ul>
+    <li>google-api-client-java6-1.20.0.jar</li>
+    <li>google-oauth-client-java6-1.20.0.jar (for JDK >=
+      6)
+      <ul>
+        <li>google-oauth-client-jetty-1.20.0.jar (for
+          Jetty 6)
+          <ul>
+            <li>jetty-${project.jetty.version}.jar</li>
+            <li>jetty-util-${project.jetty.version}.jar</li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li>google-oauth-client-java7-1.20.0.jar (for JDK >= 7)</li>
+    <li>commons-logging-1.1.1.jar</li>
+    <li>httpclient-4.0.1.jar</li>
+    <li>httpcore-4.0.1.jar</li>
+  </ul>
+
+</body>
+</html>

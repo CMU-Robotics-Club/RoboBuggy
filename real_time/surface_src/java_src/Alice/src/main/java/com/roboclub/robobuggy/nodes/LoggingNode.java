@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import com.roboclub.robobuggy.logging.autoLogging.autoLogging;
+import com.roboclub.robobuggy.main.config;
 import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.messages.BaseMessage;
 import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
@@ -20,7 +22,7 @@ import com.roboclub.robobuggy.ui.Gui;
 // When logging begins, a new folder is created, and then logging begins to that folder
 public class LoggingNode implements Node {
 
-	String directoryPath;
+	static String directoryPath;
 	String topicName;
 	
 	BufferedOutputStream outputFile = null;
@@ -34,6 +36,7 @@ public class LoggingNode implements Node {
 	// TODO get folder name from file.
 	public LoggingNode() {
 		loggingButtonPub = new Publisher(SensorChannel.GUI_LOGGING_BUTTON.getMsgPath());
+
 		
 		logging_button_sub = new Subscriber(Gui.GuiPubSubTopics.GUI_LOG_BUTTON_UPDATED.toString(), new MessageListener() {
 			@Override 
@@ -41,6 +44,10 @@ public class LoggingNode implements Node {
 				loggingButtonPub.publish(m);
 			}
 		});
+		
+        //starts auto logging in a new thread 
+        autoLogging.startAutoLogger(config.LOCAL_FOLDER_STORAGE_FOLDER,config.DRIVE_STORAGE_FOLDER_ID);
+        
 		
 	}
 	
@@ -59,7 +66,17 @@ public class LoggingNode implements Node {
 		data.put("timestamp", message.split(",")[1]);
 		data.put("name", "logging button");
 		data.put("params", params);
+		
+		autoLogging autoLogger = autoLogging.getLogger();
+		try {
+			autoLogger.startTrackingLog(new File(directoryPath));
+			autoLogger.saveLogDataToFolders();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		return data;
+
 	}
 
 
