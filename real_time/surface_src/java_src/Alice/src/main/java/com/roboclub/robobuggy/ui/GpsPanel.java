@@ -60,10 +60,15 @@ public class GpsPanel extends JPanel {
 				double latitude = ((GpsMeasurement)m).latitude;
 				double longitude = ((GpsMeasurement)m).longitude;
 				locs.add(new LocTuple(latitude, longitude));
+				int gpsSize = locs.size(); // This is new: looks locs.size
+				if (gpsSize > 20) {        // if size > 20, remove first object
+					locs.remove(0);
+				}
+				GpsPanel.this.repaint();  // refresh screen
 			}
 		});		
 		
-		locs.add(new LocTuple(-79.94596322545625, 40.440946388131266));
+		// locs.add(new LocTuple(-79.94597322545625, 40.440946388131266));
 	}
 	
 	private void setup() {
