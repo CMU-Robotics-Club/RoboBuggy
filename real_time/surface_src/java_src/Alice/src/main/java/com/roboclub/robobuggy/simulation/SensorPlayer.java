@@ -42,6 +42,8 @@ public class SensorPlayer implements Runnable {
 		loggingButtonPub = new Publisher(SensorChannel.GUI_LOGGING_BUTTON.toString());
 		
 		System.out.println("initializing the SensorPlayer");
+		
+		path = filePath;
 	}
 	
 	
@@ -65,25 +67,26 @@ public class SensorPlayer implements Runnable {
 				
 				JSONObject sensor = (JSONObject)senObj;
 				
-				Date sensorTimestamp = (Date) sensor.get("timestamp");
+				Date sensorTimestamp = RobobuggyDateFormatter.formatRobobuggyDate((String) sensor.get("timestamp"));
 				long currentSensorTimeInMillis = sensorTimestamp.getTime();
 				long sleepTime = currentSensorTimeInMillis - prevTimeInMillis;
 				if(sleepTime > 0) {
-					Thread.sleep(sleepTime);
+					//TODO change back to sleepTime
+//					Thread.sleep(sleepTime);
+					Thread.sleep(500);
 				}
 				prevTimeInMillis = currentSensorTimeInMillis;
+			
+				String sensorName = (String) sensor.get("name");
 				
-				JSONObject sensorData = (JSONObject) sensor.get("data");
-				String sensorName = (String) sensorData.get("name");
-				
-				JSONObject sensorParams = (JSONObject) sensorData.get("params");
+				JSONObject sensorParams = (JSONObject) sensor.get("params");
 				
 				switch(sensorName) {
 				
 					case "IMU":
-						float yaw = (float) sensorParams.get("yaw");
-						float pitch = (float) sensorParams.get("pitch");
-						float roll = (float) sensorParams.get("roll");
+						double yaw = (double) sensorParams.get("yaw");
+						double pitch = (double) sensorParams.get("pitch");
+						double roll = (double) sensorParams.get("roll");
 						
 						imuPub.publish(new ImuMeasurement(yaw, pitch, roll));
 						
@@ -98,12 +101,12 @@ public class SensorPlayer implements Runnable {
 						boolean north = latDir.equals("N");
 						boolean west = longDir.equals("W");
 
-						String gpsTimestampString = (String) sensorData.get("timestamp");
+						String gpsTimestampString = (String) sensor.get("timestamp");
 						Date gpsTimestamp = RobobuggyDateFormatter.formatRobobuggyDate(gpsTimestampString);
 						int qualityValue = Integer.valueOf((String) sensorParams.get("gps_quality"));
 						int numSatellites = Integer.valueOf((String) sensorParams.get("num_satellites"));
 						double hdop = (double) sensorParams.get("HDOP");
-						float antennaAlt = (float) sensorParams.get("antenna_altitude");
+						double antennaAlt = (double) sensorParams.get("antenna_altitude");
 						
 						gpsPub.publish(new GpsMeasurement(gpsTimestamp, latitude, north, longitude, west, qualityValue, numSatellites, hdop, antennaAlt));
 						
@@ -129,14 +132,13 @@ public class SensorPlayer implements Runnable {
 								break;
 						
 						}
-						
 						loggingButtonPub.publish(new GuiLoggingButtonMessage(loggingMessage));
 						
 						break;
 						
 					case "Steering":
 						
-						float steeringAngle = (float) sensorParams.get("angle");
+						double steeringAngle = (double) sensorParams.get("angle");
 						steeringPub.publish(new SteeringMeasurement((int) steeringAngle));
 						
 						break;
@@ -145,10 +147,10 @@ public class SensorPlayer implements Runnable {
 						
 						double dataword = (double) sensorParams.get("dataword");
 						double distance = (double) sensorParams.get("distance");
-						double velocity = (double) sensorParams.get("velocity");
-						double accel = (double) sensorParams.get("acceleration");
+						double velocity = sensorParams.get("velocity") != null ? (double) sensorParams.get("velocity") : 0;
+						Double accel = sensorParams.get("acceleration") != null ? (double) sensorParams.get("acceleration") : 0;
 						
-						String timestampString = (String) sensorData.get("timestamp");
+						String timestampString = (String) sensor.get("timestamp");
 						Date timestamp = RobobuggyDateFormatter.formatRobobuggyDate(timestampString);
 						
 						encoderPub.publish(new EncoderMeasurement(timestamp, dataword, distance, velocity, accel));

@@ -67,7 +67,12 @@ public final class Gui extends JFrame {
 		this.addWindowListener(new java.awt.event.WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent windowEvent) {
-				Robot.ShutDown();
+				try {
+					Robot.ShutDown();
+				}
+				catch(NullPointerException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 		
