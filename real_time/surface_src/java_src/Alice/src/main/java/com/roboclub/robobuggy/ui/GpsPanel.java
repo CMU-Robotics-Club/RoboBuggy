@@ -43,6 +43,7 @@ public class GpsPanel extends JPanel {
 	private int frameHeight;
 	private Subscriber gpsSub;
 	
+	
 	public GpsPanel(){
 		locs = new ArrayList<LocTuple>();
 		imgNorthEast = new LocTuple(-79.93596322545625, 40.443946388131266);
@@ -60,6 +61,7 @@ public class GpsPanel extends JPanel {
 				double latitude = ((GpsMeasurement)m).latitude;
 				double longitude = ((GpsMeasurement)m).longitude;
 				locs.add(new LocTuple(latitude, longitude));
+				//latitude and longitude are both needed 
 			}
 		});		
 		

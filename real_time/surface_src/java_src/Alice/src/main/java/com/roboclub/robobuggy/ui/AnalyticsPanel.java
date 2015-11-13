@@ -31,5 +31,12 @@ public class AnalyticsPanel extends JPanel {
 		
 		gbc.gridy = 1;
 		this.add(graphPanel, gbc);
+	    System.out.println("H");
 	}
+	
+	public String valuesFromData()
+	{
+	  return dataPanel.getValues();	
+	}
+	
 }

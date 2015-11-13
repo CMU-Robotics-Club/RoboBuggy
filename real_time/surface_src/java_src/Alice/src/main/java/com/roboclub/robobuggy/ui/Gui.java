@@ -37,6 +37,7 @@ public final class Gui extends JFrame {
 		GUI_LOG_BUTTON_UPDATED,
 	}
 
+	 //added data panel to figure out adding data in real time to gui
 	public static Gui getInstance() {
 		if (instance == null) {
 			instance = new Gui();
@@ -87,6 +88,7 @@ public final class Gui extends JFrame {
 		
 		this.pack();
 		this.setVisible(true);
+		
 	}
 	
 	public static void close() {
