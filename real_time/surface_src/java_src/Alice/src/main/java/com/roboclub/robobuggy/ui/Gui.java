@@ -87,8 +87,10 @@ public final class Gui extends JFrame {
 		
 		gbc.weightx = 0.75;
 		gbc.gridx = 1;
+		gbc.gridy = 0;
 		anlyPanel = new AnalyticsPanel();
 		pane.add(anlyPanel, gbc);
+		
 		
 		this.pack();
 		this.setVisible(true);

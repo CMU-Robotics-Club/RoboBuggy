@@ -72,7 +72,7 @@ public class mainFile {
         }
         
         else {
-        	SensorPlayer sp = new SensorPlayer("logs/sensorPlayerTests/sensors.txt");
+        	SensorPlayer sp = new SensorPlayer("logs/sensorPlayerTests/sensors1.txt");
         	new Thread(new Runnable() {
 				
 				@Override

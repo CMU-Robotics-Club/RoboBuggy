@@ -58,7 +58,9 @@ public class DataPanel extends JPanel {
 		gpsPanel = new GpsPanel();
 		this.add(gpsPanel, gbc);
 		
-		gbc.gridx = 1;
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		gbc.weighty = 0;
 		gbc.weightx = 0.66;
 		this.add(createDataPanel(), gbc);
 	}

@@ -78,8 +78,8 @@ public class SensorPlayer implements Runnable {
 				long sleepTime = currentSensorTimeInMillis - prevTimeInMillis;
 				if(sleepTime > 0) {
 					//TODO change back to sleepTime
-//					Thread.sleep(sleepTime);
-					Thread.sleep(500);
+					Thread.sleep(sleepTime);
+//					Thread.sleep(500);
 				}
 				prevTimeInMillis = currentSensorTimeInMillis;
 			
