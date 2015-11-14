@@ -2,17 +2,18 @@ package com.roboclub.robobuggy.main;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import com.roboclub.robobuggy.localization.KalmanFilter;
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
+import com.roboclub.robobuggy.messages.RobobuggyLogicExceptionMeasurment;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.messages.WheelAngleCommand;
-import com.roboclub.robobuggy.nodes.EncoderNode;
+import com.roboclub.robobuggy.nodes.RBSMNode;
 import com.roboclub.robobuggy.nodes.GpsNode;
 import com.roboclub.robobuggy.nodes.ImuNode;
-import com.roboclub.robobuggy.nodes.SteeringNode;
 import com.roboclub.robobuggy.ros.ActuatorChannel;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
@@ -50,7 +51,18 @@ public class Robot implements RosMaster {
 			RobotLogger.getInstance();
 		}
 		
-		System.out.println();
+
+		// Initialize Logic errors
+		RobobuggyLogicException.setupLogicException(SensorChannel.LOGIC_EXCEPTION);
+		new Subscriber(SensorChannel.LOGIC_EXCEPTION.getMsgPath(), new MessageListener() {
+				@Override
+				public void actionPerformed(String topicName, Message m) {
+					updateLogicException((RobobuggyLogicExceptionMeasurment)m);
+				}
+			});
+		//sends startup note
+		new RobobuggyLogicException("Logic Exception Setup properly" ,  MESSAGE_LEVEL.NOTE);
+		
 		
 		// Initialize Sensor
 		if (config.GPS_DEFAULT) {
@@ -82,7 +94,7 @@ public class Robot implements RosMaster {
 
 		if (config.ENCODER_DEFAULT) {
 			System.out.println("Initializing Encoder Serial Connection");
-			EncoderNode encoder = new EncoderNode(SensorChannel.ENCODER);
+			RBSMNode encoder = new RBSMNode(SensorChannel.ENCODER,SensorChannel.STEERING);
 			sensorList.add(encoder);
 		
 			new Subscriber(SensorChannel.ENCODER.getMsgPath(), new MessageListener() {
@@ -92,19 +104,7 @@ public class Robot implements RosMaster {
 				}
 			});
 		}
-
-		if (config.DRIVE_DEFAULT) {
-			System.out.println("Initializing Drive Serial Connection");
-			SteeringNode controls = new SteeringNode(SensorChannel.DRIVE_CTRL);
-			sensorList.add(controls);
-			
-			new Subscriber(SensorChannel.DRIVE_CTRL.getMsgPath(), new MessageListener() {
-				@Override
-				public void actionPerformed(String topicName, Message m) {
-					updateSteering((SteeringMeasurement)m);
-				}
-			});
-		}
+		
 
 		if (config.VISION_SYSTEM_DEFAULT) {
 			System.out.println("Initializing Vision System");
@@ -146,6 +146,7 @@ public class Robot implements RosMaster {
 	
 	// shuts down the robot and all of its child sensors
 	public static void ShutDown() {
+		new RobobuggyLogicException("shutting down Robot", MESSAGE_LEVEL.NOTE);
 		if (sensorList != null && !sensorList.isEmpty()) {
 			for (Node sensor : sensorList) {
 				if (sensor != null) {
@@ -163,6 +164,10 @@ public class Robot implements RosMaster {
 	
 	/* Methods for Updating Current State */
 	private void updateGps(GpsMeasurement m) {
+		// TODO Update planner
+	}
+	
+	private void updateLogicException(RobobuggyLogicExceptionMeasurment m) {
 		// TODO Update planner
 	}
 

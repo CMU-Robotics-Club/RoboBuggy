@@ -20,6 +20,7 @@ import rbsm_lib
 import sys
 import threading
 import time
+import struct
 
 # kill the main thread on sigint
 import signal
@@ -33,11 +34,11 @@ mid_to_str = {
   21: "MEGA_BRAKE_STATE",
   22: "MEGA_AUTON_STATE",
   23: "MEGA_BATTERY_LEVEL",
+  24: "MEGA_STEER_FEEDBACK",
   252: "RESERVED",
   254: "ERROR",
   255: "DEVICE_ID"
 }
-
 
 def redraw(state):
   screen = state["screen"]
@@ -52,7 +53,7 @@ def redraw(state):
     for mid in message_cache.keys():
       # clear line and write new data
       screen.addstr(row_id, 2, " " * (max_x - 2))
-      screen.addstr(row_id, 2, "%s %s %s" % (mid_to_str.get(mid, "MID %d"%(mid)),
+      screen.addstr(row_id, 2, "{} {} {}".format(mid_to_str.get(mid, "MID %d"%(mid)),
                                              message_cache[mid]["data"],
                                              message_cache[mid]["update_time"]))
       row_id = row_id + 1

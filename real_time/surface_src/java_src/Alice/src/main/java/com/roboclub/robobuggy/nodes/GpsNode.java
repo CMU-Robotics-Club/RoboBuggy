@@ -1,7 +1,11 @@
 package com.roboclub.robobuggy.nodes;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import jdk.nashorn.internal.scripts.JS;
+
+import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.ros.Node;
@@ -77,6 +81,12 @@ public class GpsNode extends SerialNode implements Node {
 		return DD + MM/60.0 + SS / 3600.0;
 	}
 	
+	private double convertMinSecToFloat_Longitude(String dddmmmmm) {
+		double ddd = Float.parseFloat(dddmmmmm.substring(0, 3));
+		double mins = Float.parseFloat(dddmmmmm.substring(3));
+		return ddd + mins / 60.0;
+	}
+	
 	@Override
 	public int peel(byte[] buffer, int start, int bytes_available) {
 		// TODO replace 80 with max message length
@@ -134,7 +144,7 @@ public class GpsNode extends SerialNode implements Node {
 			System.out.println("uhoh, you can't go not north or south!");
 			throw new RuntimeException();
 		}
-		double longitude = convertMinutesSecondsToFloat(ar[4]);
+		double longitude = convertMinSecToFloat_Longitude(ar[4]);
 		boolean west;
 		if(ar[5].equals("W")) {
 			west = true;
@@ -155,5 +165,26 @@ public class GpsNode extends SerialNode implements Node {
 		return ar[0].length() + ar[1].length() + ar[2].length() + ar[3].length() 
 				+ ar[4].length() + ar[5].length() + ar[6].length() + ar[7].length()
 				+ ar[8].length() + ar[9].length();
+	}
+
+	
+	@SuppressWarnings("unchecked")
+	public static JSONObject translatePeelMessageToJObject(String message) {
+		// TODO Auto-generated method stub
+		JSONObject data = new JSONObject();
+		JSONObject params = new JSONObject();
+		String[] messageData = message.split(",");
+		params.put("latitude", Double.valueOf(messageData[3]));
+		params.put("lat_direction", messageData[4]);
+		params.put("longitude", Double.valueOf(messageData[5]));
+		params.put("long_direction", messageData[6]);
+		params.put("gps_quality", messageData[7]);
+		params.put("num_satellites", messageData[8]);
+		params.put("HDOP", Double.valueOf(messageData[9]));
+		params.put("antenna_altitude", Float.valueOf(messageData[10]));
+		data.put("timestamp", messageData[1]);
+		data.put("name", "GPS");
+		data.put("params", params);
+		return data;
 	}
 }
