@@ -1,12 +1,16 @@
 import serial;
 import sys
+import struct
+
 
 class RBSerialMessage:
 
   def __init__(self, device_path):
-    self.RBSM_FOOTER = 0x0A
-    self.RBSM_BAUD_RATE = 9600
+    self.RBSM_FOOTER = "\n" # 0x0A
+    self.RBSM_BAUD_RATE = 115200
     self.RBSM_PACKET_LENGTH = 6
+    # packet format: unsigned byte, big-endian signed int, char
+    self.RBSM_PACKET_FORMAT = ">Bic"
 
     self.device_path = device_path
     self.port = serial.Serial(device_path, self.RBSM_BAUD_RATE)
@@ -16,50 +20,53 @@ class RBSerialMessage:
   def read(self):
     # if we don't have a stream lock read until we find a footer
     if(self.stream_lock == False):
-      possible_footer = ord(self.port.read(1))
+      possible_footer = self.port.read(1)
       while(possible_footer != self.RBSM_FOOTER):
-        possible_footer = ord(self.port.read(1))
+        possible_footer = self.port.read(1)
       self.stream_lock = True
 
     # capture a packet length
-    message_buffer = []
+    message_buffer = ""
+    message_unpacked = None
     message_id = None
     message_data = None
-    for i in range(self.RBSM_PACKET_LENGTH):
-      message_buffer.append(ord(self.port.read(1)))
 
-    # confirm correct packet structure
-    if(message_buffer[self.RBSM_PACKET_LENGTH - 1] == self.RBSM_FOOTER):
-      message_id = message_buffer[0]
-      # message_data = message_buffer[1:5]
-      message_data = ((message_buffer[1] << 24) +
-                      (message_buffer[2] << 16) +
-                      (message_buffer[3] << 8) +
-                      (message_buffer[4])) & 0xFFFFFFFF
-      # for j in range(4):
-      #   message_data = (message_data << 8) | message_buffer[4-j]
-      return {"id": message_id, "data": message_data, "status": "locked"}
+    # read what we think is a full packet
+    for i in range(self.RBSM_PACKET_LENGTH):
+      message_buffer += self.port.read(1)
+
+    # unpack the packet
+    message_unpacked = struct.unpack_from(self.RBSM_PACKET_FORMAT, message_buffer)
+
+    # confirm properly formed packet
+    if(message_unpacked[2] == self.RBSM_FOOTER):
+      return {"id": message_unpacked[0],
+              "data": message_unpacked[1],
+              "status": "locked"}
+
+    # but unlock the stream if we can't find a footer
     else:
       self.stream_lock = False
       return {"id": 0, "data": 0, "status": "unlocked"}
 
   def send(self, message_id, message_data):
-    message_buffer = []
-    # add header
-    message_buffer.append(message_id & 0xFF)
-    # add data in big endian byte-order
-    message_buffer.append((message_data >> 24) & 0xFF)
-    message_buffer.append((message_data >> 16) & 0xFF)
-    message_buffer.append((message_data >> 8) & 0xFF)
-    message_buffer.append((message_data) & 0xFF)
-    # add footer
-    message_buffer.append(self.RBSM_FOOTER)
-
+    message_buffer = struct.pack(self.RBSM_PACKET_FORMAT,
+                                 message_id,
+                                 message_data,
+                                 self.RBSM_FOOTER)
     self.port.write(message_buffer)
+
 
 if __name__ == "__main__":
   rbsm_endpoint = RBSerialMessage(sys.argv[1])
+  # send some test RBSM_MID_MEGA_STEER_ANGLE messages
+  rbsm_endpoint.send(20, 0)
+  rbsm_endpoint.send(20, -250)
+  rbsm_endpoint.send(20, 250)
+  rbsm_endpoint.send(20, 0)
+  print "send messages successfully."
+  # then listen for messages forever
+  print "here are some messages I'm seeing:"
   while(1):
     message = rbsm_endpoint.read()
     print message
-    # print "%d: %d (%s)\r\n" % (message["id"], message["data"], message["status"])
