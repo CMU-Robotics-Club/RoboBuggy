@@ -1,13 +1,20 @@
 package com.roboclub.robobuggy.logging;
 import java.util.*;
 import java.io.*;
+
+
 public class OldLogConverter {
+	
+/** Steering Angle Conversion Rate */
+static private final int ARD_TO_DEG = 100;
+/** Steering Angle offset?? */
+static private final int OFFSET = -200;
 	
 static ArrayList<String> sensor_type = new ArrayList<String>();
 static ArrayList<Integer> sensor_quant = new ArrayList<Integer>();
 
 	public static void main(String[] args) throws IOException {
-		boolean fileinput = true;
+		boolean fileinput = false;
 		Scanner scanner; PrintStream writer;
 		
 		if(fileinput){
@@ -102,7 +109,11 @@ static ArrayList<Integer> sensor_quant = new ArrayList<Integer>();
 		writer.print("        {\"name\":\"" + name + "\",");
 		switch(name){
 		case "Steering":
-			writer.print("\"params\":{\"angle\": \"" + st.nextToken() + "\"},");
+			String angle = st.nextToken();
+			Double potValue = Double.parseDouble(angle);
+			potValue = -(potValue + OFFSET)/ARD_TO_DEG;
+			angle = potValue.toString();
+			writer.print("\"params\":{\"angle\": \"" + angle + "\"},");
 			break;
 		case "Encoder":
 			//dataword, d, v, a
