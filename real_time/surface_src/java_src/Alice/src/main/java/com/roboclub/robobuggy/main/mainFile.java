@@ -79,7 +79,7 @@ public class mainFile {
         }
         
         else {
-        	SensorPlayer sp = new SensorPlayer("logs/2015-11-14-03-27-24/sensors.txt");
+        	SensorPlayer sp = new SensorPlayer("logs/2015-11-14-04-20-04/sensors.txt");
         	new Thread(new Runnable() {
 				
 				@Override

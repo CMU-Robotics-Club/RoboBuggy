@@ -76,7 +76,7 @@ public class SensorPlayer implements Runnable {
 				Date sensorTimestamp = RobobuggyDateFormatter.formatRobobuggyDate((String) sensor.get("timestamp"));
 				long currentSensorTimeInMillis = sensorTimestamp.getTime();
 				long sleepTime = currentSensorTimeInMillis - prevTimeInMillis;
-				if(sleepTime > 0) {
+				if(sleepTime < 0 && false) {
 					//TODO change back to sleepTime
 					Thread.sleep(sleepTime);
 //					Thread.sleep(500);
@@ -113,8 +113,10 @@ public class SensorPlayer implements Runnable {
 						int numSatellites = Integer.valueOf((String) sensorParams.get("num_satellites"));
 						double hdop = (double) sensorParams.get("HDOP");
 						double antennaAlt = (double) sensorParams.get("antenna_altitude");
+						double rawLat = (double) sensorParams.get("raw_gps_lat");
+						double rawLon = (double) sensorParams.get("raw_gps_lon");
 						
-//						gpsPub.publish(new GpsMeasurement(gpsTimestamp, latitude, north, longitude, west, qualityValue, numSatellites, hdop, antennaAlt));
+						gpsPub.publish(new GpsMeasurement(gpsTimestamp, latitude, north, longitude, west, qualityValue, numSatellites, hdop, antennaAlt, rawLat, rawLon));
 						
 						break;
 						

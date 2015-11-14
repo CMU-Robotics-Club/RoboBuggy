@@ -47,7 +47,7 @@ public class config {
 	
 	//sensor com ports
 	public static  String COM_PORT_IMU = "COM6";
-	public static  String COM_PORT_GPS_INTEGRATED = "COM5";
+	public static  String COM_PORT_GPS_INTEGRATED = "COM7";
 	public static  String COM_PORT_GPS_STANDALONE = "COM8";
 	public static  String COM_PORT_ENCODER = "COM3";
 	public static  String COM_PORT_DRIVE_CONTROL = "COM9";

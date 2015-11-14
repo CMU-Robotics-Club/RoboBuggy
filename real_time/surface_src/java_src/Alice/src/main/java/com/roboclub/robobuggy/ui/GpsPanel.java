@@ -103,7 +103,7 @@ public class GpsPanel extends JPanel {
 		
 		int cDiameter = 5;
 		g2d.setColor(Color.RED);
-		g2d.fillOval((int)px, (int)py - 500, cDiameter, cDiameter);
+		g2d.fillOval((int)px, (int)py, cDiameter, cDiameter);
 	}
 	
 	@Override
