@@ -11,7 +11,6 @@ import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
-import com.roboclub.robobuggy.ros.Subscriber;
 import com.roboclub.robobuggy.sensors.SensorState;
 import com.roboclub.robobuggy.serial.SerialNode;
 
@@ -36,8 +35,6 @@ public class GpsNode extends SerialNode implements Node {
 	
 	public GpsNode(SensorChannel sensor) {
 		super("GPS");
-		//new Subscriber(SensorChannel.GPS.getMsgPath(), messageListener)
-		
 		msgPub = new Publisher(sensor.getMsgPath());
 		statePub = new Publisher(sensor.getStatePath());
 	
@@ -78,17 +75,15 @@ public class GpsNode extends SerialNode implements Node {
 	}
 
 	private double convertMinutesSecondsToFloat(String DDMMmmmmm) {
-		double DD = Float.parseFloat(DDMMmmmmm.substring(0, 2));
-		double MM = Float.parseFloat(DDMMmmmmm.substring(2, 4));
-		double SS = Float.parseFloat(DDMMmmmmm.substring(4));
-		return DD + MM/60.0 + SS / 3600.0;
+		double DD = Double.parseDouble(DDMMmmmmm.substring(0, 2));
+		double MM = Double.parseDouble(DDMMmmmmm.substring(2));
+		return DD + MM/60.0;
 	}
 	
 	private double convertMinSecToFloat_Longitude(String dddmmmmm) {
-		double ddd = Float.parseFloat(dddmmmmm.substring(0, 3));
-		double mins = Float.parseFloat(dddmmmmm.substring(3, 5));
-		double secs = Float.parseFloat(dddmmmmm.substring(5));
-		return ddd + mins / 60.0 + secs / 3600.0;
+		double ddd = Double.parseDouble(dddmmmmm.substring(0, 3));
+		double mins = Double.parseDouble(dddmmmmm.substring(3));
+		return ddd + mins / 60.0;
 	}
 	
 	@Override
@@ -165,7 +160,7 @@ public class GpsNode extends SerialNode implements Node {
 		double antenna_altitude = Double.parseDouble(ar[9]);
 		
 		msgPub.publish(new GpsMeasurement(readingTime, latitude, north, longitude, 
-			west, quality, num_satellites, horizontal_dilution_of_precision, antenna_altitude));
+			west, quality, num_satellites, horizontal_dilution_of_precision, antenna_altitude, Double.parseDouble(ar[1]), Double.parseDouble(ar[2])));
 		return ar[0].length() + ar[1].length() + ar[2].length() + ar[3].length() 
 				+ ar[4].length() + ar[5].length() + ar[6].length() + ar[7].length()
 				+ ar[8].length() + ar[9].length();
@@ -186,6 +181,8 @@ public class GpsNode extends SerialNode implements Node {
 		params.put("num_satellites", messageData[8]);
 		params.put("HDOP", Double.valueOf(messageData[9]));
 		params.put("antenna_altitude", Float.valueOf(messageData[10]));
+		params.put("raw_gps_lat", Double.valueOf(messageData[11]));
+		params.put("raw_gps_lon", Double.valueOf(messageData[12]));
 		data.put("timestamp", messageData[1]);
 		data.put("name", "GPS");
 		data.put("params", params);

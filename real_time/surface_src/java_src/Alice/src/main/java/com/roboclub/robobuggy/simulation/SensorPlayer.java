@@ -114,7 +114,7 @@ public class SensorPlayer implements Runnable {
 						double hdop = (double) sensorParams.get("HDOP");
 						double antennaAlt = (double) sensorParams.get("antenna_altitude");
 						
-						gpsPub.publish(new GpsMeasurement(gpsTimestamp, latitude, north, longitude, west, qualityValue, numSatellites, hdop, antennaAlt));
+//						gpsPub.publish(new GpsMeasurement(gpsTimestamp, latitude, north, longitude, west, qualityValue, numSatellites, hdop, antennaAlt));
 						
 						break;
 						
