@@ -83,8 +83,9 @@ public class GpsNode extends SerialNode implements Node {
 	
 	private double convertMinSecToFloat_Longitude(String dddmmmmm) {
 		double ddd = Float.parseFloat(dddmmmmm.substring(0, 3));
-		double mins = Float.parseFloat(dddmmmmm.substring(3));
-		return ddd + mins / 60.0;
+		double mins = Float.parseFloat(dddmmmmm.substring(3, 5));
+		double secs = Float.parseFloat(dddmmmmm.substring(5));
+		return ddd + mins / 60.0 + secs / 3600.0;
 	}
 	
 	@Override
