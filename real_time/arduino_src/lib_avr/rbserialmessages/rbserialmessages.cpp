@@ -22,7 +22,7 @@ RBSerialMessages::RBSerialMessages() {
 }
 
 
-int RBSerialMessages::Init(FILE *in_file, FILE *out_file) {
+int RBSerialMessages::Init(UARTFILE *in_file, FILE *out_file) {
   // setup the hardware serial
   in_file_ = in_file;
   out_file_ = out_file;
@@ -53,7 +53,7 @@ int RBSerialMessages::Send(uint8_t id, uint32_t message) {
 // return -1 if not enough data was found
 // return -2 if an invalid message was found
 int RBSerialMessages::Read(rb_message_t* read_message){
-  while(true) {
+  while(in_file_->available() > 0) {
     // check if there is new data
     int new_serial_byte = fgetc(in_file_);
     if(new_serial_byte == EOF) {
@@ -89,14 +89,14 @@ int RBSerialMessages::Read(rb_message_t* read_message){
         // skip packet as an error
         else {
           buffer_in_stream_lock_ = false;
-          return -2;
+          return RBSM_ERROR_INVALID_MESSAGE;
         }
       }
     }
   }
 
   // we didn't have enough data to read a whole packet
-  return -1;
+  return RBSM_ERROR_INSUFFICIENT_DATA;
 
   // maybe check if the footer matches buffer_in_, else throw the message cause it is sad.
 }

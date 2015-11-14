@@ -103,8 +103,8 @@ ServoReceiver g_steering_rx;
 ServoReceiver g_brake_rx;
 ServoReceiver g_auton_rx;
 
-FILE g_uart_rbsm;
-FILE g_uart_debug;
+UARTFILE g_uart_rbsm;
+UARTFILE g_uart_debug;
 
 
 inline long map_signal(long x,
@@ -218,9 +218,11 @@ int main(void) {
      rb_message_t new_command;
      int read_status;
     
+     // while((read_status = g_rbsm.Read(&new_command))
+     //       != RBSM_ERROR_INSUFFICIENT_DATA) {
      while((read_status = g_rbsm.Read(&new_command))
            != RBSM_ERROR_INSUFFICIENT_DATA) {
-       if(read_status == false) {
+       if(read_status == 0) {
          // dipatch complete message
          switch(new_command.message_id) {
            case RBSM_MID_MEGA_STEER_ANGLE:

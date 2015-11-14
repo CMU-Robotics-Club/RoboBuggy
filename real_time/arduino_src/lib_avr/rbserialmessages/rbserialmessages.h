@@ -21,6 +21,7 @@
 // #include "HardwareSerial.h"
 #include <avr/io.h>
 #include <stdio.h>
+#include "../lib_avr/uart/uart_extra.h"
 
 // Implementation Constants
 #define RBSM_BUFFER_OUT_LENGTH 11 // minimum to support double message
@@ -74,11 +75,11 @@ typedef struct rb_message {
 class RBSerialMessages {
  public:
   RBSerialMessages();
-  int Init(FILE *in_file, FILE *out_file);
+  int Init(UARTFILE *in_file, FILE *out_file);
   int Send(uint8_t id, uint32_t message);
   int Read(rb_message_t* read_message);
  private:
-  FILE *in_file_;
+  UARTFILE *in_file_;
   FILE *out_file_;
   char buffer_out_[RBSM_BUFFER_OUT_LENGTH];
   char buffer_in_[RBSM_BUFFER_IN_LENGTH];
