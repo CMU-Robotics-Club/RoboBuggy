@@ -10,8 +10,8 @@ static private final int ARD_TO_DEG = 100;
 /** Steering Angle offset?? */
 static private final int OFFSET = -200;
 	
-static ArrayList<String> sensor_type = new ArrayList<String>();
-static ArrayList<Integer> sensor_quant = new ArrayList<Integer>();
+static private ArrayList<String> sensor_type = new ArrayList<String>();
+static private ArrayList<Integer> sensor_quant = new ArrayList<Integer>();
 
 	public static void main(String[] args) throws IOException {
 		boolean fileinput = false;
@@ -102,12 +102,32 @@ static ArrayList<Integer> sensor_quant = new ArrayList<Integer>();
 	//Note: Anything that would be a tab is a quadruple space
 	//Another note: Capitalization of sensor names is off
 	public static void writeSensorData(Scanner scanner, PrintStream writer, StringTokenizer st, String name, String timestamp){
-		if(name.equalsIgnoreCase("GPS")){name = "GPS";}
-		if(name.equalsIgnoreCase("IMU")){name = "IMU";}
-		if(name.equals("logging_button")){name = "logging button";}
-		else{name = name.substring(0, 1).toUpperCase() + name.substring(1);}
-		writer.print("        {\"name\":\"" + name + "\",");
-		switch(name){
+		String fname = formattedSensorName(name);
+		writer.print("        {\"name\":\"" + fname + "\",");
+		printSensorData(fname, st, writer);
+		//Appending the timestamp to the end of everything is universal 
+		writer.print("\"timestamp\":\"" + timestamp + "\"}");
+		if(scanner.hasNextLine()){
+			writer.println(",");
+		}
+		else{
+			writer.println();
+		}
+		updateDataBreakdown(sensor_type, sensor_quant, fname);
+	}
+	
+	public static String formattedSensorName(String name){
+		//Returns the sensor name in the format we're using in the new logs
+		//Format: First letter capitalized except for acronyms like IMU and the name logging button, which is weird
+		if("GPS".equalsIgnoreCase(name)){return("GPS");}
+		if("IMU".equalsIgnoreCase(name)){return("IMU");}
+		if("logging_button".equals(name)){return("logging button");}
+		else{return(name.substring(0, 1).toUpperCase() + name.substring(1));}
+	}
+	
+	public static void printSensorData(String sensorname, StringTokenizer st, PrintStream writer){
+		//Checks for all possible sensors and outputs the appropriate parameters
+		switch(sensorname){
 		case "Steering":
 			String angle = st.nextToken();
 			Double potValue = Double.parseDouble(angle);
@@ -121,16 +141,16 @@ static ArrayList<Integer> sensor_quant = new ArrayList<Integer>();
 			String d = st.nextToken();
 			String v = st.nextToken();
 			String a = st.nextToken();
-			if(dataword.equals("NaN")){
+			if("NaN".equals(dataword)){
 				dataword = "null";
 			}
-			if(d.equals("NaN")){
+			if("NaN".equals(d)){
 				d = "null";
 			}
-			if(v.equals("NaN")){
+			if("NaN".equals(v)){
 				v = "null";
 			}
-			if(a.equals("NaN")){
+			if("NaN".equals(a)){
 				a = "null";
 			}
 			writer.print("\"params\":{\"dataword\":" + dataword + ",\"distance\":" + d + ",\"velocity\":" + v + ",\"acceleration\":" + a + "},");
@@ -154,16 +174,7 @@ static ArrayList<Integer> sensor_quant = new ArrayList<Integer>();
 			break;
 		default:
 			//Note: This doesn't print any parameters, but you'll still have the sensor name and timestep in the log
-			System.out.println("Unknown sensor: " + name);
+			System.out.println("Unknown sensor: " + sensorname);
 		}
-		//Appending the timestamp to the end of everything is universal 
-		writer.print("\"timestamp\":\"" + timestamp + "\"}");
-		if(scanner.hasNextLine()){
-			writer.println(",");
-		}
-		else{
-			writer.println();
-		}
-		updateDataBreakdown(sensor_type, sensor_quant, name);
 	}
 }
