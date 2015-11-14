@@ -2,12 +2,28 @@ package com.roboclub.robobuggy.logging;
 import java.util.*;
 import java.io.*;
 public class OldLogConverter {
+	
+static ArrayList<String> sensor_type = new ArrayList<String>();
+static ArrayList<Integer> sensor_quant = new ArrayList<Integer>();
 
 	public static void main(String[] args) throws IOException {
-		Scanner scanner = new Scanner(new File("/Users/davidneiman/Desktop/sensors.txt"));
-		PrintStream writer = new PrintStream(new File("/Users/davidneiman/Desktop/sensorsJSON.txt"));
-		ArrayList<String> sensor_type = new ArrayList();
-		ArrayList<Integer> sensor_quant = new ArrayList();
+		boolean fileinput = true;
+		Scanner scanner; PrintStream writer;
+		
+		if(fileinput){
+			scanner = new Scanner(System.in);
+			System.out.println("Input filepath to old data file.");
+			String inputpath = scanner.nextLine();
+			System.out.println("Input filepath to new data file.");
+			String outputpath = scanner.nextLine();
+			scanner.close();
+			scanner = new Scanner(new File(inputpath));
+			writer = new PrintStream(new File(outputpath));
+		}
+		else{
+			scanner = new Scanner(new File("/Users/davidneiman/Desktop/sensors.txt"));
+			writer = new PrintStream(new File("/Users/davidneiman/Desktop/sensorsJSON.txt"));
+		}
 		
 		//Read in the first set of data so we get the date we're recording on
 		String s = scanner.nextLine();
@@ -25,12 +41,11 @@ public class OldLogConverter {
 		String schema_version = "1.0";
 		String software_version = "1.0.0";
 		writer.println("{");
-		writer.println("\t\"name: \"" + logname + "\",");
-		writer.println("\t\"schema_version\":" + schema_version + ",");
-		writer.println("\t\"date_recorded\": \"" + date_recorded + "\",");
-		writer.println("\t\"software_version\":" + software_version + ",");
-		writer.println("\t\"sensor_data\":");
-		writer.println("\t[");
+		writer.println("    \"name\": \"" + logname + "\",");
+		writer.println("    \"schema_version\": " + schema_version + ",");
+		writer.println("    \"date_recorded\": \"" + date_recorded + "\",");
+		writer.println("    \"software_version\": \"" + software_version + "\",");
+		writer.println("    \"sensor_data\": [");
 		
 		//Write the first set of data we read in before
 		writeSensorData(scanner, writer, st, type, timestamp);
@@ -41,20 +56,22 @@ public class OldLogConverter {
 			st = new StringTokenizer(s, ",");
 			type = st.nextToken().substring(8); //Could be IMU, GPS, encoder, steering
 			st2 = new StringTokenizer(st.nextToken(), " ");
-			st2.nextToken(); //Skip the date
-			timestamp = st2.nextToken();
+			timestamp = st2.nextToken() + " " + st2.nextToken(); //Date time
 			writeSensorData(scanner, writer, st, type, timestamp);
-			updateDataBreakdown(sensor_type, sensor_quant, type);
 		}
 		//End sensor data part
-		writer.println("\t],");
+		writer.println("    ],");
 		
 		//Print the breakdown
-		writer.println("\t\"data_breakdown\": {");
+		writer.print("    \"data_breakdown\" : {");
 		for(int x = 0; x < sensor_type.size(); x++){
-			writer.println("\t\t\"" + sensor_type.get(x) + "\": " + sensor_quant.get(x) +",");
+			writer.print("\"" + sensor_type.get(x) + "\":" + sensor_quant.get(x));
+			//Omit last comma
+			if(x < sensor_type.size()-1){
+				writer.print(",");
+			}
 		}
-		writer.println("\t}");
+		writer.println("}");
 		
 		//Clean up and end
 		writer.print("}");
@@ -75,57 +92,67 @@ public class OldLogConverter {
 	}
 	
 	//Given the necessary data, write it to a file in the new format. Lots of brute-force and case statements here
-	public static void writeSensorData(Scanner scanner, PrintStream writer, StringTokenizer st, String type, String timestamp){
-		writer.println("\t\t{");
-		writer.println("\t\t\t\"timestamp\": \"" + timestamp + "\",");
-		writer.println("\t\t\t\"data\": {");
-		writer.println("\t\t\t\t\"name\": \"" + type + "\"");
-		switch(type){
-		case "steering":
-			writer.println("\t\t\t\t\"value\": \"" + st.nextToken() + "\",");
+	//Note: Anything that would be a tab is a quadruple space
+	//Another note: Capitalization of sensor names is off
+	public static void writeSensorData(Scanner scanner, PrintStream writer, StringTokenizer st, String name, String timestamp){
+		if(name.equalsIgnoreCase("GPS")){name = "GPS";}
+		if(name.equalsIgnoreCase("IMU")){name = "IMU";}
+		if(name.equals("logging_button")){name = "logging button";}
+		else{name = name.substring(0, 1).toUpperCase() + name.substring(1);}
+		writer.print("        {\"name\":\"" + name + "\",");
+		switch(name){
+		case "Steering":
+			writer.print("\"params\":{\"angle\": \"" + st.nextToken() + "\"},");
 			break;
-		case "encoder":
-			writer.println("\t\t\t\t\"params\": {");
-			writer.println("\t\t\t\t\t\"val1\": \"" + st.nextToken() + "\",");
-			writer.println("\t\t\t\t\t\"val2\": \"" + st.nextToken() + "\",");
-			writer.println("\t\t\t\t\t\"val3\": \"" + st.nextToken() + "\",");
-			writer.println("\t\t\t\t\t\"val4\": \"" + st.nextToken() + "\",");
-			writer.println("\t\t\t\t},");
+		case "Encoder":
+			//dataword, d, v, a
+			String dataword = st.nextToken();
+			String d = st.nextToken();
+			String v = st.nextToken();
+			String a = st.nextToken();
+			if(dataword.equals("NaN")){
+				dataword = "null";
+			}
+			if(d.equals("NaN")){
+				d = "null";
+			}
+			if(v.equals("NaN")){
+				v = "null";
+			}
+			if(a.equals("NaN")){
+				a = "null";
+			}
+			writer.print("\"params\":{\"dataword\":" + dataword + ",\"distance\":" + d + ",\"velocity\":" + v + ",\"acceleration\":" + a + "},");
 			break;
-		case "logging_button":
-			writer.println("\t\t\t\t\"button\": \"" + st.nextToken() + "\",");
+		case "logging button":
+			writer.print("\"params\":{\"logging_status\":\"" + st.nextToken().toLowerCase() + "\"},");
 			break;
-		case "gps":
-			writer.println("\t\t\t\t\"params\": \"" + st.nextToken() + "\",");
-			writer.println("\t\t\t\t\t\"location\": {");
-			writer.println("\t\t\t\t\t\"lat\": \"" + st.nextToken() + "\",");
-			st.nextToken(); //Direction
-			writer.println("\t\t\t\t\t\"lon\": \"" + st.nextToken() + "\",");
-			st.nextToken(); //Direction
-			writer.println("\t\t\t\t\t\"val1\": \"" + st.nextToken() + "\",");
-			writer.println("\t\t\t\t\t\"val2\": \"" + st.nextToken() + "\",");
-			writer.println("\t\t\t\t\t\"val3\": \"" + st.nextToken() + "\",");
-			writer.println("\t\t\t\t\t\"val4\": \"" + st.nextToken() + "\",");
-			writer.println("\t\t\t\t},");
+		case "GPS":
+			st.nextToken(); //GPS data stores a second time; I'm not really sure what it is, but we don't need it
+			//Latitude/longitude
+			writer.print("\"params\":{\"latitude\":" + st.nextToken() + ",\"lat_direction\":\"" + st.nextToken() + "\",\"longitude\":" + st.nextToken() + ",\"long_direction\":\"" + st.nextToken() + "\",");
+			//Other parameters
+			writer.print("\"gps_quality\":\"" + st.nextToken() + "\",\"num_satellites\":\"" + st.nextToken() + "\",\"HDOP\":" + st.nextToken() + ",\"antenna_altitude\":" + st.nextToken() + "},");
 			break;
-		case "imu":
-			writer.println("\t\t\t\t\"params\": {");
-			//Note: I'm not sure what order these read in in.
-			writer.println("\t\t\t\t\t\"yaw\": \"" + st.nextToken() + "\",");
-			writer.println("\t\t\t\t\t\"pitch\": \"" + st.nextToken() + "\",");
-			writer.println("\t\t\t\t\t\"roll\": \"" + st.nextToken() + "\",");
-			writer.println("\t\t\t\t},");
+		case "IMU":
+			//Note: I'm not sure what order these read in in. I'm taking an educated guess that the -120 reading is yaw and that therefore the old data is YPR
+			String yaw = st.nextToken();
+			String pitch = st.nextToken();
+			String roll = st.nextToken();
+			writer.print("\"params\":{\"roll\":" + roll + ",\"pitch\":" + pitch + ",\"yaw\":" + yaw + "},");
 			break;
-		default: 
-			System.out.println("Unknown sensor: " + type);
+		default:
+			//Note: This doesn't print any parameters, but you'll still have the sensor name and timestep in the log
+			System.out.println("Unknown sensor: " + name);
 		}
-		writer.println("\t\t\t}");
-		writer.print("\t\t}");
+		//Appending the timestamp to the end of everything is universal 
+		writer.print("\"timestamp\":\"" + timestamp + "\"}");
 		if(scanner.hasNextLine()){
 			writer.println(",");
 		}
 		else{
 			writer.println();
 		}
+		updateDataBreakdown(sensor_type, sensor_quant, name);
 	}
 }
