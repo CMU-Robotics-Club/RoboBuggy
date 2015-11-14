@@ -74,6 +74,8 @@ def redraw(state):
 def rbsm_worker(state):
   message_cache = state["message_cache"]
   rbsm_endpoint = state["rbsm_endpoint"]
+  
+  f = open('bytes from arduino.txt', wt) #delete
 
   while(1):
     new_message = rbsm_endpoint.read()
@@ -85,10 +87,16 @@ def rbsm_worker(state):
         ( new_message["id"], 
           {"data": new_message["data"], "update_time": time.time()} ),
       ])
+	  
+	  if new_message[id] == 254:
+	    f.write(str(new_message['data']))
+	    f.write("\n")
+	  
       # update remotely
       redraw(state)
     else:
       state["status_line"] = "Unlocked!"
+		  f.close() #delete
 
   return None
 
