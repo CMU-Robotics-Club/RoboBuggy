@@ -43,6 +43,7 @@ public class GpsPanel extends JPanel {
 	private int frameHeight;
 	private Subscriber gpsSub;
 	
+	
 	public GpsPanel(){
 		locs = new ArrayList<LocTuple>();
 		imgNorthWest = new LocTuple(40.443946388131266, -79.95532877484377);

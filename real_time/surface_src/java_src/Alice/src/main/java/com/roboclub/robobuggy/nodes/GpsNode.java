@@ -11,6 +11,7 @@ import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
+import com.roboclub.robobuggy.ros.Subscriber;
 import com.roboclub.robobuggy.sensors.SensorState;
 import com.roboclub.robobuggy.serial.SerialNode;
 
@@ -35,6 +36,8 @@ public class GpsNode extends SerialNode implements Node {
 	
 	public GpsNode(SensorChannel sensor) {
 		super("GPS");
+		//new Subscriber(SensorChannel.GPS.getMsgPath(), messageListener)
+		
 		msgPub = new Publisher(sensor.getMsgPath());
 		statePub = new Publisher(sensor.getStatePath());
 	
