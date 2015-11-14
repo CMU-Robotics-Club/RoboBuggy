@@ -36,8 +36,9 @@ public class mainFile {
         }
         
         // Starts the robot
-        if(config.DATA_PLAY_BACK_DEFAULT){
-            try {
+//        if(config.DATA_PLAY_BACK_DEFAULT){
+            try {           
+            	Robot.getInstance();
                 bringup_sim();
             } catch (Exception e) {
                 Gui.close();
@@ -45,10 +46,9 @@ public class mainFile {
                 e.printStackTrace();
                 return;
             }
-        } else {
-            Robot.getInstance();
-        	
-        }   
+//        } else {
+//        	
+//        }   
     }
     
     //going to start by just connecting to the IMU
@@ -72,7 +72,7 @@ public class mainFile {
         }
         
         else {
-        	SensorPlayer sp = new SensorPlayer("C:\\Users\\Robot\\Documents\\GitHub\\RoboBuggy\\real_time\\surface_src\\java_src\\Alice\\logs\\SensorPlayer_test_0\\sensors.txt");
+        	SensorPlayer sp = new SensorPlayer("logs/sensorPlayerTests/sensors.txt");
         	new Thread(new Runnable() {
 				
 				@Override

@@ -1,5 +1,7 @@
 package com.roboclub.robobuggy.simulation;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Date;
@@ -34,16 +36,20 @@ public class SensorPlayer implements Runnable {
 
 	public SensorPlayer(String filePath) {
 	
-		imuPub = new Publisher(SensorChannel.IMU.toString());
-		gpsPub = new Publisher(SensorChannel.GPS.toString());
-		encoderPub = new Publisher(SensorChannel.ENCODER.toString());
-		brakePub = new Publisher(SensorChannel.BRAKE.toString());
-		steeringPub = new Publisher(SensorChannel.STEERING.toString());
-		loggingButtonPub = new Publisher(SensorChannel.GUI_LOGGING_BUTTON.toString());
+		imuPub = new Publisher(SensorChannel.IMU.getMsgPath());
+		gpsPub = new Publisher(SensorChannel.GPS.getMsgPath());
+		encoderPub = new Publisher(SensorChannel.ENCODER.getMsgPath());
+		brakePub = new Publisher(SensorChannel.BRAKE.getMsgPath());
+		steeringPub = new Publisher(SensorChannel.STEERING.getMsgPath());
+		loggingButtonPub = new Publisher(SensorChannel.GUI_LOGGING_BUTTON.getMsgPath());
 		
 		System.out.println("initializing the SensorPlayer");
 		
 		path = filePath;
+		File f = new File(path);
+		if(!f.exists()) {
+			new RobobuggyLogicException("File doesn't exist!", MessageLevel.EXCEPTION);
+		}
 	}
 	
 	
@@ -167,6 +173,8 @@ public class SensorPlayer implements Runnable {
 						break;
 				
 				}
+				
+				System.out.println("sent out data from " + sensorName);
 				
 				
 			}
