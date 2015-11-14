@@ -239,7 +239,7 @@ AVRDUDE_FLAGS += $(AVRDUDE_ERASE_COUNTER)
 
 #Change this variable to usb port to which arduino is connected
 #It can be checked by using "ls /dev" and looking for "tty.usbxxxxxx####"
-AVRDUDE_A_PORT = /dev/tty.asdf
+AVRDUDE_A_PORT = /dev/tty.usbmodemfd121
 AVRDUDE_A_FLAGS = -v -c wiring -p $(MCU) -P $(AVRDUDE_A_PORT) -b 115200 -D
 
 PYTHON = /usr/local/bin/python

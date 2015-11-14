@@ -139,10 +139,10 @@ def command_handler(rbsm_endpoint, command_line):
 
 def main():
   if(len(sys.argv) < 2):
-    print "You didn't provide enough arguments. Please run with:"
-    print "%s /dev/tty.something" % (sys.argv[0])
+    print ("You didn't provide enough arguments. Please run with:")
+    print ("%s /dev/tty.something" % (sys.argv[0]))
     sys.exit()
-
+  
   state = {
     "message_cache": {},
     "command_line": "",
@@ -151,15 +151,18 @@ def main():
     "rbsm_endpoint": None,
   }
   screen = state["screen"]
-
+  
   # setup program window
   screen = curses.initscr()
+  
   curses.noecho()
   screen.clear()
   screen.border(0)
   screen.addstr(1, 2, "Message Data Time")
   state["screen"] = screen
   redraw(state)
+
+
 
   # setup incomming messages
   rbsm_endpoint = rbsm_lib.RBSerialMessage(sys.argv[1])

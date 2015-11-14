@@ -64,9 +64,10 @@ if __name__ == "__main__":
   rbsm_endpoint.send(20, -250)
   rbsm_endpoint.send(20, 250)
   rbsm_endpoint.send(20, 0)
-  print "send messages successfully."
+  print ("send messages successfully.")
+  
   # then listen for messages forever
-  print "here are some messages I'm seeing:"
+  print ("here are some messages I'm seeing:")
   while(1):
     message = rbsm_endpoint.read()
-    print message
+    print (message)
