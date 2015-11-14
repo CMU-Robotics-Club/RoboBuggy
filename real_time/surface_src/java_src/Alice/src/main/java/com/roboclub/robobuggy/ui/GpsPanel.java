@@ -60,6 +60,8 @@ public class GpsPanel extends JPanel {
 			public void actionPerformed(String topicName, Message m) {
 				double latitude = ((GpsMeasurement)m).latitude;
 				double longitude = ((GpsMeasurement)m).longitude;
+				System.out.println("latddmm.mmm: "+((GpsMeasurement)m).rawGPSLat + "\t londddmm.mmmm: "+((GpsMeasurement)m).rawGPSLong);
+
 				//todo put mag based on dir
 				if(((GpsMeasurement)m).west) {
 					longitude = -longitude;

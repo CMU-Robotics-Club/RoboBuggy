@@ -1,6 +1,10 @@
 package com.roboclub.robobuggy.main;
 
+import gnu.io.CommPortIdentifier;
+
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.nodes.RealNodeEnum;
@@ -19,6 +23,9 @@ public class mainFile {
     public static void main(String args[]) {
         config.getInstance();//must be run at least once
                 
+        List<String> ports = getAvailablePorts();
+        System.out.println(ports);
+        
         for (int i = 0; i < args.length; i++) {
             if (args[i].equalsIgnoreCase("-g")) {
                 config.GUI_ON = false;
@@ -68,11 +75,11 @@ public class mainFile {
 //        	String ImuKey = sm.newRealSensor(RealNodeEnum.IMU, config.COM_PORT_IMU, SensorChannel.IMU);
         	String GpsKey = sm.newRealSensor(RealNodeEnum.GPS, config.COM_PORT_GPS_STANDALONE, SensorChannel.GPS);
 //        	String RBSMKey = sm.newRealSensor(RealNodeEnum.RBSM, config.COM_PORT_ENCODER, SensorChannel.ENCODER, SensorChannel.STEERING);
-//        	String LoggingKey = sm.newRealSensor(RealNodeEnum.LOGGING_BUTTON, "", SensorChannel.GUI_LOGGING_BUTTON);
+        	String LoggingKey = sm.newRealSensor(RealNodeEnum.LOGGING_BUTTON, "", SensorChannel.GUI_LOGGING_BUTTON);
         }
         
         else {
-        	SensorPlayer sp = new SensorPlayer("logs/sensorPlayerTests/sensors1.txt");
+        	SensorPlayer sp = new SensorPlayer("logs/2015-11-14-03-27-24/sensors.txt");
         	new Thread(new Runnable() {
 				
 				@Override
@@ -82,5 +89,21 @@ public class mainFile {
 				}
 			}).start();
         }
+    }
+    
+    public static List<String> getAvailablePorts() {
+
+        List<String> list = new ArrayList<String>();
+
+        Enumeration portList = CommPortIdentifier.getPortIdentifiers();
+
+        while (portList.hasMoreElements()) {
+            CommPortIdentifier portId = (CommPortIdentifier) portList.nextElement();
+            if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL) {
+                list.add(portId.getName());
+            }
+        }
+
+        return list;
     }
 }
