@@ -162,10 +162,10 @@ public class RBSMNode extends SerialNode implements Node {
 		}
 		else if (sensorName.equals("encoder")) {
 			data.put("name", "Encoder");
-			params.put("dataword", Float.valueOf(messageData[2]));
-			params.put("distance", Float.valueOf(messageData[3]));
-			params.put("velocity", Float.valueOf(messageData[4]));
-			params.put("acceleration", Float.valueOf(messageData[5]));
+			params.put("dataword", Double.valueOf(messageData[2]));
+			params.put("distance", Double.valueOf(messageData[3]));
+			params.put("velocity", Double.valueOf(messageData[4]));
+			params.put("acceleration", Double.valueOf(messageData[5]));
 		}
 		else {
 			System.err.println("WAT");
