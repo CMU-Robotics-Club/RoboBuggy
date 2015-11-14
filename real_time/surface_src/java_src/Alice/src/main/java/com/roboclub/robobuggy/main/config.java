@@ -48,7 +48,7 @@ public class config {
 	//sensor com ports
 	public static  String COM_PORT_IMU = "COM6";
 	public static  String COM_PORT_GPS_INTEGRATED = "COM5";
-	public static  String COM_PORT_GPS_STANDALONE = "/dev/tty.usbmodem1421";
+	public static  String COM_PORT_GPS_STANDALONE = "COM8";
 	public static  String COM_PORT_ENCODER = "COM3";
 	public static  String COM_PORT_DRIVE_CONTROL = "COM9";
 	
@@ -64,7 +64,7 @@ public class config {
 
 	public static boolean GUI_ON_DEFAULT = true;
 	// iff false, connect to serial sensors 
-	public static final boolean DATA_PLAY_BACK_DEFAULT = false;
+	public static final boolean DATA_PLAY_BACK_DEFAULT = true;
 	
 	// current status values
 	public static boolean GUI_ON;
