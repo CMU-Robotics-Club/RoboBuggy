@@ -5,6 +5,8 @@ import java.util.Date;
 import gnu.io.SerialPort;
 
 import com.orsoncharts.util.json.JSONObject;
+import com.roboclub.robobuggy.main.MESSAGE_LEVEL;
+import com.roboclub.robobuggy.main.RobobuggyLogicException;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
@@ -139,6 +141,27 @@ public class RBSMNode extends SerialNode implements Node {
 			potValue = message.getDataWord();
 			System.out.println(potValue);
 			messagePub_pot.publish(new SteeringMeasurement(-(potValue + OFFSET)/ARD_TO_DEG));
+		}
+		
+		if(message.getHeaderByte() == RBSerialMessage.RBSM_MID_ERROR){
+			switch(message.getDataWord()){
+			case 0: 
+				new RobobuggyLogicException("code 0 no error", MESSAGE_LEVEL.EXCEPTION);
+				break;
+			case 1: 
+				new RobobuggyLogicException("code 1 lost  stream message", MESSAGE_LEVEL.EXCEPTION);
+				break;
+			case 2: 
+				new RobobuggyLogicException("code 2 lost invalid mid message", MESSAGE_LEVEL.EXCEPTION);
+				break;
+			case 20:
+				new RobobuggyLogicException("code 20 lost rc message", MESSAGE_LEVEL.EXCEPTION);
+				break;
+
+			default: 
+				new RobobuggyLogicException("RBSM unknown error", MESSAGE_LEVEL.EXCEPTION);
+
+			}
 		}
 		
 		
