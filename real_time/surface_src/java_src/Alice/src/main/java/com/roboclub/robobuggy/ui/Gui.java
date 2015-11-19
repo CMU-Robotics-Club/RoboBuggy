@@ -37,6 +37,7 @@ public final class Gui extends JFrame {
 		GUI_LOG_BUTTON_UPDATED,
 	}
 
+	 //added data panel to figure out adding data in real time to gui
 	public static Gui getInstance() {
 		if (instance == null) {
 			instance = new Gui();
@@ -67,7 +68,12 @@ public final class Gui extends JFrame {
 		this.addWindowListener(new java.awt.event.WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent windowEvent) {
-				Robot.ShutDown();
+				try {
+					Robot.ShutDown();
+				}
+				catch(NullPointerException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 		
@@ -82,11 +88,14 @@ public final class Gui extends JFrame {
 		
 		gbc.weightx = 0.75;
 		gbc.gridx = 1;
+		gbc.gridy = 0;
 		anlyPanel = new AnalyticsPanel();
 		pane.add(anlyPanel, gbc);
 		
+		
 		this.pack();
 		this.setVisible(true);
+		
 	}
 	
 	public static void close() {

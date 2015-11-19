@@ -61,7 +61,7 @@ public class Robot implements RosMaster {
 				}
 			});
 		//sends startup note
-		new RobobuggyLogicException("Logic Exception Setup properly" ,  MESSAGE_LEVEL.NOTE);
+		new RobobuggyLogicException("Logic Exception Setup properly" ,  MessageLevel.NOTE);
 		
 		
 		// Initialize Sensor
@@ -147,7 +147,7 @@ public class Robot implements RosMaster {
 	
 	// shuts down the robot and all of its child sensors
 	public static void ShutDown() {
-		new RobobuggyLogicException("shutting down Robot", MESSAGE_LEVEL.NOTE);
+		new RobobuggyLogicException("shutting down Robot", MessageLevel.NOTE);
 		if (sensorList != null && !sensorList.isEmpty()) {
 			for (Node sensor : sensorList) {
 				if (sensor != null) {
