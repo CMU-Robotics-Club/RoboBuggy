@@ -164,7 +164,7 @@ public class RBSMNode extends SerialNode implements Node
 				steeringAngle = message.getDataWord();
 				messagePub_controllerSteering.publish(new SteeringMeasurement(steeringAngle));
 				break;
-			case message.getHeaderByte() == RBSerialMessage.FP_HASH:
+			case RBSerialMessage.FP_HASH:
 				System.out.println(message.getDataWord());
 				//TODO: Add logging for this 
 				break;
