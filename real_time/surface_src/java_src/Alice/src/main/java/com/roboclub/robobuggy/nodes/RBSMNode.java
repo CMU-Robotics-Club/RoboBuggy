@@ -163,11 +163,11 @@ public class RBSMNode extends SerialNode implements Node {
 		
 		data.put("timestamp", messageData[1]);
 		
-		if(sensorName.equals(SensorChannel.STEERING.getMsgPath()) || sensorName.equals(SensorChannel.STEERING_COMMANDED.getMsgPath())) {
+		if(sensorName.equals("steering") || sensorName.equals("commanded_steering")) {
 			data.put("name", "Steering_" + sensorName);
 			params.put("angle", Float.valueOf(messageData[2]));
 		}
-		else if (sensorName.equals(SensorChannel.ENCODER.getMsgPath())) {
+		else if (sensorName.equals("encoder")) {
 			data.put("name", "Encoder");
 			params.put("dataword", Double.valueOf(messageData[2]));
 			params.put("distance", Double.valueOf(messageData[3]));
@@ -175,7 +175,7 @@ public class RBSMNode extends SerialNode implements Node {
 			params.put("acceleration", Double.valueOf(messageData[5]));
 		}
 		else {
-			System.err.println("WAT");
+			System.err.println("WAT " + sensorName);
 		}
 		
 		data.put("params", params);
