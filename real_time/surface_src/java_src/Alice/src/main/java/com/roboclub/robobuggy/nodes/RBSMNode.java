@@ -42,6 +42,7 @@ public class RBSMNode extends SerialNode implements Node {
 	// accumulated
 	private int encTicks = 0;
 	private int potValue = -1;
+	private int steeringAngle = 0;
 	
 	// last state
 	private double accDistLast = 0.0;
@@ -50,6 +51,7 @@ public class RBSMNode extends SerialNode implements Node {
 	
 	Publisher messagePub_enc;
 	Publisher messagePub_pot;
+	Publisher messagePub_controllerSteering;
 	Publisher brakePub; 
 	
 	Publisher statePub_enc;
@@ -59,6 +61,7 @@ public class RBSMNode extends SerialNode implements Node {
 		super("ENCODER");
 		messagePub_enc = new Publisher(sensor_enc.getMsgPath());
 		messagePub_pot = new Publisher(sensor_pot.getMsgPath());
+		messagePub_controllerSteering = new Publisher(SensorChannel.STEERING_COMMANDED.getMsgPath());
 		brakePub = new Publisher(SensorChannel.BRAKE.getMsgPath());
 
 		statePub_enc = new Publisher(sensor_enc.getStatePath());
@@ -140,6 +143,10 @@ public class RBSMNode extends SerialNode implements Node {
 			System.out.println(potValue);
 			messagePub_pot.publish(new SteeringMeasurement(-(potValue + OFFSET)/ARD_TO_DEG));
 		}
+		if(message.getHeaderByte() == RBSerialMessage.RBSM_MID_MEGA_STEER_ANGLE) {
+			steeringAngle = message.getDataWord();
+			messagePub_controllerSteering.publish(new SteeringMeasurement(steeringAngle));
+		}
 		
 		
 		return 6;
@@ -156,11 +163,11 @@ public class RBSMNode extends SerialNode implements Node {
 		
 		data.put("timestamp", messageData[1]);
 		
-		if(sensorName.equals("steering")) {
-			data.put("name", "Steering");
+		if(sensorName.equals(SensorChannel.STEERING.getMsgPath()) || sensorName.equals(SensorChannel.STEERING_COMMANDED.getMsgPath())) {
+			data.put("name", "Steering_" + sensorName);
 			params.put("angle", Float.valueOf(messageData[2]));
 		}
-		else if (sensorName.equals("encoder")) {
+		else if (sensorName.equals(SensorChannel.ENCODER.getMsgPath())) {
 			data.put("name", "Encoder");
 			params.put("dataword", Double.valueOf(messageData[2]));
 			params.put("distance", Double.valueOf(messageData[3]));

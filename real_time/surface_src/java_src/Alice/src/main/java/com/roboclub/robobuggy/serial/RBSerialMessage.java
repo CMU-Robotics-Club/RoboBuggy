@@ -14,6 +14,7 @@ public class RBSerialMessage {
 	public static final byte AUTO = (byte)22;
 	public static final byte BATTERY = (byte)23;
 	public static final byte RBSM_MID_MEGA_STEER_FEEDBACK = (byte)24; //potentiometer 
+	public static final byte RBSM_MID_MEGA_STEER_ANGLE = (byte)20;
 	
 	public static final byte LIGHTING_ID = (byte)50;
 	
