@@ -88,15 +88,15 @@ def rbsm_worker(state):
           {"data": new_message["data"], "update_time": time.time()} ),
       ])
 	  
-	  if new_message[id] == 254:
-	    f.write(str(new_message['data']))
-	    f.write("\n")
-	  
+      if new_message[id] == 254:
+        f.write(str(new_message['data']))
+        f.write("\n")
+
       # update remotely
       redraw(state)
     else:
       state["status_line"] = "Unlocked!"
-		  f.close() #delete
+      f.close() #delete
 
   return None
 

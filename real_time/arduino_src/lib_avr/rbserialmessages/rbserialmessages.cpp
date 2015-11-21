@@ -62,14 +62,17 @@ int RBSerialMessages::Read(rb_message_t* read_message){
 
     // first, we need to try to lock on to the stream
     if(buffer_in_stream_lock_ == false) {
-      printf("RBSerialMessages::Read: searching for lock...\n");
+      printf("%s: searching for lock...\n", __PRETTY_FUNCTION__);
+      // this->Send(RBSM_MID_ERROR, (int)new_serial_byte);
       if((uint8_t)new_serial_byte == RBSM_FOOTER) {
+        printf("%s: got lock!\n", __PRETTY_FUNCTION__);
         buffer_in_stream_lock_ = true;
       }
     }
 
     // after we lock we need to read in to the buffer until full
     else {
+      // this->Send(RBSM_MID_ERROR, buffer_in_pos_);
       buffer_in_[buffer_in_pos_] = (uint8_t)new_serial_byte; 
       buffer_in_pos_++;
       // handle the end of a packet
