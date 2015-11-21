@@ -43,6 +43,7 @@ public class RBSMNode extends SerialNode implements Node
 	// accumulated
 	private int encTicks = 0;
 	private int potValue = -1;
+	private int steeringAngle = 0;
 	
 	// last state
 	private double accDistLast = 0.0;
@@ -51,6 +52,7 @@ public class RBSMNode extends SerialNode implements Node
 	
 	Publisher messagePub_enc;
 	Publisher messagePub_pot;
+	Publisher messagePub_controllerSteering;
 	Publisher brakePub; 
 	
 	Publisher statePub_enc;
@@ -61,6 +63,7 @@ public class RBSMNode extends SerialNode implements Node
 		super("ENCODER");
 		messagePub_enc = new Publisher(sensor_enc.getMsgPath());
 		messagePub_pot = new Publisher(sensor_pot.getMsgPath());
+		messagePub_controllerSteering = new Publisher(SensorChannel.STEERING_COMMANDED.getMsgPath());
 		brakePub = new Publisher(SensorChannel.BRAKE.getMsgPath());
 
 		statePub_enc = new Publisher(sensor_enc.getStatePath());
@@ -142,27 +145,34 @@ public class RBSMNode extends SerialNode implements Node
 		}
 		
 		RBSerialMessage message = rbp.getMessage();
-		if(message.getHeaderByte() == RBSerialMessage.ENC_TICK_SINCE_RESET) 
+		byte headerByte = message.getHeaderByte();
+		switch (headerByte)
 		{
-			// This is a delta-distance! Do a thing!
-			encTicks = message.getDataWord() & 0xFFF;
-			messagePub_enc.publish(estimateVelocity(message.getDataWord()));
-			System.out.println(encTicks);
-		}
-		
-		else if(message.getHeaderByte() == RBSerialMessage.RBSM_MID_MEGA_STEER_FEEDBACK) 
-		{
-			// This is a delta-distance! Do a thing!
-			potValue = message.getDataWord();
-			System.out.println(potValue);
-			messagePub_pot.publish(new SteeringMeasurement(-(potValue + OFFSET)/ARD_TO_DEG));
+			case RBSerialMessage.ENC_TICK_SINCE_RESET:
+				// This is a delta-distance! Do a thing!
+				encTicks = message.getDataWord() & 0xFFFF;
+				messagePub_enc.publish(estimateVelocity(message.getDataWord()));
+				System.out.println(encTicks);
+				break;
+			case RBSerialMessage.RBSM_MID_MEGA_STEER_FEEDBACK:
+				// This is a delta-distance! Do a thing!
+				potValue = message.getDataWord();
+				System.out.println(potValue);
+				messagePub_pot.publish(new SteeringMeasurement(-(potValue + OFFSET)/ARD_TO_DEG));
+				break;
+			case RBSerialMessage.RBSM_MID_MEGA_STEER_ANGLE:
+				steeringAngle = message.getDataWord();
+				messagePub_controllerSteering.publish(new SteeringMeasurement(steeringAngle));
+				break;
+			case message.getHeaderByte() == RBSerialMessage.FP_HASH:
+				System.out.println(message.getDataWord());
+				//TODO: Add logging for this 
+				break;
+			default:
+				System.out.println("Error: Invalid header byte");
+				break;
 		}
 
-		else if (message.getHeaderByte() == RBSerialMessage.FP_HASH)
-		{
-			System.out.println(message.getDataWord());
-		}
-		
 		
 		return 6;
 	}
@@ -178,8 +188,8 @@ public class RBSMNode extends SerialNode implements Node
 		
 		data.put("timestamp", messageData[1]);
 		
-		if(sensorName.equals("steering")) {
-			data.put("name", "Steering");
+		if(sensorName.equals("steering") || sensorName.equals("commanded_steering")) {
+			data.put("name", "Steering_" + sensorName);
 			params.put("angle", Float.valueOf(messageData[2]));
 		}
 		else if (sensorName.equals("encoder")) {
@@ -190,7 +200,7 @@ public class RBSMNode extends SerialNode implements Node
 			params.put("acceleration", Double.valueOf(messageData[5]));
 		}
 		else {
-			System.err.println("WAT");
+			System.err.println("WAT " + sensorName);
 		}
 		
 		data.put("params", params);
