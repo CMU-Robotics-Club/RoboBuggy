@@ -46,10 +46,10 @@ public class GpsPanel extends JPanel {
 	
 	public GpsPanel(){
 		locs = new ArrayList<LocTuple>();
-		imgNorthWest = new LocTuple(40.443946388131266, -79.95532877484377);
-		imgSouthEast = new LocTuple(40.436597411027364, -79.93596322545625);
+		imgNorthWest = new LocTuple(40.441569, -79.948489);
+		imgSouthEast = new LocTuple(40.438574, -79.941365);
 		try {
-			map = ImageIO.read(new File("images/lat_long_course_map.png"));
+			map = ImageIO.read(new File("images/courseMap.png"));
 		} catch(Exception e) {
 			System.out.println("Unable to open map!");
 		}
@@ -76,7 +76,8 @@ public class GpsPanel extends JPanel {
 			}
 		});		
 		
-//		locs.add(new LocTuple(40.440443, -79.9427212));
+		locs.add(new LocTuple(40.440320, -79.945282));
+		
 	}
 	
 	private void setup() {
@@ -85,10 +86,6 @@ public class GpsPanel extends JPanel {
 	}
 	
 	private void drawTuple(Graphics2D g2d, LocTuple mTuple){
-//		double dx = imgSouthWest.getLatitude() - imgNorthEast.getLatitude();
-//		double dy = imgSouthWest.getLongitude() - imgNorthEast.getLongitude();
-//		double x = (mTuple.getLatitude() - imgNorthEast.getLatitude()) / dx * frameWidth;
-//		double y = (mTuple.getLongitude() - imgSouthWest.getLongitude()) / dy * frameHeight;
 		
 		double dx = Math.abs(imgSouthEast.getLongitude() - imgNorthWest.getLongitude());
 		double dy = Math.abs(imgSouthEast.getLatitude() - imgNorthWest.getLatitude());
@@ -98,8 +95,6 @@ public class GpsPanel extends JPanel {
 		
 		double px = (londiff * frameWidth) / dx;
 		double py = (latdiff * frameHeight) / dy;
-		
-		System.out.println("printing an oval at " + px + ", " + py);
 		
 		int cDiameter = 5;
 		g2d.setColor(Color.RED);

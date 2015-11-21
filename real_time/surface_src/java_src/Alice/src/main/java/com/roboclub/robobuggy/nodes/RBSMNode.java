@@ -143,7 +143,7 @@ public class RBSMNode extends SerialNode implements Node {
 			System.out.println(potValue);
 			messagePub_pot.publish(new SteeringMeasurement(-(potValue + OFFSET)/ARD_TO_DEG));
 		}
-		if(message.getHeaderByte() == RBSerialMessage.RBSM_MID_MEGA_STEER_ANGLE) {
+		if(message.getHeaderByte() == RBSerialMessage.STEERING) {
 			steeringAngle = message.getDataWord();
 			messagePub_controllerSteering.publish(new SteeringMeasurement(steeringAngle));
 		}
