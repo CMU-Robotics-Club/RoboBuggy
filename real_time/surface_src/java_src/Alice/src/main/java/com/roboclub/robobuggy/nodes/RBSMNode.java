@@ -129,7 +129,7 @@ public class RBSMNode extends SerialNode implements Node {
 		RBSerialMessage message = rbp.getMessage();
 		if(message.getHeaderByte() == RBSerialMessage.ENC_TICK_SINCE_RESET) {
 			// This is a delta-distance! Do a thing!
-			encTicks = message.getDataWord() & 0xFFF;
+			encTicks = message.getDataWord() & 0xFFFF;
 			messagePub_enc.publish(estimateVelocity(message.getDataWord()));
 			System.out.println(encTicks);
 		}
