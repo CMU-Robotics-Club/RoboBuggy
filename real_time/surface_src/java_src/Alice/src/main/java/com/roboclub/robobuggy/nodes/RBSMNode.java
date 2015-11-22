@@ -12,6 +12,7 @@ import com.roboclub.robobuggy.messages.BrakeControlMessage;
 import com.roboclub.robobuggy.messages.DriveControlMessage;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
+import com.roboclub.robobuggy.messages.FingerPrintMessage;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
@@ -20,6 +21,8 @@ import com.roboclub.robobuggy.sensors.SensorState;
 import com.roboclub.robobuggy.serial.RBPair;
 import com.roboclub.robobuggy.serial.RBSerial;
 import com.roboclub.robobuggy.serial.RBSerialMessage;
+import com.roboclub.robobuggy.main.MessageLevel;
+import com.roboclub.robobuggy.main.RobobuggyLogicException;
 
 /**
  * @author Trevor Decker
@@ -68,6 +71,8 @@ public class RBSMNode extends PeriodicSerialNode implements Node
 	Subscriber messageSub_angle;
 	Subscriber messageSub_brakes;
 
+	Publisher messagePub_fp; //Fingerprint for low level hash
+	
 	/**
 	 * Construct a new RBSMNode object
 	 * @param sensor_enc channel the encoder is on
@@ -82,6 +87,7 @@ public class RBSMNode extends PeriodicSerialNode implements Node
 		messagePub_pot = new Publisher(sensor_pot.getMsgPath());
 		messagePub_controllerSteering = new Publisher(SensorChannel.STEERING_COMMANDED.getMsgPath());
 		brakePub = new Publisher(SensorChannel.BRAKE.getMsgPath());
+		messagePub_fp = new Publisher(SensorChannel.FP_HASH.getMsgPath());
 
 		//statePub forwards this node's estimate of the state
 		//(i.e. after filtering bad data)
@@ -212,10 +218,10 @@ public class RBSMNode extends PeriodicSerialNode implements Node
 				break;
 			case RBSerialMessage.FP_HASH:
 				System.out.println(message.getDataWord());
-				//TODO: Add logging for this 
+				messagePub_fp.publish(new FingerPrintMessage(message.getDataWord()));
 				break;
-			default:
-				System.out.println("Error: Invalid header byte");
+			default: //Unhandled or invalid RBSM message header was received.
+				new RobobuggyLogicException("Invalid RBSM message header\n", MessageLevel.NOTE);
 				break;
 		}
 
@@ -229,7 +235,8 @@ public class RBSMNode extends PeriodicSerialNode implements Node
 	 * @return JSON object representing the string message
 	 */
 	@SuppressWarnings("unchecked")
-	public static JSONObject translatePeelMessageToJObject(String message) {
+	public static JSONObject translatePeelMessageToJObject(String message) 
+	{
 		String[] messageData = message.split(",");
 		String sensorName = messageData[0];
 		sensorName = sensorName.substring(sensorName.indexOf("/") + 1);
@@ -238,18 +245,26 @@ public class RBSMNode extends PeriodicSerialNode implements Node
 		
 		data.put("timestamp", messageData[1]);
 		
-		if(sensorName.equals("steering") || sensorName.equals("commanded_steering")) {
+		if(sensorName.equals("steering") || sensorName.equals("commanded_steering")) 
+		{
 			data.put("name", "Steering_" + sensorName);
 			params.put("angle", Float.valueOf(messageData[2]));
 		}
-		else if (sensorName.equals("encoder")) {
+		else if (sensorName.equals("fp_hash")) {
+			data.put("name", "Fingerprint Hash");
+			params.put("hash_value", messageData[2]);
+			
+		}
+		else if (sensorName.equals("encoder")) 
+		{
 			data.put("name", "Encoder");
 			params.put("dataword", Double.valueOf(messageData[2]));
 			params.put("distance", Double.valueOf(messageData[3]));
 			params.put("velocity", Double.valueOf(messageData[4]));
 			params.put("acceleration", Double.valueOf(messageData[5]));
 		}
-		else {
+		else 
+		{
 			System.err.println("WAT " + sensorName);
 		}
 		

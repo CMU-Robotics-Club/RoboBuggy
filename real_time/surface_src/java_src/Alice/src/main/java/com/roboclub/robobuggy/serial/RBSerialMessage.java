@@ -1,12 +1,12 @@
 package com.roboclub.robobuggy.serial;
 
-public class RBSerialMessage {
+public class RBSerialMessage 
+{
 
-	
 	public static final byte ENC_TICKS_SINCE_LAST = (byte)0;
 	public static final byte ENC_TICK_SINCE_RESET = (byte)1;
 	public static final byte ENC_MS_SINCE_RESET = (byte)2;
-	
+
 	public static final byte RBSM_MID_MEGA_COMMAND = (byte)19;
 	public static final byte STEERING = (byte)20;
 	public static final byte BRAKE = (byte)21;
@@ -24,29 +24,32 @@ public class RBSerialMessage {
 	
 	public static final byte ERROR = (byte) -2;
 	public static final byte DEVICE_ID = (byte) -1;
-	//public static final byte ERROR = (byte)254;
-	//public static final byte DEVICE_ID = (byte)255;
 
 	public static final byte FOOTER = (byte)0x0A;
 
 	private byte header_byte;
 	private int data_bytes;
 	
-	public RBSerialMessage(byte header, int data) {
+	public RBSerialMessage(byte header, int data) 
+	{
 		header_byte = header;
 		data_bytes = data;
 	}
 
-	public byte getHeaderByte() {
+	public byte getHeaderByte() 
+	{
 		return header_byte;
 	}
 
-	public int getDataWord() {
+	public int getDataWord() 
+	{
 		return data_bytes;
 	}
 	
-	public static boolean isValidHeader(byte headerByte) {
-		switch (headerByte) {
+	public static boolean isValidHeader(byte headerByte) 
+	{
+		switch (headerByte) 
+		{
 			default:
 				return false; 
 			case ENC_MS_SINCE_RESET:
