@@ -49,7 +49,7 @@ public class config {
 	public static  String COM_PORT_IMU = "COM6";
 	public static  String COM_PORT_GPS_INTEGRATED = "COM7";
 	public static  String COM_PORT_GPS_STANDALONE = "COM8";
-	public static  String COM_PORT_ENCODER = "/dev/tty.usbmodem1A121";
+	public static  String COM_PORT_ENCODER = "COM3";
 	public static  String COM_PORT_DRIVE_CONTROL = "COM9";
 	
 	//for turning indvidual cams on and off
