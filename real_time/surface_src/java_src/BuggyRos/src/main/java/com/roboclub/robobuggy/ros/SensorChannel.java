@@ -12,7 +12,8 @@ public enum SensorChannel {
 	ENCODER("encoder"),
 	AUTO("auto"),
 	GUI_LOGGING_BUTTON("logging_button"),
-	STEERING_COMMANDED("commanded_steering");
+	STEERING_COMMANDED("commanded_steering"),
+	FP_HASH("fp_hash");
 	;
 	
 	private String rstPath;

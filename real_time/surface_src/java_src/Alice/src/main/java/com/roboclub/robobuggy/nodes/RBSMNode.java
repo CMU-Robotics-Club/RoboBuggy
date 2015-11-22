@@ -8,6 +8,7 @@ import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
+import com.roboclub.robobuggy.messages.FingerPrintMessage;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
@@ -16,6 +17,8 @@ import com.roboclub.robobuggy.serial.RBPair;
 import com.roboclub.robobuggy.serial.RBSerial;
 import com.roboclub.robobuggy.serial.RBSerialMessage;
 import com.roboclub.robobuggy.serial.SerialNode;
+import com.roboclub.robobuggy.main.MessageLevel;
+import com.roboclub.robobuggy.main.RobobuggyLogicException;
 
 /**
  * @author Trevor Decker
@@ -58,13 +61,16 @@ public class RBSMNode extends SerialNode implements Node
 	Publisher statePub_enc;
 	Publisher statePub_pot;
 
-	public RBSMNode(SensorChannel sensor_enc,SensorChannel sensor_pot) 
+	Publisher messagePub_fp; //Fingerprint for low level hash
+
+	public RBSMNode(SensorChannel sensor_enc, SensorChannel sensor_pot) 
 	{
 		super("ENCODER");
 		messagePub_enc = new Publisher(sensor_enc.getMsgPath());
 		messagePub_pot = new Publisher(sensor_pot.getMsgPath());
 		messagePub_controllerSteering = new Publisher(SensorChannel.STEERING_COMMANDED.getMsgPath());
 		brakePub = new Publisher(SensorChannel.BRAKE.getMsgPath());
+		messagePub_fp = new Publisher(SensorChannel.FP_HASH.getMsgPath());
 
 		statePub_enc = new Publisher(sensor_enc.getStatePath());
 		statePub_pot = new Publisher(sensor_pot.getStatePath());
@@ -166,10 +172,10 @@ public class RBSMNode extends SerialNode implements Node
 				break;
 			case RBSerialMessage.FP_HASH:
 				System.out.println(message.getDataWord());
-				//TODO: Add logging for this 
+				messagePub_fp.publish(new FingerPrintMessage(message.getDataWord()));
 				break;
-			default:
-				System.out.println("Error: Invalid header byte");
+			default: //Unhandled or invalid RBSM message header was received.
+				new RobobuggyLogicException("Invalid RBSM message header\n", MessageLevel.NOTE);
 				break;
 		}
 
@@ -179,7 +185,8 @@ public class RBSMNode extends SerialNode implements Node
 
 	
 	@SuppressWarnings("unchecked")
-	public static JSONObject translatePeelMessageToJObject(String message) {
+	public static JSONObject translatePeelMessageToJObject(String message) 
+	{
 		String[] messageData = message.split(",");
 		String sensorName = messageData[0];
 		sensorName = sensorName.substring(sensorName.indexOf("/") + 1);
@@ -188,18 +195,26 @@ public class RBSMNode extends SerialNode implements Node
 		
 		data.put("timestamp", messageData[1]);
 		
-		if(sensorName.equals("steering") || sensorName.equals("commanded_steering")) {
+		if(sensorName.equals("steering") || sensorName.equals("commanded_steering")) 
+		{
 			data.put("name", "Steering_" + sensorName);
 			params.put("angle", Float.valueOf(messageData[2]));
 		}
-		else if (sensorName.equals("encoder")) {
+		else if (sensorName.equals("fp_hash")) {
+			data.put("name", "Fingerprint Hash");
+			params.put("hash_value", messageData[2]);
+			
+		}
+		else if (sensorName.equals("encoder")) 
+		{
 			data.put("name", "Encoder");
 			params.put("dataword", Double.valueOf(messageData[2]));
 			params.put("distance", Double.valueOf(messageData[3]));
 			params.put("velocity", Double.valueOf(messageData[4]));
 			params.put("acceleration", Double.valueOf(messageData[5]));
 		}
-		else {
+		else 
+		{
 			System.err.println("WAT " + sensorName);
 		}
 		
