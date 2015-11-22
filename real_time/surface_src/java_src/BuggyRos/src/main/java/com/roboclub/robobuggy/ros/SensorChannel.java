@@ -8,6 +8,7 @@ public enum SensorChannel {
 	BRAKE("brake"),
 	LOGIC_EXCEPTION("logic_exception"),
 	DRIVE_CTRL("drive_ctrl"),
+	BRAKE_CTRL("commanded brake"),
 	VISION("vision"),
 	ENCODER("encoder"),
 	AUTO("auto"),
