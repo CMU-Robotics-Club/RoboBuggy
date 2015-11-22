@@ -3,6 +3,7 @@
 *   of compilation and who compiled.  Also details whether tracked files 
 *   have been modified since the last commit
 *
+*  Note: To run this, the user must have python 2.7
 *
 *   By Sean Buckley
 """
