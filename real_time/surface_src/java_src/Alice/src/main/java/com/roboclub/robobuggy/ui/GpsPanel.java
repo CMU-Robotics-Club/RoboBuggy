@@ -2,7 +2,10 @@ package com.roboclub.robobuggy.ui;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -39,6 +42,9 @@ public class GpsPanel extends JPanel {
 	private double mapViewerLat = 40.440138;
 	private double mapViewerLon = -79.945306;
 	private String mapCacheFolderDiskPath = "images/cachedCourseMap";
+	
+	private double mapDragX = -1;
+	private double mapDragY = -1;
 	
 	
 	public GpsPanel(){
@@ -111,10 +117,40 @@ public class GpsPanel extends JPanel {
 		mapTree.getViewer().setSize(getWidth(), getHeight());
 		mapTree.getViewer().setTileLoader(new OsmTileLoader(mapTree.getViewer()));
 		mapTree.getViewer().setDisplayPosition(new Coordinate(mapViewerLat, mapViewerLon), 17);
-		mapTree.getViewer().addMouseMotionListener(new MouseMotionListener() {
+		mapTree.getViewer().addMouseListener(new MouseListener() {
 			
-			private int prevEx = -1;
-			private int prevEy = -1;
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				mapDragX = e.getX();
+				mapDragY = e.getY();
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		mapTree.getViewer().addMouseMotionListener(new MouseMotionListener() {
 	
 			@Override
 			public void mouseMoved(MouseEvent e) {
@@ -125,15 +161,11 @@ public class GpsPanel extends JPanel {
 			@Override
 			public void mouseDragged(MouseEvent e) {
 				// TODO Auto-generated method stub
-				if(prevEx == -1 || prevEy == -1) {
-					prevEx = e.getX();
-					prevEy = e.getY();
-				}
 				
 				int zoomLevel = mapTree.getViewer().getZoom();
 				
-				mapViewerLat += ((prevEy - e.getY()) * 0.00001) / (zoomLevel * 10);
-				mapViewerLon += ((e.getX() - prevEx) * 0.00001) / (zoomLevel * 10);
+				mapViewerLat -= ((mapDragY - e.getY()) * 0.00001) / (zoomLevel * 10);
+				mapViewerLon -= ((e.getX() - mapDragX) * 0.00001) / (zoomLevel * 10);
 				mapTree.getViewer().setDisplayPosition(new Coordinate(mapViewerLat, mapViewerLon), zoomLevel);
 			}
 		});
