@@ -164,8 +164,8 @@ public class GpsPanel extends JPanel {
 				
 				int zoomLevel = mapTree.getViewer().getZoom();
 				
-				mapViewerLat -= ((mapDragY - e.getY()) * 0.00001) / (zoomLevel * 10);
-				mapViewerLon -= ((e.getX() - mapDragX) * 0.00001) / (zoomLevel * 10);
+				mapViewerLat -= ((mapDragY - e.getY()) * 0.001) / (zoomLevel * 1000);
+				mapViewerLon -= ((e.getX() - mapDragX) * 0.001) / (zoomLevel * 1000);
 				mapTree.getViewer().setDisplayPosition(new Coordinate(mapViewerLat, mapViewerLon), zoomLevel);
 			}
 		});
