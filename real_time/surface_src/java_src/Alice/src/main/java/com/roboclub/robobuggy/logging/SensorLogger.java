@@ -39,7 +39,7 @@ public final class SensorLogger {
 		
 		String name = "\"name\": \"Robobuggy Data Logs\",";
 		String schema_version = "\"schema_version\": 1.0,";
-		String date_recorded = "\"date_recorded\": \"" + new SimpleDateFormat("MM/dd/yyyy").format(new Date()) + "\",";
+		String date_recorded = "\"date_recorded\": \"" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()) + "\",";
 		String swVersion = "\"software_version\": \"" + getCurrentSoftwareVersion() + "\",";
 		String sensorDataHeader = "\"sensor_data\": [";
 		stream.println("{" + "\n    " + name + "\n    " + schema_version + "\n    " + date_recorded + "\n    " + swVersion + "\n    " + sensorDataHeader);
@@ -90,6 +90,8 @@ public final class SensorLogger {
 					break;
 					
 				case "steering":
+				case "fp_hash":
+				case "commanded_steering":
 					steeringHits++;
 				case "encoder":
 					sensorEntryObject = RBSMNode.translatePeelMessageToJObject(line);
@@ -103,7 +105,8 @@ public final class SensorLogger {
 
 				default:
 					//put brakes in here?
-					sensorEntryObject = SerialNode.translatePeelMessageToJObject(line);
+					sensorEntryObject = new JSONObject();
+					sensorEntryObject.put("Unknown Sensor:", sensor);
 					break;
 				}
 				

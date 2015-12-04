@@ -51,7 +51,7 @@ public class BrakeMessage extends BaseMessage implements Message {
 	public Message fromLogString(String str) {
 		String[] spl = str.split(",");
 		Date d = try_to_parse_date(spl[0]);
-		boolean brake_state = Boolean.parseBoolean(spl[1]);
+		boolean brake_state = Boolean.parseBoolean(spl[2]);
 		return new BrakeMessage(d, brake_state);
 	}
 }
