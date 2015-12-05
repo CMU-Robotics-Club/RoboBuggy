@@ -86,6 +86,8 @@ public final class Gui extends JFrame {
 		anlyPanel = new AnalyticsPanel();
 		pane.add(anlyPanel, gbc);
 		
+		new EncoderGraph().makeDistanceGraph();
+		
 		this.pack();
 		this.setVisible(true);
 		

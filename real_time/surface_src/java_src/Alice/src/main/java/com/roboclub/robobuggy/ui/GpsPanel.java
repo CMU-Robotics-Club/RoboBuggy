@@ -42,6 +42,7 @@ public class GpsPanel extends JPanel {
 	private int frameWidth;
 	private int frameHeight;
 	private Subscriber gpsSub;
+	private Subscriber encSub;
 	
 	
 	public GpsPanel(){
@@ -63,7 +64,7 @@ public class GpsPanel extends JPanel {
 				locs.add(new LocTuple(latitude, longitude));
 				//latitude and longitude are both needed 
 			}
-		});		
+		});
 		
 		locs.add(new LocTuple(-79.94596322545625, 40.440946388131266));
 	}
