@@ -64,7 +64,7 @@ public class config {
 
 	public static boolean GUI_ON_DEFAULT = true;
 	// iff false, connect to serial sensors 
-	public static final boolean DATA_PLAY_BACK_DEFAULT = true;
+	public static final boolean DATA_PLAY_BACK_DEFAULT = false;
 	
 	// current status values
 	public static boolean GUI_ON;

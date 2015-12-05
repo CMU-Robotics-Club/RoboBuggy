@@ -38,10 +38,11 @@ static private ArrayList<Integer> sensor_quant = new ArrayList<Integer>();
 		String type = st.nextToken().substring(8); //Could be IMU, GPS, encoder, steering
 		StringTokenizer st2 = new StringTokenizer(st.nextToken(), " ");
 		//The next token is the date, but in yyyy-mm-dd format; I want mm/dd/yyyy format
-		StringTokenizer stdate = new StringTokenizer(st2.nextToken(), "-");
+		String date = st2.nextToken();
+		StringTokenizer stdate = new StringTokenizer(date, "-");
 		String[] dateymd = {stdate.nextToken(), stdate.nextToken(), stdate.nextToken()};
 		String date_recorded = dateymd[1] + "/" + dateymd[2] + "/" + dateymd[0]; //This should now be in mm/dd/yyyy format
-		String timestamp = st2.nextToken();
+		String timestamp = date + " " + st2.nextToken();
 		
 		//Add heading
 		String logname = "Robobuggy Data Logs";
@@ -103,16 +104,16 @@ static private ArrayList<Integer> sensor_quant = new ArrayList<Integer>();
 	//Another note: Capitalization of sensor names is off
 	public static void writeSensorData(Scanner scanner, PrintStream writer, StringTokenizer st, String name, String timestamp){
 		String fname = formattedSensorName(name);
-		writer.print("        {\"name\":\"" + fname + "\",");
-		printSensorData(fname, st, writer);
-		//Appending the timestamp to the end of everything is universal 
-		writer.print("\"timestamp\":\"" + timestamp + "\"}");
-		if(scanner.hasNextLine()){
-			writer.println(",");
-		}
-		else{
-			writer.println();
-		}
+			writer.print("        {\"name\":\"" + fname + "\",");
+			printSensorData(fname, st, writer);
+			//Appending the timestamp to the end of everything is universal 
+			writer.print("\"timestamp\":\"" + timestamp + "\"}");
+			if(scanner.hasNextLine()){
+				writer.println(",");
+			}
+			else{
+				writer.println();
+			}
 		updateDataBreakdown(sensor_type, sensor_quant, fname);
 	}
 	
@@ -133,24 +134,23 @@ static private ArrayList<Integer> sensor_quant = new ArrayList<Integer>();
 			Double potValue = Double.parseDouble(angle);
 			potValue = -(potValue + OFFSET)/ARD_TO_DEG;
 			angle = potValue.toString();
-			writer.print("\"params\":{\"angle\": \"" + angle + "\"},");
+			writer.print("\"params\":{\"angle\": " + angle + "},");
 			break;
 		case "Encoder":
-			//dataword, d, v, a
 			String dataword = st.nextToken();
 			String d = st.nextToken();
 			String v = st.nextToken();
 			String a = st.nextToken();
-			if("NaN".equals(dataword)){
+			if("NaN".equals(dataword) || dataword.contains("Infinity")){
 				dataword = "null";
 			}
-			if("NaN".equals(d)){
+			if("NaN".equals(d) || d.contains("Infinity")){
 				d = "null";
 			}
-			if("NaN".equals(v)){
+			if("NaN".equals(v) || v.contains("Infinity")){
 				v = "null";
 			}
-			if("NaN".equals(a)){
+			if("NaN".equals(a) || a.contains("Infinity")){
 				a = "null";
 			}
 			writer.print("\"params\":{\"dataword\":" + dataword + ",\"distance\":" + d + ",\"velocity\":" + v + ",\"acceleration\":" + a + "},");
@@ -162,6 +162,8 @@ static private ArrayList<Integer> sensor_quant = new ArrayList<Integer>();
 			st.nextToken(); //GPS data stores a second time; I'm not really sure what it is, but we don't need it
 			//Latitude/longitude
 			writer.print("\"params\":{\"latitude\":" + st.nextToken() + ",\"lat_direction\":\"" + st.nextToken() + "\",\"longitude\":" + st.nextToken() + ",\"long_direction\":\"" + st.nextToken() + "\",");
+			//Insert raw longitude/latitude stuff. There's no data in the old files, so use -1.
+			writer.print("\"raw_gps_lon\":-1,\"raw_gps_lat\":-1,");
 			//Other parameters
 			writer.print("\"gps_quality\":\"" + st.nextToken() + "\",\"num_satellites\":\"" + st.nextToken() + "\",\"HDOP\":" + st.nextToken() + ",\"antenna_altitude\":" + st.nextToken() + "},");
 			break;
