@@ -54,8 +54,8 @@ class RBSerialMessage:
                                  message_id,
                                  message_data,
                                  self.RBSM_FOOTER)
-    print repr(message_buffer)
-    print len(message_buffer)
+#    print repr(message_buffer)
+#    print len(message_buffer)
     self.port.write(message_buffer)
     self.port.flush()
 

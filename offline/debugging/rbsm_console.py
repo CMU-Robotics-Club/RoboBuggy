@@ -133,13 +133,17 @@ def command_handler(rbsm_endpoint, command_line):
   error = False
   command_line = command_line.strip()
   command_parts = command_line.split(" ")
+  with open('help help.txt', 'wt') as f:
+	  f.write(repr(command_parts))
 
-  try:
-    message_id = int(command_parts[0])
-    message_data = int(command_parts[1])
-    rbsm_endpoint.send(message_id, message_data)
-  except:
-    error = True
+	  try:
+		message_id = int(command_parts[0])
+		message_data = int(command_parts[1])
+		f.write('not enpoint yet\n')
+		rbsm_endpoint.send(message_id, message_data)
+		f.write('past endpoint\n')
+	  except:
+		error = True
 
   return error
 

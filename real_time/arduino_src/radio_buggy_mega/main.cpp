@@ -231,7 +231,7 @@ int main(void) {
 
            default:
              // report unknown message
-             g_rbsm.Send(RBSM_MID_ERROR, new_command.message_id);
+             g_rbsm.Send(RBSM_MID_ERROR, RBSM_EID_RBSM_INVALID_MID);
              printf("Got message with invalid mid:");
              printf("%d", new_command.message_id);
              printf("%d\n", new_command.data);
