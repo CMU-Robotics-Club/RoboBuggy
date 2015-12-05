@@ -22,14 +22,15 @@ public class AnalyticsPanel extends JPanel {
 		graphPanel = new GraphPanel();
 		
 		gbc.fill = GridBagConstraints.BOTH;
-		gbc.weighty = 0.5;
+		gbc.weighty = 1;
 		gbc.weightx = 1;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		gbc.anchor = GridBagConstraints.CENTER;
+		gbc.anchor = GridBagConstraints.LINE_START;
 		this.add(dataPanel, gbc);
 		
 		gbc.gridy = 1;
+		gbc.weighty = 0;
 		this.add(graphPanel, gbc);
 	    System.out.println("H");
 	}

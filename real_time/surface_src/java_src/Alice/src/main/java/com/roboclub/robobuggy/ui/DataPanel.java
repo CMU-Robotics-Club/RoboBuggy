@@ -62,7 +62,9 @@ public class DataPanel extends JPanel {
 		gpsPanel = new GpsPanel();
 		this.add(gpsPanel, gbc);
 		
-		gbc.gridx = 1;
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		gbc.weighty = 0;
 		gbc.weightx = 0.66;
 		this.add(createDataPanel(), gbc);
 	}
@@ -194,7 +196,7 @@ public class DataPanel extends JPanel {
 		panel.add(steeringAng);
 		
 		// Subscriber for drive control updates
-		new Subscriber(SensorChannel.STEERING.getMsgPath(), new MessageListener() {
+		new Subscriber(SensorChannel.STEERING_COMMANDED.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				steeringAng.setText(Integer.toString(((SteeringMeasurement)m).angle));

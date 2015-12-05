@@ -68,7 +68,12 @@ public final class Gui extends JFrame {
 		this.addWindowListener(new java.awt.event.WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent windowEvent) {
-				Robot.ShutDown();
+				try {
+					Robot.ShutDown();
+				}
+				catch(NullPointerException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 		
@@ -83,9 +88,11 @@ public final class Gui extends JFrame {
 		
 		gbc.weightx = 0.75;
 		gbc.gridx = 1;
+		gbc.gridy = 0;
 		anlyPanel = new AnalyticsPanel();
 		pane.add(anlyPanel, gbc);
 		
+
 		new EncoderGraph().makeDistanceGraph();
 		
 		this.pack();
