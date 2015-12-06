@@ -177,6 +177,7 @@ static private ArrayList<Integer> sensor_quant = new ArrayList<Integer>();
 		default:
 			//Note: This doesn't print any parameters, but you'll still have the sensor name and timestep in the log
 			System.out.println("Unknown sensor: " + sensorname);
+			break;
 		}
 	}
 }
