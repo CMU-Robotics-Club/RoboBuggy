@@ -21,7 +21,7 @@ public class RBSerial {
 		if(!RBSerialMessage.isValidHeader(header)) {
 			return new RBPair(1, null);
 		}
-		if(buf[start+5] != 0x0A){
+		if(buf[(start+5) % buf.length] != 0x0A){
 			return new RBPair(1, null);
 		}
 		// Parse an int, or fail
