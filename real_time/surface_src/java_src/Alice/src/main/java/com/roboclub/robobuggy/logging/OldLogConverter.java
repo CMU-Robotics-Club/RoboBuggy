@@ -14,23 +14,13 @@ static private ArrayList<String> sensor_type = new ArrayList<String>();
 static private ArrayList<Integer> sensor_quant = new ArrayList<Integer>();
 
 	public static void main(String[] args) throws IOException {
-		boolean fileinput = false;
-		Scanner scanner; PrintStream writer;
-		
-		if(fileinput){
-			scanner = new Scanner(System.in);
-			System.out.println("Input filepath to old data file.");
-			String inputpath = scanner.nextLine();
-			System.out.println("Input filepath to new data file.");
-			String outputpath = scanner.nextLine();
-			scanner.close();
-			scanner = new Scanner(new File(inputpath));
-			writer = new PrintStream(new File(outputpath));
-		}
-		else{
-			scanner = new Scanner(new File("/Users/davidneiman/Desktop/sensors.txt"));
-			writer = new PrintStream(new File("/Users/davidneiman/Desktop/sensorsJSON.txt"));
-		}
+		convertLog("/Users/davidneiman/Desktop/sensors.txt", "/Users/davidneiman/Desktop/sensorsJSON.txt");
+	}
+	
+	public static void convertLog(String inputpath, String outputpath) throws FileNotFoundException{		
+		Scanner scanner = new Scanner(new File(inputpath));
+		PrintStream writer = new PrintStream(new File(outputpath));
+
 		
 		//Read in the first set of data so we get the date we're recording on
 		String s = scanner.nextLine();
