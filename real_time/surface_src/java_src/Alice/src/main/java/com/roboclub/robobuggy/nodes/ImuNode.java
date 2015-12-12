@@ -40,9 +40,10 @@ public class ImuNode extends SerialNode implements Node {
 		statePub.publish(new StateMessage(SensorState.DISCONNECTED));
 	}
 
-	public void setSerialPort(gnu.io.SerialPort sp) {
-		super.setSerialPort(sp);
+	public boolean setSerialPort(gnu.io.SerialPort sp) {
+		boolean didSuperFail = super.setSerialPort(sp);
 		statePub.publish(new StateMessage(SensorState.ON));
+		return didSuperFail;
 	};
 	
 	/*

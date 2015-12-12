@@ -7,8 +7,12 @@ package com.roboclub.robobuggy.main;
  * Important messages to be visible when necessary
  *
  */
-public enum MessageLevel {
+
+public enum MessageLevel{
 	EXCEPTION,
 	WARNING,
 	NOTE,
+	DEBUG
 }
+
+

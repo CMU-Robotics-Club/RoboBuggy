@@ -5,12 +5,14 @@ import java.util.List;
 
 import com.roboclub.robobuggy.localization.KalmanFilter;
 import com.roboclub.robobuggy.logging.RobotLogger;
+import com.roboclub.robobuggy.logging.autoLogging.autoLogging;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.messages.RobobuggyLogicExceptionMeasurment;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.messages.WheelAngleCommand;
+import com.roboclub.robobuggy.nodes.ClockNode;
 import com.roboclub.robobuggy.nodes.RBSMNode;
 import com.roboclub.robobuggy.nodes.GpsNode;
 import com.roboclub.robobuggy.nodes.ImuNode;
@@ -48,13 +50,6 @@ public class Robot implements RosMaster {
 		System.out.println("Starting Robot");
 		autonomous = config.AUTONOMUS_DEFAULT;
 
-		//creates a log file even if no data is used
-		if(config.logging){
-			System.out.println("Starting Logging");
-			RobotLogger.getInstance();
-		}
-		
-
 		// Initialize Logic errors
 		RobobuggyLogicException.setupLogicException(SensorChannel.LOGIC_EXCEPTION);
 		new Subscriber(SensorChannel.LOGIC_EXCEPTION.getMsgPath(), new MessageListener() {
@@ -63,9 +58,21 @@ public class Robot implements RosMaster {
 					updateLogicException((RobobuggyLogicExceptionMeasurment)m);
 				}
 			});
+		
+		//creates a log file even if no data is used
+		if(config.logging){
+			System.out.println("Starting Logging");
+			RobotLogger.getInstance();
+		}
+		
+
+
 		//sends startup note
 		new RobobuggyLogicException("Logic Exception Setup properly" ,  MessageLevel.NOTE);
 		
+		//Init clock
+		ClockNode clock = new ClockNode(SensorChannel.CLOCK);
+		sensorList.add(clock);
 		
 		// Initialize Sensor
 		if (config.GPS_DEFAULT) {
@@ -159,6 +166,9 @@ public class Robot implements RosMaster {
 				}
 			}
 		}
+		//cleaning up logging 
+		RobotLogger.CloseLog();
+		//closeing system 
 		System.exit(0);
 	}
 

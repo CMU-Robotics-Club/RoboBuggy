@@ -10,6 +10,8 @@ import java.util.logging.Handler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
+
+import com.roboclub.robobuggy.logging.autoLogging.autoLogging;
 import com.roboclub.robobuggy.main.config;
 
 /**
@@ -22,8 +24,8 @@ public final class RobotLogger {
 	public  static Logger message;
 	public static SensorLogger sensor;
 	private static RobotLogger instance;
-	public static File logDir;  //TODO describe the diffrence between LogDir and  logFolder 
-	public static File logFolder;
+	public static File logDir;  //all of the log folder (aka parent to logfolder)
+	public static File logFolder;  //this logs folder
 
 	public static RobotLogger getInstance() {
 		if (instance == null) {
@@ -31,17 +33,13 @@ public final class RobotLogger {
 			
 			logDir.mkdirs();
 			
-//			if (!logDir.exists()) {
-//				logDir.mkdirs();
-//				System.out.println("Created directory: "
-//						+ logDir.getAbsolutePath());
-//			}
 			try {
 				instance = new RobotLogger(logDir);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
+			autoLogging autoLoger = autoLogging.startAutoLogger(config.LOCAL_FOLDER_STORAGE_FOLDER,config.DRIVE_STORAGE_FOLDER_ID);
+			autoLoger.startLogSync();
 		}
 		return instance;
 
@@ -55,6 +53,16 @@ public final class RobotLogger {
 				handlers[i].close();
 				instance.message.removeHandler(handlers[i]);
 			}
+		}
+		autoLogging autoLogger = autoLogging.getLogger();
+		try {
+			if(logFolder != null){
+				autoLogger.startTrackingLog(logFolder);
+				autoLogger.saveLogDataToFolders();
+				autoLogger.startLogSync();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 

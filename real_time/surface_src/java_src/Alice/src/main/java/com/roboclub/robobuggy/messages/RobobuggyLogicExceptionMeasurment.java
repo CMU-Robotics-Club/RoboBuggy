@@ -11,6 +11,14 @@ public class RobobuggyLogicExceptionMeasurment extends BaseMessage implements Me
 		this.message = message;
 		this.level = level;
 	}
+	
+	public MessageLevel getMessageLevel(){
+		return level;
+	}
+	
+	public String getMessage(){
+		return message;
+	}
 
 	
 	@Override

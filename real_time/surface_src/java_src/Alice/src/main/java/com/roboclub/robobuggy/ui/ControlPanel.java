@@ -1,5 +1,7 @@
 package com.roboclub.robobuggy.ui;
 
+//TODO have clock update based on published time message 
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -12,16 +14,24 @@ import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import com.roboclub.robobuggy.logging.RobotLogger;
+import com.roboclub.robobuggy.main.MessageLevel;
+import com.roboclub.robobuggy.main.RobobuggyLogicException;
+import com.roboclub.robobuggy.logging.RobotLogger;
+import com.roboclub.robobuggy.logging.autoLogging.autoLogging;
 import com.roboclub.robobuggy.main.config;
 import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
+import com.roboclub.robobuggy.simulation.SensorPlayer;
 
 /**
  * 
@@ -40,6 +50,7 @@ public class ControlPanel extends JPanel {
 	private static final int TIME_ZONE_OFFSET = 18000000;//5 hours
 
 	private static JButton play_btn;
+	private static JButton loadLog_btn;
 	private JFormattedTextField time_lbl;
 	private static Date startTime;
 	private static Timer timer;
@@ -61,7 +72,7 @@ public class ControlPanel extends JPanel {
 		timer.setDelay(100);
 		timer.setRepeats(true); // timer needs to be setup before startpause_btn
 
-		//should be the time that we start the sytem at 
+		//should be the time that we start the system at 
 		startTime = new Date();
 		
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -100,6 +111,8 @@ public class ControlPanel extends JPanel {
 				play_btn.setText("STOP");
 				timer.start();
 				
+				autoLogging autoLoger = autoLogging.getLogger();
+				autoLoger.stopLogSync();
 				RobotLogger.CreateLog();
 				logging_button_pub.publish(new GuiLoggingButtonMessage(GuiLoggingButtonMessage.LoggingMessage.START));
 				startTime = new Date();
@@ -114,6 +127,44 @@ public class ControlPanel extends JPanel {
 			}
 		}
 	}
+	
+	
+	private class LoadLogButtonHandler implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(config.active){
+				new RobobuggyLogicException("tried to log an error when logging, isgnoreing command", MessageLevel.WARNING);
+				return;
+			}
+			
+			//have the user choose the log to play
+			JFileChooser chooser = new JFileChooser();
+		    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		    chooser.setCurrentDirectory(new java.io.File(config.LOG_FILE_LOCATION));
+		    int returnVal = chooser.showOpenDialog(getParent());
+		    if(returnVal == JFileChooser.APPROVE_OPTION) {
+		       System.out.println("You chose to open this file: " +
+		            chooser.getSelectedFile().getName());
+		       		String logFolder = chooser.getSelectedFile().getPath();
+		       		SensorPlayer sp = new SensorPlayer(logFolder+"/sensors.txt");
+		        	new Thread(new Runnable() {
+						
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							sp.run();
+						}
+					}).start();
+		       		//TODO test to see if selected folder is a log 
+		       		//if it is then play it back
+		       		//otherwise throw an error 
+		        	//TODO remove sensor palyer when it is done 
+		       
+		    }else{
+		    	new RobobuggyLogicException("You need to choose a log folder for play back", MessageLevel.WARNING);
+		    }
+		}
+	}
 
 	private void addLoggingPanel(GridBagConstraints gbc) {
 		JPanel loggingPanel = new JPanel();
@@ -123,11 +174,20 @@ public class ControlPanel extends JPanel {
 		GridBagConstraints gbc_panel = new GridBagConstraints();
 		gbc.weightx = 1.0;
 		
+		//setup start stop button
 		play_btn = new JButton("START");
 		play_btn.setFont(new Font("serif", Font.PLAIN, 70));
 		play_btn.addActionListener(new PlayButtonHandler());
 		play_btn.setEnabled(false);
 		play_btn.setBackground(Color.BLUE);
+		
+		//setup button for loading log files for playback 
+		loadLog_btn = new JButton("Load Log");
+		loadLog_btn.setFont(new Font("serif", Font.PLAIN, 70));
+		loadLog_btn.addActionListener(new LoadLogButtonHandler());
+		loadLog_btn.setEnabled(true);
+		loadLog_btn.setBackground(Color.BLUE);
+
 		
 		JLabel filename_lbl = new JLabel("File: ",
 				SwingConstants.CENTER);
@@ -149,7 +209,7 @@ public class ControlPanel extends JPanel {
 		
 		gbc_panel.gridy = 1;
 		gbc_panel.weighty = 0.25;
-		loggingPanel.add(filename_lbl, gbc_panel);
+		loggingPanel.add(loadLog_btn, gbc_panel);
 
 		gbc_panel.gridy = 2;
 		gbc_panel.weighty = 0.25;

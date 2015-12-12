@@ -60,7 +60,6 @@ public class GpsPanel extends JPanel {
 			public void actionPerformed(String topicName, Message m) {
 				double latitude = ((GpsMeasurement)m).latitude;
 				double longitude = ((GpsMeasurement)m).longitude;
-				System.out.println("latddmm.mmm: "+((GpsMeasurement)m).rawGPSLat + "\t londddmm.mmmm: "+((GpsMeasurement)m).rawGPSLong);
 
 				//todo put mag based on dir
 				if(((GpsMeasurement)m).west) {
@@ -99,7 +98,6 @@ public class GpsPanel extends JPanel {
 		double px = (londiff * frameWidth) / dx;
 		double py = (latdiff * frameHeight) / dy;
 		
-		System.out.println("printing an oval at " + px + ", " + py);
 		
 		int cDiameter = 5;
 		g2d.setColor(Color.RED);
@@ -118,6 +116,7 @@ public class GpsPanel extends JPanel {
 
 		g.drawImage(map, 0, 0, frameWidth, frameHeight, Color.black, null);
 
+		//TODO fix concurrent modification exception which occurs here 
 		for	(LocTuple mTuple : locs) {
 			drawTuple(g2d, mTuple);
 		}

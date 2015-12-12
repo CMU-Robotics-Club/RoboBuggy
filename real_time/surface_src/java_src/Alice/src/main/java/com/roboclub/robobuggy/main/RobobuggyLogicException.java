@@ -1,5 +1,7 @@
 package com.roboclub.robobuggy.main;
 
+import java.util.ArrayList;
+
 import com.roboclub.robobuggy.messages.RobobuggyLogicExceptionMeasurment;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
@@ -25,7 +27,6 @@ public static void setupLogicException(SensorChannel sensor){
 }
 	
 public RobobuggyLogicException(String error,MessageLevel level){
-	System.out.println(error);
 	errorPub.publish(new RobobuggyLogicExceptionMeasurment(error, level));
 	
 	//only halt the program if it is an exception 

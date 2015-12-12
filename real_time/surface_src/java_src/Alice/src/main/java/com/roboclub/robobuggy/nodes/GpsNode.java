@@ -42,9 +42,10 @@ public class GpsNode extends SerialNode implements Node {
 	}
 
 	@Override
-	public void setSerialPort(gnu.io.SerialPort sp) {
-		super.setSerialPort(sp);
+	public boolean setSerialPort(gnu.io.SerialPort sp) {
+		boolean didSuperFail = super.setSerialPort(sp);
 		statePub.publish(new StateMessage(SensorState.ON));
+		return didSuperFail;
 	};
 	
 

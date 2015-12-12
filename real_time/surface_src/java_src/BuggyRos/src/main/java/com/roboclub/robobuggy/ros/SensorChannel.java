@@ -1,6 +1,7 @@
 package com.roboclub.robobuggy.ros;
 
 public enum SensorChannel {
+	CLOCK("clock"),
 	GPS("gps"),
 	IMU("imu"),
 	RC("rc_angle"),

@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import com.orsoncharts.util.json.JSONObject;
+import com.roboclub.robobuggy.main.MessageLevel;
+import com.roboclub.robobuggy.main.RobobuggyLogicException;
 import com.roboclub.robobuggy.ros.Node;
 
 // Properly initializes the serial things
@@ -42,29 +44,26 @@ public abstract class SerialNode implements Node {
 		try {
 			serial_output.write(bytes);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			new RobobuggyLogicException("trouble sending bytes: "+ e.toString(), MessageLevel.WARNING);
+			return false;
 		}
 		return true;
 		
 	}
 	
-	public void setSerialPort(SerialPort sp) {
+	public boolean setSerialPort(SerialPort sp) {
 		this.sp = sp;
 		// Set port to be the right baud rate
 		int baudRate = baudRate();
 		try {
 			sp.setSerialPortParams(baudRate,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
 		} catch (UnsupportedCommOperationException e) {
-			// TODO Auto-generated catch block
-			System.out.println("Unsupported communication operation over serial port.");
-			e.printStackTrace();
-			return;
+			new RobobuggyLogicException("Usported Comm Operation Catch: "+e.toString(), MessageLevel.EXCEPTION);
+			return false;
 		} catch (NullPointerException e) {
-			System.out.println("Null Pointer Exception, unable to initialize the serial port. "
-					+ "Printing stack trace below: \n");
-			e.printStackTrace();
-			return;
+			new RobobuggyLogicException("Null Pointer Exception, unable to initialize the serial port. "
+					+ "Printing stack trace below:"+e.toString(), MessageLevel.EXCEPTION);
+			return false;
 		}
 				
 		// Set port to be non-blocking....maybe.
@@ -76,13 +75,15 @@ public abstract class SerialNode implements Node {
 			serial_input = sp.getInputStream();
 			serial_output = sp.getOutputStream();
 		} catch (IOException e) {
-			System.out.println("broken");
+			new RobobuggyLogicException("serial reaing had a problem:"+e.toString(), MessageLevel.EXCEPTION);
+			return false;
 		}
 		
 		// Begin the madness
 		io_thread = new Thread(new iothread(), thread_name + "-serial");
 		io_thread.setPriority(Thread.MAX_PRIORITY);
 		io_thread.start();
+		return true;
 	}
 
 	@Override

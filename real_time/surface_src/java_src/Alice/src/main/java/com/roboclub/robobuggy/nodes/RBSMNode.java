@@ -119,11 +119,11 @@ public class RBSMNode extends PeriodicSerialNode implements Node
 	
 	/**{@inheritDoc}*/
 	@Override
-	public void setSerialPort(SerialPort sp) 
-	{
-		super.setSerialPort(sp);
+	public boolean setSerialPort(SerialPort sp) {
+		boolean didSuperFail = super.setSerialPort(sp);
 		statePub_enc.publish(new StateMessage(SensorState.ON));
 		statePub_pot.publish(new StateMessage(SensorState.ON));
+		return didSuperFail;
 	}
 	
 	/**
