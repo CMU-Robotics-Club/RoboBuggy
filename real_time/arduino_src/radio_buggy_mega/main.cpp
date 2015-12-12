@@ -44,6 +44,8 @@
   #error "must complie with BUGGY_TRANSISTOR or BUGGY_NIXI flag"
 #endif
 
+#define PWM_STATE_THRESHOLD 120
+
 #define RX_STEERING_DDR  DDRE
 #define RX_STEERING_PORT PORTE
 #define RX_STEERING_PIN  PINE
@@ -84,6 +86,7 @@
 #define BRAKE_INDICATOR_PORT PORTE
 #define BRAKE_INDICATOR_PINN PE3 // arduino 5
 
+
 // Global state
 static bool g_brake_state_engaged; // 0 = disengaged, !0 = engaged.
 static bool g_brake_needs_reset; // 0 = nominal, !0 = needs reset
@@ -111,12 +114,14 @@ inline long map_signal(long x,
                        long in_offset,
                        long in_scale,
                        long out_offset,
-                       long out_scale) {
+                       long out_scale) 
+{
   return ((x - in_offset) * out_scale / in_scale) + out_offset;
 }
 
 
-void adc_init(void) {
+void adc_init(void) 
+{
   // set up adc hardware in non-freerunning mode
   // prescaler of 128 gives 125kHz sampling
   // AREF = AVCC
@@ -124,7 +129,6 @@ void adc_init(void) {
   ADCSRA |= _BV(ADEN) | _BV(ADPS2) | _BV(ADPS1) | _BV(ADPS0);
   ADMUX |= _BV(REFS0) | _BV(ADLAR);
 }
-
 
 uint8_t adc_read_blocking(uint8_t channel) {
   // in single ended mode, highest bit of ADC channel is in ADCSRB
@@ -136,7 +140,8 @@ uint8_t adc_read_blocking(uint8_t channel) {
 }
 
 
-void steering_set(int angle) {
+void steering_set(int angle) 
+{
   int servo_value_us = map_signal(angle,
                                   PWM_OFFSET_STORED_ANGLE,
                                   PWM_SCALE_STORED_ANGLE,
@@ -146,16 +151,17 @@ void steering_set(int angle) {
 }
 
 
-void brake_init() {
+void brake_init() 
+{
   BRAKE_OUT_DDR |= _BV(BRAKE_OUT_PINN);
   BRAKE_INDICATOR_DDR |= _BV(BRAKE_INDICATOR_PINN);
 }
 
 
 // Note: High-voltage raises the brake.
-// Raises the brake
 // Do not call before brake_init
-void brake_raise() {
+void brake_raise() 
+{
   BRAKE_OUT_PORT |= _BV(BRAKE_OUT_PINN);
   BRAKE_INDICATOR_PORT &= ~_BV(BRAKE_INDICATOR_PINN);
 }
@@ -163,13 +169,15 @@ void brake_raise() {
 
 // Drops the brake
 // Do not call before brake_init
-void brake_drop() {
+void brake_drop() 
+{
   BRAKE_OUT_PORT &= ~_BV(BRAKE_OUT_PINN);
   BRAKE_INDICATOR_PORT |= _BV(BRAKE_INDICATOR_PINN);
 }
 
 
-int main(void) {
+int main(void) 
+{
   // turn the ledPin on
   // DEBUG_PORT |= _BV(DEBUG_PINN);
   DEBUG_PORT &= ~_BV(DEBUG_PINN);
@@ -191,8 +199,6 @@ int main(void) {
   // map stdio for printf
   stdin = stdout = stderr = &g_uart_debug;
 
-  printf("Testing debug print out.\r\n");
-
   // setup hardware
   sei(); // enable interrupts
   // uart_init();
@@ -210,8 +216,17 @@ int main(void) {
   g_brake_rx.Init(&RX_BRAKE_PIN, RX_BRAKE_PINN, RX_BRAKE_INTN);
   g_auton_rx.Init(&RX_AUTON_PIN, RX_AUTON_PINN, RX_AUTON_INTN);
 
+  printf("Hello world! This is debug information\r\n");
+  printf("Compilation date: %s\r\n", FP_COMPDATE);
+  printf("Compilation time: %s\r\n", FP_COMPTIME);
+  printf("Branch name: %s\r\n", FP_BRANCHNAME);
+  printf("Most recent commit: %s\r\n", FP_STRCOMMITHASH);
+  printf("Branch clean? %d\r\n", FP_CLEANSTATUS);
+  printf("\nEnd of compilation information\r\n");
+
   // loop forever
-  while(1) {
+  while(1) 
+  {
     // get new command messages
     // TODO: make reading messages work
     //
@@ -248,12 +263,15 @@ int main(void) {
     // find the new brake state, if available
     smoothed_thr = g_brake_rx.GetAngle();
     // TODO make this code...less...something
-    if(smoothed_thr > 120) {
+    if(smoothed_thr > PWM_STATE_THRESHOLD) 
+    {
       // read as engaged
       g_brake_state_engaged = true;
       // brake has been reset
       g_brake_needs_reset = false;
-    } else {
+    } 
+    else 
+    {
       // read as disengaged
       g_brake_state_engaged = false;
     }
@@ -261,10 +279,13 @@ int main(void) {
     // find the new autonomous state, if available
     smoothed_auton = g_auton_rx.GetAngle();
     // TODO make this code...less...something
-    if(smoothed_auton > 120) { // MAGIC NUMBERS
+    if(smoothed_auton > PWM_STATE_THRESHOLD) 
+    { 
       // read as engaged
       g_is_autonomous = true;
-    } else {
+    } 
+    else 
+    {
       // read as disengaged
       g_is_autonomous = false;
     }
@@ -283,9 +304,12 @@ int main(void) {
     sei();
     if(delta1 > CONNECTION_TIMEOUT_US ||
        delta2 > CONNECTION_TIMEOUT_US ||
-       delta3 > CONNECTION_TIMEOUT_US) {
+       delta3 > CONNECTION_TIMEOUT_US) 
+    {
       // we haven't heard from the RC receiver in too long
-      if(g_brake_needs_reset == false) {
+
+      if(g_brake_needs_reset == false) 
+      {
         g_rbsm.Send(RBSM_MID_ERROR, RBSM_EID_RC_LOST_SIGNAL);
       }
       g_brake_needs_reset = true;
@@ -307,27 +331,36 @@ int main(void) {
                                      PWM_SCALE_STORED_ANGLE);
 
     // Set outputs
-    if(g_brake_state_engaged == false && g_brake_needs_reset == false) {
+    if(g_brake_state_engaged == false && g_brake_needs_reset == false) 
+    {
       brake_raise();
-    } else {
+    } 
+    else 
+    {
       brake_drop();
     }
 
-    if(g_is_autonomous){
+    if(g_is_autonomous)
+    {
       steering_set(auto_steering_angle);
       g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)(auto_steering_angle));
     }
-    else if(!g_is_autonomous){
+    else if(!g_is_autonomous)
+    {
       steering_set(steer_angle);
       g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
     }
-    else{
+    else
+    {
       steering_set(PWM_OFFSET_STORED_ANGLE); // default to centered
     }
 
-    if(g_brake_needs_reset == true) {
+    if(g_brake_needs_reset == true) 
+    {
       LED_DANGER_PORT |= _BV(LED_DANGER_PINN);
-    } else {
+    } 
+    else 
+    {
       LED_DANGER_PORT &= ~_BV(LED_DANGER_PINN);
     }
 
@@ -339,6 +372,7 @@ int main(void) {
     g_rbsm.Send(RBSM_MID_MEGA_STEER_FEEDBACK, (long int)g_steering_feedback);
     g_rbsm.Send(RBSM_MID_ENC_TICKS_RESET, g_encoder_ticks);
     g_rbsm.Send(RBSM_MID_ENC_TIMESTAMP, millis());
+    g_rbsm.Send(RBSM_MID_COMP_HASH, (long unsigned)(FP_HEXCOMMITHASH));
   }
 
 
@@ -346,17 +380,20 @@ int main(void) {
 }
 
 
-ISR(RX_STEERING_INT) {
+ISR(RX_STEERING_INT) 
+{
   g_steering_rx.OnInterruptReceiver();
 }
 
 
-ISR(RX_BRAKE_INT) {
+ISR(RX_BRAKE_INT) 
+{
   g_brake_rx.OnInterruptReceiver();
 }
 
 
-ISR(RX_AUTON_INT) {
+ISR(RX_AUTON_INT) 
+{
   g_auton_rx.OnInterruptReceiver();
 }
 

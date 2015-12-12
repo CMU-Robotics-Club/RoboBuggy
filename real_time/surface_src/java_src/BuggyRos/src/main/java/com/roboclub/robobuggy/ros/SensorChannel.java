@@ -8,11 +8,13 @@ public enum SensorChannel {
 	BRAKE("brake"),
 	LOGIC_EXCEPTION("logic_exception"),
 	DRIVE_CTRL("drive_ctrl"),
+	BRAKE_CTRL("commanded brake"),
 	VISION("vision"),
 	ENCODER("encoder"),
 	AUTO("auto"),
 	GUI_LOGGING_BUTTON("logging_button"),
-	STEERING_COMMANDED("commanded_steering");
+	STEERING_COMMANDED("commanded_steering"),
+	FP_HASH("fp_hash");
 	;
 	
 	private String rstPath;
