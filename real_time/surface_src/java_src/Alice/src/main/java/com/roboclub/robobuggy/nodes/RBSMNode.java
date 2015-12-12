@@ -225,7 +225,6 @@ public class RBSMNode extends PeriodicSerialNode implements Node
 				break;
 		}
 
-		
 		return 6;
 	}
 
