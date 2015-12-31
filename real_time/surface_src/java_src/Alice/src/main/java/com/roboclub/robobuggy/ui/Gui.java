@@ -52,6 +52,8 @@ public final class Gui extends JFrame {
 	}
 
 	public void populate() {
+		
+		/*
 		this.setTitle("RoboBuggy Interface");
 		this.setExtendedState(Frame.MAXIMIZED_BOTH);
 		Container pane = this.getContentPane();
@@ -95,6 +97,7 @@ public final class Gui extends JFrame {
 		
 		this.pack();
 		this.setVisible(true);
+		*/
 		
 	}
 	

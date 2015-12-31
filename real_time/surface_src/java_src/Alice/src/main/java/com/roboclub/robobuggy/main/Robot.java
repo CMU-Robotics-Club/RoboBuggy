@@ -23,132 +23,26 @@ import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 import com.roboclub.robobuggy.ui.Gui;
 
+/**
+ * 
+ * The user interface controls what gui is  displayed to the user and how they can interact with system 
+ *
+ */
 public class Robot implements RosMaster {
 	
-	public static final int COMMAND_PERIOD = 1000;
-	
+
+	/************************************** Sets all internal private variables *************************/
+	private static final int COMMAND_PERIOD = 1000;
 	private static Robot instance;
 	private static Thread alice;
 	private static boolean autonomous;
 	private static ArrayList<Node> sensorList;
 	private KalmanFilter kf;
+	//a list of topics  which the robot will publish on  
 	private static Publisher steerPub;
 	private static Publisher brakePub;
 	
-	public static Robot getInstance() {
-		if (instance == null) {
-			instance = new Robot();
-		}
-		return instance;
-	}
-
-	private Robot() {
-		sensorList = new ArrayList<>();
-		kf = new KalmanFilter();
-		System.out.println("Starting Robot");
-		autonomous = config.AUTONOMUS_DEFAULT;
-
-		//creates a log file even if no data is used
-		if(config.logging){
-			System.out.println("Starting Logging");
-			RobotLogger.getInstance();
-		}
-		
-
-		// Initialize Logic errors
-		RobobuggyLogicException.setupLogicException(SensorChannel.LOGIC_EXCEPTION);
-		new Subscriber(SensorChannel.LOGIC_EXCEPTION.getMsgPath(), new MessageListener() {
-				@Override
-				public void actionPerformed(String topicName, Message m) {
-					updateLogicException((RobobuggyLogicExceptionMeasurment)m);
-				}
-			});
-		//sends startup note
-		new RobobuggyLogicException("Logic Exception Setup properly" ,  MessageLevel.NOTE);
-		
-		
-		// Initialize Sensor
-		if (config.GPS_DEFAULT) {
-			System.out.println("Initializing GPS Serial Connection");
-			GpsNode gps = new GpsNode(SensorChannel.GPS);
-			sensorList.add(gps);
-			
-			new Subscriber(SensorChannel.GPS.getMsgPath(), new MessageListener() {
-				@Override
-				public void actionPerformed(String topicName, Message m) {
-					updateGps((GpsMeasurement)m);
-				}
-			});
-		}
-
-
-		if (config.IMU_DEFAULT) {
-			System.out.println("Initializing IMU Serial Connection");
-			ImuNode imu = new ImuNode(SensorChannel.IMU);
-			sensorList.add(imu);
-			
-			new Subscriber(SensorChannel.IMU.getMsgPath(), new MessageListener() {
-				@Override
-				public void actionPerformed(String topicName, Message m) {
-					updateImu((ImuMeasurement)m);
-				}
-			});
-		}
-
-
-		if (config.ENCODER_DEFAULT) {
-			System.out.println("Initializing Encoder Serial Connection");
-			RBSMNode encoder = new RBSMNode(SensorChannel.ENCODER,SensorChannel.STEERING,
-					COMMAND_PERIOD);
-			sensorList.add(encoder);
-		
-			new Subscriber(SensorChannel.ENCODER.getMsgPath(), new MessageListener() {
-				@Override
-				public void actionPerformed(String topicName, Message m) {
-					updateEnc((EncoderMeasurement)m);
-				}
-			});
-		}
-		
-
-		if (config.VISION_SYSTEM_DEFAULT) {
-			System.out.println("Initializing Vision System");
-			//vision = new VisionSystem(SensorChannel.VISION);
-			System.out.println("JUST KIDDING VISION SYSTEM CANNOT WORK NOW");
-			//sensorList.add(vision);
-			
-			// TODO add subscriber for vision messages
-		}
-
-		System.out.println();
-
-		// Start Autonomous Control
-		if (autonomous) {
-			if (!config.DRIVE_DEFAULT) {
-				System.out.println("Initialize Drive Controls for Autonomous");
-			} else {
-				System.out.println("Alice is in control!");
-				alice = new Thread(new Planner());
-				alice.start();
-				
-				// Initialize publishers for sending commands
-				steerPub = new Publisher(ActuatorChannel.STEERING.getMsgPath());
-				brakePub = new Publisher(ActuatorChannel.BRAKE.getMsgPath());
-			}
-		}
-		
-		Gui.EnableLogging();
-		System.out.println();
-	}
-
-	public KalmanFilter getKalmanFilter(){
-		return kf; 
-	}
-	
-	public static ArrayList<Node> getSensorList(){
-		return sensorList;
-	}
-	
+	/************************************* Set of all public functions ********************************/
 	// shuts down the robot and all of its child sensors
 	public static void ShutDown() {
 		new RobobuggyLogicException("shutting down Robot", MessageLevel.NOTE);
@@ -162,10 +56,12 @@ public class Robot implements RosMaster {
 		System.exit(0);
 	}
 
-	/*public static VisionSystem GetVision() {
-		//return vision;
-		return null;
-	}*/
+
+	@Override
+	public boolean shutDown() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 	/* Methods for Updating Current State */
 	private void updateGps(GpsMeasurement m) {
@@ -206,6 +102,124 @@ public class Robot implements RosMaster {
 		}
 	}
 	
+	/************************************* Set of all internal private functions ************************/
+	private Robot() {
+		sensorList = new ArrayList<>();
+		kf = new KalmanFilter();
+		System.out.println("Starting Robot");
+		autonomous = config.AUTONOMUS_DEFAULT;
+
+		//creates a log file even if no data is used
+		if(config.logging){
+			System.out.println("Starting Logging");
+			RobotLogger.getInstance();
+		}
+		
+		setupLogicErrors();
+		
+		// Initialize Nodes 
+		setupGPSNode();
+		setupIMUNode();
+		setupEncoderNode();
+		setupVisionNodes();
+		setupAutonomusNodes();
+		
+		//setup the gui 
+		Gui.EnableLogging();
+	}//end constructor
+	
+	private void setupLogicErrors(){
+	// Initialize Logic errors
+	RobobuggyLogicException.setupLogicException(SensorChannel.LOGIC_EXCEPTION);
+	new Subscriber(SensorChannel.LOGIC_EXCEPTION.getMsgPath(), new MessageListener() {
+			@Override
+			public void actionPerformed(String topicName, Message m) {
+				updateLogicException((RobobuggyLogicExceptionMeasurment)m);
+			}
+		});
+	//sends startup note
+	new RobobuggyLogicException("Logic Exception Setup properly" ,  MessageLevel.NOTE);
+	}
+	
+	private void setupGPSNode(){
+		if (config.GPS_DEFAULT) {
+			System.out.println("Initializing GPS Serial Connection");
+			GpsNode gps = new GpsNode(SensorChannel.GPS);
+			sensorList.add(gps);
+			
+			new Subscriber(SensorChannel.GPS.getMsgPath(), new MessageListener() {
+				@Override
+				public void actionPerformed(String topicName, Message m) {
+					updateGps((GpsMeasurement)m);
+				}
+			});
+		}  
+	}
+	
+	private void setupIMUNode(){
+		if (config.IMU_DEFAULT) {
+			System.out.println("Initializing IMU Serial Connection");
+			ImuNode imu = new ImuNode(SensorChannel.IMU);
+			sensorList.add(imu);
+			
+			new Subscriber(SensorChannel.IMU.getMsgPath(), new MessageListener() {
+				@Override
+				public void actionPerformed(String topicName, Message m) {
+					updateImu((ImuMeasurement)m);
+				}
+			});
+		}
+	}
+	
+	private void setupEncoderNode(){
+	if (config.ENCODER_DEFAULT) {
+		System.out.println("Initializing Encoder Serial Connection");
+		RBSMNode encoder = new RBSMNode(SensorChannel.ENCODER,SensorChannel.STEERING,
+				getCommandPeriod());
+		sensorList.add(encoder);
+	
+		new Subscriber(SensorChannel.ENCODER.getMsgPath(), new MessageListener() {
+			@Override
+			public void actionPerformed(String topicName, Message m) {
+				updateEnc((EncoderMeasurement)m);
+			}
+		});
+	}
+	}
+	
+	public void setupVisionNodes(){
+	if (config.VISION_SYSTEM_DEFAULT) {
+		System.out.println("Initializing Vision System");
+		//vision = new VisionSystem(SensorChannel.VISION);
+		System.out.println("JUST KIDDING VISION SYSTEM CANNOT WORK NOW");
+		//sensorList.add(vision);
+		
+		// TODO add subscriber for vision messages
+	}
+	}
+	
+	public void setupAutonomusNodes(){
+		// Start Autonomous Control
+		if (autonomous) {
+			if (!config.DRIVE_DEFAULT) {
+				System.out.println("Initialize Drive Controls for Autonomous");
+			} else {
+				System.out.println("Alice is in control!");
+				alice = new Thread(new Planner());
+				alice.start();
+				
+				// Initialize publishers for sending commands
+				steerPub = new Publisher(ActuatorChannel.STEERING.getMsgPath());
+				brakePub = new Publisher(ActuatorChannel.BRAKE.getMsgPath());
+			}
+		}
+	}
+	
+	/***************************************   Getters ********************************/
+	public static int getCommandPeriod() {
+		return COMMAND_PERIOD;
+	}
+	
 	public boolean get_autonomous() {
 		return autonomous;
 	}
@@ -214,10 +228,21 @@ public class Robot implements RosMaster {
 	public List<Node> getAllSensors() {
 		return sensorList;
 	}
-
-	@Override
-	public boolean shutDown() {
-		// TODO Auto-generated method stub
-		return false;
+	
+	public static Robot getInstance() {
+		if (instance == null) {
+			instance = new Robot();
+		}
+		return instance;
 	}
+	
+	public KalmanFilter getKalmanFilter(){
+		return kf; 
+	}
+	
+	public static ArrayList<Node> getSensorList(){
+		return sensorList;
+	}
+
+	/***************************************  setters ********************************/
 }

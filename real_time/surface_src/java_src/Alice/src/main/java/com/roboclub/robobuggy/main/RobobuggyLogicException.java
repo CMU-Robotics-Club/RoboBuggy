@@ -3,6 +3,7 @@ package com.roboclub.robobuggy.main;
 import com.roboclub.robobuggy.messages.RobobuggyLogicExceptionMeasurment;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
+import com.sun.org.apache.bcel.internal.generic.RETURN;
 
 /**
  * 
@@ -25,12 +26,55 @@ public static void setupLogicException(SensorChannel sensor){
 }
 	
 public RobobuggyLogicException(String error,MessageLevel level){
-	System.out.println(error);
+	if(shouldMessageBeDisplayed(level)){
+		//displays the error message to the jave console 
+		System.out.println(error);
+	}
+	//the message is always published 
 	errorPub.publish(new RobobuggyLogicExceptionMeasurment(error, level));
 	
 	//only halt the program if it is an exception 
 	if(level == MessageLevel.EXCEPTION){
-		assert(false);
+		assert(false); //todo shutdown in a more graceful way
 	}
 }
+
+//a function to check if a message level is signfigent enough to display to the user
+//note that this function will need to be updated if message level ever 
+private boolean shouldMessageBeDisplayed(MessageLevel level){
+	switch(level){
+	case EXCEPTION:
+		switch(config.REPORTING_LEVEL){
+		case EXCEPTION:
+			return true;
+		case WARNING:
+			return false;
+		case NOTE:
+			return false;
+		}
+		break;
+	case WARNING:
+		switch(config.REPORTING_LEVEL){
+		case EXCEPTION:
+			return true;
+		case WARNING:
+			return true;
+		case NOTE:
+			return false;
+		}
+		break;
+	case NOTE:
+		switch (config.REPORTING_LEVEL) {
+		case EXCEPTION:
+			return true;
+		case WARNING:
+			return true;
+		case NOTE:
+			return true;
+		}		
+			break;
+	}
+	return true; 
+}
+
 }

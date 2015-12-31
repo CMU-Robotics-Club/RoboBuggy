@@ -2,25 +2,19 @@ package com.roboclub.robobuggy.main;
 
 import gnu.io.CommPortIdentifier;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.nodes.RealNodeEnum;
-import com.roboclub.robobuggy.ros.Message;
-import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.SensorChannel;
-import com.roboclub.robobuggy.ros.Subscriber;
 import com.roboclub.robobuggy.sensors.SensorManager;
 import com.roboclub.robobuggy.simulation.SensorPlayer;
 import com.roboclub.robobuggy.ui.Gui;
 
 
-
+/** This class is the driver starting up the robobuggy program, if you want the buggy to drive itself you should run this node */
 public class mainFile {
     static Robot buggy;
     static int num = 0;
@@ -72,8 +66,6 @@ public class mainFile {
         }
         
         // Starts the robot
-
-//        if(config.DATA_PLAY_BACK_DEFAULT){
             try {           
             	Robot.getInstance();
                 bringup_sim();
@@ -84,10 +76,7 @@ public class mainFile {
                 System.out.println("Unable to bringup simulated robot. Stacktrace omitted because it's really big.");
                 e.printStackTrace();
                 return;
-            }
-//        } else {
-//        	
-//        }   
+            }  
     }
     
     //going to start by just connecting to the IMU
