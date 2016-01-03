@@ -1,24 +1,17 @@
 package com.roboclub.robobuggy.nodes;
 
 import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import com.orsoncharts.util.json.JSONObject;
-import com.roboclub.robobuggy.messages.BaseMessage;
 import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
-import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 import com.roboclub.robobuggy.ui.Gui;
 
 // When logging begins, a new folder is created, and then logging begins to that folder
-public class LoggingNode implements Node {
+public class LoggingNode extends BuggyDecoratorNode {
 
 	String directoryPath;
 	String topicName;
@@ -32,7 +25,16 @@ public class LoggingNode implements Node {
 	// Get the folder that we're going to use
 
 	// TODO get folder name from file.
+	/**
+	 * Create a new {@link LoggingNode} decorator
+	 */
 	public LoggingNode() {
+		super(new BuggyBaseNode());
+	}
+	
+	/**{@inheritDoc}*/
+	@Override
+	protected boolean startDecoratorNode() {
 		loggingButtonPub = new Publisher(SensorChannel.GUI_LOGGING_BUTTON.getMsgPath());
 		
 		logging_button_sub = new Subscriber(Gui.GuiPubSubTopics.GUI_LOG_BUTTON_UPDATED.toString(), new MessageListener() {
@@ -41,9 +43,14 @@ public class LoggingNode implements Node {
 				loggingButtonPub.publish(m);
 			}
 		});
-		
+		return true;
 	}
-	
+
+	/**{@inheritDoc}*/
+	@Override
+	protected boolean shutdownDecoratorNode() {
+		return true;
+	}
 
 	@SuppressWarnings("unchecked")
 	public static JSONObject translatePeelMessageToJObject(String message) {
@@ -60,15 +67,6 @@ public class LoggingNode implements Node {
 		data.put("name", "logging button");
 		data.put("params", params);
 		return data;
-	}
-
-
-	@Override
-	public boolean shutdown() {
-		// TODO Auto-generated method stub
-		loggingButtonPub = null;
-		logging_button_sub = null;
-		return true;
 	}
 	
 }
