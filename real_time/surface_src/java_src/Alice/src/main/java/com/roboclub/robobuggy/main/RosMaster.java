@@ -5,8 +5,15 @@ import com.roboclub.robobuggy.ros.Node;
 
 public interface RosMaster {
 
-	List<Node> getAllSensors();
+	/**
+	 * Returns a list of the {@link Node}s in the system
+	 * @return a list of the {@link Node}s in the system
+	 */
+	List<Node> getNodes();
 
-	// shuts down the robot and all of its child sensors
+	/**
+	 * Shuts down the {@link RosMaster} safely
+	 * @return true iff the {@link RosMaster} shut down sucessfuly
+	 */
 	boolean shutDown();
 }

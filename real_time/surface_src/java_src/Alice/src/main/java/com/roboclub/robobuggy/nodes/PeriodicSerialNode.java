@@ -4,7 +4,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.roboclub.robobuggy.ros.Node;
-import com.roboclub.robobuggy.serial.SerialNode;
 
 /**
  *

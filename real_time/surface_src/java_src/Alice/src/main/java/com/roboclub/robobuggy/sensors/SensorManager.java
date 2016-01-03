@@ -19,8 +19,8 @@ import com.roboclub.robobuggy.nodes.ImuNode;
 import com.roboclub.robobuggy.nodes.LoggingNode;
 import com.roboclub.robobuggy.nodes.RBSMNode;
 import com.roboclub.robobuggy.nodes.RealNodeEnum;
+import com.roboclub.robobuggy.nodes.SerialNode;
 import com.roboclub.robobuggy.ros.SensorChannel;
-import com.roboclub.robobuggy.serial.SerialNode;
 import com.roboclub.robobuggy.simulation.SensorPlayer;
 
 public class SensorManager {

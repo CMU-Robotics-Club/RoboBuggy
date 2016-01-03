@@ -1,18 +1,13 @@
 package com.roboclub.robobuggy.nodes;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import jdk.nashorn.internal.scripts.JS;
 
 import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
-import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.sensors.SensorState;
-import com.roboclub.robobuggy.serial.SerialNode;
 
 /**
  * @author Matt Sebek 
@@ -20,9 +15,11 @@ import com.roboclub.robobuggy.serial.SerialNode;
  *
  */
 
-public class GpsNode extends SerialNode implements Node {
+public class GpsNode extends SerialNode {
 	// how long the system should wait until a sensor switches to Disconnected
 	private static final long SENSOR_TIME_OUT = 5000;
+	
+	private static final int BAUD_RATE = 9600;
 
 	// Used for state estimation
 	/*private static final double GYRO_PER = 0.9;
@@ -33,34 +30,35 @@ public class GpsNode extends SerialNode implements Node {
 	public Publisher msgPub;
 	public Publisher statePub;
 	
-	public GpsNode(SensorChannel sensor) {
-		super("GPS");
+	/**
+	 * Creates a new {@link GpsNode}
+	 * @param sensor {@link SensorChannel} of GPS
+	 * @param portName name of the serial port to read from
+	 */
+	public GpsNode(SensorChannel sensor, String portName) {
+		super(new BuggyBaseNode(), "GPS", portName, BAUD_RATE);
 		msgPub = new Publisher(sensor.getMsgPath());
 		statePub = new Publisher(sensor.getStatePath());
 	
 		statePub.publish(new StateMessage(SensorState.DISCONNECTED));
 	}
 
-	@Override
-	public void setSerialPort(gnu.io.SerialPort sp) {
-		super.setSerialPort(sp);
-		statePub.publish(new StateMessage(SensorState.ON));
-	};
-	
-
+	/**{@inheritDoc}*/
 	@Override
 	public boolean matchDataSample(byte[] sample) {
 		return true;
 	}
 
+	/**{@inheritDoc}*/
 	@Override
 	public int matchDataMinSize() {
 		return 0;
 	}
 
+	/**{@inheritDoc}*/
 	@Override
 	public int baudRate() {
-		return 9600;
+		return BAUD_RATE;
 	}
 	
 	private Date convertHHMMSStoTime(String HHMMSSss) {
@@ -86,6 +84,7 @@ public class GpsNode extends SerialNode implements Node {
 		return ddd + mins / 60.0;
 	}
 	
+	/**{@inheritDoc}*/
 	@Override
 	public int peel(byte[] buffer, int start, int bytes_available) {
 		// TODO replace 80 with max message length

@@ -5,7 +5,6 @@ import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
-import com.roboclub.robobuggy.serial.SerialNode;
 
 /**
  * @author Matt Sebek 
@@ -14,15 +13,22 @@ import com.roboclub.robobuggy.serial.SerialNode;
  * DESCRIPTION: TODO
  */
 
-public class LightingNode extends SerialNode implements Node {
+public class LightingNode extends SerialNode {
 	// how long the system should wait until a sensor switches to Disconnected
 	private static final long SENSOR_TIME_OUT = 5000;
 
+	private static final int BAUD_RATE = 9600;
+	
 	public Publisher msgPub;
 	public Publisher statePub;
 	
-	public LightingNode(SensorChannel sensor) {
-		super("Lighting");
+	/**
+	 * Creates a new {@link LightingNode}
+	 * @param sensor {@link SensorChannel} of lighting unit
+	 * @param portName name of the serial port to read from
+	 */
+	public LightingNode(SensorChannel sensor, String portName) {
+		super(new BuggyBaseNode(), "Lighting", portName, BAUD_RATE);
 		msgPub = new Publisher(sensor.getMsgPath());
 		statePub = new Publisher(sensor.getStatePath());
 	
@@ -30,21 +36,25 @@ public class LightingNode extends SerialNode implements Node {
 		//statePub.publish(new StateMessage(this.currState));
 	}
 
+	/**{@inheritDoc}*/
 	@Override
 	public boolean matchDataSample(byte[] sample) {
 		return true;
 	}
 
+	/**{@inheritDoc}*/
 	@Override
 	public int matchDataMinSize() {
 		return 0;
 	}
 
+	/**{@inheritDoc}*/
 	@Override
 	public int baudRate() {
-		return 9600;
+		return BAUD_RATE;
 	}
 
+	/**{@inheritDoc}*/
 	@Override
 	public int peel(byte[] buffer, int start, int bytes_available) {
 		// TODO replace 80 with max message length

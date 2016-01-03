@@ -16,11 +16,11 @@ import com.roboclub.robobuggy.nodes.GpsNode;
 import com.roboclub.robobuggy.nodes.ImuNode;
 import com.roboclub.robobuggy.nodes.LoggingNode;
 import com.roboclub.robobuggy.nodes.RBSMNode;
+import com.roboclub.robobuggy.nodes.SerialNode;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
-import com.roboclub.robobuggy.serial.SerialNode;
 
 /**
  * Logs data from the sensors

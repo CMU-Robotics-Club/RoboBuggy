@@ -7,7 +7,6 @@ import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.sensors.SensorState;
-import com.roboclub.robobuggy.serial.SerialNode;
 
 /**
  * @author Matt Sebek 
@@ -16,7 +15,7 @@ import com.roboclub.robobuggy.serial.SerialNode;
  * DESCRIPTION: TODO
  */
 
-public class ImuNode extends SerialNode implements Node {
+public class ImuNode extends SerialNode {
 	/** Baud rate for serial port */
 	private static final int BAUDRATE = 57600;
 	// how long the system should wait until a sensor switches to Disconnected
@@ -31,19 +30,19 @@ public class ImuNode extends SerialNode implements Node {
 	public Publisher msgPub;
 	public Publisher statePub;
 	
-	public ImuNode(SensorChannel sensor) {
-		super("IMU");
+	/**
+	 * Creates a new {@link ImuNode}
+	 * @param sensor {@link SensorChannel} of IMU
+	 * @param portName name of the serial port to read from
+	 */
+	public ImuNode(SensorChannel sensor, String portName) {
+		super(new BuggyBaseNode(), "IMU", portName, BAUDRATE);
 		msgPub = new Publisher(sensor.getMsgPath());
 		statePub = new Publisher(sensor.getStatePath());
 	
 		// TODO state stuff
 		statePub.publish(new StateMessage(SensorState.DISCONNECTED));
 	}
-
-	public void setSerialPort(gnu.io.SerialPort sp) {
-		super.setSerialPort(sp);
-		statePub.publish(new StateMessage(SensorState.ON));
-	};
 	
 	/*
 	@SuppressWarnings("unused")
@@ -62,19 +61,26 @@ public class ImuNode extends SerialNode implements Node {
 		//msgPub.publish(new ImuMeasurement());
 	}*/
 	
-
+	/**{@inheritDoc}*/
+	@Override
 	public boolean matchDataSample(byte[] sample) {
 		return true;
 	}
 
+	/**{@inheritDoc}*/
+	@Override
 	public int matchDataMinSize() {
 		return 0;
 	}
 
+	/**{@inheritDoc}*/
+	@Override
 	public int baudRate() {
 		return 57600;
 	}
 
+	/**{@inheritDoc}*/
+	@Override
 	public int peel(byte[] buffer, int start, int bytes_available) {
 		// TODO replace 80 with max message length
 		if(bytes_available < 30) {
