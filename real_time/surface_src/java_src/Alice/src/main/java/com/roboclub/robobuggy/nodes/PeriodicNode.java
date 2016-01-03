@@ -7,22 +7,22 @@ import com.roboclub.robobuggy.ros.Node;
 
 /**
  *
- * @author Trevor Decker
+ * @author Zachary Dawson
  *
  * @brif  This node will cause for an update function to be run at a fixed frequency
  *
  */
-public abstract class PeriodicSerialNode extends SerialNode implements Node{
+public abstract class PeriodicNode extends BuggyDecoratorNode {
 
-    private  final int RUN_PERIOD;
+    private final int RUN_PERIOD;
 
     /**
-     * Create a new PeriodicSerialNode
-     * @param name Name of the thread to read the serial messages
+     * Create a new {@link PeriodicNode} decorator
+     * @param base {@link Node} to decorate
      * @param period of the periodically executed portion of the node
      */
-    protected PeriodicSerialNode(String name, int period){
-    	super(name);
+    protected PeriodicNode(Node base, int period){
+    	super(base);
         RUN_PERIOD = period;
         TimerTask timerTask = new UpdateTask();
         Timer timer = new Timer(true);
@@ -30,7 +30,7 @@ public abstract class PeriodicSerialNode extends SerialNode implements Node{
     }
     
     /**
-     * Method run periodically by the PeriodicSerialNode
+     * Method run periodically by the {@link PeriodicNode}
      */
     abstract protected void update();
 

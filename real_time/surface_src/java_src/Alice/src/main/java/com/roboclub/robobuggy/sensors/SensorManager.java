@@ -25,8 +25,7 @@ import com.roboclub.robobuggy.simulation.SensorPlayer;
 
 public class SensorManager {
 
-	private final static int TIMEOUT = 2000;
-	//Need to manage real, simulated, and calculated sensors
+	
 	
 	private LinkedHashMap<String, SerialNode> realSensors;
 	private LinkedHashMap<String, BaseCalculatedNode> calculatedSensors;
@@ -37,29 +36,7 @@ public class SensorManager {
 		calculatedSensors = new LinkedHashMap<String, BaseCalculatedNode>();	
 	}
 
-	// Open a serial port
-	// Returns null if unable to connect, otherwise SerialPort
-	private static SerialPort connect(String portName, int baudRate) {
-		try {
-	        CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
-	        
-	        if ( portIdentifier.isCurrentlyOwned() ) {
-	        	System.err.println("Error: Port currently in use");
-	        } else { 
-	            CommPort commPort = portIdentifier.open(portName, TIMEOUT);
-	            
-	            if ( commPort instanceof SerialPort ) {
-	                SerialPort serialPort = (SerialPort) commPort;
-	                serialPort.setSerialPortParams(baudRate,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
-	                return serialPort;
-	            }
-	        }
-		} catch (Exception e) {
-			System.err.println("Error: Unable to connect to port" + portName);
-		}
-		
-		return null;
-    }
+	
 	
 	public String newRealSensor(RealNodeEnum nodeType, String port, SensorChannel... sensor) throws Exception {
 		// Each sensor will get added to a list of real nodes, returning a UUID.

@@ -28,16 +28,19 @@ import com.roboclub.robobuggy.main.RobobuggyLogicException;
  * @author Trevor Decker
  * @author Matt Sebek
  * @author Kevin Brennan
+ * @author Zachary Dawson
  *
- * CHANGELOG: NONE
+ * CHANGELOG: Converted to use the decorator pattern implementation of
+ * {@link Node}s for buggy
  * 
  * DESCRIPTION: node for talking to the the low level controller via rbsm
  */
 
-public class RBSMNode extends PeriodicSerialNode implements Node 
-{
-	private static final double TICKS_PER_REV = 7.0;
+public class RBSMNode extends SerialNode {
 	
+	private static final int BAUD_RATE = 115200;
+	
+	private static final double TICKS_PER_REV = 7.0;
 	// Measured as 2 feet. Though could be made more precise. 
 	private static final double M_PER_REV = 0.61;
 	
@@ -45,10 +48,6 @@ public class RBSMNode extends PeriodicSerialNode implements Node
 	private final int ARD_TO_DEG = 100;
 	/** Steering Angle offset?? */
 	private final int OFFSET = -200;
-
-	//Stored commanded values
-	private short commandedAngle = 0;
-	private boolean commandedBrakeEngaged = true;
 
 	// accumulated
 	private int encTicks = 0;
@@ -60,28 +59,27 @@ public class RBSMNode extends PeriodicSerialNode implements Node
 	private double instVelocityLast = 0.0;
 	private Date timeLast = new Date();
 	
-	Publisher messagePub_enc;
-	Publisher messagePub_pot;
-	Publisher messagePub_controllerSteering;
-	Publisher brakePub; 
+	private Publisher messagePub_enc;
+	private Publisher messagePub_pot;
+	private Publisher messagePub_controllerSteering;
+	private Publisher brakePub; 
 	
-	Publisher statePub_enc;
-	Publisher statePub_pot;
+	private Publisher statePub_enc;
+	private Publisher statePub_pot;
 	
-	Subscriber messageSub_angle;
-	Subscriber messageSub_brakes;
-
-	Publisher messagePub_fp; //Fingerprint for low level hash
+	private Publisher messagePub_fp; //Fingerprint for low level hash
 	
 	/**
 	 * Construct a new RBSMNode object
 	 * @param sensor_enc channel the encoder is on
 	 * @param sensor_pot channel the potentiometer is on
+	 * @param portName name of the serial port used to read from the Arduino
 	 * @param period the period at which control messages are sent to the Arduino
 	 */
-	public RBSMNode(SensorChannel sensor_enc, SensorChannel sensor_pot, int period) 
-	{
-		super("ENCODER", period);
+	public RBSMNode(SensorChannel sensor_enc, SensorChannel sensor_pot,
+			String portName, int period) {
+		super(null, "RBSM", portName, BAUD_RATE);
+		this.setBaseNode(new RBSMPeriodicNode(period));
 		//messagePubs forward exact information received from arduino
 		messagePub_enc = new Publisher(sensor_enc.getMsgPath());
 		messagePub_pot = new Publisher(sensor_pot.getMsgPath());
@@ -97,33 +95,6 @@ public class RBSMNode extends PeriodicSerialNode implements Node
 		//Initialize publishers to indicate the sensor is disconnected
 		statePub_enc.publish(new StateMessage(SensorState.DISCONNECTED));
 		statePub_pot.publish(new StateMessage(SensorState.DISCONNECTED));
-		
-		//Initialize subscribers to commanded angle and brakes state
-		messageSub_angle = new Subscriber(SensorChannel.DRIVE_CTRL.getMsgPath(),
-				new MessageListener() {
-			@Override
-			public void actionPerformed(String topicName, Message m) {
-				commandedAngle = ((DriveControlMessage)m).getAngleShort();
-			}
-		});
-		messageSub_brakes = new Subscriber(SensorChannel.BRAKE_CTRL.getMsgPath(),
-				new MessageListener() {
-			@Override
-			public void actionPerformed(String topicName, Message m) {
-				commandedBrakeEngaged = ((BrakeControlMessage)m).isBrakeEngaged();
-			}
-		});
-		
-		System.out.println("rbsmnode start");
-	}
-	
-	/**{@inheritDoc}*/
-	@Override
-	public void setSerialPort(SerialPort sp) 
-	{
-		super.setSerialPort(sp);
-		statePub_enc.publish(new StateMessage(SensorState.ON));
-		statePub_pot.publish(new StateMessage(SensorState.ON));
 	}
 	
 	/**
@@ -167,7 +138,7 @@ public class RBSMNode extends PeriodicSerialNode implements Node
 	//must be the same as the baud rate of the arduino 
 	public int baudRate() 
 	{
-		return 115200;
+		return BAUD_RATE;
 	}
 
 	/**{@inheritDoc}*/
@@ -272,20 +243,71 @@ public class RBSMNode extends PeriodicSerialNode implements Node
 		// TODO Auto-generated method stub
 		return data;
 	}
-
+	
 	/**
-	 * Used to send the commanded angle and brake state to the Arduino
+	 * Private class used to handle the periodic portions of the
+	 * {@link RBSMNode}. Specifically, this will transmit the commanded
+	 * steering and brake values periodically.
+	 * 
+	 * @author Zachary Dawson
 	 */
-	@Override
-	protected void update() {
-		RBSMessage msg = new RBSMessage(commandedAngle, commandedBrakeEngaged);
-		send(msg.getMessageBytes());
+	private class RBSMPeriodicNode extends PeriodicNode {
+		
+		//Stored commanded values
+		private short commandedAngle = 0;
+		private boolean commandedBrakeEngaged = true;
+		
+		/**
+		 * Create a new {@link RBSMPeriodicNode} object
+		 * @param period of the periodic behavior
+		 */
+		public RBSMPeriodicNode(int period) {
+			super(new BuggyBaseNode(), period);
+		}
+
+		/**
+		 * Used to send the commanded angle and brake state to the Arduino.
+		 * {@inheritDoc}
+		 */
+		@Override
+		protected void update() {
+			RBSMessage msg = new RBSMessage(commandedAngle, commandedBrakeEngaged);
+			send(msg.getMessageBytes());
+		}
+
+		/**{@inheritDoc}*/
+		@Override
+		protected boolean startDecoratorNode() {
+			//Initialize subscribers to commanded angle and brakes state
+			new Subscriber(SensorChannel.DRIVE_CTRL.getMsgPath(),
+					new MessageListener() {
+				@Override
+				public void actionPerformed(String topicName, Message m) {
+					commandedAngle = ((DriveControlMessage)m).getAngleShort();
+				}
+			});
+			new Subscriber(SensorChannel.BRAKE_CTRL.getMsgPath(),
+					new MessageListener() {
+				@Override
+				public void actionPerformed(String topicName, Message m) {
+					commandedBrakeEngaged = ((BrakeControlMessage)m).isBrakeEngaged();
+				}
+			});
+			return true;
+		}
+
+		/**{@inheritDoc}*/
+		@Override
+		protected boolean shutdownDecoratorNode() {
+			return true;
+		}
+		
 	}
 	
 	/**
 	 * Private class used to represent RBSM messages
 	 */
-	private class RBSMessage {
+	private static class RBSMessage {
 		
 		private static final byte HEADER = RBSerialMessage.RBSM_MID_MEGA_COMMAND;
 		private static final byte FOOTER = RBSerialMessage.FOOTER;

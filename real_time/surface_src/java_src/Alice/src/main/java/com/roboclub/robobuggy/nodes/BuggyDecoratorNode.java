@@ -11,7 +11,7 @@ import com.roboclub.robobuggy.ros.Node;
  */
 public abstract class BuggyDecoratorNode implements Node {
 	
-	private final Node node;
+	private Node node;
 	
 	/**
 	 * Creates a new decorator for the given {@link Node}
@@ -19,6 +19,17 @@ public abstract class BuggyDecoratorNode implements Node {
 	 */
 	public BuggyDecoratorNode(Node node) {
 		this.node = node;
+	}
+	
+	/**
+	 * Set the base node after construction
+	 * @param base {@link Node} to make the base node
+	 * @return the {@link Node} that was the old base node
+	 */
+	public final Node setBaseNode(Node base) {
+		Node oldBase = node;
+		node = base;
+		return oldBase;
 	}
 
 	/**Starts the underlying {@link Node} and its decorator (in that order)
