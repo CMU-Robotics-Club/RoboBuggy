@@ -82,7 +82,7 @@ public class mainFile {
         }
         else {
         	//Play back disabled, create robot
-        	Robot.getInstance();
+        	Robot.getInstance().startNode();
         }
     }
     
@@ -90,7 +90,7 @@ public class mainFile {
 
         List<String> list = new ArrayList<String>();
 
-        Enumeration portList = CommPortIdentifier.getPortIdentifiers();
+        Enumeration<?> portList = CommPortIdentifier.getPortIdentifiers();
 
         while (portList.hasMoreElements()) {
             CommPortIdentifier portId = (CommPortIdentifier) portList.nextElement();
