@@ -51,8 +51,8 @@ public class config {
 	public static  String COM_PORT_IMU = "COM6";
 	public static  String COM_PORT_GPS_INTEGRATED = "COM7";
 	public static  String COM_PORT_GPS_STANDALONE = "COM8";
-	public static  String COM_PORT_ENCODER = "COM3";
-	public static  String COM_PORT_DRIVE_CONTROL = "COM9";
+	public static  String COM_PORT_ENCODER = "/dev/tty.usbmodem1411";
+	public static  String COM_PORT_DRIVE_CONTROL = "/dev/tty.usbmodem1411";
 	
 	//for turning indvidual cams on and off
 	public static  boolean FRONT_CAM_ON = false;
@@ -66,7 +66,7 @@ public class config {
 
 	public static boolean GUI_ON_DEFAULT = true;
 	// iff false, connect to serial sensors 
-	public static final boolean DATA_PLAY_BACK_DEFAULT = false;
+	public static final boolean DATA_PLAY_BACK_DEFAULT = true;
 	
 	// current status values
 	public static boolean GUI_ON;
