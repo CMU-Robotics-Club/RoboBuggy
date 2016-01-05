@@ -18,7 +18,7 @@ import com.roboclub.robobuggy.ros.Publisher;
  */
 public class BuggyBaseNode implements BuggyNode {
 
-	private static final long WATCHDOG_PERIOD = 1000;
+	private static final long WATCHDOG_PERIOD = 2000;
 	
 	private Publisher statePub;
 	private NodeState state;

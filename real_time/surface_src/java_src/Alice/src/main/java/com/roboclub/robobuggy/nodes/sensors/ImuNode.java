@@ -17,7 +17,7 @@ import com.roboclub.robobuggy.ros.NodeChannel;
  * DESCRIPTION: TODO
  */
 
-public class ImuNode extends SerialNode {
+public final class ImuNode extends SerialNode {
 	/** Baud rate for serial port */
 	private static final int BAUDRATE = 57600;
 	// how long the system should wait until a sensor switches to Disconnected
@@ -132,6 +132,8 @@ public class ImuNode extends SerialNode {
 		b = b.substring(hash_index);	
 			
 		msgPub.publish(new ImuMeasurement(vals[0], vals[1], vals[2]));
+		//Feed the watchdog
+		setNodeState(NodeState.ON);
 		return 4 + (orig_length - b.length());
 	}
 

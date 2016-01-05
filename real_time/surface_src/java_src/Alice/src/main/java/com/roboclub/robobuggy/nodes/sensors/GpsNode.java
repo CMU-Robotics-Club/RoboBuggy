@@ -17,7 +17,7 @@ import com.roboclub.robobuggy.ros.NodeChannel;
  *
  */
 
-public class GpsNode extends SerialNode {
+public final class GpsNode extends SerialNode {
 	// how long the system should wait until a sensor switches to Disconnected
 	private static final long SENSOR_TIME_OUT = 5000;
 	
@@ -162,6 +162,9 @@ public class GpsNode extends SerialNode {
 		
 		msgPub.publish(new GpsMeasurement(readingTime, latitude, north, longitude, 
 			west, quality, num_satellites, horizontal_dilution_of_precision, antenna_altitude, Double.parseDouble(ar[2]), Double.parseDouble(ar[4])));
+		
+		//Feed the watchdog
+		setNodeState(NodeState.ON);
 		return ar[0].length() + ar[1].length() + ar[2].length() + ar[3].length() 
 				+ ar[4].length() + ar[5].length() + ar[6].length() + ar[7].length()
 				+ ar[8].length() + ar[9].length();

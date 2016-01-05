@@ -198,7 +198,9 @@ public class RBSMNode extends SerialNode {
 				new RobobuggyLogicException("Invalid RBSM message header\n", MessageLevel.NOTE);
 				break;
 		}
-
+		
+		//Feed the watchdog
+		setNodeState(NodeState.ON);
 		
 		return 6;
 	}

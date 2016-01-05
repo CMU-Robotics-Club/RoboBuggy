@@ -3,6 +3,7 @@ package com.roboclub.robobuggy.nodes.sensors;
 import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
+import com.roboclub.robobuggy.nodes.baseNodes.NodeState;
 import com.roboclub.robobuggy.nodes.baseNodes.SerialNode;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Publisher;
@@ -103,6 +104,8 @@ public class LightingNode extends SerialNode {
 			
 //		msgPub.publish(new ImuMeasurement(vals[0], vals[1],vals[2], 
 //				vals[3], vals[4], vals[5], vals[6], vals[7], vals[8]));
+		//Feed the watchdog
+		setNodeState(NodeState.ON);
 		return 4 + (orig_length - b.length());
 	}
 

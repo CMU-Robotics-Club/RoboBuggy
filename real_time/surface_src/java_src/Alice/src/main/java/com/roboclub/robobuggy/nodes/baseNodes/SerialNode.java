@@ -90,7 +90,6 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 	 * {@inheritDoc}*/
 	@Override
 	public boolean startDecoratorNode() {
-
 		// Set port to be the right baud rate
 		int baudRate = baudRate();
 		try {
@@ -180,31 +179,31 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 					num_bytes += serial_input.read(buf, start + num_bytes, buf.length - num_bytes); 
 					//System.out.printf(new String(buf));
 					//System.out.printf("%d\n", bytes);
+					while(true) {
+						int num_read = peel(buf, start, num_bytes);
+						if(num_read == 0) break;
+						start += num_read;
+						num_bytes -= num_read;
+					}
+					
+					// Shift the array by the amount that we read.
+					// TODO this is stupid and should be fixed
+					for(int i = 0; i < num_bytes; i++) {
+						buf[i] = buf[start+i];
+					}
+					start = 0;
+				
+					try {
+						Thread.sleep(asleep_time);
+					} catch (InterruptedException e) {
+						System.out.println("sleep...interrupted?");
+					}
 				} catch (IOException e) {
 					// TODO handle this error reasonably.
+					setNodeState(NodeState.DISCONNECTED);
 					e.printStackTrace();
-				}
-				
-				while(true) {
-					int num_read = peel(buf, start, num_bytes);
-					if(num_read == 0) break;
-					start += num_read;
-					num_bytes -= num_read;
-				}
-				
-				// Shift the array by the amount that we read.
-				// TODO this is stupid and should be fixed
-				for(int i = 0; i < num_bytes; i++) {
-					buf[i] = buf[start+i];
-				}
-				start = 0;
-			
-				try {
-					Thread.sleep(asleep_time);
-				} catch (InterruptedException e) {
-					System.out.println("sleep...interrupted?");
 				}
 			}
 		}			
-		}
 	}
+}
