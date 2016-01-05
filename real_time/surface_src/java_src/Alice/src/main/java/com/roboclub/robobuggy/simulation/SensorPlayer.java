@@ -19,7 +19,7 @@ import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage.LoggingMessage;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.ros.Publisher;
-import com.roboclub.robobuggy.ros.SensorChannel;
+import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.utilities.RobobuggyDateFormatter;
 
 public class SensorPlayer implements Runnable {
@@ -36,12 +36,12 @@ public class SensorPlayer implements Runnable {
 
 	public SensorPlayer(String filePath) {
 	
-		imuPub = new Publisher(SensorChannel.IMU.getMsgPath());
-		gpsPub = new Publisher(SensorChannel.GPS.getMsgPath());
-		encoderPub = new Publisher(SensorChannel.ENCODER.getMsgPath());
-		brakePub = new Publisher(SensorChannel.BRAKE.getMsgPath());
-		steeringPub = new Publisher(SensorChannel.STEERING.getMsgPath());
-		loggingButtonPub = new Publisher(SensorChannel.GUI_LOGGING_BUTTON.getMsgPath());
+		imuPub = new Publisher(NodeChannel.IMU.getMsgPath());
+		gpsPub = new Publisher(NodeChannel.GPS.getMsgPath());
+		encoderPub = new Publisher(NodeChannel.ENCODER.getMsgPath());
+		brakePub = new Publisher(NodeChannel.BRAKE.getMsgPath());
+		steeringPub = new Publisher(NodeChannel.STEERING.getMsgPath());
+		loggingButtonPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
 		
 		System.out.println("initializing the SensorPlayer");
 		

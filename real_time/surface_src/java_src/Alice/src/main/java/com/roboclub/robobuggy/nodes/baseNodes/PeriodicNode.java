@@ -1,9 +1,7 @@
-package com.roboclub.robobuggy.nodes;
+package com.roboclub.robobuggy.nodes.baseNodes;
 
 import java.util.Timer;
 import java.util.TimerTask;
-
-import com.roboclub.robobuggy.ros.Node;
 
 /**
  *
@@ -18,10 +16,10 @@ public abstract class PeriodicNode extends BuggyDecoratorNode {
 
     /**
      * Create a new {@link PeriodicNode} decorator
-     * @param base {@link Node} to decorate
+     * @param base {@link BuggyNode} to decorate
      * @param period of the periodically executed portion of the node
      */
-    protected PeriodicNode(Node base, int period){
+    protected PeriodicNode(BuggyNode base, int period){
     	super(base);
         RUN_PERIOD = period;
         TimerTask timerTask = new UpdateTask();

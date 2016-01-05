@@ -12,14 +12,14 @@ import java.util.concurrent.LinkedBlockingQueue;
 import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.main.config;
 import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
-import com.roboclub.robobuggy.nodes.GpsNode;
-import com.roboclub.robobuggy.nodes.ImuNode;
-import com.roboclub.robobuggy.nodes.LoggingNode;
-import com.roboclub.robobuggy.nodes.RBSMNode;
-import com.roboclub.robobuggy.nodes.SerialNode;
+import com.roboclub.robobuggy.nodes.baseNodes.SerialNode;
+import com.roboclub.robobuggy.nodes.sensors.GpsNode;
+import com.roboclub.robobuggy.nodes.sensors.ImuNode;
+import com.roboclub.robobuggy.nodes.sensors.LoggingNode;
+import com.roboclub.robobuggy.nodes.sensors.RBSMNode;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
-import com.roboclub.robobuggy.ros.SensorChannel;
+import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 
 /**
@@ -166,7 +166,7 @@ public final class SensorLogger {
 
 		// Subscribe to ALL THE PUBLISHERS
 		subscribers = new ArrayList<Subscriber>();
-		for (SensorChannel channel : SensorChannel.values()) {
+		for (NodeChannel channel : NodeChannel.values()) {
 			subscribers.add(
 				new Subscriber(channel.getMsgPath(), new MessageListener() {
 					@Override

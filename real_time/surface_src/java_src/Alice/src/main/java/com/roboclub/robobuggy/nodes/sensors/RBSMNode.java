@@ -1,4 +1,4 @@
-package com.roboclub.robobuggy.nodes;
+package com.roboclub.robobuggy.nodes.sensors;
 
 import java.util.Date;
 
@@ -8,6 +8,10 @@ import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
+import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
+import com.roboclub.robobuggy.nodes.baseNodes.NodeState;
+import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
+import com.roboclub.robobuggy.nodes.baseNodes.SerialNode;
 import com.roboclub.robobuggy.messages.BrakeControlMessage;
 import com.roboclub.robobuggy.messages.DriveControlMessage;
 import com.roboclub.robobuggy.ros.Message;
@@ -15,9 +19,8 @@ import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.messages.FingerPrintMessage;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Publisher;
-import com.roboclub.robobuggy.ros.SensorChannel;
+import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
-import com.roboclub.robobuggy.sensors.SensorState;
 import com.roboclub.robobuggy.serial.RBPair;
 import com.roboclub.robobuggy.serial.RBSerial;
 import com.roboclub.robobuggy.serial.RBSerialMessage;
@@ -76,16 +79,16 @@ public class RBSMNode extends SerialNode {
 	 * @param portName name of the serial port used to read from the Arduino
 	 * @param period the period at which control messages are sent to the Arduino
 	 */
-	public RBSMNode(SensorChannel sensor_enc, SensorChannel sensor_pot,
+	public RBSMNode(NodeChannel sensor_enc, NodeChannel sensor_pot,
 			String portName, int period) {
 		super(null, "RBSM", portName, BAUD_RATE);
-		this.setBaseNode(new RBSMPeriodicNode(period));
+		this.setBaseNode(new RBSMPeriodicNode(sensor_enc, period));
 		//messagePubs forward exact information received from arduino
 		messagePub_enc = new Publisher(sensor_enc.getMsgPath());
 		messagePub_pot = new Publisher(sensor_pot.getMsgPath());
-		messagePub_controllerSteering = new Publisher(SensorChannel.STEERING_COMMANDED.getMsgPath());
-		brakePub = new Publisher(SensorChannel.BRAKE.getMsgPath());
-		messagePub_fp = new Publisher(SensorChannel.FP_HASH.getMsgPath());
+		messagePub_controllerSteering = new Publisher(NodeChannel.STEERING_COMMANDED.getMsgPath());
+		brakePub = new Publisher(NodeChannel.BRAKE.getMsgPath());
+		messagePub_fp = new Publisher(NodeChannel.FP_HASH.getMsgPath());
 
 		//statePub forwards this node's estimate of the state
 		//(i.e. after filtering bad data)
@@ -93,8 +96,8 @@ public class RBSMNode extends SerialNode {
 		statePub_pot = new Publisher(sensor_pot.getStatePath());
 
 		//Initialize publishers to indicate the sensor is disconnected
-		statePub_enc.publish(new StateMessage(SensorState.DISCONNECTED));
-		statePub_pot.publish(new StateMessage(SensorState.DISCONNECTED));
+		statePub_enc.publish(new StateMessage(NodeState.DISCONNECTED));
+		statePub_pot.publish(new StateMessage(NodeState.DISCONNECTED));
 	}
 	
 	/**
@@ -260,9 +263,10 @@ public class RBSMNode extends SerialNode {
 		/**
 		 * Create a new {@link RBSMPeriodicNode} object
 		 * @param period of the periodic behavior
+		 * @param channel of the RSBM node
 		 */
-		public RBSMPeriodicNode(int period) {
-			super(new BuggyBaseNode(), period);
+		public RBSMPeriodicNode(NodeChannel channel, int period) {
+			super(new BuggyBaseNode(channel), period);
 		}
 
 		/**
@@ -279,14 +283,14 @@ public class RBSMNode extends SerialNode {
 		@Override
 		protected boolean startDecoratorNode() {
 			//Initialize subscribers to commanded angle and brakes state
-			new Subscriber(SensorChannel.DRIVE_CTRL.getMsgPath(),
+			new Subscriber(NodeChannel.DRIVE_CTRL.getMsgPath(),
 					new MessageListener() {
 				@Override
 				public void actionPerformed(String topicName, Message m) {
 					commandedAngle = ((DriveControlMessage)m).getAngleShort();
 				}
 			});
-			new Subscriber(SensorChannel.BRAKE_CTRL.getMsgPath(),
+			new Subscriber(NodeChannel.BRAKE_CTRL.getMsgPath(),
 					new MessageListener() {
 				@Override
 				public void actionPerformed(String topicName, Message m) {

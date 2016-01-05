@@ -1,7 +1,7 @@
 package com.roboclub.robobuggy.tests;
 
 import com.orsoncharts.util.json.JSONObject;
-import com.roboclub.robobuggy.nodes.GpsNode;
+import com.roboclub.robobuggy.nodes.sensors.GpsNode;
 
 public class GPSJSONTests {
 

@@ -3,11 +3,11 @@ package com.roboclub.robobuggy.main;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.roboclub.robobuggy.nodes.RBSMNode;
-import com.roboclub.robobuggy.nodes.GpsNode;
-import com.roboclub.robobuggy.nodes.ImuNode;
+import com.roboclub.robobuggy.nodes.sensors.GpsNode;
+import com.roboclub.robobuggy.nodes.sensors.ImuNode;
+import com.roboclub.robobuggy.nodes.sensors.RBSMNode;
 import com.roboclub.robobuggy.ros.Node;
-import com.roboclub.robobuggy.ros.SensorChannel;
+import com.roboclub.robobuggy.ros.NodeChannel;
 
 /**
  * 
@@ -38,13 +38,13 @@ public class Robot implements RosMaster {
 		System.out.println("Starting Robot");
 		autonomous = config.AUTONOMUS_DEFAULT;
 		nodeList = new LinkedList<>();
-		RobobuggyLogicException.setupLogicException(SensorChannel.LOGIC_EXCEPTION);
+		RobobuggyLogicException.setupLogicException(NodeChannel.LOGIC_EXCEPTION);
 		new RobobuggyLogicException("Logic Exception Setup properly" ,  MessageLevel.NOTE);
 		
 		// Initialize Nodes
-		nodeList.add(new GpsNode(SensorChannel.GPS, config.COM_PORT_GPS_INTEGRATED));
-		nodeList.add(new ImuNode(SensorChannel.IMU, config.COM_PORT_IMU));
-		nodeList.add(new RBSMNode(SensorChannel.ENCODER, SensorChannel.STEERING,
+		nodeList.add(new GpsNode(NodeChannel.GPS, config.COM_PORT_GPS_INTEGRATED));
+		nodeList.add(new ImuNode(NodeChannel.IMU, config.COM_PORT_IMU));
+		nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING,
 				config.COM_PORT_ENCODER, COMMAND_PERIOD));
 	}
 	

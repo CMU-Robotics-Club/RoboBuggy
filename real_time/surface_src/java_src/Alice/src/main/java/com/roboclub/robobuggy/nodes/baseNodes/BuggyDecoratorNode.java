@@ -1,4 +1,4 @@
-package com.roboclub.robobuggy.nodes;
+package com.roboclub.robobuggy.nodes.baseNodes;
 
 import com.roboclub.robobuggy.ros.Node;
 
@@ -9,15 +9,15 @@ import com.roboclub.robobuggy.ros.Node;
  * @author Zachary Dawson
  *
  */
-public abstract class BuggyDecoratorNode implements Node {
+public abstract class BuggyDecoratorNode implements BuggyNode {
 	
-	private Node node;
+	private BuggyNode node;
 	
 	/**
 	 * Creates a new decorator for the given {@link Node}
 	 * @param node {@link Node} to decorate
 	 */
-	public BuggyDecoratorNode(Node node) {
+	public BuggyDecoratorNode(BuggyNode node) {
 		this.node = node;
 	}
 	
@@ -26,7 +26,7 @@ public abstract class BuggyDecoratorNode implements Node {
 	 * @param base {@link Node} to make the base node
 	 * @return the {@link Node} that was the old base node
 	 */
-	public final Node setBaseNode(Node base) {
+	public final Node setBaseNode(BuggyNode base) {
 		Node oldBase = node;
 		node = base;
 		return oldBase;
@@ -46,6 +46,12 @@ public abstract class BuggyDecoratorNode implements Node {
 	public final boolean shutdown() {
 		boolean nodeShutdownResult = node.shutdown();
 		return shutdownDecoratorNode() && nodeShutdownResult;
+	}
+	
+	/**{@inheritDoc}*/
+	@Override
+	public final void setNodeState(NodeState state) {
+		node.setNodeState(state);
 	}
 	
 	/**

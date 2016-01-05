@@ -1,4 +1,4 @@
-package com.roboclub.robobuggy.nodes;
+package com.roboclub.robobuggy.nodes.baseNodes;
 
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
@@ -10,7 +10,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import com.orsoncharts.util.json.JSONObject;
-import com.roboclub.robobuggy.ros.Node;
 
 // Properly initializes the serial things
 public abstract class SerialNode extends BuggyDecoratorNode {
@@ -34,13 +33,13 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 	int num_bytes = 0;
 
 	/**
-	 * Creates a {@link SerialNode} decorator for the specified {@link Node}
-	 * @param base {@link Node} to decorate
+	 * Creates a {@link SerialNode} decorator for the specified {@link BuggyNode}
+	 * @param base {@link BuggyNode} to decorate
 	 * @param thread_name name of the thread
 	 * @param portName name of the desired serial port
 	 * @param baudRate baud rate of the serial port
 	 */
-	public SerialNode(Node base, String thread_name, String portName,
+	public SerialNode(BuggyNode base, String thread_name, String portName,
 			int baudRate) {
 		super(base);
 		this.thread_name = thread_name;

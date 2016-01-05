@@ -21,7 +21,7 @@ import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.main.config;
 import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
 import com.roboclub.robobuggy.ros.Publisher;
-import com.roboclub.robobuggy.ros.SensorChannel;
+import com.roboclub.robobuggy.ros.NodeChannel;
 
 /**
  * 
@@ -163,12 +163,12 @@ public class ControlPanel extends JPanel {
 		switchPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 		switchPanel.setLayout(new GridLayout(7,1));
 		
-		gps_switch = new SensorSwitch("GPS", SensorChannel.GPS);
-		vision_switch = new SensorSwitch("VISION", SensorChannel.VISION);
-		encoders_switch = new SensorSwitch("ENCODERS", SensorChannel.ENCODER);
-		imu_switch = new SensorSwitch("IMU", SensorChannel.IMU);
-		controls_switch = new SensorSwitch("CONTROLS", SensorChannel.DRIVE_CTRL);
-		autonomous_switch = new SensorSwitch("AUTO", SensorChannel.AUTO);
+		gps_switch = new SensorSwitch("GPS", NodeChannel.GPS);
+		vision_switch = new SensorSwitch("VISION", NodeChannel.VISION);
+		encoders_switch = new SensorSwitch("ENCODERS", NodeChannel.ENCODER);
+		imu_switch = new SensorSwitch("IMU", NodeChannel.IMU);
+		controls_switch = new SensorSwitch("CONTROLS", NodeChannel.DRIVE_CTRL);
+		autonomous_switch = new SensorSwitch("AUTO", NodeChannel.AUTO);
 		
 		display = new JButton("DISPLAY");
 		display.setBackground(Color.BLUE);

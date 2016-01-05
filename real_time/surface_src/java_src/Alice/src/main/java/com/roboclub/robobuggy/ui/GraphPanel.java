@@ -7,7 +7,7 @@ import javax.swing.JPanel;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
-import com.roboclub.robobuggy.ros.SensorChannel;
+import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 
 public class GraphPanel extends JPanel {
@@ -33,7 +33,7 @@ public class GraphPanel extends JPanel {
 		this.add(yaw);
 		
 		// Subscriber for drive control updates
-		new Subscriber(SensorChannel.STEERING.getMsgPath(), new MessageListener() {
+		new Subscriber(NodeChannel.STEERING.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				steering.updateGraph(((SteeringMeasurement)m).angle);
@@ -41,7 +41,7 @@ public class GraphPanel extends JPanel {
 		});
 		
 		// Subscriber for Imu updates
-		new Subscriber(SensorChannel.IMU.getMsgPath(), new MessageListener() {
+		new Subscriber(NodeChannel.IMU.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				// TODO handle imu updates for graphs

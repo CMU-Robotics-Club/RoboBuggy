@@ -1,13 +1,15 @@
-package com.roboclub.robobuggy.nodes;
+package com.roboclub.robobuggy.nodes.sensors;
 
 import java.util.Date;
 
 import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
+import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
+import com.roboclub.robobuggy.nodes.baseNodes.NodeState;
+import com.roboclub.robobuggy.nodes.baseNodes.SerialNode;
 import com.roboclub.robobuggy.ros.Publisher;
-import com.roboclub.robobuggy.ros.SensorChannel;
-import com.roboclub.robobuggy.sensors.SensorState;
+import com.roboclub.robobuggy.ros.NodeChannel;
 
 /**
  * @author Matt Sebek 
@@ -32,15 +34,15 @@ public class GpsNode extends SerialNode {
 	
 	/**
 	 * Creates a new {@link GpsNode}
-	 * @param sensor {@link SensorChannel} of GPS
+	 * @param sensor {@link NodeChannel} of GPS
 	 * @param portName name of the serial port to read from
 	 */
-	public GpsNode(SensorChannel sensor, String portName) {
-		super(new BuggyBaseNode(), "GPS", portName, BAUD_RATE);
+	public GpsNode(NodeChannel sensor, String portName) {
+		super(new BuggyBaseNode(sensor), "GPS", portName, BAUD_RATE);
 		msgPub = new Publisher(sensor.getMsgPath());
 		statePub = new Publisher(sensor.getStatePath());
 	
-		statePub.publish(new StateMessage(SensorState.DISCONNECTED));
+		statePub.publish(new StateMessage(NodeState.DISCONNECTED));
 	}
 
 	/**{@inheritDoc}*/
