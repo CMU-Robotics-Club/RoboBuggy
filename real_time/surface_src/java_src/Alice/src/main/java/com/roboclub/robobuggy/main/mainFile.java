@@ -60,23 +60,25 @@ public class mainFile {
             }
         }
         
+        // Starts the robot
+        try {           
+        	Robot.getInstance();
+            bringup_sim();
+        } catch (Exception e) 
+        {
+            Gui.close();
+            System.out.println("Unable to bringup simulated robot. Stacktrace omitted because it's really big.");
+            e.printStackTrace();
+            return;
+        }  
+        
+        
         if(config.GUI_ON)
         {
             Gui.getInstance();
         }
         
-        // Starts the robot
-            try {           
-            	Robot.getInstance();
-                bringup_sim();
-            } 
-            catch (Exception e) 
-            {
-                Gui.close();
-                System.out.println("Unable to bringup simulated robot. Stacktrace omitted because it's really big.");
-                e.printStackTrace();
-                return;
-            }  
+       
     }
     
     //going to start by just connecting to the IMU
@@ -88,7 +90,6 @@ public class mainFile {
             RobotLogger.getInstance();
         }
         
-        Gui.EnableLogging();
         SensorManager sm = SensorManager.getInstance();
         
         if (config.DATA_PLAY_BACK_DEFAULT) {

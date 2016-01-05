@@ -13,6 +13,7 @@ public class AnalyticsPanel extends JPanel {
 	private GraphPanel graphPanel;
 	
 	public AnalyticsPanel() {
+
 		this.setLayout(new GridBagLayout());
 		this.setBackground(Color.DARK_GRAY);
 		
@@ -26,13 +27,19 @@ public class AnalyticsPanel extends JPanel {
 		gbc.weightx = 1;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		gbc.anchor = GridBagConstraints.LINE_START;
+	//	gbc.anchor = GridBagConstraints.LINE_START;
 		this.add(dataPanel, gbc);
 		
 		gbc.gridy = 1;
 		gbc.weighty = 0;
 		this.add(graphPanel, gbc);
-	    System.out.println("H");
+	/*
+	  	dataPanel = new DataPanel();
+		graphPanel = new GraphPanel();
+		GuiUtil.subPlot(1,1,0,0,0,0,dataPanel,this);
+		GuiUtil.subPlot(2,1,1,0,1,0,graphPanel,this);
+		*/
+
 	}
 	
 	public String valuesFromData()

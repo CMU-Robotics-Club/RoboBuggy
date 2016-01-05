@@ -123,9 +123,7 @@ public class Robot implements RosMaster {
 		setupEncoderNode();
 		setupVisionNodes();
 		setupAutonomusNodes();
-		
-		//setup the gui 
-		Gui.EnableLogging();
+
 	}//end constructor
 	
 	private void setupLogicErrors(){
