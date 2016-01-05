@@ -3,6 +3,8 @@ package com.roboclub.robobuggy.main;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.Arrays;
 
 import com.orsoncharts.util.json.JSONObject;
 import com.orsoncharts.util.json.parser.JSONParser;
@@ -133,6 +135,35 @@ public class config {
 			System.out.println("Incorrectly formated JSON for file: "
 					+ filename);
 		}
+		
+		
+
+	}
+	//includes all of the jni libraries that we need to be able to use all of our libraries
+	public static boolean setupJNI() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException{
+	       String pathToAdd =  "library";
+
+	       
+	       
+	       final Field usrPathsField = ClassLoader.class.getDeclaredField("usr_paths");
+	       usrPathsField.setAccessible(true);
+
+	       //get array of paths
+	       final String[] paths = (String[])usrPathsField.get(null);
+
+	       //check if the path to add is already present
+	       for(String path : paths) {
+	           if(path.equals(pathToAdd)) {
+	               return true;
+	           }
+	       }
+
+	       //add the new path
+	       final String[] newPaths = Arrays.copyOf(paths, paths.length + 1);
+	       newPaths[newPaths.length-1] = pathToAdd;
+	       usrPathsField.set(null, newPaths);
+	       
+	       return true;
 	}
 
 }
