@@ -1,10 +1,11 @@
 package com.roboclub.robobuggy.ui;
 
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
-public class RoboBuggyGUIComponent extends Component{
+public class RoboBuggyGUIContainer extends Container{
 	ArrayList<ComponentData> components = new ArrayList<ComponentData>();
 
 	

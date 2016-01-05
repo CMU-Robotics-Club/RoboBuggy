@@ -58,8 +58,10 @@ public final class Gui extends JFrame {
 	public Gui() {
 		System.out.println("Starting GUI");
 		RoboBuggyJFrame mainWindow = new RoboBuggyJFrame("MainWindow",1.0,1.0);	
-		mainWindow.addComponet(new JButton("1"), 0.0, 0.0, .5, 1.0);
-		mainWindow.addComponet(new JButton("2"), 0.5, 0.0, .5, 1.0);
+		AnalyticsPanel analyPane = new AnalyticsPanel();
+		ControlPanel cntrlPane = new ControlPanel();
+		mainWindow.addComponet(cntrlPane, 0.0, 0.0, .2, 1.0);
+		mainWindow.addComponet(analyPane, 0.2, 0.0, .8, 1.0);
 		windowList.add(mainWindow);
 		
 	}
