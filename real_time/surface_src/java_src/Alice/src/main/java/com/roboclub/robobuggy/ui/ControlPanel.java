@@ -100,7 +100,7 @@ public class ControlPanel extends JPanel {
 				play_btn.setText("STOP");
 				timer.start();
 				
-				RobotLogger.CreateLog();
+				RobotLogger.createLog();
 				logging_button_pub.publish(new GuiLoggingButtonMessage(GuiLoggingButtonMessage.LoggingMessage.START));
 				startTime = new Date();
 			} else {
@@ -108,7 +108,7 @@ public class ControlPanel extends JPanel {
 				play_btn.setBackground(Color.GREEN);
 				play_btn.setText("START");
 				
-				RobotLogger.CloseLog();
+				RobotLogger.closeLog();
 				logging_button_pub.publish(new GuiLoggingButtonMessage(GuiLoggingButtonMessage.LoggingMessage.STOP));
 				timer.stop();
 			}

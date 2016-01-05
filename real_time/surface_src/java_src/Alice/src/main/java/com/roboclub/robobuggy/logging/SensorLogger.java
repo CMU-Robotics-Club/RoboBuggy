@@ -30,27 +30,29 @@ import com.roboclub.robobuggy.ros.Subscriber;
  * @author Trevor Decker
  */
 public final class SensorLogger {
-	private final PrintStream _log;
-	private final Queue<String> _logQueue;
+	private final PrintStream log;
+	private final Queue<String> logQueue;
 	private final ArrayList<Subscriber> subscribers;
 
-	private static final Queue<String> startLoggingThread(PrintStream stream) {
+	private static Queue<String> startLoggingThread(PrintStream stream) {
 		final LinkedBlockingQueue<String> ret = new LinkedBlockingQueue<>();
 		
 		String name = "\"name\": \"Robobuggy Data Logs\",";
-		String schema_version = "\"schema_version\": 1.0,";
-		String date_recorded = "\"date_recorded\": \"" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()) + "\",";
+		String schemaVersion = "\"schema_version\": 1.0,";
+		String dateRecorded = "\"date_recorded\": \"" + 
+				new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()) + "\",";
 		String swVersion = "\"software_version\": \"" + getCurrentSoftwareVersion() + "\",";
 		String sensorDataHeader = "\"sensor_data\": [";
-		stream.println("{" + "\n    " + name + "\n    " + schema_version + "\n    " + date_recorded + "\n    " + swVersion + "\n    " + sensorDataHeader);
+		stream.println("{" + "\n    " + name + "\n    " + schemaVersion + "\n    " + dateRecorded
+				+ "\n    " + swVersion + "\n    " + sensorDataHeader);
 		
-		Thread logging_thread = new Thread() {
-			int logButtonHits = 0;
-			int gpsHits = 0;
-			int imuHits = 0;
-			int encoderHits = 0;
-			int brakeHits = 0;
-			int steeringHits = 0;
+		Thread loggingThread = new Thread() {
+			private int logButtonHits = 0;
+			private int gpsHits = 0;
+			private int imuHits = 0;
+			private int encoderHits = 0;
+			private int brakeHits = 0;
+			private int steeringHits = 0;
 			
 			public void run() {
 				while (true) {
@@ -133,8 +135,8 @@ public final class SensorLogger {
 		// the actual fix probably involved throttling the sensors to a
 		// reasonable update
 		// frequency
-		logging_thread.setPriority(10);//TODO this is terible 
-		logging_thread.start();
+		loggingThread.setPriority(10);//TODO this is terible 
+		loggingThread.start();
 		return ret;
 	};
 
@@ -144,11 +146,16 @@ public final class SensorLogger {
 		return "1.0.0";
 	}
 
-	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+	private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 
-	public SensorLogger(File outputDir, Date startTime) throws Exception {
+	/**
+	 * Construct a new {@link SensorLogger} object
+	 * @param outputDir {@link File} of the output file directory
+	 * @param startTime {@link Date} of the start time of the logger
+	 */
+	public SensorLogger(File outputDir, Date startTime) {
 		if (outputDir == null) {
-			throw new Exception("Output Directory was null!");
+			throw new IllegalArgumentException("Output Directory was null!");
 		} else if (!outputDir.exists()) {
 			outputDir.mkdirs();
 		}
@@ -156,13 +163,13 @@ public final class SensorLogger {
 		File logFile = new File(outputDir, "sensors.txt");
 		System.out.println("FileCreated: " + logFile.getAbsolutePath());
 		try {
-			_log = new PrintStream(logFile);
+			log = new PrintStream(logFile);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			throw new RuntimeException("Cannot create sensor log file ("
 					+ logFile + ")!");
 		}
-		_logQueue = startLoggingThread(_log);
+		logQueue = startLoggingThread(log);
 
 		// Subscribe to ALL THE PUBLISHERS
 		subscribers = new ArrayList<Subscriber>();
@@ -171,7 +178,7 @@ public final class SensorLogger {
 				new Subscriber(channel.getMsgPath(), new MessageListener() {
 					@Override
 					public void actionPerformed(String topicName, Message m) {
-						_logQueue.offer(topicName + "," + m.toLogString());
+						logQueue.offer(topicName + "," + m.toLogString());
 					}
 				}));
 		}

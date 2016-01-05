@@ -20,8 +20,8 @@ import com.roboclub.robobuggy.ros.Message;
  * @author Matt Sebek (sebek.matt@gmail.com)
  */
 public final class MessageLogWriter {
-	private PrintStream _csv_outstream = null;
-	private LinkedBlockingQueue<String> _line_queue = new LinkedBlockingQueue<String>();
+	private PrintStream csvOutstream = null;
+	private LinkedBlockingQueue<String> lineQueue = new LinkedBlockingQueue<String>();
 
 	// Used for directory names
 	private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
@@ -34,11 +34,22 @@ public final class MessageLogWriter {
 		return outputFileName;
 	}
 
+	/**
+	 * Constructs a new {@link MessageLogWriter}
+	 * @param outputDir {@link File} of the output directory
+	 * @param startTime {@link Date} of the starting time
+	 */
 	public MessageLogWriter(File outputDir, Date startTime) {
 		String filename = getFileName(startTime);
 		init(outputDir, filename, startTime);
 	}
 
+	/**
+	 * Constructs a new {@link MessageLogWriter}
+	 * @param outputDir {@link File} of the output directory
+	 * @param logFileName name of the output log file
+	 * @param startTime {@link Date} of the starting time
+	 */
 	public MessageLogWriter(File outputDir, String logFileName, Date startTime) {
 		init(outputDir, logFileName, startTime);
 	}
@@ -57,7 +68,7 @@ public final class MessageLogWriter {
 
 		// TODO fix Gui.UpdateLogName( outputFileName );
 		try {
-			_csv_outstream = new PrintStream(csvFile);
+			csvOutstream = new PrintStream(csvFile);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			throw new RuntimeException("Cannot create sensor log file ("
@@ -65,7 +76,7 @@ public final class MessageLogWriter {
 		}
 
 		// Spin up loggin thread
-		new Thread(new csv_writer(_csv_outstream)).start();
+		new Thread(new CsvWriter(csvOutstream)).start();
 
 	}
 
@@ -79,19 +90,28 @@ public final class MessageLogWriter {
 	 * new String[keys.size()]; keys.toArray(_keys); _csvQueue.offer(_keys); }
 	 */
 
-	// Runnable that writes to a CSV file-stream continuously
-	class csv_writer implements Runnable {
-		PrintStream ps;
+	/**
+	 * Runnable that writes to a CSV file-stream continuously
+	 */
+	private class CsvWriter implements Runnable {
+		private PrintStream ps;
 
-		public csv_writer(PrintStream stream) {
+		/**
+		 * Construct a new {@link CsvWriter} object
+		 * @param stream {@link PrintStream} to write to
+		 */
+		public CsvWriter(PrintStream stream) {
 			ps = stream;
 		}
 
+		/**
+		 * Constantly write received messages to the log file
+		 */
 		@Override
 		public void run() {
 			while (true) {
 				try {
-					String line = _line_queue.take();
+					String line = lineQueue.take();
 					ps.write(line.getBytes());
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -102,7 +122,11 @@ public final class MessageLogWriter {
 		}
 	}
 
+	/**
+	 * Submit a {@link Message} to be logged by the {@link MessageLogWriter}
+	 * @param m {@link Message} to be logged
+	 */
 	public void log(Message m) {
-		_line_queue.offer(m.toLogString());
+		lineQueue.offer(m.toLogString());
 	}
 }
