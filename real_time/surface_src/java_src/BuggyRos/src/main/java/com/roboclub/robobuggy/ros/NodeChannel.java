@@ -1,6 +1,6 @@
 package com.roboclub.robobuggy.ros;
 
-public enum SensorChannel {
+public enum NodeChannel {
 	GPS("gps"),
 	IMU("imu"),
 	RC("rc_angle"),
@@ -21,7 +21,7 @@ public enum SensorChannel {
 	private String msgPath;
 	private String statePath;
 	
-	private SensorChannel(String name) {
+	private NodeChannel(String name) {
 		this.rstPath = "sensors/" + name + "/reset";
 		this.msgPath = "sensors/" + name;
 		this.statePath = "sensor/" + name + "/state";

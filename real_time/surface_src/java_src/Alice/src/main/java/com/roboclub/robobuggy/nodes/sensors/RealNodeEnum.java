@@ -1,4 +1,4 @@
-package com.roboclub.robobuggy.nodes;
+package com.roboclub.robobuggy.nodes.sensors;
 
 public enum RealNodeEnum {
 	ENCODER,

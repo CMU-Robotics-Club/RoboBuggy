@@ -2,7 +2,7 @@ package com.roboclub.robobuggy.main;
 
 import com.roboclub.robobuggy.messages.RobobuggyLogicExceptionMeasurment;
 import com.roboclub.robobuggy.ros.Publisher;
-import com.roboclub.robobuggy.ros.SensorChannel;
+import com.roboclub.robobuggy.ros.NodeChannel;
 import com.sun.org.apache.bcel.internal.generic.RETURN;
 
 /**
@@ -21,7 +21,7 @@ public class RobobuggyLogicException {
 	private static Publisher errorPub;
 	
 	//must be run before LogicException can be called 
-public static void setupLogicException(SensorChannel sensor){
+public static void setupLogicException(NodeChannel sensor){
 	errorPub = new Publisher(sensor.getMsgPath());
 }
 	

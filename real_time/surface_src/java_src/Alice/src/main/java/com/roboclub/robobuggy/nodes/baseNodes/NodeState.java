@@ -1,4 +1,4 @@
-package com.roboclub.robobuggy.sensors;
+package com.roboclub.robobuggy.nodes.baseNodes;
 
 /**
  * 
@@ -11,10 +11,11 @@ package com.roboclub.robobuggy.sensors;
  * DESCRIPTION: TODO
  */
 
-public enum SensorState {
+public enum NodeState {
 	ON,
 	NOT_IN_USE,
 	DISCONNECTED,
 	ERROR,
-	FAULT
+	FAULT,
+	WATCHDOG_DEAD
 }

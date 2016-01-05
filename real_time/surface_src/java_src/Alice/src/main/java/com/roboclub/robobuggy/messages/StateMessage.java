@@ -2,14 +2,14 @@ package com.roboclub.robobuggy.messages;
 
 import java.util.Date;
 
+import com.roboclub.robobuggy.nodes.baseNodes.NodeState;
 import com.roboclub.robobuggy.ros.Message;
-import com.roboclub.robobuggy.sensors.SensorState;
 
 public class StateMessage implements Message {
 	private Date timestamp;
-	private SensorState state;
+	private NodeState state;
 	
-	public StateMessage(SensorState state) {
+	public StateMessage(NodeState state) {
 		this.timestamp = new Date();
 		this.state = state;
 	}
@@ -26,7 +26,7 @@ public class StateMessage implements Message {
 		return null;
 	}
 
-	public SensorState getState() {
+	public NodeState getState() {
 		return this.state;
 	}
 }
