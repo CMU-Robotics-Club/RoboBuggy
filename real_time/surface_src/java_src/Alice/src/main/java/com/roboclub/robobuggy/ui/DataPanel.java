@@ -138,15 +138,15 @@ public class DataPanel extends JPanel {
 				// Limit measurement values to 10 characters
 				String tmp = new String();
 				
-				tmp = Double.toString(msg.yaw);
+				tmp = Double.toString(msg.getYaw());
 				if (tmp.length() > MAX_LENGTH) tmp = tmp.substring(0, MAX_LENGTH);
 				aX.setText(tmp);
 				
-				tmp = Double.toString(msg.pitch);
+				tmp = Double.toString(msg.getPitch());
 				if (tmp.length() > MAX_LENGTH) tmp = tmp.substring(0, MAX_LENGTH);
 				aY.setText(tmp);
 
-				tmp = Double.toString(msg.roll);
+				tmp = Double.toString(msg.getRoll());
 				if (tmp.length() > MAX_LENGTH) tmp = tmp.substring(0, MAX_LENGTH);
 				aZ.setText(tmp);
 				
@@ -156,8 +156,8 @@ public class DataPanel extends JPanel {
 		gpsSub = new Subscriber(NodeChannel.GPS.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
-				double lat = ((GpsMeasurement)m).latitude;
-				double longit = ((GpsMeasurement)m).longitude;
+				double lat = ((GpsMeasurement)m).getLatitude();
+				double longit = ((GpsMeasurement)m).getLongitude();
 			    latitude.setText(Double.toString(lat));
 			    longitude.setText(Double.toString(longit));
 				//latitude and longitude are both needed 
@@ -180,11 +180,11 @@ public class DataPanel extends JPanel {
 			public void actionPerformed(String topicName, Message m) {
 				EncoderMeasurement msg = (EncoderMeasurement)m;
 				
-				String tmp = Double.toString(msg.velocity);
+				String tmp = Double.toString(msg.getVelocity());
 				if (tmp.length() > MAX_LENGTH) tmp = tmp.substring(0, MAX_LENGTH);
 				velocity.setText(tmp);
 				
-				tmp = Double.toString(msg.distance);
+				tmp = Double.toString(msg.getDistance());
 				if (tmp.length() > MAX_LENGTH) tmp = tmp.substring(0, MAX_LENGTH);
 				distance.setText(tmp);
 			}
@@ -199,14 +199,14 @@ public class DataPanel extends JPanel {
 		new Subscriber(NodeChannel.STEERING_COMMANDED.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
-				steeringAng.setText(Integer.toString(((SteeringMeasurement)m).angle));
+				steeringAng.setText(Integer.toString(((SteeringMeasurement)m).getAngle()));
 			}
 		});
 		
 		//Subscriber for GPS data - agirish
 		new Subscriber(NodeChannel.GPS.getMsgPath(), new MessageListener() {
 			public void actionPerformed(String topicName, Message m) {
-				aX.setText(Double.toString(((GpsMeasurement)m).latitude)); //adding a value 
+				aX.setText(Double.toString(((GpsMeasurement)m).getLatitude())); //adding a value 
 				
 			}
 		});

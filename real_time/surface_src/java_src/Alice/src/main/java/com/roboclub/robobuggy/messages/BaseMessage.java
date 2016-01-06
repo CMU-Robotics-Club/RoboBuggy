@@ -8,17 +8,31 @@ import java.util.Date;
 import com.roboclub.robobuggy.main.MessageLevel;
 import com.roboclub.robobuggy.main.RobobuggyLogicException;
 
+/**
+ * Abstract class used to represent the base message sent over BuggyROS
+ */
 public abstract class BaseMessage {
-	public static DateFormat formatter = new SimpleDateFormat(
+	private static final DateFormat FORMATTER = new SimpleDateFormat(
 			"yyyy-MM-dd HH:mm:ss.SSS");
 
-	public static String format_the_date(Date dt) {
-		return formatter.format(dt);
+	/**
+	 * Creates a {@link String} representing the {@link Date}
+	 * @param dt {@link Date} to format
+	 * @return a {@link String} representing the {@link Date} dt
+	 */
+	public static String formatDate(Date dt) {
+		return FORMATTER.format(dt);
 	}
 
-	public static Date try_to_parse_date(String maybe_date) {
+	/**
+	 * Converts a {@link String} into a valid {@link Date} object, if possible
+	 * @param maybeDate {@link String} representing the {@link Date}
+	 * @return a new {@link Date} object representing maybeDate, or null if
+	 *  maybeDate is an invalid format
+	 */
+	public static Date tryToParseDate(String maybeDate) {
 		try {
-			return formatter.parse(maybe_date);
+			return FORMATTER.parse(maybeDate);
 		} catch (ParseException e) {
 			new RobobuggyLogicException("could not parse date stack trace: "+ e.getStackTrace().toString(), MessageLevel.WARNING);
 			return null;

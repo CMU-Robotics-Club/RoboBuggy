@@ -5,6 +5,7 @@ import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyDecoratorNode;
+import com.roboclub.robobuggy.nodes.baseNodes.SerialNode;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.Publisher;
@@ -12,18 +13,22 @@ import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 import com.roboclub.robobuggy.ui.Gui;
 
-// When logging begins, a new folder is created, and then logging begins to that folder
+/**
+ * {@link SerialNode} for reading in logging commands from the GUI
+ * When logging begins, a new folder is created, and then logging begins
+ *  to that folder
+ */
 public class LoggingNode extends BuggyDecoratorNode {
 
-	String directoryPath;
-	String topicName;
+	private String directoryPath;
+	private String topicName;
 	
-	BufferedOutputStream outputFile = null;
+	private BufferedOutputStream outputFile = null;
 	
-	Subscriber s;
-	Subscriber logging_button_sub;
+	private Subscriber s;
+	private Subscriber loggingButtonSub;
 	
-	public Publisher loggingButtonPub;
+	private Publisher loggingButtonPub;
 	// Get the folder that we're going to use
 
 	// TODO get folder name from file.
@@ -40,7 +45,7 @@ public class LoggingNode extends BuggyDecoratorNode {
 	protected boolean startDecoratorNode() {
 		loggingButtonPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
 		
-		logging_button_sub = new Subscriber(Gui.GuiPubSubTopics.GUI_LOG_BUTTON_UPDATED.toString(), new MessageListener() {
+		loggingButtonSub = new Subscriber(Gui.GuiPubSubTopics.GUI_LOG_BUTTON_UPDATED.toString(), new MessageListener() {
 			@Override 
 			public void actionPerformed(String topicName, Message m) {
 				loggingButtonPub.publish(m);
@@ -55,6 +60,11 @@ public class LoggingNode extends BuggyDecoratorNode {
 		return true;
 	}
 
+	/**
+	 * Called to translate a peeled message to a JSON object
+	 * @param message {@link String} of the peeled message
+	 * @return {@link JSONObject} representing the string
+	 */
 	@SuppressWarnings("unchecked")
 	public static JSONObject translatePeelMessageToJObject(String message) {
 		// TODO Auto-generated method stub

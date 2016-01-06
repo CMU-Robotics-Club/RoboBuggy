@@ -11,12 +11,10 @@ import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.NodeChannel;
 
 /**
+ * {@link SerialNode} for reading in IMU data
  * @author Matt Sebek 
  * @author Kevin Brennan
- *
- * DESCRIPTION: TODO
  */
-
 public final class ImuNode extends SerialNode {
 	/** Baud rate for serial port */
 	private static final int BAUDRATE = 57600;
@@ -29,8 +27,8 @@ public final class ImuNode extends SerialNode {
 	public double angle;
 	*/
 
-	public Publisher msgPub;
-	public Publisher statePub;
+	private Publisher msgPub;
+	private Publisher statePub;
 	
 	/**
 	 * Creates a new {@link ImuNode}
@@ -83,9 +81,9 @@ public final class ImuNode extends SerialNode {
 
 	/**{@inheritDoc}*/
 	@Override
-	public int peel(byte[] buffer, int start, int bytes_available) {
+	public int peel(byte[] buffer, int start, int bytesAvailable) {
 		// TODO replace 80 with max message length
-		if(bytes_available < 30) {
+		if(bytesAvailable < 30) {
 			// Not enough bytes...maybe?
 			return 0;
 		}
@@ -107,37 +105,38 @@ public final class ImuNode extends SerialNode {
 			return 1;
 		}
 		
-		
-		
-		
 		double[] vals = new double[3];
-		String b = new String(buffer, start+5, bytes_available-5);
-		int orig_length = b.length();
+		String b = new String(buffer, start+5, bytesAvailable-5);
+		int origLength = b.length();
 		for (int i = 0; i < 2; i++) {
 			// TODO: need less than bytes_availble
-			int comma_index = b.indexOf(',');
+			int commaIndex = b.indexOf(',');
 			try {
-				Double d = Double.parseDouble(b.substring(0, comma_index));
+				Double d = Double.parseDouble(b.substring(0, commaIndex));
 				vals[i] = d;
 			} catch (NumberFormatException nfe) {
 				System.out.println("maligned input; skipping...");
 				return 1;
 			}
-			b = b.substring(comma_index+1);	
+			b = b.substring(commaIndex+1);	
 		}
 		
 		// The last one, we use the hash as the symbol!
-		int hash_index = b.indexOf('#');
-		vals[2] = Double.parseDouble(b.substring(0, hash_index));
-		b = b.substring(hash_index);	
+		int hashIndex = b.indexOf('#');
+		vals[2] = Double.parseDouble(b.substring(0, hashIndex));
+		b = b.substring(hashIndex);	
 			
 		msgPub.publish(new ImuMeasurement(vals[0], vals[1], vals[2]));
 		//Feed the watchdog
 		setNodeState(NodeState.ON);
-		return 4 + (orig_length - b.length());
+		return 4 + (origLength - b.length());
 	}
 
-	
+	/**
+	 * Called to translate a peeled message to a JSON object
+	 * @param message {@link String} of the peeled message
+	 * @return {@link JSONObject} representing the string
+	 */
 	@SuppressWarnings("unchecked")
 	public static JSONObject translatePeelMessageToJObject(String message) {
 		// TODO Auto-generated method stub

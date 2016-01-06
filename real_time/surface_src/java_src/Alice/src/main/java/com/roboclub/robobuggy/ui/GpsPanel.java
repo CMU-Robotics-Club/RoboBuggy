@@ -58,11 +58,11 @@ public class GpsPanel extends JPanel {
 		gpsSub = new Subscriber(NodeChannel.GPS.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
-				double latitude = ((GpsMeasurement)m).latitude;
-				double longitude = ((GpsMeasurement)m).longitude;
+				double latitude = ((GpsMeasurement)m).getLatitude();
+				double longitude = ((GpsMeasurement)m).getLongitude();
 
 				//todo put mag based on dir
-				if(((GpsMeasurement)m).west) {
+				if(((GpsMeasurement)m).getWest()) {
 					longitude = -longitude;
 				}
 				

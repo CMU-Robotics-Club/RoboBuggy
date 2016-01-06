@@ -4,14 +4,19 @@ import java.util.Date;
 
 import com.roboclub.robobuggy.ros.Message;
 
-// Represents raw measurement from the IMU
+/**
+ * Message to request the front wheel angle
+ */
 public class RemoteWheelAngleRequest implements Message {
-	public static final String version_id = "rc_wheel_angleV0.1";
+	public static final String VERSION_ID = "rc_wheel_angleV0.1";
 
-	public Date timestamp;
-	public double angle;
+	private Date timestamp;
+	private double angle;
 
-	// Makes an encoder measurement with the time of Now.
+	/**
+	 * Constructs a new {@link RemoteWheelAngleRequest} at time now
+	 * @param angle angle of the front wheel
+	 */
 	public RemoteWheelAngleRequest(double angle) {
 		this.angle = angle;
 		this.timestamp = new Date();

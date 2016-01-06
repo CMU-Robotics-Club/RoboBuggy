@@ -4,15 +4,14 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
+ * This node will cause for an update function to be run at a fixed frequency
  *
  * @author Zachary Dawson
- *
- * @brif  This node will cause for an update function to be run at a fixed frequency
  *
  */
 public abstract class PeriodicNode extends BuggyDecoratorNode {
 
-    private final int RUN_PERIOD;
+    private final int runPeriod;
 
     /**
      * Create a new {@link PeriodicNode} decorator
@@ -21,16 +20,16 @@ public abstract class PeriodicNode extends BuggyDecoratorNode {
      */
     protected PeriodicNode(BuggyNode base, int period){
     	super(base);
-        RUN_PERIOD = period;
+        runPeriod = period;
         TimerTask timerTask = new UpdateTask();
         Timer timer = new Timer(true);
-        timer.scheduleAtFixedRate(timerTask, 0, RUN_PERIOD);
+        timer.scheduleAtFixedRate(timerTask, 0, runPeriod);
     }
     
     /**
      * Method run periodically by the {@link PeriodicNode}
      */
-    abstract protected void update();
+    protected abstract void update();
 
     /**
      * Task used to call the update method

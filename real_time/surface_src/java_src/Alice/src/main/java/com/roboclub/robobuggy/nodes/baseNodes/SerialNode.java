@@ -11,38 +11,41 @@ import java.io.OutputStream;
 
 import com.orsoncharts.util.json.JSONObject;
 
-// Properly initializes the serial things
+/**
+ * Abstract class extended to create a decorator node that uses 
+ * serial communications
+ */
 public abstract class SerialNode extends BuggyDecoratorNode {
 	
-	private final static int TIMEOUT = 2000;
+	private static final int TIMEOUT = 2000;
 	//Need to manage real, simulated, and calculated sensors
 	
 	// Initialize first
-	String thread_name;
-	public SerialPort sp;
+	private String threadName;
+	private SerialPort sp;
 
 	// Initialize after getting a serial port
-	InputStream serial_input;
-	OutputStream serial_output;
+	private InputStream serialInput;
+	private OutputStream serialOutput;
 	
-	Thread io_thread;
+	private Thread ioThread;
 	
-	boolean running = false;
-	byte[] buf = new byte[128];
-	int start = 0;
-	int num_bytes = 0;
+	private boolean running = false;
+	private byte[] buf = new byte[128];
+	private int start = 0;
+	private int numBytes = 0;
 
 	/**
 	 * Creates a {@link SerialNode} decorator for the specified {@link BuggyNode}
 	 * @param base {@link BuggyNode} to decorate
-	 * @param thread_name name of the thread
+	 * @param threadName name of the thread
 	 * @param portName name of the desired serial port
 	 * @param baudRate baud rate of the serial port
 	 */
-	public SerialNode(BuggyNode base, String thread_name, String portName,
+	public SerialNode(BuggyNode base, String threadName, String portName,
 			int baudRate) {
 		super(base);
-		this.thread_name = thread_name;
+		this.threadName = threadName;
 		this.sp = connect(portName, baudRate);
 	}
 	
@@ -70,19 +73,23 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 		return null;
     }
 
+	/**
+	 * Call to send bytes over the serial port
+	 * @param bytes byte array to send
+	 * @return true iff the bytes are transmitted successfully
+	 */
 	public boolean send(byte[] bytes) {
-		if(serial_output == null) {
+		if(serialOutput == null) {
 			return false;
 		}
 	
 		try {
-			serial_output.write(bytes);
+			serialOutput.write(bytes);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return true;
-		
 	}
 	
 	/**
@@ -112,8 +119,8 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 		// Set port to have a reasonable input buffer size?
 	
 		try {
-			serial_input = sp.getInputStream();
-			serial_output = sp.getOutputStream();
+			serialInput = sp.getInputStream();
+			serialOutput = sp.getOutputStream();
 		} catch (IOException e) {
 			System.out.println("broken");
 			return false;
@@ -123,9 +130,9 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 		running = true;
 		
 		// Begin the madness
-		io_thread = new Thread(new iothread(), thread_name + "-serial");
-		io_thread.setPriority(Thread.MAX_PRIORITY);
-		io_thread.start();
+		ioThread = new Thread(new IoThread(), threadName + "-serial");
+		ioThread.setPriority(Thread.MAX_PRIORITY);
+		ioThread.start();
 		
 		return true;
 	}
@@ -139,9 +146,9 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 		// iothread will commence shutdown next loop.
 	
 		// Wait forever to join...hope that we're not seized up...
-		if (io_thread != null) {
+		if (ioThread != null) {
 			try {
-				io_thread.join();
+				ioThread.join();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 				return false;
@@ -150,51 +157,73 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 		return true;
 	}
 
-	// Return true iff the data type is readable by this current node
+	/**
+	 * Returns true iff the data type is readable by this current node
+	 * @param sample byte array data
+	 * @return true iff the data type is readable by this current node
+	 */
 	public abstract boolean matchDataSample(byte[] sample);
 
-	// Return the number of bytes needed to match 
+	/**
+	 * Returns the number of bytes needed to match 
+	 * @return the number of bytes needed to match
+	 */
 	public abstract int matchDataMinSize();
 
 
-	// Return the expected baud rate of the current device
+	/**
+	 * Returns the expected baud rate of the current device
+	 * @return the expected baud rate of the current device
+	 */
 	public abstract int baudRate();
 	
+	/**
+	 * Called to translate a peeled message to a JSON object
+	 * @param message {@link String} of the peeled message
+	 * @return {@link JSONObject} representing the string
+	 */
 	public static JSONObject translatePeelMessageToJObject(String message) {
 		return new JSONObject();
 	}
 
-	// Peel is called once. user should read as many messages as possible
-	// returns the number of bytes read; or 1 on failure
-	// start is the offset into the array 
-	public abstract int peel(byte[] buffer, int start, int bytes_available);
+	/**
+	 * Peel is called once. User should read as many messages as possible
+	 * @param buffer byte array read from the serial port
+	 * @param start offset into buffer
+	 * @param bytesAvailable number of bytes available to read
+	 * @return the number of bytes read, or 1 on failure
+	 */ 
+	public abstract int peel(byte[] buffer, int start, int bytesAvailable);
 	
-	private class iothread implements Runnable {
-		int asleep_time = (1000 / 60);
+	/**
+	 * Private class used as a thread to read serial messages
+	 */
+	private class IoThread implements Runnable {
+		private int asleepTime = (1000 / 60);
 		
 		@Override
 		public void run() {
 			while(running) {
 				try {
-					num_bytes += serial_input.read(buf, start + num_bytes, buf.length - num_bytes); 
+					numBytes += serialInput.read(buf, start + numBytes, buf.length - numBytes); 
 					//System.out.printf(new String(buf));
 					//System.out.printf("%d\n", bytes);
 					while(true) {
-						int num_read = peel(buf, start, num_bytes);
-						if(num_read == 0) break;
-						start += num_read;
-						num_bytes -= num_read;
+						int numRead = peel(buf, start, numBytes);
+						if(numRead == 0) break;
+						start += numRead;
+						numBytes -= numRead;
 					}
 					
 					// Shift the array by the amount that we read.
 					// TODO this is stupid and should be fixed
-					for(int i = 0; i < num_bytes; i++) {
+					for(int i = 0; i < numBytes; i++) {
 						buf[i] = buf[start+i];
 					}
 					start = 0;
 				
 					try {
-						Thread.sleep(asleep_time);
+						Thread.sleep(asleepTime);
 					} catch (InterruptedException e) {
 						System.out.println("sleep...interrupted?");
 					}

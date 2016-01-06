@@ -12,11 +12,11 @@ import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.NodeChannel;
 
 /**
+ * {@link SerialNode} for reading in GPS data
  * @author Matt Sebek 
  * @author Kevin Brennan
  *
  */
-
 public final class GpsNode extends SerialNode {
 	// how long the system should wait until a sensor switches to Disconnected
 	private static final long SENSOR_TIME_OUT = 5000;
@@ -29,8 +29,8 @@ public final class GpsNode extends SerialNode {
 	public double angle;
 	*/
 
-	public Publisher msgPub;
-	public Publisher statePub;
+	private Publisher msgPub;
+	private Publisher statePub;
 	
 	/**
 	 * Creates a new {@link GpsNode}
@@ -63,24 +63,24 @@ public final class GpsNode extends SerialNode {
 		return BAUD_RATE;
 	}
 	
-	private Date convertHHMMSStoTime(String HHMMSSss) {
+	private Date convertHHMMSStoTime(String timeHHMMSSss) {
 		Date d = new Date();
-		float HH = Float.parseFloat(HHMMSSss.substring(0, 2));
-		float MM = Float.parseFloat(HHMMSSss.substring(2, 4));
-		float SS = Float.parseFloat(HHMMSSss.substring(4));
-		d.setHours((int) HH);
-		d.setMinutes((int) MM);
-		d.setSeconds((int) SS);
+		float timeHH = Float.parseFloat(timeHHMMSSss.substring(0, 2));
+		float timeMM = Float.parseFloat(timeHHMMSSss.substring(2, 4));
+		float timeSS = Float.parseFloat(timeHHMMSSss.substring(4));
+		d.setHours((int) timeHH);
+		d.setMinutes((int) timeMM);
+		d.setSeconds((int) timeSS);
 		return d;
 	}
 
-	private double convertMinutesSecondsToFloat(String DDMMmmmmm) {
-		double DD = Double.parseDouble(DDMMmmmmm.substring(0, 2));
-		double MM = Double.parseDouble(DDMMmmmmm.substring(2));
-		return DD + MM/60.0;
+	private double convertMinutesSecondsToFloat(String posDDMMmmmmm) {
+		double posDD = Double.parseDouble(posDDMMmmmmm.substring(0, 2));
+		double posMM = Double.parseDouble(posDDMMmmmmm.substring(2));
+		return posDD + posMM/60.0;
 	}
 	
-	private double convertMinSecToFloat_Longitude(String dddmmmmm) {
+	private double convertMinSecToFloatLongitude(String dddmmmmm) {
 		double ddd = Double.parseDouble(dddmmmmm.substring(0, 3));
 		double mins = Double.parseDouble(dddmmmmm.substring(3));
 		return ddd + mins / 60.0;
@@ -88,15 +88,15 @@ public final class GpsNode extends SerialNode {
 	
 	/**{@inheritDoc}*/
 	@Override
-	public int peel(byte[] buffer, int start, int bytes_available) {
+	public int peel(byte[] buffer, int start, int bytesAvailable) {
 		// TODO replace 80 with max message length
 		// This lets us avoid handling arcane failure cases about not-enough message.
-		if(bytes_available < 80) {
+		if(bytesAvailable < 80) {
 			// Not enough bytes...maybe?
 			return 0;
 		}
 
-		String str = new String(buffer, start, bytes_available);
+		String str = new String(buffer, start, bytesAvailable);
 
 		// Quick check to reject things without doing string stuff (which is not cheap)
 		if(buffer[start] != '$') {
@@ -144,7 +144,7 @@ public final class GpsNode extends SerialNode {
 			System.out.println("uhoh, you can't go not north or south!");
 			throw new RuntimeException();
 		}
-		double longitude = convertMinSecToFloat_Longitude(ar[4]);
+		double longitude = convertMinSecToFloatLongitude(ar[4]);
 		boolean west;
 		if(ar[5].equals("W")) {
 			west = true;
@@ -156,12 +156,13 @@ public final class GpsNode extends SerialNode {
 		}
 		
 		
-		int num_satellites = Integer.parseInt(ar[7]);
-		double horizontal_dilution_of_precision = Double.parseDouble(ar[8]);
-		double antenna_altitude = Double.parseDouble(ar[9]);
+		int numSatellites = Integer.parseInt(ar[7]);
+		double horizontalDilutionOfPrecision = Double.parseDouble(ar[8]);
+		double antennaAltitude = Double.parseDouble(ar[9]);
 		
 		msgPub.publish(new GpsMeasurement(readingTime, latitude, north, longitude, 
-			west, quality, num_satellites, horizontal_dilution_of_precision, antenna_altitude, Double.parseDouble(ar[2]), Double.parseDouble(ar[4])));
+			west, quality, numSatellites, horizontalDilutionOfPrecision, antennaAltitude,
+			Double.parseDouble(ar[2]), Double.parseDouble(ar[4])));
 		
 		//Feed the watchdog
 		setNodeState(NodeState.ON);
@@ -170,7 +171,11 @@ public final class GpsNode extends SerialNode {
 				+ ar[8].length() + ar[9].length();
 	}
 
-	
+	/**
+	 * Called to translate a peeled message to a JSON object
+	 * @param message {@link String} of the peeled message
+	 * @return {@link JSONObject} representing the string
+	 */
 	@SuppressWarnings("unchecked")
 	public static JSONObject translatePeelMessageToJObject(String message) {
 		// TODO Auto-generated method stub

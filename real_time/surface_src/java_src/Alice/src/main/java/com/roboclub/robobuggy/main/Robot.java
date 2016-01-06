@@ -14,7 +14,7 @@ import com.roboclub.robobuggy.ros.NodeChannel;
  * The user interface controls what gui is  displayed to the user and how they can interact with system 
  *
  */
-public class Robot implements RosMaster {
+public final class Robot implements RosMaster {
 
 	/************************************** Sets all internal private variables *************************/
 	private static final int COMMAND_PERIOD = 1000;
@@ -24,12 +24,18 @@ public class Robot implements RosMaster {
 	
 	/************************************* Set of all public functions ********************************/
 
+	/**{@inheritDoc}*/
 	@Override
 	public boolean shutDown() {
 		return nodeList.stream().map(n -> n.shutdown()).reduce(true, (a,b) -> a&&b);
 	}
 	
-	public boolean startNode() {
+	/**
+	 * Starts all of the nodes of the {@link Robot}
+	 * @return true iff all the nodes are started successfully
+	 */
+	@Override
+	public boolean startNodes() {
 		return nodeList.stream().map(n -> n.startNode()).reduce(true, (a,b) -> a&&b);
 	}
 	
@@ -49,14 +55,27 @@ public class Robot implements RosMaster {
 	}
 	
 	/***************************************   Getters ********************************/
+	/**
+	 * Returns the period at which commands are sent to the actuators
+	 * @return the period at which commands are sent to the actuators
+	 */
 	public static int getCommandPeriod() {
 		return COMMAND_PERIOD;
 	}
 	
-	public boolean get_autonomous() {
+	/**
+	 * Returns true iff the robot has autonomous mode enabled
+	 * @return true iff the robot has autonomous mode enabled
+	 */
+	public boolean getAutonomous() {
 		return autonomous;
 	}
 	
+	/**
+	 * Returns a reference to the one instance of the {@link Robot} object.
+	 * If no instance exists, a new one is created.
+	 * @return a reference to the one instance of the {@link Robot} object
+	 */
 	public static Robot getInstance() {
 		if (instance == null) {
 			instance = new Robot();
@@ -64,6 +83,7 @@ public class Robot implements RosMaster {
 		return instance;
 	}
 
+	/**{@inheritDoc}*/
 	@Override
 	public List<Node> getNodes() {
 		return nodeList;

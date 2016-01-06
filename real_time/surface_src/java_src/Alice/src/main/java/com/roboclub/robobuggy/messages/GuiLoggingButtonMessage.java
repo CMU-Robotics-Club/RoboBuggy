@@ -4,6 +4,7 @@ import java.util.Date;
 import com.roboclub.robobuggy.ros.Message;
 
 /**
+ * Message for passing gui logging button status
  * @author ?
  *
  * @version 0.5
@@ -12,41 +13,52 @@ import com.roboclub.robobuggy.ros.Message;
  * 
  *          DESCRIPTION: TODO
  */
-
-// Represents raw measurement from the IMU
 public class GuiLoggingButtonMessage extends BaseMessage implements Message {
 
+	/**
+	 * Logging message state
+	 */
 	public enum LoggingMessage {
 		START, STOP		
 	}
 	
-	public static final String version_id = "gui_logging_buttonV0.0";
+	public static final String VERSION_ID = "gui_logging_buttonV0.0";
 
-	public Date timestamp;
-	public LoggingMessage lm; 
+	private Date timestamp;
+	private LoggingMessage lm; 
 	
-	// Makes an encoder measurement with the time of Now.
+	/**
+	 * Constructs a new {@link GuiLoggingButtonMessage} at time now
+	 * @param lm {@link LoggingMessage} state of the GUI
+	 */
 	public GuiLoggingButtonMessage(LoggingMessage lm) {
 		this.lm = lm;
 		this.timestamp = new Date();
 	}
 
+	/**
+	 * Constructs a new {@link GuiLoggingButtonMessage} at time now
+	 * @param timestamp {@link Date} representing the time of the message
+	 * @param lm {@link LoggingMessage} state of the GUI
+	 */
 	public GuiLoggingButtonMessage(Date timestamp, LoggingMessage lm) {
 		this.timestamp = timestamp;
 		this.lm = lm;
 	}
 
+	/**{@inheritDoc}*/
 	@Override
 	public String toLogString() {
-		String s = super.formatter.format(timestamp);
+		String s = formatDate(timestamp);
 		return s + ',' + lm.toString();
 	}
 
+	/**{@inheritDoc}*/
 	@Override
 	public Message fromLogString(String str) {
 		String[] ar = str.split(",");
-		Date d = try_to_parse_date(ar[0]);
+		Date d = tryToParseDate(ar[0]);
 		LoggingMessage lm = LoggingMessage.valueOf(ar[1]);
-		return new GuiLoggingButtonMessage(timestamp, lm);
+		return new GuiLoggingButtonMessage(d, lm);
 	}
 }

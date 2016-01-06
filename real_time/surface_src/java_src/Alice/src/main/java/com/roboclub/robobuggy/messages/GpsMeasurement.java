@@ -5,6 +5,9 @@ import java.util.Date;
 import com.roboclub.robobuggy.ros.Message;
 
 /**
+ * Message used to pass GPS measurements over BuggyROS
+ * gpsTimestamp is the UTC time in hours for the given position.
+ * See http://hemispheregnss.com/gpsreference/GPGGA.html for more information
  * @author Matt Sebek (msebek)
  *
  * @version 0.5
@@ -13,63 +16,118 @@ import com.roboclub.robobuggy.ros.Message;
  * 
  *          DESCRIPTION: TODO
  */
-
-// gpsTimestamp is the UTC time in hours for the given position.
-// See http://hemispheregnss.com/gpsreference/GPGGA.html for more information
 public class GpsMeasurement extends BaseMessage implements Message {
-	public static final String version_id = "gpsV0.2";
+	public static final String VERSION_ID = "gpsV0.2";
 
-	public Date timestamp;
-	public Date gpsTimestamp;
-	public double latitude;
-	public boolean north;
-	public double longitude;
-	public boolean west;
-	public int quality_value;
-	public int num_satellites;
-	public double horizontal_dilution_of_precision;
-	public double antenna_altitude;
-	public double rawGPSLat;
-	public double rawGPSLong;
+	private Date timestamp;
+	private Date gpsTimestamp;
+	private double latitude;
+	private boolean north;
+	private double longitude;
+	private boolean west;
+	private int qualityValue;
+	private int numSatellites;
+	private double horizontalDilutionOfPrecision;
+	private double antennaAltitude;
+	private double rawGPSLat;
+	private double rawGPSLong;
 	
+	/**
+	 * Constructs a new {@link GpsMeasurement} at time now
+	 * @param gpsTimestamp {@link Date} of the GPS timestamp
+	 * @param latitude latitude measurement
+	 * @param north true iff the latitude measurement is north
+	 * @param longitude longitude measurement
+	 * @param west true iff the longitude measurement is west
+	 * @param qualityValue value of the signal quality
+	 * @param numSatellites number of GPS satellites connected
+	 * @param horizontalDilutionOfPrecision horizontal dilation of precision
+	 * @param antennaAltitude altitude of the antenna
+	 * @param rawGPSLat raw GPS latitude
+	 * @param rawGPSLong raw GPS longitude
+	 */
 	public GpsMeasurement(Date gpsTimestamp, double latitude, boolean north, double longitude, 
-			boolean west, int quality_value, int num_satellites, 
-			double horizontal_dulition_of_precision, double antenna_altitude, double rawGPSLat, double rawGPSLong) {
-	
+			boolean west, int qualityValue, int numSatellites, 
+			double horizontalDilutionOfPrecision, double antennaAltitude, double rawGPSLat, double rawGPSLong) {	
 		this.timestamp = new Date();
 		this.gpsTimestamp = gpsTimestamp;
 		this.latitude = latitude;
 		this.north = north;
 		this.longitude = longitude;
 		this.west = west;
-		this.quality_value = quality_value;
-		this.num_satellites = num_satellites;
-		this.horizontal_dilution_of_precision = horizontal_dulition_of_precision;
-		this.antenna_altitude = antenna_altitude;
+		this.qualityValue = qualityValue;
+		this.numSatellites = numSatellites;
+		this.horizontalDilutionOfPrecision = horizontalDilutionOfPrecision;
+		this.antennaAltitude = antennaAltitude;
 		this.rawGPSLat = rawGPSLat;
 		this.rawGPSLong = rawGPSLong;
 	}
 
+	/**
+	 * Constructs a new {@link GpsMeasurement}
+	 * @param messageTimestamp {@link Date} representing the time of the message
+	 * @param gpsTimestamp {@link Date} of the GPS timestamp
+	 * @param latitude latitude measurement
+	 * @param north true iff the latitude measurement is north
+	 * @param longitude longitude measurement
+	 * @param west true iff the longitude measurement is west
+	 * @param qualityValue value of the signal quality
+	 * @param numSatellites number of GPS satellites connected
+	 * @param horizontalDilutionOfPrecision horizontal dilation of precision
+	 * @param antennaAltitude altitude of the antenna
+	 */
 	public GpsMeasurement(Date messageTimestamp, Date gpsTimestamp, double latitude, boolean north, double longitude,
-			boolean west, int quality_value, int num_satellites, double horizontal_dilution_of_precision, double antenna_altitude) {
-		
+			boolean west, int qualityValue, int numSatellites, double horizontalDilutionOfPrecision, double antennaAltitude) {
 		this.timestamp = messageTimestamp;
 		this.gpsTimestamp = gpsTimestamp;
 		this.latitude = latitude;
 		this.north = north;
 		this.longitude = longitude;
 		this.west = west;
-		this.quality_value = quality_value;
-		this.num_satellites = num_satellites;
-		this.horizontal_dilution_of_precision = horizontal_dilution_of_precision;
-		this.antenna_altitude = antenna_altitude;
+		this.qualityValue = qualityValue;
+		this.numSatellites = numSatellites;
+		this.horizontalDilutionOfPrecision = horizontalDilutionOfPrecision;
+		this.antennaAltitude = antennaAltitude;
 	}
 	
+	/**
+	 * Returns the latitude of the {@link GpsMeasurement}
+	 * @return the latitude of the {@link GpsMeasurement}
+	 */
+	public double getLatitude() {
+		return latitude;
+	}
+	
+	/**
+	 * Returns the longitude of the {@link GpsMeasurement}
+	 * @return the longitude of the {@link GpsMeasurement}
+	 */
+	public double getLongitude() {
+		return longitude;
+	}
+	
+	/**
+	 * Returns the west value of the {@link GpsMeasurement}
+	 * @return the west value of the {@link GpsMeasurement}
+	 */
+	public boolean getWest() {
+		return west;
+	}
+	
+	/**
+	 * Returns the north value of the {@link GpsMeasurement}
+	 * @return the north value of the {@link GpsMeasurement}
+	 */
+	public boolean getNorth() {
+		return north;
+	}
+	
+	/**{@inheritDoc}*/
 	@Override
 	public String toLogString() {
-		String s = super.format_the_date(timestamp);
+		String s = super.formatDate(timestamp);
 		
-		s += ',' + super.format_the_date(gpsTimestamp);
+		s += ',' + super.formatDate(gpsTimestamp);
 		
 		s += ',' + Double.toString(latitude);
 		if (north) s += ",N";
@@ -79,22 +137,23 @@ public class GpsMeasurement extends BaseMessage implements Message {
 		if (west) s += ",W";
 		else s += ",E";
 	
-		s += "," + Integer.toString(quality_value);
-		s += "," + Integer.toString(num_satellites);
-		s += "," + Double.toString(horizontal_dilution_of_precision);
-		s += "," + Double.toString(antenna_altitude);
+		s += "," + Integer.toString(qualityValue);
+		s += "," + Integer.toString(numSatellites);
+		s += "," + Double.toString(horizontalDilutionOfPrecision);
+		s += "," + Double.toString(antennaAltitude);
 		s += "," + Double.toString(rawGPSLat);
 		s += "," + Double.toString(rawGPSLong);
 		
 		return s;
 	}
 
+	/**{@inheritDoc}*/
 	@Override
 	public Message fromLogString(String str) {
 		String[] ar = str.split(",");
 
-		Date messageTimestamp = super.try_to_parse_date(ar[1]);
-		Date gpsTimestamp = super.try_to_parse_date(ar[0]);
+		Date messageTimestamp = super.tryToParseDate(ar[1]);
+		Date gpsTimestamp = super.tryToParseDate(ar[0]);
 		if(messageTimestamp == null || gpsTimestamp == null) {
 			return null;
 		}
@@ -102,11 +161,11 @@ public class GpsMeasurement extends BaseMessage implements Message {
 		boolean north = ar[2].equalsIgnoreCase("N");
 		double longitude = Double.parseDouble(ar[3]);
 		boolean west = ar[3].equalsIgnoreCase("W");
-		int quality_value = Integer.parseInt(ar[4]);
-		int num_satellites = Integer.parseInt(ar[5]);
-		double horizontal_diluation = Double.parseDouble(ar[6]);
-		double antenna_altitude = Double.parseDouble(ar[7]);
+		int qualityValue = Integer.parseInt(ar[4]);
+		int numSatellites = Integer.parseInt(ar[5]);
+		double horizontalDiluation = Double.parseDouble(ar[6]);
+		double antennaAltitude = Double.parseDouble(ar[7]);
 		return new GpsMeasurement(messageTimestamp, gpsTimestamp, latitude, north, longitude,
-				west, quality_value, num_satellites, horizontal_diluation, antenna_altitude);
+				west, qualityValue, numSatellites, horizontalDiluation, antennaAltitude);
 	}
 }

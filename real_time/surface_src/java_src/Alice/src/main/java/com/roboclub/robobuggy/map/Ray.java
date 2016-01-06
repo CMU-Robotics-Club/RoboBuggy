@@ -1,10 +1,11 @@
 package com.roboclub.robobuggy.map;
 
-/* repersentation of a ray on the map 
- * for now this value will be sotred as a point and a direction */
-
+/**
+ * Object used to represent a ray on a {@link Map}.
+ * For now this value will be sotred as a point and a direction.
+ */
 public class Ray implements MapObject {
-    Point startPoint;   //meters
-    double angle;       //radians
+    private Point startPoint;   //meters
+    private double angle;       //radians
 
 }

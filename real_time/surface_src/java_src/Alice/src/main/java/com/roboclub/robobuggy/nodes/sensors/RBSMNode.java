@@ -28,6 +28,7 @@ import com.roboclub.robobuggy.main.MessageLevel;
 import com.roboclub.robobuggy.main.RobobuggyLogicException;
 
 /**
+ * {@link SerialNode} for reading and sending RBSM data
  * @author Trevor Decker
  * @author Matt Sebek
  * @author Kevin Brennan
@@ -48,9 +49,9 @@ public class RBSMNode extends SerialNode {
 	private static final double M_PER_REV = 0.61;
 	
 	/** Steering Angle Conversion Rate */
-	private final int ARD_TO_DEG = 100;
+	private static final int ARD_TO_DEG = 100;
 	/** Steering Angle offset?? */
-	private final int OFFSET = -200;
+	private static final int OFFSET = -200;
 
 	// accumulated
 	private int encTicks = 0;
@@ -62,42 +63,42 @@ public class RBSMNode extends SerialNode {
 	private double instVelocityLast = 0.0;
 	private Date timeLast = new Date();
 	
-	private Publisher messagePub_enc;
-	private Publisher messagePub_pot;
-	private Publisher messagePub_controllerSteering;
+	private Publisher messagePubEnc;
+	private Publisher messagePubPot;
+	private Publisher messagePubControllerSteering;
 	private Publisher brakePub; 
 	
-	private Publisher statePub_enc;
-	private Publisher statePub_pot;
+	private Publisher statePubEnc;
+	private Publisher statePubPot;
 	
-	private Publisher messagePub_fp; //Fingerprint for low level hash
+	private Publisher messagePubFp; //Fingerprint for low level hash
 	
 	/**
 	 * Construct a new RBSMNode object
-	 * @param sensor_enc channel the encoder is on
-	 * @param sensor_pot channel the potentiometer is on
+	 * @param sensorEnc channel the encoder is on
+	 * @param sensorPot channel the potentiometer is on
 	 * @param portName name of the serial port used to read from the Arduino
 	 * @param period the period at which control messages are sent to the Arduino
 	 */
-	public RBSMNode(NodeChannel sensor_enc, NodeChannel sensor_pot,
+	public RBSMNode(NodeChannel sensorEnc, NodeChannel sensorPot,
 			String portName, int period) {
 		super(null, "RBSM", portName, BAUD_RATE);
-		this.setBaseNode(new RBSMPeriodicNode(sensor_enc, period));
+		this.setBaseNode(new RBSMPeriodicNode(sensorEnc, period));
 		//messagePubs forward exact information received from arduino
-		messagePub_enc = new Publisher(sensor_enc.getMsgPath());
-		messagePub_pot = new Publisher(sensor_pot.getMsgPath());
-		messagePub_controllerSteering = new Publisher(NodeChannel.STEERING_COMMANDED.getMsgPath());
+		messagePubEnc = new Publisher(sensorEnc.getMsgPath());
+		messagePubPot = new Publisher(sensorPot.getMsgPath());
+		messagePubControllerSteering = new Publisher(NodeChannel.STEERING_COMMANDED.getMsgPath());
 		brakePub = new Publisher(NodeChannel.BRAKE.getMsgPath());
-		messagePub_fp = new Publisher(NodeChannel.FP_HASH.getMsgPath());
+		messagePubFp = new Publisher(NodeChannel.FP_HASH.getMsgPath());
 
 		//statePub forwards this node's estimate of the state
 		//(i.e. after filtering bad data)
-		statePub_enc = new Publisher(sensor_enc.getStatePath());
-		statePub_pot = new Publisher(sensor_pot.getStatePath());
+		statePubEnc = new Publisher(sensorEnc.getStatePath());
+		statePubPot = new Publisher(sensorPot.getStatePath());
 
 		//Initialize publishers to indicate the sensor is disconnected
-		statePub_enc.publish(new StateMessage(NodeState.DISCONNECTED));
-		statePub_pot.publish(new StateMessage(NodeState.DISCONNECTED));
+		statePubEnc.publish(new StateMessage(NodeState.DISCONNECTED));
+		statePubPot.publish(new StateMessage(NodeState.DISCONNECTED));
 	}
 	
 	/**
@@ -146,13 +147,13 @@ public class RBSMNode extends SerialNode {
 
 	/**{@inheritDoc}*/
 	@Override
-	public int peel(byte[] buffer, int start, int bytes_available) 
+	public int peel(byte[] buffer, int start, int bytesAvailable) 
 	{
 		// The Encoder sends 3 types of messages
 		//  - Encoder ticks since last message (keep)
 		//  - Number of ticks since last reset
 		//  - Timestamp since reset
-		RBPair rbp = RBSerial.peel(buffer, start, bytes_available);
+		RBPair rbp = RBSerial.peel(buffer, start, bytesAvailable);
 		switch(rbp.getNumberOfBytesRead()) 
 		{
 			case 0:
@@ -162,12 +163,9 @@ public class RBSMNode extends SerialNode {
 			case 6: 
 				break;
 			default: 
-			{
 				System.out.println("HOW DID NOT A SIX GET HERE");
 				//TODO add error
 				break;
-			}
-		
 		}
 		
 		RBSerialMessage message = rbp.getMessage();
@@ -177,22 +175,22 @@ public class RBSMNode extends SerialNode {
 			case RBSerialMessage.ENC_TICK_SINCE_RESET:
 				// This is a delta-distance! Do a thing!
 				encTicks = message.getDataWord() & 0xFFFF;
-				messagePub_enc.publish(estimateVelocity(message.getDataWord()));
+				messagePubEnc.publish(estimateVelocity(message.getDataWord()));
 				System.out.println(encTicks);
 				break;
 			case RBSerialMessage.RBSM_MID_MEGA_STEER_FEEDBACK:
 				// This is a delta-distance! Do a thing!
 				potValue = message.getDataWord();
 				System.out.println(potValue);
-				messagePub_pot.publish(new SteeringMeasurement(-(potValue + OFFSET)/ARD_TO_DEG));
+				messagePubPot.publish(new SteeringMeasurement(-(potValue + OFFSET)/ARD_TO_DEG));
 				break;
 			case RBSerialMessage.RBSM_MID_MEGA_STEER_ANGLE:
 				steeringAngle = message.getDataWord();
-				messagePub_controllerSteering.publish(new SteeringMeasurement(steeringAngle));
+				messagePubControllerSteering.publish(new SteeringMeasurement(steeringAngle));
 				break;
 			case RBSerialMessage.FP_HASH:
 				System.out.println(message.getDataWord());
-				messagePub_fp.publish(new FingerPrintMessage(message.getDataWord()));
+				messagePubFp.publish(new FingerPrintMessage(message.getDataWord()));
 				break;
 			default: //Unhandled or invalid RBSM message header was received.
 				new RobobuggyLogicException("Invalid RBSM message header\n", MessageLevel.NOTE);
@@ -256,7 +254,7 @@ public class RBSMNode extends SerialNode {
 	 * 
 	 * @author Zachary Dawson
 	 */
-	private class RBSMPeriodicNode extends PeriodicNode {
+	private final class RBSMPeriodicNode extends PeriodicNode {
 		
 		//Stored commanded values
 		private short commandedAngle = 0;
@@ -313,7 +311,7 @@ public class RBSMNode extends SerialNode {
 	/**
 	 * Private class used to represent RBSM messages
 	 */
-	private static class RBSMessage {
+	private final class RBSMessage {
 		
 		private static final byte HEADER = RBSerialMessage.RBSM_MID_MEGA_COMMAND;
 		private static final byte FOOTER = RBSerialMessage.FOOTER;
@@ -340,7 +338,10 @@ public class RBSMNode extends SerialNode {
 			bytes[0] = HEADER;
 			bytes[1] = (byte)((angle >> 8)&0xFF);
 			bytes[2] = (byte)(angle);
-			bytes[3] = (byte)((brakesEngaged)?1:0);
+			if(brakesEngaged)
+				bytes[3] = (byte)1;
+			else
+				bytes[3] = (byte)0;
 			bytes[4] = (byte)(0xc0);
 			bytes[5] = FOOTER;
 			return bytes;

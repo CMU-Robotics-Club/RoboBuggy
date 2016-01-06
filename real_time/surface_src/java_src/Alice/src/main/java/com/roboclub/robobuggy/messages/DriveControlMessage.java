@@ -9,15 +9,15 @@ import com.roboclub.robobuggy.ros.Message;
  */
 public class DriveControlMessage extends BaseMessage implements Message {
 
-	private static final String version_id = "drive_control_message";
+	private static final String VERSION_ID = "drive_control_message";
 	
 	private final double angle;
 	private final Date timestamp;
 	
 	/**
 	 * Construct a new DriveControlMessage
-	 * @param timestamp
-	 * @param brakeEngagged
+	 * @param timestamp {@link Date} representing the creation time
+	 * @param angle the commanded angle of the front wheel
 	 */
 	public DriveControlMessage(Date timestamp, double angle) {
 		this.angle = angle;
@@ -43,15 +43,15 @@ public class DriveControlMessage extends BaseMessage implements Message {
 	/**{@inheritDoc}*/
 	@Override
 	public String toLogString() {
-		return String.format("%s,'%s',%s\n", format_the_date(timestamp),
-				version_id, String.valueOf(angle));
+		return String.format("%s,'%s',%s\n", formatDate(timestamp),
+				VERSION_ID, String.valueOf(angle));
 	}
 
 	/**{@inheritDoc}*/
 	@Override
 	public Message fromLogString(String str) {
 		String[] spl = str.split(",");
-		Date d = try_to_parse_date(spl[0]);
+		Date d = tryToParseDate(spl[0]);
 		double readAngle = Short.parseShort(spl[2]);
 		return new DriveControlMessage(d, readAngle);
 	}

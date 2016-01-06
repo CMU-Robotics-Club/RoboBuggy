@@ -5,6 +5,7 @@ import java.util.Date;
 import com.roboclub.robobuggy.ros.Message;
 
 /**
+ * Message representing a camera measurement
  * @author ?
  *
  * @version 0.5
@@ -13,24 +14,24 @@ import com.roboclub.robobuggy.ros.Message;
  * 
  *          DESCRIPTION: TODO
  */
-
-// Represents raw measurement from the IMU
 public class CameraMeasurement extends BaseMessage implements Message {
-	public static final String version_id = "camV0.0";
+	private static final String VERSION_ID = "camV0.0";
 
-	public Date timestamp;
+	private Date timestamp;
 
+	/**{@inheritDoc}*/
 	@Override
 	public String toLogString() {
-		return String.format("%s,%s\n", format_the_date(timestamp),
+		return String.format("%s,%s\n", formatDate(timestamp),
 				String.valueOf(5));
 	}
 
+	/**{@inheritDoc}*/
 	@Override
 	public Message fromLogString(String str) {
 		String[] spl = str.split(",");
-		Date d = try_to_parse_date(spl[0]);
-		//todo actually send a message that is usefull
+		Date d = tryToParseDate(spl[0]);
+		//TODO: actually send a message that is usefull
 		return new CameraMeasurement();
 	}
 }

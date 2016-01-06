@@ -57,8 +57,8 @@ public class LocPanel extends JPanel {
 		gpsSub = new Subscriber(NodeChannel.GPS.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
-				double latitude = ((GpsMeasurement)m).latitude;
-				double longitude = ((GpsMeasurement)m).longitude;
+				double latitude = ((GpsMeasurement)m).getLatitude();
+				double longitude = ((GpsMeasurement)m).getLongitude();
 				locs.add(new LocTuple(latitude, longitude));
 			}
 		});		

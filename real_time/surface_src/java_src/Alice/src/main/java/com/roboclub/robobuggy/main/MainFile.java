@@ -12,11 +12,17 @@ import com.roboclub.robobuggy.ui.Gui;
 
 
 /** This class is the driver starting up the robobuggy program, if you want the buggy to drive itself you should run this node */
-public class mainFile {
-    static Robot buggy;
-    static int num = 0;
+public class MainFile {
     
-    public static void main(String args[])  {
+	/**
+	 * Run Alice
+	 * @param args :
+	 * -g - run without gui
+	 * +g - run with gui
+	 * -r - run with active false
+	 * +r - run with active true
+	 */
+    public static void main(String[] args)  {
         config.getInstance();//must be run at least once
         try {
 			config.setupJNI(); //must run for jni to install
@@ -82,7 +88,7 @@ public class mainFile {
         }
         else {
         	//Play back disabled, create robot
-        	Robot.getInstance().startNode();
+        	Robot.getInstance().startNodes();
         }
     }
     

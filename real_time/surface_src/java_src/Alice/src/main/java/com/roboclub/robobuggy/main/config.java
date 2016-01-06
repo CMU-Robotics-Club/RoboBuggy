@@ -10,9 +10,10 @@ import com.orsoncharts.util.json.JSONObject;
 import com.orsoncharts.util.json.parser.JSONParser;
 import com.orsoncharts.util.json.parser.ParseException;
 
-// where all system configuration values should be placed
-// add jason parser for config
-
+// TODO: add jason parser for config
+/**
+ * Class used to store the system configuration values
+ */
 public class config {
 	// port index of the front camera
 	public static int FRONT_CAM_INDEX = 2;

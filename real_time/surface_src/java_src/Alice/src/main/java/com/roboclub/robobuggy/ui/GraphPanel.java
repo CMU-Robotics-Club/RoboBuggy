@@ -36,7 +36,7 @@ public class GraphPanel extends JPanel {
 		new Subscriber(NodeChannel.STEERING.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
-				steering.updateGraph(((SteeringMeasurement)m).angle);
+				steering.updateGraph(((SteeringMeasurement)m).getAngle());
 			}
 		});
 		
