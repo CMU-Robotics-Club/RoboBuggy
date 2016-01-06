@@ -22,6 +22,10 @@ import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.utilities.RobobuggyDateFormatter;
 
+/**
+ * Class used for playing back old log files. It does this by reading BuggyROS 
+ * messages stored in the log file and reinjecting them into the BuggyROS network.
+ */
 public class SensorPlayer implements Runnable {
 
 	private String path;
@@ -34,6 +38,10 @@ public class SensorPlayer implements Runnable {
 	private Publisher loggingButtonPub;
 
 
+	/**
+	 * Construct a new {@link SensorPlayer} object
+	 * @param filePath {@link String} of the name and location of the log file
+	 */
 	public SensorPlayer(String filePath) {
 	
 		imuPub = new Publisher(NodeChannel.IMU.getMsgPath());
@@ -82,10 +90,10 @@ public class SensorPlayer implements Runnable {
 				if(sensorStartTimeInMilis == 0){
 					sensorStartTimeInMilis = currentSensorTimeInMillis;
 				}
-				long sensorTime_fromStart = currentSensorTimeInMillis -sensorStartTimeInMilis; 
-				long realTime_fromStart = currentTime - prevTimeInMillis;				
-				long PLAY_BACK_SPEED = 100;
-				long sleepTime = PLAY_BACK_SPEED*realTime_fromStart - sensorTime_fromStart;
+				long sensorTimeFromStart = currentSensorTimeInMillis -sensorStartTimeInMilis; 
+				long realTimeFromStart = currentTime - prevTimeInMillis;				
+				long playbackSpeed = 100;
+				long sleepTime = playbackSpeed*realTimeFromStart - sensorTimeFromStart;
 				System.out.println("sleepTime:"+sleepTime);
 				if(sleepTime < 0 ){ 
 					//TODO change back to sleepTime
@@ -127,7 +135,9 @@ public class SensorPlayer implements Runnable {
 						double rawLat = (double) sensorParams.get("raw_gps_lat");
 						double rawLon = (double) sensorParams.get("raw_gps_lon");
 						
-						gpsPub.publish(new GpsMeasurement(gpsTimestamp, latitude, north, longitude, west, qualityValue, numSatellites, hdop, antennaAlt, rawLat, rawLon));
+						gpsPub.publish(new GpsMeasurement(gpsTimestamp, 
+								latitude, north, longitude, west, qualityValue,
+								numSatellites, hdop, antennaAlt, rawLat, rawLon));
 						
 						break;
 						
