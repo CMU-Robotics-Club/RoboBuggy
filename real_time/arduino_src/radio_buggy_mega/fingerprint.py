@@ -4,6 +4,8 @@
 *   have been modified since the last commit.  Information is stored in 
 *   fingerprint.h after the "make" command has been called
 *
+*  Note: To run this, the user must have python 2.7
+*
 *   By Sean Buckley
 """
 

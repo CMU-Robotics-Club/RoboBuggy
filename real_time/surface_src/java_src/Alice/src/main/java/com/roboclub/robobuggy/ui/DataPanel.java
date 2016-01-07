@@ -196,7 +196,7 @@ public class DataPanel extends JPanel {
 		panel.add(steeringAng);
 		
 		// Subscriber for drive control updates
-		new Subscriber(SensorChannel.STEERING.getMsgPath(), new MessageListener() {
+		new Subscriber(SensorChannel.STEERING_COMMANDED.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				steeringAng.setText(Integer.toString(((SteeringMeasurement)m).angle));
