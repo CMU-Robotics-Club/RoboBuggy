@@ -34,7 +34,8 @@ public final class RobotLogger {
 		if (instance == null) {
 			logDir = new File(Config.LOG_FILE_LOCATION);
 			
-			logDir.mkdirs();
+			if(!logDir.mkdirs())
+				throw new RuntimeException("Failed to create log directory");
 			
 //			if (!logDir.exists()) {
 //				logDir.mkdirs();
@@ -84,13 +85,15 @@ public final class RobotLogger {
 		if (instance != null) {
 			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 			logFolder = new File(logDir, df.format(new Date()));
-			logFolder.mkdirs();
+			if(!logFolder.mkdirs())
+				throw new RuntimeException("Failed to create log directory");
 
 			File msgFile = new File(logFolder, "messages.log");
 			sensor = new SensorLogger(logFolder, new Date());
 
 			try {
-				msgFile.createNewFile();
+				if(!msgFile.createNewFile())
+					throw new RuntimeException("Failed to create log file");
 				// TODO fix Gui.UpdateLogName(msgFile.getName());
 
 				Handler handler = new StreamHandler(new FileOutputStream(

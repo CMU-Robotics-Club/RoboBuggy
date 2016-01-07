@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.text.SimpleDateFormat;
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -22,9 +22,6 @@ import com.roboclub.robobuggy.ros.Message;
 public final class MessageLogWriter {
 	private PrintStream csvOutstream = null;
 	private LinkedBlockingQueue<String> lineQueue = new LinkedBlockingQueue<String>();
-
-	// Used for directory names
-	private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 
 	// returns the name of the logger.
 	private String getFileName(Date startTime) {
@@ -60,7 +57,8 @@ public final class MessageLogWriter {
 		if (outputDir == null) {
 			throw new RuntimeException("Output Directory was null!");
 		} else if (!outputDir.exists()) {
-			outputDir.mkdirs();
+			if(!outputDir.mkdirs())
+				throw new RuntimeException("Unable to make output Directory!");
 		}
 
 		File csvFile = new File(outputDir, outputFilename + "sensors.csv");
@@ -68,11 +66,14 @@ public final class MessageLogWriter {
 
 		// TODO fix Gui.UpdateLogName( outputFileName );
 		try {
-			csvOutstream = new PrintStream(csvFile);
+			csvOutstream = new PrintStream(csvFile, "UTF-8");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			throw new RuntimeException("Cannot create sensor log file ("
 					+ csvFile + ")!");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		// Spin up loggin thread

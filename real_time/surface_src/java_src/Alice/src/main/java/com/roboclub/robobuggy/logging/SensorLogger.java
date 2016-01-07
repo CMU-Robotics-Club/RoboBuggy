@@ -3,6 +3,7 @@ package com.roboclub.robobuggy.logging;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,9 +11,6 @@ import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import com.orsoncharts.util.json.JSONObject;
-import com.roboclub.robobuggy.main.Config;
-import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
-import com.roboclub.robobuggy.nodes.baseNodes.SerialNode;
 import com.roboclub.robobuggy.nodes.sensors.GpsNode;
 import com.roboclub.robobuggy.nodes.sensors.ImuNode;
 import com.roboclub.robobuggy.nodes.sensors.LoggingNode;
@@ -146,8 +144,6 @@ public final class SensorLogger {
 		return "1.0.0";
 	}
 
-	private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-
 	/**
 	 * Construct a new {@link SensorLogger} object
 	 * @param outputDir {@link File} of the output file directory
@@ -157,14 +153,15 @@ public final class SensorLogger {
 		if (outputDir == null) {
 			throw new IllegalArgumentException("Output Directory was null!");
 		} else if (!outputDir.exists()) {
-			outputDir.mkdirs();
+			if(!outputDir.mkdirs())
+				throw new RuntimeException("Failed to create output directory");
 		}
 
 		File logFile = new File(outputDir, "sensors.txt");
 		System.out.println("FileCreated: " + logFile.getAbsolutePath());
 		try {
-			log = new PrintStream(logFile);
-		} catch (FileNotFoundException e) {
+			log = new PrintStream(logFile, "UTF-8");
+		} catch (FileNotFoundException | UnsupportedEncodingException e) {
 			e.printStackTrace();
 			throw new RuntimeException("Cannot create sensor log file ("
 					+ logFile + ")!");

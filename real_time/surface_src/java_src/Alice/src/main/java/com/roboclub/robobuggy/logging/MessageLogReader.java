@@ -1,7 +1,5 @@
 package com.roboclub.robobuggy.logging;
 
-import java.text.SimpleDateFormat;
-
 /**
  * Read the data from the file.
  *
@@ -12,8 +10,6 @@ import java.text.SimpleDateFormat;
  * @author Matt Sebek (sebek.matt@gmail.com)
  */
 public final class MessageLogReader {
-	// Used for directory names
-	private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 
 	// Loop through each type of message, and see if it fits the bill. gT
 	/*
