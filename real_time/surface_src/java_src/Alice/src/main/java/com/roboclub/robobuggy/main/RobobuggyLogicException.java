@@ -54,7 +54,7 @@ public class RobobuggyLogicException {
 	private boolean shouldMessageBeDisplayed(MessageLevel level){
 		switch(level){
 		case EXCEPTION:
-			switch(config.REPORTING_LEVEL){
+			switch(Config.REPORTING_LEVEL){
 			case EXCEPTION:
 				return true;
 			case WARNING:
@@ -66,7 +66,7 @@ public class RobobuggyLogicException {
 				return true;
 			}
 		case WARNING:
-			switch(config.REPORTING_LEVEL){
+			switch(Config.REPORTING_LEVEL){
 			case EXCEPTION:
 				return true;
 			case WARNING:
@@ -78,7 +78,7 @@ public class RobobuggyLogicException {
 				return true;
 			}
 		case NOTE:
-			switch (config.REPORTING_LEVEL) {
+			switch (Config.REPORTING_LEVEL) {
 			case EXCEPTION:
 				return true;
 			case WARNING:

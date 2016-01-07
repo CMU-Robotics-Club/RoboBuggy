@@ -10,12 +10,19 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+/**
+ * {@link JPanel} used to display an angular graph
+ */
 public class AngleGraph extends JPanel {
 	private static final long serialVersionUID = 4524475337756493384L;
 
 	private JTextField reading;
 	private Graph graph;
 	
+	/**
+	 * Construct a new {@link AngleGraph}
+	 * @param name name of the graph
+	 */
 	public AngleGraph(String name) {
 		this.setLayout(new GridBagLayout());
 		this.setBackground(Color.DARK_GRAY);
@@ -43,11 +50,18 @@ public class AngleGraph extends JPanel {
 		this.add(panel, gbc);
 	}
 	
+	/**
+	 * Update the {@link AngleGraph} with a new value
+	 * @param angle new value to display
+	 */
 	public void updateGraph(int angle) {
 		this.graph.updateGraph(angle);
 		this.reading.setText(Integer.toString(angle));
 	}
 	
+	/**
+	 * Private class used to represent a graph
+	 */
 	private class Graph extends JPanel {
 		private static final long serialVersionUID = 6015150544448011207L;
 
@@ -56,16 +70,19 @@ public class AngleGraph extends JPanel {
 		private int endx;
 		private int endy;
 		private static final int OFFSET = 10;
-		private static final int startx = WIDTH/2 + OFFSET;
-		private static final int starty = HEIGHT/2 + OFFSET;
+		private static final int START_X = WIDTH/2 + OFFSET;
+		private static final int START_Y = HEIGHT/2 + OFFSET;
 		private static final double RADIUS = (double)WIDTH/2;
 		
+		/**
+		 * Construct a new {@link Graph}
+		 */
 		public Graph() {
 			this.setPreferredSize(new Dimension(WIDTH + 2*OFFSET, 
 					HEIGHT + 2*OFFSET));
 			
-			this.endx = startx;
-			this.endy = starty;
+			this.endx = START_X;
+			this.endy = START_Y;
 		}
 		
 		@Override
@@ -77,12 +94,12 @@ public class AngleGraph extends JPanel {
 			g.fillOval(OFFSET, OFFSET, WIDTH, HEIGHT);
 			
 			g.setColor(Color.RED);
-			g.drawLine(startx, starty, endx, endy);
+			g.drawLine(START_X, START_Y, endx, endy);
 		}
 		
 		public void updateGraph(int angle) {
-			endx = startx - (int)(RADIUS * Math.sin(Math.toRadians(angle)));
-			endy = starty - (int)(RADIUS * Math.cos(Math.toRadians(angle)));
+			endx = START_X - (int)(RADIUS * Math.sin(Math.toRadians(angle)));
+			endy = START_Y - (int)(RADIUS * Math.cos(Math.toRadians(angle)));
 			
 			this.repaint();
 		}

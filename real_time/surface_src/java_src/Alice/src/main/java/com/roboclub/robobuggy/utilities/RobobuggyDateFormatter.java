@@ -9,8 +9,16 @@ import java.util.Locale;
 import com.roboclub.robobuggy.main.MessageLevel;
 import com.roboclub.robobuggy.main.RobobuggyLogicException;
 
+/**
+ * Class used to format dates
+ */
 public class RobobuggyDateFormatter {
 
+	/**
+	 * Converts a {@link String} of a date into a {@link Date} object
+	 * @param date {@link String} representation of the date
+	 * @return {@link Date} object representing the date
+	 */
 	public static Date formatRobobuggyDate(String date) {
 		try {
 			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.ENGLISH);

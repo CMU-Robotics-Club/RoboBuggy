@@ -10,6 +10,9 @@ import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 
+/**
+ * {@link JPanel} used to represent a graph
+ */
 public class GraphPanel extends JPanel {
 	private static final long serialVersionUID = -5453262887347328140L;
 
@@ -18,6 +21,9 @@ public class GraphPanel extends JPanel {
 	private AngleGraph pitch;
 	private AngleGraph yaw;
 	
+	/**
+	 * Construct a new {@link GraphPanel}
+	 */
 	public GraphPanel() {
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
 		this.setLayout(new GridLayout(1,4));

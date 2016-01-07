@@ -23,9 +23,9 @@ public class MainFile {
 	 * +r - run with active true
 	 */
     public static void main(String[] args)  {
-        config.getInstance();//must be run at least once
+        Config.getInstance();//must be run at least once
         try {
-			config.setupJNI(); //must run for jni to install
+			Config.setupJNI(); //must run for jni to install
 			//note that errors are just printed to the console since the gui and logging system  has not been created yet
 		} catch (NoSuchFieldException e1) {
 			e1.printStackTrace();
@@ -47,34 +47,34 @@ public class MainFile {
         
         for (int i = 0; i < args.length; i++) {
             if (args[i].equalsIgnoreCase("-g")) {
-                config.GUI_ON = false;
+                Config.GUI_ON = false;
             } 
             else if (args[i].equalsIgnoreCase("+g")) 
             {
-                config.GUI_ON = true;
+                Config.GUI_ON = true;
             } 
             else if (args[i].equalsIgnoreCase("-r")) 
             {
-                config.active = false;
+                Config.active = false;
             } 
             else if (args[i].equalsIgnoreCase("+r")) 
             {
-                config.active = true;
+                Config.active = true;
             }
         }
         
-        if(config.GUI_ON)
+        if(Config.GUI_ON)
         {
             Gui.getInstance();
         }
         
-    	if(config.logging)
+    	if(Config.logging)
         {
             RobotLogger.getInstance();
-            Gui.EnableLogging();
+            Gui.enableLogging();
         }
     	
-    	if (config.DATA_PLAY_BACK_DEFAULT) {
+    	if (Config.DATA_PLAY_BACK_DEFAULT) {
     		//Play back mode enabled
     		SensorPlayer sp = new SensorPlayer("logs/2015-11-21-07-08-10/sensors.txt");
         	new Thread(new Runnable() {

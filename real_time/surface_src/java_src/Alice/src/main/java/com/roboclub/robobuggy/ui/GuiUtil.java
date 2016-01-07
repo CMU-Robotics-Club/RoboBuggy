@@ -7,6 +7,13 @@ package com.roboclub.robobuggy.ui;
  */
 public class GuiUtil {
 	
+	/**
+	 * Creates a subplot in the gui
+	 * @param rows number of rows
+	 * @param cols number of columns
+	 * @param thisRow the row to populate
+	 * @param thisCol the column to populate
+	 */
 	public void subplot(int rows, int cols, int thisRow, int thisCol){
 		//TODO
 	}

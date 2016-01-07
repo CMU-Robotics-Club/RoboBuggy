@@ -18,13 +18,13 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import com.roboclub.robobuggy.logging.RobotLogger;
-import com.roboclub.robobuggy.main.config;
+import com.roboclub.robobuggy.main.Config;
 import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.NodeChannel;
 
 /**
- * 
+ * {@link JPanel} used to represent a control pattern
  * @author Trevor Decker
  * @author Kevin Brennan
  *
@@ -34,30 +34,32 @@ import com.roboclub.robobuggy.ros.NodeChannel;
  * 
  *          DESCRIPTION: TODO
  */
-
 public class ControlPanel extends JPanel {
 	private static final long serialVersionUID = -924045896215455343L;
 	private static final int TIME_ZONE_OFFSET = 18000000;//5 hours
 
-	private static JButton play_btn;
-	private JFormattedTextField time_lbl;
-	private static Date startTime;
-	private static Timer timer;
+	private JButton playBtn;
+	private JFormattedTextField timeLbl;
+	private Date startTime;
+	private Timer timer;
 
-	SensorSwitch gps_switch;
-	SensorSwitch vision_switch;
-	SensorSwitch encoders_switch;
-	SensorSwitch imu_switch;
-	SensorSwitch controls_switch;
-	SensorSwitch autonomous_switch;
-	JButton display;
+	private SensorSwitch gpsSwitch;
+	private SensorSwitch visionSwitch;
+	private SensorSwitch encodersSwitch;
+	private SensorSwitch imuSwitch;
+	private SensorSwitch controlsSwitch;
+	private SensorSwitch autonomousSwitch;
+	private JButton display;
 
-	Publisher logging_button_pub;
+	private Publisher loggingButtonPub;
 	
+	/**
+	 * Construct a new {@link ControlPanel} object
+	 */
 	public ControlPanel() {
-		logging_button_pub = new Publisher(Gui.GuiPubSubTopics.GUI_LOG_BUTTON_UPDATED.toString());
+		loggingButtonPub = new Publisher(Gui.GuiPubSubTopics.GUI_LOG_BUTTON_UPDATED.toString());
 		
-		timer = new Timer(10, new timerHandler());// updates every .01 seconds
+		timer = new Timer(10, new TimerHandler());// updates every .01 seconds
 		timer.setDelay(100);
 		timer.setRepeats(true); // timer needs to be setup before startpause_btn
 
@@ -80,36 +82,42 @@ public class ControlPanel extends JPanel {
 		addSensorSwitchPanel(gbc);
 	}
 
-	private class timerHandler implements ActionListener {
+	/**
+	 * Private class used to handle timer events
+	 */
+	private class TimerHandler implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent ae) {
 			Date currentTime = new Date();
-			time_lbl.setValue(currentTime.getTime() - startTime.getTime()+ TIME_ZONE_OFFSET);
+			timeLbl.setValue(currentTime.getTime() - startTime.getTime()+ TIME_ZONE_OFFSET);
 		}
 	}
 
+	/**
+	 * Private class used to handle play button actions
+	 */
 	private class PlayButtonHandler implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// inverts the state of the system every time the button is pressed
-			config.active = !config.active;
+			Config.active = !Config.active;
 			
-			if (config.active) {
+			if (Config.active) {
 				System.out.println("System Started");
-				play_btn.setBackground(Color.RED);
-				play_btn.setText("STOP");
+				playBtn.setBackground(Color.RED);
+				playBtn.setText("STOP");
 				timer.start();
 				
 				RobotLogger.createLog();
-				logging_button_pub.publish(new GuiLoggingButtonMessage(GuiLoggingButtonMessage.LoggingMessage.START));
+				loggingButtonPub.publish(new GuiLoggingButtonMessage(GuiLoggingButtonMessage.LoggingMessage.START));
 				startTime = new Date();
 			} else {
 				System.out.println("System Paused");
-				play_btn.setBackground(Color.GREEN);
-				play_btn.setText("START");
+				playBtn.setBackground(Color.GREEN);
+				playBtn.setText("START");
 				
 				RobotLogger.closeLog();
-				logging_button_pub.publish(new GuiLoggingButtonMessage(GuiLoggingButtonMessage.LoggingMessage.STOP));
+				loggingButtonPub.publish(new GuiLoggingButtonMessage(GuiLoggingButtonMessage.LoggingMessage.STOP));
 				timer.stop();
 			}
 		}
@@ -120,40 +128,40 @@ public class ControlPanel extends JPanel {
 		loggingPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 		loggingPanel.setLayout(new GridBagLayout());
 		
-		GridBagConstraints gbc_panel = new GridBagConstraints();
+		GridBagConstraints gbcPanel = new GridBagConstraints();
 		gbc.weightx = 1.0;
 		
-		play_btn = new JButton("START");
-		play_btn.setFont(new Font("serif", Font.PLAIN, 70));
-		play_btn.addActionListener(new PlayButtonHandler());
-		play_btn.setEnabled(false);
-		play_btn.setBackground(Color.BLUE);
+		playBtn = new JButton("START");
+		playBtn.setFont(new Font("serif", Font.PLAIN, 70));
+		playBtn.addActionListener(new PlayButtonHandler());
+		playBtn.setEnabled(false);
+		playBtn.setBackground(Color.BLUE);
 		
-		JLabel filename_lbl = new JLabel("File: ",
+		JLabel filenameLbl = new JLabel("File: ",
 				SwingConstants.CENTER);
-		filename_lbl.setFont(new Font("sanserif", Font.PLAIN, 30));
+		filenameLbl.setFont(new Font("sanserif", Font.PLAIN, 30));
 
-		time_lbl = new JFormattedTextField(new SimpleDateFormat("HH:mm:ss.S"));
-		time_lbl.setHorizontalAlignment(SwingConstants.CENTER);
-		time_lbl.setFont(new Font("sanserif", Font.PLAIN, 50));
-		time_lbl.setEditable(false);
-		time_lbl.setColumns(7);
-		time_lbl.setValue(startTime);
+		timeLbl = new JFormattedTextField(new SimpleDateFormat("HH:mm:ss.S"));
+		timeLbl.setHorizontalAlignment(SwingConstants.CENTER);
+		timeLbl.setFont(new Font("sanserif", Font.PLAIN, 50));
+		timeLbl.setEditable(false);
+		timeLbl.setColumns(7);
+		timeLbl.setValue(startTime);
 
-		gbc_panel.weightx = 1;
-		gbc_panel.fill = GridBagConstraints.BOTH;
-		gbc_panel.gridx = 0;
-		gbc_panel.gridy = 0;
-		gbc_panel.weighty = 0.5;
-		loggingPanel.add(play_btn, gbc_panel);
+		gbcPanel.weightx = 1;
+		gbcPanel.fill = GridBagConstraints.BOTH;
+		gbcPanel.gridx = 0;
+		gbcPanel.gridy = 0;
+		gbcPanel.weighty = 0.5;
+		loggingPanel.add(playBtn, gbcPanel);
 		
-		gbc_panel.gridy = 1;
-		gbc_panel.weighty = 0.25;
-		loggingPanel.add(filename_lbl, gbc_panel);
+		gbcPanel.gridy = 1;
+		gbcPanel.weighty = 0.25;
+		loggingPanel.add(filenameLbl, gbcPanel);
 
-		gbc_panel.gridy = 2;
-		gbc_panel.weighty = 0.25;
-		loggingPanel.add(time_lbl, gbc_panel);
+		gbcPanel.gridy = 2;
+		gbcPanel.weighty = 0.25;
+		loggingPanel.add(timeLbl, gbcPanel);
 		
 		this.add(loggingPanel, gbc);
 	}
@@ -163,12 +171,12 @@ public class ControlPanel extends JPanel {
 		switchPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 		switchPanel.setLayout(new GridLayout(7,1));
 		
-		gps_switch = new SensorSwitch("GPS", NodeChannel.GPS);
-		vision_switch = new SensorSwitch("VISION", NodeChannel.VISION);
-		encoders_switch = new SensorSwitch("ENCODERS", NodeChannel.ENCODER);
-		imu_switch = new SensorSwitch("IMU", NodeChannel.IMU);
-		controls_switch = new SensorSwitch("CONTROLS", NodeChannel.DRIVE_CTRL);
-		autonomous_switch = new SensorSwitch("AUTO", NodeChannel.AUTO);
+		gpsSwitch = new SensorSwitch("GPS", NodeChannel.GPS);
+		visionSwitch = new SensorSwitch("VISION", NodeChannel.VISION);
+		encodersSwitch = new SensorSwitch("ENCODERS", NodeChannel.ENCODER);
+		imuSwitch = new SensorSwitch("IMU", NodeChannel.IMU);
+		controlsSwitch = new SensorSwitch("CONTROLS", NodeChannel.DRIVE_CTRL);
+		autonomousSwitch = new SensorSwitch("AUTO", NodeChannel.AUTO);
 		
 		display = new JButton("DISPLAY");
 		display.setBackground(Color.BLUE);
@@ -182,21 +190,22 @@ public class ControlPanel extends JPanel {
 			}
 		});
 		
-		switchPanel.add(autonomous_switch);
-		switchPanel.add(gps_switch);
-		switchPanel.add(imu_switch);
-		switchPanel.add(encoders_switch);
-		switchPanel.add(controls_switch);
-		switchPanel.add(vision_switch);
+		switchPanel.add(autonomousSwitch);
+		switchPanel.add(gpsSwitch);
+		switchPanel.add(imuSwitch);
+		switchPanel.add(encodersSwitch);
+		switchPanel.add(controlsSwitch);
+		switchPanel.add(visionSwitch);
 		switchPanel.add(display);
 		
 		this.add(switchPanel, gbc);
 	}
-
 	
-	/*		Update Methods */
+	/**
+	 * Enables logging
+	 */
 	public void enableLogging() {
-		play_btn.setEnabled(true);
-		play_btn.setBackground(Color.GREEN);
+		playBtn.setEnabled(true);
+		playBtn.setBackground(Color.GREEN);
 	}
 }

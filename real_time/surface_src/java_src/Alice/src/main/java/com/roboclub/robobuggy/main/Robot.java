@@ -42,16 +42,16 @@ public final class Robot implements RosMaster {
 	/************************************* Set of all internal private functions ************************/
 	private Robot() {
 		System.out.println("Starting Robot");
-		autonomous = config.AUTONOMUS_DEFAULT;
+		autonomous = Config.AUTONOMUS_DEFAULT;
 		nodeList = new LinkedList<>();
 		RobobuggyLogicException.setupLogicException(NodeChannel.LOGIC_EXCEPTION);
 		new RobobuggyLogicException("Logic Exception Setup properly" ,  MessageLevel.NOTE);
 		
 		// Initialize Nodes
-		nodeList.add(new GpsNode(NodeChannel.GPS, config.COM_PORT_GPS_INTEGRATED));
-		nodeList.add(new ImuNode(NodeChannel.IMU, config.COM_PORT_IMU));
+		nodeList.add(new GpsNode(NodeChannel.GPS, Config.COM_PORT_GPS_INTEGRATED));
+		nodeList.add(new ImuNode(NodeChannel.IMU, Config.COM_PORT_IMU));
 		nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING,
-				config.COM_PORT_ENCODER, COMMAND_PERIOD));
+				Config.COM_PORT_ENCODER, COMMAND_PERIOD));
 	}
 	
 	/***************************************   Getters ********************************/

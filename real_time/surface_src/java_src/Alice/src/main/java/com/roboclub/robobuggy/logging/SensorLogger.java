@@ -10,7 +10,7 @@ import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import com.orsoncharts.util.json.JSONObject;
-import com.roboclub.robobuggy.main.config;
+import com.roboclub.robobuggy.main.Config;
 import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
 import com.roboclub.robobuggy.nodes.baseNodes.SerialNode;
 import com.roboclub.robobuggy.nodes.sensors.GpsNode;

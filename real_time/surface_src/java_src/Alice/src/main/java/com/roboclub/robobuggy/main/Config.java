@@ -14,7 +14,7 @@ import com.orsoncharts.util.json.parser.ParseException;
 /**
  * Class used to store the system configuration values
  */
-public class config {
+public class Config {
 	// port index of the front camera
 	public static int FRONT_CAM_INDEX = 2;
 	
@@ -79,13 +79,13 @@ public class config {
 	public static String clEyeDllPath = "C://CL-Eye Platform SDK//Bin//CLEyeMulticam.dll";
 
 	// internal reference of this config so that it can fit the factory pattern
-	private static config instance;
+	private static Config instance;
 
-	public static config getInstance() {
+	public static Config getInstance() {
 		if (instance == null) {
-			instance = new config();
+			instance = new Config();
 			// sets defaults
-			logging = config.LOGGING_DEFAULT;
+			logging = Config.LOGGING_DEFAULT;
 			GUI_ON = GUI_ON_DEFAULT;
 			active = ACTIVE_DEFAULT;
 		}
@@ -103,33 +103,33 @@ public class config {
 					.parse(new FileReader(filename));
 
 			FRONT_CAM_INDEX = (int) obj.getOrDefault("FRONT_CAM_INDEX",
-					config.FRONT_CAM_INDEX);
+					Config.FRONT_CAM_INDEX);
 			REAR_CAM_INDEX = (int) obj.getOrDefault("BACK_CAM_INDEX",
-					config.REAR_CAM_INDEX);
-			OVERLOOK_CAM_INDEX = (int) obj.getOrDefault("OVERLOOK_CAM_INDEX",config.OVERLOOK_CAM_INDEX);
+					Config.REAR_CAM_INDEX);
+			OVERLOOK_CAM_INDEX = (int) obj.getOrDefault("OVERLOOK_CAM_INDEX",Config.OVERLOOK_CAM_INDEX);
 			VISION_SYSTEM_EXECUTABLE_LOCATION = (String) obj.getOrDefault(
 					"VISION_SYSTEM_EXECUTABLE_LOCATION",
-					config.VISION_SYSTEM_EXECUTABLE_LOCATION);
+					Config.VISION_SYSTEM_EXECUTABLE_LOCATION);
 			LOG_FILE_LOCATION = (String) obj.getOrDefault("LOG_FILE_LOCATION",
-					config.LOG_FILE_LOCATION);
+					Config.LOG_FILE_LOCATION);
 
 			logging = (boolean) obj.getOrDefault("LOGGING",
-					config.LOGGING_DEFAULT);
-			GUI_ON = (boolean) obj.getOrDefault("GUI", config.GUI_ON_DEFAULT);
+					Config.LOGGING_DEFAULT);
+			GUI_ON = (boolean) obj.getOrDefault("GUI", Config.GUI_ON_DEFAULT);
 
 			AUTONOMUS_DEFAULT = (boolean) obj.getOrDefault("AUTONOMOUS",
-					config.AUTONOMUS_DEFAULT);
+					Config.AUTONOMUS_DEFAULT);
 			DRIVE_DEFAULT = (boolean) obj.getOrDefault("DRIVE",
-					config.DRIVE_DEFAULT);
+					Config.DRIVE_DEFAULT);
 
-			IMU_DEFAULT = (boolean) obj.getOrDefault("IMU", config.IMU_DEFAULT);
-			GPS_DEFAULT = (boolean) obj.getOrDefault("GPS", config.GPS_DEFAULT);
+			IMU_DEFAULT = (boolean) obj.getOrDefault("IMU", Config.IMU_DEFAULT);
+			GPS_DEFAULT = (boolean) obj.getOrDefault("GPS", Config.GPS_DEFAULT);
 			ENCODER_DEFAULT = (boolean) obj.getOrDefault("ENCODER",
-					config.ENCODER_DEFAULT);
+					Config.ENCODER_DEFAULT);
 			VISION_SYSTEM_DEFAULT = (boolean) obj.getOrDefault("VISION",
-					config.VISION_SYSTEM_DEFAULT);
+					Config.VISION_SYSTEM_DEFAULT);
 			BRAKES_PER_FULL_PRESSURE = (byte) obj.getOrDefault(
-					"BRAKE_PER_FULL_PRESSURE", config.BRAKES_PER_FULL_PRESSURE);
+					"BRAKE_PER_FULL_PRESSURE", Config.BRAKES_PER_FULL_PRESSURE);
 		} catch (FileNotFoundException e) {
 			System.out.println("Failed to read file: " + filename);
 		} catch (IOException e) {

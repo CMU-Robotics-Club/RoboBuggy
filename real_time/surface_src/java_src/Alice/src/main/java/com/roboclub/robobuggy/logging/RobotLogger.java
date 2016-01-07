@@ -10,7 +10,7 @@ import java.util.logging.Handler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
-import com.roboclub.robobuggy.main.config;
+import com.roboclub.robobuggy.main.Config;
 
 /**
  * Logs data from the sensors
@@ -32,7 +32,7 @@ public final class RobotLogger {
 	 */
 	public static RobotLogger getInstance() {
 		if (instance == null) {
-			logDir = new File(config.LOG_FILE_LOCATION);
+			logDir = new File(Config.LOG_FILE_LOCATION);
 			
 			logDir.mkdirs();
 			

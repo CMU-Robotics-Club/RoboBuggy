@@ -20,6 +20,7 @@ import com.roboclub.robobuggy.ros.Subscriber;
 //import com.roboclub.robobuggy.ui.GpsPanel.LocTuple;
 
 /**
+ * {@link JPanel} used for displaying sensor data
  * @author Trevor Decker
  * @author Kevin Brennan 
  *
@@ -29,7 +30,6 @@ import com.roboclub.robobuggy.ros.Subscriber;
  * 
  * DESCRIPTION: TODO
  */
-
 public class DataPanel extends JPanel {
 	private static final long serialVersionUID = 3950373392222628865L;
 
@@ -48,6 +48,9 @@ public class DataPanel extends JPanel {
 	private JLabel latitude,longitude;
 	private Subscriber gpsSub;
 	
+	/**
+	 * Construct a new {@link DataPanel}
+	 */
 	public DataPanel() {
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
 		this.setLayout(new GridBagLayout());
@@ -220,6 +223,10 @@ public class DataPanel extends JPanel {
 	}
 	
 	//added by Abhinav Girish ; only temporary
+	/**
+	 * Returns the values of the {@link DataPanel}
+	 * @return the values of the {@link DataPanel}
+	 */
 	public String getValues()
 	{
 		String values = "";

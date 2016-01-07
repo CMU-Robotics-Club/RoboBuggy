@@ -14,7 +14,7 @@ import javax.swing.JFrame;
 import com.roboclub.robobuggy.main.Robot;
 
 /**
- * 
+ * {@link JFrame} used to represent the robobuggy gui
  * @author Trevor Decker
  * @author Kevin Brennan 
  *
@@ -24,7 +24,6 @@ import com.roboclub.robobuggy.main.Robot;
  * 
  * DESCRIPTION: TODO
  */
-
 public final class Gui extends JFrame {
 	private static final long serialVersionUID = 670947948979376738L;
 
@@ -33,11 +32,18 @@ public final class Gui extends JFrame {
 	
 	private static Gui instance;
 	
+	/**
+	 * Enum of {@link Gui} publisher and subscriber topics
+	 */
 	public enum GuiPubSubTopics {
 		GUI_LOG_BUTTON_UPDATED,
 	}
 
-	 //added data panel to figure out adding data in real time to gui
+	/**
+	 * Returns a reference to the one instance of the {@link Gui}. 
+	 * If none exists, one will be constructed.
+	 * @return a reference to the one instance of the {@link Gui}
+	 */
 	public static Gui getInstance() {
 		if (instance == null) {
 			instance = new Gui();
@@ -45,13 +51,16 @@ public final class Gui extends JFrame {
 		return instance;
 	}
 
-	public Gui() {
+	/**
+	 * Construct a new {@link Gui} object
+	 */
+	private Gui() {
 		System.out.println("Starting GUI");
 		populate();
 		System.out.println("Populated!");
 	}
 
-	public void populate() {
+	private void populate() {
 		this.setTitle("RoboBuggy Interface");
 		this.setExtendedState(Frame.MAXIMIZED_BOTH);
 		Container pane = this.getContentPane();
@@ -98,13 +107,19 @@ public final class Gui extends JFrame {
 		
 	}
 	
+	/**
+	 * Closes the {@link Gui}
+	 */
 	public static void close() {
 		System.out.println("Trying to close the window!");
 		instance.dispatchEvent(new WindowEvent(instance, WindowEvent.WINDOW_CLOSING));
 		System.out.println("Apparently we've closed the window!");
 	}
 
-	public static void EnableLogging() {
+	/**
+	 * Enables logging
+	 */
+	public static void enableLogging() {
 		instance.ctrlPanel.enableLogging();
 	}
 }

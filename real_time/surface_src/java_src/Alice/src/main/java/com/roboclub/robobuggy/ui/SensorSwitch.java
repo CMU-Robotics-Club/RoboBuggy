@@ -22,7 +22,7 @@ import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 
 /**
- * 
+ * {@link JPanel} used to represent a switch for a robobuggy sensor
  * @author Trevor Decker
  * @author Kevin Brennan
  *
@@ -32,26 +32,30 @@ import com.roboclub.robobuggy.ros.Subscriber;
  * 
  * DESCRIPTION: TODO
  */
-
 public class SensorSwitch extends JPanel {
 	private static final long serialVersionUID = 8232116275431651229L;
-	private JButton sensor_btn;
+	private JButton sensorBtn;
 	private Publisher publisher;
 
+	/**
+	 * Constructs a new {@link SensorSwitch} object
+	 * @param name Name of the panel
+	 * @param sensor {@link NodeChannel} of the sensor
+	 */
 	public SensorSwitch(String name, NodeChannel sensor) {
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
 		this.setLayout(new GridLayout(1,2));
 
-		JLabel sensorName_lbl = new JLabel(name, SwingConstants.CENTER);
-		sensorName_lbl.setFont(new Font("serif", Font.BOLD, 20));
-		this.add(sensorName_lbl);
+		JLabel sensorNameLbl = new JLabel(name, SwingConstants.CENTER);
+		sensorNameLbl.setFont(new Font("serif", Font.BOLD, 20));
+		this.add(sensorNameLbl);
 
-		sensor_btn = new JButton("OFF");
-		sensor_btn.setHorizontalTextPosition(SwingConstants.CENTER);
-		sensor_btn.setFont(new Font("serif", Font.BOLD, 20));
-		sensor_btn.setForeground(Color.WHITE);
-		this.add(sensor_btn);
-		sensor_btn.addActionListener(new ResetHandler());
+		sensorBtn = new JButton("OFF");
+		sensorBtn.setHorizontalTextPosition(SwingConstants.CENTER);
+		sensorBtn.setFont(new Font("serif", Font.BOLD, 20));
+		sensorBtn.setForeground(Color.WHITE);
+		this.add(sensorBtn);
+		sensorBtn.addActionListener(new ResetHandler());
 		
 		publisher = new Publisher(sensor.getRstPath());
 		// Subscriber for sensor state changes
@@ -65,33 +69,36 @@ public class SensorSwitch extends JPanel {
 	private void updateButton(NodeState state) {
 		switch (state) {
 		case ON:
-			sensor_btn.setEnabled(true);
-			sensor_btn.setText("ON");
-			sensor_btn.setBackground(Color.GREEN);
+			sensorBtn.setEnabled(true);
+			sensorBtn.setText("ON");
+			sensorBtn.setBackground(Color.GREEN);
 			break;
 		case DISCONNECTED:
-			sensor_btn.setEnabled(true);
-			sensor_btn.setText("OFF");
-			sensor_btn.setBackground(Color.RED);
+			sensorBtn.setEnabled(true);
+			sensorBtn.setText("OFF");
+			sensorBtn.setBackground(Color.RED);
 			break;
 		case NOT_IN_USE:
-			sensor_btn.setEnabled(false);
-			sensor_btn.setText("OFF");
-			sensor_btn.setBackground(Color.BLUE);
+			sensorBtn.setEnabled(false);
+			sensorBtn.setText("OFF");
+			sensorBtn.setBackground(Color.BLUE);
 			break;
 		case FAULT:
-			sensor_btn.setEnabled(true);
-			sensor_btn.setText("FAULT");
-			sensor_btn.setBackground(Color.ORANGE);
+			sensorBtn.setEnabled(true);
+			sensorBtn.setText("FAULT");
+			sensorBtn.setBackground(Color.ORANGE);
 			break;
 		case ERROR:
 		default:
-			sensor_btn.setEnabled(true);
-			sensor_btn.setText("ERROR");
-			sensor_btn.setBackground(Color.RED);
+			sensorBtn.setEnabled(true);
+			sensorBtn.setText("ERROR");
+			sensorBtn.setBackground(Color.RED);
 		}
 	}
 
+	/**
+	 * Private class used to handle reset messages
+	 */
 	private class ResetHandler implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -100,6 +107,9 @@ public class SensorSwitch extends JPanel {
 		}
 	}
 	
+	/**
+	 * Private class used to handle update messages
+	 */
 	private class UpdateListener implements MessageListener {
 		@Override
 		public void actionPerformed(String topicName, Message m) {
