@@ -30,12 +30,15 @@ def main():
     file.write("#define FP_BRANCHNAME \"%s\"\n" %branch)
 
     try:
-        #subprocess.check_output throws an exception on a non-zero return status
-        #Below call should return 0 if clean, 1 if tracked files have changed
+        #subprocess.check_output throws a CalledProcessError exception on a 
+        # non-zero return status
+        #The git call below should return 0 if clean, 1 if tracked files have changed
         subprocess.check_output(["git", "diff-index", "--quiet", "HEAD"])
         clean = True
-    except:
+    except subprocess.CalledProcessError:
         clean = False
+    except:
+        print("Unknown error encountered! Are you using Python 2.7?")
 
     hString = str(subprocess.check_output(["git", "log", "-1", "--pretty=format:'%h'"])).rstrip().replace("'", "")
 
