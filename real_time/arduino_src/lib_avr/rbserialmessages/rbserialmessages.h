@@ -66,33 +66,34 @@
 #define RBSM_ERROR_INSUFFICIENT_DATA -1
 #define RBSM_ERROR_INVALID_MESSAGE -2
 
-//TODO: Is this typedef cpp-kosher?
+
 struct rb_message_t
 {
-  char message_id;
-  uint32_t data;
+    char message_id;
+    uint32_t data;
 };
 
 
 class RBSerialMessages 
 {
- public:
-  RBSerialMessages();
-  int Init(FILE *in_file, FILE *out_file);
-  int Send(uint8_t id, uint32_t message);
-  int Read(rb_message_t* read_message);
- private:
-  FILE *in_file_;
-  FILE *out_file_;
-  char buffer_out_[RBSM_BUFFER_OUT_LENGTH];
-  char buffer_in_[RBSM_BUFFER_IN_LENGTH];
-  uint8_t buffer_in_pos_;
-  bool buffer_in_stream_lock_;
-  uint8_t AppendMessageToBuffer(uint8_t id,
+    public:
+    RBSerialMessages();
+    int Init(FILE *in_file, FILE *out_file);
+    int Send(uint8_t id, uint32_t message);
+    int Read(rb_message_t* read_message);
+    
+    private:
+    FILE *in_file_;
+    FILE *out_file_;
+    char buffer_out_[RBSM_BUFFER_OUT_LENGTH];
+    char buffer_in_[RBSM_BUFFER_IN_LENGTH];
+    uint8_t buffer_in_pos_;
+    bool buffer_in_stream_lock_;
+    uint8_t AppendMessageToBuffer(uint8_t id,
                                 uint32_t message,
                                 uint8_t out_start_pos);
-  uint8_t InitMessageBuffer();
-  int InitReadBuffer();
+    uint8_t InitMessageBuffer();
+    int InitReadBuffer();
 };
 
 

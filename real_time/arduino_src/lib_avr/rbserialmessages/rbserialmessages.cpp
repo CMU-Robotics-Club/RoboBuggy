@@ -22,7 +22,7 @@ RBSerialMessages::RBSerialMessages()
 {
 }
 
-//TODO: Why is this not in the constructor? Doesn't seem able to fail.
+
 int RBSerialMessages::Init(FILE *in_file, FILE *out_file) 
 {
     // setup the hardware serial
@@ -36,7 +36,6 @@ int RBSerialMessages::Init(FILE *in_file, FILE *out_file)
     return 1;
 }
 
-//TODO: Are we supposed to return a status value or just 0?
 int RBSerialMessages::Send(uint8_t id, uint32_t message) 
 {
     uint8_t buffer_pos;
