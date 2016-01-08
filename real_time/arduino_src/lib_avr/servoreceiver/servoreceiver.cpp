@@ -5,13 +5,14 @@ inline long map(long x,
                 long in_offset,
                 long in_scale,
                 long out_offset,
-                long out_scale) {
-  return ((x - in_offset) * out_scale / in_scale) + out_offset;
+                long out_scale) 
+{
+    return ((x - in_offset) * out_scale / in_scale) + out_offset;
 }
 
 
-ServoReceiver::ServoReceiver(){
-
+ServoReceiver::ServoReceiver()
+{
 }
 
 

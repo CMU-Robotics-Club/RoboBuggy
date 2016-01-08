@@ -66,12 +66,12 @@
 #define RBSM_ERROR_INSUFFICIENT_DATA -1
 #define RBSM_ERROR_INVALID_MESSAGE -2
 
-
-typedef struct rb_message 
+//TODO: Is this typedef cpp-kosher?
+struct rb_message_t
 {
   char message_id;
   uint32_t data;
-} rb_message_t;
+};
 
 
 class RBSerialMessages 

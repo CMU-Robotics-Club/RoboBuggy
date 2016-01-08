@@ -1,3 +1,11 @@
+/*
+* main.cpp
+*
+* This file contains the main body of code for the low-level systems. This 
+*  includes interactions with the high-level, brake, and steering systems.
+*
+*/
+
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/sleep.h>
@@ -22,7 +30,7 @@
 #define SERVO_PINN PB5 // arduino 11 TODO: this is not used here
 #define CONNECTION_TIMEOUT_US 1000000L // 1000ms
 
-/**
+/*
  * These values map the physical input/output (voltage/ms of pwm pulse) to a
  * fixed physical angle. When software commands a steering angle of 10 deg
  * (1000 hundredths), the PWM_SCALE_STEERING_OUT and POT_SCALE_STEERING_IN
@@ -41,7 +49,7 @@
     #define PWM_OFFSET_STORED_ANGLE 0
     #define PWM_SCALE_STORED_ANGLE 1000 // in hundredths of a degree for precision
 #else
-    #error "must complie with BUGGY_TRANSISTOR or BUGGY_NIXI flag"
+    #error "must compile with BUGGY_TRANSISTOR or BUGGY_NIXI flag"
 #endif
 
 #define PWM_STATE_THRESHOLD 120
@@ -217,6 +225,7 @@ int main(void)
     g_brake_rx.Init(&RX_BRAKE_PIN, RX_BRAKE_PINN, RX_BRAKE_INTN);
     g_auton_rx.Init(&RX_AUTON_PIN, RX_AUTON_PINN, RX_AUTON_INTN);
 
+    //Output information about code on arduino once to uart2 on startup.
     printf("Hello world! This is debug information\r\n");
     printf("Compilation date: %s\r\n", FP_COMPDATE);
     printf("Compilation time: %s\r\n", FP_COMPTIME);
@@ -303,6 +312,7 @@ int main(void)
         unsigned long delta2 = time_now - time2;
         unsigned long delta3 = time_now - time3;
         sei();
+
         if(delta1 > CONNECTION_TIMEOUT_US ||
            delta2 > CONNECTION_TIMEOUT_US ||
            delta3 > CONNECTION_TIMEOUT_US) 
@@ -346,14 +356,10 @@ int main(void)
             steering_set(auto_steering_angle);
             g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)(auto_steering_angle));
         }
-        else if(!g_is_autonomous)
+        else
         {
             steering_set(steer_angle);
             g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
-        }
-        else
-        {
-            steering_set(PWM_OFFSET_STORED_ANGLE); // default to centered
         }
 
         if(g_brake_needs_reset == true) 

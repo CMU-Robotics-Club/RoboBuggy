@@ -26,6 +26,8 @@ import struct
 import signal
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
+max_encoder = 0
+
 mid_to_str = {
   0: "ENC_TICKS_LAST",
   1: "ENC_TICKS_RESET",
@@ -81,9 +83,18 @@ def rbsm_worker(state):
       # update status
       state["status_line"] = "Locked."
       # save new data
+
+      value = new_message["data"]
+      if new_messagep["id"] == 1:
+        max_encoder = max(value,max_encoder)
+        value = max_encoder
+
+
       message_cache.update([
         ( new_message["id"], 
-          {"data": new_message["data"], "update_time": time.time()} ),
+#          {"data": new_message["data"], "update_time": time.time()} ),
+          {"data": value, "update_time": time.time()} ),
+
       ])
       # update remotely
       redraw(state)
