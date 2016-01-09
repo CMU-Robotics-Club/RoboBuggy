@@ -24,8 +24,9 @@ public abstract class SerialNode implements Node {
 	Thread io_thread;
 	
 	boolean running = false;
-	byte[] buf = new byte[128];
+	byte[] buf = new byte[128];//[1048576];
 	int start = 0;
+	//
 	int num_bytes = 0;
 
 	// IO does not start until a serial port is attached
@@ -128,26 +129,24 @@ public abstract class SerialNode implements Node {
 		public void run() {
 			while(true) {
 				try {
+					// prototype (buffer of bytes, start index, length to read)
 					num_bytes += serial_input.read(buf, start + num_bytes, buf.length - num_bytes); 
+					System.out.println("num_bytes after read"+num_bytes);
 					//System.out.printf(new String(buf));
 					//System.out.printf("%d\n", bytes);
 				} catch (IOException e) {
 					// TODO handle this error reasonably.
 					e.printStackTrace();
 				}
-				
 				while(true) {
 					int num_read = peel(buf, start, num_bytes);
 					if(num_read == 0) break;
 					start += num_read;
 					num_bytes -= num_read;
+					System.out.println("num_bytes after peel"+num_bytes +" numRead"+num_read+" start"+start);
 				}
 				
-				// Shift the array by the amount that we read.
-				// TODO this is stupid and should be fixed
-				for(int i = 0; i < num_bytes; i++) {
-					buf[i] = buf[start+i];
-				}
+				num_bytes = 0;
 				start = 0;
 			
 				try {
