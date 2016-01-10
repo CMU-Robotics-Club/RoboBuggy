@@ -30,9 +30,8 @@ import com.roboclub.robobuggy.ros.Subscriber;
  * DESCRIPTION: TODO
  */
 
-public class DataPanel extends JPanel {
+public class DataPanel extends RoboBuggyGUIContainer {
 	private static final long serialVersionUID = 3950373392222628865L;
-
 	private static final int MAX_LENGTH = 10;
 	
 	private GpsPanel gpsPanel;
@@ -49,24 +48,9 @@ public class DataPanel extends JPanel {
 	private Subscriber gpsSub;
 	
 	public DataPanel() {
-		this.setBorder(BorderFactory.createLineBorder(Color.black));
-		this.setLayout(new GridBagLayout());
-		
-		GridBagConstraints gbc = new GridBagConstraints();
-		
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.weightx = 0.34;
-		gbc.weighty = 1.0;
 		gpsPanel = new GpsPanel();
-		this.add(gpsPanel, gbc);
-		
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		gbc.weighty = 0;
-		gbc.weightx = 0.66;
-		this.add(createDataPanel(), gbc);
+		this.addComponet(gpsPanel, 0, 0, 1, .8);
+		this.addComponet(createDataPanel(), 0, .8, 1, .2);
 	}
 	
 	private JPanel createDataPanel() {
@@ -161,6 +145,7 @@ public class DataPanel extends JPanel {
 			    latitude.setText(Double.toString(lat));
 			    longitude.setText(Double.toString(longit));
 				//latitude and longitude are both needed 
+			    Gui.getInstance().fixPaint();
 			}
 		});		
 		
@@ -187,6 +172,7 @@ public class DataPanel extends JPanel {
 				tmp = Double.toString(msg.distance);
 				if (tmp.length() > MAX_LENGTH) tmp = tmp.substring(0, MAX_LENGTH);
 				distance.setText(tmp);
+			    Gui.getInstance().fixPaint();
 			}
 		});
 		
@@ -200,6 +186,7 @@ public class DataPanel extends JPanel {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				steeringAng.setText(Integer.toString(((SteeringMeasurement)m).angle));
+			    Gui.getInstance().fixPaint();
 			}
 		});
 		
@@ -207,7 +194,7 @@ public class DataPanel extends JPanel {
 		new Subscriber(SensorChannel.GPS.getMsgPath(), new MessageListener() {
 			public void actionPerformed(String topicName, Message m) {
 				aX.setText(Double.toString(((GpsMeasurement)m).latitude)); //adding a value 
-				
+			    Gui.getInstance().fixPaint();
 			}
 		});
 		

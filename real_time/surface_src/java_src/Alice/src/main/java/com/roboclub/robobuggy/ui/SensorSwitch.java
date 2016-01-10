@@ -43,7 +43,7 @@ public class SensorSwitch extends JPanel {
 		this.setLayout(new GridLayout(1,2));
 
 		JLabel sensorName_lbl = new JLabel(name, SwingConstants.CENTER);
-		sensorName_lbl.setFont(new Font("serif", Font.BOLD, 20));
+		//sensorName_lbl.setFont(new Font("serif", Font.BOLD, 20));
 		this.add(sensorName_lbl);
 
 		sensor_btn = new JButton("OFF");
@@ -90,6 +90,7 @@ public class SensorSwitch extends JPanel {
 			sensor_btn.setText("ERROR");
 			sensor_btn.setBackground(Color.RED);
 		}
+	 //   Gui.getInstance().fixPaint();
 	}
 
 	private class ResetHandler implements ActionListener {

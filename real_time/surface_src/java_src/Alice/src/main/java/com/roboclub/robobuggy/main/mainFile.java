@@ -8,20 +8,36 @@ import java.util.List;
 
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.nodes.RealNodeEnum;
-import com.roboclub.robobuggy.ros.Message;
-import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.SensorChannel;
-import com.roboclub.robobuggy.ros.Subscriber;
 import com.roboclub.robobuggy.sensors.SensorManager;
 import com.roboclub.robobuggy.simulation.SensorPlayer;
 import com.roboclub.robobuggy.ui.Gui;
 
+
+/** This class is the driver starting up the robobuggy program, if you want the buggy to drive itself you should run this node */
 public class mainFile {
     static Robot buggy;
     static int num = 0;
     
-    public static void main(String args[]) {
+    public static void main(String args[])  {
         config.getInstance();//must be run at least once
+        try {
+			config.setupJNI(); //must run for jni to install
+			//note that errors are just printed to the console since the gui and logging system  has not been created yet
+		} catch (NoSuchFieldException e1) {
+			e1.printStackTrace();
+		} catch (SecurityException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IllegalArgumentException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IllegalAccessException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+   
+
                 
         List<String> ports = getAvailablePorts();
         System.out.println(ports);
@@ -44,28 +60,25 @@ public class mainFile {
             }
         }
         
+        // Starts the robot
+        try {           
+        	Robot.getInstance();
+            bringup_sim();
+        } catch (Exception e) 
+        {
+            Gui.close();
+            System.out.println("Unable to bringup simulated robot. Stacktrace omitted because it's really big.");
+            e.printStackTrace();
+            return;
+        }  
+        
+        
         if(config.GUI_ON)
         {
             Gui.getInstance();
         }
         
-        // Starts the robot
-
-//        if(config.DATA_PLAY_BACK_DEFAULT){
-            try {           
-            	Robot.getInstance();
-                bringup_sim();
-            } 
-            catch (Exception e) 
-            {
-                Gui.close();
-                System.out.println("Unable to bringup simulated robot. Stacktrace omitted because it's really big.");
-                e.printStackTrace();
-                return;
-            }
-//        } else {
-//        	
-//        }   
+       
     }
     
     //going to start by just connecting to the IMU
@@ -77,7 +90,6 @@ public class mainFile {
             RobotLogger.getInstance();
         }
         
-        Gui.EnableLogging();
         SensorManager sm = SensorManager.getInstance();
         
         if (config.DATA_PLAY_BACK_DEFAULT) {
@@ -91,7 +103,7 @@ public class mainFile {
         }
         
         else {
-        	SensorPlayer sp = new SensorPlayer("logs/2015-11-14-04-20-04/sensors.txt");
+        	SensorPlayer sp = new SensorPlayer("logs/2015-11-21-07-08-10/sensors.txt");
         	new Thread(new Runnable() {
 				
 				@Override

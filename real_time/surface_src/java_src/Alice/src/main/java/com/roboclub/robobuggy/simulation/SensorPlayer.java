@@ -69,19 +69,30 @@ public class SensorPlayer implements Runnable {
 			long prevTimeInMillis = loggingDate.getTime();
 			
 			JSONArray sensorDataArray = (JSONArray) completeLogFile.get("sensor_data");
+			long sensorStartTimeInMilis = 0;
 			for(Object senObj : sensorDataArray) {
 				
 				JSONObject sensor = (JSONObject)senObj;
 				
 				Date sensorTimestamp = RobobuggyDateFormatter.formatRobobuggyDate((String) sensor.get("timestamp"));
 				long currentSensorTimeInMillis = sensorTimestamp.getTime();
-				long sleepTime = currentSensorTimeInMillis - prevTimeInMillis;
-				if(sleepTime < 0 && false) {
+				long currentTime = loggingDate.getTime();
+
+				//grab the first sensors time for reference
+				if(sensorStartTimeInMilis == 0){
+					sensorStartTimeInMilis = currentSensorTimeInMillis;
+				}
+				long sensorTime_fromStart = currentSensorTimeInMillis -sensorStartTimeInMilis; 
+				long realTime_fromStart = currentTime - prevTimeInMillis;				
+				long PLAY_BACK_SPEED = 100;
+				long sleepTime = PLAY_BACK_SPEED*realTime_fromStart - sensorTime_fromStart;
+				new RobobuggyLogicException("sleepingTime:"+sleepTime, MessageLevel.NOTE);
+				if(sleepTime < 0 ){ 
 					//TODO change back to sleepTime
-					Thread.sleep(sleepTime);
+					Thread.sleep(-sleepTime/100000);
 //					Thread.sleep(500);
 				}
-				prevTimeInMillis = currentSensorTimeInMillis;
+				//prevTimeInMillis = currentSensorTimeInMillis;
 			
 				String sensorName = (String) sensor.get("name");
 				
@@ -176,7 +187,7 @@ public class SensorPlayer implements Runnable {
 				
 				}
 				
-				System.out.println("sent out data from " + sensorName);
+				//System.out.println("sent out data from " + sensorName);
 				
 				
 			}

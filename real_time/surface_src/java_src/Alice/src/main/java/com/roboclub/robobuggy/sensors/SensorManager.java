@@ -80,7 +80,7 @@ public class SensorManager {
 			realSensors.put(portKey, gps);
 			break;
 		case RBSM:
-			RBSMNode rbsm = new RBSMNode(sensor[0], sensor[1], Robot.COMMAND_PERIOD);
+			RBSMNode rbsm = new RBSMNode(sensor[0], sensor[1], Robot.getCommandPeriod());
 			rbsm.setSerialPort(connect(port, rbsm.baudRate()));
 			realSensors.put(portKey, rbsm);
 			break;
