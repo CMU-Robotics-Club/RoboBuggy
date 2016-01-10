@@ -9,7 +9,6 @@ import javax.swing.JLabel;
 import javax.swing.JTextArea;
 
 import com.roboclub.robobuggy.main.MessageLevel;
-import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.messages.RobobuggyLogicExceptionMeasurment;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
@@ -17,6 +16,10 @@ import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 
 public class LogicErrorMessageConsole extends RoboBuggyGUIContainer{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6532100079403054035L;
 	static final MessageLevel[] messageLevels = MessageLevel.values();
 	static final int NUMBER_OF_MESSAGES = messageLevels.length;
 	boolean[] show_messages;
@@ -31,6 +34,11 @@ public class LogicErrorMessageConsole extends RoboBuggyGUIContainer{
 	JButton WARNING_btn;
 	JButton NOTE_btn;
 	public class Header extends RoboBuggyGUIContainer{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 8019501107506958218L;
+
 		public Header(){
 			show_messages = new boolean[NUMBER_OF_MESSAGES];
 			buttons = new JButton[NUMBER_OF_MESSAGES];

@@ -1,15 +1,23 @@
 package com.roboclub.robobuggy.ui;
 
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
 public class RoboBuggyGUIContainer extends JPanel{
-	ArrayList<ComponentData> components = new ArrayList<ComponentData>();
-	String name = "unknown";
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7096009898048816618L;
+	/**************************** internal variables **********************************/
+	private ArrayList<ComponentData> components = new ArrayList<ComponentData>();
+	protected String name = "unknown";
+	
+	
+	
+	/*************************** class public metheds *********************************/
 	@Override
 	public void paint(Graphics g){
 		int frameWidth = this.getWidth();

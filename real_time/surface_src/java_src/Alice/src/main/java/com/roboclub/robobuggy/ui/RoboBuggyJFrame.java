@@ -15,6 +15,11 @@ import javax.swing.JFrame;
  */
 public class RoboBuggyJFrame extends JFrame  {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3566499518806533434L;
+
 	public RoboBuggyJFrame(String title,double widthPercentage,double heightPercentage) {
 		
 		//sets the title based on this frames name

@@ -41,6 +41,8 @@ public class GpsPanel extends JPanel {
 	private boolean setup;
 	private int frameWidth;
 	private int frameHeight;
+	
+	@SuppressWarnings("unused") //this subscriber is used to generate callbacks 
 	private Subscriber gpsSub;
 	
 	

@@ -1,11 +1,5 @@
 package com.roboclub.robobuggy.ui;
 
-import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-
-import javax.swing.JPanel;
-
 public class AnalyticsPanel extends RoboBuggyGUIContainer {
 	private static final long serialVersionUID = 7017667286491619492L;
 
