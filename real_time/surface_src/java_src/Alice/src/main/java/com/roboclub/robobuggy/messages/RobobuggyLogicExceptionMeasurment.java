@@ -17,6 +17,14 @@ public class RobobuggyLogicExceptionMeasurment extends BaseMessage implements Me
 	public String toLogString() {
 		return level.toString() + "\t"+message;
 	}
+	
+	public String getMessage(){
+		return message;	
+	}
+	
+	public MessageLevel getLevel(){
+		return level;
+	}
 
 	@Override
 	public Message fromLogString(String str) {

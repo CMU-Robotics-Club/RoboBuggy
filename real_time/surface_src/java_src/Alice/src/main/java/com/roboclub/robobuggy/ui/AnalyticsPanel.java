@@ -6,39 +6,18 @@ import java.awt.GridBagLayout;
 
 import javax.swing.JPanel;
 
-public class AnalyticsPanel extends JPanel {
+public class AnalyticsPanel extends RoboBuggyGUIContainer {
 	private static final long serialVersionUID = 7017667286491619492L;
 
 	private DataPanel dataPanel;
 	private GraphPanel graphPanel;
 	
 	public AnalyticsPanel() {
-
-		this.setLayout(new GridBagLayout());
-		this.setBackground(Color.DARK_GRAY);
-		
-		GridBagConstraints gbc = new GridBagConstraints();
-		
+		name = "analytics";
 		dataPanel = new DataPanel();
 		graphPanel = new GraphPanel();
-		
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.weighty = 1;
-		gbc.weightx = 1;
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-	//	gbc.anchor = GridBagConstraints.LINE_START;
-		this.add(dataPanel, gbc);
-		
-		gbc.gridy = 1;
-		gbc.weighty = 0;
-		this.add(graphPanel, gbc);
-	/*
-	  	dataPanel = new DataPanel();
-		graphPanel = new GraphPanel();
-		GuiUtil.subPlot(1,1,0,0,0,0,dataPanel,this);
-		GuiUtil.subPlot(2,1,1,0,1,0,graphPanel,this);
-		*/
+		this.addComponet(dataPanel, 0, 0, 1, .6);
+		this.addComponet(graphPanel, 0, .6, 1, .4);
 
 	}
 	

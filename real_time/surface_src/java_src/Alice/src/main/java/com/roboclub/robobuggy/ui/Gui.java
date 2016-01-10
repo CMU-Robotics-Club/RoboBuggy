@@ -6,6 +6,8 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.WindowEvent;
@@ -43,7 +45,13 @@ public final class Gui extends JFrame {
 	public enum GuiPubSubTopics {
 		GUI_LOG_BUTTON_UPDATED,
 	}
-
+	public void fixPaint(){
+		for(int i = 0;i<windowList.size();i++){
+			windowList.get(i).repaint(); 
+		}
+	}
+	
+	
 	 //added data panel to figure out adding data in real time to gui
 	public static Gui getInstance() {
 		if (instance == null) {
@@ -60,9 +68,15 @@ public final class Gui extends JFrame {
 		RoboBuggyJFrame mainWindow = new RoboBuggyJFrame("MainWindow",1.0,1.0);	
 		AnalyticsPanel analyPane = new AnalyticsPanel();
 		ControlPanel cntrlPane = new ControlPanel();
-		mainWindow.addComponet(cntrlPane, 0.0, 0.0, .2, 1.0);
-		mainWindow.addComponet(analyPane, 0.2, 0.0, .8, 1.0);
+		//addComponet syntax is (newComponent,percentageLeft,percentageTop,percentageWidth,percentageHeight)
+		mainWindow.addComponet(cntrlPane, 0.0, 0.0, .3, 1.0);
+		mainWindow.addComponet(analyPane, 0.3, 0.0, .7, 1.0);
+		//the repaint is needed for a non blank screen to appear when the gui is first displayed 
+		//mainWindow.resize(0, 0);
+		//mainWindow.fullScreenRepaint();
+		mainWindow.repaint();
 		windowList.add(mainWindow);
+		
 		
 	}
 	

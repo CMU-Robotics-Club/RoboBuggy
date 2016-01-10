@@ -40,6 +40,15 @@ public class RoboBuggyJFrame extends JFrame  {
 	}
 	
 ArrayList<ComponentData> components = new ArrayList<ComponentData>();
+	
+	public void fullScreenRepaint(){
+		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+		this.pack();
+		int screenWidth = gd.getDisplayMode().getWidth();
+		int screenHeight = gd.getDisplayMode().getHeight();
+		this.setSize(screenWidth, screenHeight);
+	}
+
 
 	
 	@Override
