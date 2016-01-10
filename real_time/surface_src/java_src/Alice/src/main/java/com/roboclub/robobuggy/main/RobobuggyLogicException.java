@@ -28,7 +28,7 @@ public static void setupLogicException(SensorChannel sensor){
 public RobobuggyLogicException(String error,MessageLevel level){
 	if(shouldMessageBeDisplayed(level)){
 		//displays the error message to the jave console 
-		System.out.println(error);
+	//	System.out.println(error);
 	}
 	//the message is always published 
 	errorPub.publish(new RobobuggyLogicExceptionMeasurment(error, level));

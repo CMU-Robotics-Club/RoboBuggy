@@ -21,6 +21,11 @@ public class LogicErrorMessageConsole extends RoboBuggyGUIContainer{
 	static final int NUMBER_OF_MESSAGES = messageLevels.length;
 	boolean[] show_messages;
 	JButton[] buttons;
+	JTextArea messages;
+	
+	String messageBuffer[] = new String[10];
+	int messageBufferStart = 0;
+	int messageBufferEnd = 0;
 
 	JButton EXCEPTION_btn;
 	JButton WARNING_btn;
@@ -61,10 +66,10 @@ public class LogicErrorMessageConsole extends RoboBuggyGUIContainer{
 					show_messages[1] = !show_messages[1];
 					if(show_messages[1]){
 						WARNING_btn.setBackground(Color.GREEN);
-						NOTE_btn.setText("SHOW WARNING");
+						WARNING_btn.setText("SHOW WARNING");
 					}else{
 						WARNING_btn.setBackground(Color.GRAY);
-						EXCEPTION_btn.setText("DONT SHOW WARNING");
+						WARNING_btn.setText("DONT SHOW WARNING");
 					}
 				}
 			});
@@ -93,18 +98,36 @@ public class LogicErrorMessageConsole extends RoboBuggyGUIContainer{
 
 
 		}
+
+
 	}
+	public void addMessage(String newMessage){
+		messageBuffer[messageBufferEnd] = newMessage;
+		String text = "";
+		for(int i = 0;i< messageBuffer.length;i++){
+			text+=messageBuffer[(messageBufferStart+i)%messageBuffer.length]+"\n";
+		}
+		messageBufferEnd = (messageBufferEnd +1)%messageBuffer.length;
+		//move start up if need be
+		if(messageBufferEnd == messageBufferStart){
+			messageBufferStart = (messageBufferStart +1)%messageBuffer.length;
+		}
+		messages.setText(text);
+		Gui.getInstance().fixPaint();
+		
+	}
+	
 	
 	public LogicErrorMessageConsole(){
 		Header header = new Header();
 		EXCEPTION_btn.setEnabled(true);
 		WARNING_btn.setEnabled(true);
 		NOTE_btn.setEnabled(true);
-		JTextArea messages = new JTextArea();
+		 messages = new JTextArea();
 		this.addComponet(header, 0.0, 0.0, 1.0, .1);
 		this.addComponet(messages, 0.0, 0.1, 1.0, .9);
 		messages.setText("this is where user defined messages will go\n");
-
+		
 		// Subscriber for LogicException updates
 		new Subscriber(SensorChannel.LOGIC_EXCEPTION.getMsgPath(), new MessageListener() {
 			@Override
@@ -113,26 +136,27 @@ public class LogicErrorMessageConsole extends RoboBuggyGUIContainer{
 				switch(msg.getLevel()){
 				case EXCEPTION:
 					if(show_messages[0]){
-				//		messages.append(messageLevels[0].toString()+":\t"+msg.getMessage()+"\n");
+						addMessage(messageLevels[0].toString()+":\t"+msg.getMessage()+"\n");
 					}
 					break;
 				case WARNING:
 					if(show_messages[1]){
-				//		messages.append("WARNING\t"+msg.getMessage()+"\n");
+						addMessage(messageLevels[1].toString()+"\t"+msg.getMessage()+"\n");
 					}
 					break;
 				case NOTE:
 					if(show_messages[2]){
-					//	messages.append("NOTE\t"+msg.getMessage()+"\n");
+						addMessage(messageLevels[2].toString()+"\t"+msg.getMessage()+"\n");
 					}
 					break;
 				default:
-				//	messages.append("something is wrong with  the logic errot console \n");
+					addMessage("something is wrong with  the logic errot console \n");
 				}
-								
-			    Gui.getInstance().fixPaint();
 
+			    Gui.getInstance().fixPaint();
+				
 					}
+			
 				});
 
 		
