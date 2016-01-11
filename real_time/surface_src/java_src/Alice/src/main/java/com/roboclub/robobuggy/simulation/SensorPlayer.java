@@ -86,10 +86,10 @@ public class SensorPlayer implements Runnable {
 				long realTime_fromStart = currentTime - prevTimeInMillis;				
 				long PLAY_BACK_SPEED = 100;
 				long sleepTime = PLAY_BACK_SPEED*realTime_fromStart - sensorTime_fromStart;
-				System.out.println("sleepTime:"+sleepTime);
+				new RobobuggyLogicException("sleepingTime:"+sleepTime, MessageLevel.NOTE);
 				if(sleepTime < 0 ){ 
 					//TODO change back to sleepTime
-					Thread.sleep(-sleepTime/10000);
+					Thread.sleep(-sleepTime/100000);
 //					Thread.sleep(500);
 				}
 				//prevTimeInMillis = currentSensorTimeInMillis;
@@ -187,7 +187,7 @@ public class SensorPlayer implements Runnable {
 				
 				}
 				
-				System.out.println("sent out data from " + sensorName);
+				//System.out.println("sent out data from " + sensorName);
 				
 				
 			}

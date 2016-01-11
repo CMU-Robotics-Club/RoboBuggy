@@ -65,7 +65,7 @@ public class mainFile {
     	if(config.logging)
         {
             RobotLogger.getInstance();
-            Gui.EnableLogging();
+            //Gui.EnableLogging();
         }
     	
     	if (config.DATA_PLAY_BACK_DEFAULT) {
