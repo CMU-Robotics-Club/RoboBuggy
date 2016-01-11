@@ -50,11 +50,11 @@ public class config {
 	public static  boolean VISION_SYSTEM_DEFAULT = true;
 	
 	//sensor com ports
-	public static  String COM_PORT_IMU = "COM8";
+	public static  String COM_PORT_IMU = "COM6";
 	public static  String COM_PORT_GPS_INTEGRATED = "COM7";
-	public static  String COM_PORT_GPS_STANDALONE = "COM7";
-	public static  String COM_PORT_ENCODER = "COM4";
-	public static  String COM_PORT_DRIVE_CONTROL = "COM4";
+	public static  String COM_PORT_GPS_STANDALONE = "COM8";
+	public static  String COM_PORT_ENCODER = "COM3";
+	public static  String COM_PORT_DRIVE_CONTROL = "COM9";
 	
 	//for turning indvidual cams on and off
 	public static  boolean FRONT_CAM_ON = false;
