@@ -66,7 +66,7 @@ public class SensorPlayer implements Runnable {
 			//get info from the header file
 			Date loggingDate = new Date();
 			
-			long prevTimeInMillis = loggingDate.getTime();
+			long playBackStartTime = loggingDate.getTime();
 			
 			JSONArray sensorDataArray = (JSONArray) completeLogFile.get("sensor_data");
 			long sensorStartTimeInMilis = 0;
@@ -83,7 +83,7 @@ public class SensorPlayer implements Runnable {
 					sensorStartTimeInMilis = currentSensorTimeInMillis;
 				}
 				long sensorTime_fromStart = currentSensorTimeInMillis -sensorStartTimeInMilis; 
-				long realTime_fromStart = currentTime - prevTimeInMillis;				
+				long realTime_fromStart = currentTime - playBackStartTime;				
 				long PLAY_BACK_SPEED = 100;
 				long sleepTime = PLAY_BACK_SPEED*realTime_fromStart - sensorTime_fromStart;
 				System.out.println("sleepTime:"+sleepTime);
@@ -92,8 +92,6 @@ public class SensorPlayer implements Runnable {
 					Thread.sleep(-sleepTime/10000);
 //					Thread.sleep(500);
 				}
-				//prevTimeInMillis = currentSensorTimeInMillis;
-			
 				String sensorName = (String) sensor.get("name");
 				
 				JSONObject sensorParams = (JSONObject) sensor.get("params");
