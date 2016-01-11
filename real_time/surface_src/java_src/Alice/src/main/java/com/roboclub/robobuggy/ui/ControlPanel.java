@@ -21,7 +21,7 @@ import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.main.config;
 import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
 import com.roboclub.robobuggy.ros.Publisher;
-import com.roboclub.robobuggy.ros.SensorChannel;
+import com.roboclub.robobuggy.ros.NodeChannel;
 
 /**
  * 
@@ -49,8 +49,5 @@ public class ControlPanel extends RoboBuggyGUIContainer {
 		this.addComponet(messageConsole,0,.6,1,.4);
 		
 	}
-
-
-	
 
 }

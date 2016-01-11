@@ -1,13 +1,14 @@
-package com.roboclub.robobuggy.nodes;
+package com.roboclub.robobuggy.nodes.sensors;
 
 import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
+import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
+import com.roboclub.robobuggy.nodes.baseNodes.NodeState;
+import com.roboclub.robobuggy.nodes.baseNodes.SerialNode;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Publisher;
-import com.roboclub.robobuggy.ros.SensorChannel;
-import com.roboclub.robobuggy.sensors.SensorState;
-import com.roboclub.robobuggy.serial.SerialNode;
+import com.roboclub.robobuggy.ros.NodeChannel;
 
 /**
  * @author Matt Sebek 
@@ -16,7 +17,7 @@ import com.roboclub.robobuggy.serial.SerialNode;
  * DESCRIPTION: TODO
  */
 
-public class ImuNode extends SerialNode implements Node {
+public final class ImuNode extends SerialNode {
 	/** Baud rate for serial port */
 	private static final int BAUDRATE = 57600;
 	// how long the system should wait until a sensor switches to Disconnected
@@ -31,19 +32,19 @@ public class ImuNode extends SerialNode implements Node {
 	public Publisher msgPub;
 	public Publisher statePub;
 	
-	public ImuNode(SensorChannel sensor) {
-		super("IMU");
+	/**
+	 * Creates a new {@link ImuNode}
+	 * @param sensor {@link NodeChannel} of IMU
+	 * @param portName name of the serial port to read from
+	 */
+	public ImuNode(NodeChannel sensor, String portName) {
+		super(new BuggyBaseNode(sensor), "IMU", portName, BAUDRATE);
 		msgPub = new Publisher(sensor.getMsgPath());
 		statePub = new Publisher(sensor.getStatePath());
 	
 		// TODO state stuff
-		statePub.publish(new StateMessage(SensorState.DISCONNECTED));
+		statePub.publish(new StateMessage(NodeState.DISCONNECTED));
 	}
-
-	public void setSerialPort(gnu.io.SerialPort sp) {
-		super.setSerialPort(sp);
-		statePub.publish(new StateMessage(SensorState.ON));
-	};
 	
 	/*
 	@SuppressWarnings("unused")
@@ -62,19 +63,26 @@ public class ImuNode extends SerialNode implements Node {
 		//msgPub.publish(new ImuMeasurement());
 	}*/
 	
-
+	/**{@inheritDoc}*/
+	@Override
 	public boolean matchDataSample(byte[] sample) {
 		return true;
 	}
 
+	/**{@inheritDoc}*/
+	@Override
 	public int matchDataMinSize() {
 		return 0;
 	}
 
-	public int baudRate() {
+	/**{@inheritDoc}*/
+	@Override
+	public int getBaudRate() {
 		return 57600;
 	}
 
+	/**{@inheritDoc}*/
+	@Override
 	public int peel(byte[] buffer, int start, int bytes_available) {
 		// TODO replace 80 with max message length
 		if(bytes_available < 30) {
@@ -124,6 +132,8 @@ public class ImuNode extends SerialNode implements Node {
 		b = b.substring(hash_index);	
 			
 		msgPub.publish(new ImuMeasurement(vals[0], vals[1], vals[2]));
+		//Feed the watchdog
+		setNodeState(NodeState.ON);
 		return 4 + (orig_length - b.length());
 	}
 

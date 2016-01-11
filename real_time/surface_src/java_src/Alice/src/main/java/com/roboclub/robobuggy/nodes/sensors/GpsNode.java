@@ -1,18 +1,15 @@
-package com.roboclub.robobuggy.nodes;
+package com.roboclub.robobuggy.nodes.sensors;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import jdk.nashorn.internal.scripts.JS;
 
 import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
-import com.roboclub.robobuggy.ros.Node;
+import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
+import com.roboclub.robobuggy.nodes.baseNodes.NodeState;
+import com.roboclub.robobuggy.nodes.baseNodes.SerialNode;
 import com.roboclub.robobuggy.ros.Publisher;
-import com.roboclub.robobuggy.ros.SensorChannel;
-import com.roboclub.robobuggy.sensors.SensorState;
-import com.roboclub.robobuggy.serial.SerialNode;
+import com.roboclub.robobuggy.ros.NodeChannel;
 
 /**
  * @author Matt Sebek 
@@ -20,9 +17,11 @@ import com.roboclub.robobuggy.serial.SerialNode;
  *
  */
 
-public class GpsNode extends SerialNode implements Node {
+public final class GpsNode extends SerialNode {
 	// how long the system should wait until a sensor switches to Disconnected
 	private static final long SENSOR_TIME_OUT = 5000;
+	
+	private static final int BAUD_RATE = 9600;
 
 	// Used for state estimation
 	/*private static final double GYRO_PER = 0.9;
@@ -33,34 +32,35 @@ public class GpsNode extends SerialNode implements Node {
 	public Publisher msgPub;
 	public Publisher statePub;
 	
-	public GpsNode(SensorChannel sensor) {
-		super("GPS");
+	/**
+	 * Creates a new {@link GpsNode}
+	 * @param sensor {@link NodeChannel} of GPS
+	 * @param portName name of the serial port to read from
+	 */
+	public GpsNode(NodeChannel sensor, String portName) {
+		super(new BuggyBaseNode(sensor), "GPS", portName, BAUD_RATE);
 		msgPub = new Publisher(sensor.getMsgPath());
 		statePub = new Publisher(sensor.getStatePath());
 	
-		statePub.publish(new StateMessage(SensorState.DISCONNECTED));
+		statePub.publish(new StateMessage(NodeState.DISCONNECTED));
 	}
 
-	@Override
-	public void setSerialPort(gnu.io.SerialPort sp) {
-		super.setSerialPort(sp);
-		statePub.publish(new StateMessage(SensorState.ON));
-	};
-	
-
+	/**{@inheritDoc}*/
 	@Override
 	public boolean matchDataSample(byte[] sample) {
 		return true;
 	}
 
+	/**{@inheritDoc}*/
 	@Override
 	public int matchDataMinSize() {
 		return 0;
 	}
 
+	/**{@inheritDoc}*/
 	@Override
-	public int baudRate() {
-		return 9600;
+	public int getBaudRate() {
+		return BAUD_RATE;
 	}
 	
 	private Date convertHHMMSStoTime(String HHMMSSss) {
@@ -86,6 +86,7 @@ public class GpsNode extends SerialNode implements Node {
 		return ddd + mins / 60.0;
 	}
 	
+	/**{@inheritDoc}*/
 	@Override
 	public int peel(byte[] buffer, int start, int bytes_available) {
 		// TODO replace 80 with max message length
@@ -129,6 +130,7 @@ public class GpsNode extends SerialNode implements Node {
 		if(quality == 0) {
 			//System.out.println("No lock...");
 			// TODO publish not-lock to someone
+			setNodeState(NodeState.ERROR);
 			return 1;
 		}
 		Date readingTime = convertHHMMSStoTime(ar[1]);
@@ -161,6 +163,9 @@ public class GpsNode extends SerialNode implements Node {
 		
 		msgPub.publish(new GpsMeasurement(readingTime, latitude, north, longitude, 
 			west, quality, num_satellites, horizontal_dilution_of_precision, antenna_altitude, Double.parseDouble(ar[2]), Double.parseDouble(ar[4])));
+		
+		//Feed the watchdog
+		setNodeState(NodeState.ON);
 		return ar[0].length() + ar[1].length() + ar[2].length() + ar[3].length() 
 				+ ar[4].length() + ar[5].length() + ar[6].length() + ar[7].length()
 				+ ar[8].length() + ar[9].length();

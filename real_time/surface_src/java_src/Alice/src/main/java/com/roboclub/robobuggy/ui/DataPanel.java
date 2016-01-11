@@ -15,7 +15,7 @@ import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
-import com.roboclub.robobuggy.ros.SensorChannel;
+import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 //import com.roboclub.robobuggy.ui.GpsPanel.LocTuple;
 
@@ -114,7 +114,7 @@ public class DataPanel extends RoboBuggyGUIContainer {
 		panel.add(longitude);
 		
 		// Subscriber for Imu updates
-		new Subscriber(SensorChannel.IMU.getMsgPath(), new MessageListener() {
+		new Subscriber(NodeChannel.IMU.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				ImuMeasurement msg = (ImuMeasurement)m;
@@ -137,7 +137,7 @@ public class DataPanel extends RoboBuggyGUIContainer {
 			}
 		});
 		
-		gpsSub = new Subscriber(SensorChannel.GPS.getMsgPath(), new MessageListener() {
+		gpsSub = new Subscriber(NodeChannel.GPS.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				double lat = ((GpsMeasurement)m).latitude;
@@ -160,7 +160,7 @@ public class DataPanel extends RoboBuggyGUIContainer {
 		panel.add(distance);
 		
 		// Subscriber for encoder updates
-		new Subscriber(SensorChannel.ENCODER.getMsgPath(), new MessageListener() {
+		new Subscriber(NodeChannel.ENCODER.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				EncoderMeasurement msg = (EncoderMeasurement)m;
@@ -182,7 +182,7 @@ public class DataPanel extends RoboBuggyGUIContainer {
 		panel.add(steeringAng);
 		
 		// Subscriber for drive control updates
-		new Subscriber(SensorChannel.STEERING_COMMANDED.getMsgPath(), new MessageListener() {
+		new Subscriber(NodeChannel.STEERING_COMMANDED.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				steeringAng.setText(Integer.toString(((SteeringMeasurement)m).angle));
@@ -191,7 +191,7 @@ public class DataPanel extends RoboBuggyGUIContainer {
 		});
 		
 		//Subscriber for GPS data - agirish
-		new Subscriber(SensorChannel.GPS.getMsgPath(), new MessageListener() {
+		new Subscriber(NodeChannel.GPS.getMsgPath(), new MessageListener() {
 			public void actionPerformed(String topicName, Message m) {
 				aX.setText(Double.toString(((GpsMeasurement)m).latitude)); //adding a value 
 			    Gui.getInstance().fixPaint();

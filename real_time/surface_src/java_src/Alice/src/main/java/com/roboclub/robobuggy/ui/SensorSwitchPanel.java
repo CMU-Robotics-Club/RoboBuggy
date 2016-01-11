@@ -10,7 +10,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import com.roboclub.robobuggy.ros.SensorChannel;
+import com.roboclub.robobuggy.ros.NodeChannel;
 
 public class SensorSwitchPanel extends RoboBuggyGUIContainer{
 	
@@ -23,12 +23,12 @@ public class SensorSwitchPanel extends RoboBuggyGUIContainer{
 	JButton display;
 	
 	public SensorSwitchPanel() {
-	gps_switch = new SensorSwitch("GPS", SensorChannel.GPS);
-	vision_switch = new SensorSwitch("VISION", SensorChannel.VISION);
-	encoders_switch = new SensorSwitch("ENCODERS", SensorChannel.ENCODER);
-	imu_switch = new SensorSwitch("IMU", SensorChannel.IMU);
-	controls_switch = new SensorSwitch("CONTROLS", SensorChannel.DRIVE_CTRL);
-	autonomous_switch = new SensorSwitch("AUTO", SensorChannel.AUTO);
+	gps_switch = new SensorSwitch("GPS", NodeChannel.GPS);
+	vision_switch = new SensorSwitch("VISION", NodeChannel.VISION);
+	encoders_switch = new SensorSwitch("ENCODERS", NodeChannel.ENCODER);
+	imu_switch = new SensorSwitch("IMU", NodeChannel.IMU);
+	controls_switch = new SensorSwitch("CONTROLS", NodeChannel.DRIVE_CTRL);
+	autonomous_switch = new SensorSwitch("AUTO", NodeChannel.AUTO);
 	
 	this.addComponet(autonomous_switch, 0, 0, 1, .16);
 	this.addComponet(gps_switch, 0, .16, 1, .16);

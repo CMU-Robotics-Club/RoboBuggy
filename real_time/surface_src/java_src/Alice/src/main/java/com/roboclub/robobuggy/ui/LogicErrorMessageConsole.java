@@ -12,7 +12,7 @@ import com.roboclub.robobuggy.main.MessageLevel;
 import com.roboclub.robobuggy.messages.RobobuggyLogicExceptionMeasurment;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
-import com.roboclub.robobuggy.ros.SensorChannel;
+import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 
 public class LogicErrorMessageConsole extends RoboBuggyGUIContainer{
@@ -137,7 +137,7 @@ public class LogicErrorMessageConsole extends RoboBuggyGUIContainer{
 		messages.setText("this is where user defined messages will go\n");
 		
 		// Subscriber for LogicException updates
-		new Subscriber(SensorChannel.LOGIC_EXCEPTION.getMsgPath(), new MessageListener() {
+		new Subscriber(NodeChannel.LOGIC_EXCEPTION.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				RobobuggyLogicExceptionMeasurment msg = (RobobuggyLogicExceptionMeasurment)m;

@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
-import com.roboclub.robobuggy.ros.SensorChannel;
+import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 
 public class LocPanel extends JPanel {
@@ -54,7 +54,7 @@ public class LocPanel extends JPanel {
 		}
 		setup = false;
 		
-		gpsSub = new Subscriber(SensorChannel.GPS.getMsgPath(), new MessageListener() {
+		gpsSub = new Subscriber(NodeChannel.GPS.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				double latitude = ((GpsMeasurement)m).latitude;

@@ -14,12 +14,12 @@ import javax.swing.SwingConstants;
 
 import com.roboclub.robobuggy.messages.ResetMessage;
 import com.roboclub.robobuggy.messages.StateMessage;
+import com.roboclub.robobuggy.nodes.baseNodes.NodeState;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.Publisher;
-import com.roboclub.robobuggy.ros.SensorChannel;
+import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
-import com.roboclub.robobuggy.sensors.SensorState;
 
 /**
  * 
@@ -38,7 +38,7 @@ public class SensorSwitch extends JPanel {
 	private JButton sensor_btn;
 	private Publisher publisher;
 
-	public SensorSwitch(String name, SensorChannel sensor) {
+	public SensorSwitch(String name, NodeChannel sensor) {
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
 		this.setLayout(new GridLayout(1,2));
 
@@ -58,11 +58,11 @@ public class SensorSwitch extends JPanel {
 		new Subscriber(sensor.getStatePath(), new UpdateListener());
 		
 		// Default to displaying sensors as not in use
-		updateButton(SensorState.NOT_IN_USE);
+		updateButton(NodeState.NOT_IN_USE);
 	}
 
 
-	private void updateButton(SensorState state) {
+	private void updateButton(NodeState state) {
 		switch (state) {
 		case ON:
 			sensor_btn.setEnabled(true);
@@ -84,6 +84,11 @@ public class SensorSwitch extends JPanel {
 			sensor_btn.setText("FAULT");
 			sensor_btn.setBackground(Color.ORANGE);
 			break;
+		case WATCHDOG_DEAD:
+			sensor_btn.setEnabled(true);
+			sensor_btn.setText("WATCHDOG");
+			sensor_btn.setBackground(Color.PINK);
+			break;
 		case ERROR:
 		default:
 			sensor_btn.setEnabled(true);
@@ -96,7 +101,7 @@ public class SensorSwitch extends JPanel {
 	private class ResetHandler implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			updateButton(SensorState.DISCONNECTED);
+			updateButton(NodeState.DISCONNECTED);
 			publisher.publish(new ResetMessage());
 		}
 	}

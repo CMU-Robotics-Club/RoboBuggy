@@ -1,5 +1,7 @@
-package com.roboclub.robobuggy.serial;
+package com.roboclub.robobuggy.nodes.baseNodes;
 
+import gnu.io.CommPort;
+import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 import gnu.io.UnsupportedCommOperationException;
 
@@ -8,16 +10,18 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import com.orsoncharts.util.json.JSONObject;
-import com.roboclub.robobuggy.ros.Node;
 
 // Properly initializes the serial things
-public abstract class SerialNode implements Node {
+public abstract class SerialNode extends BuggyDecoratorNode {
+	
+	private final static int TIMEOUT = 2000;
+	//Need to manage real, simulated, and calculated sensors
 	
 	// Initialize first
 	String thread_name;
+	public SerialPort sp;
 
 	// Initialize after getting a serial port
-	public SerialPort sp;
 	InputStream serial_input;
 	OutputStream serial_output;
 	
@@ -28,11 +32,43 @@ public abstract class SerialNode implements Node {
 	int start = 0;
 	int num_bytes = 0;
 
-	// IO does not start until a serial port is attached
-	public SerialNode(String thread_name) {
+	/**
+	 * Creates a {@link SerialNode} decorator for the specified {@link BuggyNode}
+	 * @param base {@link BuggyNode} to decorate
+	 * @param thread_name name of the thread
+	 * @param portName name of the desired serial port
+	 * @param baudRate baud rate of the serial port
+	 */
+	public SerialNode(BuggyNode base, String thread_name, String portName,
+			int baudRate) {
+		super(base);
 		this.thread_name = thread_name;
+		this.sp = connect(portName, baudRate);
 	}
-
+	
+	// Open a serial port
+	// Returns null if unable to connect, otherwise SerialPort
+	private static SerialPort connect(String portName, int baudRate) {
+		try {
+	        CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
+	        
+	        if ( portIdentifier.isCurrentlyOwned() ) {
+	        	System.err.println("Error: Port currently in use");
+	        } else { 
+	            CommPort commPort = portIdentifier.open(portName, TIMEOUT);
+	            
+	            if ( commPort instanceof SerialPort ) {
+	                SerialPort serialPort = (SerialPort) commPort;
+	                serialPort.setSerialPortParams(baudRate,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
+	                return serialPort;
+	            }
+	        }
+		} catch (Exception e) {
+			System.err.println("Error: Unable to connect to port" + portName);
+		}
+		
+		return null;
+    }
 
 	public boolean send(byte[] bytes) {
 		if(serial_output == null) {
@@ -49,22 +85,25 @@ public abstract class SerialNode implements Node {
 		
 	}
 	
-	public void setSerialPort(SerialPort sp) {
-		this.sp = sp;
+	/**
+	 * Sets up a new thread to read in the serial data
+	 * {@inheritDoc}*/
+	@Override
+	protected boolean startDecoratorNode() {
 		// Set port to be the right baud rate
-		int baudRate = baudRate();
+		int baudRate = getBaudRate();
 		try {
 			sp.setSerialPortParams(baudRate,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
 		} catch (UnsupportedCommOperationException e) {
 			// TODO Auto-generated catch block
 			System.out.println("Unsupported communication operation over serial port.");
 			e.printStackTrace();
-			return;
+			return false;
 		} catch (NullPointerException e) {
 			System.out.println("Null Pointer Exception, unable to initialize the serial port. "
 					+ "Printing stack trace below: \n");
 			e.printStackTrace();
-			return;
+			return false;
 		}
 				
 		// Set port to be non-blocking....maybe.
@@ -77,18 +116,27 @@ public abstract class SerialNode implements Node {
 			serial_output = sp.getOutputStream();
 		} catch (IOException e) {
 			System.out.println("broken");
+			return false;
 		}
+		
+		//Set the node to running
+		running = true;
 		
 		// Begin the madness
 		io_thread = new Thread(new iothread(), thread_name + "-serial");
 		io_thread.setPriority(Thread.MAX_PRIORITY);
 		io_thread.start();
+		
+		return true;
 	}
 
+	/**
+	 * Shuts down the Serial reader thread
+	 * {@inheritDoc}*/
 	@Override
-	public boolean shutdown() {
+	protected boolean shutdownDecoratorNode() {
 		running = false;
-		// Node will commence shutdown next loop.
+		// iothread will commence shutdown next loop.
 	
 		// Wait forever to join...hope that we're not seized up...
 		if (io_thread != null) {
@@ -110,7 +158,7 @@ public abstract class SerialNode implements Node {
 
 
 	// Return the expected baud rate of the current device
-	public abstract int baudRate();
+	public abstract int getBaudRate();
 	
 	public static JSONObject translatePeelMessageToJObject(String message) {
 		return new JSONObject();
@@ -126,36 +174,36 @@ public abstract class SerialNode implements Node {
 		
 		@Override
 		public void run() {
-			while(true) {
+			while(running) {
 				try {
 					num_bytes += serial_input.read(buf, start + num_bytes, buf.length - num_bytes); 
 					//System.out.printf(new String(buf));
 					//System.out.printf("%d\n", bytes);
+					while(true) {
+						int num_read = peel(buf, start, num_bytes);
+						if(num_read == 0) break;
+						start += num_read;
+						num_bytes -= num_read;
+					}
+					
+					// Shift the array by the amount that we read.
+					// TODO this is stupid and should be fixed
+					for(int i = 0; i < num_bytes; i++) {
+						buf[i] = buf[start+i];
+					}
+					start = 0;
+				
+					try {
+						Thread.sleep(asleep_time);
+					} catch (InterruptedException e) {
+						System.out.println("sleep...interrupted?");
+					}
 				} catch (IOException e) {
 					// TODO handle this error reasonably.
+					setNodeState(NodeState.DISCONNECTED);
 					e.printStackTrace();
-				}
-				
-				while(true) {
-					int num_read = peel(buf, start, num_bytes);
-					if(num_read == 0) break;
-					start += num_read;
-					num_bytes -= num_read;
-				}
-				
-				// Shift the array by the amount that we read.
-				// TODO this is stupid and should be fixed
-				for(int i = 0; i < num_bytes; i++) {
-					buf[i] = buf[start+i];
-				}
-				start = 0;
-			
-				try {
-					Thread.sleep(asleep_time);
-				} catch (InterruptedException e) {
-					System.out.println("sleep...interrupted?");
 				}
 			}
 		}			
-		}
 	}
+}

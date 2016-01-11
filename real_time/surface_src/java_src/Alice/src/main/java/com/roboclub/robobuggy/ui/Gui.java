@@ -101,7 +101,7 @@ public final class Gui extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent windowEvent) {
 				try {
-					Robot.ShutDown();
+					Robot.getInstance().shutDown();
 				}
 				catch(NullPointerException e) {
 					e.printStackTrace();
@@ -121,6 +121,9 @@ public final class Gui extends JFrame {
 
 	
 		this.pack();
+<<<<<<< HEAD
+		this.setVisible(true);
+=======
 	}
 	
 	@Override
@@ -134,6 +137,7 @@ public final class Gui extends JFrame {
 		super.paint(g);
 	//	GuiUtil.subPlot(1,1,0,0,0,0,anlyPanel,pane);
 
+>>>>>>> trevor-cleanup
 		
 	}
 	
