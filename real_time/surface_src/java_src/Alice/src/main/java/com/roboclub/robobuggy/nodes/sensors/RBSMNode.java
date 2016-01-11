@@ -139,7 +139,7 @@ public class RBSMNode extends SerialNode {
 	/**{@inheritDoc}*/
 	@Override
 	//must be the same as the baud rate of the arduino 
-	public int baudRate() 
+	public int getBaudRate() 
 	{
 		return BAUD_RATE;
 	}

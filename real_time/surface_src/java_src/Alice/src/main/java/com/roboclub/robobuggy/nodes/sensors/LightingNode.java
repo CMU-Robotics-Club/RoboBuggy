@@ -53,7 +53,7 @@ public class LightingNode extends SerialNode {
 
 	/**{@inheritDoc}*/
 	@Override
-	public int baudRate() {
+	public int getBaudRate() {
 		return BAUD_RATE;
 	}
 

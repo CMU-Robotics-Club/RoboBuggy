@@ -89,9 +89,9 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 	 * Sets up a new thread to read in the serial data
 	 * {@inheritDoc}*/
 	@Override
-	public boolean startDecoratorNode() {
+	protected boolean startDecoratorNode() {
 		// Set port to be the right baud rate
-		int baudRate = baudRate();
+		int baudRate = getBaudRate();
 		try {
 			sp.setSerialPortParams(baudRate,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
 		} catch (UnsupportedCommOperationException e) {
@@ -134,7 +134,7 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 	 * Shuts down the Serial reader thread
 	 * {@inheritDoc}*/
 	@Override
-	public boolean shutdownDecoratorNode() {
+	protected boolean shutdownDecoratorNode() {
 		running = false;
 		// iothread will commence shutdown next loop.
 	
@@ -158,7 +158,7 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 
 
 	// Return the expected baud rate of the current device
-	public abstract int baudRate();
+	public abstract int getBaudRate();
 	
 	public static JSONObject translatePeelMessageToJObject(String message) {
 		return new JSONObject();
