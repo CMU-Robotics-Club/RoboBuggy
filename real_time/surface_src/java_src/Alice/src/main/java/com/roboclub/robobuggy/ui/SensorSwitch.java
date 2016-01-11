@@ -84,6 +84,11 @@ public class SensorSwitch extends JPanel {
 			sensor_btn.setText("FAULT");
 			sensor_btn.setBackground(Color.ORANGE);
 			break;
+		case WATCHDOG_DEAD:
+			sensor_btn.setEnabled(true);
+			sensor_btn.setText("WATCHDOG");
+			sensor_btn.setBackground(Color.PINK);
+			break;
 		case ERROR:
 		default:
 			sensor_btn.setEnabled(true);
