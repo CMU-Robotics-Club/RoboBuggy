@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import com.roboclub.robobuggy.main.MessageLevel;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.main.RobobuggyLogicException;
 
 public class RobobuggyDateFormatter {
@@ -17,7 +17,7 @@ public class RobobuggyDateFormatter {
 			return format.parse(date);
 		} catch (ParseException e) {
 			System.out.println("Unable to parse date");
-			new RobobuggyLogicException("Couldn't parse date from " + date, MessageLevel.EXCEPTION);
+			new RobobuggyLogicException("Couldn't parse date from " + date, RobobuggyMessageLevel.EXCEPTION);
 			return new Date();
 		}	
 	}

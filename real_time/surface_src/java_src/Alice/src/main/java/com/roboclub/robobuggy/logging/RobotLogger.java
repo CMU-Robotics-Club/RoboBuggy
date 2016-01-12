@@ -10,7 +10,10 @@ import java.util.logging.Handler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
-import com.roboclub.robobuggy.main.config;
+
+import com.roboclub.robobuggy.main.RobobuggyConfigFile;
+import com.roboclub.robobuggy.main.RobobuggyLogicException;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 
 /**
  * Logs data from the sensors
@@ -27,7 +30,7 @@ public final class RobotLogger {
 
 	public static RobotLogger getInstance() {
 		if (instance == null) {
-			logDir = new File(config.LOG_FILE_LOCATION);
+			logDir = new File(RobobuggyConfigFile.LOG_FILE_LOCATION);
 			
 			logDir.mkdirs();
 			
@@ -71,7 +74,9 @@ public final class RobotLogger {
 		if (instance != null) {
 			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 			logFolder = new File(logDir, df.format(new Date()));
-			logFolder.mkdirs();
+			if(!logFolder.mkdirs()) {
+			    new RobobuggyLogicException("Couldn't create log folder!", RobobuggyMessageLevel.EXCEPTION);
+			}
 
 			File msgFile = new File(logFolder, "messages.log");
 			try {

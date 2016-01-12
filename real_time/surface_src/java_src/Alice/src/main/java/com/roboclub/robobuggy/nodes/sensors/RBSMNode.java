@@ -2,8 +2,6 @@ package com.roboclub.robobuggy.nodes.sensors;
 
 import java.util.Date;
 
-import gnu.io.SerialPort;
-
 import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
@@ -24,7 +22,7 @@ import com.roboclub.robobuggy.ros.Subscriber;
 import com.roboclub.robobuggy.serial.RBPair;
 import com.roboclub.robobuggy.serial.RBSerial;
 import com.roboclub.robobuggy.serial.RBSerialMessage;
-import com.roboclub.robobuggy.main.MessageLevel;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.main.RobobuggyLogicException;
 
 /**
@@ -195,7 +193,7 @@ public class RBSMNode extends SerialNode {
 				messagePub_fp.publish(new FingerPrintMessage(message.getDataWord()));
 				break;
 			default: //Unhandled or invalid RBSM message header was received.
-				new RobobuggyLogicException("Invalid RBSM message header\n", MessageLevel.NOTE);
+				new RobobuggyLogicException("Invalid RBSM message header\n", RobobuggyMessageLevel.NOTE);
 				break;
 		}
 		

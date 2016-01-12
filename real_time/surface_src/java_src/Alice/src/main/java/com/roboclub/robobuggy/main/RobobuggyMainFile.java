@@ -12,14 +12,14 @@ import com.roboclub.robobuggy.ui.Gui;
 
 
 /** This class is the driver starting up the robobuggy program, if you want the buggy to drive itself you should run this node */
-public class mainFile {
+public class RobobuggyMainFile {
     static Robot buggy;
     static int num = 0;
     
     public static void main(String args[])  {
-        config.getInstance();//must be run at least once
+        RobobuggyConfigFile.getInstance();//must be run at least once
         try {
-			config.setupJNI(); //must run for jni to install
+			RobobuggyConfigFile.setupJNI(); //must run for jni to install
 			//note that errors are just printed to the console since the gui and logging system  has not been created yet
 		} catch (NoSuchFieldException e1) {
 			e1.printStackTrace();
@@ -41,36 +41,36 @@ public class mainFile {
         
         for (int i = 0; i < args.length; i++) {
             if (args[i].equalsIgnoreCase("-g")) {
-                config.GUI_ON = false;
+                RobobuggyConfigFile.GUI_ON = false;
             } 
             else if (args[i].equalsIgnoreCase("+g")) 
             {
-                config.GUI_ON = true;
+                RobobuggyConfigFile.GUI_ON = true;
             } 
             else if (args[i].equalsIgnoreCase("-r")) 
             {
-                config.active = false;
+                RobobuggyConfigFile.IS_GUI_CURRENTLY_LOGGING = false;
             } 
             else if (args[i].equalsIgnoreCase("+r")) 
             {
-                config.active = true;
+                RobobuggyConfigFile.IS_GUI_CURRENTLY_LOGGING = true;
             }
         }
         
-        if(config.GUI_ON)
+        if(RobobuggyConfigFile.GUI_ON)
         {
             Gui.getInstance();
         }
         
-    	if(config.logging)
+    	if(RobobuggyConfigFile.IS_GUI_CURRENTLY_LOGGING)
         {
             RobotLogger.getInstance();
             //Gui.EnableLogging();
         }
     	
-    	if (config.DATA_PLAY_BACK_DEFAULT) {
+    	if (RobobuggyConfigFile.DATA_PLAY_BACK_DEFAULT) {
     		//Play back mode enabled
-    		SensorPlayer sp = new SensorPlayer("logs/2015-11-21-07-08-10/sensors.txt");
+    		final SensorPlayer sp = new SensorPlayer("logs/2015-11-21-07-08-10/sensors.txt");
         	new Thread(new Runnable() {
 				
 				@Override

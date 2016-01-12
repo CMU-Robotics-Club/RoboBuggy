@@ -10,9 +10,6 @@ import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import com.orsoncharts.util.json.JSONObject;
-import com.roboclub.robobuggy.main.config;
-import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
-import com.roboclub.robobuggy.nodes.baseNodes.SerialNode;
 import com.roboclub.robobuggy.nodes.sensors.GpsNode;
 import com.roboclub.robobuggy.nodes.sensors.ImuNode;
 import com.roboclub.robobuggy.nodes.sensors.LoggingNode;
@@ -34,7 +31,7 @@ public final class SensorLogger {
 	private final Queue<String> _logQueue;
 	private final ArrayList<Subscriber> subscribers;
 
-	private static final Queue<String> startLoggingThread(PrintStream stream) {
+	private static Queue<String> startLoggingThread(PrintStream stream) {
 		final LinkedBlockingQueue<String> ret = new LinkedBlockingQueue<>();
 		
 		String name = "\"name\": \"Robobuggy Data Logs\",";
@@ -74,8 +71,7 @@ public final class SensorLogger {
 			}
 
 			private String parseData(String line) {
-				// TODO Auto-generated method stub
-				String sensor = line.substring(line.indexOf("/") + 1, line.indexOf(","));				
+				String sensor = line.substring(line.indexOf("/") + 1, line.indexOf(","));
 				JSONObject sensorEntryObject;
 
 				switch (sensor) {
@@ -115,7 +111,6 @@ public final class SensorLogger {
 
 			@SuppressWarnings("unchecked")
 			private String getDataBreakdown() {
-				// TODO Auto-generated method stub
 				JSONObject dataBreakdownObj = new JSONObject();
 				
 				dataBreakdownObj.put("logging_button", logButtonHits);

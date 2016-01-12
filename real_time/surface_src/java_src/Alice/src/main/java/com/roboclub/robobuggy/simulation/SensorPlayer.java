@@ -1,7 +1,6 @@
 package com.roboclub.robobuggy.simulation;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Date;
@@ -10,7 +9,7 @@ import com.orsoncharts.util.json.JSONArray;
 import com.orsoncharts.util.json.JSONObject;
 import com.orsoncharts.util.json.parser.JSONParser;
 import com.orsoncharts.util.json.parser.ParseException;
-import com.roboclub.robobuggy.main.MessageLevel;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.main.RobobuggyLogicException;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
@@ -48,7 +47,7 @@ public class SensorPlayer implements Runnable {
 		path = filePath;
 		File f = new File(path);
 		if(!f.exists()) {
-			new RobobuggyLogicException("File doesn't exist!", MessageLevel.EXCEPTION);
+			new RobobuggyLogicException("File doesn't exist!", RobobuggyMessageLevel.EXCEPTION);
 		}
 	}
 	
@@ -86,7 +85,7 @@ public class SensorPlayer implements Runnable {
 				long realTime_fromStart = currentTime - prevTimeInMillis;				
 				long PLAY_BACK_SPEED = 100;
 				long sleepTime = PLAY_BACK_SPEED*realTime_fromStart - sensorTime_fromStart;
-				new RobobuggyLogicException("sleepingTime:"+sleepTime, MessageLevel.NOTE);
+				new RobobuggyLogicException("sleepingTime:"+sleepTime, RobobuggyMessageLevel.NOTE);
 				if(sleepTime < 0 ){ 
 					//TODO change back to sleepTime
 					Thread.sleep(-sleepTime/100000);
@@ -147,7 +146,7 @@ public class SensorPlayer implements Runnable {
 								break;
 								
 							default:
-								new RobobuggyLogicException("Unknown status in the log!", MessageLevel.EXCEPTION);
+								new RobobuggyLogicException("Unknown status in the log!", RobobuggyMessageLevel.EXCEPTION);
 								break;
 						
 						}
@@ -182,7 +181,7 @@ public class SensorPlayer implements Runnable {
 						break;
 						
 					default:
-						//new RobobuggyLogicException("Found an unsupported sensor in the logs!", MessageLevel.WARNING);
+						//new RobobuggyLogicException("Found an unsupported sensor in the logs!", RobobuggyMessageLevel.WARNING);
 						break;
 				
 				}
@@ -194,11 +193,11 @@ public class SensorPlayer implements Runnable {
 			
 		}
 		catch(IOException e) {
-			new RobobuggyLogicException("Error while trying to read from the playback file!", MessageLevel.EXCEPTION);
+			new RobobuggyLogicException("Error while trying to read from the playback file!", RobobuggyMessageLevel.EXCEPTION);
 		} catch (InterruptedException e) {
-			new RobobuggyLogicException("Something went wrong while waiting...", MessageLevel.WARNING);
+			new RobobuggyLogicException("Something went wrong while waiting...", RobobuggyMessageLevel.WARNING);
 		} catch (ParseException e) {
-			new RobobuggyLogicException("Couldn't parse the file given. Make sure it's a proper JSON file", MessageLevel.EXCEPTION);
+			new RobobuggyLogicException("Couldn't parse the file given. Make sure it's a proper JSON file", RobobuggyMessageLevel.EXCEPTION);
 		}		
 	}
 }

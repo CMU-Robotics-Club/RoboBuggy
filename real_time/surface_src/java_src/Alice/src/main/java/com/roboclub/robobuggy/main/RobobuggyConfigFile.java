@@ -11,13 +11,13 @@ import com.orsoncharts.util.json.parser.JSONParser;
 import com.orsoncharts.util.json.parser.ParseException;
 
 // where all system configuration values should be placed
-// add jason parser for config
+// add jason parser for RobobuggyConfigFile
 
-public class config {
+public class RobobuggyConfigFile {
 	// port index of the front camera
 	public static int FRONT_CAM_INDEX = 2;
 	
-	public static final MessageLevel REPORTING_LEVEL = MessageLevel.NOTE;
+	public static final RobobuggyMessageLevel REPORTING_LEVEL = RobobuggyMessageLevel.NOTE;
 
 	// port index of the rear (pushbar camera back)
 	public static int REAR_CAM_INDEX = 0;
@@ -72,21 +72,21 @@ public class config {
 	
 	// current status values
 	public static boolean GUI_ON;
-	public static boolean active;
+	public static boolean IS_GUI_CURRENTLY_LOGGING;
 	public static boolean logging;
 
 	public static String clEyeDllPath = "C://CL-Eye Platform SDK//Bin//CLEyeMulticam.dll";
 
-	// internal reference of this config so that it can fit the factory pattern
-	private static config instance;
+	// internal reference of this RobobuggyConfigFile so that it can fit the factory pattern
+	private static RobobuggyConfigFile instance;
 
-	public static config getInstance() {
+	public static RobobuggyConfigFile getInstance() {
 		if (instance == null) {
-			instance = new config();
+			instance = new RobobuggyConfigFile();
 			// sets defaults
-			logging = config.LOGGING_DEFAULT;
+			logging = RobobuggyConfigFile.LOGGING_DEFAULT;
 			GUI_ON = GUI_ON_DEFAULT;
-			active = ACTIVE_DEFAULT;
+			IS_GUI_CURRENTLY_LOGGING = ACTIVE_DEFAULT;
 		}
 		return instance;
 	}
@@ -102,33 +102,33 @@ public class config {
 					.parse(new FileReader(filename));
 
 			FRONT_CAM_INDEX = (int) obj.getOrDefault("FRONT_CAM_INDEX",
-					config.FRONT_CAM_INDEX);
+					RobobuggyConfigFile.FRONT_CAM_INDEX);
 			REAR_CAM_INDEX = (int) obj.getOrDefault("BACK_CAM_INDEX",
-					config.REAR_CAM_INDEX);
-			OVERLOOK_CAM_INDEX = (int) obj.getOrDefault("OVERLOOK_CAM_INDEX",config.OVERLOOK_CAM_INDEX);
+					RobobuggyConfigFile.REAR_CAM_INDEX);
+			OVERLOOK_CAM_INDEX = (int) obj.getOrDefault("OVERLOOK_CAM_INDEX", RobobuggyConfigFile.OVERLOOK_CAM_INDEX);
 			VISION_SYSTEM_EXECUTABLE_LOCATION = (String) obj.getOrDefault(
 					"VISION_SYSTEM_EXECUTABLE_LOCATION",
-					config.VISION_SYSTEM_EXECUTABLE_LOCATION);
+					RobobuggyConfigFile.VISION_SYSTEM_EXECUTABLE_LOCATION);
 			LOG_FILE_LOCATION = (String) obj.getOrDefault("LOG_FILE_LOCATION",
-					config.LOG_FILE_LOCATION);
+					RobobuggyConfigFile.LOG_FILE_LOCATION);
 
 			logging = (boolean) obj.getOrDefault("LOGGING",
-					config.LOGGING_DEFAULT);
-			GUI_ON = (boolean) obj.getOrDefault("GUI", config.GUI_ON_DEFAULT);
+					RobobuggyConfigFile.LOGGING_DEFAULT);
+			GUI_ON = (boolean) obj.getOrDefault("GUI", RobobuggyConfigFile.GUI_ON_DEFAULT);
 
 			AUTONOMUS_DEFAULT = (boolean) obj.getOrDefault("AUTONOMOUS",
-					config.AUTONOMUS_DEFAULT);
+					RobobuggyConfigFile.AUTONOMUS_DEFAULT);
 			DRIVE_DEFAULT = (boolean) obj.getOrDefault("DRIVE",
-					config.DRIVE_DEFAULT);
+					RobobuggyConfigFile.DRIVE_DEFAULT);
 
-			IMU_DEFAULT = (boolean) obj.getOrDefault("IMU", config.IMU_DEFAULT);
-			GPS_DEFAULT = (boolean) obj.getOrDefault("GPS", config.GPS_DEFAULT);
+			IMU_DEFAULT = (boolean) obj.getOrDefault("IMU", RobobuggyConfigFile.IMU_DEFAULT);
+			GPS_DEFAULT = (boolean) obj.getOrDefault("GPS", RobobuggyConfigFile.GPS_DEFAULT);
 			ENCODER_DEFAULT = (boolean) obj.getOrDefault("ENCODER",
-					config.ENCODER_DEFAULT);
+					RobobuggyConfigFile.ENCODER_DEFAULT);
 			VISION_SYSTEM_DEFAULT = (boolean) obj.getOrDefault("VISION",
-					config.VISION_SYSTEM_DEFAULT);
+					RobobuggyConfigFile.VISION_SYSTEM_DEFAULT);
 			BRAKES_PER_FULL_PRESSURE = (byte) obj.getOrDefault(
-					"BRAKE_PER_FULL_PRESSURE", config.BRAKES_PER_FULL_PRESSURE);
+					"BRAKE_PER_FULL_PRESSURE", RobobuggyConfigFile.BRAKES_PER_FULL_PRESSURE);
 		} catch (FileNotFoundException e) {
 			System.out.println("Failed to read file: " + filename);
 		} catch (IOException e) {

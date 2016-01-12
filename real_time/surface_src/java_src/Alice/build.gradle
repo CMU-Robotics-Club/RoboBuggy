@@ -30,4 +30,4 @@ uploadArchives {
 
 // This adds a run target.
 apply plugin: 'application'
-mainClassName = "com.roboclub.robobuggy.main.mainFile"
+mainClassName = "com.roboclub.robobuggy.main.RobobuggyMainFile"

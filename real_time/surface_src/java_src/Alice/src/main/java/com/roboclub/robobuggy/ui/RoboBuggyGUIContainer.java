@@ -30,7 +30,7 @@ public class RoboBuggyGUIContainer extends JPanel{
 		super.paint(g);
 	}
 	
-	public void addComponet(Component newComponent,double percentageLeft,double percentageTop,double percentageWidth,double percentageHeight){
+	public void addComponent(Component newComponent, double percentageLeft, double percentageTop, double percentageWidth, double percentageHeight){
 		//create a container for keeping track of this components data
 		ComponentData thisComponet = new ComponentData();
 		thisComponet.component = newComponent;

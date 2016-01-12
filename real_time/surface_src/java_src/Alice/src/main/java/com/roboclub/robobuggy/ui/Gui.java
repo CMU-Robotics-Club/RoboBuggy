@@ -68,7 +68,7 @@ public final class Gui extends JFrame {
 		RoboBuggyJFrame mainWindow = new RoboBuggyJFrame("MainWindow",1.0,1.0);	
 		AnalyticsPanel analyPane = new AnalyticsPanel();
 		ControlPanel cntrlPane = new ControlPanel();
-		//addComponet syntax is (newComponent,percentageLeft,percentageTop,percentageWidth,percentageHeight)
+		//addComponent syntax is (newComponent,percentageLeft,percentageTop,percentageWidth,percentageHeight)
 		mainWindow.addComponet(cntrlPane, 0.0, 0.0, .3, 1.0);
 		mainWindow.addComponet(analyPane, 0.3, 0.0, .7, 1.0);
 		//the repaint is needed for a non blank screen to appear when the gui is first displayed 

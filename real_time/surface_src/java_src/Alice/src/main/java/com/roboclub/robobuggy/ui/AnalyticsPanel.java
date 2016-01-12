@@ -10,8 +10,8 @@ public class AnalyticsPanel extends RoboBuggyGUIContainer {
 		name = "analytics";
 		dataPanel = new DataPanel();
 		graphPanel = new GraphPanel();
-		this.addComponet(dataPanel, 0, 0, 1, .6);
-		this.addComponet(graphPanel, 0, .6, 1, .4);
+		this.addComponent(dataPanel, 0, 0, 1, .6);
+		this.addComponent(graphPanel, 0, .6, 1, .4);
 
 	}
 	

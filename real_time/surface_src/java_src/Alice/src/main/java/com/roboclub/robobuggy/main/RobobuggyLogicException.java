@@ -3,7 +3,7 @@ package com.roboclub.robobuggy.main;
 import com.roboclub.robobuggy.messages.RobobuggyLogicExceptionMeasurment;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.NodeChannel;
-import com.sun.org.apache.bcel.internal.generic.RETURN;
+import com.roboclub.robobuggy.ui.Gui;
 
 /**
  * 
@@ -25,26 +25,27 @@ public static void setupLogicException(NodeChannel sensor){
 	errorPub = new Publisher(sensor.getMsgPath());
 }
 	
-public RobobuggyLogicException(String error,MessageLevel level){
+public RobobuggyLogicException(String error, RobobuggyMessageLevel level){
 	if(shouldMessageBeDisplayed(level)){
 		//displays the error message to the jave console 
-	//	System.out.println(error);
+		System.out.println(error);
 	}
 	//the message is always published 
 	errorPub.publish(new RobobuggyLogicExceptionMeasurment(error, level));
 	
-	//only halt the program if it is an exception 
-	if(level == MessageLevel.EXCEPTION){
-		assert(false); //todo shutdown in a more graceful way
+	//only halt the program if it is an exception
+	if(level == RobobuggyMessageLevel.EXCEPTION){
+        Robot.getInstance().shutDown();
+		Gui.close();
 	}
 }
 
 //a function to check if a message level is signfigent enough to display to the user
 //note that this function will need to be updated if message level ever 
-private boolean shouldMessageBeDisplayed(MessageLevel level){
+private boolean shouldMessageBeDisplayed(RobobuggyMessageLevel level){
 	switch(level){
 	case EXCEPTION:
-		switch(config.REPORTING_LEVEL){
+		switch(RobobuggyConfigFile.REPORTING_LEVEL){
 		case EXCEPTION:
 			return true;
 		case WARNING:
@@ -54,7 +55,7 @@ private boolean shouldMessageBeDisplayed(MessageLevel level){
 		}
 		break;
 	case WARNING:
-		switch(config.REPORTING_LEVEL){
+		switch(RobobuggyConfigFile.REPORTING_LEVEL){
 		case EXCEPTION:
 			return true;
 		case WARNING:
@@ -64,7 +65,7 @@ private boolean shouldMessageBeDisplayed(MessageLevel level){
 		}
 		break;
 	case NOTE:
-		switch (config.REPORTING_LEVEL) {
+		switch (RobobuggyConfigFile.REPORTING_LEVEL) {
 		case EXCEPTION:
 			return true;
 		case WARNING:

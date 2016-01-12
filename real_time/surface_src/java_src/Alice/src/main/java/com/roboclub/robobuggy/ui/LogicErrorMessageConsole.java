@@ -8,7 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
 
-import com.roboclub.robobuggy.main.MessageLevel;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.messages.RobobuggyLogicExceptionMeasurment;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
@@ -20,8 +20,8 @@ public class LogicErrorMessageConsole extends RoboBuggyGUIContainer{
 	 * 
 	 */
 	private static final long serialVersionUID = -6532100079403054035L;
-	static final MessageLevel[] messageLevels = MessageLevel.values();
-	static final int NUMBER_OF_MESSAGES = messageLevels.length;
+	static final RobobuggyMessageLevel[] robobuggyMessageLevels = RobobuggyMessageLevel.values();
+	static final int NUMBER_OF_MESSAGES = robobuggyMessageLevels.length;
 	boolean[] show_messages;
 	JButton[] buttons;
 	JTextArea messages;
@@ -45,7 +45,7 @@ public class LogicErrorMessageConsole extends RoboBuggyGUIContainer{
 			//init header buttons
 			for(int k = 0;k<NUMBER_OF_MESSAGES;k++){
 				show_messages[k] = true;
-				buttons[k] = new JButton(messageLevels[k].toString());
+				buttons[k] = new JButton(robobuggyMessageLevels[k].toString());
 			}
 			
 			
@@ -99,10 +99,10 @@ public class LogicErrorMessageConsole extends RoboBuggyGUIContainer{
 					
 				}
 			});
-			this.addComponet(label, 0, 0, .25, 1);
-			this.addComponet(EXCEPTION_btn, .25, 0, .25, 1);
-			this.addComponet(WARNING_btn, .50, 0, .25, 1);
-			this.addComponet(NOTE_btn, .75, 0, .25, 1);
+			this.addComponent(label, 0, 0, .25, 1);
+			this.addComponent(EXCEPTION_btn, .25, 0, .25, 1);
+			this.addComponent(WARNING_btn, .50, 0, .25, 1);
+			this.addComponent(NOTE_btn, .75, 0, .25, 1);
 
 
 		}
@@ -132,8 +132,8 @@ public class LogicErrorMessageConsole extends RoboBuggyGUIContainer{
 		WARNING_btn.setEnabled(true);
 		NOTE_btn.setEnabled(true);
 		 messages = new JTextArea();
-		this.addComponet(header, 0.0, 0.0, 1.0, .1);
-		this.addComponet(messages, 0.0, 0.1, 1.0, .9);
+		this.addComponent(header, 0.0, 0.0, 1.0, .1);
+		this.addComponent(messages, 0.0, 0.1, 1.0, .9);
 		messages.setText("this is where user defined messages will go\n");
 		
 		// Subscriber for LogicException updates
@@ -144,17 +144,17 @@ public class LogicErrorMessageConsole extends RoboBuggyGUIContainer{
 				switch(msg.getLevel()){
 				case EXCEPTION:
 					if(show_messages[0]){
-						addMessage(messageLevels[0].toString()+":\t"+msg.getMessage()+"\n");
+						addMessage(robobuggyMessageLevels[0].toString()+":\t"+msg.getMessage()+"\n");
 					}
 					break;
 				case WARNING:
 					if(show_messages[1]){
-						addMessage(messageLevels[1].toString()+"\t"+msg.getMessage()+"\n");
+						addMessage(robobuggyMessageLevels[1].toString()+"\t"+msg.getMessage()+"\n");
 					}
 					break;
 				case NOTE:
 					if(show_messages[2]){
-						addMessage(messageLevels[2].toString()+"\t"+msg.getMessage()+"\n");
+						addMessage(robobuggyMessageLevels[2].toString()+"\t"+msg.getMessage()+"\n");
 					}
 					break;
 				default:

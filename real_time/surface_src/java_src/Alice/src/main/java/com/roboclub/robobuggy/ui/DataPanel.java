@@ -1,8 +1,6 @@
 package com.roboclub.robobuggy.ui;
 
 import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 
 import javax.swing.BorderFactory;
@@ -49,8 +47,8 @@ public class DataPanel extends RoboBuggyGUIContainer {
 	
 	public DataPanel() {
 		gpsPanel = new GpsPanel();
-		this.addComponet(gpsPanel, 0, 0, 1, .8);
-		this.addComponet(createDataPanel(), 0, .8, 1, .2);
+		this.addComponent(gpsPanel, 0, 0, 1, .8);
+		this.addComponent(createDataPanel(), 0, .8, 1, .2);
 	}
 	
 	private JPanel createDataPanel() {

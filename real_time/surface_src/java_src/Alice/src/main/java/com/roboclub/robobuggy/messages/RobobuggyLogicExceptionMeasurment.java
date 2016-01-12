@@ -1,13 +1,13 @@
 package com.roboclub.robobuggy.messages;
 
-import com.roboclub.robobuggy.main.MessageLevel;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.ros.Message;
 
 public class RobobuggyLogicExceptionMeasurment extends BaseMessage implements Message{
 	private String message;
-	private MessageLevel level;
+	private RobobuggyMessageLevel level;
 	
-	public RobobuggyLogicExceptionMeasurment(String message,MessageLevel level) {
+	public RobobuggyLogicExceptionMeasurment(String message,RobobuggyMessageLevel level) {
 		this.message = message;
 		this.level = level;
 	}
@@ -22,7 +22,7 @@ public class RobobuggyLogicExceptionMeasurment extends BaseMessage implements Me
 		return message;	
 	}
 	
-	public MessageLevel getLevel(){
+	public RobobuggyMessageLevel getLevel(){
 		return level;
 	}
 
@@ -34,13 +34,13 @@ public class RobobuggyLogicExceptionMeasurment extends BaseMessage implements Me
 			return null;
 		}else{
 			String thisLevel_str = str.substring(0, splitPoint);
-			MessageLevel thisLevel = null;
-			if(thisLevel_str.equals(MessageLevel.EXCEPTION.toString())){
-				thisLevel = MessageLevel.EXCEPTION;
-			}else if(thisLevel_str.equals(MessageLevel.NOTE.toString())){
-				thisLevel = MessageLevel.NOTE;
-			}else if(thisLevel_str.equals(MessageLevel.WARNING.toString())){
-				thisLevel = MessageLevel.WARNING;
+			RobobuggyMessageLevel thisLevel = null;
+			if(thisLevel_str.equals(RobobuggyMessageLevel.EXCEPTION.toString())){
+				thisLevel = RobobuggyMessageLevel.EXCEPTION;
+			}else if(thisLevel_str.equals(RobobuggyMessageLevel.NOTE.toString())){
+				thisLevel = RobobuggyMessageLevel.NOTE;
+			}else if(thisLevel_str.equals(RobobuggyMessageLevel.WARNING.toString())){
+				thisLevel = RobobuggyMessageLevel.WARNING;
 			}
 			String thisMessage = str.substring(splitPoint, str.length());
 			return new RobobuggyLogicExceptionMeasurment(thisMessage, thisLevel);

@@ -19,9 +19,9 @@ public class AngleGraph extends RoboBuggyGUIContainer {
 		reading.setEditable(false);
 		JLabel label = new JLabel("   " + name + ": ");
 		graph = new Graph();
-		this.addComponet(label, 0, 0, 1, .1);
-		this.addComponet(graph,0,.1,1,.8);
-		this.addComponet(reading, 0, .9, 1, .1);
+		this.addComponent(label, 0, 0, 1, .1);
+		this.addComponent(graph,0,.1,1,.8);
+		this.addComponent(reading, 0, .9, 1, .1);
 	}
 	
 	public void updateGraph(int angle) {
