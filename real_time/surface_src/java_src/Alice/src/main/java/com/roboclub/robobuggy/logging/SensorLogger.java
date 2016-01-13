@@ -34,7 +34,7 @@ public final class SensorLogger {
 	private final Queue<String> _logQueue;
 	private final ArrayList<Subscriber> subscribers;
 
-	private static final Queue<String> startLoggingThread(PrintStream stream) {
+	private static final Queue<String> startLoggingThread(final PrintStream stream) {
 		final LinkedBlockingQueue<String> ret = new LinkedBlockingQueue<>();
 		
 		String name = "\"name\": \"Robobuggy Data Logs\",";

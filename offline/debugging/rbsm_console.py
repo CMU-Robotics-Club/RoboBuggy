@@ -22,6 +22,7 @@ import threading
 import time
 import struct
 
+
 # kill the main thread on sigint
 import signal
 signal.signal(signal.SIGINT, signal.SIG_DFL)
@@ -80,6 +81,7 @@ def rbsm_worker(state):
     if(new_message["status"] == "locked"):
       # update status
       state["status_line"] = "Locked."
+
       # save new data
       message_cache.update([
         ( new_message["id"], 
