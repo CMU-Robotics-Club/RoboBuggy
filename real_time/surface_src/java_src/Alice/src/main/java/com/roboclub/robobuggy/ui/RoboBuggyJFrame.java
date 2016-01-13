@@ -8,7 +8,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
-import javax.swing.JFrame;
+import javax.swing.*;
 
 /*
  *  This class is for the robobuggy group to have nice control over how Jframe windows look and resize 
@@ -24,7 +24,10 @@ public class RoboBuggyJFrame extends JFrame  {
 		
 		//sets the title based on this frames name
 		this.setTitle(title);
-		
+
+		//set the window close default
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
 		//adds the roboclub icon to the top of the window
 		try {
 			this.setIconImage(ImageIO.read(new File("images/rc_logo.png")));
@@ -68,7 +71,7 @@ ArrayList<ComponentData> components = new ArrayList<ComponentData>();
 		super.paint(g);
 	}
 	
-	public void addComponet(Component newComponent,double percentageLeft,double percentageTop,double percentageWidth,double percentageHeight){
+	public void addComponent(Component newComponent, double percentageLeft, double percentageTop, double percentageWidth, double percentageHeight){
 		//create a container for keeping track of this components data
 		ComponentData thisComponet = new ComponentData();
 		thisComponet.component = newComponent;

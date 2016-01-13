@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.NClob;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -18,6 +19,7 @@ import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.main.RobobuggyLogicException;
 import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
+import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 
 public class LoggingPanel extends RoboBuggyGUIContainer{
@@ -33,8 +35,8 @@ public class LoggingPanel extends RoboBuggyGUIContainer{
 
 	public LoggingPanel(){
 		name = "LoggingPanel";
-		logging_button_pub = new Publisher(Gui.GuiPubSubTopics.GUI_LOG_BUTTON_UPDATED.toString());
-		
+		logging_button_pub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
+
 		timer = new Timer(10, new timerHandler());// updates every .01 seconds
 		timer.setDelay(100);
 		timer.setRepeats(true); // timer needs to be setup before startpause_btn
@@ -107,7 +109,7 @@ public class LoggingPanel extends RoboBuggyGUIContainer{
         play_btn.setBackground(Color.GREEN);
         play_btn.setText("START");
 
-        RobotLogger.CloseLog();
+//        RobotLogger.CloseLog();
         logging_button_pub.publish(new GuiLoggingButtonMessage(GuiLoggingButtonMessage.LoggingMessage.STOP));
         timer.stop();
     }

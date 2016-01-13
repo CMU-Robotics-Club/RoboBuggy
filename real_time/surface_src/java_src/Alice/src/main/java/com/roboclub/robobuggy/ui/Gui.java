@@ -1,24 +1,10 @@
 package com.roboclub.robobuggy.ui;
 
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.Graphics;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
-import javax.swing.JButton;
 import javax.swing.JFrame;
-
-import com.roboclub.robobuggy.main.Robot;
 
 /**
  * 
@@ -69,8 +55,8 @@ public final class Gui extends JFrame {
 		AnalyticsPanel analyPane = new AnalyticsPanel();
 		ControlPanel cntrlPane = new ControlPanel();
 		//addComponent syntax is (newComponent,percentageLeft,percentageTop,percentageWidth,percentageHeight)
-		mainWindow.addComponet(cntrlPane, 0.0, 0.0, .3, 1.0);
-		mainWindow.addComponet(analyPane, 0.3, 0.0, .7, 1.0);
+		mainWindow.addComponent(cntrlPane, 0.0, 0.0, .3, 1.0);
+		mainWindow.addComponent(analyPane, 0.3, 0.0, .7, 1.0);
 		//the repaint is needed for a non blank screen to appear when the gui is first displayed 
 		//mainWindow.resize(0, 0);
 		//mainWindow.fullScreenRepaint();
