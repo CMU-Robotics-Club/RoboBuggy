@@ -170,6 +170,9 @@ public class RBSMNode extends PeriodicSerialNode implements Node
 		return 115200;
 	}
 
+	//temp 
+	int maxEncoder = 0;
+	
 	/**{@inheritDoc}*/
 	@Override
 	public int peel(byte[] buffer, int start, int bytes_available) 
@@ -201,10 +204,15 @@ public class RBSMNode extends PeriodicSerialNode implements Node
 		switch (headerByte)
 		{
 			case RBSerialMessage.ENC_TICK_SINCE_RESET:
+				int encoderReading = message.getDataWord();
+				maxEncoder = Integer.max(encoderReading,maxEncoder);
+				System.out.println("maxEncoder:"+maxEncoder + "encoderReading:"+encoderReading);
+
+				
 				// This is a delta-distance! Do a thing!
 				encTicks = message.getDataWord() & 0xFFFF;
 				messagePub_enc.publish(estimateVelocity(message.getDataWord()));
-				System.out.println(encTicks);
+				System.out.println("encoderTicks:"+encTicks);
 				break;
 			case RBSerialMessage.RBSM_MID_MEGA_STEER_FEEDBACK:
 				// This is a delta-distance! Do a thing!
