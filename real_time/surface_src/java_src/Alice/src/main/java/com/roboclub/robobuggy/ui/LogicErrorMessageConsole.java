@@ -158,7 +158,7 @@ public class LogicErrorMessageConsole extends RoboBuggyGUIContainer{
 					}
 					break;
 				default:
-					addMessage("something is wrong with  the logic errot console \n");
+					addMessage("something is wrong with  the logic error console \n");
 				}
 
 			    Gui.getInstance().fixPaint();
