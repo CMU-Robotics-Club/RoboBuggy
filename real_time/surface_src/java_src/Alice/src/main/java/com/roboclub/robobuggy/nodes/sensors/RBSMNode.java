@@ -39,7 +39,7 @@ import com.roboclub.robobuggy.main.RobobuggyLogicException;
 
 public class RBSMNode extends SerialNode {
 	
-	private static final int BAUD_RATE = 115200;
+	private static final int BAUD_RATE = 76800;
 	
 	private static final double TICKS_PER_REV = 7.0;
 	// Measured as 2 feet. Though could be made more precise. 
