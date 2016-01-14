@@ -40,7 +40,7 @@ public class RobobuggyConfigFile {
 	// this program is started
 	public static boolean ACTIVE_DEFAULT = false;
 
-	public static boolean AUTONOMUS_DEFAULT = false;
+	public static boolean AUTONOMOUS_DEFAULT = false;
 
 	// sensor default settings (true for on false for off)
 	public static  boolean DRIVE_DEFAULT = true;
@@ -116,8 +116,8 @@ public class RobobuggyConfigFile {
 					RobobuggyConfigFile.LOGGING_DEFAULT);
 			GUI_ON = (boolean) obj.getOrDefault("GUI", RobobuggyConfigFile.GUI_ON_DEFAULT);
 
-			AUTONOMUS_DEFAULT = (boolean) obj.getOrDefault("AUTONOMOUS",
-					RobobuggyConfigFile.AUTONOMUS_DEFAULT);
+			AUTONOMOUS_DEFAULT = (boolean) obj.getOrDefault("AUTONOMOUS",
+					RobobuggyConfigFile.AUTONOMOUS_DEFAULT);
 			DRIVE_DEFAULT = (boolean) obj.getOrDefault("DRIVE",
 					RobobuggyConfigFile.DRIVE_DEFAULT);
 

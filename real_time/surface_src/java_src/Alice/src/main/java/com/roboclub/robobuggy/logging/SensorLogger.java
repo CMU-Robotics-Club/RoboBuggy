@@ -53,7 +53,8 @@ public final class SensorLogger {
 				while (true) {
 					try {
 						String line = ret.take();
-						if (line == null) {
+                        System.out.println(line);
+                        if (line == null) {
 							break;
 						}
 						if (line.contains("STOP")) {

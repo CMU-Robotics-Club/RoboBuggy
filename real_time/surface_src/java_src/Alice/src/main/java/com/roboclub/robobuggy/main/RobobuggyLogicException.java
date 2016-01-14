@@ -36,7 +36,6 @@ public RobobuggyLogicException(String error, RobobuggyMessageLevel level){
 	//only halt the program if it is an exception
 	if(level == RobobuggyMessageLevel.EXCEPTION){
         Robot.getInstance().shutDown();
-		Gui.close();
 	}
 }
 

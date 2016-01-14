@@ -26,6 +26,7 @@ public class Robot implements RosMaster {
 
 	@Override
 	public boolean shutDown() {
+		new RobobuggyLogicException("Shutting down Robot", RobobuggyMessageLevel.WARNING);
 		return nodeList.stream().map(n -> n.shutdown()).reduce(true, (a,b) -> a&&b);
 	}
 	
@@ -36,7 +37,7 @@ public class Robot implements RosMaster {
 	/************************************* Set of all internal private functions ************************/
 	private Robot() {
 		System.out.println("Starting Robot");
-		autonomous = RobobuggyConfigFile.AUTONOMUS_DEFAULT;
+		autonomous = RobobuggyConfigFile.AUTONOMOUS_DEFAULT;
 		nodeList = new LinkedList<>();
 		RobobuggyLogicException.setupLogicException(NodeChannel.LOGIC_EXCEPTION);
 		new RobobuggyLogicException("Logic Exception Setup properly" ,  RobobuggyMessageLevel.NOTE);
