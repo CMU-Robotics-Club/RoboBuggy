@@ -82,7 +82,7 @@ public class RobobuggyMainFile {
         }
         else {
         	//Play back disabled, create robot
-        	Robot.getInstance().startNode();
+       // 	Robot.getInstance().startNode();
         }
     }
     

@@ -49,6 +49,7 @@ public final class Gui extends JFrame {
 	//The windowList is a list of all of the windows that are a part of the gui
 	ArrayList<RoboBuggyJFrame> windowList = new ArrayList<RoboBuggyJFrame>();
 	
+	// constructor for GUI this method sets up all of the gui elements that the system uses 
 	public Gui() {
 		System.out.println("Starting GUI");
 		RoboBuggyJFrame mainWindow = new RoboBuggyJFrame("MainWindow",1.0,1.0);	
