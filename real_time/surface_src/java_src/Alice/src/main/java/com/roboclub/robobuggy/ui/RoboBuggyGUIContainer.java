@@ -21,29 +21,12 @@ public class RoboBuggyGUIContainer extends JPanel{
 	
 	/*************************** class public metheds *********************************/
 
-	@Override
-	public void paint(Graphics g){
-		int frameWidth = this.getWidth();
-		int frameHeight = this.getHeight();
-	//	System.out.println("Component:"+name+"  width:"+frameWidth+"height:"+frameHeight);
-/*
-		int frameWidth = this.getWidth();
-		int frameHeight = this.getHeight();
-	//	System.out.println("Component:"+name+"  width:"+frameWidth+"height:"+frameHeight);
-		for(int i = 0;i<components.size();i++){
-			ComponentData thisComponet = components.get(i);
-			thisComponet.component.setBounds((int)(thisComponet.percentageLeft*frameWidth), (int)(thisComponet.percentageTop*frameHeight), (int)(thisComponet.percentageWidth*frameWidth),(int)(thisComponet.percentageHeight*frameHeight));
-		}
-		*/
-		super.paint(g);
-	}
 	
 	
 	
 	public void updateSizeing(){
 		int frameWidth = this.getWidth();
 		int frameHeight = this.getHeight();
-	//	System.out.println("frameWidth "+frameWidth+" frameHeight"+frameHeight);
 		for(int i = 0;i<components.size();i++){
 			ComponentData thisComponet = components.get(i);
 			//calculate the size of the subcomponent
@@ -74,7 +57,7 @@ public class RoboBuggyGUIContainer extends JPanel{
 		components.add(thisComponet);
 		add(newComponent);
 		this.repaint();
-		testLayout t = new testLayout(components);
+		PercentileLayoutManger t = new PercentileLayoutManger(components);
 		this.setLayout(t);
 	}
 	

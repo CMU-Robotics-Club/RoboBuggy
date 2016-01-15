@@ -4,6 +4,7 @@ import com.roboclub.robobuggy.messages.RobobuggyLogicExceptionMeasurment;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ui.Gui;
+import com.sun.nio.file.SensitivityWatchEventModifier;
 
 /**
  * 
@@ -26,6 +27,10 @@ public static void setupLogicException(NodeChannel sensor){
 }
 	
 public RobobuggyLogicException(String error, RobobuggyMessageLevel level){
+		if(errorPub == null){
+			setupLogicException(NodeChannel.LOGIC_EXCEPTION);
+		}
+		
 	if(shouldMessageBeDisplayed(level)){
 		//displays the error message to the jave console 
 		System.out.println(error);
@@ -35,7 +40,7 @@ public RobobuggyLogicException(String error, RobobuggyMessageLevel level){
 	
 	//only halt the program if it is an exception
 	if(level == RobobuggyMessageLevel.EXCEPTION){
-        Robot.getInstance().shutDown();
+//        Robot.getInstance().shutDown();
 	}
 }
 

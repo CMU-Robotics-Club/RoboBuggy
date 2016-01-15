@@ -52,119 +52,9 @@ public class RoboBuggyJFrame extends JFrame  {
 		this.setVisible(true);
 	}
 	
-ArrayList<ComponentData> components = new ArrayList<ComponentData>();
-	
-	public void fullScreenRepaint(){
-	/*
-	  	GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-		this.pack();
-		int screenWidth = gd.getDisplayMode().getWidth();
-		int screenHeight = gd.getDisplayMode().getHeight();
-		this.setSize(screenWidth, screenHeight);
-		*/
-	}
+	ArrayList<ComponentData> components = new ArrayList<ComponentData>();
 
-
-	
-	@Override
-	public void paint(Graphics g){
-	/*	int frameWidth = this.getWidth();
-		int frameHeight = this.getHeight();
-		for(int i = 0;i<components.size();i++){
-			ComponentData thisComponet = components.get(i);
-			thisComponet.component.setBounds((int)(thisComponet.percentageLeft*frameWidth), (int)(thisComponet.percentageTop*frameHeight), (int)(thisComponet.percentageWidth*frameWidth),(int)(thisComponet.percentageHeight*frameHeight));
-		}
-*/
-		super.paint(g);
-	}
-	public class resizeEvent implements ComponentListener{
-		
-		Component thisComponent;
-		double left;
-		double top;
-		double w;
-		double h;
-
-		public  resizeEvent(Component newComponent,double percentageLeft, double percentageTop, double percentageWidth, double percentageHeight){
-			thisComponent = newComponent;
-			left = percentageLeft;
-			top = percentageTop;
-			w = percentageWidth;
-			h = percentageHeight;
-		}
-
-		@Override
-		public void componentResized(ComponentEvent e) {
-			// TODO Auto-generated method stub
-			System.out.println("resize happened");
-			System.out.println(thisComponent);
-			int frameWidth = thisComponent.getWidth();
-			int frameHeight = thisComponent.getHeight();
-			int subComponetX = (int)(left*frameWidth);
-			int subComponetY = (int)(top*frameHeight);
-			int subComponentWidth = (int)(w*frameWidth);
-			int subComponentHeight = (int)(h*frameHeight);
-		//	thisComponent.setBounds(subComponetX, subComponetY, subComponentWidth, subComponentHeight);
-			if(thisComponent instanceof RoboBuggyGUIContainer){
-				RoboBuggyGUIContainer rbGuicontainer = (RoboBuggyGUIContainer) thisComponent;
-				rbGuicontainer.updateSizeing();
-			}
-			
-			
-		}
-
-		@Override
-		public void componentMoved(ComponentEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void componentShown(ComponentEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void componentHidden(ComponentEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-	}
-	
-
-	
-	/*
-	@Override
-	public void doLayout(){
-		//super.doLayout();
-		//
-	
-        LayoutManager layoutMgr = this.layoutMgr;
-        if (layoutMgr != null) {
-            layoutMgr.layoutContainer(this);
-        }
-		System.out.println("doing layout");
-		int frameWidth = this.getWidth();
-		int frameHeight = this.getHeight();
-		for(int i = 0;i<components.size();i++){
-			ComponentData thisComponet = components.get(i);
-			thisComponet.component.setBounds((int)(thisComponet.percentageLeft*frameWidth), (int)(thisComponet.percentageTop*frameHeight), (int)(thisComponet.percentageWidth*frameWidth),(int)(thisComponet.percentageHeight*frameHeight));
-		}
-
-      //  this.validate();
-
-	}
-	*/
-	
-	
 	public void addComponent(Component newComponent, double percentageLeft, double percentageTop, double percentageWidth, double percentageHeight){
-
-		
-	//	resizeEvent test = new resizeEvent( newComponent, percentageLeft,  percentageTop,  percentageWidth,  percentageHeight);	
-	//	newComponent.addComponentListener(test);
-		
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		int screenWidth = gd.getDisplayMode().getWidth();
 		int screenHeight = gd.getDisplayMode().getHeight();
@@ -182,7 +72,7 @@ ArrayList<ComponentData> components = new ArrayList<ComponentData>();
 		thisComponet.percentageHeight = percentageHeight;
 		components.add(thisComponet);
 		this.add(newComponent);
-		testLayout t = new testLayout(components);
+		PercentileLayoutManger t = new PercentileLayoutManger(components);
 		this.setLayout(t);
 	}
 	

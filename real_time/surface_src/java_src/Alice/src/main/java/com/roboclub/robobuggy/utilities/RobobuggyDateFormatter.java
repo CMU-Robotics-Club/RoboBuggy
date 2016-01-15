@@ -13,8 +13,13 @@ public class RobobuggyDateFormatter {
 
 	public static Date formatRobobuggyDate(String date) {
 		try {
-			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.ENGLISH);
-			return format.parse(date);
+			if(date == null){
+				new RobobuggyLogicException("No Date information sent to formatRobobuggyDate", RobobuggyMessageLevel.EXCEPTION);
+				return new  Date();
+			}else{
+				DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.ENGLISH);
+				return format.parse(date);
+			}
 		} catch (ParseException e) {
 			System.out.println("Unable to parse date");
 			new RobobuggyLogicException("Couldn't parse date from " + date, RobobuggyMessageLevel.EXCEPTION);
@@ -23,3 +28,4 @@ public class RobobuggyDateFormatter {
 	}
 	
 }
+	

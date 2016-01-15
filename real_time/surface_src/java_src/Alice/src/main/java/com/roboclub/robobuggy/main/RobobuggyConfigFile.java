@@ -68,7 +68,7 @@ public class RobobuggyConfigFile {
 
 	public static boolean GUI_ON_DEFAULT = true;
 	// iff false, connect to serial sensors 
-	public static final boolean DATA_PLAY_BACK_DEFAULT = false;
+	public static final boolean DATA_PLAY_BACK_DEFAULT = true;
 	
 	// current status values
 	public static boolean GUI_ON;

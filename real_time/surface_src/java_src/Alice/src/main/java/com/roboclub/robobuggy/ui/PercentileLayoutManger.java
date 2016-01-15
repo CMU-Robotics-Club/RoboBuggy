@@ -7,10 +7,10 @@ import java.awt.LayoutManager;
 import java.util.ArrayList;
 
 
-class testLayout implements LayoutManager{
+class PercentileLayoutManger implements LayoutManager{
 	ArrayList<ComponentData> components;
 	
-	testLayout(ArrayList<ComponentData> components){
+	PercentileLayoutManger(ArrayList<ComponentData> components){
 		this.components = components;
 	}
 	
@@ -42,7 +42,6 @@ class testLayout implements LayoutManager{
 	public void layoutContainer(Container parent) {
 		int frameWidth = parent.getWidth();
 		int frameHeight = parent.getHeight();
-		System.out.println("x"+parent.getX()+"y"+parent.getY()+"width"+frameWidth+"frameHeight"+frameHeight + " name"+parent.getName());
 		for(int i = 0;i<this.components.size();i++){
 			Component thisComponent = this.components.get(i).component;
 			int x = (int)(this.components.get(i).percentageLeft*frameWidth);
@@ -50,9 +49,7 @@ class testLayout implements LayoutManager{
 			int width = (int)(this.components.get(i).percentageWidth*frameWidth);
 			int height = (int)(this.components.get(i).percentageHeight*frameHeight);
 			thisComponent.setBounds(x, y, width, height);
-		}
-		// TODO Auto-generated method stub
-		
+		}		
 	}
 	
 }
