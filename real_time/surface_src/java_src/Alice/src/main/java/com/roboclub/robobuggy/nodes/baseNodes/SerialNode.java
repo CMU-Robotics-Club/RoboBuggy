@@ -179,9 +179,13 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 					num_bytes += serial_input.read(buf, start + num_bytes, buf.length - num_bytes); 
 					//System.out.printf(new String(buf));
 					//System.out.printf("%d\n", bytes);
-					while(true) {
+					while(true) 
+					{
 						int num_read = peel(buf, start, num_bytes);
-						if(num_read == 0) break;
+						if(num_read == 0)
+						{
+							break;
+						}
 						start += num_read;
 						num_bytes -= num_read;
 					}

@@ -20,19 +20,20 @@ public class LogicErrorMessageConsole extends RoboBuggyGUIContainer{
 	 * 
 	 */
 	private static final long serialVersionUID = -6532100079403054035L;
-	static final RobobuggyMessageLevel[] robobuggyMessageLevels = RobobuggyMessageLevel.values();
-	static final int NUMBER_OF_MESSAGES = robobuggyMessageLevels.length;
-	boolean[] show_messages;
-	JButton[] buttons;
-	JTextArea messages;
+	private static final RobobuggyMessageLevel[] robobuggyMessageLevels = RobobuggyMessageLevel.values();
+	private static final int NUMBER_OF_MESSAGES = robobuggyMessageLevels.length;
+	private boolean[] show_messages;
+	private JButton[] buttons;
+	private JTextArea messages;
 	
-	String messageBuffer[] = new String[10];
-	int messageBufferStart = 0;
-	int messageBufferEnd = 0;
+	private String messageBuffer[] = new String[10];
+	private int messageBufferStart = 0;
+	private int messageBufferEnd = 0;
 
-	JButton EXCEPTION_btn;
-	JButton WARNING_btn;
-	JButton NOTE_btn;
+	//buttons for showing which messages to show 
+	private JButton EXCEPTION_btn;
+	private JButton WARNING_btn;
+	private JButton NOTE_btn;
 	public class Header extends RoboBuggyGUIContainer{
 		/**
 		 * 
