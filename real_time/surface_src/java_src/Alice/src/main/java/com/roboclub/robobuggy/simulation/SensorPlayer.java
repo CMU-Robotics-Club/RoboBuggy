@@ -179,10 +179,10 @@ public class SensorPlayer implements Runnable {
 							//new RobobuggyLogicException("Found an unsupported sensor in the logs!", RobobuggyMessageLevel.WARNING);
 							break;
 				
-					}
+				}
+								
 				
-				}				
-				
+			}
 			}
 			
 		}
