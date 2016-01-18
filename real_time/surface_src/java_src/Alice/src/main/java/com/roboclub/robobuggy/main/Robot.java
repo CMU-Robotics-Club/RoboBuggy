@@ -1,13 +1,13 @@
 package com.roboclub.robobuggy.main;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import com.roboclub.robobuggy.nodes.sensors.GpsNode;
 import com.roboclub.robobuggy.nodes.sensors.ImuNode;
 import com.roboclub.robobuggy.nodes.sensors.RBSMNode;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.NodeChannel;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * 

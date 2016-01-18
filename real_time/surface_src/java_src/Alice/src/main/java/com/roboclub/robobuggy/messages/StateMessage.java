@@ -1,9 +1,9 @@
 package com.roboclub.robobuggy.messages;
 
-import java.util.Date;
-
 import com.roboclub.robobuggy.nodes.baseNodes.NodeState;
 import com.roboclub.robobuggy.ros.Message;
+
+import java.util.Date;
 
 public class StateMessage implements Message {
 	private Date timestamp;

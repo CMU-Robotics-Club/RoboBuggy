@@ -1,5 +1,7 @@
 package com.roboclub.robobuggy.logging;
 
+import com.roboclub.robobuggy.ros.Message;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -7,8 +9,6 @@ import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.LinkedBlockingQueue;
-
-import com.roboclub.robobuggy.ros.Message;
 
 /**
  * Logs data to a file.

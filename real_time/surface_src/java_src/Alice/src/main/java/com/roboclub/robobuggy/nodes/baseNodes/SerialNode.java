@@ -1,5 +1,6 @@
 package com.roboclub.robobuggy.nodes.baseNodes;
 
+import com.orsoncharts.util.json.JSONObject;
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
@@ -8,8 +9,6 @@ import gnu.io.UnsupportedCommOperationException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import com.orsoncharts.util.json.JSONObject;
 
 // Properly initializes the serial things
 public abstract class SerialNode extends BuggyDecoratorNode {

@@ -1,8 +1,9 @@
 package com.roboclub.robobuggy.messages;
 
+import com.roboclub.robobuggy.ros.Message;
+
 import java.text.ParseException;
 import java.util.Date;
-import com.roboclub.robobuggy.ros.Message;
 
 /**
  * @author ?

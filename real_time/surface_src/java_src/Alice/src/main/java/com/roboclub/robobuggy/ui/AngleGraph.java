@@ -1,12 +1,7 @@
 package com.roboclub.robobuggy.ui;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
+import java.awt.*;
 
 public class AngleGraph extends RoboBuggyGUIContainer {
 	private static final long serialVersionUID = 4524475337756493384L;

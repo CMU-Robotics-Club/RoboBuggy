@@ -1,13 +1,12 @@
 package com.roboclub.robobuggy.tests;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-
 import com.orsoncharts.util.json.JSONObject;
 import com.orsoncharts.util.json.parser.JSONParser;
 import com.orsoncharts.util.json.parser.ParseException;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class OrsonJsonTests {
 

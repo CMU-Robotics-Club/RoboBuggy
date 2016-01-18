@@ -1,10 +1,9 @@
 package com.roboclub.robobuggy.ui;
 
-import java.awt.Container;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
-
-import javax.swing.JFrame;
 
 /**
  * 

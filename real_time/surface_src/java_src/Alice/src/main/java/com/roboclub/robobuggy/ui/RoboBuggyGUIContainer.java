@@ -1,10 +1,8 @@
 package com.roboclub.robobuggy.ui;
 
-import java.awt.Component;
-import java.awt.Graphics;
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
-
-import javax.swing.JPanel;
 
 public class RoboBuggyGUIContainer extends JPanel{
 	/**

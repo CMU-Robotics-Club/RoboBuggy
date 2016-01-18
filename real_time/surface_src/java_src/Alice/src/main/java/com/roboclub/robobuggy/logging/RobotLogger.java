@@ -1,5 +1,9 @@
 package com.roboclub.robobuggy.logging;
 
+import com.roboclub.robobuggy.main.RobobuggyConfigFile;
+import com.roboclub.robobuggy.main.RobobuggyLogicException;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -10,10 +14,6 @@ import java.util.logging.Handler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
-
-import com.roboclub.robobuggy.main.RobobuggyConfigFile;
-import com.roboclub.robobuggy.main.RobobuggyLogicException;
-import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 
 /**
  * Logs data from the sensors

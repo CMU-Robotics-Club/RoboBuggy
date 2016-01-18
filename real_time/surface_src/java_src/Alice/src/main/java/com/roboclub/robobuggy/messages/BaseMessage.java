@@ -1,12 +1,12 @@
 package com.roboclub.robobuggy.messages;
 
+import com.roboclub.robobuggy.main.RobobuggyLogicException;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
-import com.roboclub.robobuggy.main.RobobuggyLogicException;
 
 public abstract class BaseMessage {
 	public static DateFormat formatter = new SimpleDateFormat(

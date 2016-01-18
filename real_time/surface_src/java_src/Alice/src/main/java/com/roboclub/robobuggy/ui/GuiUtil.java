@@ -1,10 +1,9 @@
 package com.roboclub.robobuggy.ui;
 
-import java.awt.Component;
-import java.awt.Container;
-
-import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.main.RobobuggyLogicException;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
+
+import java.awt.*;
 
 /**
  * This is a helper class for the gui containing commonly used gui related helper function

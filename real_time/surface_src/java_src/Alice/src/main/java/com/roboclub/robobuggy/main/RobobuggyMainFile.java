@@ -1,14 +1,13 @@
 package com.roboclub.robobuggy.main;
 
 import com.roboclub.robobuggy.logging.RobotLogger;
+import com.roboclub.robobuggy.simulation.SensorPlayer;
+import com.roboclub.robobuggy.ui.Gui;
 import gnu.io.CommPortIdentifier;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-
-import com.roboclub.robobuggy.simulation.SensorPlayer;
-import com.roboclub.robobuggy.ui.Gui;
 
 
 /** This class is the driver starting up the robobuggy program, if you want the buggy to drive itself you should run this node */
