@@ -54,9 +54,9 @@ public final class Gui extends JFrame {
 		System.out.println("Starting GUI");
 		RoboBuggyJFrame mainWindow = new RoboBuggyJFrame("MainWindow",1.0,1.0);	
 		AnalyticsPanel analyPane = new AnalyticsPanel();
-		ControlPanel cntrlPane = new ControlPanel();
+		ctrlPanel1 = new ControlPanel();
 		//addComponent syntax is (newComponent,percentageLeft,percentageTop,percentageWidth,percentageHeight)
-		mainWindow.addComponent(cntrlPane, 0.0, 0.0, .3, 1.0);
+		mainWindow.addComponent(ctrlPanel1, 0.0, 0.0, .3, 1.0);
 		mainWindow.addComponent(analyPane, 0.3, 0.0, .7, 1.0);
 		//the repaint is needed for a non blank screen to appear when the gui is first displayed 
 		//mainWindow.resize(0, 0);
@@ -66,7 +66,11 @@ public final class Gui extends JFrame {
 		
 		
 	}
-	
+
+	public ControlPanel getControlPanel() {
+		return ctrlPanel1;
+	}
+
 	//This method closes all gui elements relating to this instance of robobuggy
 	public static void close() {
 		System.out.println("Trying to close the window!");

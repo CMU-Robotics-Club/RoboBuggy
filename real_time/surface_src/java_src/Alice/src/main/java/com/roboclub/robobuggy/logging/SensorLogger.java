@@ -18,6 +18,7 @@ import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
+import com.roboclub.robobuggy.ui.Gui;
 
 /**
  * Logs data from the sensors
@@ -158,6 +159,9 @@ public final class SensorLogger {
 			throw new RuntimeException("Cannot create sensor log file ("
 					+ logFile + ")!");
 		}
+
+		Gui.getInstance().getControlPanel().getLoggingPanel().setFileName(outputDir + "/sensors.txt");
+
 		_logQueue = startLoggingThread(_log);
 
 		// Subscribe to ALL THE PUBLISHERS

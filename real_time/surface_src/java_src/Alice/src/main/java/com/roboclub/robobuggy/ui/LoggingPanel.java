@@ -29,6 +29,7 @@ public class LoggingPanel extends RoboBuggyGUIContainer{
 	private static Date startTime;
 	private static Timer timer;
 	Publisher logging_button_pub;
+	private JLabel filename_lbl;
 	//to make logging panel accessible to button callbacks
 	private LoggingPanel thisLoggingPanel = this;
 	
@@ -50,9 +51,9 @@ public class LoggingPanel extends RoboBuggyGUIContainer{
 		play_btn.setEnabled(true);
 		play_btn.setBackground(Color.BLUE);
 	
-		JLabel filename_lbl = new JLabel("File: ",
+		filename_lbl = new JLabel("File: ",
 				SwingConstants.CENTER);
-		filename_lbl.setFont(new Font("sanserif", Font.PLAIN, 30));
+		filename_lbl.setFont(new Font("sanserif", Font.PLAIN, 15));
 
 		time_lbl = new JFormattedTextField(new SimpleDateFormat("HH:mm:ss.S"));
 		time_lbl.setHorizontalAlignment(SwingConstants.CENTER);
@@ -64,6 +65,10 @@ public class LoggingPanel extends RoboBuggyGUIContainer{
 		this.addComponent(play_btn, 0, 0, 1.0, .25);
 		this.addComponent(filename_lbl, 0, .25, 1.0, .25);
 		this.addComponent(time_lbl, 0, .5, 1, .5);
+	}
+
+	public void setFileName(String fileName) {
+		filename_lbl.setText("File: " + fileName);
 	}
 
 	private class PlayButtonHandler implements ActionListener {

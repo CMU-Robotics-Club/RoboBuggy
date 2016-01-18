@@ -15,16 +15,21 @@ package com.roboclub.robobuggy.ui;
 public class ControlPanel extends RoboBuggyGUIContainer {
 	private static final long serialVersionUID = -924045896215455343L;
 
+	private LoggingPanel loggingPane;
 	
 	public ControlPanel() {
 
-		LoggingPanel loggingPane = new LoggingPanel();
+		loggingPane = new LoggingPanel();
 		SensorSwitchPanel sensorsPane = new SensorSwitchPanel();
 		LogicErrorMessageConsole messageConsole = new LogicErrorMessageConsole();
 		this.addComponent(loggingPane, 0, 0, 1, .3);
 		this.addComponent(sensorsPane, 0, .3, 1, .3);
 		this.addComponent(messageConsole,0,.6,1,.4);
 		
+	}
+
+	public LoggingPanel getLoggingPanel() {
+		return loggingPane;
 	}
 
 }
