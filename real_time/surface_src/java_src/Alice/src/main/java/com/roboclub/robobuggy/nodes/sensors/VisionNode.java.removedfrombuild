@@ -28,7 +28,7 @@ import org.opencv.highgui.Highgui;
 import org.opencv.highgui.VideoCapture;
 import org.opencv.imgproc.Imgproc;
 import com.roboclub.robobuggy.logging.RobotLogger;
-import com.roboclub.robobuggy.main.config;
+import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.ros.SensorChannel;
 import com.roboclub.robobuggy.sensors.SensorState;
 

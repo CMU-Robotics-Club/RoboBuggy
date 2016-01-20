@@ -18,7 +18,7 @@ public class Config {
 	// port index of the front camera
 	public static int FRONT_CAM_INDEX = 2;
 	
-	public static final MessageLevel REPORTING_LEVEL = MessageLevel.NOTE;
+	public static final RobobuggyMessageLevel REPORTING_LEVEL = RobobuggyMessageLevel.NOTE;
 
 	// port index of the rear (pushbar camera back)
 	public static int REAR_CAM_INDEX = 0;

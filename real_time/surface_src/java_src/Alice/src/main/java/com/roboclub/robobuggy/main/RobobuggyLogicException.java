@@ -33,28 +33,29 @@ public class RobobuggyLogicException {
 	/**
 	 * Constructs a new {@link RobobuggyLogicException}
 	 * @param exception description of the exception that occurred
-	 * @param level {@link MessageLevel} of the {@link RobobuggyLogicException}
+	 * @param level {@link RobobuggyMessageLevel} of the
+	 *  {@link RobobuggyLogicException}
 	 */
-	public RobobuggyLogicException(String exception,MessageLevel level){
+	public RobobuggyLogicException(String exception, RobobuggyMessageLevel level){
 		if(shouldMessageBeDisplayed(level)){
-			//displays the error message to the jave console 
+			//displays the error message to the java console 
 			System.out.println(exception);
 		}
 		//the message is always published 
 		errorPub.publish(new RobobuggyLogicExceptionMeasurment(exception, level));
 		
 		//only halt the program if it is an exception 
-		if(level == MessageLevel.EXCEPTION){
+		if(level == RobobuggyMessageLevel.EXCEPTION){
 			assert(false); //todo shutdown in a more graceful way
 		}
 	}
-	
+
 	//a function to check if a message level is signfigent enough to display to the user
 	//note that this function will need to be updated if message level ever 
-	private boolean shouldMessageBeDisplayed(MessageLevel level){
+	private boolean shouldMessageBeDisplayed(RobobuggyMessageLevel level){
 		switch(level){
 		case EXCEPTION:
-			switch(Config.REPORTING_LEVEL){
+			switch(RobobuggyConfigFile.REPORTING_LEVEL){
 			case EXCEPTION:
 				return true;
 			case WARNING:
@@ -66,7 +67,7 @@ public class RobobuggyLogicException {
 				return true;
 			}
 		case WARNING:
-			switch(Config.REPORTING_LEVEL){
+			switch(RobobuggyConfigFile.REPORTING_LEVEL){
 			case EXCEPTION:
 				return true;
 			case WARNING:
@@ -78,21 +79,48 @@ public class RobobuggyLogicException {
 				return true;
 			}
 		case NOTE:
-			switch (Config.REPORTING_LEVEL) {
+			switch (RobobuggyConfigFile.REPORTING_LEVEL) {
 			case EXCEPTION:
-				return true;
+				switch(RobobuggyConfigFile.REPORTING_LEVEL){
+				case EXCEPTION:
+					return true;
+				case WARNING:
+					return false;
+				case NOTE:
+					return false;
+				default:
+					System.out.println("Unknown MessageLevel. Printing");
+					return true;
+				}
 			case WARNING:
-				return true;
+				switch(RobobuggyConfigFile.REPORTING_LEVEL){
+				case EXCEPTION:
+					return true;
+				case WARNING:
+					return true;
+				case NOTE:
+					return false;
+				default:
+					System.out.println("Unknown MessageLevel. Printing");
+					return true;
+				}
 			case NOTE:
-				return true;		
+				switch (RobobuggyConfigFile.REPORTING_LEVEL) {
+				case EXCEPTION:
+					return true;
+				case WARNING:
+					return true;
+				case NOTE:
+					return true;		
+				default:
+					System.out.println("Unknown MessageLevel. Printing");
+					return true;
+				}
 			default:
 				System.out.println("Unknown MessageLevel. Printing");
 				return true;
 			}
-		default:
-			System.out.println("Unknown MessageLevel. Printing");
-			return true;
 		}
+		return true;
 	}
-
 }

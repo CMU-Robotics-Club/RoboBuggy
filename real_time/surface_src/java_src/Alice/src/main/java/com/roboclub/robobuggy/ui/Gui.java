@@ -1,17 +1,10 @@
 package com.roboclub.robobuggy.ui;
 
-import java.awt.Color;
 import java.awt.Container;
-import java.awt.Frame;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.event.WindowEvent;
-import java.io.File;
+import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
 import javax.swing.JFrame;
-
-import com.roboclub.robobuggy.main.Robot;
 
 /**
  * {@link JFrame} used to represent the robobuggy gui
@@ -22,12 +15,14 @@ import com.roboclub.robobuggy.main.Robot;
  * 
  * CHANGELOG: NONE
  * 
- * DESCRIPTION: TODO
+ * DESCRIPTION: This class is the top level controller for the graphical user interface displayed to the user 
  */
 public final class Gui extends JFrame {
 	private static final long serialVersionUID = 670947948979376738L;
+	private Container pane;
+	private ControlPanel ctrlPanel1;
+	private ControlPanel ctrlPanel2;
 
-	private ControlPanel ctrlPanel;
 	private AnalyticsPanel anlyPanel;
 	
 	private static Gui instance;
@@ -39,6 +34,12 @@ public final class Gui extends JFrame {
 		GUI_LOG_BUTTON_UPDATED,
 	}
 
+	public void fixPaint(){
+		for(int i = 0;i<windowList.size();i++){
+			windowList.get(i).repaint(); 
+		}
+	}
+	
 	/**
 	 * Returns a reference to the one instance of the {@link Gui}. 
 	 * If none exists, one will be constructed.
@@ -51,60 +52,25 @@ public final class Gui extends JFrame {
 		return instance;
 	}
 
+	//The windowList is a list of all of the windows that are a part of the gui
+	private ArrayList<RoboBuggyJFrame> windowList = new ArrayList<RoboBuggyJFrame>();
+	
 	/**
 	 * Construct a new {@link Gui} object
 	 */
 	private Gui() {
 		System.out.println("Starting GUI");
-		populate();
-		System.out.println("Populated!");
-	}
-
-	private void populate() {
-		this.setTitle("RoboBuggy Interface");
-		this.setExtendedState(Frame.MAXIMIZED_BOTH);
-		Container pane = this.getContentPane();
-		pane.setLayout(new GridBagLayout());
-		pane.setBackground(Color.DARK_GRAY);
-
-		try {
-			this.setIconImage(ImageIO.read(new File("images/rc_logo.png")));
-		} catch (Exception e) {
-			System.out.println("Unable to read icon image!");
-		}
-		
-		// Close ports and close window upon exit
-		this.addWindowListener(new java.awt.event.WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent windowEvent) {
-				try {
-					Robot.getInstance().shutDown();
-				}
-				catch(NullPointerException e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.weightx = 0.25;
-		gbc.weighty = 1.0;
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.fill = GridBagConstraints.BOTH;
-		ctrlPanel = new ControlPanel();
-		pane.add(ctrlPanel, gbc);
-		
-		gbc.weightx = 0.75;
-		gbc.gridx = 1;
-		gbc.gridy = 0;
-		anlyPanel = new AnalyticsPanel();
-		pane.add(anlyPanel, gbc);
-		
-		
-		this.pack();
-		this.setVisible(true);
-		
+		RoboBuggyJFrame mainWindow = new RoboBuggyJFrame("MainWindow",1.0,1.0);	
+		AnalyticsPanel analyPane = new AnalyticsPanel();
+		ControlPanel cntrlPane = new ControlPanel();
+		//addComponent syntax is (newComponent,percentageLeft,percentageTop,percentageWidth,percentageHeight)
+		mainWindow.addComponent(cntrlPane, 0.0, 0.0, .3, 1.0);
+		mainWindow.addComponent(analyPane, 0.3, 0.0, .7, 1.0);
+		//the repaint is needed for a non blank screen to appear when the gui is first displayed 
+		//mainWindow.resize(0, 0);
+		//mainWindow.fullScreenRepaint();
+		mainWindow.repaint();
+		windowList.add(mainWindow);
 	}
 	
 	/**
@@ -116,10 +82,4 @@ public final class Gui extends JFrame {
 		System.out.println("Apparently we've closed the window!");
 	}
 
-	/**
-	 * Enables logging
-	 */
-	public static void enableLogging() {
-		instance.ctrlPanel.enableLogging();
-	}
 }

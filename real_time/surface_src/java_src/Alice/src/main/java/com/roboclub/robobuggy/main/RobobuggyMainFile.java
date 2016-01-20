@@ -12,20 +12,14 @@ import com.roboclub.robobuggy.ui.Gui;
 
 
 /** This class is the driver starting up the robobuggy program, if you want the buggy to drive itself you should run this node */
-public class MainFile {
+public class RobobuggyMainFile {
+    static Robot buggy;
+    static int num = 0;
     
-	/**
-	 * Run Alice
-	 * @param args :
-	 * -g - run without gui
-	 * +g - run with gui
-	 * -r - run with active false
-	 * +r - run with active true
-	 */
-    public static void main(String[] args)  {
-        Config.getInstance();//must be run at least once
+    public static void main(String args[])  {
+        RobobuggyConfigFile.getInstance();//must be run at least once
         try {
-			Config.setupJNI(); //must run for jni to install
+			RobobuggyConfigFile.setupJNI(); //must run for jni to install
 			//note that errors are just printed to the console since the gui and logging system  has not been created yet
 		} catch (NoSuchFieldException e1) {
 			e1.printStackTrace();
@@ -47,36 +41,36 @@ public class MainFile {
         
         for (int i = 0; i < args.length; i++) {
             if (args[i].equalsIgnoreCase("-g")) {
-                Config.GUI_ON = false;
+                RobobuggyConfigFile.GUI_ON = false;
             } 
             else if (args[i].equalsIgnoreCase("+g")) 
             {
-                Config.GUI_ON = true;
+                RobobuggyConfigFile.GUI_ON = true;
             } 
             else if (args[i].equalsIgnoreCase("-r")) 
             {
-                Config.active = false;
+                RobobuggyConfigFile.IS_GUI_CURRENTLY_LOGGING = false;
             } 
             else if (args[i].equalsIgnoreCase("+r")) 
             {
-                Config.active = true;
+                RobobuggyConfigFile.IS_GUI_CURRENTLY_LOGGING = true;
             }
         }
         
-        if(Config.GUI_ON)
+        if(RobobuggyConfigFile.GUI_ON)
         {
             Gui.getInstance();
         }
         
-    	if(Config.logging)
+    	if(RobobuggyConfigFile.IS_GUI_CURRENTLY_LOGGING)
         {
             RobotLogger.getInstance();
-            Gui.enableLogging();
+            //Gui.EnableLogging();
         }
     	
-    	if (Config.DATA_PLAY_BACK_DEFAULT) {
+    	if (RobobuggyConfigFile.DATA_PLAY_BACK_DEFAULT) {
     		//Play back mode enabled
-    		SensorPlayer sp = new SensorPlayer("logs/2015-11-21-07-08-10/sensors.txt");
+    		final SensorPlayer sp = new SensorPlayer("logs/logs/2015-11-15-06-57-21/sensors.txt");
         	new Thread(new Runnable() {
 				
 				@Override

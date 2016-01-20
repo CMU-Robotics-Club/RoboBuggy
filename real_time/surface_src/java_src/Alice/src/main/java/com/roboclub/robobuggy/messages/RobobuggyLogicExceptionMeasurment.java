@@ -1,6 +1,6 @@
 package com.roboclub.robobuggy.messages;
 
-import com.roboclub.robobuggy.main.MessageLevel;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.ros.Message;
 
 /**
@@ -8,14 +8,14 @@ import com.roboclub.robobuggy.ros.Message;
  */
 public class RobobuggyLogicExceptionMeasurment extends BaseMessage implements Message{
 	private String message;
-	private MessageLevel level;
+	private RobobuggyMessageLevel level;
 	
 	/**
 	 * Constructs a new {@link RobobuggyLogicExceptionMeasurement} at time now.
 	 * @param message {@link String} message to transmit
 	 * @param level {@link MessageLevel} of the message to transmit
 	 */
-	public RobobuggyLogicExceptionMeasurment(String message,MessageLevel level) {
+	public RobobuggyLogicExceptionMeasurment(String message,RobobuggyMessageLevel level) {
 		this.message = message;
 		this.level = level;
 	}
@@ -24,6 +24,14 @@ public class RobobuggyLogicExceptionMeasurment extends BaseMessage implements Me
 	@Override
 	public String toLogString() {
 		return level.toString() + "\t"+message;
+	}
+	
+	public String getMessage(){
+		return message;	
+	}
+	
+	public RobobuggyMessageLevel getLevel(){
+		return level;
 	}
 
 	/**{@inheritDoc}*/
@@ -34,14 +42,14 @@ public class RobobuggyLogicExceptionMeasurment extends BaseMessage implements Me
 			//error 
 			return null;
 		}else{
-			String thisLevelStr = str.substring(0, splitPoint);
-			MessageLevel thisLevel = null;
-			if(thisLevelStr.equals(MessageLevel.EXCEPTION.toString())){
-				thisLevel = MessageLevel.EXCEPTION;
-			}else if(thisLevelStr.equals(MessageLevel.NOTE.toString())){
-				thisLevel = MessageLevel.NOTE;
-			}else if(thisLevelStr.equals(MessageLevel.WARNING.toString())){
-				thisLevel = MessageLevel.WARNING;
+			String thisLevel_str = str.substring(0, splitPoint);
+			RobobuggyMessageLevel thisLevel = null;
+			if(thisLevel_str.equals(RobobuggyMessageLevel.EXCEPTION.toString())){
+				thisLevel = RobobuggyMessageLevel.EXCEPTION;
+			}else if(thisLevel_str.equals(RobobuggyMessageLevel.NOTE.toString())){
+				thisLevel = RobobuggyMessageLevel.NOTE;
+			}else if(thisLevel_str.equals(RobobuggyMessageLevel.WARNING.toString())){
+				thisLevel = RobobuggyMessageLevel.WARNING;
 			}
 			String thisMessage = str.substring(splitPoint, str.length());
 			return new RobobuggyLogicExceptionMeasurment(thisMessage, thisLevel);

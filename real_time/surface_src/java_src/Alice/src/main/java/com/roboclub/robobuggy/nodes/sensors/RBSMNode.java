@@ -2,8 +2,6 @@ package com.roboclub.robobuggy.nodes.sensors;
 
 import java.util.Date;
 
-import gnu.io.SerialPort;
-
 import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
@@ -24,7 +22,7 @@ import com.roboclub.robobuggy.ros.Subscriber;
 import com.roboclub.robobuggy.serial.RBPair;
 import com.roboclub.robobuggy.serial.RBSerial;
 import com.roboclub.robobuggy.serial.RBSerialMessage;
-import com.roboclub.robobuggy.main.MessageLevel;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.main.RobobuggyLogicException;
 
 /**
@@ -42,7 +40,7 @@ import com.roboclub.robobuggy.main.RobobuggyLogicException;
 
 public class RBSMNode extends SerialNode {
 	
-	private static final int BAUD_RATE = 115200;
+	private static final int BAUD_RATE = 76800;
 	
 	private static final double TICKS_PER_REV = 7.0;
 	// Measured as 2 feet. Though could be made more precise. 
@@ -140,7 +138,7 @@ public class RBSMNode extends SerialNode {
 	/**{@inheritDoc}*/
 	@Override
 	//must be the same as the baud rate of the arduino 
-	public int baudRate() 
+	public int getBaudRate() 
 	{
 		return BAUD_RATE;
 	}
@@ -193,7 +191,7 @@ public class RBSMNode extends SerialNode {
 				messagePubFp.publish(new FingerPrintMessage(message.getDataWord()));
 				break;
 			default: //Unhandled or invalid RBSM message header was received.
-				new RobobuggyLogicException("Invalid RBSM message header\n", MessageLevel.NOTE);
+				new RobobuggyLogicException("Invalid RBSM message header\n", RobobuggyMessageLevel.NOTE);
 				break;
 		}
 		

@@ -52,6 +52,7 @@ uploadArchives {
     }
 }
 
+<<<<<<< HEAD
 buildscript{ 
   repositories {
     mavenCentral()
@@ -62,3 +63,8 @@ buildscript{
   }
 }
 cobertura.coverageFormats = ['html', 'xml']
+=======
+// This adds a run target.
+apply plugin: 'application'
+mainClassName = "com.roboclub.robobuggy.main.RobobuggyMainFile"
+>>>>>>> trevor-cleanup

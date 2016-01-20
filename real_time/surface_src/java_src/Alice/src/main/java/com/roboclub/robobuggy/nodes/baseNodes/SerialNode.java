@@ -96,9 +96,9 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 	 * Sets up a new thread to read in the serial data
 	 * {@inheritDoc}*/
 	@Override
-	public boolean startDecoratorNode() {
+	protected boolean startDecoratorNode() {
 		// Set port to be the right baud rate
-		int baudRate = baudRate();
+		int baudRate = getBaudRate();
 		try {
 			sp.setSerialPortParams(baudRate,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
 		} catch (UnsupportedCommOperationException e) {
@@ -141,7 +141,7 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 	 * Shuts down the Serial reader thread
 	 * {@inheritDoc}*/
 	@Override
-	public boolean shutdownDecoratorNode() {
+	protected boolean shutdownDecoratorNode() {
 		running = false;
 		// iothread will commence shutdown next loop.
 	
@@ -170,12 +170,11 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 	 */
 	public abstract int matchDataMinSize();
 
-
 	/**
 	 * Returns the expected baud rate of the current device
 	 * @return the expected baud rate of the current device
 	 */
-	public abstract int baudRate();
+	public abstract int getBaudRate();
 	
 	/**
 	 * Called to translate a peeled message to a JSON object
@@ -208,11 +207,16 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 					numBytes += serialInput.read(buf, start + numBytes, buf.length - numBytes); 
 					//System.out.printf(new String(buf));
 					//System.out.printf("%d\n", bytes);
-					while(true) {
-						int numRead = peel(buf, start, numBytes);
-						if(numRead == 0) break;
-						start += numRead;
-						numBytes -= numRead;
+
+					while(true) 
+					{
+						int num_read = peel(buf, start, numBytes);
+						if(num_read == 0)
+						{
+							break;
+						}
+						start += num_read;
+						numBytes -= num_read;
 					}
 					
 					// Shift the array by the amount that we read.

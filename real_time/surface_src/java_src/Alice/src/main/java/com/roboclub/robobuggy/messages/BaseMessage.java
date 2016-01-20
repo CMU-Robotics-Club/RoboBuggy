@@ -5,7 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.roboclub.robobuggy.main.MessageLevel;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.main.RobobuggyLogicException;
 
 /**
@@ -34,7 +34,7 @@ public abstract class BaseMessage {
 		try {
 			return FORMATTER.parse(maybeDate);
 		} catch (ParseException e) {
-			new RobobuggyLogicException("could not parse date stack trace: "+ e.getStackTrace().toString(), MessageLevel.WARNING);
+			new RobobuggyLogicException("could not parse date stack trace: "+ e.getStackTrace().toString(), RobobuggyMessageLevel.WARNING);
 			return null;
 		}
 	}

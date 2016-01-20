@@ -46,9 +46,9 @@ public class SensorSwitch extends JPanel {
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
 		this.setLayout(new GridLayout(1,2));
 
-		JLabel sensorNameLbl = new JLabel(name, SwingConstants.CENTER);
-		sensorNameLbl.setFont(new Font("serif", Font.BOLD, 20));
-		this.add(sensorNameLbl);
+		JLabel sensorName_lbl = new JLabel(name, SwingConstants.CENTER);
+		//sensorName_lbl.setFont(new Font("serif", Font.BOLD, 20));
+		this.add(sensorName_lbl);
 
 		sensorBtn = new JButton("OFF");
 		sensorBtn.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -88,12 +88,18 @@ public class SensorSwitch extends JPanel {
 			sensorBtn.setText("FAULT");
 			sensorBtn.setBackground(Color.ORANGE);
 			break;
+		case WATCHDOG_DEAD:
+			sensorBtn.setEnabled(true);
+			sensorBtn.setText("WATCHDOG");
+			sensorBtn.setBackground(Color.PINK);
+			break;
 		case ERROR:
 		default:
 			sensorBtn.setEnabled(true);
 			sensorBtn.setText("ERROR");
 			sensorBtn.setBackground(Color.RED);
 		}
+	 //   Gui.getInstance().fixPaint();
 	}
 
 	/**

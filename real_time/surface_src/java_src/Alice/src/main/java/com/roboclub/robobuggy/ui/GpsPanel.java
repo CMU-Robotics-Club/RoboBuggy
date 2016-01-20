@@ -63,6 +63,8 @@ public class GpsPanel extends JPanel {
 	private boolean setup;
 	private int frameWidth;
 	private int frameHeight;
+	
+	@SuppressWarnings("unused") //this subscriber is used to generate callbacks 
 	private Subscriber gpsSub;
 	
 	/**
@@ -95,7 +97,8 @@ public class GpsPanel extends JPanel {
 //				if (gpsSize > 20) {        // if size > 20, remove first object
 //					locs.remove(0);
 //				}
-				GpsPanel.this.repaint();  // refresh screen
+			 // refresh screen
+			    Gui.getInstance().fixPaint();
 			}
 		});		
 		

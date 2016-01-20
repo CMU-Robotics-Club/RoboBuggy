@@ -85,6 +85,7 @@ public class LocPanel extends JPanel {
 				double latitude = ((GpsMeasurement)m).getLatitude();
 				double longitude = ((GpsMeasurement)m).getLongitude();
 				locs.add(new LocTuple(latitude, longitude));
+			    Gui.getInstance().fixPaint();
 			}
 		});		
 		

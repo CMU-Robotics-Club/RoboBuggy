@@ -59,7 +59,7 @@ public final class GpsNode extends SerialNode {
 
 	/**{@inheritDoc}*/
 	@Override
-	public int baudRate() {
+	public int getBaudRate() {
 		return BAUD_RATE;
 	}
 	
@@ -130,6 +130,7 @@ public final class GpsNode extends SerialNode {
 		if(quality == 0) {
 			//System.out.println("No lock...");
 			// TODO publish not-lock to someone
+			setNodeState(NodeState.ERROR);
 			return 1;
 		}
 		Date readingTime = convertHHMMSStoTime(ar[1]);

@@ -56,7 +56,8 @@ public final class SensorLogger {
 				while (true) {
 					try {
 						String line = ret.take();
-						if (line == null) {
+                        System.out.println(line);
+                        if (line == null) {
 							break;
 						}
 						if (line.contains("STOP")) {
@@ -74,8 +75,7 @@ public final class SensorLogger {
 			}
 
 			private String parseData(String line) {
-				// TODO Auto-generated method stub
-				String sensor = line.substring(line.indexOf("/") + 1, line.indexOf(","));				
+				String sensor = line.substring(line.indexOf("/") + 1, line.indexOf(","));
 				JSONObject sensorEntryObject;
 
 				switch (sensor) {
@@ -115,7 +115,6 @@ public final class SensorLogger {
 
 			@SuppressWarnings("unchecked")
 			private String getDataBreakdown() {
-				// TODO Auto-generated method stub
 				JSONObject dataBreakdownObj = new JSONObject();
 				
 				dataBreakdownObj.put("logging_button", logButtonHits);
