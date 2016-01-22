@@ -43,13 +43,13 @@ public class BrakeMessage extends BaseMessage implements Message {
 	 */
 	public BrakeMessage(Date timestamp, boolean brakeValue) {
 		this.down = brakeValue;
-		this.timestamp = timestamp;
+		this.timestamp = new Date(timestamp.getTime());
 	}
 
 	/**{@inheritDoc}*/
 	@Override
 	public String toLogString() {
-		return String.format("%s,'%s',%s\n", formatDate(timestamp),
+		return String.format("%s,'%s',%s", formatDate(timestamp),
 				VERSION_ID, String.valueOf(down));
 	}
 

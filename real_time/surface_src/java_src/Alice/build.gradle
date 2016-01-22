@@ -1,6 +1,6 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
-apply plugin: 'checkstyle'
+//apply plugin: 'checkstyle'
 apply plugin: 'cobertura'
 apply plugin: 'findbugs'
 
@@ -19,12 +19,12 @@ findbugs {
   toolVersion = "3.0.0"
 }
 
-checkstyle{
-  toolVersion = "6.2"
-  sourceSets = [sourceSets.main]
-  checkstyleMain.exclude '**/edu/cmu/cs/cs214/hw6/util/*'
-  checkstyleMain.exclude '**/edu/cmu/cs/cs214/hw6/plugin/**'
-}
+//checkstyle{
+//  toolVersion = "6.2"
+//  sourceSets = [sourceSets.main]
+//  checkstyleMain.exclude '**/edu/cmu/cs/cs214/hw6/util/*'
+//  checkstyleMain.exclude '**/edu/cmu/cs/cs214/hw6/plugin/**'
+//}
 
 repositories {
   mavenCentral()

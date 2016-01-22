@@ -6,14 +6,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
-import com.roboclub.robobuggy.main.RobobuggyLogicException;
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 
 /**
  * Abstract class used to represent the base message sent over BuggyROS
  */
 public abstract class BaseMessage {
-	private static final DateFormat FORMATTER = new SimpleDateFormat(
-			"yyyy-MM-dd HH:mm:ss.SSS");
+	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
 
 	/**
 	 * Creates a {@link String} representing the {@link Date}
@@ -21,6 +20,7 @@ public abstract class BaseMessage {
 	 * @return a {@link String} representing the {@link Date} dt
 	 */
 	public static String formatDate(Date dt) {
+		DateFormat FORMATTER = new SimpleDateFormat(DATE_FORMAT);
 		return FORMATTER.format(dt);
 	}
 
@@ -32,9 +32,10 @@ public abstract class BaseMessage {
 	 */
 	public static Date tryToParseDate(String maybeDate) {
 		try {
+			DateFormat FORMATTER = new SimpleDateFormat(DATE_FORMAT);
 			return FORMATTER.parse(maybeDate);
 		} catch (ParseException e) {
-			new RobobuggyLogicException("could not parse date stack trace: "+ e.getStackTrace().toString(), RobobuggyMessageLevel.WARNING);
+			new RobobuggyLogicNotification("could not parse date stack trace: "+ e.getMessage(), RobobuggyMessageLevel.WARNING);
 			return null;
 		}
 	}

@@ -27,7 +27,7 @@ public final class Robot implements RosMaster {
 	/**{@inheritDoc}*/
 	@Override
 	public boolean shutDown() {
-		new RobobuggyLogicException("Shutting down Robot", RobobuggyMessageLevel.WARNING);
+		new RobobuggyLogicNotification("Shutting down Robot", RobobuggyMessageLevel.WARNING);
 		return nodeList.stream().map(n -> n.shutdown()).reduce(true, (a,b) -> a&&b);
 	}
 	
@@ -45,14 +45,14 @@ public final class Robot implements RosMaster {
 		System.out.println("Starting Robot");
 		autonomous = RobobuggyConfigFile.AUTONOMOUS_DEFAULT;
 		nodeList = new LinkedList<>();
-		RobobuggyLogicException.setupLogicException(NodeChannel.LOGIC_EXCEPTION);
-		new RobobuggyLogicException("Logic Exception Setup properly" ,  RobobuggyMessageLevel.NOTE);
+		RobobuggyLogicNotification.setupLogicException(NodeChannel.LOGIC_EXCEPTION);
+		new RobobuggyLogicNotification("Logic Exception Setup properly" ,  RobobuggyMessageLevel.NOTE);
 		
 		// Initialize Nodes
-		nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.COM_PORT_GPS_INTEGRATED));
+		nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.COM_PORT_GPS));
 		nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.COM_PORT_IMU));
 		nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING,
-				RobobuggyConfigFile.COM_PORT_ENCODER, COMMAND_PERIOD));
+				RobobuggyConfigFile.COM_PORT_RBSM, COMMAND_PERIOD));
 	}
 	
 	/***************************************   Getters ********************************/

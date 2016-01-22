@@ -27,16 +27,16 @@ public class RobobuggyLogicExceptionMeasurment extends BaseMessage implements Me
 	}
 	
 	/**
-	 * Returns the {@link String} representing the contents of the {@link RobobuggyLogicException}
-	 * @return the {@link String} representing the contents of the {@link RobobuggyLogicException}
+	 * Returns the {@link String} representing the contents of the {@link RobobuggyLogicNotification}
+	 * @return the {@link String} representing the contents of the {@link RobobuggyLogicNotification}
 	 */
 	public String getMessage(){
 		return message;	
 	}
 
 	/**
-	 * Returns the {@link RobobuggyMessageLevel} of the {@link RobobuggyLogicException}
-	 * @return the {@link RobobuggyMessageLevel} of the {@link RobobuggyLogicException}
+	 * Returns the {@link RobobuggyMessageLevel} of the {@link RobobuggyLogicNotification}
+	 * @return the {@link RobobuggyMessageLevel} of the {@link RobobuggyLogicNotification}
 	 */
 	public RobobuggyMessageLevel getLevel(){
 		return level;

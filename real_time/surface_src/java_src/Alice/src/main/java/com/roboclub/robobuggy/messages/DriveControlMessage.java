@@ -21,7 +21,7 @@ public class DriveControlMessage extends BaseMessage implements Message {
 	 */
 	public DriveControlMessage(Date timestamp, double angle) {
 		this.angle = angle;
-		this.timestamp = timestamp;
+		this.timestamp = new Date(timestamp.getTime());
 	}
 	
 	/**
@@ -43,7 +43,7 @@ public class DriveControlMessage extends BaseMessage implements Message {
 	/**{@inheritDoc}*/
 	@Override
 	public String toLogString() {
-		return String.format("%s,'%s',%s\n", formatDate(timestamp),
+		return String.format("%s,'%s',%s", formatDate(timestamp),
 				VERSION_ID, String.valueOf(angle));
 	}
 

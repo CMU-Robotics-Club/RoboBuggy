@@ -12,7 +12,7 @@ import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
 
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
-import com.roboclub.robobuggy.main.RobobuggyLogicException;
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 
 /**
@@ -90,7 +90,7 @@ public final class RobotLogger {
 			logFolder = new File(logDir, df.format(new Date()));
 
 			if(!logFolder.mkdirs()) {
-			    new RobobuggyLogicException("Couldn't create log folder!", RobobuggyMessageLevel.EXCEPTION);
+			    new RobobuggyLogicNotification("Couldn't create log folder!", RobobuggyMessageLevel.EXCEPTION);
 			}
 
 			File msgFile = new File(logFolder, "messages.log");

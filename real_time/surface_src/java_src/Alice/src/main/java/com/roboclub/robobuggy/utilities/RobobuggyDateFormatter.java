@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
-import com.roboclub.robobuggy.main.RobobuggyLogicException;
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 
 /**
  * Class used to format dates
@@ -22,7 +22,7 @@ public class RobobuggyDateFormatter {
 	public static Date formatRobobuggyDate(String date) {
 		try {
 			if(date == null){
-				new RobobuggyLogicException("No Date information sent to formatRobobuggyDate", RobobuggyMessageLevel.EXCEPTION);
+				new RobobuggyLogicNotification("No Date information sent to formatRobobuggyDate", RobobuggyMessageLevel.EXCEPTION);
 				return new  Date();
 			}else{
 				DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.ENGLISH);
@@ -30,7 +30,7 @@ public class RobobuggyDateFormatter {
 			}
 		} catch (ParseException e) {
 			System.out.println("Unable to parse date");
-			new RobobuggyLogicException("Couldn't parse date from " + date, RobobuggyMessageLevel.EXCEPTION);
+			new RobobuggyLogicNotification("Couldn't parse date from " + date, RobobuggyMessageLevel.EXCEPTION);
 			return new Date();
 		}	
 	}

@@ -50,7 +50,7 @@ public class GpsMeasurement extends BaseMessage implements Message {
 			boolean west, int qualityValue, int numSatellites, 
 			double horizontalDilutionOfPrecision, double antennaAltitude, double rawGPSLat, double rawGPSLong) {	
 		this.timestamp = new Date();
-		this.gpsTimestamp = gpsTimestamp;
+		this.gpsTimestamp = new Date(gpsTimestamp.getTime());
 		this.latitude = latitude;
 		this.north = north;
 		this.longitude = longitude;
@@ -78,8 +78,8 @@ public class GpsMeasurement extends BaseMessage implements Message {
 	 */
 	public GpsMeasurement(Date messageTimestamp, Date gpsTimestamp, double latitude, boolean north, double longitude,
 			boolean west, int qualityValue, int numSatellites, double horizontalDilutionOfPrecision, double antennaAltitude) {
-		this.timestamp = messageTimestamp;
-		this.gpsTimestamp = gpsTimestamp;
+		this.timestamp = new Date(messageTimestamp.getTime());
+		this.gpsTimestamp = new Date(gpsTimestamp.getTime());
 		this.latitude = latitude;
 		this.north = north;
 		this.longitude = longitude;

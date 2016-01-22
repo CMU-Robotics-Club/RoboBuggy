@@ -90,9 +90,15 @@ public final class SensorLogger {
 					break;
 					
 				case "steering":
+					sensorEntryObject = RBSMNode.translatePeelMessageToJObject(line);
+					break;
 				case "fp_hash":
+					sensorEntryObject = RBSMNode.translatePeelMessageToJObject(line);
+					break;
 				case "commanded_steering":
+					sensorEntryObject = RBSMNode.translatePeelMessageToJObject(line);
 					steeringHits++;
+					break;
 				case "encoder":
 					sensorEntryObject = RBSMNode.translatePeelMessageToJObject(line);
 					encoderHits++;

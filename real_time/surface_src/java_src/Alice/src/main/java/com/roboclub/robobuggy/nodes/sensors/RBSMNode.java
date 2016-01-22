@@ -23,7 +23,7 @@ import com.roboclub.robobuggy.serial.RBPair;
 import com.roboclub.robobuggy.serial.RBSerial;
 import com.roboclub.robobuggy.serial.RBSerialMessage;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
-import com.roboclub.robobuggy.main.RobobuggyLogicException;
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 
 /**
  * {@link SerialNode} for reading and sending RBSM data
@@ -191,7 +191,7 @@ public class RBSMNode extends SerialNode {
 				messagePubFp.publish(new FingerPrintMessage(message.getDataWord()));
 				break;
 			default: //Unhandled or invalid RBSM message header was received.
-				new RobobuggyLogicException("Invalid RBSM message header\n", RobobuggyMessageLevel.NOTE);
+				new RobobuggyLogicNotification("Invalid RBSM message header\n", RobobuggyMessageLevel.NOTE);
 				break;
 		}
 		

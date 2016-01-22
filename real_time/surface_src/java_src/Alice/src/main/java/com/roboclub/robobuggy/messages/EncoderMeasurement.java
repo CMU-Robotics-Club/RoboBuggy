@@ -43,7 +43,7 @@ public class EncoderMeasurement extends BaseMessage implements Message {
 	 * @param velocity the current velocity value from the encoder
 	 */
 	public EncoderMeasurement(Date timestamp, double distance, double velocity) {
-		this.timestamp = timestamp;
+		this.timestamp = new Date(timestamp.getTime());
 		this.distance = distance;
 		this.velocity = velocity;
 		this.dataWord = 0;
@@ -60,7 +60,7 @@ public class EncoderMeasurement extends BaseMessage implements Message {
 	 */
 	public EncoderMeasurement(Date timestamp, double dataWord, double distance,
 			double velocity, double accel) {
-		this.timestamp = timestamp;
+		this.timestamp = new Date(timestamp.getTime());
 		this.dataWord = dataWord;
 		this.distance = distance;
 		this.velocity = velocity;

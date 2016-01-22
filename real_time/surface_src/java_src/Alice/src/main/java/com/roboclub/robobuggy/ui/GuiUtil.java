@@ -4,7 +4,7 @@ import java.awt.Component;
 import java.awt.Container;
 
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
-import com.roboclub.robobuggy.main.RobobuggyLogicException;
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 
 /**
  * This is a helper class for the gui containing commonly used gui related helper function
@@ -32,43 +32,43 @@ public class GuiUtil {
 
 		//report errors if something is wrong
 		if(startRow > stopRow){
-			new RobobuggyLogicException("gui start row is after end row" , RobobuggyMessageLevel.EXCEPTION);
+			new RobobuggyLogicNotification("gui start row is after end row" , RobobuggyMessageLevel.EXCEPTION);
 		}
 		
 		if(startCol > stopCol){
-			new RobobuggyLogicException("gui start col is after end col" , RobobuggyMessageLevel.EXCEPTION);
+			new RobobuggyLogicNotification("gui start col is after end col" , RobobuggyMessageLevel.EXCEPTION);
 		}
 		
 		if(startCol >= cols){
-			new RobobuggyLogicException("gui start col is larger then cols" , RobobuggyMessageLevel.EXCEPTION);
+			new RobobuggyLogicNotification("gui start col is larger then cols" , RobobuggyMessageLevel.EXCEPTION);
 		}
 		
 		if(startRow >= rows){
-			new RobobuggyLogicException("gui start row is larger then rows" , RobobuggyMessageLevel.EXCEPTION);
+			new RobobuggyLogicNotification("gui start row is larger then rows" , RobobuggyMessageLevel.EXCEPTION);
 		}
 		
 		if(stopCol >= cols){
-			new RobobuggyLogicException("gui stop col is larger then cols" , RobobuggyMessageLevel.EXCEPTION);
+			new RobobuggyLogicNotification("gui stop col is larger then cols" , RobobuggyMessageLevel.EXCEPTION);
 		}
 		
 		if(stopRow >= rows){
-			new RobobuggyLogicException("gui stop row is larger then rows" , RobobuggyMessageLevel.EXCEPTION);
+			new RobobuggyLogicNotification("gui stop row is larger then rows" , RobobuggyMessageLevel.EXCEPTION);
 		}
 		
 		if(startCol < 0){
-			new RobobuggyLogicException("gui start col is less then 0" , RobobuggyMessageLevel.EXCEPTION);
+			new RobobuggyLogicNotification("gui start col is less then 0" , RobobuggyMessageLevel.EXCEPTION);
 		}
 		
 		if(startRow < 0){
-			new RobobuggyLogicException("gui start row is less then 0" , RobobuggyMessageLevel.EXCEPTION);
+			new RobobuggyLogicNotification("gui start row is less then 0" , RobobuggyMessageLevel.EXCEPTION);
 		}
 		
 		if(stopCol < 0){
-			new RobobuggyLogicException("gui stop col is less then 0" , RobobuggyMessageLevel.EXCEPTION);
+			new RobobuggyLogicNotification("gui stop col is less then 0" , RobobuggyMessageLevel.EXCEPTION);
 		}
 		
 		if(stopRow < 0){
-			new RobobuggyLogicException("gui stop row is less then 0" , RobobuggyMessageLevel.EXCEPTION);
+			new RobobuggyLogicNotification("gui stop row is less then 0" , RobobuggyMessageLevel.EXCEPTION);
 		}
 		
 		stopRow = stopRow +1;

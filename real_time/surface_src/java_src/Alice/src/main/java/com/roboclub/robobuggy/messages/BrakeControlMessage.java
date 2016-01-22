@@ -21,7 +21,7 @@ public class BrakeControlMessage extends BaseMessage implements Message {
 	 */
 	public BrakeControlMessage(Date timestamp, boolean brakeEngagged) {
 		this.brakeEngaged = brakeEngagged;
-		this.timestamp = timestamp;
+		this.timestamp = new Date(timestamp.getTime());
 	}
 	
 	/**
@@ -35,7 +35,7 @@ public class BrakeControlMessage extends BaseMessage implements Message {
 	/**{@inheritDoc}*/
 	@Override
 	public String toLogString() {
-		return String.format("%s,'%s',%s\n", formatDate(timestamp),
+		return String.format("%s,'%s',%s", formatDate(timestamp),
 				VERSION_ID, String.valueOf(brakeEngaged));
 	}
 

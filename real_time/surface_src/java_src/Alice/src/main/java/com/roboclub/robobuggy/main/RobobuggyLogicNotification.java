@@ -16,27 +16,27 @@ import com.roboclub.robobuggy.ros.NodeChannel;
  *  
  *   Note that we do NOT throw this, as creating a new instance will publish to the error channel
  */
-public class RobobuggyLogicException {
+public class RobobuggyLogicNotification {
 	private static Publisher errorPub;
 	
 	//must be run before LogicException can be called 
 	/**
-	 * Sets up the {@link RobobuggyLogicException}. Must be called before a new
-	 * {@link RobobuggyLogicException} can be constructed.
+	 * Sets up the {@link RobobuggyLogicNotification}. Must be called before a new
+	 * {@link RobobuggyLogicNotification} can be constructed.
 	 * @param channel {@link NodeChannel} used to log the
-	 * {@link RobobuggyLogicException}s on
+	 * {@link RobobuggyLogicNotification}s on
 	 */
 	public static void setupLogicException(NodeChannel channel){
 		errorPub = new Publisher(channel.getMsgPath());
 	}
 	
 	/**
-	 * Constructs a new {@link RobobuggyLogicException}
+	 * Constructs a new {@link RobobuggyLogicNotification}
 	 * @param exception description of the exception that occurred
 	 * @param level {@link RobobuggyMessageLevel} of the
-	 *  {@link RobobuggyLogicException}
+	 *  {@link RobobuggyLogicNotification}
 	 */
-	public RobobuggyLogicException(String exception, RobobuggyMessageLevel level){
+	public RobobuggyLogicNotification(String exception, RobobuggyMessageLevel level){
 		if(shouldMessageBeDisplayed(level)){
 			//displays the error message to the java console 
 			System.out.println(exception);

@@ -30,7 +30,7 @@ public class FingerPrintMessage extends BaseMessage implements Message
 	public FingerPrintMessage(Date tStamp, int hash)
 	{
 		this.fpHash = hash;
-		this.timestamp = tStamp;
+		this.timestamp = new Date(tStamp.getTime());
 	}
 	
 	/**{@inheritDoc}*/

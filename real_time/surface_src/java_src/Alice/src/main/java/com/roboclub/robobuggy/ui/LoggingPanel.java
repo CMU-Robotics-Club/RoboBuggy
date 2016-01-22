@@ -17,7 +17,7 @@ import javax.swing.Timer;
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
-import com.roboclub.robobuggy.main.RobobuggyLogicException;
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
@@ -72,17 +72,19 @@ public class LoggingPanel extends RobobuggyGUIContainer{
 	}
 
 	private class PlayButtonHandler implements ActionListener {
+		private boolean isLogging = false;
+		
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// inverts the state of the system every time the button is pressed
-			RobobuggyConfigFile.IS_GUI_CURRENTLY_LOGGING = !RobobuggyConfigFile.IS_GUI_CURRENTLY_LOGGING;
-			new RobobuggyLogicException("start/stop button was pressed", RobobuggyMessageLevel.NOTE);
+			new RobobuggyLogicNotification("start/stop button was pressed", RobobuggyMessageLevel.NOTE);
 		
-			if (RobobuggyConfigFile.IS_GUI_CURRENTLY_LOGGING) {
+			if (!isLogging) {
                 enableLogging();
-
+                isLogging = true;
 			} else {
                 disableLogging();
+                isLogging = false;
             }//end if else
             thisLoggingPanel.validate();
             Gui.getInstance().fixPaint();  //if this line is not here then the gui will not display correctly after the button is pressed

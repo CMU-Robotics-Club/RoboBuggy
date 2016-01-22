@@ -10,7 +10,7 @@ import com.orsoncharts.util.json.JSONObject;
 import com.orsoncharts.util.json.parser.JSONParser;
 import com.orsoncharts.util.json.parser.ParseException;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
-import com.roboclub.robobuggy.main.RobobuggyLogicException;
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
@@ -55,7 +55,7 @@ public class SensorPlayer implements Runnable {
 		path = filePath;
 		File f = new File(path);
 		if(!f.exists()) {
-			new RobobuggyLogicException("File doesn't exist!", RobobuggyMessageLevel.EXCEPTION);
+			new RobobuggyLogicNotification("File doesn't exist!", RobobuggyMessageLevel.EXCEPTION);
 		}
 	}
 	
@@ -94,7 +94,7 @@ public class SensorPlayer implements Runnable {
 				long realTimeFromStart = currentTime - prevTimeInMillis;				
 				long playbackSpeed = 100;
 				long sleepTime = playbackSpeed*realTimeFromStart - sensorTimeFromStart;
-				new RobobuggyLogicException("sleepingTime:"+sleepTime, RobobuggyMessageLevel.NOTE);
+				new RobobuggyLogicNotification("sleepingTime:"+sleepTime, RobobuggyMessageLevel.NOTE);
 				if(sleepTime < 0 && false){ 
 					//TODO change back to sleepTime
 					Thread.sleep(-sleepTime/1000000);
@@ -104,7 +104,7 @@ public class SensorPlayer implements Runnable {
 			
 				String sensorName = (String) sensor.get("name");
 				if(sensorName == null){
-					new RobobuggyLogicException("sensor name is not in this lines log line, this log cannot be repaid",
+					new RobobuggyLogicNotification("sensor name is not in this lines log line, this log cannot be repaid",
 							RobobuggyMessageLevel.EXCEPTION);
 				}else{
 					JSONObject sensorParams = (JSONObject) sensor.get("params");
@@ -155,7 +155,7 @@ public class SensorPlayer implements Runnable {
 									break;
 								
 								default:
-									new RobobuggyLogicException("Unknown status in the log!",
+									new RobobuggyLogicNotification("Unknown status in the log!",
 											RobobuggyMessageLevel.EXCEPTION);
 									break;
 						
@@ -204,11 +204,11 @@ public class SensorPlayer implements Runnable {
 			
 		}
 		catch(IOException e) {
-			new RobobuggyLogicException("Error while trying to read from the playback file!", RobobuggyMessageLevel.EXCEPTION);
+			new RobobuggyLogicNotification("Error while trying to read from the playback file!", RobobuggyMessageLevel.EXCEPTION);
 		} catch (InterruptedException e) {
-			new RobobuggyLogicException("Something went wrong while waiting...", RobobuggyMessageLevel.WARNING);
+			new RobobuggyLogicNotification("Something went wrong while waiting...", RobobuggyMessageLevel.WARNING);
 		} catch (ParseException e) {
-			new RobobuggyLogicException("Couldn't parse the file given. Make sure it's a proper JSON file", RobobuggyMessageLevel.EXCEPTION);
+			new RobobuggyLogicNotification("Couldn't parse the file given. Make sure it's a proper JSON file", RobobuggyMessageLevel.EXCEPTION);
 		}		
 	}
 }
