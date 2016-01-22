@@ -1,21 +1,29 @@
 package com.roboclub.robobuggy.messages;
 
+import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.ros.Message;
+import com.roboclub.robobuggy.utilities.RobobuggyDateFormatter;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class RobobuggyLogicExceptionMeasurment extends BaseMessage implements Message{
 	private String message;
 	private RobobuggyMessageLevel level;
+	private Date timestamp;
 	
 	public RobobuggyLogicExceptionMeasurment(String message,RobobuggyMessageLevel level) {
 		this.message = message;
 		this.level = level;
+		this.timestamp = new Date();
 	}
 
 	
 	@Override
 	public String toLogString() {
-		return level.toString() + "\t"+message;
+		return format_the_date(timestamp) + "," + level.toString() + "," + message;
 	}
 	
 	public String getMessage(){
@@ -45,6 +53,19 @@ public class RobobuggyLogicExceptionMeasurment extends BaseMessage implements Me
 			String thisMessage = str.substring(splitPoint, str.length());
 			return new RobobuggyLogicExceptionMeasurment(thisMessage, thisLevel);
 		}
+	}
+
+	public static JSONObject translatePeelMessageToJObject(String message) {
+		JSONObject data = new JSONObject();
+		JSONObject params = new JSONObject();
+		String[] messageData = message.split(",");
+		data.put("timestamp", messageData[1]);
+		data.put("name", "Robobuggy Logic Exception");
+		params.put("level", messageData[2]);
+		params.put("message", messageData[3]);
+
+		data.put("params", params);
+		return data;
 	}
 
 }

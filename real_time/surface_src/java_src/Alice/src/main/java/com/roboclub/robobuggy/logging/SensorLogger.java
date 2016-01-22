@@ -1,6 +1,8 @@
 package com.roboclub.robobuggy.logging;
 
 import com.orsoncharts.util.json.JSONObject;
+import com.roboclub.robobuggy.main.RobobuggyLogicException;
+import com.roboclub.robobuggy.messages.RobobuggyLogicExceptionMeasurment;
 import com.roboclub.robobuggy.nodes.sensors.GpsNode;
 import com.roboclub.robobuggy.nodes.sensors.ImuNode;
 import com.roboclub.robobuggy.nodes.sensors.LoggingNode;
@@ -49,12 +51,12 @@ public final class SensorLogger {
 			int encoderHits = 0;
 			int brakeHits = 0;
 			int steeringHits = 0;
+			int exceptionHits = 0;
 			
 			public void run() {
 				while (true) {
 					try {
 						String line = ret.take();
-                        System.out.println(line);
                         if (line == null) {
 							break;
 						}
@@ -77,35 +79,40 @@ public final class SensorLogger {
 				JSONObject sensorEntryObject;
 
 				switch (sensor) {
-				case "imu":
-					sensorEntryObject = ImuNode.translatePeelMessageToJObject(line);
-					imuHits++;
-					break;
-				
-				case "gps":
-					sensorEntryObject = GpsNode.translatePeelMessageToJObject(line);
-					gpsHits++;
-					break;
-					
-				case "steering":
-				case "fp_hash":
-				case "commanded_steering":
-					steeringHits++;
-				case "encoder":
-					sensorEntryObject = RBSMNode.translatePeelMessageToJObject(line);
-					encoderHits++;
-					break;
-					
-				case "logging_button":
-					sensorEntryObject = LoggingNode.translatePeelMessageToJObject(line);
-					logButtonHits++;
-					break;
+                    case "imu":
+                        sensorEntryObject = ImuNode.translatePeelMessageToJObject(line);
+                        imuHits++;
+                        break;
 
-				default:
-					//put brakes in here?
-					sensorEntryObject = new JSONObject();
-					sensorEntryObject.put("Unknown Sensor:", sensor);
-					break;
+                    case "gps":
+                        sensorEntryObject = GpsNode.translatePeelMessageToJObject(line);
+                        gpsHits++;
+                        break;
+
+                    case "steering":
+                    case "fp_hash":
+                    case "commanded_steering":
+                        steeringHits++;
+                    case "encoder":
+                        sensorEntryObject = RBSMNode.translatePeelMessageToJObject(line);
+                        encoderHits++;
+                        break;
+
+                    case "logging_button":
+                        sensorEntryObject = LoggingNode.translatePeelMessageToJObject(line);
+                        logButtonHits++;
+                        break;
+
+					case "logic_exception":
+						sensorEntryObject = RobobuggyLogicExceptionMeasurment.translatePeelMessageToJObject(line);
+						exceptionHits++;
+						break;
+
+                    default:
+                        //put brakes in here?
+                        sensorEntryObject = new JSONObject();
+                        sensorEntryObject.put("Unknown Sensor:", sensor);
+                        break;
 				}
 				
 				return sensorEntryObject.toJSONString();
@@ -121,6 +128,7 @@ public final class SensorLogger {
 				dataBreakdownObj.put("encoder", encoderHits);
 				dataBreakdownObj.put("brake", brakeHits);
 				dataBreakdownObj.put("steering", steeringHits);
+				dataBreakdownObj.put("exceptions", exceptionHits);
 				
 				return dataBreakdownObj.toJSONString();
 			}
