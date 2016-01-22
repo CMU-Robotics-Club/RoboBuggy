@@ -9,9 +9,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /**
- * {@link RoboBuggyGUIContainer} used to display an angular graph
+ * {@link RobobuggyGUIContainer} used to display an angular graph
  */
-public class AngleGraph extends RoboBuggyGUIContainer {
+public class AngleGraph extends RobobuggyGUIContainer {
 
 	private static final long serialVersionUID = 4524475337756493384L;
 
@@ -53,9 +53,9 @@ public class AngleGraph extends RoboBuggyGUIContainer {
 		private int endy;
 
 		private int offset;
-		private int start_x;
-		private int start_y;
-		private double RADIUS;
+		private int startX;
+		private int startY;
+		private double radius;
 		
 		/**
 		 * Construct a new {@link Graph}
@@ -69,12 +69,12 @@ public class AngleGraph extends RoboBuggyGUIContainer {
 		private void updateDimensions(){
 			this.graphWidth = (int) (this.getWidth()*.9);
 			this.graphHeight = (int) (this.getHeight()*.9);
-			this.start_x = graphWidth/2 + offset;
-			this.start_y = graphHeight/2 + offset;
-			this.endx = start_x;
-			this.endy = start_y;
+			this.startX = graphWidth/2 + offset;
+			this.startY = graphHeight/2 + offset;
+			this.endx = startX;
+			this.endy = startY;
 			this.offset = 10;
-			this.RADIUS = (double)graphWidth/2;
+			this.radius = (double)graphWidth/2;
 		}
 		
 		@Override
@@ -88,12 +88,12 @@ public class AngleGraph extends RoboBuggyGUIContainer {
 			g.fillOval(offset, offset, graphWidth, graphHeight);
 			
 			g.setColor(Color.RED);
-			g.drawLine(start_x, start_y, endx, endy);
+			g.drawLine(startX, startY, endx, endy);
 		}
 		
 		public void updateGraph(int angle) {
-			endx = start_x - (int)(RADIUS * Math.sin(Math.toRadians(angle)));
-			endy = start_y - (int)(RADIUS * Math.cos(Math.toRadians(angle)));
+			endx = startX - (int)(radius * Math.sin(Math.toRadians(angle)));
+			endy = startY - (int)(radius * Math.cos(Math.toRadians(angle)));
 			Gui.getInstance().fixPaint();
 		}
 	}

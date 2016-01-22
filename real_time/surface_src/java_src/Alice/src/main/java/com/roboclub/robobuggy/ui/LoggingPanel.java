@@ -22,20 +22,25 @@ import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 
-public class LoggingPanel extends RoboBuggyGUIContainer{
-	private static JButton play_btn;
-	private JFormattedTextField time_lbl;
+/**
+ * {@link RobobuggyGUIContainer} used for logging information
+ */
+public class LoggingPanel extends RobobuggyGUIContainer{
+	private static JButton playBtn;
+	private JFormattedTextField timeLbl;
 	private static final int TIME_ZONE_OFFSET = 18000000;//5 hours
 	private static Date startTime;
 	private static Timer timer;
-	Publisher logging_button_pub;
+	Publisher loggingButtonPub;
 	//to make logging panel accessible to button callbacks
 	private LoggingPanel thisLoggingPanel = this;
 	
-
+	/**
+	 * Construct a new {@link LoggingPanel} object
+	 */
 	public LoggingPanel(){
 		name = "LoggingPanel";
-		logging_button_pub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
+		loggingButtonPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
 
 		timer = new Timer(10, new timerHandler());// updates every .01 seconds
 		timer.setDelay(100);
@@ -44,26 +49,26 @@ public class LoggingPanel extends RoboBuggyGUIContainer{
 		//should be the time that we start the sytem at 
 		startTime = new Date();
 		
-		play_btn = new JButton("START");
-		play_btn.setFont(new Font("serif", Font.PLAIN, 70));
-		play_btn.addActionListener(new PlayButtonHandler());
-		play_btn.setEnabled(true);
-		play_btn.setBackground(Color.BLUE);
+		playBtn = new JButton("START");
+		playBtn.setFont(new Font("serif", Font.PLAIN, 70));
+		playBtn.addActionListener(new PlayButtonHandler());
+		playBtn.setEnabled(true);
+		playBtn.setBackground(Color.BLUE);
 	
 		JLabel filename_lbl = new JLabel("File: ",
 				SwingConstants.CENTER);
 		filename_lbl.setFont(new Font("sanserif", Font.PLAIN, 30));
 
-		time_lbl = new JFormattedTextField(new SimpleDateFormat("HH:mm:ss.S"));
-		time_lbl.setHorizontalAlignment(SwingConstants.CENTER);
-		time_lbl.setFont(new Font("sanserif", Font.PLAIN, 50));
-		time_lbl.setEditable(false);
-		time_lbl.setColumns(7);
-		time_lbl.setValue(startTime);
+		timeLbl = new JFormattedTextField(new SimpleDateFormat("HH:mm:ss.S"));
+		timeLbl.setHorizontalAlignment(SwingConstants.CENTER);
+		timeLbl.setFont(new Font("sanserif", Font.PLAIN, 50));
+		timeLbl.setEditable(false);
+		timeLbl.setColumns(7);
+		timeLbl.setValue(startTime);
 
-		this.addComponent(play_btn, 0, 0, 1.0, .25);
+		this.addComponent(playBtn, 0, 0, 1.0, .25);
 		this.addComponent(filename_lbl, 0, .25, 1.0, .25);
-		this.addComponent(time_lbl, 0, .5, 1, .5);
+		this.addComponent(timeLbl, 0, .5, 1, .5);
 	}
 
 	private class PlayButtonHandler implements ActionListener {
@@ -89,28 +94,34 @@ public class LoggingPanel extends RoboBuggyGUIContainer{
         @Override
         public void actionPerformed(ActionEvent ae) {
             Date currentTime = new Date();
-            time_lbl.setValue(currentTime.getTime() - startTime.getTime()+ TIME_ZONE_OFFSET);
+            timeLbl.setValue(currentTime.getTime() - startTime.getTime()+ TIME_ZONE_OFFSET);
             Gui.getInstance().fixPaint();
         }
     }
 
 	/*	Update Methods */
+    /**
+     * Enable logging 
+     */
     public void enableLogging() {
         timer.start();
-        play_btn.setBackground(Color.RED);
-        play_btn.setText("STOP");
+        playBtn.setBackground(Color.RED);
+        playBtn.setText("STOP");
 
         RobotLogger.createLog();
-        logging_button_pub.publish(new GuiLoggingButtonMessage(GuiLoggingButtonMessage.LoggingMessage.START));
+        loggingButtonPub.publish(new GuiLoggingButtonMessage(GuiLoggingButtonMessage.LoggingMessage.START));
         startTime = new Date();
     }
 
+    /**
+     * Disable logging
+     */
     public void disableLogging() {
-        play_btn.setBackground(Color.GREEN);
-        play_btn.setText("START");
+        playBtn.setBackground(Color.GREEN);
+        playBtn.setText("START");
 
 //        RobotLogger.CloseLog();
-        logging_button_pub.publish(new GuiLoggingButtonMessage(GuiLoggingButtonMessage.LoggingMessage.STOP));
+        loggingButtonPub.publish(new GuiLoggingButtonMessage(GuiLoggingButtonMessage.LoggingMessage.STOP));
         timer.stop();
     }
 

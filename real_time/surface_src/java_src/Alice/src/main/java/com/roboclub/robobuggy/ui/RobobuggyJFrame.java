@@ -18,14 +18,14 @@ import javax.swing.*;
 /*
  *  This class is for the robobuggy group to have nice control over how Jframe windows look and resize 
  */
-public class RoboBuggyJFrame extends JFrame  {
+public class RobobuggyJFrame extends JFrame  {
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -3566499518806533434L;
 
-	public RoboBuggyJFrame(String title,double widthPercentage,double heightPercentage) {
+	public RobobuggyJFrame(String title,double widthPercentage,double heightPercentage) {
 		
 		//sets the title based on this frames name
 		this.setTitle(title);
@@ -59,17 +59,16 @@ public class RoboBuggyJFrame extends JFrame  {
 		int screenWidth = gd.getDisplayMode().getWidth();
 		int screenHeight = gd.getDisplayMode().getHeight();
 		newComponent.setBounds((int)(percentageLeft*screenWidth),(int)(percentageTop*screenHeight),(int)(screenWidth*percentageWidth),(int)(screenHeight*percentageHeight));
-		if(newComponent instanceof RoboBuggyGUIContainer){
-			RoboBuggyGUIContainer rbGuicontainer = (RoboBuggyGUIContainer) newComponent;
+		if(newComponent instanceof RobobuggyGUIContainer){
+			RobobuggyGUIContainer rbGuicontainer = (RobobuggyGUIContainer) newComponent;
 			rbGuicontainer.updateSizeing();
 		}
 		//create a container for keeping track of this components data
-		ComponentData thisComponet = new ComponentData();
-		thisComponet.component = newComponent;
-		thisComponet.percentageLeft = percentageLeft;
-		thisComponet.percentageTop = percentageTop;
-		thisComponet.percentageWidth = percentageWidth;
-		thisComponet.percentageHeight = percentageHeight;
+		ComponentData thisComponet = new ComponentData(newComponent,
+													   percentageLeft,
+													   percentageTop,
+													   percentageWidth,
+													   percentageHeight);
 		components.add(thisComponet);
 		this.add(newComponent);
 		PercentileLayoutManger t = new PercentileLayoutManger(components);

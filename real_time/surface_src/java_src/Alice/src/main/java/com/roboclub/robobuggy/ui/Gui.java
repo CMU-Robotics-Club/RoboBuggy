@@ -34,6 +34,9 @@ public final class Gui extends JFrame {
 		GUI_LOG_BUTTON_UPDATED,
 	}
 
+	/**
+	 * Repaints all objects in the {@link Gui}
+	 */
 	public void fixPaint(){
 		for(int i = 0;i<windowList.size();i++){
 			windowList.get(i).repaint(); 
@@ -53,14 +56,14 @@ public final class Gui extends JFrame {
 	}
 
 	//The windowList is a list of all of the windows that are a part of the gui
-	private ArrayList<RoboBuggyJFrame> windowList = new ArrayList<RoboBuggyJFrame>();
+	private ArrayList<RobobuggyJFrame> windowList = new ArrayList<RobobuggyJFrame>();
 	
 	/**
 	 * Construct a new {@link Gui} object
 	 */
 	private Gui() {
 		System.out.println("Starting GUI");
-		RoboBuggyJFrame mainWindow = new RoboBuggyJFrame("MainWindow",1.0,1.0);	
+		RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow",1.0,1.0);	
 		AnalyticsPanel analyPane = new AnalyticsPanel();
 		ControlPanel cntrlPane = new ControlPanel();
 		//addComponent syntax is (newComponent,percentageLeft,percentageTop,percentageWidth,percentageHeight)

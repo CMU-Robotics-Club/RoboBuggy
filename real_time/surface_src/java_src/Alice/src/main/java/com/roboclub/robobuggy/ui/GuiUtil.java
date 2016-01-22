@@ -18,10 +18,15 @@ public class GuiUtil {
 	 *  number of rows and columns
 	 * @param rows number of rows
 	 * @param cols number of columns
-	 * @param thisRow the row to populate
-	 * @param thisCol the column to populate
+	 * @param startRow the row to start populating
+	 * @param startCol the column to start populating
+	 * @param stopRow the row to stop populating at
+	 * @param stopCol the column to stop populating at
+	 * @param comp the component you are making a subplot of
+	 * @param pane the container containing the objects to draw
 	 */
-	public static void subPlot(int rows, int cols, int startRow, int startCol, int stopRow, int stopCol,Component comp,Container pane){
+	public static void subPlot(int rows, int cols, int startRow, int startCol,
+			int stopRow, int stopCol,Component comp,Container pane){
 		pane.setLayout(null);
 
 
@@ -68,8 +73,8 @@ public class GuiUtil {
 		
 		stopRow = stopRow +1;
 		stopCol = stopCol +1;
-		double width_inCols = stopCol - startCol;
-		double height_inRows = stopRow - startRow;
+		double widthInCols = stopCol - startCol;
+		double heightInRows = stopRow - startRow;
 		double frameWidth = pane.getSize().getWidth();
 		double frameHeight = pane.getSize().getHeight();
 		System.out.println("frameWidth:"+frameWidth+"frameHeight:"+frameHeight);
@@ -78,8 +83,8 @@ public class GuiUtil {
 		//System.out.println("frameWidth:"+frameWidth+"frameHeight"+frameHeight);
 		double widthPerColumn = frameWidth/cols;
 		double heightPerRow = frameHeight/rows;
-		double width = width_inCols*widthPerColumn;
-		double height = height_inRows*heightPerRow;
+		double width = widthInCols*widthPerColumn;
+		double height = heightInRows*heightPerRow;
 		double startX = widthPerColumn*startCol;
 		double startY = heightPerRow*startRow;
 		//System.out.println("startX:"+startX+"startY"+startY+"width"+width+"height"+height);

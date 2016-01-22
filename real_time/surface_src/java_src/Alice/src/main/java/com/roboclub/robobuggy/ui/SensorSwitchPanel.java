@@ -4,7 +4,7 @@ import javax.swing.JButton;
 
 import com.roboclub.robobuggy.ros.NodeChannel;
 
-public class SensorSwitchPanel extends RoboBuggyGUIContainer{
+public class SensorSwitchPanel extends RobobuggyGUIContainer{
 	
 	SensorSwitch gps_switch;
 	SensorSwitch vision_switch;

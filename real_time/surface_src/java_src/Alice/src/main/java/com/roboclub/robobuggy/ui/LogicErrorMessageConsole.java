@@ -15,7 +15,7 @@ import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 
-public class LogicErrorMessageConsole extends RoboBuggyGUIContainer{
+public class LogicErrorMessageConsole extends RobobuggyGUIContainer{
 	/**
 	 * 
 	 */
@@ -34,7 +34,7 @@ public class LogicErrorMessageConsole extends RoboBuggyGUIContainer{
 	private JButton EXCEPTION_btn;
 	private JButton WARNING_btn;
 	private JButton NOTE_btn;
-	public class Header extends RoboBuggyGUIContainer{
+	public class Header extends RobobuggyGUIContainer{
 		/**
 		 * 
 		 */

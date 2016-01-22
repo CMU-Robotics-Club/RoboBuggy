@@ -18,7 +18,7 @@ import com.roboclub.robobuggy.ros.Subscriber;
 //import com.roboclub.robobuggy.ui.GpsPanel.LocTuple;
 
 /**
- * {@link RoboBuggyGUIContainer} used for displaying sensor data
+ * {@link RobobuggyGUIContainer} used for displaying sensor data
  * @author Trevor Decker
  * @author Kevin Brennan 
  *
@@ -28,7 +28,7 @@ import com.roboclub.robobuggy.ros.Subscriber;
  * 
  * DESCRIPTION: TODO
  */
-public class DataPanel extends RoboBuggyGUIContainer {
+public class DataPanel extends RobobuggyGUIContainer {
 
 	private static final long serialVersionUID = 3950373392222628865L;
 	private static final int MAX_LENGTH = 10;

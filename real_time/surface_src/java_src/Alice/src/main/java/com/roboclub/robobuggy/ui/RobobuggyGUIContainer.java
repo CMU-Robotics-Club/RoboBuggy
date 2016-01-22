@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
-public class RoboBuggyGUIContainer extends JPanel{
+public class RobobuggyGUIContainer extends JPanel{
 	/**
 	 * 
 	 */
@@ -30,16 +30,16 @@ public class RoboBuggyGUIContainer extends JPanel{
 		for(int i = 0;i<components.size();i++){
 			ComponentData thisComponet = components.get(i);
 			//calculate the size of the subcomponent
-			int subComponetX = (int)(thisComponet.percentageLeft*frameWidth);
-			int subComponetY = (int)(thisComponet.percentageTop*frameHeight);
-			int subComponentWidth = (int)(thisComponet.percentageWidth*frameWidth);
-			int subComponentHeight = (int)(thisComponet.percentageHeight*frameHeight);
+			int subComponetX = (int)(thisComponet.getPercentageLeft()*frameWidth);
+			int subComponetY = (int)(thisComponet.getPercentageTop()*frameHeight);
+			int subComponentWidth = (int)(thisComponet.getPercentageWidth()*frameWidth);
+			int subComponentHeight = (int)(thisComponet.getPercentageHeight()*frameHeight);
 			//actually set the size bound 
-			thisComponet.component.setBounds(subComponetX,subComponetY,subComponentWidth,subComponentHeight);
+			thisComponet.getComponent().setBounds(subComponetX,subComponetY,subComponentWidth,subComponentHeight);
 			// we don't know if the component is a robobuggy container or a primitive component, 
 			// if it is a primitive then we are finished otherwise we need to recursively apply the size change 
-			if(thisComponet.component instanceof RoboBuggyGUIContainer){
-				RoboBuggyGUIContainer rbGuicontainer = (RoboBuggyGUIContainer) thisComponet.component;
+			if(thisComponet.getComponent() instanceof RobobuggyGUIContainer){
+				RobobuggyGUIContainer rbGuicontainer = (RobobuggyGUIContainer) thisComponet.getComponent();
 				rbGuicontainer.updateSizeing();
 			}
 		}
@@ -48,12 +48,11 @@ public class RoboBuggyGUIContainer extends JPanel{
 	
 	public void addComponent(Component newComponent, double percentageLeft, double percentageTop, double percentageWidth, double percentageHeight){
 		//create a container for keeping track of this components data
-		ComponentData thisComponet = new ComponentData();
-		thisComponet.component = newComponent;
-		thisComponet.percentageLeft = percentageLeft;
-		thisComponet.percentageTop = percentageTop;
-		thisComponet.percentageWidth = percentageWidth;
-		thisComponet.percentageHeight = percentageHeight;
+		ComponentData thisComponet = new ComponentData(newComponent,
+				   percentageLeft,
+				   percentageTop,
+				   percentageWidth,
+				   percentageHeight);
 		components.add(thisComponet);
 		add(newComponent);
 		this.repaint();

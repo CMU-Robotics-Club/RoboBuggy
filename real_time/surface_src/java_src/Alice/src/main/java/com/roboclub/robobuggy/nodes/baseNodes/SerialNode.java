@@ -210,13 +210,13 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 
 					while(true) 
 					{
-						int num_read = peel(buf, start, numBytes);
-						if(num_read == 0)
+						int numRead = peel(buf, start, numBytes);
+						if(numRead == 0)
 						{
 							break;
 						}
-						start += num_read;
-						numBytes -= num_read;
+						start += numRead;
+						numBytes -= numRead;
 					}
 					
 					// Shift the array by the amount that we read.

@@ -3,9 +3,10 @@ package com.roboclub.robobuggy.main;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
-// where all system configuration values should be placed
 // add jason parser for RobobuggyConfigFile
-
+/**
+ * Class used to store the system configuration values
+ */
 public final class  RobobuggyConfigFile {
 
 	public static final RobobuggyMessageLevel REPORTING_LEVEL = RobobuggyMessageLevel.NOTE; // for what messages should be printed to the console
@@ -53,6 +54,11 @@ public final class  RobobuggyConfigFile {
 	// internal reference of this RobobuggyConfigFile so that it can fit the factory pattern
 	private static RobobuggyConfigFile instance;
 
+	/**
+	 * Returns a reference to the one instance of the {@link RobobuggyConfigFile} object.
+	 * If no instance exists, a new one is created.
+	 * @return a reference to the one instance of the {@link RobobuggyConfigFile} object
+	 */
 	public static RobobuggyConfigFile getInstance() {
 		if (instance == null) {
 			instance = new RobobuggyConfigFile();
@@ -64,7 +70,14 @@ public final class  RobobuggyConfigFile {
 		return instance;
 	}
 
-	//includes all of the jni libraries that we need to be able to use all of our libraries
+	/**
+	 * Includes all of the jni libraries that we need to be able to use all of our libraries
+	 * @return true iff the setup completes sucessfully
+	 * @throws NoSuchFieldException
+	 * @throws SecurityException
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 */
 	public static boolean setupJNI() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException{
 	       final String PATH_TO_ADD =  "library";
 	       final Field usrPathsField = ClassLoader.class.getDeclaredField("usr_paths");

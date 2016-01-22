@@ -26,10 +26,18 @@ public class RobobuggyLogicExceptionMeasurment extends BaseMessage implements Me
 		return level.toString() + "\t"+message;
 	}
 	
+	/**
+	 * Returns the {@link String} representing the contents of the {@link RobobuggyLogicException}
+	 * @return the {@link String} representing the contents of the {@link RobobuggyLogicException}
+	 */
 	public String getMessage(){
 		return message;	
 	}
-	
+
+	/**
+	 * Returns the {@link RobobuggyMessageLevel} of the {@link RobobuggyLogicException}
+	 * @return the {@link RobobuggyMessageLevel} of the {@link RobobuggyLogicException}
+	 */
 	public RobobuggyMessageLevel getLevel(){
 		return level;
 	}
@@ -42,13 +50,13 @@ public class RobobuggyLogicExceptionMeasurment extends BaseMessage implements Me
 			//error 
 			return null;
 		}else{
-			String thisLevel_str = str.substring(0, splitPoint);
+			String thisLevelStr = str.substring(0, splitPoint);
 			RobobuggyMessageLevel thisLevel = null;
-			if(thisLevel_str.equals(RobobuggyMessageLevel.EXCEPTION.toString())){
+			if(thisLevelStr.equals(RobobuggyMessageLevel.EXCEPTION.toString())){
 				thisLevel = RobobuggyMessageLevel.EXCEPTION;
-			}else if(thisLevel_str.equals(RobobuggyMessageLevel.NOTE.toString())){
+			}else if(thisLevelStr.equals(RobobuggyMessageLevel.NOTE.toString())){
 				thisLevel = RobobuggyMessageLevel.NOTE;
-			}else if(thisLevel_str.equals(RobobuggyMessageLevel.WARNING.toString())){
+			}else if(thisLevelStr.equals(RobobuggyMessageLevel.WARNING.toString())){
 				thisLevel = RobobuggyMessageLevel.WARNING;
 			}
 			String thisMessage = str.substring(splitPoint, str.length());

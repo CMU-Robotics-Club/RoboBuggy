@@ -1,7 +1,7 @@
 package com.roboclub.robobuggy.ui;
 
 /**
- * {@link RoboBuggyGUIContainer} used to represent a control pattern
+ * {@link RobobuggyGUIContainer} used to represent a control pattern
  * @author Trevor Decker
  * @author Kevin Brennan
  *
@@ -12,7 +12,7 @@ package com.roboclub.robobuggy.ui;
  *          DESCRIPTION: TODO
  */
 
-public class ControlPanel extends RoboBuggyGUIContainer {
+public class ControlPanel extends RobobuggyGUIContainer {
 	private static final long serialVersionUID = -924045896215455343L;
 	
 	/**

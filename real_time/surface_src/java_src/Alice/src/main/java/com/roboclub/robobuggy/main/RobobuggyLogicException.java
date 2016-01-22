@@ -120,7 +120,9 @@ public class RobobuggyLogicException {
 				System.out.println("Unknown MessageLevel. Printing");
 				return true;
 			}
+		default:
+			System.out.println("Unknown MessageLevel. Printing");
+			return true;
 		}
-		return true;
 	}
 }

@@ -90,10 +90,10 @@ public class SensorPlayer implements Runnable {
 					sensorStartTimeInMilis = currentSensorTimeInMillis;
 				}
 
-				long sensorTime_fromStart = currentSensorTimeInMillis -sensorStartTimeInMilis; 
-				long realTime_fromStart = currentTime - prevTimeInMillis;				
-				long PLAY_BACK_SPEED = 100;
-				long sleepTime = PLAY_BACK_SPEED*realTime_fromStart - sensorTime_fromStart;
+				long sensorTimeFromStart = currentSensorTimeInMillis -sensorStartTimeInMilis; 
+				long realTimeFromStart = currentTime - prevTimeInMillis;				
+				long playbackSpeed = 100;
+				long sleepTime = playbackSpeed*realTimeFromStart - sensorTimeFromStart;
 				new RobobuggyLogicException("sleepingTime:"+sleepTime, RobobuggyMessageLevel.NOTE);
 				if(sleepTime < 0 && false){ 
 					//TODO change back to sleepTime
@@ -104,7 +104,8 @@ public class SensorPlayer implements Runnable {
 			
 				String sensorName = (String) sensor.get("name");
 				if(sensorName == null){
-					new RobobuggyLogicException("sensor name is not in this lines log line, this log cannot be repaid", RobobuggyMessageLevel.EXCEPTION);
+					new RobobuggyLogicException("sensor name is not in this lines log line, this log cannot be repaid",
+							RobobuggyMessageLevel.EXCEPTION);
 				}else{
 					JSONObject sensorParams = (JSONObject) sensor.get("params");
 					System.out.println(sensorName);
@@ -134,7 +135,8 @@ public class SensorPlayer implements Runnable {
 							double antennaAlt = (double) sensorParams.get("antenna_altitude");
 							double rawLat = (double) sensorParams.get("raw_gps_lat");
 							double rawLon = (double) sensorParams.get("raw_gps_lon");		
-							gpsPub.publish(new GpsMeasurement(gpsTimestamp, latitude, north, longitude, west, qualityValue, numSatellites, hdop, antennaAlt, rawLat, rawLon));
+							gpsPub.publish(new GpsMeasurement(gpsTimestamp, latitude, north, longitude, west,
+									qualityValue, numSatellites, hdop, antennaAlt, rawLat, rawLon));
 							break;
 						
 						case "logging button":
@@ -153,7 +155,8 @@ public class SensorPlayer implements Runnable {
 									break;
 								
 								default:
-									new RobobuggyLogicException("Unknown status in the log!", RobobuggyMessageLevel.EXCEPTION);
+									new RobobuggyLogicException("Unknown status in the log!",
+											RobobuggyMessageLevel.EXCEPTION);
 									break;
 						
 							}
@@ -170,8 +173,12 @@ public class SensorPlayer implements Runnable {
 						
 							double dataword = (double) sensorParams.get("dataword");
 							double distance = (double) sensorParams.get("distance");
-							double velocity = sensorParams.get("velocity") != null ? (double) sensorParams.get("velocity") : 0;
-							Double accel = sensorParams.get("acceleration") != null ? (double) sensorParams.get("acceleration") : 0;
+							double velocity = 0;
+							if(sensorParams.get("velocity") != null)
+								velocity = (double) sensorParams.get("velocity");
+							double accel = 0;
+							if(sensorParams.get("acceleration") != null)
+								accel = (double) sensorParams.get("acceleration");
 						
 							String timestampString = (String) sensor.get("timestamp");
 							Date timestamp = RobobuggyDateFormatter.formatRobobuggyDate(timestampString);
@@ -185,7 +192,8 @@ public class SensorPlayer implements Runnable {
 							break;
 						
 						default:
-							//new RobobuggyLogicException("Found an unsupported sensor in the logs!", RobobuggyMessageLevel.WARNING);
+							//new RobobuggyLogicException("Found an unsupported sensor in the logs!",
+							//RobobuggyMessageLevel.WARNING);
 							break;
 				
 				}

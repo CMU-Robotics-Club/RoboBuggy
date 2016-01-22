@@ -1,10 +1,10 @@
 package com.roboclub.robobuggy.ui;
 
 /**
- * {@link RoboBuggyGUIContainer} used to display a {@link DataPanel} and a
+ * {@link RobobuggyGUIContainer} used to display a {@link DataPanel} and a
  *  {@link GraphPanel}
  */
-public class AnalyticsPanel extends RoboBuggyGUIContainer {
+public class AnalyticsPanel extends RobobuggyGUIContainer {
 
 	private static final long serialVersionUID = 7017667286491619492L;
 

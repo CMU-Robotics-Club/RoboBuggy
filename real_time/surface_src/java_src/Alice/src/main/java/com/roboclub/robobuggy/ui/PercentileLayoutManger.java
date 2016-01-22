@@ -43,11 +43,11 @@ class PercentileLayoutManger implements LayoutManager{
 		int frameWidth = parent.getWidth();
 		int frameHeight = parent.getHeight();
 		for(int i = 0;i<this.components.size();i++){
-			Component thisComponent = this.components.get(i).component;
-			int x = (int)(this.components.get(i).percentageLeft*frameWidth);
-			int y = (int)(this.components.get(i).percentageTop*frameHeight);
-			int width = (int)(this.components.get(i).percentageWidth*frameWidth);
-			int height = (int)(this.components.get(i).percentageHeight*frameHeight);
+			Component thisComponent = this.components.get(i).getComponent();
+			int x = (int)(this.components.get(i).getPercentageLeft()*frameWidth);
+			int y = (int)(this.components.get(i).getPercentageTop()*frameHeight);
+			int width = (int)(this.components.get(i).getPercentageWidth()*frameWidth);
+			int height = (int)(this.components.get(i).getPercentageHeight()*frameHeight);
 			thisComponent.setBounds(x, y, width, height);
 		}		
 	}

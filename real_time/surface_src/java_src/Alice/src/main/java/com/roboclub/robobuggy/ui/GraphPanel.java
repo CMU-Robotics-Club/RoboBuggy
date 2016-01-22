@@ -8,9 +8,9 @@ import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 
 /**
- * {@link RoboBuggyGUIContainer} used to represent a graph
+ * {@link RobobuggyGUIContainer} used to represent a graph
  */
-public class GraphPanel extends RoboBuggyGUIContainer {
+public class GraphPanel extends RobobuggyGUIContainer {
 
 	private static final long serialVersionUID = -5453262887347328140L;
 
