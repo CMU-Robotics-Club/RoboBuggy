@@ -39,7 +39,7 @@ public class SteeringMeasurement extends BaseMessage implements Message {
 	public Message fromLogString(String str) {
 		String delims = ",";
 		String[] ar = str.split(delims);
-		Date timestamp = tryToParseDate(ar[0]);
+		timestamp = new Date(tryToParseDate(ar[0]).getTime());
 		int angle = Integer.parseInt(ar[1]);
 		return new SteeringMeasurement(angle);
 	}

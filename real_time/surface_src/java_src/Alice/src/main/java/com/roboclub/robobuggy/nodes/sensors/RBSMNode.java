@@ -64,7 +64,7 @@ public class RBSMNode extends SerialNode {
 	private Publisher messagePubEnc;
 	private Publisher messagePubPot;
 	private Publisher messagePubControllerSteering;
-	private Publisher brakePub; 
+//	private Publisher brakePub; future expansion
 	
 	private Publisher statePubEnc;
 	private Publisher statePubPot;
@@ -86,7 +86,7 @@ public class RBSMNode extends SerialNode {
 		messagePubEnc = new Publisher(sensorEnc.getMsgPath());
 		messagePubPot = new Publisher(sensorPot.getMsgPath());
 		messagePubControllerSteering = new Publisher(NodeChannel.STEERING_COMMANDED.getMsgPath());
-		brakePub = new Publisher(NodeChannel.BRAKE.getMsgPath());
+//		brakePub = new Publisher(NodeChannel.BRAKE.getMsgPath()); //todo future expansion 
 		messagePubFp = new Publisher(NodeChannel.FP_HASH.getMsgPath());
 
 		//statePub forwards this node's estimate of the state
@@ -302,50 +302,8 @@ public class RBSMNode extends SerialNode {
 		@Override
 		protected boolean shutdownDecoratorNode() {
 			return true;
-		}
-		
+		}	
 	}
-	
-	/**
-	 * Private class used to represent RBSM messages
-	 */
-	private final class RBSMessage {
-		
-		private static final byte HEADER = RBSerialMessage.RBSM_MID_MEGA_COMMAND;
-		private static final byte FOOTER = RBSerialMessage.FOOTER;
-		
-		private short angle;
-		private boolean brakesEngaged;
-		
-		/**
-		 * Create a new RBSMessage object to send to the Arduino
-		 * @param angle desired commanded angle in degrees*1000
-		 * @param brakesEngaged desired brake state
-		 */
-		private RBSMessage(short angle, boolean brakesEngaged) {
-			this.angle = angle;
-			this.brakesEngaged = brakesEngaged;
-		}
-		
-		/**
-		 * Returns a byte array of the RBSMessage to send to the Arduino
-		 * @return a byte array of the RBSMessage to send to the Arduino
-		 */
-		private byte[] getMessageBytes() {
-			byte[] bytes = new byte[6];
-			bytes[0] = HEADER;
-			bytes[1] = (byte)((angle >> 8)&0xFF);
-			bytes[2] = (byte)(angle);
-			if(brakesEngaged)
-				bytes[3] = (byte)1;
-			else
-				bytes[3] = (byte)0;
-			bytes[4] = (byte)(0xc0);
-			bytes[5] = FOOTER;
-			return bytes;
-		}
-	}
-
 }
 
 

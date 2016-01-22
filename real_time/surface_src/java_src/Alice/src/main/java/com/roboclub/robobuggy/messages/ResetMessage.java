@@ -16,6 +16,10 @@ public class ResetMessage implements Message {
 	public ResetMessage() {
 		this.timestamp = new Date();
 	}
+	
+	public Date getTimestamp(){
+		return new Date(timestamp.getTime());
+	}
 
 	/**{@inheritDoc}*/
 	@Override

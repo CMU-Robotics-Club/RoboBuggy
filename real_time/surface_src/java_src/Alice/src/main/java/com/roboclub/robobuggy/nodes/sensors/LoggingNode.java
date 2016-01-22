@@ -20,12 +20,8 @@ import com.roboclub.robobuggy.ui.Gui;
  */
 public class LoggingNode extends BuggyDecoratorNode {
 
-	private String directoryPath;
-	private String topicName;
 	
-	private BufferedOutputStream outputFile = null;
 	
-	private Subscriber s;
 	private Subscriber loggingButtonSub;
 	
 	private Publisher loggingButtonPub;
@@ -45,12 +41,12 @@ public class LoggingNode extends BuggyDecoratorNode {
 	protected boolean startDecoratorNode() {
 		loggingButtonPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
 		
-		loggingButtonSub = new Subscriber(Gui.GuiPubSubTopics.GUI_LOG_BUTTON_UPDATED.toString(), new MessageListener() {
+		setLoggingButtonSub(new Subscriber(Gui.GuiPubSubTopics.GUI_LOG_BUTTON_UPDATED.toString(), new MessageListener() {
 			@Override 
 			public void actionPerformed(String topicName, Message m) {
 				loggingButtonPub.publish(m);
 			}
-		});
+		}));
 		return true;
 	}
 
@@ -80,6 +76,15 @@ public class LoggingNode extends BuggyDecoratorNode {
 		data.put("name", "logging button");
 		data.put("params", params);
 		return data;
+	}
+
+
+	public Subscriber getLoggingButtonSub() {
+		return loggingButtonSub;
+	}
+
+	public void setLoggingButtonSub(Subscriber loggingButtonSub) {
+		this.loggingButtonSub = loggingButtonSub;
 	}
 	
 }

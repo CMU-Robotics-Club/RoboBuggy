@@ -31,6 +31,15 @@ public class WheelAngleCommand implements Message {
 		this.angle = angle;
 		this.timestamp = new Date();
 	}
+	
+	public Date getTimestamp(){
+		return new Date(timestamp.getTime());
+	}
+	
+	public float getAngle(){
+		return angle;
+	}
+	
 
 	/**{@inheritDoc}*/
 	@Override

@@ -2,6 +2,8 @@ package com.roboclub.robobuggy.nodes.baseNodes;
 
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
+import gnu.io.NoSuchPortException;
+import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
 import gnu.io.UnsupportedCommOperationException;
 
@@ -10,6 +12,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import com.orsoncharts.util.json.JSONObject;
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 
 /**
  * Abstract class extended to create a decorator node that uses 
@@ -52,9 +56,9 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 	// Open a serial port
 	// Returns null if unable to connect, otherwise SerialPort
 	private static SerialPort connect(String portName, int baudRate) {
-		try {
-	        CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
-	        
+	        CommPortIdentifier portIdentifier;
+			try {
+				portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
 	        if ( portIdentifier.isCurrentlyOwned() ) {
 	        	System.err.println("Error: Port currently in use");
 	        } else { 
@@ -66,10 +70,10 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 	                return serialPort;
 	            }
 	        }
-		} catch (Exception e) {
-			System.err.println("Error: Unable to connect to port" + portName);
-		}
-		
+			} catch (NoSuchPortException | PortInUseException | UnsupportedCommOperationException e) {
+				new RobobuggyLogicNotification("Error: Unable to connect to port"+portName, RobobuggyMessageLevel.EXCEPTION);
+
+			}		
 		return null;
     }
 

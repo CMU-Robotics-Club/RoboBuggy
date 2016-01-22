@@ -1,5 +1,7 @@
 package com.roboclub.robobuggy.nodes.sensors;
 
+import java.util.Arrays;
+
 import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
@@ -20,13 +22,7 @@ public final class ImuNode extends SerialNode {
 	private static final int BAUDRATE = 57600;
 	// how long the system should wait until a sensor switches to Disconnected
 	private static final long SENSOR_TIME_OUT = 5000;
-
-	// Used for state estimation
-	/*private static final double GYRO_PER = 0.9;
-	private static final double ACCEL_PER = 1 - GYRO_PER;
-	public double angle;
-	*/
-
+	
 	private Publisher msgPub;
 	private Publisher statePub;
 	
@@ -43,23 +39,6 @@ public final class ImuNode extends SerialNode {
 		// TODO state stuff
 		statePub.publish(new StateMessage(NodeState.DISCONNECTED));
 	}
-	
-	/*
-	@SuppressWarnings("unused")
-	private void estimateOrientation(double aX, double aY, double aZ, 
-			double rX, double rY, double rZ, double mX, double mY, double mZ) {
-		// TODO calculate roll, pitch, and yaw from imu data
-		
-		double rollA = Math.atan2(aX, Math.sqrt(Math.pow(aY,2) + Math.pow(aZ,2)));
-		double pitchA = Math.atan2(aY, Math.sqrt(Math.pow(aX,2) + Math.pow(aZ,2)));
-		
-		double rollR = Math.atan2(rY, Math.sqrt(Math.pow(rX,2) + Math.pow(rZ,2)));
-		double pitchR = Math.atan2(-rX, rZ);
-		
-		double yaw = 0.0;
-		
-		//msgPub.publish(new ImuMeasurement());
-	}*/
 	
 	/**{@inheritDoc}*/
 	@Override
@@ -106,30 +85,31 @@ public final class ImuNode extends SerialNode {
 		}
 		
 		double[] vals = new double[3];
-		String b = new String(buffer, start+5, bytesAvailable-5);
-		int origLength = b.length();
+		String imuRawStr = Arrays.toString(buffer).substring(start+5, bytesAvailable-5); //TODO check +5 -5
+
+		int origLength = imuRawStr.length();
 		for (int i = 0; i < 2; i++) {
 			// TODO: need less than bytes_availble
-			int commaIndex = b.indexOf(',');
+			int commaIndex = imuRawStr.indexOf(',');
 			try {
-				Double d = Double.parseDouble(b.substring(0, commaIndex));
+				Double d = Double.parseDouble(imuRawStr.substring(0, commaIndex));
 				vals[i] = d;
 			} catch (NumberFormatException nfe) {
 				System.out.println("maligned input; skipping...");
 				return 1;
 			}
-			b = b.substring(commaIndex+1);	
+			imuRawStr = imuRawStr.substring(commaIndex+1);	
 		}
 		
 		// The last one, we use the hash as the symbol!
-		int hashIndex = b.indexOf('#');
-		vals[2] = Double.parseDouble(b.substring(0, hashIndex));
-		b = b.substring(hashIndex);	
+		int hashIndex = imuRawStr.indexOf('#');
+		vals[2] = Double.parseDouble(imuRawStr.substring(0, hashIndex));
+		imuRawStr = imuRawStr.substring(hashIndex);	
 			
 		msgPub.publish(new ImuMeasurement(vals[0], vals[1], vals[2]));
 		//Feed the watchdog
 		setNodeState(NodeState.ON);
-		return 4 + (origLength - b.length());
+		return 4 + (origLength - imuRawStr.length());
 	}
 
 	/**

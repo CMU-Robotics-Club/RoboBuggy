@@ -32,7 +32,7 @@ public class SensorPlayer implements Runnable {
 	private Publisher imuPub;
 	private Publisher gpsPub;
 	private Publisher encoderPub;
-	private Publisher brakePub;
+	//private Publisher brakePub; TODO: future expansion 
 	private Publisher steeringPub;
 	private Publisher loggingButtonPub;
 
@@ -46,7 +46,7 @@ public class SensorPlayer implements Runnable {
 		imuPub = new Publisher(NodeChannel.IMU.getMsgPath());
 		gpsPub = new Publisher(NodeChannel.GPS.getMsgPath());
 		encoderPub = new Publisher(NodeChannel.ENCODER.getMsgPath());
-		brakePub = new Publisher(NodeChannel.BRAKE.getMsgPath());
+	//	brakePub = new Publisher(NodeChannel.BRAKE.getMsgPath()); TODO: future expansion 
 		steeringPub = new Publisher(NodeChannel.STEERING.getMsgPath());
 		loggingButtonPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
 		

@@ -1,5 +1,7 @@
 package com.roboclub.robobuggy.nodes.sensors;
 
+import java.util.Arrays;
+
 import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
@@ -18,13 +20,10 @@ import com.roboclub.robobuggy.ros.NodeChannel;
  */
 
 public class LightingNode extends SerialNode {
-	// how long the system should wait until a sensor switches to Disconnected
-	private static final long SENSOR_TIME_OUT = 5000;
 
 	private static final int BAUD_RATE = 9600;
 	
-	private Publisher msgPub;
-	private Publisher statePub;
+
 	
 	/**
 	 * Creates a new {@link LightingNode}
@@ -33,8 +32,7 @@ public class LightingNode extends SerialNode {
 	 */
 	public LightingNode(NodeChannel sensor, String portName) {
 		super(new BuggyBaseNode(sensor), "Lighting", portName, BAUD_RATE);
-		msgPub = new Publisher(sensor.getMsgPath());
-		statePub = new Publisher(sensor.getStatePath());
+
 	
 		// TODO state stuff
 		//statePub.publish(new StateMessage(this.currState));
@@ -84,30 +82,31 @@ public class LightingNode extends SerialNode {
 			return 1;
 		}
 		double[] vals = new double[9];
-		String b = new String(buffer, start+5, bytesAvailable-5);
-		int origLength = b.length();
+		String lightingRawStr = Arrays.toString(buffer).substring(start+5, bytesAvailable-5);//TODO check +5 -5
+
+		int origLength = lightingRawStr.length();
 		for (int i = 0; i < 8; i++) {
 			// TODO: need less than bytes_availble
-			int commaIndex = b.indexOf(',');
+			int commaIndex = lightingRawStr.indexOf(',');
 			try {
-				vals[i] = Double.parseDouble(b.substring(0, commaIndex)); 
+				vals[i] = Double.parseDouble(lightingRawStr.substring(0, commaIndex)); 
 			} catch (NumberFormatException nfe) {
 				System.out.println("maligned input; skipping...");
 				return 1;
 			}
-			b = b.substring(commaIndex+1);	
+			lightingRawStr = lightingRawStr.substring(commaIndex+1);	
 		}
 		
 		// The last one, we use the hash as the symbol!
-		int hashIndex = b.indexOf('#');
-		vals[8] = Double.parseDouble(b.substring(0, hashIndex));
-		b = b.substring(hashIndex);	
+		int hashIndex = lightingRawStr.indexOf('#');
+		vals[8] = Double.parseDouble(lightingRawStr.substring(0, hashIndex));
+		lightingRawStr = lightingRawStr.substring(hashIndex);	
 			
 //		msgPub.publish(new ImuMeasurement(vals[0], vals[1],vals[2], 
 //				vals[3], vals[4], vals[5], vals[6], vals[7], vals[8]));
 		//Feed the watchdog
 		setNodeState(NodeState.ON);
-		return 4 + (origLength - b.length());
+		return 4 + (origLength - lightingRawStr.length());
 	}
 
 	/**

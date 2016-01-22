@@ -21,6 +21,14 @@ public class RemoteWheelAngleRequest implements Message {
 		this.angle = angle;
 		this.timestamp = new Date();
 	}
+	
+	public double getAngle(){
+		return angle;
+	}
+	
+	public Date getTimeStamp(){
+		return new Date(timestamp.getTime());
+	}
 
 	@Override
 	public String toLogString() {

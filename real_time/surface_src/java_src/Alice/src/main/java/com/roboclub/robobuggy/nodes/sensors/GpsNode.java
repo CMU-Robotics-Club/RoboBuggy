@@ -1,5 +1,6 @@
 package com.roboclub.robobuggy.nodes.sensors;
 
+import java.util.Arrays;
 import java.util.Date;
 
 import com.orsoncharts.util.json.JSONObject;
@@ -96,7 +97,7 @@ public final class GpsNode extends SerialNode {
 			return 0;
 		}
 
-		String str = new String(buffer, start, bytesAvailable);
+		String str = Arrays.toString(buffer).substring(start, bytesAvailable);
 
 		// Quick check to reject things without doing string stuff (which is not cheap)
 		if(buffer[start] != '$') {

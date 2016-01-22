@@ -21,6 +21,10 @@ public class StateMessage implements Message {
 		this.state = state;
 	}
 	
+	public Date getTimestamp(){
+		return new Date(timestamp.getTime());
+	}
+	
 	/**{@inheritDoc}*/
 	@Override
 	public String toLogString() {
