@@ -67,12 +67,6 @@ public class RobobuggyMainFile {
         else {
         	//Play back disabled, create robot
         	Robot.getInstance().startNode();
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            new RobobuggyLogicException("HELLO", RobobuggyMessageLevel.EXCEPTION);
         }
     }
     
