@@ -214,37 +214,33 @@ int main(void) {
 
   // loop forever
   while(1) {
-//     get new command messages
-//     TODO: make reading messages work
-	  
-     rb_message_t new_command;
-     int read_status;
-    
-     // while((read_status = g_rbsm.Read(&new_command))
-     //       != RBSM_ERROR_INSUFFICIENT_DATA) {
-     while((read_status = g_rbsm.Read(&new_command))
-           != RBSM_ERROR_INSUFFICIENT_DATA) {
-       if(read_status == 0) {
-         // dipatch complete message
-         switch(new_command.message_id) {
-           case RBSM_MID_MEGA_STEER_ANGLE:
-             auto_steering_angle = (int)(long)new_command.data;
-             break;
+    rb_message_t new_command;
+    int read_status;
 
-           default:
-             // report unknown message
-             g_rbsm.Send(RBSM_MID_ERROR, RBSM_EID_RBSM_INVALID_MID);
-             printf("Got message with invalid mid:");
-             printf("%d", new_command.message_id);
-             printf("%d\n", new_command.data);
-             break;
-         }
-       } else if(read_status == RBSM_ERROR_INVALID_MESSAGE) {
-         // report stream losses for tracking
-         g_rbsm.Send(RBSM_MID_ERROR, RBSM_EID_RBSM_LOST_STREAM);
-       }
-       // drop responses with other faults
-     }
+    while((read_status = g_rbsm.Read(&new_command))
+         != RBSM_ERROR_INSUFFICIENT_DATA) {
+      if(read_status == 0) {
+        // dipatch complete message
+        switch(new_command.message_id) {
+          case RBSM_MID_MEGA_STEER_ANGLE:
+            auto_steering_angle = (int)(long)new_command.data;
+            printf("Got steering message for %d.\n", auto_steering_angle);
+            break;
+
+          default:
+            // report unknown message
+            g_rbsm.Send(RBSM_MID_ERROR, RBSM_EID_RBSM_INVALID_MID);
+            printf("Got message with invalid mid %d and data %d",
+                   new_command.message_id,
+                   new_command.data);
+            break;
+        }
+      } else if(read_status == RBSM_ERROR_INVALID_MESSAGE) {
+       // report stream losses for tracking
+       g_rbsm.Send(RBSM_MID_ERROR, RBSM_EID_RBSM_LOST_STREAM);
+      }
+      // drop responses with other faults
+    }
 
     // find the new steering angle, if available
     steer_angle = g_steering_rx.GetAngleThousandths();

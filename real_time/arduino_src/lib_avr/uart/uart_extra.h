@@ -39,6 +39,10 @@ Note:
 ************************************************************************/
 
 
+#define UART_GET_ERROR(b) ((b >> 8) & 0xFF)
+#define UART_GET_DATA(b) (b & 0xFF)
+
+
 /** @brief Extend avr libc's FILE struct with UART specific functions
  *
  *  We use this particularly to implement non-blocking fgetc with available() +
@@ -53,7 +57,11 @@ typedef struct __uartfile : __file {
 
 /** @brief  Match uart0_getc to avr-libc getc() type. */
 inline int uart0_getc_stream(FILE *stream) {
-  return uart0_getc();
+  uint16_t new_data;
+  do {
+    new_data = uart0_getc();
+  } while(UART_GET_ERROR(new_data) != 0);
+  return UART_GET_DATA(new_data);
 }
 
 /** @brief  Match uart0_putc to avr-libc putc() type. */
@@ -83,7 +91,11 @@ inline void uart0_fdevopen(UARTFILE *stream) {
 
 /** @brief  Match uart1_getc to avr-libc getc() type. */
 inline int uart1_getc_stream(FILE *stream) {
-  return uart1_getc();
+  uint16_t new_data;
+  do {
+    new_data = uart1_getc();
+  } while(UART_GET_ERROR(new_data) != 0);
+  return UART_GET_DATA(new_data);
 }
 
 /** @brief  Match uart1_putc to avr-libc putc() type. */
@@ -107,7 +119,11 @@ inline void uart1_fdevopen(UARTFILE *stream) {
 
 /** @brief  Match uart2_getc to avr-libc getc() type. */
 inline int uart2_getc_stream(FILE *stream) {
-  return uart2_getc();
+  uint16_t new_data;
+  do {
+    new_data = uart2_getc();
+  } while(UART_GET_ERROR(new_data) != 0);
+  return UART_GET_DATA(new_data);
 }
 
 /** @brief  Match uart2_putc to avr-libc putc() type. */
@@ -131,7 +147,11 @@ inline void uart2_fdevopen(UARTFILE *stream) {
 
 /** @brief  Match uart3_getc to avr-libc getc() type. */
 inline int uart3_getc_stream(FILE *stream) {
-  return uart3_getc();
+  uint16_t new_data;
+  do {
+    new_data = uart3_getc();
+  } while(UART_GET_ERROR(new_data) != 0);
+  return UART_GET_DATA(new_data);
 }
 
 /** @brief  Match uart3_putc to avr-libc putc() type. */
