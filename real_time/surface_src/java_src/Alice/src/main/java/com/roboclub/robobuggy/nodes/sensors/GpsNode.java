@@ -204,7 +204,6 @@ public final class GpsNode extends SerialNode {
 		params.put("raw_gps_lat", Double.valueOf(messageData[11]));
 		params.put("raw_gps_lon", Double.valueOf(messageData[12]));
 		data.put("timestamp", messageData[1]);
-		data.put("name", "GPS");
 		data.put("params", params);
 		return data;
 	}

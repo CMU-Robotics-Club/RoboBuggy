@@ -60,7 +60,13 @@ public class RobobuggyMainFile {
         	RobotLogger.getInstance();
         	//Play back disabled, create robot
         	Robot.getInstance().startNodes();
-        }
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			new RobobuggyLogicNotification("HELLO", RobobuggyMessageLevel.WARNING);
+		}
     }
     
     private static List<String> getAvailablePorts() {

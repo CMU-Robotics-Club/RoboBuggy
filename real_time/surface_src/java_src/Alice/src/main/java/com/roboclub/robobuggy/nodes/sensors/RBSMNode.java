@@ -219,17 +219,14 @@ public class RBSMNode extends SerialNode {
 		
 		if(sensorName.equals("steering") || sensorName.equals("commanded_steering")) 
 		{
-			data.put("name", "Steering_" + sensorName);
 			params.put("angle", Float.valueOf(messageData[2]));
 		}
 		else if (sensorName.equals("fp_hash")) {
-			data.put("name", "Fingerprint Hash");
 			params.put("hash_value", messageData[2]);
 			
 		}
 		else if (sensorName.equals("encoder")) 
 		{
-			data.put("name", "Encoder");
 			params.put("dataword", Double.valueOf(messageData[2]));
 			params.put("distance", Double.valueOf(messageData[3]));
 			params.put("velocity", Double.valueOf(messageData[4]));

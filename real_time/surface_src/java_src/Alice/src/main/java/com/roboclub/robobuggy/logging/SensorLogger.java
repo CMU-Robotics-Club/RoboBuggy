@@ -1,5 +1,17 @@
 package com.roboclub.robobuggy.logging;
 
+import com.orsoncharts.util.json.JSONObject;
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
+import com.roboclub.robobuggy.messages.RobobuggyLogicNotificationMeasurment;
+import com.roboclub.robobuggy.nodes.sensors.GpsNode;
+import com.roboclub.robobuggy.nodes.sensors.ImuNode;
+import com.roboclub.robobuggy.nodes.sensors.LoggingNode;
+import com.roboclub.robobuggy.nodes.sensors.RBSMNode;
+import com.roboclub.robobuggy.ros.NodeChannel;
+import com.roboclub.robobuggy.ros.Subscriber;
+import com.roboclub.robobuggy.ui.Gui;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
@@ -8,14 +20,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
-
-import com.orsoncharts.util.json.JSONObject;
-import com.roboclub.robobuggy.nodes.sensors.GpsNode;
-import com.roboclub.robobuggy.nodes.sensors.ImuNode;
-import com.roboclub.robobuggy.nodes.sensors.LoggingNode;
-import com.roboclub.robobuggy.nodes.sensors.RBSMNode;
-import com.roboclub.robobuggy.ros.NodeChannel;
-import com.roboclub.robobuggy.ros.Subscriber;
 
 /**
  * Logs data from the sensors
@@ -46,12 +50,12 @@ public final class SensorLogger {
 			private int encoderHits = 0;
 			private int brakeHits = 0;
 			private int steeringHits = 0;
+			private int notificationHits = 0;
 			
 			public void run() {
 				while (true) {
 					try {
 						String line = ret.take();
-                        System.out.println(line);
                         if (line == null) {
 							break;
 						}
@@ -73,45 +77,63 @@ public final class SensorLogger {
 			private String parseData(String line) {
 				String sensor = line.substring(line.indexOf("/") + 1, line.indexOf(","));
 				JSONObject sensorEntryObject;
+				NodeChannel channelForSensor = NodeChannel.getNodeForName(sensor);
 
-				switch (sensor) {
-				case "imu":
-					sensorEntryObject = ImuNode.translatePeelMessageToJObject(line);
-					imuHits++;
-					break;
-				
-				case "gps":
-					sensorEntryObject = GpsNode.translatePeelMessageToJObject(line);
-					gpsHits++;
-					break;
-					
-				case "steering":
-					sensorEntryObject = RBSMNode.translatePeelMessageToJObject(line);
-					break;
-				case "fp_hash":
-					sensorEntryObject = RBSMNode.translatePeelMessageToJObject(line);
-					break;
-				case "commanded_steering":
-					sensorEntryObject = RBSMNode.translatePeelMessageToJObject(line);
-					steeringHits++;
-					break;
-				case "encoder":
-					sensorEntryObject = RBSMNode.translatePeelMessageToJObject(line);
-					encoderHits++;
-					break;
-					
-				case "logging_button":
-					sensorEntryObject = LoggingNode.translatePeelMessageToJObject(line);
-					logButtonHits++;
-					break;
-
-				default:
-					//put brakes in here?
+				if (channelForSensor.equals(NodeChannel.UNKNOWN_CHANNEL)) {
+					new RobobuggyLogicNotification("Tried to parse an unknown sensor: " + sensor, RobobuggyMessageLevel.WARNING);
 					sensorEntryObject = new JSONObject();
-					sensorEntryObject.put("Unknown Sensor:", sensor);
-					break;
+					sensorEntryObject.put("Unknown sensor!", sensor);
+					return sensorEntryObject.toJSONString();
 				}
-				
+
+
+				switch (channelForSensor) {
+					case IMU:
+                        sensorEntryObject = ImuNode.translatePeelMessageToJObject(line);
+                        imuHits++;
+                        break;
+
+					case GPS:
+                        sensorEntryObject = GpsNode.translatePeelMessageToJObject(line);
+                        gpsHits++;
+                        break;
+
+					case STEERING:
+                        sensorEntryObject = RBSMNode.translatePeelMessageToJObject(line);
+                        break;
+
+					case FP_HASH:
+                        sensorEntryObject = RBSMNode.translatePeelMessageToJObject(line);
+                        break;
+
+					case STEERING_COMMANDED:
+                        sensorEntryObject = RBSMNode.translatePeelMessageToJObject(line);
+                        steeringHits++;
+                        break;
+
+					case ENCODER:
+                        sensorEntryObject = RBSMNode.translatePeelMessageToJObject(line);
+                        encoderHits++;
+                        break;
+
+					case GUI_LOGGING_BUTTON:
+                        sensorEntryObject = LoggingNode.translatePeelMessageToJObject(line);
+                        logButtonHits++;
+                        break;
+
+					case LOGIC_EXCEPTION:
+						sensorEntryObject = RobobuggyLogicNotificationMeasurment.translatePeelMessageToJObject(line);
+						notificationHits++;
+						break;
+
+                    default:
+                        //put brakes in here?
+                        sensorEntryObject = new JSONObject();
+                        sensorEntryObject.put("Unknown Sensor:", sensor);
+                        break;
+				}
+
+				sensorEntryObject.put("name", channelForSensor.getName());
 				return sensorEntryObject.toJSONString();
 			}
 
@@ -119,12 +141,13 @@ public final class SensorLogger {
 			private String getDataBreakdown() {
 				JSONObject dataBreakdownObj = new JSONObject();
 				
-				dataBreakdownObj.put("logging_button", logButtonHits);
-				dataBreakdownObj.put("gps", gpsHits);
-				dataBreakdownObj.put("IMU", imuHits);
-				dataBreakdownObj.put("encoder", encoderHits);
-				dataBreakdownObj.put("brake", brakeHits);
-				dataBreakdownObj.put("steering", steeringHits);
+				dataBreakdownObj.put(NodeChannel.GUI_LOGGING_BUTTON.getName(), logButtonHits);
+				dataBreakdownObj.put(NodeChannel.GPS.getName(), gpsHits);
+				dataBreakdownObj.put(NodeChannel.IMU.getName(), imuHits);
+				dataBreakdownObj.put(NodeChannel.ENCODER.getName(), encoderHits);
+				dataBreakdownObj.put(NodeChannel.BRAKE.getName(), brakeHits);
+				dataBreakdownObj.put(NodeChannel.STEERING.getName(), steeringHits);
+				dataBreakdownObj.put(NodeChannel.LOGIC_EXCEPTION, notificationHits);
 				
 				return dataBreakdownObj.toJSONString();
 			}
@@ -168,6 +191,8 @@ public final class SensorLogger {
 					+ logFile + ")!");
 		}
 		logQueue = startLoggingThread(log);
+
+		Gui.getInstance().getControlPanel().getLoggingPanel().setFileName(outputDir + "/sensors.txt");
 
 		// Subscribe to ALL THE PUBLISHERS
 		for (NodeChannel channel : NodeChannel.values()) {

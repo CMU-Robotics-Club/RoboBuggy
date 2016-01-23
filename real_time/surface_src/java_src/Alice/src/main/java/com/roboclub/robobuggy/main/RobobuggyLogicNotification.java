@@ -1,8 +1,8 @@
 package com.roboclub.robobuggy.main;
 
-import com.roboclub.robobuggy.messages.RobobuggyLogicExceptionMeasurment;
-import com.roboclub.robobuggy.ros.Publisher;
+import com.roboclub.robobuggy.messages.RobobuggyLogicNotificationMeasurment;
 import com.roboclub.robobuggy.ros.NodeChannel;
+import com.roboclub.robobuggy.ros.Publisher;
 
 /**
  * 
@@ -42,11 +42,11 @@ public class RobobuggyLogicNotification {
 			System.out.println(exception);
 		}
 		//the message is always published 
-		errorPub.publish(new RobobuggyLogicExceptionMeasurment(exception, level));
+		errorPub.publish(new RobobuggyLogicNotificationMeasurment(exception, level));
 		
 		//only halt the program if it is an exception 
 		if(level == RobobuggyMessageLevel.EXCEPTION){
-			assert(false); //todo shutdown in a more graceful way
+			Robot.getInstance().shutDown();
 		}
 	}
 
@@ -80,32 +80,6 @@ public class RobobuggyLogicNotification {
 			}
 		case NOTE:
 			switch (RobobuggyConfigFile.REPORTING_LEVEL) {
-			case EXCEPTION:
-				switch(RobobuggyConfigFile.REPORTING_LEVEL){
-				case EXCEPTION:
-					return true;
-				case WARNING:
-					return false;
-				case NOTE:
-					return false;
-				default:
-					System.out.println("Unknown MessageLevel. Printing");
-					return true;
-				}
-			case WARNING:
-				switch(RobobuggyConfigFile.REPORTING_LEVEL){
-				case EXCEPTION:
-					return true;
-				case WARNING:
-					return true;
-				case NOTE:
-					return false;
-				default:
-					System.out.println("Unknown MessageLevel. Printing");
-					return true;
-				}
-			case NOTE:
-				switch (RobobuggyConfigFile.REPORTING_LEVEL) {
 				case EXCEPTION:
 					return true;
 				case WARNING:
@@ -116,13 +90,11 @@ public class RobobuggyLogicNotification {
 					System.out.println("Unknown MessageLevel. Printing");
 					return true;
 				}
-			default:
-				System.out.println("Unknown MessageLevel. Printing");
-				return true;
-			}
-		default:
-			System.out.println("Unknown MessageLevel. Printing");
-			return true;
-		}
+        default:
+            System.out.println("Unknown MessageLevel. Printing");
+            return true;
+        }
 	}
+
+
 }

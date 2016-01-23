@@ -33,7 +33,8 @@ public class LoggingPanel extends RobobuggyGUIContainer{
 	private Publisher loggingButtonPub;
 	//to make logging panel accessible to button callbacks
 	private LoggingPanel thisLoggingPanel = this;
-	
+	private JLabel filenameLabel;
+
 	/**
 	 * Construct a new {@link LoggingPanel} object
 	 */
@@ -54,9 +55,9 @@ public class LoggingPanel extends RobobuggyGUIContainer{
 		playBtn.setEnabled(true);
 		playBtn.setBackground(Color.BLUE);
 	
-		JLabel filenameLabel = new JLabel("File: ",
+		filenameLabel = new JLabel("File: ",
 				SwingConstants.CENTER);
-		filenameLabel.setFont(new Font("sanserif", Font.PLAIN, 30));
+		filenameLabel.setFont(new Font("sanserif", Font.PLAIN, 15));
 
 		timeLbl = new JFormattedTextField(new SimpleDateFormat("HH:mm:ss.S"));
 		timeLbl.setHorizontalAlignment(SwingConstants.CENTER);
@@ -68,6 +69,15 @@ public class LoggingPanel extends RobobuggyGUIContainer{
 		this.addComponent(playBtn, 0, 0, 1.0, .25);
 		this.addComponent(filenameLabel, 0, .25, 1.0, .25);
 		this.addComponent(timeLbl, 0, .5, 1, .5);
+	}
+
+
+	/**
+	 * Sets the label for which file we are currently logging to
+	 * @param fileName the filepath we're logging to
+	 */
+	public void setFileName(String fileName) {
+		filenameLabel.setText("File: " + fileName);
 	}
 
 	/**

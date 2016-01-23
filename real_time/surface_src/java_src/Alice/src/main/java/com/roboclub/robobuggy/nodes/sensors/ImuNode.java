@@ -129,7 +129,6 @@ public final class ImuNode extends SerialNode {
 		params.put("pitch", Float.valueOf(ypr[3]));
 		params.put("roll", Float.valueOf(ypr[4]));
 		data.put("timestamp", ypr[1]);
-		data.put("name", "IMU");
 		data.put("params", params);
 		return data;
 	}

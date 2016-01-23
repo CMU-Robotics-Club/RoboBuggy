@@ -9,7 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextArea;
 
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
-import com.roboclub.robobuggy.messages.RobobuggyLogicExceptionMeasurment;
+import com.roboclub.robobuggy.messages.RobobuggyLogicNotificationMeasurment;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
@@ -159,7 +159,7 @@ public class LogicErrorMessageConsole extends RobobuggyGUIContainer{
 		new Subscriber(NodeChannel.LOGIC_EXCEPTION.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
-				RobobuggyLogicExceptionMeasurment msg = (RobobuggyLogicExceptionMeasurment)m;
+				RobobuggyLogicNotificationMeasurment msg = (RobobuggyLogicNotificationMeasurment)m;
 				switch(msg.getLevel()){
 				case EXCEPTION:
 					if(showMessages[0]){

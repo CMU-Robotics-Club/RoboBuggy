@@ -37,8 +37,9 @@ public final class RobotLogger {
 		if (instance == null) {
 			logDir = new File(RobobuggyConfigFile.LOG_FILE_LOCATION);
 			
-			if(!logDir.mkdirs())
+			if(!logDir.mkdirs() && !logDir.exists()) {
 				throw new RuntimeException("Failed to create log directory");
+			}
 			
 //			if (!logDir.exists()) {
 //				logDir.mkdirs();

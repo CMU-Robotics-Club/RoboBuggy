@@ -69,7 +69,6 @@ public class LoggingNode extends BuggyDecoratorNode {
 			params.put("logging_status", "stop");
 		}
 		data.put("timestamp", message.split(",")[1]);
-		data.put("name", "logging button");
 		data.put("params", params);
 		return data;
 	}
