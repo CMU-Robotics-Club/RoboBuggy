@@ -1,30 +1,29 @@
 package com.roboclub.robobuggy.ui;
 
 import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.LayoutManager;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.io.File;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.WindowConstants;
 
-/*
+/**
  *  This class is for the robobuggy group to have nice control over how Jframe windows look and resize 
  */
-public class RobobuggyJFrame extends JFrame  {
+public class RobobuggyJFrame extends JFrame {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -3566499518806533434L;
+	private ArrayList<ComponentData> components = new ArrayList<>();
 
+	/**
+	 * Instantiates a RobobuggyJFrame
+	 * @param title title of the window
+	 * @param widthPercentage percentage of the screen for the width
+	 * @param heightPercentage percentage of the screen for the height
+	 */
 	public RobobuggyJFrame(String title,double widthPercentage,double heightPercentage) {
 		
 		//sets the title based on this frames name
@@ -51,25 +50,36 @@ public class RobobuggyJFrame extends JFrame  {
 		this.setBounds(0, 0, (int)width, (int)height);
 		this.setVisible(true);
 	}
-	
-	ArrayList<ComponentData> components = new ArrayList<ComponentData>();
 
+
+	/**
+	 * Adds a new component to the JFrame
+	 * @param newComponent the component to add
+	 * @param percentageLeft the percentage from the left edge
+	 * @param percentageTop the percentage from the top
+	 * @param percentageWidth the percentage for the width
+	 * @param percentageHeight the percentage for the height
+	 */
 	public void addComponent(Component newComponent, double percentageLeft, double percentageTop, double percentageWidth, double percentageHeight){
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		int screenWidth = gd.getDisplayMode().getWidth();
 		int screenHeight = gd.getDisplayMode().getHeight();
-		newComponent.setBounds((int)(percentageLeft*screenWidth),(int)(percentageTop*screenHeight),(int)(screenWidth*percentageWidth),(int)(screenHeight*percentageHeight));
+		newComponent.setBounds((int)(percentageLeft*screenWidth),
+								(int)(percentageTop*screenHeight),
+								(int)(screenWidth*percentageWidth),
+								(int)(screenHeight*percentageHeight)
+		);
 		if(newComponent instanceof RobobuggyGUIContainer){
 			RobobuggyGUIContainer rbGuicontainer = (RobobuggyGUIContainer) newComponent;
-			rbGuicontainer.updateSizeing();
+			rbGuicontainer.updateSizing();
 		}
 		//create a container for keeping track of this components data
-		ComponentData thisComponet = new ComponentData(newComponent,
+		ComponentData thisComponent = new ComponentData(newComponent,
 													   percentageLeft,
 													   percentageTop,
 													   percentageWidth,
 													   percentageHeight);
-		components.add(thisComponet);
+		components.add(thisComponent);
 		this.add(newComponent);
 		PercentileLayoutManger t = new PercentileLayoutManger(components);
 		this.setLayout(t);

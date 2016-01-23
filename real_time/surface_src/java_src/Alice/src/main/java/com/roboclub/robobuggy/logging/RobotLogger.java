@@ -94,7 +94,7 @@ public final class RobotLogger {
 			}
 
 			File msgFile = new File(logFolder, "messages.log");
-			sensor = new SensorLogger(logFolder, new Date());
+			sensor = new SensorLogger(logFolder);
 
 			try {
 				if(!msgFile.createNewFile())

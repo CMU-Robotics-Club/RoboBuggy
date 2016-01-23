@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -15,8 +14,6 @@ import com.roboclub.robobuggy.nodes.sensors.GpsNode;
 import com.roboclub.robobuggy.nodes.sensors.ImuNode;
 import com.roboclub.robobuggy.nodes.sensors.LoggingNode;
 import com.roboclub.robobuggy.nodes.sensors.RBSMNode;
-import com.roboclub.robobuggy.ros.Message;
-import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 
@@ -28,9 +25,7 @@ import com.roboclub.robobuggy.ros.Subscriber;
  * @author Trevor Decker
  */
 public final class SensorLogger {
-	private final PrintStream log;
 	private final Queue<String> logQueue;
-	private final ArrayList<Subscriber> subscribers;
 
 	private static Queue<String> startLoggingThread(PrintStream stream) {
 		final LinkedBlockingQueue<String> ret = new LinkedBlockingQueue<>();
@@ -74,6 +69,7 @@ public final class SensorLogger {
 				}
 			}
 
+			@SuppressWarnings("unchecked")
 			private String parseData(String line) {
 				String sensor = line.substring(line.indexOf("/") + 1, line.indexOf(","));
 				JSONObject sensorEntryObject;
@@ -141,7 +137,7 @@ public final class SensorLogger {
 		loggingThread.setPriority(10);//TODO this is terible 
 		loggingThread.start();
 		return ret;
-	};
+	}
 
 	private static String getCurrentSoftwareVersion() {
 		// TODO Auto-generated method stub
@@ -152,9 +148,8 @@ public final class SensorLogger {
 	/**
 	 * Construct a new {@link SensorLogger} object
 	 * @param outputDir {@link File} of the output file directory
-	 * @param startTime {@link Date} of the start time of the logger
 	 */
-	public SensorLogger(File outputDir, Date startTime) {
+	public SensorLogger(File outputDir) {
 		if (outputDir == null) {
 			throw new IllegalArgumentException("Output Directory was null!");
 		} else if (!outputDir.exists()) {
@@ -164,6 +159,7 @@ public final class SensorLogger {
 
 		File logFile = new File(outputDir, "sensors.txt");
 		System.out.println("FileCreated: " + logFile.getAbsolutePath());
+		PrintStream log;
 		try {
 			log = new PrintStream(logFile, "UTF-8");
 		} catch (FileNotFoundException | UnsupportedEncodingException e) {
@@ -174,15 +170,8 @@ public final class SensorLogger {
 		logQueue = startLoggingThread(log);
 
 		// Subscribe to ALL THE PUBLISHERS
-		subscribers = new ArrayList<Subscriber>();
 		for (NodeChannel channel : NodeChannel.values()) {
-			subscribers.add(
-				new Subscriber(channel.getMsgPath(), new MessageListener() {
-					@Override
-					public void actionPerformed(String topicName, Message m) {
-						logQueue.offer(topicName + "," + m.toLogString());
-					}
-				}));
+				new Subscriber(channel.getMsgPath(), (topicName, m) -> logQueue.offer(topicName + "," + m.toLogString()));
 		}
 	}
 }

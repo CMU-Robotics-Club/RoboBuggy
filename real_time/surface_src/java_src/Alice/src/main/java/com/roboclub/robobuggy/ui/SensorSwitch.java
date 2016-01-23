@@ -46,9 +46,9 @@ public class SensorSwitch extends JPanel {
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
 		this.setLayout(new GridLayout(1,2));
 
-		JLabel sensorName_lbl = new JLabel(name, SwingConstants.CENTER);
-		//sensorName_lbl.setFont(new Font("serif", Font.BOLD, 20));
-		this.add(sensorName_lbl);
+		JLabel sensorNameLbl = new JLabel(name, SwingConstants.CENTER);
+		//sensorNameLbl.setFont(new Font("serif", Font.BOLD, 20));
+		this.add(sensorNameLbl);
 
 		sensorBtn = new JButton("OFF");
 		sensorBtn.setHorizontalTextPosition(SwingConstants.CENTER);

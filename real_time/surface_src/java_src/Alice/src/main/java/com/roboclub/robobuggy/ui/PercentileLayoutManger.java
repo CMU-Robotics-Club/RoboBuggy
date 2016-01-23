@@ -6,38 +6,45 @@ import java.awt.Dimension;
 import java.awt.LayoutManager;
 import java.util.ArrayList;
 
-
+/**
+ * A class that helps manage adding components with percentages
+ */
 class PercentileLayoutManger implements LayoutManager{
-	ArrayList<ComponentData> components;
+	private ArrayList<ComponentData> components;
 	
 	PercentileLayoutManger(ArrayList<ComponentData> components){
 		this.components = components;
 	}
-	
+
+	/**{@inheritDoc}*/
 	@Override
 	public void addLayoutComponent(String name, Component comp) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	/**{@inheritDoc}*/
 	@Override
 	public void removeLayoutComponent(Component comp) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	/**{@inheritDoc}*/
 	@Override
 	public Dimension preferredLayoutSize(Container parent) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/**{@inheritDoc}*/
 	@Override
 	public Dimension minimumLayoutSize(Container parent) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/**{@inheritDoc}*/
 	@Override
 	public void layoutContainer(Container parent) {
 		int frameWidth = parent.getWidth();

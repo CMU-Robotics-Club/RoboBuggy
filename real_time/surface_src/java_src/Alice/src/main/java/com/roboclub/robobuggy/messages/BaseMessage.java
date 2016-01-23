@@ -20,8 +20,8 @@ public abstract class BaseMessage {
 	 * @return a {@link String} representing the {@link Date} dt
 	 */
 	public static String formatDate(Date dt) {
-		DateFormat FORMATTER = new SimpleDateFormat(DATE_FORMAT);
-		return FORMATTER.format(dt);
+		DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
+		return formatter.format(dt);
 	}
 
 	/**
@@ -32,8 +32,8 @@ public abstract class BaseMessage {
 	 */
 	public static Date tryToParseDate(String maybeDate) {
 		try {
-			DateFormat FORMATTER = new SimpleDateFormat(DATE_FORMAT);
-			return FORMATTER.parse(maybeDate);
+			DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
+			return formatter.parse(maybeDate);
 		} catch (ParseException e) {
 			new RobobuggyLogicNotification("could not parse date stack trace: "+ e.getMessage(), RobobuggyMessageLevel.WARNING);
 			return null;

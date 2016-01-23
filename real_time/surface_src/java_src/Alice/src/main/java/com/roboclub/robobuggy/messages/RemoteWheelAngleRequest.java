@@ -21,11 +21,19 @@ public class RemoteWheelAngleRequest implements Message {
 		this.angle = angle;
 		this.timestamp = new Date();
 	}
-	
+
+	/**
+	 * Gets the angle the wheel should be at
+	 * @return requested angle
+     */
 	public double getAngle(){
 		return angle;
 	}
-	
+
+	/**
+	 * Get the timestamp of the request
+	 * @return the timestamp of the request
+     */
 	public Date getTimeStamp(){
 		return new Date(timestamp.getTime());
 	}

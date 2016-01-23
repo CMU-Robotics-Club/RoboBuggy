@@ -16,7 +16,11 @@ public class ResetMessage implements Message {
 	public ResetMessage() {
 		this.timestamp = new Date();
 	}
-	
+
+	/**
+	 * Get the timestamp of the reset
+	 * @return the timestamp of this message
+     */
 	public Date getTimestamp(){
 		return new Date(timestamp.getTime());
 	}

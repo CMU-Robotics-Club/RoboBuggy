@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.NClob;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -16,7 +15,6 @@ import javax.swing.Timer;
 
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
-import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
 import com.roboclub.robobuggy.ros.NodeChannel;
@@ -32,7 +30,7 @@ public class LoggingPanel extends RobobuggyGUIContainer{
 	private static final int TIME_ZONE_OFFSET = 18000000;//5 hours
 	private Date startTime;
 	private Timer timer;
-	Publisher loggingButtonPub;
+	private Publisher loggingButtonPub;
 	//to make logging panel accessible to button callbacks
 	private LoggingPanel thisLoggingPanel = this;
 	
@@ -43,7 +41,7 @@ public class LoggingPanel extends RobobuggyGUIContainer{
 		name = "LoggingPanel";
 		loggingButtonPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
 
-		timer = new Timer(10, new timerHandler());// updates every .01 seconds
+		timer = new Timer(10, new TimerHandler());// updates every .01 seconds
 		timer.setDelay(100);
 		timer.setRepeats(true); // timer needs to be setup before startpause_btn
 
@@ -56,9 +54,9 @@ public class LoggingPanel extends RobobuggyGUIContainer{
 		playBtn.setEnabled(true);
 		playBtn.setBackground(Color.BLUE);
 	
-		JLabel filename_lbl = new JLabel("File: ",
+		JLabel filenameLabel = new JLabel("File: ",
 				SwingConstants.CENTER);
-		filename_lbl.setFont(new Font("sanserif", Font.PLAIN, 30));
+		filenameLabel.setFont(new Font("sanserif", Font.PLAIN, 30));
 
 		timeLbl = new JFormattedTextField(new SimpleDateFormat("HH:mm:ss.S"));
 		timeLbl.setHorizontalAlignment(SwingConstants.CENTER);
@@ -68,10 +66,13 @@ public class LoggingPanel extends RobobuggyGUIContainer{
 		timeLbl.setValue(startTime);
 
 		this.addComponent(playBtn, 0, 0, 1.0, .25);
-		this.addComponent(filename_lbl, 0, .25, 1.0, .25);
+		this.addComponent(filenameLabel, 0, .25, 1.0, .25);
 		this.addComponent(timeLbl, 0, .5, 1, .5);
 	}
 
+	/**
+	 * Class that implements what the clicking the start and stop button should d
+	 */
 	private class PlayButtonHandler implements ActionListener {
 		private boolean isLogging = false;
 		
@@ -93,7 +94,10 @@ public class LoggingPanel extends RobobuggyGUIContainer{
         }
     }
 
-    private class timerHandler implements ActionListener {
+	/**
+	 * This class handles timers, what that does is still a mystery....
+	 */
+    private class TimerHandler implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent ae) {
             Date currentTime = new Date();

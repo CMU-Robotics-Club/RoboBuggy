@@ -4,29 +4,27 @@ import javax.swing.JButton;
 
 import com.roboclub.robobuggy.ros.NodeChannel;
 
+/**
+ * Switches to toggle individual sensors
+ */
 public class SensorSwitchPanel extends RobobuggyGUIContainer{
-	
-	SensorSwitch gps_switch;
-	SensorSwitch vision_switch;
-	SensorSwitch encoders_switch;
-	SensorSwitch imu_switch;
-	SensorSwitch controls_switch;
-	SensorSwitch autonomous_switch;
-	JButton display;
-	
+
+	/**
+	 * Instantiates the switch panel
+	 */
 	public SensorSwitchPanel() {
-	gps_switch = new SensorSwitch("GPS", NodeChannel.GPS);
-	vision_switch = new SensorSwitch("VISION", NodeChannel.VISION);
-	encoders_switch = new SensorSwitch("ENCODERS", NodeChannel.ENCODER);
-	imu_switch = new SensorSwitch("IMU", NodeChannel.IMU);
-	controls_switch = new SensorSwitch("CONTROLS", NodeChannel.DRIVE_CTRL);
-	autonomous_switch = new SensorSwitch("AUTO", NodeChannel.AUTO);
+		SensorSwitch gpsSwitch = new SensorSwitch("GPS", NodeChannel.GPS);
+		SensorSwitch visionSwitch = new SensorSwitch("VISION", NodeChannel.VISION);
+		SensorSwitch encodersSwitch = new SensorSwitch("ENCODERS", NodeChannel.ENCODER);
+		SensorSwitch imuSwitch = new SensorSwitch("IMU", NodeChannel.IMU);
+		SensorSwitch controlsSwitch = new SensorSwitch("CONTROLS", NodeChannel.DRIVE_CTRL);
+		SensorSwitch autonomousSwitch = new SensorSwitch("AUTO", NodeChannel.AUTO);
 	
-	this.addComponent(autonomous_switch, 0, 0, 1, .16);
-	this.addComponent(gps_switch, 0, .16, 1, .16);
-	this.addComponent(imu_switch, 0, .32, 1, .16);
-	this.addComponent(encoders_switch, 0, .48, 1, .16);
-	this.addComponent(controls_switch, 0, .64, 1, .16);
-	this.addComponent(vision_switch, 0, .80, 1, .16);
+	this.addComponent(autonomousSwitch, 0, 0, 1, .16);
+	this.addComponent(gpsSwitch, 0, .16, 1, .16);
+	this.addComponent(imuSwitch, 0, .32, 1, .16);
+	this.addComponent(encodersSwitch, 0, .48, 1, .16);
+	this.addComponent(controlsSwitch, 0, .64, 1, .16);
+	this.addComponent(visionSwitch, 0, .80, 1, .16);
 	}
 }

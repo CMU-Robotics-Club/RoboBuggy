@@ -15,85 +15,92 @@ import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 
+/**
+ * The error console for any RobobuggyLogicNotifications
+ */
 public class LogicErrorMessageConsole extends RobobuggyGUIContainer{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -6532100079403054035L;
-	private static final RobobuggyMessageLevel[] robobuggyMessageLevels = RobobuggyMessageLevel.values();
-	private static final int NUMBER_OF_MESSAGES = robobuggyMessageLevels.length;
-	private boolean[] show_messages;
+	private static final RobobuggyMessageLevel[] ROBOBUGGY_MESSAGE_LEVELS = RobobuggyMessageLevel.values();
+	private static final int NUMBER_OF_MESSAGES = ROBOBUGGY_MESSAGE_LEVELS.length;
+	private boolean[] showMessages;
 	private JButton[] buttons;
 	private JTextArea messages;
 	
-	private String messageBuffer[] = new String[10];
+	private String[] messageBuffer = new String[10];
 	private int messageBufferStart = 0;
 	private int messageBufferEnd = 0;
 
 	//buttons for showing which messages to show 
-	private JButton EXCEPTION_btn;
-	private JButton WARNING_btn;
-	private JButton NOTE_btn;
+	private JButton exceptionBtn;
+	private JButton warningBtn;
+	private JButton noteBtn;
+
+	/**
+	 * The header bar for the console
+	 */
 	public class Header extends RobobuggyGUIContainer{
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 8019501107506958218L;
 
+		/**
+		 * Constructor for the Header
+		 */
 		public Header(){
-			show_messages = new boolean[NUMBER_OF_MESSAGES];
+			showMessages = new boolean[NUMBER_OF_MESSAGES];
 			buttons = new JButton[NUMBER_OF_MESSAGES];
 			//init header buttons
 			for(int k = 0;k<NUMBER_OF_MESSAGES;k++){
-				show_messages[k] = true;
-				buttons[k] = new JButton(robobuggyMessageLevels[k].toString());
+				showMessages[k] = true;
+				buttons[k] = new JButton(ROBOBUGGY_MESSAGE_LEVELS[k].toString());
 			}
 			
 			
 			JLabel label = new JLabel("Logic Errors");
-			EXCEPTION_btn = new JButton("SHOW EXCEPTION");
-			EXCEPTION_btn.addActionListener(new ActionListener() {
+			exceptionBtn = new JButton("SHOW EXCEPTION");
+			exceptionBtn.addActionListener(new ActionListener() {
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					show_messages[0] = !show_messages[0];
-					if(show_messages[0]){
-						EXCEPTION_btn.setBackground(Color.green);
-						EXCEPTION_btn.setText("SHOW EXCEPTION");
+					showMessages[0] = !showMessages[0];
+					if(showMessages[0]){
+						exceptionBtn.setBackground(Color.green);
+						exceptionBtn.setText("SHOW EXCEPTION");
 					}else{
-						EXCEPTION_btn.setBackground(Color.gray);
-						EXCEPTION_btn.setText("DONT SHOW EXCEPTION");
+						exceptionBtn.setBackground(Color.gray);
+						exceptionBtn.setText("DONT SHOW EXCEPTION");
 
 					}
 				}
 			});
-			WARNING_btn = new JButton("SHOW WARNING");		
-			WARNING_btn.addActionListener(new ActionListener() {
+			warningBtn = new JButton("SHOW WARNING");
+			warningBtn.addActionListener(new ActionListener() {
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					show_messages[1] = !show_messages[1];
-					if(show_messages[1]){
-						WARNING_btn.setBackground(Color.GREEN);
-						WARNING_btn.setText("SHOW WARNING");
+					showMessages[1] = !showMessages[1];
+					if(showMessages[1]){
+						warningBtn.setBackground(Color.GREEN);
+						warningBtn.setText("SHOW WARNING");
 					}else{
-						WARNING_btn.setBackground(Color.GRAY);
-						WARNING_btn.setText("DONT SHOW WARNING");
+						warningBtn.setBackground(Color.GRAY);
+						warningBtn.setText("DONT SHOW WARNING");
 					}
 				}
 			});
-			NOTE_btn = new JButton("SHOW NOTE");
-			NOTE_btn.addActionListener(new ActionListener() {
+			noteBtn = new JButton("SHOW NOTE");
+			noteBtn.addActionListener(new ActionListener() {
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					show_messages[2] = !show_messages[2];
-					if(show_messages[2]){
-						NOTE_btn.setBackground(Color.GREEN);
-						NOTE_btn.setText("SHOW NOTE");
+					showMessages[2] = !showMessages[2];
+					if(showMessages[2]){
+						noteBtn.setBackground(Color.GREEN);
+						noteBtn.setText("SHOW NOTE");
 					}else{
-						NOTE_btn.setBackground(Color.GRAY);
-						NOTE_btn.setText("DONT SHOW NOTE");
+						noteBtn.setBackground(Color.GRAY);
+						noteBtn.setText("DONT SHOW NOTE");
 
 					}
 					
@@ -101,15 +108,20 @@ public class LogicErrorMessageConsole extends RobobuggyGUIContainer{
 				}
 			});
 			this.addComponent(label, 0, 0, .25, 1);
-			this.addComponent(EXCEPTION_btn, .25, 0, .25, 1);
-			this.addComponent(WARNING_btn, .50, 0, .25, 1);
-			this.addComponent(NOTE_btn, .75, 0, .25, 1);
+			this.addComponent(exceptionBtn, .25, 0, .25, 1);
+			this.addComponent(warningBtn, .50, 0, .25, 1);
+			this.addComponent(noteBtn, .75, 0, .25, 1);
 
 
 		}
 
 
 	}
+
+	/**
+	 * adds a RobobuggyLogicNotifications to the console list
+	 * @param newMessage a new RobobuggyLogicNotifications as a string
+     */
 	public void addMessage(String newMessage){
 		messageBuffer[messageBufferEnd] = newMessage;
 		String text = "";
@@ -125,17 +137,19 @@ public class LogicErrorMessageConsole extends RobobuggyGUIContainer{
 		Gui.getInstance().fixPaint();
 		
 	}
-	
-	
+
+	/**
+	 * Constructor for the logic exception console
+	 */
 	public LogicErrorMessageConsole(){
-		EXCEPTION_btn = new JButton();
-		WARNING_btn = new JButton();
-		NOTE_btn = new JButton();
+		exceptionBtn = new JButton();
+		warningBtn = new JButton();
+		noteBtn = new JButton();
 		
 		Header header = new Header();
-		EXCEPTION_btn.setEnabled(true);
-		WARNING_btn.setEnabled(true);
-		NOTE_btn.setEnabled(true);
+		exceptionBtn.setEnabled(true);
+		warningBtn.setEnabled(true);
+		noteBtn.setEnabled(true);
 		 messages = new JTextArea();
 		this.addComponent(header, 0.0, 0.0, 1.0, .1);
 		this.addComponent(messages, 0.0, 0.1, 1.0, .9);
@@ -148,18 +162,18 @@ public class LogicErrorMessageConsole extends RobobuggyGUIContainer{
 				RobobuggyLogicExceptionMeasurment msg = (RobobuggyLogicExceptionMeasurment)m;
 				switch(msg.getLevel()){
 				case EXCEPTION:
-					if(show_messages[0]){
-						addMessage(robobuggyMessageLevels[0].toString()+":\t"+msg.getMessage()+"\n");
+					if(showMessages[0]){
+						addMessage(ROBOBUGGY_MESSAGE_LEVELS[0].toString()+":\t"+msg.getMessage()+"\n");
 					}
 					break;
 				case WARNING:
-					if(show_messages[1]){
-						addMessage(robobuggyMessageLevels[1].toString()+"\t"+msg.getMessage()+"\n");
+					if(showMessages[1]){
+						addMessage(ROBOBUGGY_MESSAGE_LEVELS[1].toString()+"\t"+msg.getMessage()+"\n");
 					}
 					break;
 				case NOTE:
-					if(show_messages[2]){
-						addMessage(robobuggyMessageLevels[2].toString()+"\t"+msg.getMessage()+"\n");
+					if(showMessages[2]){
+						addMessage(ROBOBUGGY_MESSAGE_LEVELS[2].toString()+"\t"+msg.getMessage()+"\n");
 					}
 					break;
 				default:

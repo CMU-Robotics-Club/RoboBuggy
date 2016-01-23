@@ -1,11 +1,13 @@
 package com.roboclub.robobuggy.ui;
 
 import java.awt.Component;
-import java.awt.Graphics;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
+/**
+ * The JFrame container for the GUI
+ */
 public class RobobuggyGUIContainer extends JPanel{
 	/**
 	 * 
@@ -19,12 +21,12 @@ public class RobobuggyGUIContainer extends JPanel{
 	
 	
 	
-	/*************************** class public metheds *********************************/
+	/*************************** class public methods *********************************/
 
 	
 	
 	
-	public void updateSizeing(){
+	public void updateSizing(){
 		int frameWidth = this.getWidth();
 		int frameHeight = this.getHeight();
 		for(int i = 0;i<components.size();i++){
@@ -40,20 +42,28 @@ public class RobobuggyGUIContainer extends JPanel{
 			// if it is a primitive then we are finished otherwise we need to recursively apply the size change 
 			if(thisComponet.getComponent() instanceof RobobuggyGUIContainer){
 				RobobuggyGUIContainer rbGuicontainer = (RobobuggyGUIContainer) thisComponet.getComponent();
-				rbGuicontainer.updateSizeing();
+				rbGuicontainer.updateSizing();
 			}
 		}
 		
 	}
-	
+
+	/**
+	 * Adds a component to the screen, with percentages as to where it is on screen
+	 * @param newComponent the component to add
+	 * @param percentageLeft the percentage from the left
+	 * @param percentageTop the percentage from the top
+	 * @param percentageWidth the percentage of the frame for the width
+	 * @param percentageHeight the percentage of the frame for the height
+     */
 	public void addComponent(Component newComponent, double percentageLeft, double percentageTop, double percentageWidth, double percentageHeight){
 		//create a container for keeping track of this components data
-		ComponentData thisComponet = new ComponentData(newComponent,
+		ComponentData thisComponent = new ComponentData(newComponent,
 				   percentageLeft,
 				   percentageTop,
 				   percentageWidth,
 				   percentageHeight);
-		components.add(thisComponet);
+		components.add(thisComponent);
 		add(newComponent);
 		this.repaint();
 		PercentileLayoutManger t = new PercentileLayoutManger(components);

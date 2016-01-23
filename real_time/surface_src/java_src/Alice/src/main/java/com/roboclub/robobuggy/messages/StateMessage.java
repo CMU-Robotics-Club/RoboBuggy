@@ -20,7 +20,11 @@ public class StateMessage implements Message {
 		this.timestamp = new Date();
 		this.state = state;
 	}
-	
+
+	/**
+	 * Get the timestamp of the state message
+	 * @return the timestamp of this message
+	 */
 	public Date getTimestamp(){
 		return new Date(timestamp.getTime());
 	}

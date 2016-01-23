@@ -31,11 +31,19 @@ public class WheelAngleCommand implements Message {
 		this.angle = angle;
 		this.timestamp = new Date();
 	}
-	
+
+	/**
+	 * Get the timestamp of the wheel command message
+	 * @return the timestamp of this message
+	 */
 	public Date getTimestamp(){
 		return new Date(timestamp.getTime());
 	}
-	
+
+	/**
+	 * Get the angle commanded for the wheel
+	 * @return the commanded angle
+     */
 	public float getAngle(){
 		return angle;
 	}

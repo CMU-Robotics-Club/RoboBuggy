@@ -20,10 +20,6 @@ import com.roboclub.robobuggy.ui.Gui;
  */
 public class LoggingNode extends BuggyDecoratorNode {
 
-	
-	
-	private Subscriber loggingButtonSub;
-	
 	private Publisher loggingButtonPub;
 	// Get the folder that we're going to use
 
@@ -41,12 +37,12 @@ public class LoggingNode extends BuggyDecoratorNode {
 	protected boolean startDecoratorNode() {
 		loggingButtonPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
 		
-		setLoggingButtonSub(new Subscriber(Gui.GuiPubSubTopics.GUI_LOG_BUTTON_UPDATED.toString(), new MessageListener() {
+		new Subscriber(Gui.GuiPubSubTopics.GUI_LOG_BUTTON_UPDATED.toString(), new MessageListener() {
 			@Override 
 			public void actionPerformed(String topicName, Message m) {
 				loggingButtonPub.publish(m);
 			}
-		}));
+		});
 		return true;
 	}
 
@@ -78,13 +74,4 @@ public class LoggingNode extends BuggyDecoratorNode {
 		return data;
 	}
 
-
-	public Subscriber getLoggingButtonSub() {
-		return loggingButtonSub;
-	}
-
-	public void setLoggingButtonSub(Subscriber loggingButtonSub) {
-		this.loggingButtonSub = loggingButtonSub;
-	}
-	
 }

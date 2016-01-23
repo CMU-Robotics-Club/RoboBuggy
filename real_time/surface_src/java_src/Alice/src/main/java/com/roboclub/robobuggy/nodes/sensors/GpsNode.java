@@ -1,16 +1,21 @@
 package com.roboclub.robobuggy.nodes.sensors;
 
-import java.util.Arrays;
-import java.util.Date;
-
 import com.orsoncharts.util.json.JSONObject;
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.NodeState;
 import com.roboclub.robobuggy.nodes.baseNodes.SerialNode;
-import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.NodeChannel;
+import com.roboclub.robobuggy.ros.Publisher;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
 
 /**
  * {@link SerialNode} for reading in GPS data
@@ -19,9 +24,7 @@ import com.roboclub.robobuggy.ros.NodeChannel;
  *
  */
 public final class GpsNode extends SerialNode {
-	// how long the system should wait until a sensor switches to Disconnected
-	private static final long SENSOR_TIME_OUT = 5000;
-	
+
 	private static final int BAUD_RATE = 9600;
 
 	// Used for state estimation
@@ -65,14 +68,14 @@ public final class GpsNode extends SerialNode {
 	}
 	
 	private Date convertHHMMSStoTime(String timeHHMMSSss) {
-		Date d = new Date();
-		float timeHH = Float.parseFloat(timeHHMMSSss.substring(0, 2));
-		float timeMM = Float.parseFloat(timeHHMMSSss.substring(2, 4));
-		float timeSS = Float.parseFloat(timeHHMMSSss.substring(4));
-		d.setHours((int) timeHH);
-		d.setMinutes((int) timeMM);
-		d.setSeconds((int) timeSS);
-		return d;
+		//todo this may not be correct formatting
+		DateFormat f = new SimpleDateFormat("HHmmssSS");
+		try {
+			return f.parse(timeHHMMSSss);
+		} catch (ParseException e) {
+			new RobobuggyLogicNotification("Couldn't parse a time we got from peel!", RobobuggyMessageLevel.WARNING);
+			return new Date();
+		}
 	}
 
 	private double convertMinutesSecondsToFloat(String posDDMMmmmmm) {
@@ -138,23 +141,29 @@ public final class GpsNode extends SerialNode {
 		double latitude = convertMinutesSecondsToFloat(ar[2]);
 
 		boolean north;
-		if(ar[3].equals("N")) {
-			north = true;
-		} else if(ar[3].equals("S")) {
-			north = false;
-		} else {
-			System.out.println("uhoh, you can't go not north or south!");
-			throw new RuntimeException();
+		switch (ar[3]) {
+			case "N":
+				north = true;
+				break;
+			case "S":
+				north = false;
+				break;
+			default:
+				System.out.println("uhoh, you can't go not north or south!");
+				throw new RuntimeException();
 		}
 		double longitude = convertMinSecToFloatLongitude(ar[4]);
 		boolean west;
-		if(ar[5].equals("W")) {
-			west = true;
-		} else if(ar[5].equals("E")) {
-			west = false;
-		} else {
-			System.out.println("uhoh, you can't go not north or south!");
-			throw new RuntimeException();
+		switch (ar[5]) {
+			case "W":
+				west = true;
+				break;
+			case "E":
+				west = false;
+				break;
+			default:
+				System.out.println("uhoh, you can't go not north or south!");
+				throw new RuntimeException();
 		}
 		
 		
