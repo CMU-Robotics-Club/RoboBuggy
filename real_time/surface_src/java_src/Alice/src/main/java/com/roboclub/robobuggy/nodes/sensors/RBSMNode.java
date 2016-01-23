@@ -270,6 +270,8 @@ public class RBSMNode extends SerialNode {
 		 */
 		@Override
 		protected void update() {
+			commandedAngle = (short) ((commandedAngle + 1) % 256);
+			System.out.println("sending command "+commandedAngle);
 			RBSMessage msg = new RBSMessage(commandedAngle, commandedBrakeEngaged);
 			send(msg.getMessageBytes());
 		}

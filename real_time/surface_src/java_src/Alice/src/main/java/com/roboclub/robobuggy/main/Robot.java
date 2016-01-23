@@ -49,8 +49,8 @@ public final class Robot implements RosMaster {
 		new RobobuggyLogicNotification("Logic Exception Setup properly" ,  RobobuggyMessageLevel.NOTE);
 		
 		// Initialize Nodes
-		nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.COM_PORT_GPS));
-		nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.COM_PORT_IMU));
+	//	nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.COM_PORT_GPS));
+	//	nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.COM_PORT_IMU));
 		nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING,
 				RobobuggyConfigFile.COM_PORT_RBSM, COMMAND_PERIOD));
 	}

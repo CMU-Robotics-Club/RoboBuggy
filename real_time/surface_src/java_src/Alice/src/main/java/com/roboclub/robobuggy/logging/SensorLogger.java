@@ -3,14 +3,18 @@ package com.roboclub.robobuggy.logging;
 import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
+import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.RobobuggyLogicNotificationMeasurment;
 import com.roboclub.robobuggy.nodes.sensors.GpsNode;
 import com.roboclub.robobuggy.nodes.sensors.ImuNode;
 import com.roboclub.robobuggy.nodes.sensors.LoggingNode;
 import com.roboclub.robobuggy.nodes.sensors.RBSMNode;
+import com.roboclub.robobuggy.ros.Message;
+import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 import com.roboclub.robobuggy.ui.Gui;
+import com.roboclub.robobuggy.ui.LocTuple;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,6 +35,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public final class SensorLogger {
 	private final Queue<String> logQueue;
 
+	
 	private static Queue<String> startLoggingThread(PrintStream stream) {
 		final LinkedBlockingQueue<String> ret = new LinkedBlockingQueue<>();
 		
@@ -168,10 +173,8 @@ public final class SensorLogger {
 		return "1.0.0";
 	}
 
-	/**
-	 * Construct a new {@link SensorLogger} object
-	 * @param outputDir {@link File} of the output file directory
-	 */
+	 //Construct a new {@link SensorLogger} object
+	 //@param outputDir {@link File} of the output file directory
 	public SensorLogger(File outputDir) {
 		if (outputDir == null) {
 			throw new IllegalArgumentException("Output Directory was null!");
@@ -179,7 +182,6 @@ public final class SensorLogger {
 			if(!outputDir.mkdirs())
 				throw new RuntimeException("Failed to create output directory");
 		}
-
 		File logFile = new File(outputDir, "sensors.txt");
 		System.out.println("FileCreated: " + logFile.getAbsolutePath());
 		PrintStream log;
@@ -191,12 +193,16 @@ public final class SensorLogger {
 					+ logFile + ")!");
 		}
 		logQueue = startLoggingThread(log);
-
 		Gui.getInstance().getControlPanel().getLoggingPanel().setFileName(outputDir + "/sensors.txt");
-
 		// Subscribe to ALL THE PUBLISHERS
-		for (NodeChannel channel : NodeChannel.values()) {
-				new Subscriber(channel.getMsgPath(), (topicName, m) -> logQueue.offer(topicName + "," + m.toLogString()));
+		for(NodeChannel channel : NodeChannel.values()){
+				new Subscriber(channel.getMsgPath(),new MessageListener() {
+					@Override
+					public void actionPerformed(String topicName, Message m) {
+						logQueue.offer(topicName + "," + m.toLogString());
+					}
+				});		
 		}
+
 	}
 }

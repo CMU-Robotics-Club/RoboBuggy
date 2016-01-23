@@ -30,7 +30,7 @@ public final class  RobobuggyConfigFile {
 	//sensor com ports
 	public static  final String COM_PORT_IMU = "COM6";
 	public static  final String COM_PORT_GPS = "COM7";
-	public static  final String COM_PORT_RBSM = "/dev/tty.usbmodem14231";
+	public static  final String COM_PORT_RBSM = "/dev/tty.usbmodem14121";
 	
 	// iff false, connect to serial sensors 
 	public static final boolean DATA_PLAY_BACK = false;
