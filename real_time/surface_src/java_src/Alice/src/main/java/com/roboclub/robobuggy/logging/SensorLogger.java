@@ -173,8 +173,9 @@ public final class SensorLogger {
 		return "1.0.0";
 	}
 
-	 //Construct a new {@link SensorLogger} object
-	 //@param outputDir {@link File} of the output file directory
+	 /**Construct a new {@link SensorLogger} object
+	  **@param outputDir {@link File} of the output file directory
+	  */
 	public SensorLogger(File outputDir) {
 		if (outputDir == null) {
 			throw new IllegalArgumentException("Output Directory was null!");
