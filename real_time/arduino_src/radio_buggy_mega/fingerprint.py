@@ -27,7 +27,11 @@ def main():
     file.write("#define FP_COMPTIME \"%02d:%02d:%02d\" //hour:minute:second\n" %(time.hour, time.minute, time.second))
     file.write("#define FP_HOSTNAME \"%s\"\n" %socket.gethostname().split(".")[0])
 
-    branch = str(subprocess.check_output(["git", "symbolic-ref", "--short", "HEAD"])).replace("\n", "")
+    branch = "unnamed branch"
+    try:
+        branch = str(subprocess.check_output(["git", "symbolic-ref", "--short", "HEAD"])).replace("\n", "")
+    except subprocess.CalledProcessError:
+        print("Unable to find branch name!")
 
     file.write("#define FP_BRANCHNAME \"%s\"\n" %branch)
 

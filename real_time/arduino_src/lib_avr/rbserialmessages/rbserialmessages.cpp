@@ -59,15 +59,11 @@ int RBSerialMessages::Read(rb_message_t* read_message)
 {
   while(in_file_->available() > 0) {
     // check if there is new data
-    int new_serial_byte = fgetc(in_file_);
-    if(new_serial_byte == EOF) {
-      break;
-    }
+    char new_serial_byte = fgetc(in_file_);
 
     // first, we need to try to lock on to the stream
     if(buffer_in_stream_lock_ == false) {
       printf("%s: searching for lock...\n", __PRETTY_FUNCTION__);
-      // this->Send(RBSM_MID_ERROR, (int)new_serial_byte);
       if((uint8_t)new_serial_byte == RBSM_FOOTER) {
         printf("%s: got lock!\n", __PRETTY_FUNCTION__);
         buffer_in_stream_lock_ = true;

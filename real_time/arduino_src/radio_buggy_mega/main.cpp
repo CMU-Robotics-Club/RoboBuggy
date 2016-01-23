@@ -11,8 +11,7 @@
 #include <avr/sleep.h>
 #include <avr/interrupt.h>
 #include <stdio.h>
-#include <avr/wdt.h> //TODO: Create new watchdogs 
-//TODO: Have brakes deploy if watchdog barks from starving
+#include <avr/wdt.h> 
 
 #include "../lib_avr/rbserialmessages/rbserialmessages.h"
 #include "../lib_avr/servoreceiver/servoreceiver.h"
@@ -269,41 +268,43 @@ int main(void)
     printf("Branch clean? %d\r\n", FP_CLEANSTATUS);
     printf("\nEnd of compilation information\r\n");
 
-
     watchdog_init();
 
     // loop forever
     while(1) 
     {
-        // get new command messages
-        // TODO: make reading messages work
-        //
-        // rb_message_t new_command;
-        // int read_status;
+        rb_message_t new_command;
+        int read_status;
 
-        // while((read_status = g_rbserialmessages.Read(&new_command))
-        //       != RBSM_ERROR_INSUFFICIENT_DATA) {
-        //   if(read_status == false) {
-        //     // dipatch complete message
-        //     switch(new_command.message_id) {
-        //       case RBSM_MID_MEGA_STEER_ANGLE:
-        //         auto_steering_angle = (int)(long)new_command.data;
-        //         break;
+        while((read_status = g_rbsm.Read(&new_command))
+             != RBSM_ERROR_INSUFFICIENT_DATA) 
+        {
+            if(read_status == 0) 
+            {
+                // dipatch complete message
+                switch(new_command.message_id) 
+                {
+                  case RBSM_MID_MEGA_STEER_ANGLE:
+                    auto_steering_angle = (int)(long)new_command.data;
+                    printf("Got steering message for %d.\n", auto_steering_angle);
+                    break;
 
-        //       default:
-        //         // report unknown message
-        //         g_rbserialmessages.Send(RBSM_MID_ERROR, RBSM_EID_RBSM_INVALID_MID);
-        //         dbg_println("Got message with invalid mid:");
-        //         dbg_println(new_command.message_id);
-        //         dbg_println(new_command.data);
-        //         break;
-        //     }
-        //   } else if(read_status == RBSM_ERROR_INVALID_MESSAGE) {
-        //     // report stream losses for tracking
-        //     g_rbserialmessages.Send(RBSM_MID_ERROR, RBSM_EID_RBSM_LOST_STREAM);
-        //   }
-        //   // drop responses with other faults
-        // }
+                  default:
+                    // report unknown message
+                    g_rbsm.Send(RBSM_MID_ERROR, RBSM_EID_RBSM_INVALID_MID);
+                    printf("Got message with invalid mid %d and data %d",
+                           new_command.message_id,
+                           new_command.data);
+                    break;
+                }
+            } 
+            else if(read_status == RBSM_ERROR_INVALID_MESSAGE) 
+            {
+                // report stream losses for tracking
+                g_rbsm.Send(RBSM_MID_ERROR, RBSM_EID_RBSM_LOST_STREAM);
+            }
+            // drop responses with other faults
+        }
 
         // find the new steering angle, if available
         steer_angle = g_steering_rx.GetAngleThousandths();
