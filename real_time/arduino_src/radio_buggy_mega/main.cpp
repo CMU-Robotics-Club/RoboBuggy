@@ -188,7 +188,6 @@ void brake_drop()
     BRAKE_INDICATOR_PORT |= _BV(BRAKE_INDICATOR_PINN);
 }
 
-
 /*
 * Function: watchdog_init
 *
@@ -200,9 +199,6 @@ void watchdog_init()
 {
     //Disable interrupts because setup is time sensitive
     cli();
-
-    wdt_reset();
-
 
     //Set the watchdog timer control register
 
@@ -220,9 +216,11 @@ void watchdog_init()
     sei();
 }
 
-
 int main(void) 
 {
+    //have a short delay so that the board can be programed incase something goes wrong latter in the code
+    _delay_ms(1000);
+
     // turn the ledPin on
     // DEBUG_PORT |= _BV(DEBUG_PINN);
     DEBUG_PORT &= ~_BV(DEBUG_PINN);
@@ -342,7 +340,7 @@ int main(void)
         // detect dropped conections
         // note: interrupts must be disabled while checking system clock so that
         //       timestamps are not updated under our feet
-        cli();
+        cli(); //disable interrupts
         unsigned long time_now = micros();
         unsigned long time1 = g_steering_rx.GetLastTimestamp();
         unsigned long time2 = g_brake_rx.GetLastTimestamp();
@@ -350,7 +348,8 @@ int main(void)
         unsigned long delta1 = time_now - time1;
         unsigned long delta2 = time_now - time2;
         unsigned long delta3 = time_now - time3;
-        sei();
+        unsigned long g_encoder_ticks_safe = g_encoder_ticks;
+        sei(); //enable interrupts
 
         if(delta1 > CONNECTION_TIMEOUT_US ||
            delta2 > CONNECTION_TIMEOUT_US ||
@@ -416,7 +415,7 @@ int main(void)
         g_rbsm.Send(RBSM_MID_MEGA_AUTON_STATE, (long unsigned)g_is_autonomous);
         g_rbsm.Send(RBSM_MID_MEGA_BATTERY_LEVEL, g_current_voltage);
         g_rbsm.Send(RBSM_MID_MEGA_STEER_FEEDBACK, (long int)g_steering_feedback);
-        g_rbsm.Send(RBSM_MID_ENC_TICKS_RESET, g_encoder_ticks);
+        g_rbsm.Send(RBSM_MID_ENC_TICKS_RESET, g_encoder_ticks_safe);
         g_rbsm.Send(RBSM_MID_ENC_TIMESTAMP, millis());
         g_rbsm.Send(RBSM_MID_COMP_HASH, (long unsigned)(FP_HEXCOMMITHASH));
 
@@ -465,3 +464,5 @@ ISR(ENCODER_INT)
     }
     g_encoder_time_last = time_now;
 }
+
+

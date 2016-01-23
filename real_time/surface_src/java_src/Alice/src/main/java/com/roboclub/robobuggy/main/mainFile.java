@@ -2,9 +2,12 @@ package com.roboclub.robobuggy.main;
 
 import gnu.io.CommPortIdentifier;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.nodes.RealNodeEnum;
@@ -16,12 +19,31 @@ import com.roboclub.robobuggy.sensors.SensorManager;
 import com.roboclub.robobuggy.simulation.SensorPlayer;
 import com.roboclub.robobuggy.ui.Gui;
 
+
+
 public class mainFile {
     static Robot buggy;
     static int num = 0;
     
-    public static void main(String args[]) {
+    public static void main(String args[])  {
         config.getInstance();//must be run at least once
+        try {
+			config.setupJNI(); //must run for jni to install
+			//note that errors are just printed to the console since the gui and logging system  has not been created yet
+		} catch (NoSuchFieldException e1) {
+			e1.printStackTrace();
+		} catch (SecurityException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IllegalArgumentException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IllegalAccessException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+   
+
                 
         List<String> ports = getAvailablePorts();
         System.out.println(ports);
@@ -91,7 +113,7 @@ public class mainFile {
         }
         
         else {
-        	SensorPlayer sp = new SensorPlayer("logs/2015-11-14-04-20-04/sensors.txt");
+        	final SensorPlayer sp = new SensorPlayer("logs/2015-11-21-07-08-10/sensors.txt");
         	new Thread(new Runnable() {
 				
 				@Override
