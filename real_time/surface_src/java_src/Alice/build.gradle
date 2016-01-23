@@ -13,10 +13,11 @@ dependencies {
     compile project (':BuggyRos')
     //for jason object extraction from strings 
     compile 'com.google.code.gson:gson:2.2.+'
-
+    compile 'jfreechart:jfreechart:1.0.0'
 
     // TODO: this is stupid. find a way to use mavencentral repo.
     compile files('library/orsoncharts-1.4-eval-nofx.jar')
+
     compile files('library/RXTXcomm.jar')
 }
 

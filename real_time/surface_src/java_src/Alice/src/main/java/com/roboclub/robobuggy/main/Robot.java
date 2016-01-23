@@ -24,6 +24,9 @@ import com.roboclub.robobuggy.ros.Subscriber;
 import com.roboclub.robobuggy.ui.Gui;
 
 public class Robot implements RosMaster {
+	
+	public static final int COMMAND_PERIOD = 1000;
+	
 	private static Robot instance;
 	private static Thread alice;
 	private static boolean autonomous;
@@ -61,7 +64,7 @@ public class Robot implements RosMaster {
 				}
 			});
 		//sends startup note
-		new RobobuggyLogicException("Logic Exception Setup properly" ,  MESSAGE_LEVEL.NOTE);
+		new RobobuggyLogicException("Logic Exception Setup properly" ,  MessageLevel.NOTE);
 		
 		
 		// Initialize Sensor
@@ -92,9 +95,11 @@ public class Robot implements RosMaster {
 			});
 		}
 
+
 		if (config.ENCODER_DEFAULT) {
 			System.out.println("Initializing Encoder Serial Connection");
-			RBSMNode encoder = new RBSMNode(SensorChannel.ENCODER,SensorChannel.STEERING);
+			RBSMNode encoder = new RBSMNode(SensorChannel.ENCODER,SensorChannel.STEERING,
+					COMMAND_PERIOD);
 			sensorList.add(encoder);
 		
 			new Subscriber(SensorChannel.ENCODER.getMsgPath(), new MessageListener() {
@@ -146,7 +151,7 @@ public class Robot implements RosMaster {
 	
 	// shuts down the robot and all of its child sensors
 	public static void ShutDown() {
-		new RobobuggyLogicException("shutting down Robot", MESSAGE_LEVEL.NOTE);
+		new RobobuggyLogicException("shutting down Robot", MessageLevel.NOTE);
 		if (sensorList != null && !sensorList.isEmpty()) {
 			for (Node sensor : sensorList) {
 				if (sensor != null) {

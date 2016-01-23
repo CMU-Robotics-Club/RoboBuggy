@@ -7,14 +7,12 @@
     [
         {
             "timestamp":"HH:mm:ss.SSS",
-            "data: {
-                "name": "sensorX",
-                "params": {
-                    "param1": "val1",
-                    "param2": "val2",
-                    ...
-                    "paramN": "valN"
-                }
+            "name": "sensorX",
+            "params": {
+                "param1": "val1",
+                "param2": "val2",
+                ...
+                "paramN": "valN"
             }
         },
         ...

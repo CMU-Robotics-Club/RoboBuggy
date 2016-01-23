@@ -29,10 +29,12 @@ public class GpsMeasurement extends BaseMessage implements Message {
 	public int num_satellites;
 	public double horizontal_dilution_of_precision;
 	public double antenna_altitude;
+	public double rawGPSLat;
+	public double rawGPSLong;
 	
 	public GpsMeasurement(Date gpsTimestamp, double latitude, boolean north, double longitude, 
 			boolean west, int quality_value, int num_satellites, 
-			double horizontal_dulition_of_precision, double antenna_altitude) {
+			double horizontal_dulition_of_precision, double antenna_altitude, double rawGPSLat, double rawGPSLong) {
 	
 		this.timestamp = new Date();
 		this.gpsTimestamp = gpsTimestamp;
@@ -44,6 +46,8 @@ public class GpsMeasurement extends BaseMessage implements Message {
 		this.num_satellites = num_satellites;
 		this.horizontal_dilution_of_precision = horizontal_dulition_of_precision;
 		this.antenna_altitude = antenna_altitude;
+		this.rawGPSLat = rawGPSLat;
+		this.rawGPSLong = rawGPSLong;
 	}
 
 	public GpsMeasurement(Date messageTimestamp, Date gpsTimestamp, double latitude, boolean north, double longitude,
@@ -79,6 +83,8 @@ public class GpsMeasurement extends BaseMessage implements Message {
 		s += "," + Integer.toString(num_satellites);
 		s += "," + Double.toString(horizontal_dilution_of_precision);
 		s += "," + Double.toString(antenna_altitude);
+		s += "," + Double.toString(rawGPSLat);
+		s += "," + Double.toString(rawGPSLong);
 		
 		return s;
 	}
