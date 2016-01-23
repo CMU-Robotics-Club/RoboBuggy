@@ -216,6 +216,7 @@ void watchdog_init()
     sei();
 }
 
+
 int main(void) 
 {
     //have a short delay so that the board can be programed incase something goes wrong latter in the code

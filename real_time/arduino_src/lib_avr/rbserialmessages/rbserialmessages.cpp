@@ -23,7 +23,7 @@ RBSerialMessages::RBSerialMessages()
 }
 
 
-int RBSerialMessages::Init(FILE *in_file, FILE *out_file) 
+int RBSerialMessages::Init(UARTFILE *in_file, FILE *out_file) 
 {
     // setup the hardware serial
     in_file_ = in_file;
@@ -57,58 +57,51 @@ int RBSerialMessages::Send(uint8_t id, uint32_t message)
 // return -2 if an invalid message was found
 int RBSerialMessages::Read(rb_message_t* read_message)
 {
-    while(true) 
-    {
-        // check if there is new data
-        int new_serial_byte = fgetc(in_file_);
-        if(new_serial_byte == EOF) 
-        {
-            break;
-        }
+  while(in_file_->available() > 0) {
+    // check if there is new data
+    int new_serial_byte = fgetc(in_file_);
+    if(new_serial_byte == EOF) {
+      break;
+    }
 
-        // first, we need to try to lock on to the stream
-        if(buffer_in_stream_lock_ == false) 
-        {
-            printf("RBSerialMessages::Read: searching for lock...\n");
-            if((uint8_t)new_serial_byte == RBSM_FOOTER) 
-            {
-                buffer_in_stream_lock_ = true;
-            }
-        }
+    // first, we need to try to lock on to the stream
+    if(buffer_in_stream_lock_ == false) {
+      printf("%s: searching for lock...\n", __PRETTY_FUNCTION__);
+      // this->Send(RBSM_MID_ERROR, (int)new_serial_byte);
+      if((uint8_t)new_serial_byte == RBSM_FOOTER) {
+        printf("%s: got lock!\n", __PRETTY_FUNCTION__);
+        buffer_in_stream_lock_ = true;
+      }
+    }
 
-        // after we lock we need to read in to the buffer until full
-        else 
-        {
-            buffer_in_[buffer_in_pos_] = (uint8_t)new_serial_byte; 
-            buffer_in_pos_++;
-            // handle the end of a packet
-            if(buffer_in_pos_ == RBSM_PACKET_LENGTH) 
-            {
-                // reset buffer for next packet
-                buffer_in_pos_ = 0;
-                // parse this complete packet
-                if(buffer_in_[5] == RBSM_FOOTER) 
-                {
-                    read_message->message_id = buffer_in_[0];
-                    uint8_t *data_bytes = (uint8_t *) &(read_message->data);
-                    data_bytes[0] = buffer_in_[4];
-                    data_bytes[1] = buffer_in_[3];
-                    data_bytes[2] = buffer_in_[2];
-                    data_bytes[3] = buffer_in_[1];
-                    return 0;
-                }
-                // skip packet as an error
-                else 
-                {
-                    buffer_in_stream_lock_ = false;
-                    return -2;
-                }
-            }
+    // after we lock we need to read in to the buffer until full
+    else {
+      // this->Send(RBSM_MID_ERROR, buffer_in_pos_);
+      buffer_in_[buffer_in_pos_] = (uint8_t)new_serial_byte; 
+      buffer_in_pos_++;
+      // handle the end of a packet
+      if(buffer_in_pos_ == RBSM_PACKET_LENGTH) {
+        // reset buffer for next packet
+        buffer_in_pos_ = 0;
+        // parse this complete packet
+        if(buffer_in_[5] == RBSM_FOOTER) {
+          read_message->message_id = buffer_in_[0];
+          uint8_t *data_bytes = (uint8_t *) &(read_message->data);
+          data_bytes[0] = buffer_in_[4];
+          data_bytes[1] = buffer_in_[3];
+          data_bytes[2] = buffer_in_[2];
+          data_bytes[3] = buffer_in_[1];
+          return 0;
+        }
+        // skip packet as an error
+        else {
+          buffer_in_stream_lock_ = false;
+          return RBSM_ERROR_INVALID_MESSAGE;
         }
     } //End while
 
     // we didn't have enough data to read a whole packet
-    return -1;
+    return RBSM_ERROR_INSUFFICIENT_DATA;
 
     // maybe check if the footer matches buffer_in_, else throw the message cause it is sad.
 }
@@ -153,7 +146,7 @@ uint8_t RBSerialMessages::InitMessageBuffer()
     return buffer_pos;
 }
 
-//TODO: Why is this not void?
+
 int RBSerialMessages::InitReadBuffer() 
 {
     buffer_in_pos_ = 0;

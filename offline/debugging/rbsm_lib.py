@@ -54,19 +54,27 @@ class RBSerialMessage:
                                  message_id,
                                  message_data,
                                  self.RBSM_FOOTER)
+#    print repr(message_buffer)
+#    print len(message_buffer)
     self.port.write(message_buffer)
+    self.port.flush()
 
 
 if __name__ == "__main__":
+  import time
+  print("waiting for reset...")
+  time.sleep(10)
+  print("sending test messages:")
   rbsm_endpoint = RBSerialMessage(sys.argv[1])
   # send some test RBSM_MID_MEGA_STEER_ANGLE messages
   rbsm_endpoint.send(20, 0)
   rbsm_endpoint.send(20, -250)
   rbsm_endpoint.send(20, 250)
   rbsm_endpoint.send(20, 0)
-  print "send messages successfully."
+  print("send messages successfully.")
+  
   # then listen for messages forever
-  print "here are some messages I'm seeing:"
-  while(1):
-    message = rbsm_endpoint.read()
-    print message
+  print("here are some messages I'm seeing:")
+  # while(1):
+  #   message = rbsm_endpoint.read()
+  #   print (message)

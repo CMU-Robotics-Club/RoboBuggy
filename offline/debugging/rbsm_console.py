@@ -75,6 +75,8 @@ def redraw(state):
 def rbsm_worker(state):
   message_cache = state["message_cache"]
   rbsm_endpoint = state["rbsm_endpoint"]
+  
+  #f = open('bytes from arduino.txt', wt) #delete
 
   while(1):
     new_message = rbsm_endpoint.read()
@@ -87,10 +89,16 @@ def rbsm_worker(state):
         ( new_message["id"], 
           {"data": new_message["data"], "update_time": time.time()} ),
       ])
+	  
+      if new_message["id"] == 254:
+        f.write(str(new_message['data']))
+        f.write("\n")
+
       # update remotely
       redraw(state)
     else:
       state["status_line"] = "Unlocked!"
+#f.close() #delete
 
   return None
 
@@ -127,13 +135,17 @@ def command_handler(rbsm_endpoint, command_line):
   error = False
   command_line = command_line.strip()
   command_parts = command_line.split(" ")
+  with open('help help.txt', 'wt') as f:
+	  f.write(repr(command_parts))
 
-  try:
-    message_id = int(command_parts[0])
-    message_data = int(command_parts[1])
-    rbsm_endpoint.send(message_id, message_data)
-  except:
-    error = True
+	  try:
+		message_id = int(command_parts[0])
+		message_data = int(command_parts[1])
+		f.write('not enpoint yet\n')
+		rbsm_endpoint.send(message_id, message_data)
+		f.write('past endpoint\n')
+	  except:
+		error = True
 
   return error
 
@@ -141,10 +153,10 @@ def command_handler(rbsm_endpoint, command_line):
 
 def main():
   if(len(sys.argv) < 2):
-    print "You didn't provide enough arguments. Please run with:"
-    print "%s /dev/tty.something" % (sys.argv[0])
+    print ("You didn't provide enough arguments. Please run with:")
+    print ("%s /dev/tty.something" % (sys.argv[0]))
     sys.exit()
-
+  
   state = {
     "message_cache": {},
     "command_line": "",
@@ -153,15 +165,18 @@ def main():
     "rbsm_endpoint": None,
   }
   screen = state["screen"]
-
+  
   # setup program window
   screen = curses.initscr()
+  
   curses.noecho()
   screen.clear()
   screen.border(0)
   screen.addstr(1, 2, "Message Data Time")
   state["screen"] = screen
   redraw(state)
+
+
 
   # setup incomming messages
   rbsm_endpoint = rbsm_lib.RBSerialMessage(sys.argv[1])
