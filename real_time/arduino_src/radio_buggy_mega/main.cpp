@@ -11,6 +11,8 @@
 #include <avr/sleep.h>
 #include <avr/interrupt.h>
 #include <stdio.h>
+#include <avr/wdt.h> //TODO: Create new watchdogs 
+//TODO: Have brakes deploy if watchdog barks from starving
 
 #include "../lib_avr/rbserialmessages/rbserialmessages.h"
 #include "../lib_avr/servoreceiver/servoreceiver.h"
@@ -93,6 +95,8 @@
 #define BRAKE_INDICATOR_DDR  DDRE
 #define BRAKE_INDICATOR_PORT PORTE
 #define BRAKE_INDICATOR_PINN PE3 // arduino 5
+
+#define WDT_INT WDT_vect
 
 
 // Global state
@@ -185,6 +189,38 @@ void brake_drop()
 }
 
 
+/*
+* Function: watchdog_init
+*
+* Description: Configures the hardware watchdog to monitor for timeouts.
+*   Sets the system to "bark" after 1 second without resets.  Has an 
+*   independent clock and will check for timeout regardless of main code.
+*/
+void watchdog_init()
+{
+    //Disable interrupts because setup is time sensitive
+    cli();
+
+    wdt_reset();
+
+
+    //Set the watchdog timer control register
+
+    //This line enables the watchdog timer to be configured. Do not change.
+    WDTCSR |= (1 << WDCE) | (1 << WDE);
+
+    //This next line must run within 4 clock cycles of the above line.
+    //See Section 12.4 of the ATMEGA2560 code for additional details
+    WDTCSR = 
+            (1 << WDIE) //Call ISR on timeout
+            | (1 << WDP2) // w/ WDP1 sets timeout to 1 second
+            | (1 << WDP1);
+
+    //Re-enable interrupts
+    sei();
+}
+
+
 int main(void) 
 {
     // turn the ledPin on
@@ -233,6 +269,9 @@ int main(void)
     printf("Most recent commit: %s\r\n", FP_STRCOMMITHASH);
     printf("Branch clean? %d\r\n", FP_CLEANSTATUS);
     printf("\nEnd of compilation information\r\n");
+
+
+    watchdog_init();
 
     // loop forever
     while(1) 
@@ -380,12 +419,25 @@ int main(void)
         g_rbsm.Send(RBSM_MID_ENC_TICKS_RESET, g_encoder_ticks);
         g_rbsm.Send(RBSM_MID_ENC_TIMESTAMP, millis());
         g_rbsm.Send(RBSM_MID_COMP_HASH, (long unsigned)(FP_HEXCOMMITHASH));
+
+        //Feed the watchdog to indicate things aren't timing out
+        wdt_reset();
     
     } //End while
 
     return 0;
 }
 
+
+//TODO: Is this safe/working?
+ISR(WDT_INT)
+{
+    cli();
+    brake_drop();
+    while(1)
+    {
+    }
+}
 
 ISR(RX_STEERING_INT) 
 {
@@ -406,7 +458,7 @@ ISR(RX_AUTON_INT)
 
 ISR(ENCODER_INT) 
 {
-    unsigned long time_now = micros();
+    unsigned long time_now = micros(); //TODO: Is this atomic?
     // debounce encoder tick count
     if(time_now - g_encoder_time_last > ENCODER_TIMEOUT_US) 
     {
