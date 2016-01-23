@@ -1,8 +1,10 @@
 package com.roboclub.robobuggy.simulation;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Date;
 
 import com.orsoncharts.util.json.JSONArray;
@@ -67,7 +69,7 @@ public class SensorPlayer implements Runnable {
 		System.out.println("Starting to read from file!");
 		try {
 			JSONParser parser = new JSONParser();
-			FileReader reader = new FileReader(path);
+			InputStreamReader reader = new InputStreamReader(new FileInputStream(path),"UTF-8");	
 			JSONObject completeLogFile = (JSONObject) parser.parse(reader); //may take a while, currently working on a solution to read line by line
 			
 			//get info from the header file
@@ -129,8 +131,8 @@ public class SensorPlayer implements Runnable {
 
 							String gpsTimestampString = (String) sensor.get("timestamp");
 							Date gpsTimestamp = RobobuggyDateFormatter.formatRobobuggyDate(gpsTimestampString);
-							int qualityValue = Integer.valueOf((String) sensorParams.get("gps_quality"));
-							int numSatellites = Integer.valueOf((String) sensorParams.get("num_satellites"));
+							int qualityValue = Integer.parseInt((String) sensorParams.get("gps_quality"));
+							int numSatellites = Integer.parseInt((String) sensorParams.get("num_satellites"));
 							double hdop = (double) sensorParams.get("HDOP");
 							double antennaAlt = (double) sensorParams.get("antenna_altitude");
 							double rawLat = (double) sensorParams.get("raw_gps_lat");

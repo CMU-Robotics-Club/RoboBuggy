@@ -21,40 +21,6 @@ import com.roboclub.robobuggy.ros.Subscriber;
  */
 public class LocPanel extends JPanel {
 	
-	/**
-	 * Private class used for representing a latitude and longitude combination
-	 */
-	private final class LocTuple {
-		private double latitude;
-		private double longitude;
-		
-		/**
-		 * Construct a new {@link LocTuple}
-		 * @param x latitude
-		 * @param y longitude
-		 */
-		private LocTuple(double x, double y){
-			this.latitude = x;
-			this.longitude = y;
-		}
-		
-		/**
-		 * Returns the latitude of the {@link LocTuple}
-		 * @return the latitude of the {@link LocTuple}
-		 */
-		public double getLatitude(){
-			return latitude;
-		}
-		
-		/**
-		 * Returns the longitude of the {@link LocTuple}
-		 * @return the longitude of the {@link LocTuple}
-		 */
-		public double getLongitude(){
-			return longitude;
-		}
-	}
-	
 	private static final long serialVersionUID = 42L;
 	private ArrayList<LocTuple> locs;
 	private LocTuple imgNorthEast;

@@ -26,11 +26,12 @@ import com.roboclub.robobuggy.ros.Publisher;
  * {@link RobobuggyGUIContainer} used for logging information
  */
 public class LoggingPanel extends RobobuggyGUIContainer{
-	private static JButton playBtn;
+	//TODO: test to make sure all these dont need to be static
+	private JButton playBtn;
 	private JFormattedTextField timeLbl;
 	private static final int TIME_ZONE_OFFSET = 18000000;//5 hours
-	private static Date startTime;
-	private static Timer timer;
+	private Date startTime;
+	private Timer timer;
 	Publisher loggingButtonPub;
 	//to make logging panel accessible to button callbacks
 	private LoggingPanel thisLoggingPanel = this;

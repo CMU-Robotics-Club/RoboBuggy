@@ -44,7 +44,7 @@ public class AngleGraph extends RobobuggyGUIContainer {
 	/**
 	 * Private class used to represent a graph
 	 */
-	private class Graph extends JPanel {
+	private static class Graph extends JPanel {
 		private static final long serialVersionUID = 6015150544448011207L;
 
 		private int graphWidth = 200;  //200 is the default  value for the width
@@ -52,10 +52,10 @@ public class AngleGraph extends RobobuggyGUIContainer {
 		private int endx;
 		private int endy;
 
-		private int offset;
-		private int startX;
-		private int startY;
-		private double radius;
+		private int offset = -1;
+		private int startX = -1;
+		private int startY = -1;
+		private double radius = -1; 
 		
 		/**
 		 * Construct a new {@link Graph}
@@ -67,13 +67,13 @@ public class AngleGraph extends RobobuggyGUIContainer {
 		
 		
 		private void updateDimensions(){
-			this.graphWidth = (int) (this.getWidth()*.9);
-			this.graphHeight = (int) (this.getHeight()*.9);
+			this.graphWidth = (int) (this.getWidth()*.9); //TODO: get ride of magic value
+			this.graphHeight = (int) (this.getHeight()*.9);//TODO: get ride of magic value
 			this.startX = graphWidth/2 + offset;
 			this.startY = graphHeight/2 + offset;
 			this.endx = startX;
 			this.endy = startY;
-			this.offset = 10;
+			this.offset = 10;//TODO: get ride of magic value
 			this.radius = (double)graphWidth/2;
 		}
 		

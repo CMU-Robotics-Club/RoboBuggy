@@ -114,7 +114,7 @@ public class LogicErrorMessageConsole extends RobobuggyGUIContainer{
 		messageBuffer[messageBufferEnd] = newMessage;
 		String text = "";
 		for(int i = 0;i< messageBuffer.length;i++){
-			text+=messageBuffer[(messageBufferStart+i)%messageBuffer.length]+"\n";
+			text = text.concat(messageBuffer[(messageBufferStart+i)%messageBuffer.length]+"\n");
 		}
 		messageBufferEnd = (messageBufferEnd +1)%messageBuffer.length;
 		//move start up if need be
@@ -128,6 +128,10 @@ public class LogicErrorMessageConsole extends RobobuggyGUIContainer{
 	
 	
 	public LogicErrorMessageConsole(){
+		EXCEPTION_btn = new JButton();
+		WARNING_btn = new JButton();
+		NOTE_btn = new JButton();
+		
 		Header header = new Header();
 		EXCEPTION_btn.setEnabled(true);
 		WARNING_btn.setEnabled(true);

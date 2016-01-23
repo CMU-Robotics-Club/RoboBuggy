@@ -44,8 +44,6 @@ public class DataPanel extends RobobuggyGUIContainer {
 	private JLabel steeringAng;
 	private JLabel errorNum;
 	private JLabel latitude,longitude;
-	private Subscriber gpsSub;
-	
 	/**
 	 * Construct a new {@link DataPanel}
 	 */
@@ -121,10 +119,8 @@ public class DataPanel extends RobobuggyGUIContainer {
 			public void actionPerformed(String topicName, Message m) {
 				ImuMeasurement msg = (ImuMeasurement)m;
 				
-				// Limit measurement values to 10 characters
-				String tmp = new String();
-				
-				tmp = Double.toString(msg.getYaw());
+				// Limit measurement values to 10 characters				
+				String tmp = Double.toString(msg.getYaw());
 				if (tmp.length() > MAX_LENGTH) tmp = tmp.substring(0, MAX_LENGTH);
 				aX.setText(tmp);
 				
@@ -139,7 +135,7 @@ public class DataPanel extends RobobuggyGUIContainer {
 			}
 		});
 		
-		gpsSub = new Subscriber(NodeChannel.GPS.getMsgPath(), new MessageListener() {
+		new Subscriber(NodeChannel.GPS.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				double lat = ((GpsMeasurement)m).getLatitude();
