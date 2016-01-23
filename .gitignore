@@ -29,3 +29,6 @@ real_time/surface_src/java_src/Alice/.classpath
 
 # intellij's nonsense
 *.eml
+setuptools-19.4.zip
+real_time/surface_src/java_src/.idea
+real_time/surface_src/java_src/logs
