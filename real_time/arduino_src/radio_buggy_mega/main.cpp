@@ -21,7 +21,7 @@
 #include "system_clock.h"
 #include "fingerprint.h"
 
-#define BAUD 115200
+#define BAUD 76800
 
 #define DEBUG_DDR  DDRB
 #define DEBUG_PORT PORTB
@@ -117,8 +117,8 @@ ServoReceiver g_steering_rx;
 ServoReceiver g_brake_rx;
 ServoReceiver g_auton_rx;
 
-FILE g_uart_rbsm;
-FILE g_uart_debug;
+UARTFILE g_uart_rbsm;
+UARTFILE g_uart_debug;
 
 
 inline long map_signal(long x,
