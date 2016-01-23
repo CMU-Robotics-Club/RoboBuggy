@@ -429,7 +429,6 @@ int main(void)
 }
 
 
-//TODO: Is this safe/working?
 ISR(WDT_INT)
 {
     cli();
