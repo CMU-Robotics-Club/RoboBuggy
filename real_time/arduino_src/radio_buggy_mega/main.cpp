@@ -110,6 +110,7 @@ static int smoothed_thr;
 static int smoothed_auton;
 static int steer_angle;
 static int auto_steering_angle;
+static bool auto_brake_engaged;
 
 RBSerialMessages g_rbsm;
 rb_message_t g_new_rbsm;
@@ -284,9 +285,13 @@ int main(void)
                 // dipatch complete message
                 switch(new_command.message_id) 
                 {
-                  case RBSM_MID_MEGA_STEER_ANGLE:
+                  case RBSM_MID_MEGA_STEER_COMMAND:
                     auto_steering_angle = (int)(long)new_command.data;
                     printf("Got steering message for %d.\n", auto_steering_angle);
+                    break;
+				  case RBSM_MID_MEGA_BRAKE_COMMAND:
+				    auto_brake_engaged = (bool)(long)new_command.data;
+                    printf("Got brake message for %d.\n", auto_brake_engaged);
                     break;
 
                   default:
@@ -381,7 +386,21 @@ int main(void)
                                          PWM_OFFSET_STORED_ANGLE,
                                          PWM_SCALE_STORED_ANGLE);
 
-        // Set outputs
+        if(g_is_autonomous)
+        {
+			if(auto_brake_engaged)
+			    g_brake_state_engaged = true;
+            steering_set(auto_steering_angle);
+            g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)(auto_steering_angle));
+			if
+        }
+        else
+        {
+            steering_set(steer_angle);
+            g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
+        }
+		
+		// Set outputs
         if(g_brake_state_engaged == false && g_brake_needs_reset == false) 
         {
             brake_raise();
@@ -389,17 +408,6 @@ int main(void)
         else 
         {
             brake_drop();
-        }
-
-        if(g_is_autonomous)
-        {
-            steering_set(auto_steering_angle);
-            g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)(auto_steering_angle));
-        }
-        else
-        {
-            steering_set(steer_angle);
-            g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
         }
 
         if(g_brake_needs_reset == true) 
