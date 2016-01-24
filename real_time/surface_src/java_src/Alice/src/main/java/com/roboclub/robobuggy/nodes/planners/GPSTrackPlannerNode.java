@@ -13,6 +13,7 @@ import com.orsoncharts.util.json.parser.ParseException;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.messages.PoseMessage;
+import com.roboclub.robobuggy.nodes.baseNodes.NodeState;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ui.LocTuple;
 
@@ -23,7 +24,7 @@ import com.roboclub.robobuggy.ui.LocTuple;
  * @author Zachary Dawson
  *
  */
-public class GPSTrackPlannerNode extends PathPlannerNode {
+public final class GPSTrackPlannerNode extends PathPlannerNode {
 
 	private static final double NEXT_THRESHOLD = 0.1;
 	private static final double BRAKE_THRESHOLD = 0.5;
@@ -120,6 +121,9 @@ public class GPSTrackPlannerNode extends PathPlannerNode {
 			//Set steering to centered if we are braking
 			commandedAngle = 0.0;
 		}
+		
+		//Feed the watchdog
+		setNodeState(NodeState.ON);
 	}
 	
 	/**
@@ -154,13 +158,13 @@ public class GPSTrackPlannerNode extends PathPlannerNode {
 
 	/**{@inheritDoc}*/
 	@Override
-	protected double getCommandedSteeringAngle() {
+	protected synchronized double getCommandedSteeringAngle() {
 		return commandedAngle;
 	}
 
 	/**{@inheritDoc}*/
 	@Override
-	protected boolean getDeployBrakeValue() {
+	protected synchronized boolean getDeployBrakeValue() {
 		return commandedBrake;
 	}
 
