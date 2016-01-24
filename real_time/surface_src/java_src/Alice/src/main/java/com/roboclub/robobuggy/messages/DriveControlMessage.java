@@ -33,11 +33,11 @@ public class DriveControlMessage extends BaseMessage implements Message {
 	}
 	
 	/**
-	 * Returns the commanded angle of the steering as a short (in thousandths of degrees)
-	 * @return the commanded angle of the steering as a short (in thousandths of degrees)
+	 * Returns the commanded angle of the steering as an int (in hundredths of degrees)
+	 * @return the commanded angle of the steering as an int (in hundredths of degrees)
 	 */
-	public short getAngleShort() {
-		return (short)(angle*1000.0);
+	public int getAngleInt() {
+		return (int)(angle*100.0);
 	}
 	
 	/**{@inheritDoc}*/

@@ -10,7 +10,8 @@ public class RBSerialMessage
 	public static final byte ENC_TICK_SINCE_RESET = (byte)1;
 	public static final byte ENC_MS_SINCE_RESET = (byte)2;
 
-	public static final byte RBSM_MID_MEGA_COMMAND = (byte)19;
+	public static final byte RBSM_MID_MEGA_BRAKE_COMMAND = (byte)18;
+	public static final byte RBSM_MID_MEGA_STEER_COMMAND = (byte)19;
 	public static final byte STEERING = (byte)20;
 	public static final byte BRAKE = (byte)21;
 	public static final byte AUTO = (byte)22;
@@ -82,7 +83,7 @@ public class RBSerialMessage
 			case AUTO:
 			case BATTERY:
 			case RBSM_MID_MEGA_STEER_FEEDBACK:
-			case RBSM_MID_MEGA_COMMAND:
+			case RBSM_MID_MEGA_STEER_COMMAND:
 			case FP_HASH:
 				
 			case ERROR:

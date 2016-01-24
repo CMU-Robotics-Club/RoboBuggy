@@ -252,7 +252,7 @@ public class RBSMNode extends SerialNode {
 	private final class RBSMPeriodicNode extends PeriodicNode {
 		
 		//Stored commanded values
-		private short commandedAngle = 0;
+		private int commandedAngle = 0;
 		private boolean commandedBrakeEngaged = true;
 		
 		/**
@@ -270,10 +270,10 @@ public class RBSMNode extends SerialNode {
 		 */
 		@Override
 		protected void update() {
-			commandedAngle = (short) ((commandedAngle + 1) % 256);
-			System.out.println("sending command "+commandedAngle);
-			RBSMessage msg = new RBSMessage(commandedAngle, commandedBrakeEngaged);
-			send(msg.getMessageBytes());
+			RBSMSteeringMessage msgSteer = new RBSMSteeringMessage(commandedAngle);
+			send(msgSteer.getMessageBytes());
+			RBSMBrakeMessage msgBrake = new RBSMBrakeMessage(commandedBrakeEngaged);
+			send(msgBrake.getMessageBytes());
 		}
 
 		/**{@inheritDoc}*/
@@ -284,7 +284,7 @@ public class RBSMNode extends SerialNode {
 					new MessageListener() {
 				@Override
 				public void actionPerformed(String topicName, Message m) {
-					commandedAngle = ((DriveControlMessage)m).getAngleShort();
+					commandedAngle = ((DriveControlMessage)m).getAngleInt();
 				}
 			});
 			new Subscriber(NodeChannel.BRAKE_CTRL.getMsgPath(),
