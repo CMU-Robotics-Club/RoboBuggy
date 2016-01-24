@@ -31,7 +31,7 @@ class ServoReceiver {
         unsigned long GetLastTimestamp();
         unsigned long GetPulseWidth();
         int GetAngle();
-        int GetAngleThousandths();
+        int GetAngleHundredths();
         void PrintDebugInfo(FILE *out_stream);
 };
 

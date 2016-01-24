@@ -168,7 +168,7 @@ int ServoReceiver::GetAngle(){
 }
 
 
-int ServoReceiver::GetAngleThousandths() {
+int ServoReceiver::GetAngleHundredths() {
   // Scale the received signal into hundredths of a degree
   int value = (int)map(rc_value_,
                        k_offset_rc_in,

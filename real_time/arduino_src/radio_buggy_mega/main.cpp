@@ -307,7 +307,7 @@ int main(void)
         }
 
         // find the new steering angle, if available
-        steer_angle = g_steering_rx.GetAngleThousandths();
+        steer_angle = g_steering_rx.GetAngleHundredths();
 
         // find the new brake state, if available
         smoothed_thr = g_brake_rx.GetAngle();
