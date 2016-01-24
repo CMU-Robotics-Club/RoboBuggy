@@ -15,6 +15,7 @@ public enum NodeChannel {
 	GUI_LOGGING_BUTTON("logging_button"),
 	STEERING_COMMANDED("commanded_steering"),
 	FP_HASH("fp_hash"),
+	POSE("pose"),
 	UNKNOWN_CHANNEL("unknown"),
 	;
 	

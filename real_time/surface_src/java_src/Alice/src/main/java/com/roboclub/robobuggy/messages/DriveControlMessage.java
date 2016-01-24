@@ -52,7 +52,7 @@ public class DriveControlMessage extends BaseMessage implements Message {
 	public Message fromLogString(String str) {
 		String[] spl = str.split(",");
 		Date d = tryToParseDate(spl[0]);
-		double readAngle = Short.parseShort(spl[2]);
+		double readAngle = Integer.parseInt(spl[2]);
 		return new DriveControlMessage(d, readAngle);
 	}
 
