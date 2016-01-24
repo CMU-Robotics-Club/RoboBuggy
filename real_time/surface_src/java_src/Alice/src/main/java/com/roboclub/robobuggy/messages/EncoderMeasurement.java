@@ -4,6 +4,7 @@ import java.util.Date;
 import com.roboclub.robobuggy.ros.Message;
 
 /**
+ * Message for passing encoder measurements over BuggyROS
  * @author ?
  *
  * @version 0.5
@@ -12,19 +13,21 @@ import com.roboclub.robobuggy.ros.Message;
  * 
  *          DESCRIPTION: TODO
  */
-
-// Represents raw measurement from the IMU
 public class EncoderMeasurement extends BaseMessage implements Message {
 
-	public static final String version_id = "encoderV0.0";
+	private static final String VERSION_ID = "encoderV0.0";
 
-	public Date timestamp;
-	public double distance;
-	public double velocity;
-	public double dataWord;
-	public double accel;
+	private Date timestamp;
+	private final double distance;
+	private final double velocity;
+	private final double dataWord;
+	private final double accel;
 
-	// Makes an encoder measurement with the time of Now.
+	/**
+	 * Construct a new {@link EncoderMeasurement} at time now
+	 * @param distance the current distance value from the encoder
+	 * @param velocity the current velocity value from the encoder
+	 */
 	public EncoderMeasurement(double distance, double velocity) {
 		this.distance = distance;
 		this.velocity = velocity;
@@ -33,40 +36,89 @@ public class EncoderMeasurement extends BaseMessage implements Message {
 		this.accel = 0;
 	}
 	
+	/**
+	 * Construct a new {@link EncoderMeasurement}
+	 * @param timestamp {@link Date} representing the time of the message
+	 * @param distance the current distance value from the encoder
+	 * @param velocity the current velocity value from the encoder
+	 */
 	public EncoderMeasurement(Date timestamp, double distance, double velocity) {
-		this.timestamp = timestamp;
+		this.timestamp = new Date(timestamp.getTime());
 		this.distance = distance;
 		this.velocity = velocity;
 		this.dataWord = 0;
 		this.accel = 0;
 	}
 	
-	//logs the number of ticks received since last time as well
-	public EncoderMeasurement(Date timestamp, double dataWord, double distance, double velocity, double accel) {
-		this.timestamp = timestamp;
+	/**
+	 * Construct a new {@link EncoderMeasurement}
+	 * @param timestamp {@link Date} representing the time of the message
+	 * @param dataWord the exact value passed in from the encoder
+	 * @param distance the current distance value from the encoder
+	 * @param velocity the current velocity value from the encoder
+	 * @param accel the current acceleration value from the encoder
+	 */
+	public EncoderMeasurement(Date timestamp, double dataWord, double distance,
+			double velocity, double accel) {
+		this.timestamp = new Date(timestamp.getTime());
 		this.dataWord = dataWord;
 		this.distance = distance;
 		this.velocity = velocity;
 		this.accel = accel;		
 	}
+	
+	/**
+	 * Returns the distance from the {@link EncoderMeasurement}
+	 * @return the distance from the {@link EncoderMeasurement}
+	 */
+	public double getDistance() {
+		return distance;
+	}
+	
+	/**
+	 * Returns the velocity from the {@link EncoderMeasurement}
+	 * @return the velocity from the {@link EncoderMeasurement}
+	 */
+	public double getVelocity() {
+		return velocity;
+	}
+	
+	/**
+	 * Returns the dataWord from the {@link EncoderMeasurement}
+	 * @return the dataWord from the {@link EncoderMeasurement}
+	 */
+	public double getDataWord() {
+		return dataWord;
+	}
+	
+	/**
+	 * Returns the acceleration from the {@link EncoderMeasurement}
+	 * @return the acceleration from the {@link EncoderMeasurement}
+	 */
+	public double getAcceleration() {
+		return accel;
+	}
 
+	/**{@inheritDoc}*/
 	@Override
 	public String toLogString() {
-		return super.formatter.format(timestamp) + ','
+		return formatDate(timestamp) + ','
 				+ Double.toString(dataWord) + ','
 				+ Double.toString(distance) + ',' 
 				+ Double.toString(velocity) + ','
 				+ Double.toString(accel);
 	}
 
+	/**{@inheritDoc}*/
 	@Override
 	public Message fromLogString(String str) {
 		String[] ar = str.split(",");
-		Date d = try_to_parse_date(ar[0]);
-		distance = Double.parseDouble(ar[1]);
-		velocity = Double.parseDouble(ar[2]);
-		dataWord = Double.parseDouble(ar[3]);
+		Date d = tryToParseDate(ar[0]);
+		double distance = Double.parseDouble(ar[1]);
+		double velocity = Double.parseDouble(ar[2]);
+		double dataWord = Double.parseDouble(ar[3]);
+		double accel = Double.parseDouble(ar[4]);
 		//TODO calculate acceleration
-		return new EncoderMeasurement(timestamp, distance, velocity, dataWord, accel);
+		return new EncoderMeasurement(d, distance, velocity, dataWord, accel);
 	}
 }

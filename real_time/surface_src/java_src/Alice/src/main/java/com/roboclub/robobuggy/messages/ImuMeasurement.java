@@ -1,10 +1,10 @@
 package com.roboclub.robobuggy.messages;
 
-import java.text.ParseException;
 import java.util.Date;
 import com.roboclub.robobuggy.ros.Message;
 
 /**
+ * Message for passing IMU measurements within BuggyROS
  * @author ?
  *
  * @version 0.5
@@ -13,43 +13,71 @@ import com.roboclub.robobuggy.ros.Message;
  * 
  *          DESCRIPTION: TODO
  */
-
-// Represents raw measurement from the IMU
 public class ImuMeasurement extends BaseMessage implements Message {
 
-	public static final String version_id = "imuV0.0";
+	public static final String VERSION_ID = "imuV0.0";
 
-	public Date timestamp;
+	private Date timestamp;
 
-	public double yaw;
-	public double pitch;
-	public double roll;
+	private double yaw;
+	private double pitch;
+	private double roll;
 
+	/**
+	 * Constructs a new {@link ImuMeasurement} at time now
+	 * @param y yaw value
+	 * @param p pitch value
+	 * @param r roll value
+	 */
 	public ImuMeasurement(double y, double p, double r) {
 		this.timestamp = new Date();
 		this.yaw = y;
 		this.pitch = p;
 		this.roll = r;
 	}
+	
+	/**
+	 * Returns the yaw value of the {@link ImuMeasurement}
+	 * @return the yaw value of the {@link ImuMeasurement}
+	 */
+	public double getYaw() {
+		return yaw;
+	}
+	
+	/**
+	 * Returns the pitch value of the {@link ImuMeasurement}
+	 * @return the pitch value of the {@link ImuMeasurement}
+	 */
+	public double getPitch() {
+		return pitch;
+	}
+	
+	/**
+	 * Returns the roll value of the {@link ImuMeasurement}
+	 * @return the roll value of the {@link ImuMeasurement}
+	 */
+	public double getRoll() {
+		return roll;
+	}
 
+	/**{@inheritDoc}*/
+	@Override
 	public String toLogString() {
-		String s = super.formatter.format(timestamp);
+		String s = formatDate(timestamp);
 		return s + "," + Double.toString(yaw) + "," 
 				+ Double.toString(pitch) + "," 
 				+ Double.toString(roll);
 	}
 
+	/**{@inheritDoc}*/
+	@Override
 	public Message fromLogString(String str) {
 		String delims = ",";
 		String[] ar = str.split(delims);
 
 		// Creating SimpleDateFormat with yyyyMMdd format e.g."20110914"
 		String yyyyMMdd = ar[0];
-		try {
-			timestamp = super.formatter.parse(yyyyMMdd);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+		timestamp = tryToParseDate(yyyyMMdd);
 
 		Double y = Double.parseDouble(ar[1]);
 		Double p = Double.parseDouble(ar[2]);

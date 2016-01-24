@@ -29,6 +29,12 @@ public class TwoSourceIntegrator implements Node {
 		return false;
 	}
 
+	@Override
+	public boolean startNode() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	
 	
 	

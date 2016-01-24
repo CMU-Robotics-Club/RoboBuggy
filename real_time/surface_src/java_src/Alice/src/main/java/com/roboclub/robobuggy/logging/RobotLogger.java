@@ -10,7 +10,10 @@ import java.util.logging.Handler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
-import com.roboclub.robobuggy.main.config;
+
+import com.roboclub.robobuggy.main.RobobuggyConfigFile;
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 
 /**
  * Logs data from the sensors
@@ -19,17 +22,24 @@ import com.roboclub.robobuggy.main.config;
  * @author Trevor Decker
  */
 public final class RobotLogger {
-	public  static Logger message;
-	public static SensorLogger sensor;
+	private static Logger message;
+	private static SensorLogger sensor;
 	private static RobotLogger instance;
-	public static File logDir;  //TODO describe the diffrence between LogDir and  logFolder 
-	public static File logFolder;
+	private static File logDir;  //TODO describe the diffrence between LogDir and  logFolder 
+	private static File logFolder;
 
+	/**
+	 * Returns a reference to the one {@link RobotLogger} object.
+	 * If no {@link RobotLogger} object exists, one will be constructed.
+	 * @return a reference to the one {@link RobotLogger} object
+	 */
 	public static RobotLogger getInstance() {
 		if (instance == null) {
-			logDir = new File(config.LOG_FILE_LOCATION);
+			logDir = new File(RobobuggyConfigFile.LOG_FILE_LOCATION);
 			
-			logDir.mkdirs();
+			if(!logDir.mkdirs() && !logDir.exists()) {
+				throw new RuntimeException("Failed to create log directory");
+			}
 			
 //			if (!logDir.exists()) {
 //				logDir.mkdirs();
@@ -47,7 +57,10 @@ public final class RobotLogger {
 
 	}
 
-	public static void CloseLog() {
+	/**
+	 * Closes the {@link RobotLogger} log file
+	 */
+	public static void closeLog() {
 		if (instance != null) {
 			Handler[] handlers = instance.message.getHandlers();
 
@@ -58,31 +71,35 @@ public final class RobotLogger {
 		}
 	}
 
-	// closes the current log and creates a new one
+	/**
+	 * Closes the current log and creates a new one
+	 */
 	public void startNewLog() {
 		// TODO send signal to vision to start a new log also
-		CloseLog();
-		CreateLog();
+		closeLog();
+		createLog();
 	}
 
-	public static void CreateLog() {
+	/**
+	 * Creates a new log file to record data in using the {@link RobotLegger}
+	 */
+	public static void createLog() {
 		getInstance();
 
 		if (instance != null) {
 			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 			logFolder = new File(logDir, df.format(new Date()));
-			logFolder.mkdirs();
 
-			File msgFile = new File(logFolder, "messages.log");
-			try {
-				sensor = new SensorLogger(logFolder, new Date());
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+			if(!logFolder.mkdirs()) {
+			    new RobobuggyLogicNotification("Couldn't create log folder!", RobobuggyMessageLevel.EXCEPTION);
 			}
 
+			File msgFile = new File(logFolder, "messages.log");
+			sensor = new SensorLogger(logFolder);
+
 			try {
-				msgFile.createNewFile();
+				if(!msgFile.createNewFile())
+					throw new RuntimeException("Failed to create log file");
 				// TODO fix Gui.UpdateLogName(msgFile.getName());
 
 				Handler handler = new StreamHandler(new FileOutputStream(

@@ -20,9 +20,18 @@ surface_src/java_src/Alice/src/com/roboclub/robobuggy/main/config.java
 *.sym
 .dep
 
-#version number 
+#version number
 real_time/arduino_src/radio_buggy_mega/fingerprint.h
 
 #eclipse's nonsense
 real_time/surface_src/java_src/.recommenders/
 real_time/surface_src/java_src/Alice/.classpath
+<<<<<<< HEAD
+=======
+
+# intellij's nonsense
+*.eml
+setuptools-19.4.zip
+real_time/surface_src/java_src/.idea
+real_time/surface_src/java_src/logs
+>>>>>>> zsd-unitTestFixes
