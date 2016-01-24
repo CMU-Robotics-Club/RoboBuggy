@@ -276,6 +276,7 @@ int main(void)
 
     // find the new autonomous state, if available
     smoothed_auton = g_auton_rx.GetAngle();
+
     // TODO make this code...less...something
     if(smoothed_auton > PWM_STATE_THRESHOLD) 
     { 
@@ -332,22 +333,22 @@ int main(void)
     // Set outputs
     if(g_brake_state_engaged == false && g_brake_needs_reset == false) 
     {
-      brake_raise();
+        brake_raise();
     } 
     else 
     {
-      brake_drop();
+        brake_drop();
     }
 
     if(g_is_autonomous)
     {
-      steering_set(auto_steering_angle);
-      g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)(auto_steering_angle));
+        steering_set(auto_steering_angle);
+        g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)(auto_steering_angle));
     }
     else if(!g_is_autonomous)
     {
-      steering_set(steer_angle);
-      g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
+        steering_set(steer_angle);
+        g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
     }
     else
     {
