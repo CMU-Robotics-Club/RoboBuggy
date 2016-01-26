@@ -46,11 +46,13 @@ public class RobobuggyLogicNotification {
 		//the message is always published 
 		errorPub.publish(new RobobuggyLogicNotificationMeasurment(exception, level));
 
-		
+	
+		/*TODO: do something logical this segment was causing an infinite loop where the robot was being shut down and then restarted
 		//only halt the program if it is an exception 
 		if(level == RobobuggyMessageLevel.EXCEPTION){
-		//	Robot.getInstance().shutDown();  TODO do something logical 
+		//	Robot.getInstance().shutDown();  
 		}
+		*/
 	}
 
 	//a function to check if a message level is signfigent enough to display to the user

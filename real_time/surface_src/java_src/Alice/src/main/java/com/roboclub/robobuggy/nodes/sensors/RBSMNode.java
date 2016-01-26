@@ -143,8 +143,6 @@ public class RBSMNode extends SerialNode {
 		return BAUD_RATE;
 	}
 
-	//temp 
-	int maxEncoder = 0;
 	
 	/**{@inheritDoc}*/
 	@Override
@@ -174,11 +172,6 @@ public class RBSMNode extends SerialNode {
 		switch (headerByte)
 		{
 			case RBSerialMessage.ENC_TICK_SINCE_RESET:
-				int encoderReading = message.getDataWord();
-				maxEncoder = Integer.max(encoderReading,maxEncoder);
-				System.out.println("maxEncoder:"+maxEncoder + "encoderReading:"+encoderReading);
-
-				
 				// This is a delta-distance! Do a thing!
 				encTicks = message.getDataWord() & 0xFFFF;
 				messagePubEnc.publish(estimateVelocity(message.getDataWord()));
