@@ -1,14 +1,12 @@
 package com.roboclub.robobuggy.nodes.sensors;
 
-import java.util.Arrays;
-
+import java.io.UnsupportedEncodingException;
 import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.NodeState;
 import com.roboclub.robobuggy.nodes.baseNodes.SerialNode;
-import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.NodeChannel;
 
@@ -87,7 +85,12 @@ public final class ImuNode extends SerialNode {
 		}
 		
 		double[] vals = new double[3];
-		String imuRawStr = Arrays.toString(buffer).substring(start+5, bytesAvailable-5); //TODO check +5 -5
+		String imuRawStr;
+		try {
+			imuRawStr = new String(buffer, start+5, bytesAvailable-5, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			return 1;
+		} //TODO check +5 -5
 
 		int origLength = imuRawStr.length();
 		for (int i = 0; i < 2; i++) {
