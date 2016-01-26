@@ -11,10 +11,10 @@ import com.roboclub.robobuggy.nodes.baseNodes.SerialNode;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 
+import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -100,7 +100,12 @@ public final class GpsNode extends SerialNode {
 			return 0;
 		}
 
-		String str = Arrays.toString(buffer).substring(start, bytesAvailable);
+		String str;
+		try {
+			str = new String(buffer, start, bytesAvailable, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			return 0;
+		}
 
 		// Quick check to reject things without doing string stuff (which is not cheap)
 		if(buffer[start] != '$') {
