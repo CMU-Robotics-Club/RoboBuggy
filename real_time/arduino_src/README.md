@@ -1,5 +1,9 @@
 Arduino code goes here!
 
+## to setup avr-lib look at 
+http://maxembedded.com/2015/06/setting-up-avr-gcc-toolchain-on-linux-and-mac-os-x/
+
+
 ## Sketches Overview
 
 * **imu** - Our code and reference implementation for the razor imu

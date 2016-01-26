@@ -143,6 +143,7 @@ public class RBSMNode extends SerialNode {
 		return BAUD_RATE;
 	}
 
+	
 	/**{@inheritDoc}*/
 	@Override
 	public int peel(byte[] buffer, int start, int bytesAvailable) 
@@ -174,7 +175,6 @@ public class RBSMNode extends SerialNode {
 				// This is a delta-distance! Do a thing!
 				encTicks = message.getDataWord() & 0xFFFF;
 				messagePubEnc.publish(estimateVelocity(message.getDataWord()));
-				System.out.println(encTicks);
 				break;
 			case RBSerialMessage.RBSM_MID_MEGA_STEER_FEEDBACK:
 				// This is a delta-distance! Do a thing!

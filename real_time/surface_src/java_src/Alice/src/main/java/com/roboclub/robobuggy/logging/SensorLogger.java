@@ -35,7 +35,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 public final class SensorLogger {
 	private final Queue<String> logQueue;
 
-	
 	private static Queue<String> startLoggingThread(PrintStream stream) {
 		final LinkedBlockingQueue<String> ret = new LinkedBlockingQueue<>();
 		

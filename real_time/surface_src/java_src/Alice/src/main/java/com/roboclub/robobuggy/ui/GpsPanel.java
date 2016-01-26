@@ -65,7 +65,7 @@ public class GpsPanel extends JPanel {
 			 // refresh screen
 			    Gui.getInstance().fixPaint();
 			}
-		});		
+		});
 		
 //		locs.add(new LocTuple(40.440443, -79.9427212));
 	}

@@ -75,7 +75,7 @@ public class SensorPlayer implements Runnable {
 			//get info from the header file
 			Date loggingDate = new Date();
 			
-			long prevTimeInMillis = loggingDate.getTime();
+			long playBackStartTime = loggingDate.getTime();
 			
 			JSONArray sensorDataArray = (JSONArray) completeLogFile.get("sensor_data");
 			long sensorStartTimeInMilis = 0;
@@ -93,7 +93,8 @@ public class SensorPlayer implements Runnable {
 				}
 
 				long sensorTimeFromStart = currentSensorTimeInMillis -sensorStartTimeInMilis; 
-				long realTimeFromStart = currentTime - prevTimeInMillis;				
+				long realTimeFromStart = currentTime - playBackStartTime;				
+
 				long playbackSpeed = 100;
 				long sleepTime = playbackSpeed*realTimeFromStart - sensorTimeFromStart;
 				new RobobuggyLogicNotification("sleepingTime:"+sleepTime, RobobuggyMessageLevel.NOTE);

@@ -18,6 +18,7 @@ surface_src/java_src/Alice/src/com/roboclub/robobuggy/main/config.java
 *.map
 *.o
 *.sym
+*~
 .dep
 
 #version number

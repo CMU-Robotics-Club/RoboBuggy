@@ -1,6 +1,5 @@
 package com.roboclub.robobuggy.ui;
 
-
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
@@ -52,5 +51,6 @@ public class GraphPanel extends RobobuggyGUIContainer {
 				// TODO handle imu updates for graphs
 			}
 		});
+		
 	}
 }

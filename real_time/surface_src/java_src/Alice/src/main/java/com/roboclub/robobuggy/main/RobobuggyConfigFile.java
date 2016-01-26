@@ -1,7 +1,5 @@
 package com.roboclub.robobuggy.main;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
 
 // add jason parser for RobobuggyConfigFile
 /**

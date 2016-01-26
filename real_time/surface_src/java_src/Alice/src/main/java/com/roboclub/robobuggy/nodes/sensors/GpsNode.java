@@ -45,7 +45,6 @@ public final class GpsNode extends SerialNode {
 		super(new BuggyBaseNode(sensor), "GPS", portName, BAUD_RATE);
 		msgPub = new Publisher(sensor.getMsgPath());
 		statePub = new Publisher(sensor.getStatePath());
-	
 		statePub.publish(new StateMessage(NodeState.DISCONNECTED));
 	}
 
