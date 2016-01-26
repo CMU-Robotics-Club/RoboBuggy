@@ -52,7 +52,7 @@ public final class Robot implements RosMaster {
 		nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.COM_PORT_IMU));
 		nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING,
 				RobobuggyConfigFile.COM_PORT_RBSM, COMMAND_PERIOD));
-				
+
 	}
 	
 	/***************************************   Getters ********************************/

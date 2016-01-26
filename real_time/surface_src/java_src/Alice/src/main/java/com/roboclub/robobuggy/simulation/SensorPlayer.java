@@ -94,6 +94,7 @@ public class SensorPlayer implements Runnable {
 
 				long sensorTimeFromStart = currentSensorTimeInMillis -sensorStartTimeInMilis; 
 				long realTimeFromStart = currentTime - playBackStartTime;				
+
 				long playbackSpeed = 100;
 				long sleepTime = playbackSpeed*realTimeFromStart - sensorTimeFromStart;
 				new RobobuggyLogicNotification("sleepingTime:"+sleepTime, RobobuggyMessageLevel.NOTE);

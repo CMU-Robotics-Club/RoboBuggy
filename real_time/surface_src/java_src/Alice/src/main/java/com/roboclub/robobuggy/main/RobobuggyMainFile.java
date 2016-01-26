@@ -43,6 +43,7 @@ public class RobobuggyMainFile {
         System.out.println(ports);
         
         Gui.getInstance();
+    	
     	if (RobobuggyConfigFile.DATA_PLAY_BACK) {
     		//Play back mode enabled
     		final SensorPlayer sp = new SensorPlayer("logs/2016-01-26-00-00-53/sensors.txt");
@@ -59,7 +60,6 @@ public class RobobuggyMainFile {
         	RobotLogger.getInstance();
         	//Play back disabled, create robot
         	Robot.getInstance().startNodes();
-        	
 			try {
 				Thread.sleep(3000);
 			} catch (InterruptedException e) {
@@ -68,9 +68,7 @@ public class RobobuggyMainFile {
 			new RobobuggyLogicNotification("HELLO", RobobuggyMessageLevel.WARNING);
 		}
     }
-
-        
-
+    
     private static List<String> getAvailablePorts() {
 
         List<String> list = new ArrayList<String>();
@@ -86,6 +84,5 @@ public class RobobuggyMainFile {
 
         return list;
     }
-
 
 }
