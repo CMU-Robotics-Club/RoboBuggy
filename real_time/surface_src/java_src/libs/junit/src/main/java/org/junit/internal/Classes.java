@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 package org.junit.internal;
 
 import static java.lang.Thread.currentThread;
@@ -17,23 +17,3 @@ public class Classes {
         return Class.forName(className, true, currentThread().getContextClassLoader());
     }
 }
-=======
-package org.junit.internal;
-
-import static java.lang.Thread.currentThread;
-
-/**
- * Miscellaneous functions dealing with classes.
- */
-public class Classes {
-    /**
-     * Returns Class.forName for {@code className} using the current thread's class loader.
-     *
-     * @param className Name of the class.
-     * @throws ClassNotFoundException
-     */
-    public static Class<?> getClass(String className) throws ClassNotFoundException {
-        return Class.forName(className, true, currentThread().getContextClassLoader());
-    }
-}
->>>>>>> 184953b77bdf777b290c0c4d236105030c50a6de

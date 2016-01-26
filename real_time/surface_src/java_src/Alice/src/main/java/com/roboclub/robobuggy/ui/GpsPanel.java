@@ -13,26 +13,13 @@ import javax.swing.JPanel;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
-import com.roboclub.robobuggy.ros.SensorChannel;
+import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 
-public class GpsPanel extends JPanel {
-	private class LocTuple {
-		private double latitude;
-		private double longitude;
-		private LocTuple(double x, double y){
-			this.latitude = x;
-			this.longitude = y;
-		}
-		
-		public double getLatitude(){
-			return latitude;
-		}
-		public double getLongitude(){
-			return longitude;
-		}
-	}	
-	
+/**
+ * {@link JPanel} used to display GPS data
+ */
+public class GpsPanel extends JPanel {	
 	private static final long serialVersionUID = 42L;
 	private ArrayList<LocTuple> locs;
 	private LocTuple imgNorthWest;
@@ -41,10 +28,13 @@ public class GpsPanel extends JPanel {
 	private boolean setup;
 	private int frameWidth;
 	private int frameHeight;
+	
+	@SuppressWarnings("unused") //this subscriber is used to generate callbacks 
 	private Subscriber gpsSub;
-	private Subscriber encSub;
 	
-	
+	/**
+	 * Construct a new {@link GpsPanel}
+	 */
 	public GpsPanel(){
 		locs = new ArrayList<LocTuple>();
 		imgNorthWest = new LocTuple(40.443946388131266, -79.95532877484377);
@@ -56,14 +46,14 @@ public class GpsPanel extends JPanel {
 		}
 		setup = false;
 		
-		gpsSub = new Subscriber(SensorChannel.GPS.getMsgPath(), new MessageListener() {
+		gpsSub = new Subscriber(NodeChannel.GPS.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
-				double latitude = ((GpsMeasurement)m).latitude;
-				double longitude = ((GpsMeasurement)m).longitude;
+				double latitude = ((GpsMeasurement)m).getLatitude();
+				double longitude = ((GpsMeasurement)m).getLongitude();
 
 				//todo put mag based on dir
-				if(((GpsMeasurement)m).west) {
+				if(((GpsMeasurement)m).getWest()) {
 					longitude = -longitude;
 				}
 				
@@ -72,7 +62,8 @@ public class GpsPanel extends JPanel {
 //				if (gpsSize > 20) {        // if size > 20, remove first object
 //					locs.remove(0);
 //				}
-				GpsPanel.this.repaint();  // refresh screen
+			 // refresh screen
+			    Gui.getInstance().fixPaint();
 			}
 		});
 		

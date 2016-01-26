@@ -1,9 +1,15 @@
 package com.roboclub.robobuggy.localization;
 
+/**
+ * Class used to represent a Kalman Filter
+ */
 public class KalmanFilter {
 //	private vector state;
 //	private matrix covariance;
 	
+	/**
+	 * Construct a new instance of a {@link KalmanFilter}
+	 */
     public KalmanFilter() {
         // This is a very trusting kalman filter; it just adds the
         // encoder offset to the current believed position.
