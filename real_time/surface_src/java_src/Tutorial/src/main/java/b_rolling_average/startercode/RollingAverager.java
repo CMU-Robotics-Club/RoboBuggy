@@ -30,6 +30,13 @@ public class RollingAverager implements Node {
 		//   (but if you opened a file or something, close it cleanly)
 		return true;
 	}
+
+
+	@Override
+	public boolean startNode() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 	
 	

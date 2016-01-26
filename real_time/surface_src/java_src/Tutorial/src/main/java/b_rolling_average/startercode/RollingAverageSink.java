@@ -21,6 +21,12 @@ public class RollingAverageSink implements Node {
 		// no resources to clean up; simply return.
 		return true;
 	}
+
+	@Override
+	public boolean startNode() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 	
 	
