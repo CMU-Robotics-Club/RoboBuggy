@@ -6,6 +6,9 @@ import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
+
 /**
  * {@link JFrame} used to represent the robobuggy gui
  * @author Trevor Decker
@@ -62,7 +65,7 @@ public final class Gui extends JFrame {
 	 * Construct a new {@link Gui} object
 	 */
 	private Gui() {
-		System.out.println("Starting GUI");
+		new RobobuggyLogicNotification("StartingGUI", RobobuggyMessageLevel.NOTE);
 		RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow",1.0,1.0);	
 		AnalyticsPanel analyPane = new AnalyticsPanel();
 		ctrlPanel1 = new ControlPanel();
@@ -88,9 +91,9 @@ public final class Gui extends JFrame {
 	 * Closes the {@link Gui}
 	 */
 	public static void close() {
-		System.out.println("Trying to close the window!");
+		new RobobuggyLogicNotification("trying to close gui", RobobuggyMessageLevel.NOTE);
 		instance.dispatchEvent(new WindowEvent(instance, WindowEvent.WINDOW_CLOSING));
-		System.out.println("Apparently we've closed the window!");
+		new RobobuggyLogicNotification("gui has been closed", RobobuggyMessageLevel.NOTE);
 	}
 
 }

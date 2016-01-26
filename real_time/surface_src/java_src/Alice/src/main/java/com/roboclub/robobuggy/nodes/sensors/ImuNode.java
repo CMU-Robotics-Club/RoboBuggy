@@ -67,6 +67,8 @@ public final class ImuNode extends SerialNode {
 			return 0;
 		}
 		
+		System.out.println("in peel for imu: "+buffer[start]);
+		
 		// Check the prefix. was previously #ACG
 		if(buffer[start] != '#') {
 			return 1;
