@@ -97,12 +97,9 @@ public class SensorPlayer implements Runnable {
 				long playbackSpeed = 100;
 				long sleepTime = playbackSpeed*realTimeFromStart - sensorTimeFromStart;
 				new RobobuggyLogicNotification("sleepingTime:"+sleepTime, RobobuggyMessageLevel.NOTE);
-				if(sleepTime < 0 && false){ 
-					//TODO change back to sleepTime
-					Thread.sleep(-sleepTime/1000000);
-//					Thread.sleep(500);
+				if(sleepTime < 0){ 
+					Thread.sleep(-sleepTime/1000);
 				}
-				//prevTimeInMillis = currentSensorTimeInMillis;
 			
 				String sensorName = (String) sensor.get("name");
 				if(sensorName == null){
@@ -111,9 +108,12 @@ public class SensorPlayer implements Runnable {
 				}else{
 					JSONObject sensorParams = (JSONObject) sensor.get("params");
 					System.out.println(sensorName);
+					//TODO: add fp_hash
+					//TODO: add command_steering
+					
 					switch(sensorName) {
 				
-						case "IMU":
+						case "imu":
 							double yaw = (double) sensorParams.get("yaw");
 							double pitch = (double) sensorParams.get("pitch");
 							double roll = (double) sensorParams.get("roll");
@@ -171,7 +171,7 @@ public class SensorPlayer implements Runnable {
 							steeringPub.publish(new SteeringMeasurement((int) steeringAngle));
 							break;
 						
-						case "Encoder":
+						case "encoder":
 						
 							double dataword = (double) sensorParams.get("dataword");
 							double distance = (double) sensorParams.get("distance");

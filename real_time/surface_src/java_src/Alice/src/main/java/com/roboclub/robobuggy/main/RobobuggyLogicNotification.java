@@ -23,11 +23,9 @@ public class RobobuggyLogicNotification {
 	/**
 	 * Sets up the {@link RobobuggyLogicNotification}. Must be called before a new
 	 * {@link RobobuggyLogicNotification} can be constructed.
-	 * @param channel {@link NodeChannel} used to log the
-	 * {@link RobobuggyLogicNotification}s on
 	 */
-	public static void setupLogicException(NodeChannel channel){
-		errorPub = new Publisher(channel.getMsgPath());
+	private static void setupLogicException(){
+		errorPub = new Publisher(NodeChannel.LOGIC_EXCEPTION.getMsgPath());
 	}
 	
 	/**
@@ -41,8 +39,13 @@ public class RobobuggyLogicNotification {
 			//displays the error message to the java console 
 			System.out.println(exception);
 		}
+		if(errorPub ==null){
+			setupLogicException();
+			}
+		
 		//the message is always published 
 		errorPub.publish(new RobobuggyLogicNotificationMeasurment(exception, level));
+
 		
 		//only halt the program if it is an exception 
 		if(level == RobobuggyMessageLevel.EXCEPTION){
