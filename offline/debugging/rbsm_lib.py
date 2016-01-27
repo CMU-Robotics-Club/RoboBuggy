@@ -7,7 +7,7 @@ class RBSerialMessage:
 
   def __init__(self, device_path):
     self.RBSM_FOOTER = "\n" # 0x0A
-    self.RBSM_BAUD_RATE = 115200
+    self.RBSM_BAUD_RATE = 76800
     self.RBSM_PACKET_LENGTH = 6
     # packet format: unsigned byte, big-endian signed int, char
     self.RBSM_PACKET_FORMAT = ">Bic"
@@ -55,18 +55,33 @@ class RBSerialMessage:
                                  message_data,
                                  self.RBSM_FOOTER)
     self.port.write(message_buffer)
+    self.port.flush()
 
 
 if __name__ == "__main__":
+  import time
+  # create a test rbsm channel
   rbsm_endpoint = RBSerialMessage(sys.argv[1])
+  # arduino resets on connection. be careful to not miss messages
+  print("waiting for reset...")
+  time.sleep(2)
   # send some test RBSM_MID_MEGA_STEER_ANGLE messages
+  print("sending test messages:")
+  print("steering to 0")
   rbsm_endpoint.send(20, 0)
+  time.sleep(2)
+  print("steering to -250")
   rbsm_endpoint.send(20, -250)
+  time.sleep(2)
+  print("steering to 250")
   rbsm_endpoint.send(20, 250)
+  time.sleep(2)
+  print("steering to 0")
   rbsm_endpoint.send(20, 0)
-  print "send messages successfully."
+  print("send messages successfully.")
+  
   # then listen for messages forever
-  print "here are some messages I'm seeing:"
-  while(1):
-    message = rbsm_endpoint.read()
-    print message
+  # print("here are some messages I'm seeing:")
+  # while(1):
+  #   message = rbsm_endpoint.read()
+  #   print (message)

@@ -5,13 +5,14 @@ inline long map(long x,
                 long in_offset,
                 long in_scale,
                 long out_offset,
-                long out_scale) {
-  return ((x - in_offset) * out_scale / in_scale) + out_offset;
+                long out_scale) 
+{
+    return ((x - in_offset) * out_scale / in_scale) + out_offset;
 }
 
 
-ServoReceiver::ServoReceiver(){
-
+ServoReceiver::ServoReceiver()
+{
 }
 
 
@@ -167,7 +168,7 @@ int ServoReceiver::GetAngle(){
 }
 
 
-int ServoReceiver::GetAngleThousandths() {
+int ServoReceiver::GetAngleHundredths() {
   // Scale the received signal into hundredths of a degree
   int value = (int)map(rc_value_,
                        k_offset_rc_in,
