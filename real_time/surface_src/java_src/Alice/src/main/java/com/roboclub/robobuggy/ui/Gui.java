@@ -1,20 +1,16 @@
 package com.roboclub.robobuggy.ui;
 
-import java.awt.Color;
 import java.awt.Container;
-import java.awt.Frame;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.event.WindowEvent;
-import java.io.File;
+import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
-import com.roboclub.robobuggy.main.Robot;
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 
 /**
- * 
+ * {@link JFrame} used to represent the robobuggy gui
  * @author Trevor Decker
  * @author Kevin Brennan 
  *
@@ -22,22 +18,39 @@ import com.roboclub.robobuggy.main.Robot;
  * 
  * CHANGELOG: NONE
  * 
- * DESCRIPTION: TODO
+ * DESCRIPTION: This class is the top level controller for the graphical user interface displayed to the user 
  */
-
 public final class Gui extends JFrame {
 	private static final long serialVersionUID = 670947948979376738L;
+	private Container pane;
+	private ControlPanel ctrlPanel1;
+	private ControlPanel ctrlPanel2;
 
-	private ControlPanel ctrlPanel;
 	private AnalyticsPanel anlyPanel;
 	
 	private static Gui instance;
 	
+	/**
+	 * Enum of {@link Gui} publisher and subscriber topics
+	 */
 	public enum GuiPubSubTopics {
 		GUI_LOG_BUTTON_UPDATED,
 	}
 
-	 //added data panel to figure out adding data in real time to gui
+	/**
+	 * Repaints all objects in the {@link Gui}
+	 */
+	public void fixPaint(){
+		for(int i = 0;i<windowList.size();i++){
+			windowList.get(i).repaint(); 
+		}
+	}
+	
+	/**
+	 * Returns a reference to the one instance of the {@link Gui}. 
+	 * If none exists, one will be constructed.
+	 * @return a reference to the one instance of the {@link Gui}
+	 */
 	public static Gui getInstance() {
 		if (instance == null) {
 			instance = new Gui();
@@ -45,68 +58,42 @@ public final class Gui extends JFrame {
 		return instance;
 	}
 
-	public Gui() {
-		System.out.println("Starting GUI");
-		populate();
-		System.out.println("Populated!");
+	//The windowList is a list of all of the windows that are a part of the gui
+	private ArrayList<RobobuggyJFrame> windowList = new ArrayList<RobobuggyJFrame>();
+	
+	/**
+	 * Construct a new {@link Gui} object
+	 */
+	private Gui() {
+		new RobobuggyLogicNotification("StartingGUI", RobobuggyMessageLevel.NOTE);
+		RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow",1.0,1.0);	
+		AnalyticsPanel analyPane = new AnalyticsPanel();
+		ctrlPanel1 = new ControlPanel();
+		//addComponent syntax is (newComponent,percentageLeft,percentageTop,percentageWidth,percentageHeight)
+		mainWindow.addComponent(ctrlPanel1, 0.0, 0.0, .3, 1.0);
+		mainWindow.addComponent(analyPane, 0.3, 0.0, .7, 1.0);
+		//the repaint is needed for a non blank screen to appear when the gui is first displayed 
+		//mainWindow.resize(0, 0);
+		//mainWindow.fullScreenRepaint();
+		mainWindow.repaint();
+		windowList.add(mainWindow);
 	}
 
-	public void populate() {
-		this.setTitle("RoboBuggy Interface");
-		this.setExtendedState(Frame.MAXIMIZED_BOTH);
-		Container pane = this.getContentPane();
-		pane.setLayout(new GridBagLayout());
-		pane.setBackground(Color.DARK_GRAY);
-
-		try {
-			this.setIconImage(ImageIO.read(new File("images/rc_logo.png")));
-		} catch (Exception e) {
-			System.out.println("Unable to read icon image!");
-		}
-		
-		// Close ports and close window upon exit
-		this.addWindowListener(new java.awt.event.WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent windowEvent) {
-				try {
-					Robot.ShutDown();
-				}
-				catch(NullPointerException e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.weightx = 0.25;
-		gbc.weighty = 1.0;
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.fill = GridBagConstraints.BOTH;
-		ctrlPanel = new ControlPanel();
-		pane.add(ctrlPanel, gbc);
-		
-		gbc.weightx = 0.75;
-		gbc.gridx = 1;
-		gbc.gridy = 0;
-		anlyPanel = new AnalyticsPanel();
-		pane.add(anlyPanel, gbc);
-		
-
-		new EncoderGraph().makeDistanceGraph();
-		
-		this.pack();
-		this.setVisible(true);
-		
+	/**
+	 * returns the control panel
+	 * @return the control panel
+	 */
+	public ControlPanel getControlPanel() {
+		return ctrlPanel1;
 	}
 	
+	/**
+	 * Closes the {@link Gui}
+	 */
 	public static void close() {
-		System.out.println("Trying to close the window!");
+		new RobobuggyLogicNotification("trying to close gui", RobobuggyMessageLevel.NOTE);
 		instance.dispatchEvent(new WindowEvent(instance, WindowEvent.WINDOW_CLOSING));
-		System.out.println("Apparently we've closed the window!");
+		new RobobuggyLogicNotification("gui has been closed", RobobuggyMessageLevel.NOTE);
 	}
 
-	public static void EnableLogging() {
-		instance.ctrlPanel.enableLogging();
-	}
 }

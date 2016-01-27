@@ -1,8 +1,6 @@
 package com.roboclub.robobuggy.ui;
 
 import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 
 import javax.swing.BorderFactory;
@@ -15,11 +13,12 @@ import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
-import com.roboclub.robobuggy.ros.SensorChannel;
+import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 //import com.roboclub.robobuggy.ui.GpsPanel.LocTuple;
 
 /**
+ * {@link RobobuggyGUIContainer} used for displaying sensor data
  * @author Trevor Decker
  * @author Kevin Brennan 
  *
@@ -29,10 +28,9 @@ import com.roboclub.robobuggy.ros.Subscriber;
  * 
  * DESCRIPTION: TODO
  */
+public class DataPanel extends RobobuggyGUIContainer {
 
-public class DataPanel extends JPanel {
 	private static final long serialVersionUID = 3950373392222628865L;
-
 	private static final int MAX_LENGTH = 10;
 	
 	private GpsPanel gpsPanel;
@@ -46,27 +44,13 @@ public class DataPanel extends JPanel {
 	private JLabel steeringAng;
 	private JLabel errorNum;
 	private JLabel latitude,longitude;
-	private Subscriber gpsSub;
-	
+	/**
+	 * Construct a new {@link DataPanel}
+	 */
 	public DataPanel() {
-		this.setBorder(BorderFactory.createLineBorder(Color.black));
-		this.setLayout(new GridBagLayout());
-		
-		GridBagConstraints gbc = new GridBagConstraints();
-		
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.weightx = 0.34;
-		gbc.weighty = 1.0;
 		gpsPanel = new GpsPanel();
-		this.add(gpsPanel, gbc);
-		
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		gbc.weighty = 0;
-		gbc.weightx = 0.66;
-		this.add(createDataPanel(), gbc);
+		this.addComponent(gpsPanel, 0, 0, 1, .8);
+		this.addComponent(createDataPanel(), 0, .8, 1, .2);
 	}
 	
 	private JPanel createDataPanel() {
@@ -130,37 +114,36 @@ public class DataPanel extends JPanel {
 		panel.add(longitude);
 		
 		// Subscriber for Imu updates
-		new Subscriber(SensorChannel.IMU.getMsgPath(), new MessageListener() {
+		new Subscriber(NodeChannel.IMU.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				ImuMeasurement msg = (ImuMeasurement)m;
 				
-				// Limit measurement values to 10 characters
-				String tmp = new String();
-				
-				tmp = Double.toString(msg.yaw);
+				// Limit measurement values to 10 characters				
+				String tmp = Double.toString(msg.getYaw());
 				if (tmp.length() > MAX_LENGTH) tmp = tmp.substring(0, MAX_LENGTH);
 				aX.setText(tmp);
 				
-				tmp = Double.toString(msg.pitch);
+				tmp = Double.toString(msg.getPitch());
 				if (tmp.length() > MAX_LENGTH) tmp = tmp.substring(0, MAX_LENGTH);
 				aY.setText(tmp);
 
-				tmp = Double.toString(msg.roll);
+				tmp = Double.toString(msg.getRoll());
 				if (tmp.length() > MAX_LENGTH) tmp = tmp.substring(0, MAX_LENGTH);
 				aZ.setText(tmp);
 				
 			}
 		});
 		
-		gpsSub = new Subscriber(SensorChannel.GPS.getMsgPath(), new MessageListener() {
+		new Subscriber(NodeChannel.GPS.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
-				double lat = ((GpsMeasurement)m).latitude;
-				double longit = ((GpsMeasurement)m).longitude;
+				double lat = ((GpsMeasurement)m).getLatitude();
+				double longit = ((GpsMeasurement)m).getLongitude();
 			    latitude.setText(Double.toString(lat));
 			    longitude.setText(Double.toString(longit));
 				//latitude and longitude are both needed 
+			    Gui.getInstance().fixPaint();
 			}
 		});		
 		
@@ -175,18 +158,19 @@ public class DataPanel extends JPanel {
 		panel.add(distance);
 		
 		// Subscriber for encoder updates
-		new Subscriber(SensorChannel.ENCODER.getMsgPath(), new MessageListener() {
+		new Subscriber(NodeChannel.ENCODER.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				EncoderMeasurement msg = (EncoderMeasurement)m;
 				
-				String tmp = Double.toString(msg.velocity);
+				String tmp = Double.toString(msg.getVelocity());
 				if (tmp.length() > MAX_LENGTH) tmp = tmp.substring(0, MAX_LENGTH);
 				velocity.setText(tmp);
 				
-				tmp = Double.toString(msg.distance);
+				tmp = Double.toString(msg.getDistance());
 				if (tmp.length() > MAX_LENGTH) tmp = tmp.substring(0, MAX_LENGTH);
 				distance.setText(tmp);
+			    Gui.getInstance().fixPaint();
 			}
 		});
 		
@@ -196,18 +180,19 @@ public class DataPanel extends JPanel {
 		panel.add(steeringAng);
 		
 		// Subscriber for drive control updates
-		new Subscriber(SensorChannel.STEERING_COMMANDED.getMsgPath(), new MessageListener() {
+		new Subscriber(NodeChannel.STEERING_COMMANDED.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
-				steeringAng.setText(Integer.toString(((SteeringMeasurement)m).angle));
+				steeringAng.setText(Integer.toString(((SteeringMeasurement)m).getAngle()));
+			    Gui.getInstance().fixPaint();
 			}
 		});
 		
 		//Subscriber for GPS data - agirish
-		new Subscriber(SensorChannel.GPS.getMsgPath(), new MessageListener() {
+		new Subscriber(NodeChannel.GPS.getMsgPath(), new MessageListener() {
 			public void actionPerformed(String topicName, Message m) {
-				aX.setText(Double.toString(((GpsMeasurement)m).latitude)); //adding a value 
-				
+				aX.setText(Double.toString(((GpsMeasurement)m).getLatitude())); //adding a value 
+			    Gui.getInstance().fixPaint();
 			}
 		});
 		
@@ -220,6 +205,10 @@ public class DataPanel extends JPanel {
 	}
 	
 	//added by Abhinav Girish ; only temporary
+	/**
+	 * Returns the values of the {@link DataPanel}
+	 * @return the values of the {@link DataPanel}
+	 */
 	public String getValues()
 	{
 		String values = "";

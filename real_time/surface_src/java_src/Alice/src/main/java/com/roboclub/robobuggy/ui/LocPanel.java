@@ -13,25 +13,13 @@ import javax.swing.JPanel;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
-import com.roboclub.robobuggy.ros.SensorChannel;
+import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 
+/**
+ * {@link JPanel} used to display location information
+ */
 public class LocPanel extends JPanel {
-	private class LocTuple {
-		private double latitude;
-		private double longitude;
-		private LocTuple(double x, double y){
-			this.latitude = x;
-			this.longitude = y;
-		}
-		
-		public double getLatitude(){
-			return latitude;
-		}
-		public double getLongitude(){
-			return longitude;
-		}
-	}	
 	
 	private static final long serialVersionUID = 42L;
 	private ArrayList<LocTuple> locs;
@@ -43,6 +31,9 @@ public class LocPanel extends JPanel {
 	private int frameHeight;
 	private Subscriber gpsSub;
 	
+	/**
+	 * Construct a new {@link LocPanel}
+	 */
 	public LocPanel(){
 		locs = new ArrayList<LocTuple>();
 		imgNorthEast = new LocTuple(-79.93596322545625, 40.443946388131266);
@@ -54,12 +45,13 @@ public class LocPanel extends JPanel {
 		}
 		setup = false;
 		
-		gpsSub = new Subscriber(SensorChannel.GPS.getMsgPath(), new MessageListener() {
+		gpsSub = new Subscriber(NodeChannel.GPS.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
-				double latitude = ((GpsMeasurement)m).latitude;
-				double longitude = ((GpsMeasurement)m).longitude;
+				double latitude = ((GpsMeasurement)m).getLatitude();
+				double longitude = ((GpsMeasurement)m).getLongitude();
 				locs.add(new LocTuple(latitude, longitude));
+			    Gui.getInstance().fixPaint();
 			}
 		});		
 		
@@ -82,6 +74,7 @@ public class LocPanel extends JPanel {
 		g2d.fillOval((int)x, -(int)y, cDiameter, cDiameter);
 	}
 	
+	/**{@inheritDoc}*/
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);

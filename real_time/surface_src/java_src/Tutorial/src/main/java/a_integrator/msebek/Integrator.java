@@ -31,6 +31,13 @@ public class Integrator implements Node {
 		// No resources-needing-closing required.
 		return true;
 	}
+
+
+	@Override
+	public boolean startNode() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 	
 	

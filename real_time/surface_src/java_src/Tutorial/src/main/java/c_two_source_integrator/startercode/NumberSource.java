@@ -17,6 +17,12 @@ public class NumberSource implements Node {
 	public boolean shutdown() {
 		return true;
 	}
+
+	@Override
+	public boolean startNode() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 	
 	
