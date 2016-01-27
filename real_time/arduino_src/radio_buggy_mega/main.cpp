@@ -218,9 +218,6 @@ void watchdog_init()
 
 int main(void) 
 {
-    //have a short delay so that the board can be programed incase something goes wrong latter in the code
-    _delay_ms(1000);
-
     // turn the ledPin on
     // DEBUG_PORT |= _BV(DEBUG_PINN);
     DEBUG_PORT &= ~_BV(DEBUG_PINN);
