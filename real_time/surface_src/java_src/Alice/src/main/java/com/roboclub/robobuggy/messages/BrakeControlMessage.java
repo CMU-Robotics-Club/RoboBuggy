@@ -9,19 +9,19 @@ import com.roboclub.robobuggy.ros.Message;
  */
 public class BrakeControlMessage extends BaseMessage implements Message {
 
-	private static final String version_id = "brake_control_message";
+	private static final String VERSION_ID = "brake_control_message";
 	
 	private final boolean brakeEngaged;
 	private final Date timestamp;
 	
 	/**
 	 * Construct a new BrakeControlMessage
-	 * @param timestamp
-	 * @param brakeEngagged
+	 * @param timestamp {@link Date} representing the creation time
+	 * @param brakeEngagged whether or not the brakes are deployed
 	 */
 	public BrakeControlMessage(Date timestamp, boolean brakeEngagged) {
 		this.brakeEngaged = brakeEngagged;
-		this.timestamp = timestamp;
+		this.timestamp = new Date(timestamp.getTime());
 	}
 	
 	/**
@@ -35,17 +35,17 @@ public class BrakeControlMessage extends BaseMessage implements Message {
 	/**{@inheritDoc}*/
 	@Override
 	public String toLogString() {
-		return String.format("%s,'%s',%s\n", format_the_date(timestamp),
-				version_id, String.valueOf(brakeEngaged));
+		return String.format("%s,'%s',%s", formatDate(timestamp),
+				VERSION_ID, String.valueOf(brakeEngaged));
 	}
 
 	/**{@inheritDoc}*/
 	@Override
 	public Message fromLogString(String str) {
 		String[] spl = str.split(",");
-		Date d = try_to_parse_date(spl[0]);
-		boolean brake_state = Boolean.parseBoolean(spl[2]);
-		return new BrakeControlMessage(d, brake_state);
+		Date d = tryToParseDate(spl[0]);
+		boolean brakeState = Boolean.parseBoolean(spl[2]);
+		return new BrakeControlMessage(d, brakeState);
 	}
 
 }

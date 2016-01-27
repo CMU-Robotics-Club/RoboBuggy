@@ -1,5 +1,8 @@
 package com.roboclub.robobuggy.serial;
 
+/**
+ * Class representing a robobuggy serial message
+ */
 public class RBSerialMessage 
 {
 
@@ -27,25 +30,43 @@ public class RBSerialMessage
 
 	public static final byte FOOTER = (byte)0x0A;
 
-	private byte header_byte;
-	private int data_bytes;
+	private byte headerByte;
+	private int dataBytes;
 	
+	/**
+	 * Construct a new {@link RBSerialMessage} object
+	 * @param header byte of the RBSM message header
+	 * @param data 4 bytes of the RBSM message payload
+	 */
 	public RBSerialMessage(byte header, int data) 
 	{
-		header_byte = header;
-		data_bytes = data;
+		headerByte = header;
+		dataBytes = data;
 	}
 
+	/**
+	 * Returns the header byte of the {@link RBSerialMessage}
+	 * @return the header byte of the {@link RBSerialMessage}
+	 */
 	public byte getHeaderByte() 
 	{
-		return header_byte;
+		return headerByte;
 	}
 
+	/**
+	 * Returns the payload bytes of the {@link RBSerialMessage}
+	 * @return the payload bytes of the {@link RBSerialMessage}
+	 */
 	public int getDataWord() 
 	{
-		return data_bytes;
+		return dataBytes;
 	}
 	
+	/**
+	 * Determines if the headerByte is a valid RBSM header
+	 * @param headerByte header byte
+	 * @return true iff the headerByte is valid
+	 */
 	public static boolean isValidHeader(byte headerByte) 
 	{
 		switch (headerByte) 

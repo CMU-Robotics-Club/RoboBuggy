@@ -1,24 +1,38 @@
 package com.roboclub.robobuggy.map;
 
 import java.util.ArrayList;
+import java.util.List;
 
-//TODO write Line test system
+//TODO: write Line test system
 
+/**
+ * Object used to represent a line in a {@link Map}
+ */
 public class Line implements MapObject {
-	ArrayList<Point> points = new ArrayList<Point>();
-	final static double ON_LINE_DISTANCE = .1; // meters
-	boolean validLine = false;
+	private List<Point> points = new ArrayList<>();
+	private static final double ON_LINE_DISTANCE = .1; // meters
+	private boolean validLine = false;
 
 	// if the line is not valid then all operations are not valid
 	// must have at least two points
 
-	Line(ArrayList<Point> newPoints) {
+	/**
+	 * Construct a new {@link Line} from a {@link List} of {@link Point}s
+	 * @param newPoints {@link List} of {@link Point}s to form the 
+	 * {@link Line} from
+	 */
+	public Line(ArrayList<Point> newPoints) {
 		for (int i = 0; i < newPoints.size(); i++) {
 			points.add(newPoints.get(i));
 		}
 		updatedValidLine();
 	}
 
+	/**
+	 * Constructs a new {@link Line} given a start and end {@link Point}
+	 * @param aStart {@link Point} to start from
+	 * @param aEnd {@link Point} to end at
+	 */
 	public Line(Point aStart, Point aEnd) {
 		points = new ArrayList<>();
 		points.add(aStart);
@@ -26,11 +40,18 @@ public class Line implements MapObject {
 		updatedValidLine();
 	}
 
+	/**
+	 * Constructs a new empty line (containing no {@link Point}s)
+	 */
 	public Line() {
 		points = new ArrayList<Point>();
 		updatedValidLine();
 	}
 
+	/**
+	 * Determines if a {@link Line} is valid (contains 2 or more 
+	 * {@link Point}s)
+	 */
 	private void updatedValidLine() {
 		if (points.size() >= 2) {
 			validLine = true;
@@ -39,16 +60,28 @@ public class Line implements MapObject {
 		}
 	}
 
+	/**
+	 * Adds a new {@link Point} to the {@link Line}
+	 * @param newPoint {@link Point} to add
+	 */
 	public void addPointToLine(Point newPoint) {
 		points.add(newPoint);
 		updatedValidLine();
 	}
 
-	public void removePoint_byIndex(int i) {
+	/**
+	 * Removes a {@link Point} from the {@link Line}
+	 * @param i index of the {@link Point} to remove
+	 */
+	public void removePointByIndex(int i) {
 		points.remove(i);
 		updatedValidLine();
 	}
 
+	/**
+	 * Removes a {@link Point} from the {@link Line}
+	 * @param pointToRemove {@link Point} to remove
+	 */
 	public void removeEquivlentPoint(Point pointToRemove) {
 		for (int i = 0; i < points.size(); i++) {
 			if (points.get(i).equals(pointToRemove)) {
@@ -59,13 +92,21 @@ public class Line implements MapObject {
 		updatedValidLine();
 	}
 
-	// returns true if aPoint is on the line, flase otherwise
+	/**
+	 * Determines if a {@link Point} is on the {@link Line}
+	 * @param aPoint {@link Point} to check
+	 * @return true iff aPoint is on the line
+	 */
 	public boolean onLine(Point aPoint) {
 		assert (validLine);
 		return getDistance(aPoint) < ON_LINE_DISTANCE;
 	}
 
-	// returns true if the two lines intersect, false otherwise
+	/**
+	 * Determines if two {@link Line}s intersect
+	 * @param aLine {@link Line} to check
+	 * @return true iff the two lines intersect
+	 */
 	public boolean intersect(Line aLine) {
 		assert (validLine && aLine.validLine);
 		// TODO
@@ -91,6 +132,12 @@ public class Line implements MapObject {
 
 	// returns the distance from a point to the line
 	// returns in meters
+	/**
+	 * Calculates the distance from a {@link Point} to the nearest
+	 *  {@link Point} contained in the {@link Line}
+	 * @param aPoint {@link Point} to check
+	 * @return the distance to aPoint
+	 */
 	public double getDistance(Point aPoint) {
 		assert (validLine);
 		double minD = Double.MAX_VALUE;
@@ -106,21 +153,30 @@ public class Line implements MapObject {
 		return minD;
 	}
 
-	// combines line_a and line_b into 1 continuous line
-	public Line combineLine(Line line_a, Line line_b) {
-		assert (line_a.validLine);
-		assert (line_b.validLine);
+	/**
+	 * Combines lineA and lineB into 1 continuous {@link Line}
+	 * @param lineA one {@link Line} to combine
+	 * @param lineB second {@link Line} to combine
+	 * @return a new {@link Line} that combines the two
+	 */
+	public static Line combineLine(Line lineA, Line lineB) {
+		assert (lineA.validLine);
+		assert (lineB.validLine);
 		Line newLine = new Line();
-		for (int i = 0; i < line_a.points.size(); i++) {
-			newLine.addPointToLine(line_a.points.get(i));
+		for (int i = 0; i < lineA.points.size(); i++) {
+			newLine.addPointToLine(lineA.points.get(i));
 		}
-		for (int i = 0; i < line_b.points.size(); i++) {
-			newLine.addPointToLine(line_b.points.get(i));
+		for (int i = 0; i < lineB.points.size(); i++) {
+			newLine.addPointToLine(lineB.points.get(i));
 		}
 		return newLine;
 	}
 
-	// / returns true if aLine is a subsection of the line
+	/**
+	 * Returns true iff thisLine is a subsection of the {@link Line}
+	 * @param thisLine {@link Line} to compare to
+	 * @return true iff thisLine is a subsection of the {@link Line}
+	 */
 	public boolean isSubSection(Line thisLine) {
 		assert (validLine && thisLine.validLine);
 		for (int i = 0; i < thisLine.points.size(); i++) {
@@ -130,7 +186,8 @@ public class Line implements MapObject {
 		}
 		return true;
 	}
-
+	
+	/**{@inheritDoc}*/
 	@Override
 	public boolean equals(Object thisObject) {
 		if (!(thisObject instanceof Line)) {
@@ -149,6 +206,12 @@ public class Line implements MapObject {
 		// every point on either line is on the other line so they
 		// must be equivlent lines
 		return true;
+	}
+	
+	/**{@inheritDoc}*/
+	@Override
+	public int hashCode() {
+		return this.points.hashCode();
 	}
 
 }

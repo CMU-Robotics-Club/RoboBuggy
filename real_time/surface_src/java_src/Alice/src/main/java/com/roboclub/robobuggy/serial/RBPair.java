@@ -1,24 +1,37 @@
 package com.roboclub.robobuggy.serial;
 
+/**
+ * Class used to represent a message pair of number of bytes and
+ *  {@link RBSerialMessage}
+ */
 public class RBPair {
-	private int num_bytes_read;
-	private RBSerialMessage rb_message;
+	private int numBytesRead;
+	private RBSerialMessage rbMessage;
 
-	RBPair(int num_bytes_read, RBSerialMessage new_message) {
-		this.num_bytes_read = num_bytes_read;
-		this.rb_message = new_message;
+	/**
+	 * Construct a new {@link RBPair}
+	 * @param numBytesRead number of bytes read
+	 * @param newMessage {@link RBSerialMessage} read
+	 */
+	public RBPair(int numBytesRead, RBSerialMessage newMessage) {
+		this.numBytesRead = numBytesRead;
+		this.rbMessage = newMessage;
 	}
-		
+	
+	/**
+	 * Returns the number of bytes read
+	 * @return the number of bytes read
+	 */
 	public int getNumberOfBytesRead() {
-		return num_bytes_read;
+		return numBytesRead;
 	}
-		
+	
+	/**
+	 * Returns the {@link RBSerialMessage} read
+	 * @return the {@link RBSerialMessage} read
+	 */
 	public RBSerialMessage getMessage() {
-		return rb_message;
+		return rbMessage;
 	}
 
-	public int get_num_bytes_read() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 }

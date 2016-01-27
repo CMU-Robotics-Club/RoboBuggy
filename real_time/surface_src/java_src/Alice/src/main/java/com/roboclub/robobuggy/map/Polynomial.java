@@ -1,6 +1,7 @@
 package com.roboclub.robobuggy.map;
 
 /**
+ * Object used to represent a polynomial
  * @author Trevor Decker
  *
  * @version 0.5
@@ -9,7 +10,6 @@ package com.roboclub.robobuggy.map;
  * 
  *          DESCRIPTION: TODO
  */
-
 public class Polynomial implements MapObject {
 	// TODO
 }

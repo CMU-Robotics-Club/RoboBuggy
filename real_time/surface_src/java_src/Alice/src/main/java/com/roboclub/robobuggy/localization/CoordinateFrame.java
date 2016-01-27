@@ -1,5 +1,8 @@
 package com.roboclub.robobuggy.localization;
 
+/**
+ * Class used to represent a coordinate frame
+ */
 public class CoordinateFrame {
 	// TODO
 }

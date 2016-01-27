@@ -33,7 +33,6 @@ import javax.swing.table.DefaultTableModel;
 //import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
-import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
 
 public class MessageListenerGui extends JPanel implements ActionListener {

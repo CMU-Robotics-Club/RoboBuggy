@@ -5,6 +5,7 @@ import java.util.Date;
 import com.roboclub.robobuggy.ros.Message;
 
 /**
+ * Message used to pass commanded steering angle messages over BuggyROS
  * @author ?
  *
  * @version 0.5
@@ -13,28 +14,49 @@ import com.roboclub.robobuggy.ros.Message;
  * 
  *          DESCRIPTION: TODO
  */
-
-// Represents raw measurement from the IMU
 public class WheelAngleCommand implements Message {
 	// V0.0 had int
 	// V0.1 has float. Note that round-off is hundreths of a degree.
-	public static final String version_id = "autonomous_angleV0.1";
+	public static final String VERSION_ID = "autonomous_angleV0.1";
 
-	public Date timestamp;
-	public float angle;
+	private Date timestamp;
+	private float angle;
 
-	// Makes an encoder measurement with the time of Now.
+	/**
+	 * Construct a new {@link WheelAngleCommand} object at time now
+	 * @param angle the commanded angle 
+	 * (Note that round-off is hundreths of a degree)
+	 */
 	public WheelAngleCommand(float angle) {
 		this.angle = angle;
 		this.timestamp = new Date();
 	}
 
+	/**
+	 * Get the timestamp of the wheel command message
+	 * @return the timestamp of this message
+	 */
+	public Date getTimestamp(){
+		return new Date(timestamp.getTime());
+	}
+
+	/**
+	 * Get the angle commanded for the wheel
+	 * @return the commanded angle
+     */
+	public float getAngle(){
+		return angle;
+	}
+	
+
+	/**{@inheritDoc}*/
 	@Override
 	public String toLogString() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/**{@inheritDoc}*/
 	@Override
 	public Message fromLogString(String str) {
 		// TODO Auto-generated method stub
