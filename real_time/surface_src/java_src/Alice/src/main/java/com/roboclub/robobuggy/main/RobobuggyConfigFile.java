@@ -1,8 +1,5 @@
 package com.roboclub.robobuggy.main;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
-
 // add jason parser for RobobuggyConfigFile
 /**
  * Class used to store the system configuration values
@@ -28,9 +25,9 @@ public final class  RobobuggyConfigFile {
 	public static final boolean VISION_SYSTEM_ENABLED = true;
 	
 	//sensor com ports
-	public static  final String COM_PORT_IMU = "COM8";
-	public static  final String COM_PORT_GPS = "COM14";
-	public static  final String COM_PORT_RBSM = "COM4";
+	public static  final String COM_PORT_IMU = "COM6";
+	public static  final String COM_PORT_GPS = "COM12";
+	public static  final String COM_PORT_RBSM = "COM3";
 	
 	// iff false, connect to serial sensors 
 	public static final boolean DATA_PLAY_BACK = false;

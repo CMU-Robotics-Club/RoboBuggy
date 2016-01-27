@@ -68,7 +68,6 @@ public class RobobuggyMainFile {
 			new RobobuggyLogicNotification("HELLO", RobobuggyMessageLevel.WARNING);
 		}
     }
-    
     private static List<String> getAvailablePorts() {
 
         List<String> list = new ArrayList<String>();

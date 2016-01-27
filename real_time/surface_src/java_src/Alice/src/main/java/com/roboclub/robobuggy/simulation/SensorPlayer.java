@@ -2,6 +2,7 @@ package com.roboclub.robobuggy.simulation;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Date;
@@ -74,7 +75,7 @@ public class SensorPlayer implements Runnable {
 			//get info from the header file
 			Date loggingDate = new Date();
 			
-			long prevTimeInMillis = loggingDate.getTime();
+			long playBackStartTime = loggingDate.getTime();
 			
 			JSONArray sensorDataArray = (JSONArray) completeLogFile.get("sensor_data");
 			long sensorStartTimeInMilis = 0;
@@ -92,15 +93,14 @@ public class SensorPlayer implements Runnable {
 				}
 
 				long sensorTimeFromStart = currentSensorTimeInMillis -sensorStartTimeInMilis; 
-				long realTimeFromStart = currentTime - prevTimeInMillis;				
+				long realTimeFromStart = currentTime - playBackStartTime;				
 				long playbackSpeed = 100;
 				long sleepTime = playbackSpeed*realTimeFromStart - sensorTimeFromStart;
 				new RobobuggyLogicNotification("sleepingTime:"+sleepTime, RobobuggyMessageLevel.NOTE);
-				if(sleepTime < 0 && false){ 
-					//TODO change back to sleepTime
-					Thread.sleep(-sleepTime/1000000);
-//					Thread.sleep(500);
+				if(sleepTime < 0){ 
+					Thread.sleep(-sleepTime/1000);
 				}
+			
 				String sensorName = (String) sensor.get("name");
 				if(sensorName == null){
 					new RobobuggyLogicNotification("sensor name is not in this lines log line, this log cannot be repaid",
@@ -108,9 +108,12 @@ public class SensorPlayer implements Runnable {
 				}else{
 					JSONObject sensorParams = (JSONObject) sensor.get("params");
 					System.out.println(sensorName);
+					//TODO: add fp_hash
+					//TODO: add command_steering
+					
 					switch(sensorName) {
 				
-						case "IMU":
+						case "imu":
 							double yaw = (double) sensorParams.get("yaw");
 							double pitch = (double) sensorParams.get("pitch");
 							double roll = (double) sensorParams.get("roll");
@@ -168,8 +171,7 @@ public class SensorPlayer implements Runnable {
 							steeringPub.publish(new SteeringMeasurement((int) steeringAngle));
 							break;
 						
-						case "Encoder":
-						
+						case "encoder":						
 							double dataword = (double) sensorParams.get("dataword");
 							double distance = (double) sensorParams.get("distance");
 							double velocity = 0;

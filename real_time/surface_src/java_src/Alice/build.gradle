@@ -62,4 +62,8 @@ buildscript{
     classpath 'net.saliman:gradle-cobertura-plugin:2.2.5'
   }
 }
+<<<<<<< HEAD
 cobertura.coverageFormats = ['html', 'xml']
+=======
+cobertura.coverageFormats = ['html', 'xml']
+>>>>>>> master

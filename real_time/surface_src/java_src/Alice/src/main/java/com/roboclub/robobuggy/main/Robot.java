@@ -47,7 +47,6 @@ public final class Robot implements RosMaster {
 		System.out.println("Starting Robot");
 		autonomous = RobobuggyConfigFile.AUTONOMOUS_DEFAULT;
 		nodeList = new LinkedList<>();
-		RobobuggyLogicNotification.setupLogicException(NodeChannel.LOGIC_EXCEPTION);
 		new RobobuggyLogicNotification("Logic Exception Setup properly" ,  RobobuggyMessageLevel.NOTE);
 		
 		// Initialize Nodes
