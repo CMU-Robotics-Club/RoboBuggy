@@ -265,6 +265,9 @@ int main(void)
     printf("Branch clean? %d\r\n", FP_CLEANSTATUS);
     printf("\nEnd of compilation information\r\n");
 
+    cli();
+    int auton_last = millis();
+    sei();
     watchdog_init();
 
     // loop forever
@@ -283,6 +286,9 @@ int main(void)
                 {
                   case RBSM_MID_MEGA_STEER_ANGLE:
                     auto_steering_angle = (int)(long)new_command.data;
+                    cli();
+                    auton_last = millis();
+                    sei();
                     printf("Got steering message for %d.\n", auto_steering_angle);
                     break;
 
@@ -390,6 +396,18 @@ int main(void)
 
         if(g_is_autonomous)
         {
+            cli();
+            timenow = micros();
+            int delta = timenow - auton_last;
+            sei();
+            if (delta > CONNECTION_TIMEOUT_US)
+            {
+                cli();
+                brake_drop();
+                while(1);
+                {
+                }
+            }
             steering_set(auto_steering_angle);
             g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)(auto_steering_angle));
         }
