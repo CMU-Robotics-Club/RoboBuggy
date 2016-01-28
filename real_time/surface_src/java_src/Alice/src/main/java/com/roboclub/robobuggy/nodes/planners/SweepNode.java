@@ -17,7 +17,6 @@ public class SweepNode extends PathPlannerNode {
     private static final double STEERING_ANGLE_LOWER_BOUND = -10;
     private static final double STEERING_ANGLE_UPPER_BOUND = 10;
     private static final double STEERING_ANGLE_INCREMENT = 0.1;
-    private Thread steeringAngleThread;
     private Publisher steeringPublisher;
 
     /**
