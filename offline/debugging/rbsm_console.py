@@ -76,13 +76,16 @@ def rbsm_worker(state):
   message_cache = state["message_cache"]
   rbsm_endpoint = state["rbsm_endpoint"]
   
-  #f = open('bytes from arduino.txt', wt) #delete
+  f = open('bytes from arduino.txt', 'wt') #delete
 
   while(1):
     new_message = rbsm_endpoint.read()
     if(new_message["status"] == "locked"):
       # update status
       state["status_line"] = "Locked."
+
+      if (new_message["id"] == 0):
+        print("Found encoder")
 
       # save new data
       message_cache.update([
@@ -98,7 +101,7 @@ def rbsm_worker(state):
       redraw(state)
     else:
       state["status_line"] = "Unlocked!"
-#f.close() #delete
+  f.close() #delete
 
   return None
 

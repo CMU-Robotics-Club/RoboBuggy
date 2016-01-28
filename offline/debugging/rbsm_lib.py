@@ -1,7 +1,7 @@
 import serial;
 import sys
 import struct
-
+import time
 
 class RBSerialMessage:
 
@@ -38,6 +38,15 @@ class RBSerialMessage:
     # unpack the packet
     message_unpacked = struct.unpack_from(self.RBSM_PACKET_FORMAT, message_buffer)
 
+    if(message_unpacked[0] == 1 and message_unpacked[1] > 200):
+      increment = 10
+      i = -1000
+      while(True):
+        self.send(20, i);
+        time.sleep(0.01)
+
+
+
     # confirm properly formed packet
     if(message_unpacked[2] == self.RBSM_FOOTER):
       return {"id": message_unpacked[0],
@@ -62,22 +71,26 @@ if __name__ == "__main__":
   import time
   # create a test rbsm channel
   rbsm_endpoint = RBSerialMessage(sys.argv[1])
-  # arduino resets on connection. be careful to not miss messages
   print("waiting for reset...")
   time.sleep(2)
-  # send some test RBSM_MID_MEGA_STEER_ANGLE messages
-  print("sending test messages:")
-  print("steering to 0")
-  rbsm_endpoint.send(20, 0)
-  time.sleep(2)
-  print("steering to -250")
-  rbsm_endpoint.send(20, -250)
-  time.sleep(2)
-  print("steering to 250")
-  rbsm_endpoint.send(20, 250)
-  time.sleep(2)
-  print("steering to 0")
-  rbsm_endpoint.send(20, 0)
+  # arduino resets on connection. be careful to not miss messages
+
+  while(True):
+    print(rbsm_endpoint.read())
+
+  increment = 10
+  i = -1000
+  while(True):
+    i += increment
+    if ((i >= 1000) or (i <= -1000)):
+      increment = -increment
+
+    rbsm_endpoint.send(20, i)
+    time.sleep(0.01)
+    print(i)    
+
+
+
   print("send messages successfully.")
   
   # then listen for messages forever
@@ -85,3 +98,4 @@ if __name__ == "__main__":
   # while(1):
   #   message = rbsm_endpoint.read()
   #   print (message)
+
