@@ -1,5 +1,6 @@
 package com.roboclub.robobuggy.nodes.planners;
 
+import com.roboclub.robobuggy.messages.BrakeControlMessage;
 import com.roboclub.robobuggy.messages.DriveControlMessage;
 import com.roboclub.robobuggy.messages.PoseMessage;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
@@ -18,6 +19,7 @@ public class SweepNode extends PathPlannerNode {
     private static final double STEERING_ANGLE_UPPER_BOUND = 20;
     private static final double STEERING_ANGLE_INCREMENT = 3;
     private Publisher steeringPublisher;
+    private Publisher brakePublisher;
 
     /**
      * Construct a new {@link PathPlannerNode}
@@ -29,6 +31,8 @@ public class SweepNode extends PathPlannerNode {
         super(channel);
 
         steeringPublisher = new Publisher(NodeChannel.DRIVE_CTRL.getMsgPath());
+        brakePublisher = new Publisher(NodeChannel.BRAKE_CTRL.getMsgPath());
+
         Thread t1 = new Thread(new Runnable() {
             private boolean sweepUp = false;
 
@@ -53,6 +57,8 @@ public class SweepNode extends PathPlannerNode {
                 	}	
                 	
                 	steeringPublisher.publish(new DriveControlMessage(new Date(), currentCommandedSteeringAngle));
+                    brakePublisher.publish(new BrakeControlMessage(new Date(), false));
+
             		System.out.println("sending angle: "+currentCommandedSteeringAngle);
                 }            }});  
             t1.start();
