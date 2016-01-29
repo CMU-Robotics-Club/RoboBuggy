@@ -21,6 +21,8 @@
 #include "system_clock.h"
 #include "fingerprint.h"
 
+// Use 76800 or 250k. 115200 does not work well with 16MHz clock.
+// ATMega 2560 datasheet Table 22-12.
 #define BAUD 76800
 
 #define DEBUG_DDR  DDRB
@@ -336,7 +338,7 @@ int main(void)
             g_is_autonomous = false;
         }
 
-        // detect dropped conections
+        // detect dropped radio conections
         // note: interrupts must be disabled while checking system clock so that
         //       timestamps are not updated under our feet
         cli(); //disable interrupts
@@ -421,7 +423,7 @@ int main(void)
         //Feed the watchdog to indicate things aren't timing out
         wdt_reset();
     
-    } //End while
+    } //End while(true)
 
     return 0;
 }
@@ -455,7 +457,7 @@ ISR(RX_AUTON_INT)
 
 ISR(ENCODER_INT) 
 {
-    unsigned long time_now = micros(); //TODO: Is this atomic?
+    unsigned long time_now = micros();
     // debounce encoder tick count
     if(time_now - g_encoder_time_last > ENCODER_TIMEOUT_US) 
     {
@@ -463,5 +465,4 @@ ISR(ENCODER_INT)
     }
     g_encoder_time_last = time_now;
 }
-
 
