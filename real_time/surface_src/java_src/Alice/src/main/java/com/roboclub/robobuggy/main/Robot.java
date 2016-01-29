@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.roboclub.robobuggy.nodes.localizers.GPSLocalizer;
 import com.roboclub.robobuggy.nodes.planners.GPSTrackPlannerNode;
+import com.roboclub.robobuggy.nodes.planners.SweepNode;
 import com.roboclub.robobuggy.nodes.sensors.GpsNode;
 import com.roboclub.robobuggy.nodes.sensors.ImuNode;
 import com.roboclub.robobuggy.nodes.sensors.RBSMNode;
@@ -50,13 +51,14 @@ public final class Robot implements RosMaster {
 		new RobobuggyLogicNotification("Logic Exception Setup properly" ,  RobobuggyMessageLevel.NOTE);
 		
 		// Initialize Nodes
-		nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.COM_PORT_GPS));
-		nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.COM_PORT_IMU));
+		//nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.COM_PORT_GPS));
+		//nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.COM_PORT_IMU));
 		nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING,
 				RobobuggyConfigFile.COM_PORT_RBSM, COMMAND_PERIOD));
-		nodeList.add(new GPSTrackPlannerNode(NodeChannel.BRAKE_CTRL,
-				RobobuggyConfigFile.LOG_FILE_LOCATION));
-		nodeList.add(new GPSLocalizer(NodeChannel.POSE));
+		nodeList.add(new SweepNode(NodeChannel.BRAKE_CTRL));
+//		nodeList.add(new GPSTrackPlannerNode(NodeChannel.BRAKE_CTRL,
+//				RobobuggyConfigFile.LOG_FILE_LOCATION));
+//		nodeList.add(new GPSLocalizer(NodeChannel.POSE));
 	}
 	
 	/***************************************   Getters ********************************/

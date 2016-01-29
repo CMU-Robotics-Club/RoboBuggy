@@ -178,7 +178,6 @@ public class RBSMNode extends SerialNode {
 			case RBSerialMessage.RBSM_MID_MEGA_STEER_FEEDBACK:
 				// This is a delta-distance! Do a thing!
 				potValue = message.getDataWord();
-				System.out.println(potValue);
 				messagePubPot.publish(new SteeringMeasurement(-(potValue + OFFSET)/ARD_TO_DEG));
 				break;
 			case RBSerialMessage.RBSM_MID_MEGA_STEER_ANGLE:
@@ -186,10 +185,37 @@ public class RBSMNode extends SerialNode {
 				messagePubControllerSteering.publish(new SteeringMeasurement(steeringAngle));
 				break;
 			case RBSerialMessage.FP_HASH:
-				System.out.println(message.getDataWord());
+			//	System.out.println(message.getDataWord());
 				messagePubFp.publish(new FingerPrintMessage(message.getDataWord()));
 				break;
+			case RBSerialMessage.RBSM_MID_ERROR:
+				//TODO
+				break;
+			case RBSerialMessage.ENC_TICKS_SINCE_LAST:
+				//TODO 
+				break;
+			case RBSerialMessage.ENC_MS_SINCE_RESET:
+				//TODO
+				break;
+			case RBSerialMessage.BATTERY:
+				//TODO publish message for batery level
+				break;
+			case RBSerialMessage.BRAKE:
+				//TODO publish message for brake
+				break;
+			case RBSerialMessage.AUTO:
+				//TODO publish message for atuo
+				break;
+			case RBSerialMessage.RBSM_MID_DEVICE_ID:
+				//TODO publish message for device ID
+				break;
+/*			case RBSerialMessage.STEERING:
+				//TODO publish message for steering
+				break;
+				*/
 			default: //Unhandled or invalid RBSM message header was received.
+				System.out.println("headerByte"+headerByte);
+
 				new RobobuggyLogicNotification("Invalid RBSM message header\n", RobobuggyMessageLevel.NOTE);
 				break;
 		}
@@ -269,6 +295,7 @@ public class RBSMNode extends SerialNode {
 		 */
 		@Override
 		protected void update() {
+			System.out.println("actually sending "+commandedAngle);
 			RBSMSteeringMessage msgSteer = new RBSMSteeringMessage(commandedAngle);
 			send(msgSteer.getMessageBytes());
 			RBSMBrakeMessage msgBrake = new RBSMBrakeMessage(commandedBrakeEngaged);
