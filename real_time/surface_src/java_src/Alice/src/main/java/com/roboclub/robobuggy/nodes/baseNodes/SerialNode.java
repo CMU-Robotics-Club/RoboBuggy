@@ -89,6 +89,7 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 	
 		try {
 			serialOutput.write(bytes);
+			serialOutput.flush();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

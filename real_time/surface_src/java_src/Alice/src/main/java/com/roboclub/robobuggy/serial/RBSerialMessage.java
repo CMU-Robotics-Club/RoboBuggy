@@ -10,7 +10,7 @@ public class RBSerialMessage
 	public static final byte ENC_TICK_SINCE_RESET = (byte)1;
 	public static final byte ENC_MS_SINCE_RESET = (byte)2;
 
-	public static final byte RBSM_MID_MEGA_BRAKE_COMMAND = (byte)18;
+	public static final byte RBSM_MID_MEGA_BRAKE_COMMAND = (byte)21;
 	public static final byte RBSM_MID_MEGA_STEER_COMMAND = (byte)20;
 	public static final byte STEERING = (byte)24;
 	public static final byte BRAKE = (byte)21;

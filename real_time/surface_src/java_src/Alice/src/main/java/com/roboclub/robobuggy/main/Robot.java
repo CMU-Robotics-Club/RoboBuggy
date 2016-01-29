@@ -20,7 +20,7 @@ import com.roboclub.robobuggy.ros.NodeChannel;
 public final class Robot implements RosMaster {
 
 	/************************************** Sets all internal private variables *************************/
-	private static final int COMMAND_PERIOD = 1000;
+	private static final int COMMAND_PERIOD = 500;
 	private static Robot instance;
 	private boolean autonomous;
 	private List<Node> nodeList;
