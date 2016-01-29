@@ -38,7 +38,7 @@ public class OdomLocalizer  extends PeriodicNode{
 	
 	
 	public OdomLocalizer() {
-		super(new  BuggyBaseNode(NodeChannel.POSE), 1000);
+		super(new  BuggyBaseNode(NodeChannel.POSE), 100);
 		//Initialize subscriber to encoder measurements
 		new Subscriber(NodeChannel.ENCODER.getMsgPath(), new MessageListener() {
 		@Override
@@ -61,10 +61,6 @@ public class OdomLocalizer  extends PeriodicNode{
 				mostRecentAngle = steerMeasur.getAngle();				
 			}
 		});
-		
-			
-			
-			
 	}
 
 
