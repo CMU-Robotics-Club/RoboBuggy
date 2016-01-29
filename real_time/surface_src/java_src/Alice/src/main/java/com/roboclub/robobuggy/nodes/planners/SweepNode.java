@@ -30,7 +30,8 @@ public class SweepNode extends PathPlannerNode {
 
         steeringPublisher = new Publisher(NodeChannel.DRIVE_CTRL.getMsgPath());
         Thread t1 = new Thread(new Runnable() {
-        boolean sweepUp = false;
+            private boolean sweepUp = false;
+
             public void run()
             {
                 while(true){
