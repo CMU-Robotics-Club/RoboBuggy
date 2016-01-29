@@ -14,9 +14,9 @@ import java.util.Date;
 public class SweepNode extends PathPlannerNode {
 
     private double currentCommandedSteeringAngle = 0;
-    private static final double STEERING_ANGLE_LOWER_BOUND = -10;
-    private static final double STEERING_ANGLE_UPPER_BOUND = 10;
-    private static final double STEERING_ANGLE_INCREMENT = .1;
+    private static final double STEERING_ANGLE_LOWER_BOUND = -20;
+    private static final double STEERING_ANGLE_UPPER_BOUND = 20;
+    private static final double STEERING_ANGLE_INCREMENT = 3;
     private Publisher steeringPublisher;
 
     /**

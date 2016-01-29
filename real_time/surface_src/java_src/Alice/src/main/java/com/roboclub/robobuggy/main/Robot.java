@@ -1,16 +1,12 @@
 package com.roboclub.robobuggy.main;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import com.roboclub.robobuggy.nodes.localizers.GPSLocalizer;
-import com.roboclub.robobuggy.nodes.planners.GPSTrackPlannerNode;
 import com.roboclub.robobuggy.nodes.planners.SweepNode;
-import com.roboclub.robobuggy.nodes.sensors.GpsNode;
-import com.roboclub.robobuggy.nodes.sensors.ImuNode;
 import com.roboclub.robobuggy.nodes.sensors.RBSMNode;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.NodeChannel;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * 
@@ -20,7 +16,7 @@ import com.roboclub.robobuggy.ros.NodeChannel;
 public final class Robot implements RosMaster {
 
 	/************************************** Sets all internal private variables *************************/
-	private static final int COMMAND_PERIOD = 500;
+	private static final int COMMAND_PERIOD = 50;
 	private static Robot instance;
 	private boolean autonomous;
 	private List<Node> nodeList;
@@ -59,6 +55,11 @@ public final class Robot implements RosMaster {
 //		nodeList.add(new GPSTrackPlannerNode(NodeChannel.BRAKE_CTRL,
 //				RobobuggyConfigFile.LOG_FILE_LOCATION));
 //		nodeList.add(new GPSLocalizer(NodeChannel.POSE));
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/***************************************   Getters ********************************/
