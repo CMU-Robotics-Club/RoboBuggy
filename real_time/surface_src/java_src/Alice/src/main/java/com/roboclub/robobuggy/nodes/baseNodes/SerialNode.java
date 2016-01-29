@@ -7,7 +7,13 @@ import java.io.OutputStream;
 import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
-import gnu.io.*;
+
+import gnu.io.CommPort;
+import gnu.io.CommPortIdentifier;
+import gnu.io.NoSuchPortException;
+import gnu.io.SerialPort;
+import gnu.io.PortInUseException;
+import gnu.io.UnsupportedCommOperationException;
 
 
 /**

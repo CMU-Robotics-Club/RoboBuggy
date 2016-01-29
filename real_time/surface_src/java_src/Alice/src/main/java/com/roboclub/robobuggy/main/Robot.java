@@ -20,7 +20,9 @@ public final class Robot implements RosMaster {
 	private static Robot instance;
 	private boolean autonomous;
 	private List<Node> nodeList;
-	
+	//TODO find out the actual time we need to put here
+	private static final int ARDUINO_BOOTLOADER_TIMEOUT = 2000;
+
 	/************************************* Set of all public functions ********************************/
 
 	/**{@inheritDoc}*/
@@ -56,9 +58,9 @@ public final class Robot implements RosMaster {
 //				RobobuggyConfigFile.LOG_FILE_LOCATION));
 //		nodeList.add(new GPSLocalizer(NodeChannel.POSE));
 		try {
-			Thread.sleep(2000);
+			Thread.sleep(ARDUINO_BOOTLOADER_TIMEOUT);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			new RobobuggyLogicNotification("Couldn't wait for bootloader, shutting down", RobobuggyMessageLevel.EXCEPTION);
 		}
 	}
 	
