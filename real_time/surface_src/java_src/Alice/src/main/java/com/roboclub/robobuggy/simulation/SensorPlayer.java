@@ -94,6 +94,7 @@ public class SensorPlayer implements Runnable {
 
 				long sensorTimeFromStart = currentSensorTimeInMillis -sensorStartTimeInMilis; 
 				long realTimeFromStart = currentTime - playBackStartTime;				
+
 				long playbackSpeed = 100;
 				long sleepTime = playbackSpeed*realTimeFromStart - sensorTimeFromStart;
 				new RobobuggyLogicNotification("sleepingTime:"+sleepTime, RobobuggyMessageLevel.NOTE);
@@ -171,7 +172,7 @@ public class SensorPlayer implements Runnable {
 							steeringPub.publish(new SteeringMeasurement((int) steeringAngle));
 							break;
 						
-						case "encoder":						
+						case "encoder":
 							double dataword = (double) sensorParams.get("dataword");
 							double distance = (double) sensorParams.get("distance");
 							double velocity = 0;
