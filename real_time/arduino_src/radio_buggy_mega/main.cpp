@@ -97,6 +97,13 @@
 
 #define WDT_INT WDT_vect
 
+#define DEBUG
+
+#ifdef DEBUG
+    #define dbg_printf(...) printf(__VA_ARGS__)
+#else
+    #define dbg_printf 
+#endif
 
 // Global state
 static bool g_brake_state_engaged; // 0 = disengaged, !0 = engaged.
@@ -257,18 +264,16 @@ int main(void)
     g_auton_rx.Init(&RX_AUTON_PIN, RX_AUTON_PINN, RX_AUTON_INTN);
 
     //Output information about code on arduino once to uart2 on startup.
-    printf("Hello world! This is debug information\r\n");
-    printf("Compilation date: %s\r\n", FP_COMPDATE);
-    printf("Compilation time: %s\r\n", FP_COMPTIME);
-    printf("Branch name: %s\r\n", FP_BRANCHNAME);
-    printf("Most recent commit: %s\r\n", FP_STRCOMMITHASH);
-    printf("Branch clean? %d\r\n", FP_CLEANSTATUS);
-    printf("\nEnd of compilation information\r\n");
+    dbg_printf("Hello world! This is debug information\r\n");
+    dbg_printf("Compilation date: %s\r\n", FP_COMPDATE);
+    dbg_printf("Compilation time: %s\r\n", FP_COMPTIME);
+    dbg_printf("Branch name: %s\r\n", FP_BRANCHNAME);
+    dbg_printf("Most recent commit: %s\r\n", FP_STRCOMMITHASH);
+    dbg_printf("Branch clean? %d\r\n", FP_CLEANSTATUS);
+    dbg_printf("\nEnd of compilation information\r\n");
 
-    cli();
-    int auton_last = millis();
-    sei();
-    watchdog_init();
+    int auton_last = micros();
+    //watchdog_init();
 
     // loop forever
     while(1) 
@@ -286,16 +291,14 @@ int main(void)
                 {
                   case RBSM_MID_MEGA_STEER_ANGLE:
                     auto_steering_angle = (int)(long)new_command.data;
-                    cli();
-                    auton_last = millis();
-                    sei();
-                    printf("Got steering message for %d.\n", auto_steering_angle);
+                    auton_last = micros();
+                    dbg_printf("Got steering message for %d.\n", auto_steering_angle);
                     break;
 
                   default:
                     // report unknown message
                     g_rbsm.Send(RBSM_MID_ERROR, RBSM_EID_RBSM_INVALID_MID);
-                    printf("Got message with invalid mid %d and data %d",
+                    dbg_printf("Got message with invalid mid %d and data %d\n",
                            new_command.message_id,
                            new_command.data);
                     break;
@@ -397,7 +400,7 @@ int main(void)
         if(g_is_autonomous)
         {
             cli();
-            timenow = micros();
+            int timenow = micros();
             int delta = timenow - auton_last;
             sei();
             if (delta > CONNECTION_TIMEOUT_US)
@@ -437,7 +440,7 @@ int main(void)
         g_rbsm.Send(RBSM_MID_COMP_HASH, (long unsigned)(FP_HEXCOMMITHASH));
 
         //Feed the watchdog to indicate things aren't timing out
-        wdt_reset();
+        //wdt_reset();
     
     } //End while
 
