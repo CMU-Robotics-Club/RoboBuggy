@@ -212,7 +212,7 @@ void watchdog_init()
     WDTCSR |= (1 << WDCE) | (1 << WDE);
 
     //This next line must run within 4 clock cycles of the above line.
-    //See Section 12.4 of the ATMEGA2560 code for additional details
+    //See Section 12.4 of the ATMEGA2560 datasheet for additional details
     WDTCSR = 
             (1 << WDIE) //Call ISR on timeout
             | (1 << WDP2) // w/ WDP1 sets timeout to 1 second
@@ -273,7 +273,7 @@ int main(void)
     dbg_printf("\nEnd of compilation information\r\n");
 
     int auton_last = micros();
-    //watchdog_init();
+    watchdog_init();
 
     // loop forever
     while(1) 
@@ -440,7 +440,7 @@ int main(void)
         g_rbsm.Send(RBSM_MID_COMP_HASH, (long unsigned)(FP_HEXCOMMITHASH));
 
         //Feed the watchdog to indicate things aren't timing out
-        //wdt_reset();
+        wdt_reset();
     
     } //End while
 
