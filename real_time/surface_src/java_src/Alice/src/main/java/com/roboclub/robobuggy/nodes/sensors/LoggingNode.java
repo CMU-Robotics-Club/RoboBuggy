@@ -1,6 +1,8 @@
 package com.roboclub.robobuggy.nodes.sensors;
 
 import java.io.BufferedOutputStream;
+import java.io.File;
+
 import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
@@ -21,6 +23,7 @@ import com.roboclub.robobuggy.ui.Gui;
 public class LoggingNode extends BuggyDecoratorNode {
 
 	private Publisher loggingButtonPub;
+	private File outputFile;
 	// Get the folder that we're going to use
 
 	// TODO get folder name from file.
@@ -28,7 +31,7 @@ public class LoggingNode extends BuggyDecoratorNode {
 	 * Create a new {@link LoggingNode} decorator
 	 * @param channel the {@link NodeChannel} of the {@link LoggingNode}
 	 */
-	public LoggingNode(NodeChannel channel) {
+	public LoggingNode(NodeChannel channel, String outputDir) {
 		super(new BuggyBaseNode(channel));
 	}
 	
