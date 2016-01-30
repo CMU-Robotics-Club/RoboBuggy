@@ -5,8 +5,8 @@ import java.util.List;
 
 import com.roboclub.robobuggy.nodes.localizers.GPSLocalizer;
 import com.roboclub.robobuggy.nodes.localizers.OdomLocalizer;
+import com.roboclub.robobuggy.nodes.planners.DeadreckoningPlanner;
 import com.roboclub.robobuggy.nodes.planners.GPSTrackPlannerNode;
-
 import com.roboclub.robobuggy.nodes.planners.SweepNode;
 import com.roboclub.robobuggy.nodes.sensors.RBSMNode;
 import com.roboclub.robobuggy.ros.Node;
@@ -61,7 +61,8 @@ public final class Robot implements RosMaster {
 		nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING,
 				RobobuggyConfigFile.COM_PORT_RBSM, COMMAND_PERIOD));
 		nodeList.add(new OdomLocalizer());
-//		nodeList.add(new SweepNode(NodeChannel.BRAKE_CTRL));
+		nodeList.add(new DeadreckoningPlanner(NodeChannel.BRAKE_CTRL));
+	//	nodeList.add(new SweepNode(NodeChannel.BRAKE_CTRL));
 //		nodeList.add(new GPSTrackPlannerNode(NodeChannel.BRAKE_CTRL,
 //				RobobuggyConfigFile.LOG_FILE_LOCATION));
 //		nodeList.add(new GPSLocalizer(NodeChannel.POSE));

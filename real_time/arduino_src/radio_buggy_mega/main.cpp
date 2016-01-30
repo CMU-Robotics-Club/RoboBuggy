@@ -295,20 +295,20 @@ int main(void)
                   case RBSM_MID_MEGA_STEER_COMMAND:
                     auto_steering_angle = (int)(long)new_command.data;
                     auton_last = micros();
-                    dbg_printf("Got steering message for %d.\n", auto_steering_angle);
+		    // dbg_printf("Got steering message for %d.\n", auto_steering_angle);
                     break;
-				  case RBSM_MID_MEGA_BRAKE_COMMAND:
-				    auto_brake_engaged = (bool)(long)new_command.data;
-                    printf("Got brake message for %d.\n", auto_brake_engaged);
-                    break;
-
-                  default:
-                    // report unknown message
-                    g_rbsm.Send(RBSM_MID_ERROR, RBSM_EID_RBSM_INVALID_MID);
-                    dbg_printf("Got message with invalid mid %d and data %d\n",
-                           new_command.message_id,
-                           new_command.data);
-                    break;
+		case RBSM_MID_MEGA_BRAKE_COMMAND:
+		  auto_brake_engaged = (bool)(long)new_command.data;
+		  //printf("Got brake message for %d.\n", auto_brake_engaged);
+		  break;
+		  
+		default:
+		  // report unknown message
+		  g_rbsm.Send(RBSM_MID_ERROR, RBSM_EID_RBSM_INVALID_MID);
+		  dbg_printf("Got message with invalid mid %d and data %d\n",
+			     new_command.message_id,
+			     new_command.data);
+		  break;
                 }
             } 
             else if(read_status == RBSM_ERROR_INVALID_MESSAGE) 
@@ -394,9 +394,10 @@ int main(void)
                                          PWM_OFFSET_STORED_ANGLE,
                                          PWM_SCALE_STORED_ANGLE);
 
+	
         if(g_is_autonomous)
         {
-			if(auto_brake_engaged)
+	  if(auto_brake_engaged)
             {
                 g_brake_state_engaged = true;                
             }

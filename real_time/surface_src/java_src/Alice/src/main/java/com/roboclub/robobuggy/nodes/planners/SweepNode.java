@@ -17,7 +17,7 @@ public class SweepNode extends PathPlannerNode {
     private double currentCommandedSteeringAngle = 0;
     private static final double STEERING_ANGLE_LOWER_BOUND = -20;
     private static final double STEERING_ANGLE_UPPER_BOUND = 20;
-    private static final double STEERING_ANGLE_INCREMENT = 3;
+    private static final double STEERING_ANGLE_INCREMENT = 1;
     private Publisher steeringPublisher;
     private Publisher brakePublisher;
 
@@ -59,7 +59,6 @@ public class SweepNode extends PathPlannerNode {
                 	steeringPublisher.publish(new DriveControlMessage(new Date(), currentCommandedSteeringAngle));
                     brakePublisher.publish(new BrakeControlMessage(new Date(), false));
 
-            		System.out.println("sending angle: "+currentCommandedSteeringAngle);
                 }            }});  
             t1.start();
  

@@ -47,23 +47,39 @@ public class OdomLocalizer  extends PeriodicNode{
 		public void actionPerformed(String topicName, Message m) {
 			EncoderMeasurement encM = (EncoderMeasurement)m;
 			//TODO add locks 
-			secondOldestEncoder = mostRecentEncoder;
-			mostRecentEncoder = encM.getDistance();
+			double dist = encM.getDistance();
+			//to stop small value errors
+			double delta = dist - mostRecentEncoder;
+			//System.out.println("delta:"+delta);
+			//if(Math.abs(delta) > .01){
+				secondOldestEncoder = mostRecentEncoder;
+				mostRecentEncoder = dist;
+			if (pose == null) {
+				pose = new So2Pose(0.0, 0.0, 0.0);
+			}
+			double deltaAngle = mostRecentAngle - secondOldestAngle;
+			double deltaEncoder = mostRecentEncoder - secondOldestEncoder;
+			So2Pose deltaPose = new So2Pose(deltaEncoder, 0.0, deltaAngle);
+			pose = pose.mult(deltaPose);
+			posePub.publish(new PoseMessage(new Date(), pose.getX(), pose.getY(), pose.getOrintation()));
+			//posePub.publish(new PoseMessage(new Date(), mostRecentEncoder, 0, 0));
+			//System.out.println("x:"+pose.getX()+"\t y:"+pose.getY()+"\torintation"+pose.getOrintation());
+			secondOldestAngle = mostRecentAngle;
+			//}
 			
-			System.out.println("mostRecentEncoder = " + mostRecentEncoder);
-			
+						
 			}
 		});
 			
 		//Initialize subscriber for what steering angle low level is currently at
-		new Subscriber(NodeChannel.STEERING_COMMANDED.getMsgPath(), new MessageListener() {
+		new Subscriber(NodeChannel.STEERING.getMsgPath(), new MessageListener() {
 			
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				SteeringMeasurement steerMeasur =  (SteeringMeasurement)m;
 				//TODO add locks
-				secondOldestAngle = mostRecentAngle;
-				mostRecentAngle = steerMeasur.getAngle();				
+				mostRecentAngle = (steerMeasur.getAngle());///100.0)*Math.PI/180;	
+				System.out.println("angle:"+mostRecentAngle);
 			}
 		});
 	}
@@ -71,16 +87,7 @@ public class OdomLocalizer  extends PeriodicNode{
 
 	@Override
 	protected void update() {
-		if (pose == null) {
-			pose = new So2Pose(0.0, 0.0, 0.0);
-		}
-		double deltaAngle = mostRecentAngle - secondOldestAngle;
-		double deltaEncoder = mostRecentEncoder - secondOldestEncoder;
-		So2Pose deltaPose = new So2Pose(deltaEncoder, 0.0, deltaAngle);
-		pose = deltaPose.mult(pose);
-		posePub.publish(new PoseMessage(new Date(), pose.getX(), pose.getY(), pose.getOrintation()));
-		System.out.println("Pose X: "+pose.getX()+" "+pose.getY()+"orintation"+pose.getOrintation());
-		
+			
 	}
 
 

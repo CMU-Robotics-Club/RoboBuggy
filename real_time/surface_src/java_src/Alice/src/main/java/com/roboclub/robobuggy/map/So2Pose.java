@@ -38,8 +38,13 @@ public class So2Pose {
 	public So2Pose mult(So2Pose postPose){
 		double x = Math.cos(orintation)*getX() + Math.sin(orintation)*getY() + postPose.getX();
 		double y = -Math.sin(orintation)*getX() + Math.cos(orintation)*getY() + postPose.getY();
-		double th = getOrintation() + postPose.getOrintation();
+		double a = Math.cos(orintation)*Math.cos(postPose.getOrintation())+ Math.sin(orintation)*-Math.sin(postPose.getOrintation());
+		double b = Math.cos(orintation)*Math.sin(postPose.getOrintation())+ Math.sin(orintation)*Math.cos(postPose.getOrintation());
+		double th = Math.atan2(b, a);
+		
+		
 		return new So2Pose(x, y,th);
+		
 	}
 	
 	
