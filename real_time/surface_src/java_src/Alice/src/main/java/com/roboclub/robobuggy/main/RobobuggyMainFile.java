@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
+import com.roboclub.robobuggy.jetty.gui.JettyServer;
 import com.roboclub.robobuggy.logging.RobotLogger;
 import com.roboclub.robobuggy.simulation.SensorPlayer;
 import com.roboclub.robobuggy.ui.Gui;
@@ -19,8 +20,10 @@ public class RobobuggyMainFile {
 	 * Run Alice
 	 * @param args : None
 	 */
-    public static void main(String[] args)  {
+    public static void main(String[] args) throws Exception {
 
+    	JettyServer js = new JettyServer();
+    	
         try {
 			JNISetup.setupJNI(); //must run for jni to install
 			//note that errors are just printed to the console since the gui and logging system  has not been created yet
@@ -37,8 +40,6 @@ public class RobobuggyMainFile {
 			e1.printStackTrace();
 		}
    
-
-                
         List<String> ports = getAvailablePorts();
         System.out.println(ports);
         
