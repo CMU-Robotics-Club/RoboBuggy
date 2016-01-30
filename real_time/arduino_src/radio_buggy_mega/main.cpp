@@ -400,16 +400,17 @@ int main(void)
             {
                 g_brake_state_engaged = true;                
             }
+
+            //TODO: The following needs to be fixed in order to allow for reconnects
+            /*
+            //Check for timeout
             int timenow = micros();
             int delta = timenow - auton_last;
             if (delta > CONNECTION_TIMEOUT_US)
             {
-                cli();
-                brake_drop();
-                while(1);
-                {
-                }
+                g_brake_state_engaged = true;
             }
+            */
             steering_set(auto_steering_angle);
             g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)(auto_steering_angle));
         }
