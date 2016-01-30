@@ -173,6 +173,7 @@ public class RBSMNode extends SerialNode {
 			case RBSerialMessage.ENC_TICK_SINCE_RESET:
 				// This is a delta-distance! Do a thing!
 				encTicks = message.getDataWord() & 0xFFFF;
+				System.out.println("Got raw encoder data : " + encTicks);
 				messagePubEnc.publish(estimateVelocity(message.getDataWord()));
 				break;
 			case RBSerialMessage.RBSM_MID_MEGA_STEER_FEEDBACK:

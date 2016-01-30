@@ -28,9 +28,9 @@ import com.roboclub.robobuggy.ui.LocTuple;
  *
  */
 public class OdomLocalizer  extends PeriodicNode{
-	private Publisher posePub;
-	private So2Pose pose = new So2Pose(0.0, 0.0, 0.0);
-	
+	private So2Pose pose;
+	private Publisher posePub = new Publisher(NodeChannel.POSE.getMsgPath());
+
 	private double mostRecentEncoder = 0;
 	private double secondOldestEncoder = 0;
 	private double mostRecentAngle = 0;
@@ -39,6 +39,8 @@ public class OdomLocalizer  extends PeriodicNode{
 	
 	public OdomLocalizer() {
 		super(new  BuggyBaseNode(NodeChannel.POSE), 100);
+		
+		
 		//Initialize subscriber to encoder measurements
 		new Subscriber(NodeChannel.ENCODER.getMsgPath(), new MessageListener() {
 		@Override
@@ -47,6 +49,9 @@ public class OdomLocalizer  extends PeriodicNode{
 			//TODO add locks 
 			secondOldestEncoder = mostRecentEncoder;
 			mostRecentEncoder = encM.getDistance();
+			
+			System.out.println("mostRecentEncoder = " + mostRecentEncoder);
+			
 			}
 		});
 			
@@ -66,11 +71,15 @@ public class OdomLocalizer  extends PeriodicNode{
 
 	@Override
 	protected void update() {
+		if (pose == null) {
+			pose = new So2Pose(0.0, 0.0, 0.0);
+		}
 		double deltaAngle = mostRecentAngle - secondOldestAngle;
 		double deltaEncoder = mostRecentEncoder - secondOldestEncoder;
 		So2Pose deltaPose = new So2Pose(deltaEncoder, 0.0, deltaAngle);
 		pose = deltaPose.mult(pose);
 		posePub.publish(new PoseMessage(new Date(), pose.getX(), pose.getY(), pose.getOrintation()));
+		System.out.println("Pose X: "+pose.getX()+" "+pose.getY()+"orintation"+pose.getOrintation());
 		
 	}
 
