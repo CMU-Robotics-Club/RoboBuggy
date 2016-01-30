@@ -21,6 +21,8 @@
 #include "system_clock.h"
 #include "fingerprint.h"
 
+// Use 76800 or 250k. 115200 does not work well with 16MHz clock.
+// ATMega 2560 datasheet Table 22-12.
 #define BAUD 76800
 
 #define DEBUG_DDR  DDRB
@@ -97,6 +99,13 @@
 
 #define WDT_INT WDT_vect
 
+#define DEBUG
+
+#ifdef DEBUG
+    #define dbg_printf(...) printf(__VA_ARGS__)
+#else
+    #define dbg_printf 
+#endif
 
 // Global state
 static bool g_brake_state_engaged; // 0 = disengaged, !0 = engaged.
@@ -206,7 +215,7 @@ void watchdog_init()
     WDTCSR |= (1 << WDCE) | (1 << WDE);
 
     //This next line must run within 4 clock cycles of the above line.
-    //See Section 12.4 of the ATMEGA2560 code for additional details
+    //See Section 12.4 of the ATMEGA2560 datasheet for additional details
     WDTCSR = 
             (1 << WDIE) //Call ISR on timeout
             | (1 << WDP2) // w/ WDP1 sets timeout to 1 second
@@ -219,9 +228,6 @@ void watchdog_init()
 
 int main(void) 
 {
-    //have a short delay so that the board can be programed incase something goes wrong latter in the code
-    _delay_ms(1000);
-
     // turn the ledPin on
     // DEBUG_PORT |= _BV(DEBUG_PINN);
     DEBUG_PORT &= ~_BV(DEBUG_PINN);
@@ -261,14 +267,15 @@ int main(void)
     g_auton_rx.Init(&RX_AUTON_PIN, RX_AUTON_PINN, RX_AUTON_INTN);
 
     //Output information about code on arduino once to uart2 on startup.
-    printf("Hello world! This is debug information\r\n");
-    printf("Compilation date: %s\r\n", FP_COMPDATE);
-    printf("Compilation time: %s\r\n", FP_COMPTIME);
-    printf("Branch name: %s\r\n", FP_BRANCHNAME);
-    printf("Most recent commit: %s\r\n", FP_STRCOMMITHASH);
-    printf("Branch clean? %d\r\n", FP_CLEANSTATUS);
-    printf("\nEnd of compilation information\r\n");
+    dbg_printf("Hello world! This is debug information\r\n");
+    dbg_printf("Compilation date: %s\r\n", FP_COMPDATE);
+    dbg_printf("Compilation time: %s\r\n", FP_COMPTIME);
+    dbg_printf("Branch name: %s\r\n", FP_BRANCHNAME);
+    dbg_printf("Most recent commit: %s\r\n", FP_STRCOMMITHASH);
+    dbg_printf("Branch clean? %d\r\n", FP_CLEANSTATUS);
+    dbg_printf("\nEnd of compilation information\r\n");
 
+    int auton_last = micros();
     watchdog_init();
 
     // loop forever
@@ -287,7 +294,8 @@ int main(void)
                 {
                   case RBSM_MID_MEGA_STEER_COMMAND:
                     auto_steering_angle = (int)(long)new_command.data;
-                    printf("Got steering message for %d.\n", auto_steering_angle);
+                    auton_last = micros();
+                    dbg_printf("Got steering message for %d.\n", auto_steering_angle);
                     break;
 				  case RBSM_MID_MEGA_BRAKE_COMMAND:
 				    auto_brake_engaged = (bool)(long)new_command.data;
@@ -297,7 +305,7 @@ int main(void)
                   default:
                     // report unknown message
                     g_rbsm.Send(RBSM_MID_ERROR, RBSM_EID_RBSM_INVALID_MID);
-                    printf("Got message with invalid mid %d and data %d",
+                    dbg_printf("Got message with invalid mid %d and data %d\n",
                            new_command.message_id,
                            new_command.data);
                     break;
@@ -344,7 +352,7 @@ int main(void)
             g_is_autonomous = false;
         }
 
-        // detect dropped conections
+        // detect dropped radio conections
         // note: interrupts must be disabled while checking system clock so that
         //       timestamps are not updated under our feet
         cli(); //disable interrupts
@@ -389,10 +397,22 @@ int main(void)
         if(g_is_autonomous)
         {
 			if(auto_brake_engaged)
-			    g_brake_state_engaged = true;
+            {
+                g_brake_state_engaged = true;                
+            }
+
+            //TODO: The following needs to be fixed in order to allow for reconnects
+            /*
+            //Check for timeout
+            int timenow = micros();
+            int delta = timenow - auton_last;
+            if (delta > CONNECTION_TIMEOUT_US)
+            {
+                g_brake_state_engaged = true;
+            }
+            */
             steering_set(auto_steering_angle);
             g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)(auto_steering_angle));
-			if
         }
         else
         {
@@ -432,7 +452,7 @@ int main(void)
         //Feed the watchdog to indicate things aren't timing out
         wdt_reset();
     
-    } //End while
+    } //End while(true)
 
     return 0;
 }
@@ -466,7 +486,7 @@ ISR(RX_AUTON_INT)
 
 ISR(ENCODER_INT) 
 {
-    unsigned long time_now = micros(); //TODO: Is this atomic?
+    unsigned long time_now = micros();
     // debounce encoder tick count
     if(time_now - g_encoder_time_last > ENCODER_TIMEOUT_US) 
     {
@@ -474,5 +494,4 @@ ISR(ENCODER_INT)
     }
     g_encoder_time_last = time_now;
 }
-
 

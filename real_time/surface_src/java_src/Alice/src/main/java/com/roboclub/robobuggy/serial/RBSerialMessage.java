@@ -11,12 +11,11 @@ public class RBSerialMessage
 	public static final byte ENC_MS_SINCE_RESET = (byte)2;
 
 	public static final byte RBSM_MID_MEGA_BRAKE_COMMAND = (byte)18;
-	public static final byte RBSM_MID_MEGA_STEER_COMMAND = (byte)20;
-	public static final byte STEERING = (byte)24;
+	public static final byte RBSM_MID_MEGA_STEER_COMMAND = (byte)19;
 	public static final byte BRAKE = (byte)21;
 	public static final byte AUTO = (byte)22;
 	public static final byte BATTERY = (byte)23;
-	public static final byte RBSM_MID_MEGA_STEER_FEEDBACK = (byte)24; //potentiometer 
+	public static final byte RBSM_MID_MEGA_STEER_FEEDBACK = (byte)24; //potentiometer
 	public static final byte RBSM_MID_MEGA_STEER_ANGLE = (byte)20; //Arduino to servo
 	public static final byte FP_HASH = (byte)30;
 	
@@ -78,7 +77,7 @@ public class RBSerialMessage
 			case ENC_TICK_SINCE_RESET:
 			case ENC_TICKS_SINCE_LAST:
 				
-			case STEERING:
+			case RBSM_MID_MEGA_STEER_FEEDBACK:
 			case BRAKE:
 			case AUTO:
 			case BATTERY:

@@ -27,18 +27,9 @@ real_time/arduino_src/radio_buggy_mega/fingerprint.h
 #eclipse's nonsense
 real_time/surface_src/java_src/.recommenders/
 real_time/surface_src/java_src/Alice/.classpath
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> master
 
 # intellij's nonsense
 *.eml
 setuptools-19.4.zip
 real_time/surface_src/java_src/.idea
 real_time/surface_src/java_src/logs
-<<<<<<< HEAD
->>>>>>> zsd-unitTestFixes
-=======
->>>>>>> master

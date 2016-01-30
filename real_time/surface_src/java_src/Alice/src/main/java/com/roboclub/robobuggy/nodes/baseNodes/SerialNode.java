@@ -1,12 +1,5 @@
 package com.roboclub.robobuggy.nodes.baseNodes;
 
-import gnu.io.CommPort;
-import gnu.io.CommPortIdentifier;
-import gnu.io.NoSuchPortException;
-import gnu.io.PortInUseException;
-import gnu.io.SerialPort;
-import gnu.io.UnsupportedCommOperationException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -14,6 +7,14 @@ import java.io.OutputStream;
 import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
+
+import gnu.io.CommPort;
+import gnu.io.CommPortIdentifier;
+import gnu.io.NoSuchPortException;
+import gnu.io.SerialPort;
+import gnu.io.PortInUseException;
+import gnu.io.UnsupportedCommOperationException;
+
 
 /**
  * Abstract class extended to create a decorator node that uses 
@@ -51,7 +52,7 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 		super(base);
 		this.threadName = threadName;
 		this.sp = connect(portName, baudRate);
-	}
+    }
 	
 	// Open a serial port
 	// Returns null if unable to connect, otherwise SerialPort
@@ -89,6 +90,7 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 	
 		try {
 			serialOutput.write(bytes);
+			serialOutput.flush();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

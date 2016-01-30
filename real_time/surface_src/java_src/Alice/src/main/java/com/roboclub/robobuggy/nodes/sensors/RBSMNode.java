@@ -32,6 +32,7 @@ import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
  * @author Kevin Brennan
  * @author Zachary Dawson
  *
+ *
  * CHANGELOG: Converted to use the decorator pattern implementation of
  * {@link Node}s for buggy
  * 

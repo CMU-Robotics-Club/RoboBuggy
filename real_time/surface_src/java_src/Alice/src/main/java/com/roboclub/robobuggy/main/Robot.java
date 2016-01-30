@@ -6,12 +6,14 @@ import java.util.List;
 import com.roboclub.robobuggy.nodes.localizers.GPSLocalizer;
 import com.roboclub.robobuggy.nodes.localizers.OdomLocalizer;
 import com.roboclub.robobuggy.nodes.planners.GPSTrackPlannerNode;
+
 import com.roboclub.robobuggy.nodes.planners.SweepNode;
-import com.roboclub.robobuggy.nodes.sensors.GpsNode;
-import com.roboclub.robobuggy.nodes.sensors.ImuNode;
 import com.roboclub.robobuggy.nodes.sensors.RBSMNode;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.NodeChannel;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * 
@@ -21,11 +23,13 @@ import com.roboclub.robobuggy.ros.NodeChannel;
 public final class Robot implements RosMaster {
 
 	/************************************** Sets all internal private variables *************************/
-	private static final int COMMAND_PERIOD = 1000;
+	private static final int COMMAND_PERIOD = 50;
 	private static Robot instance;
 	private boolean autonomous;
 	private List<Node> nodeList;
-	
+	//TODO find out the actual time we need to put here
+	private static final int ARDUINO_BOOTLOADER_TIMEOUT = 2000;
+
 	/************************************* Set of all public functions ********************************/
 
 	/**{@inheritDoc}*/
@@ -61,6 +65,11 @@ public final class Robot implements RosMaster {
 //		nodeList.add(new GPSTrackPlannerNode(NodeChannel.BRAKE_CTRL,
 //				RobobuggyConfigFile.LOG_FILE_LOCATION));
 //		nodeList.add(new GPSLocalizer(NodeChannel.POSE));
+		try {
+			Thread.sleep(ARDUINO_BOOTLOADER_TIMEOUT);
+		} catch (InterruptedException e) {
+			new RobobuggyLogicNotification("Couldn't wait for bootloader, shutting down", RobobuggyMessageLevel.EXCEPTION);
+		}
 	}
 	
 	/***************************************   Getters ********************************/
