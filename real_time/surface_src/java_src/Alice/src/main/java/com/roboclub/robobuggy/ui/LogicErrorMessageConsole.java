@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
@@ -27,6 +28,7 @@ public class LogicErrorMessageConsole extends RobobuggyGUIContainer{
 	private static final int NUMBER_OF_MESSAGES = ROBOBUGGY_MESSAGE_LEVELS.length;
 	private boolean[] showMessages;
 	private JButton[] buttons;
+	private JScrollPane messageScrollingContainer;
 	private JTextArea messages;
 	
 	private String[] messageBuffer = new String[10];
@@ -141,7 +143,7 @@ public class LogicErrorMessageConsole extends RobobuggyGUIContainer{
 	/**
 	 * Constructor for the logic exception console
 	 */
-	public LogicErrorMessageConsole(){
+	public LogicErrorMessageConsole() {
 		exceptionBtn = new JButton();
 		warningBtn = new JButton();
 		noteBtn = new JButton();
@@ -150,11 +152,14 @@ public class LogicErrorMessageConsole extends RobobuggyGUIContainer{
 		exceptionBtn.setEnabled(true);
 		warningBtn.setEnabled(true);
 		noteBtn.setEnabled(true);
-		 messages = new JTextArea();
+		messages = new JTextArea();
+		messageScrollingContainer = new JScrollPane(messages);
+		messageScrollingContainer.setVisible(true);
 		this.addComponent(header, 0.0, 0.0, 1.0, .1);
-		this.addComponent(messages, 0.0, 0.1, 1.0, .9);
+		this.addComponent(messageScrollingContainer, 0.0, 0.1, 1.0, .9);
+
 		messages.setText("this is where user defined messages will go\n");
-		
+
 		// Subscriber for LogicException updates
 		new Subscriber(NodeChannel.LOGIC_EXCEPTION.getMsgPath(), new MessageListener() {
 			@Override
