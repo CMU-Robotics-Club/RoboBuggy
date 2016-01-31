@@ -84,11 +84,9 @@ public final class Robot implements RosMaster {
 	 * @return a reference to the one instance of the {@link Robot} object
 	 */
 	public static Robot getInstance() {
-		System.out.println("start_arobot");
 		if (instance == null) {
 			instance = new Robot();
 		}
-		System.out.println("ending_arobot");
 		return instance;
 	}
 
