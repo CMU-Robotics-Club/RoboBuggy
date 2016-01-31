@@ -1,7 +1,15 @@
 package com.roboclub.robobuggy.ui;
 
+/**
+ * 
+ * @author Trevor Decker
+ *
+ */
 public class MainGuiWindow extends RobobuggyGUIContainer{
 	
+	/**
+	 * constructor for the main gui window, sets up what is shown on the window
+	 */
 	public MainGuiWindow(){
 		AnalyticsPanel analyPane = new AnalyticsPanel();
 		ControlPanel ctrlPanel = new ControlPanel();

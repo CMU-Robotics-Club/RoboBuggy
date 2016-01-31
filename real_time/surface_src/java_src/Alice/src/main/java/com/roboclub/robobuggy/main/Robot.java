@@ -72,8 +72,8 @@ public final class Robot implements RosMaster {
 	
 	/**
 	 * Returns the list of current nodes 
-	 * @return
-	 */
+	 * @return the nodeList
+	 */ 
 	public List<Node> getNodeList(){
 		return nodeList;
 	}

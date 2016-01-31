@@ -14,7 +14,7 @@ public class RobobuggyGUITabs extends JTabbedPane {
 	
 	/**
 	 * Adds a tab without an explict title 
-	 * @param newTab
+	 * @param newTab the compoent to be added to a new tab
 	 */
 public void addTab(JComponent newTab){
 	this.addTab(newTab.getName(), newTab);
@@ -22,8 +22,8 @@ public void addTab(JComponent newTab){
 
 /**
  *  Adds a tab with an explicit title 
- * @param newTab
- * @param title
+ * @param newTab the component to be added to a new tab
+ * @param title the name for that tab
  */
 public void addTab(JComponent newTab,String title){
 	this.addTab(title, newTab);

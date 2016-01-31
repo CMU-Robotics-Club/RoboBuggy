@@ -68,10 +68,18 @@ public abstract class BuggyDecoratorNode implements BuggyNode {
 	 */
 	protected abstract boolean shutdownDecoratorNode();
 	
+	/**
+	 * used for updating the name by which this node is known
+	 * @param newName the new name for this node
+	 */
 	public void setName(String newName){
 		name = newName;
 	}
 	
+	/**
+	 * gives access to the current value of this nodes name
+	 * @return the name of this node
+	 */
 	public String getName(){
 		return name;
 	}
