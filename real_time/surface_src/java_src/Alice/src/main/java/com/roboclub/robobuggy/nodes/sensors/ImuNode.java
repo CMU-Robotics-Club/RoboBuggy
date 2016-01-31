@@ -1,14 +1,14 @@
 package com.roboclub.robobuggy.nodes.sensors;
 
-import java.io.UnsupportedEncodingException;
-import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.NodeState;
 import com.roboclub.robobuggy.nodes.baseNodes.SerialNode;
-import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.NodeChannel;
+import com.roboclub.robobuggy.ros.Publisher;
+
+import java.io.UnsupportedEncodingException;
 
 /**
  * {@link SerialNode} for reading in IMU data
@@ -118,24 +118,4 @@ public final class ImuNode extends SerialNode {
 		return 4 + (origLength - imuRawStr.length());
 	}
 
-	/**
-	 * Called to translate a peeled message to a JSON object
-	 * @param message {@link String} of the peeled message
-	 * @return {@link JSONObject} representing the string
-	 */
-	@SuppressWarnings("unchecked")
-	public static JSONObject translatePeelMessageToJObject(String message) {
-		// TODO Auto-generated method stub
-		// message has it organized as yaw pitch roll
-		JSONObject data = new JSONObject();
-		JSONObject params = new JSONObject();
-		String[] ypr = message.split(",");
-		//0 and 1 will be the name and time
-		params.put("yaw", Float.valueOf(ypr[2]));
-		params.put("pitch", Float.valueOf(ypr[3]));
-		params.put("roll", Float.valueOf(ypr[4]));
-		data.put("timestamp", ypr[1]);
-		data.put("params", params);
-		return data;
-	}
 }

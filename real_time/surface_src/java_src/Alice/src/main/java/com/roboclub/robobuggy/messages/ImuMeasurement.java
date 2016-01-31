@@ -1,7 +1,8 @@
 package com.roboclub.robobuggy.messages;
 
-import java.util.Date;
 import com.roboclub.robobuggy.ros.Message;
+
+import java.util.Date;
 
 /**
  * Message for passing IMU measurements within BuggyROS

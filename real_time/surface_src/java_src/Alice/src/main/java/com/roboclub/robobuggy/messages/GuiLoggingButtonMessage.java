@@ -1,7 +1,8 @@
 package com.roboclub.robobuggy.messages;
 
-import java.util.Date;
 import com.roboclub.robobuggy.ros.Message;
+
+import java.util.Date;
 
 /**
  * Message for passing gui logging button status
@@ -44,6 +45,13 @@ public class GuiLoggingButtonMessage extends BaseMessage implements Message {
 	public GuiLoggingButtonMessage(Date timestamp, LoggingMessage lm) {
 		this.timestamp = new Date(timestamp.getTime());
 		this.lm = lm;
+	}
+
+	/**
+	 * @return the logging message
+	 */
+	public LoggingMessage getLoggingMessage() {
+		return lm;
 	}
 
 	/**{@inheritDoc}*/

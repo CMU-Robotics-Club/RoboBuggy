@@ -9,9 +9,10 @@ import java.util.Date;
  */
 public class FingerPrintMessage extends BaseMessage implements Message
 {
+	private static final String VERSION_ID = "fingerprint_hash";
 	private int fpHash;
 	private Date timestamp;
-	
+
 	/**
 	 * Construct a new {@link FingerPrintMessage} at time now
 	 * @param hash the hash of the low level code

@@ -1,8 +1,8 @@
 package com.roboclub.robobuggy.messages;
 
-import java.util.Date;
-
 import com.roboclub.robobuggy.ros.Message;
+
+import java.util.Date;
 
 /**
  * Message used for representing the state of the brakes
@@ -14,9 +14,9 @@ import com.roboclub.robobuggy.ros.Message;
  */
 public class BrakeMessage extends BaseMessage implements Message {
 
+	private static final String VERSION_ID = "brakeV0.1";
 	private Date timestamp;
 	private boolean down;
-	private static final String VERSION_ID = "brakeV0.1";
 
 	/**
 	 * Construct a new {@link BrakeMessage} at time now

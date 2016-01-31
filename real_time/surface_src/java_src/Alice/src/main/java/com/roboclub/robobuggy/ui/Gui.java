@@ -1,13 +1,12 @@
 package com.roboclub.robobuggy.ui;
 
-import java.awt.Container;
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
+
+import javax.swing.JFrame;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
-import javax.swing.JFrame;
-
-import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
-import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 
 /**
  * {@link JFrame} used to represent the robobuggy gui
