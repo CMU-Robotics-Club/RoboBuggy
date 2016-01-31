@@ -54,12 +54,6 @@ public class RobobuggyMainFile {
 					sp.run();
 				}
 			}).start();
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			new RobobuggyLogicNotification("Robobuggy Logic Notfication started! Reeeaaaaallllyyyy long and verbose error messaaaaagggggeeeee", RobobuggyMessageLevel.NOTE);
         }
         else {
         	RobotLogger.getInstance();
