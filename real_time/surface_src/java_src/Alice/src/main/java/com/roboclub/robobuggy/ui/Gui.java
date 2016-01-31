@@ -22,11 +22,7 @@ import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
  */
 public final class Gui extends JFrame {
 	private static final long serialVersionUID = 670947948979376738L;
-	private Container pane;
-	private ControlPanel ctrlPanel1;
-	private ControlPanel ctrlPanel2;
 
-	private AnalyticsPanel anlyPanel;
 	
 	private static Gui instance;
 	
@@ -67,24 +63,11 @@ public final class Gui extends JFrame {
 	private Gui() {
 		new RobobuggyLogicNotification("StartingGUI", RobobuggyMessageLevel.NOTE);
 		RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow",1.0,1.0);	
-		AnalyticsPanel analyPane = new AnalyticsPanel();
-		ctrlPanel1 = new ControlPanel();
-		//addComponent syntax is (newComponent,percentageLeft,percentageTop,percentageWidth,percentageHeight)
-		mainWindow.addComponent(ctrlPanel1, 0.0, 0.0, .3, 1.0);
-		mainWindow.addComponent(analyPane, 0.3, 0.0, .7, 1.0);
-		//the repaint is needed for a non blank screen to appear when the gui is first displayed 
-		//mainWindow.resize(0, 0);
-		//mainWindow.fullScreenRepaint();
-		mainWindow.repaint();
+		RobobuggyGUITabs tabs = new RobobuggyGUITabs();
+		tabs.addTab(new MainGuiWindow(),"Home");
+		tabs.addTab(new NodeViewer(),"Nodes");
+		mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
 		windowList.add(mainWindow);
-	}
-
-	/**
-	 * returns the control panel
-	 * @return the control panel
-	 */
-	public ControlPanel getControlPanel() {
-		return ctrlPanel1;
 	}
 	
 	/**

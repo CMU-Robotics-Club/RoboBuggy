@@ -49,6 +49,7 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 	public SerialNode(BuggyNode base, String threadName, String portName,
 			int baudRate) {
 		super(base);
+		this.setName(threadName);
 		this.threadName = threadName;
 		this.sp = connect(portName, baudRate);
 	}

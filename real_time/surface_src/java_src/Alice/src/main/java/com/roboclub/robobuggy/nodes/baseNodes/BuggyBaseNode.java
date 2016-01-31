@@ -17,7 +17,7 @@ import com.roboclub.robobuggy.ros.Publisher;
  *
  */
 public class BuggyBaseNode implements BuggyNode {
-
+	private String name;
 	private static final long WATCHDOG_PERIOD = 2000;
 	
 	private Publisher statePub;
@@ -76,6 +76,14 @@ public class BuggyBaseNode implements BuggyNode {
 	    	}
 	    	statePub.publish(new StateMessage(state));
 	    }
+	}
+	
+	public void setName(String newName){
+		name = newName;
+	}
+	
+	public String getName(){
+		return name;
 	}
 
 }

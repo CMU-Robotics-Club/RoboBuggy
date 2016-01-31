@@ -10,7 +10,7 @@ import com.roboclub.robobuggy.ros.Node;
  *
  */
 public abstract class BuggyDecoratorNode implements BuggyNode {
-	
+	private String name;
 	private BuggyNode node;
 	
 	/**
@@ -67,5 +67,13 @@ public abstract class BuggyDecoratorNode implements BuggyNode {
 	 * @return true iff the decorator is shut down successfully
 	 */
 	protected abstract boolean shutdownDecoratorNode();
+	
+	public void setName(String newName){
+		name = newName;
+	}
+	
+	public String getName(){
+		return name;
+	}
 
 }

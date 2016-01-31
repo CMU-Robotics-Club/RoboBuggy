@@ -33,7 +33,8 @@ public final class ImuNode extends SerialNode {
 		super(new BuggyBaseNode(sensor), "IMU", portName, BAUDRATE);
 		msgPub = new Publisher(sensor.getMsgPath());
 		statePub = new Publisher(sensor.getStatePath());
-	
+		
+		
 		// TODO state stuff
 		statePub.publish(new StateMessage(NodeState.DISCONNECTED));
 	}

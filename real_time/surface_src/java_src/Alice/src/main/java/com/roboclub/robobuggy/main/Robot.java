@@ -46,13 +46,11 @@ public final class Robot implements RosMaster {
 		autonomous = RobobuggyConfigFile.AUTONOMOUS_DEFAULT;
 		nodeList = new LinkedList<>();
 		new RobobuggyLogicNotification("Logic Exception Setup properly" ,  RobobuggyMessageLevel.NOTE);
-		
 		// Initialize Nodes
 		nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.COM_PORT_GPS));
 		nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.COM_PORT_IMU));
 		nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING,
 				RobobuggyConfigFile.COM_PORT_RBSM, COMMAND_PERIOD));
-
 	}
 	
 	/***************************************   Getters ********************************/
@@ -73,14 +71,24 @@ public final class Robot implements RosMaster {
 	}
 	
 	/**
+	 * Returns the list of current nodes 
+	 * @return
+	 */
+	public List<Node> getNodeList(){
+		return nodeList;
+	}
+	
+	/**
 	 * Returns a reference to the one instance of the {@link Robot} object.
 	 * If no instance exists, a new one is created.
 	 * @return a reference to the one instance of the {@link Robot} object
 	 */
 	public static Robot getInstance() {
+		System.out.println("start_arobot");
 		if (instance == null) {
 			instance = new Robot();
 		}
+		System.out.println("ending_arobot");
 		return instance;
 	}
 

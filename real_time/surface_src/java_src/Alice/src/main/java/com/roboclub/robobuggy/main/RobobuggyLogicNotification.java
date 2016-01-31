@@ -39,13 +39,12 @@ public class RobobuggyLogicNotification {
 			//displays the error message to the java console 
 			System.out.println(exception);
 		}
+
 		if(errorPub ==null){
 			setupLogicException();
 			}
-		
 		//the message is always published 
 		errorPub.publish(new RobobuggyLogicNotificationMeasurment(exception, level));
-
 	
 		/*TODO: do something logical this segment was causing an infinite loop where the robot was being shut down and then restarted
 		//only halt the program if it is an exception 

@@ -193,7 +193,7 @@ public final class SensorLogger {
 					+ logFile + ")!");
 		}
 		logQueue = startLoggingThread(log);
-		Gui.getInstance().getControlPanel().getLoggingPanel().setFileName(outputDir + "/sensors.txt");
+	//	Gui.getInstance().getControlPanel().getLoggingPanel().setFileName(outputDir + "/sensors.txt");
 		// Subscribe to ALL THE PUBLISHERS
 		for(NodeChannel channel : NodeChannel.values()){
 				new Subscriber(channel.getMsgPath(),new MessageListener() {
