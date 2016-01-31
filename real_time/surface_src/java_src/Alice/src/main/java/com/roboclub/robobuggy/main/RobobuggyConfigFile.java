@@ -15,8 +15,7 @@ public final class  RobobuggyConfigFile {
 	// program is started
 	public static final boolean LOGGING = true;
 	public static final String LOG_FILE_LOCATION = "logs";
-	public static final String LOG_STOP_MESSAGE = "STOP_LOGGING";
-	public static final String LOG_FILE_NAME = "sensors.txt";
+	public static final String LOG_FILE_NAME = "sensors";
 
 	//Autonomous controls
 	public static final boolean AUTONOMOUS_DEFAULT = false;

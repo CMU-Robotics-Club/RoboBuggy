@@ -1,9 +1,8 @@
 package com.roboclub.robobuggy.ui;
 
+import javax.swing.JPanel;
 import java.awt.Component;
 import java.util.ArrayList;
-
-import javax.swing.JPanel;
 
 /**
  * The JFrame container for the GUI

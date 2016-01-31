@@ -1,8 +1,8 @@
 package com.roboclub.robobuggy.messages;
 
-import java.util.Date;
-
 import com.roboclub.robobuggy.ros.Message;
+
+import java.util.Date;
 
 /**
  * {@link Message} for passing information about the current state of the robot

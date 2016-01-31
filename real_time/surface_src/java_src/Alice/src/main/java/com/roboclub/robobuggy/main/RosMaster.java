@@ -1,7 +1,8 @@
 package com.roboclub.robobuggy.main;
 
-import java.util.List;
 import com.roboclub.robobuggy.ros.Node;
+
+import java.util.List;
 
 /**
  * Interface to dictate the behaviors of a BuggyROS master

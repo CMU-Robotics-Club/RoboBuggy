@@ -1,14 +1,13 @@
 package com.roboclub.robobuggy.ui;
 
+import javax.imageio.ImageIO;
+import javax.swing.JFrame;
+import javax.swing.WindowConstants;
 import java.awt.Component;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.util.ArrayList;
-
-import javax.imageio.ImageIO;
-import javax.swing.JFrame;
-import javax.swing.WindowConstants;
 
 /**
  *  This class is for the robobuggy group to have nice control over how Jframe windows look and resize 

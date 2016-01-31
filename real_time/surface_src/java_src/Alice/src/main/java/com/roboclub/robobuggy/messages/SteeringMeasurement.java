@@ -1,15 +1,17 @@
 package com.roboclub.robobuggy.messages;
 
-import java.util.Date;
 import com.roboclub.robobuggy.ros.Message;
+
+import java.util.Date;
 
 /**
  * Message for passing steering angle measurements over BuggyROS
  */
 public class SteeringMeasurement extends BaseMessage implements Message {
+	public static final String VERSION_ID = "steering";
 	private int angle;
 	private Date timestamp;
-	
+
 	/**
 	 * Construct a new {@link SteeringMeasurement} at time now
 	 * @param angle front wheel angle

@@ -1,19 +1,18 @@
 package com.roboclub.robobuggy.ui;
 
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JTextArea;
-
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
-import com.roboclub.robobuggy.messages.RobobuggyLogicNotificationMeasurment;
+import com.roboclub.robobuggy.messages.RobobuggyLogicNotificationMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
+
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JTextArea;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * The error console for any RobobuggyLogicNotifications
@@ -156,10 +155,10 @@ public class LogicErrorMessageConsole extends RobobuggyGUIContainer{
 		messages.setText("this is where user defined messages will go\n");
 		
 		// Subscriber for LogicException updates
-		new Subscriber(NodeChannel.LOGIC_EXCEPTION.getMsgPath(), new MessageListener() {
+		new Subscriber(NodeChannel.LOGIC_NOTIFICATION.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
-				RobobuggyLogicNotificationMeasurment msg = (RobobuggyLogicNotificationMeasurment)m;
+				RobobuggyLogicNotificationMeasurement msg = (RobobuggyLogicNotificationMeasurement)m;
 				switch(msg.getLevel()){
 				case EXCEPTION:
 					if(showMessages[0]){
