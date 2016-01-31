@@ -46,13 +46,11 @@ public final class Robot implements RosMaster {
 		autonomous = RobobuggyConfigFile.AUTONOMOUS_DEFAULT;
 		nodeList = new LinkedList<>();
 		new RobobuggyLogicNotification("Logic Exception Setup properly" ,  RobobuggyMessageLevel.NOTE);
-		
 		// Initialize Nodes
 		nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.COM_PORT_GPS));
 		nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.COM_PORT_IMU));
 		nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING,
 				RobobuggyConfigFile.COM_PORT_RBSM, COMMAND_PERIOD));
-
 	}
 	
 	/***************************************   Getters ********************************/
@@ -70,6 +68,14 @@ public final class Robot implements RosMaster {
 	 */
 	public boolean getAutonomous() {
 		return autonomous;
+	}
+	
+	/**
+	 * Returns the list of current nodes 
+	 * @return the nodeList
+	 */ 
+	public List<Node> getNodeList(){
+		return nodeList;
 	}
 	
 	/**
