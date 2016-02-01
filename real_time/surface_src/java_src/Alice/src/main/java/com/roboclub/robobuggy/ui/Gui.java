@@ -1,10 +1,11 @@
 package com.roboclub.robobuggy.ui;
 
-import java.awt.Container;
-import java.awt.event.WindowEvent;
-import java.util.ArrayList;
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 
 import javax.swing.JFrame;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;

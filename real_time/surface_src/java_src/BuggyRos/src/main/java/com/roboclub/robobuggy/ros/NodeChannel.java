@@ -7,7 +7,7 @@ public enum NodeChannel {
 	RC("rc_angle"),
 	STEERING("steering"),
 	BRAKE("brake"),
-	LOGIC_EXCEPTION("logic_exception"),
+	LOGIC_NOTIFICATION("logic_notification"),
 	DRIVE_CTRL("drive_ctrl"),
 	BRAKE_CTRL("commanded brake"),
 	VISION("vision"),
@@ -16,6 +16,9 @@ public enum NodeChannel {
 	GUI_LOGGING_BUTTON("logging_button"),
 	STEERING_COMMANDED("commanded_steering"),
 	FP_HASH("fp_hash"),
+	POSE("pose"),
+	RESET("reset"),
+	STATE("state"),
 	UNKNOWN_CHANNEL("unknown"),
 	;
 	
@@ -55,4 +58,5 @@ public enum NodeChannel {
 		}
 		return UNKNOWN_CHANNEL;
 	}
+
 }

@@ -1,11 +1,11 @@
 package com.roboclub.robobuggy.nodes.baseNodes;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Base implementation of a Buggy {@link BuggyNode} to be decorated

@@ -1,24 +1,22 @@
 package com.roboclub.robobuggy.ui;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
+import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
+import com.roboclub.robobuggy.ros.NodeChannel;
+import com.roboclub.robobuggy.ros.Publisher;
 
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
-
-import com.roboclub.robobuggy.logging.RobotLogger;
-import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
-import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
-import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
-import com.roboclub.robobuggy.ros.NodeChannel;
-import com.roboclub.robobuggy.ros.Publisher;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * {@link RobobuggyGUIContainer} used for logging information
@@ -92,11 +90,11 @@ public class LoggingPanel extends RobobuggyGUIContainer{
 			new RobobuggyLogicNotification("start/stop button was pressed", RobobuggyMessageLevel.NOTE);
 		
 			if (!isLogging) {
-                enableLogging();
                 isLogging = true;
+				enableLogging();
 			} else {
-                disableLogging();
                 isLogging = false;
+				disableLogging();
             }//end if else
             thisLoggingPanel.validate();
             Gui.getInstance().fixPaint();  //if this line is not here then the gui will not display correctly after the button is pressed
@@ -118,14 +116,13 @@ public class LoggingPanel extends RobobuggyGUIContainer{
 
 	/*	Update Methods */
     /**
-     * Enable logging 
+     * Enable logging
      */
     public void enableLogging() {
         timer.start();
         playBtn.setBackground(Color.RED);
         playBtn.setText("STOP");
 
-        RobotLogger.createLog();
         loggingButtonPub.publish(new GuiLoggingButtonMessage(GuiLoggingButtonMessage.LoggingMessage.START));
         startTime = new Date();
     }
@@ -137,7 +134,6 @@ public class LoggingPanel extends RobobuggyGUIContainer{
         playBtn.setBackground(Color.GREEN);
         playBtn.setText("START");
 
-//        RobotLogger.CloseLog();
         loggingButtonPub.publish(new GuiLoggingButtonMessage(GuiLoggingButtonMessage.LoggingMessage.STOP));
         timer.stop();
     }
