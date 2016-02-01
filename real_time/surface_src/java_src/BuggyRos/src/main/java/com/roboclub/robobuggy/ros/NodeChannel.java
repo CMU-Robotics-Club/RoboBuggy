@@ -6,7 +6,7 @@ public enum NodeChannel {
 	RC("rc_angle"),
 	STEERING("steering"),
 	BRAKE("brake"),
-	LOGIC_NOTIFICATION("logic_exception"),
+	LOGIC_NOTIFICATION("logic_notification"),
 	DRIVE_CTRL("drive_ctrl"),
 	BRAKE_CTRL("commanded brake"),
 	VISION("vision"),

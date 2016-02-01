@@ -33,7 +33,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Modifier;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
@@ -50,7 +49,7 @@ public class LoggingNode extends BuggyDecoratorNode {
     private File outputDirectory;
     private NodeChannel[] filters;
     private LinkedList<Message> messageQueue;
-    private LogWriterRunnable loggingThread;
+    private LogWriterThread loggingThread;
     private boolean keepLogging;
 
 	/**
@@ -65,9 +64,8 @@ public class LoggingNode extends BuggyDecoratorNode {
         this.filters = filters;
         messageQueue = new LinkedList<>();
         keepLogging = true;
-        loggingThread = new LogWriterRunnable();
+        outputDirectory = new File(outputDirPath);
 
-        createNewLogFile(outputDirPath);
         setupSubscriberList();
         setupLoggingTrigger();
 
@@ -81,17 +79,26 @@ public class LoggingNode extends BuggyDecoratorNode {
     private void setupLoggingTrigger() {
         new Subscriber(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath(), new MessageListener() {
             @Override
-            public void actionPerformed(String topicName, Message m) {
+            public synchronized void actionPerformed(String topicName, Message m) {
                 GuiLoggingButtonMessage message = (GuiLoggingButtonMessage) m;
                 if (message.getLoggingMessage().equals(GuiLoggingButtonMessage.LoggingMessage.START)) {
-                    createNewLogFile(outputDirectory.getPath());
+                    if (!createNewLogFile()) {
+                        new RobobuggyLogicNotification("Error creating new log file!", RobobuggyMessageLevel.EXCEPTION);
+                        return;
+                    }
                     keepLogging = true;
+                    loggingThread = new LogWriterThread();
                     loggingThread.start();
                     new RobobuggyLogicNotification("Starting up logging thread!", RobobuggyMessageLevel.NOTE);
                 }
                 else if (message.getLoggingMessage().equals(GuiLoggingButtonMessage.LoggingMessage.STOP)) {
                     keepLogging = false;
                     new RobobuggyLogicNotification("Stopping logging thread!", RobobuggyMessageLevel.NOTE);
+                    try {
+                        loggingThread.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
                 else {
                     new RobobuggyLogicNotification("Gui said something logger couldn't understand!", RobobuggyMessageLevel.EXCEPTION);
@@ -120,11 +127,9 @@ public class LoggingNode extends BuggyDecoratorNode {
      * Creates the log file, and returns the status
      * Returns false if anything went wrong, but already throws the logic exception
      *
-     * @param outputDirString the directory string of the log file
      * @return the status of the operation - true if it succeeded, false if it didn't
      */
-    private boolean createNewLogFile(String outputDirString) {
-        outputDirectory = new File(outputDirString);
+    private boolean createNewLogFile() {
         if (!outputDirectory.exists() || !outputDirectory.isDirectory()) {
             new RobobuggyLogicNotification("Output directory path isn't a folder!", RobobuggyMessageLevel.EXCEPTION);
             return false;
@@ -169,9 +174,9 @@ public class LoggingNode extends BuggyDecoratorNode {
 
 
     /**
-     * LogWriterRunnable - where we actually process each message and write it to the file
+     * LogWriterThread - where we actually process each message and write it to the file
      */
-    private class LogWriterRunnable extends Thread {
+    private class LogWriterThread extends Thread {
 
         private PrintStream fileWriteStream;
         private Gson messageTranslator;
@@ -197,7 +202,7 @@ public class LoggingNode extends BuggyDecoratorNode {
         private String footerDataEntry = "        {\"VERSION_ID\":\"STOP\"}";
 
         @Override
-        public synchronized void start() {
+        public synchronized void run() {
 
             try {
                 fileWriteStream = new PrintStream(outputFile, "UTF-8");
@@ -212,12 +217,13 @@ public class LoggingNode extends BuggyDecoratorNode {
 
             //always want to log :)
             while (keepLogging) {
-                //spin in a loop until a message comes in
+                //spin until a message comes in
                 while (messageQueue.isEmpty()) {
-                    //TODO be able to spin in a tight loop until the message queue isn't empty
-                    // // STOPSHIP: 1/31/16
-                    // // FIXME: 1/31/16 spin in a loop
-                    stateHits = 0;
+                    // need to check for the break message
+                    if (!keepLogging) {
+                        printDataBreakdown();
+                        return;
+                    }
                 }
                 //now we have a message from the queue
 
@@ -228,38 +234,27 @@ public class LoggingNode extends BuggyDecoratorNode {
                 // giganti-frickin-ic telemetry block
                 if (toSort instanceof BrakeMessage) {
                     brakeHits++;
-                }
-                else if (toSort instanceof EncoderMeasurement) {
+                } else if (toSort instanceof EncoderMeasurement) {
                     encoderHits++;
-                }
-                else if (toSort instanceof FingerPrintMessage) {
+                } else if (toSort instanceof FingerPrintMessage) {
                     fingerprintHits++;
-                }
-                else if (toSort instanceof GpsMeasurement) {
+                } else if (toSort instanceof GpsMeasurement) {
                     gpsHits++;
-                }
-                else if (toSort instanceof GuiLoggingButtonMessage) {
+                } else if (toSort instanceof GuiLoggingButtonMessage) {
                     logButtonHits++;
-                }
-                else if (toSort instanceof ImuMeasurement) {
+                } else if (toSort instanceof ImuMeasurement) {
                     imuHits++;
-                }
-                else if (toSort instanceof PoseMessage) {
+                } else if (toSort instanceof PoseMessage) {
                     poseMessageHits++;
-                }
-                else if (toSort instanceof ResetMessage) {
+                } else if (toSort instanceof ResetMessage) {
                     resetHits++;
-                }
-                else if (toSort instanceof RobobuggyLogicNotificationMeasurement) {
+                } else if (toSort instanceof RobobuggyLogicNotificationMeasurement) {
                     logicNotificationHits++;
-                }
-                else if (toSort instanceof StateMessage) {
+                } else if (toSort instanceof StateMessage) {
                     stateHits++;
-                }
-                else if (toSort instanceof SteeringMeasurement) {
+                } else if (toSort instanceof SteeringMeasurement) {
                     steeringHits++;
-                }
-                else {
+                } else {
                     //a new kind of message!
                     new RobobuggyLogicNotification("New message came in that we aren't tracking", RobobuggyMessageLevel.WARNING);
                 }
@@ -268,6 +263,10 @@ public class LoggingNode extends BuggyDecoratorNode {
 
             }
 
+            printDataBreakdown();
+        }
+
+        private void printDataBreakdown() {
             //we've stopped logging
             JsonObject dataBreakdown = new JsonObject();
             dataBreakdown.addProperty(NodeChannel.GUI_LOGGING_BUTTON.getName(), logButtonHits);
@@ -285,6 +284,7 @@ public class LoggingNode extends BuggyDecoratorNode {
             fileWriteStream.println(footerDataEntry);
             fileWriteStream.println("    ],\n    \"data_breakdown\" : " + dataBreakdown.toString() + "\n}");
             fileWriteStream.close();
+            new RobobuggyLogicNotification("Finished writing to file", RobobuggyMessageLevel.NOTE);
         }
     }
 
