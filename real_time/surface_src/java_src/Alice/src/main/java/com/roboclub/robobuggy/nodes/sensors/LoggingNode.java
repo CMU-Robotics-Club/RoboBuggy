@@ -36,6 +36,7 @@ import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * {@link SerialNode} for reading in logging commands from the GUI
@@ -44,25 +45,25 @@ import java.util.LinkedList;
  */
 public class LoggingNode extends BuggyDecoratorNode {
 
-	private Publisher loggingButtonPub;
-	private File outputFile;
+    private Publisher loggingButtonPub;
+    private File outputFile;
     private File outputDirectory;
     private NodeChannel[] filters;
-    private LinkedList<Message> messageQueue;
+    private LinkedBlockingQueue<Message> messageQueue;
     private LogWriterThread loggingThread;
     private boolean keepLogging;
 
-	/**
-	 * Create a new {@link LoggingNode} decorator
-	 * @param channel the {@link NodeChannel} of the {@link LoggingNode}
+    /**
+     * Create a new {@link LoggingNode} decorator
+     * @param channel the {@link NodeChannel} of the {@link LoggingNode}
      * @param outputDirPath The path to the output directory (not file)
      * @param filters sensors to log. To log all sensors, just use NodeChannel.values()
-	 */
-	public LoggingNode(NodeChannel channel, String outputDirPath, NodeChannel...filters) {
-		super(new BuggyBaseNode(channel));
+     */
+    public LoggingNode(NodeChannel channel, String outputDirPath, NodeChannel...filters) {
+        super(new BuggyBaseNode(channel));
 
         this.filters = filters;
-        messageQueue = new LinkedList<>();
+        messageQueue = new LinkedBlockingQueue<>();
         keepLogging = true;
         outputDirectory = new File(outputDirPath);
 
@@ -79,7 +80,7 @@ public class LoggingNode extends BuggyDecoratorNode {
     private void setupLoggingTrigger() {
         new Subscriber(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath(), new MessageListener() {
             @Override
-            public synchronized void actionPerformed(String topicName, Message m) {
+            public void actionPerformed(String topicName, Message m) {
                 GuiLoggingButtonMessage message = (GuiLoggingButtonMessage) m;
                 if (message.getLoggingMessage().equals(GuiLoggingButtonMessage.LoggingMessage.START)) {
                     if (!createNewLogFile()) {
@@ -94,11 +95,7 @@ public class LoggingNode extends BuggyDecoratorNode {
                 else if (message.getLoggingMessage().equals(GuiLoggingButtonMessage.LoggingMessage.STOP)) {
                     keepLogging = false;
                     new RobobuggyLogicNotification("Stopping logging thread!", RobobuggyMessageLevel.NOTE);
-                    try {
-                        loggingThread.join();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    loggingThread.interrupt();
                 }
                 else {
                     new RobobuggyLogicNotification("Gui said something logger couldn't understand!", RobobuggyMessageLevel.EXCEPTION);
@@ -152,25 +149,25 @@ public class LoggingNode extends BuggyDecoratorNode {
     }
 
 
-	/**{@inheritDoc}*/
-	@Override
-	protected boolean startDecoratorNode() {
-		loggingButtonPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
-		
-		new Subscriber(Gui.GuiPubSubTopics.GUI_LOG_BUTTON_UPDATED.toString(), new MessageListener() {
-			@Override 
-			public void actionPerformed(String topicName, Message m) {
-				loggingButtonPub.publish(m);
-			}
-		});
-		return true;
-	}
+    /**{@inheritDoc}*/
+    @Override
+    protected boolean startDecoratorNode() {
+        loggingButtonPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
 
-	/**{@inheritDoc}*/
-	@Override
-	protected boolean shutdownDecoratorNode() {
-		return true;
-	}
+        new Subscriber(Gui.GuiPubSubTopics.GUI_LOG_BUTTON_UPDATED.toString(), new MessageListener() {
+            @Override
+            public void actionPerformed(String topicName, Message m) {
+                loggingButtonPub.publish(m);
+            }
+        });
+        return true;
+    }
+
+    /**{@inheritDoc}*/
+    @Override
+    protected boolean shutdownDecoratorNode() {
+        return true;
+    }
 
 
     /**
@@ -202,6 +199,18 @@ public class LoggingNode extends BuggyDecoratorNode {
         private String footerDataEntry = "        {\"VERSION_ID\":\"STOP\"}";
 
         @Override
+        public void interrupt() {
+            printDataBreakdown();
+        }
+
+        /**
+         * Instantiates a new LogWriterThread by clearing the message queue
+         */
+        public LogWriterThread() {
+            messageQueue.clear();
+        }
+
+        @Override
         public synchronized void run() {
 
             try {
@@ -217,56 +226,52 @@ public class LoggingNode extends BuggyDecoratorNode {
 
             //always want to log :)
             while (keepLogging) {
-                //spin until a message comes in
-                while (messageQueue.isEmpty()) {
-                    // need to check for the break message
-                    if (!keepLogging) {
-                        printDataBreakdown();
-                        return;
+
+                //block until we have a message from the queue
+                Message toSort = null;
+                try {
+                    toSort = messageQueue.take();
+                    String msgAsJsonString = messageTranslator.toJson(toSort);
+
+                    // and if you look on your right you'll see the almost-unnecessary
+                    // giganti-frickin-ic telemetry block
+                    if (toSort instanceof BrakeMessage) {
+                        brakeHits++;
+                    } else if (toSort instanceof EncoderMeasurement) {
+                        encoderHits++;
+                    } else if (toSort instanceof FingerPrintMessage) {
+                        fingerprintHits++;
+                    } else if (toSort instanceof GpsMeasurement) {
+                        gpsHits++;
+                    } else if (toSort instanceof GuiLoggingButtonMessage) {
+                        logButtonHits++;
+                    } else if (toSort instanceof ImuMeasurement) {
+                        imuHits++;
+                    } else if (toSort instanceof PoseMessage) {
+                        poseMessageHits++;
+                    } else if (toSort instanceof ResetMessage) {
+                        resetHits++;
+                    } else if (toSort instanceof RobobuggyLogicNotificationMeasurement) {
+                        logicNotificationHits++;
+                    } else if (toSort instanceof StateMessage) {
+                        stateHits++;
+                    } else if (toSort instanceof SteeringMeasurement) {
+                        steeringHits++;
+                    } else {
+                        //a new kind of message!
+                        new RobobuggyLogicNotification("New message came in that we aren't tracking", RobobuggyMessageLevel.WARNING);
                     }
+
+                    fileWriteStream.println("        " + msgAsJsonString + ",");
+
+                } catch (InterruptedException e) {
+                    //note level since this is expected behavior
+                    new RobobuggyLogicNotification("Logging was interrupted, exiting logging thread!", RobobuggyMessageLevel.NOTE);
                 }
-                //now we have a message from the queue
-
-                Message toSort = messageQueue.pop();
-                String msgAsJsonString = messageTranslator.toJson(toSort);
-
-                // and if you look on your right you'll see the almost-unnecessary
-                // giganti-frickin-ic telemetry block
-                if (toSort instanceof BrakeMessage) {
-                    brakeHits++;
-                } else if (toSort instanceof EncoderMeasurement) {
-                    encoderHits++;
-                } else if (toSort instanceof FingerPrintMessage) {
-                    fingerprintHits++;
-                } else if (toSort instanceof GpsMeasurement) {
-                    gpsHits++;
-                } else if (toSort instanceof GuiLoggingButtonMessage) {
-                    logButtonHits++;
-                } else if (toSort instanceof ImuMeasurement) {
-                    imuHits++;
-                } else if (toSort instanceof PoseMessage) {
-                    poseMessageHits++;
-                } else if (toSort instanceof ResetMessage) {
-                    resetHits++;
-                } else if (toSort instanceof RobobuggyLogicNotificationMeasurement) {
-                    logicNotificationHits++;
-                } else if (toSort instanceof StateMessage) {
-                    stateHits++;
-                } else if (toSort instanceof SteeringMeasurement) {
-                    steeringHits++;
-                } else {
-                    //a new kind of message!
-                    new RobobuggyLogicNotification("New message came in that we aren't tracking", RobobuggyMessageLevel.WARNING);
-                }
-
-                fileWriteStream.println("        " + msgAsJsonString + ",");
-
             }
-
-            printDataBreakdown();
         }
 
-        private void printDataBreakdown() {
+        private synchronized void printDataBreakdown() {
             //we've stopped logging
             JsonObject dataBreakdown = new JsonObject();
             dataBreakdown.addProperty(NodeChannel.GUI_LOGGING_BUTTON.getName(), logButtonHits);
