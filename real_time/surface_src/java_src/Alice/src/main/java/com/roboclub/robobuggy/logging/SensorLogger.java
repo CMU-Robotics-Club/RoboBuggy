@@ -5,6 +5,7 @@ import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.RobobuggyLogicNotificationMeasurment;
+import com.roboclub.robobuggy.nodes.sensors.CameraNode;
 import com.roboclub.robobuggy.nodes.sensors.GpsNode;
 import com.roboclub.robobuggy.nodes.sensors.ImuNode;
 import com.roboclub.robobuggy.nodes.sensors.LoggingNode;
@@ -55,6 +56,8 @@ public final class SensorLogger {
 			private int brakeHits = 0;
 			private int steeringHits = 0;
 			private int notificationHits = 0;
+			private int cameraHits = 0;
+			private int unknownHits = 0;
 			
 			public void run() {
 				while (true) {
@@ -129,11 +132,17 @@ public final class SensorLogger {
 						sensorEntryObject = RobobuggyLogicNotificationMeasurment.translatePeelMessageToJObject(line);
 						notificationHits++;
 						break;
-
+						
+					case PUSHBAR_CAMERA:
+						sensorEntryObject = CameraNode.toJObject(line);
+						cameraHits++;
+						break;
+						
                     default:
                         //put brakes in here?
                         sensorEntryObject = new JSONObject();
                         sensorEntryObject.put("Unknown Sensor:", sensor);
+                        unknownHits++;
                         break;
 				}
 
@@ -152,6 +161,8 @@ public final class SensorLogger {
 				dataBreakdownObj.put(NodeChannel.BRAKE.getName(), brakeHits);
 				dataBreakdownObj.put(NodeChannel.STEERING.getName(), steeringHits);
 				dataBreakdownObj.put(NodeChannel.LOGIC_EXCEPTION, notificationHits);
+				dataBreakdownObj.put(NodeChannel.PUSHBAR_CAMERA,cameraHits);
+				dataBreakdownObj.put("unkown", unknownHits);
 				
 				return dataBreakdownObj.toJSONString();
 			}

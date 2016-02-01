@@ -3,6 +3,7 @@ package com.roboclub.robobuggy.main;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.roboclub.robobuggy.nodes.sensors.CameraNode;
 import com.roboclub.robobuggy.nodes.sensors.GpsNode;
 import com.roboclub.robobuggy.nodes.sensors.ImuNode;
 import com.roboclub.robobuggy.nodes.sensors.RBSMNode;
@@ -47,10 +48,11 @@ public final class Robot implements RosMaster {
 		nodeList = new LinkedList<>();
 		new RobobuggyLogicNotification("Logic Exception Setup properly" ,  RobobuggyMessageLevel.NOTE);
 		// Initialize Nodes
-		nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.COM_PORT_GPS));
-		nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.COM_PORT_IMU));
-		nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING,
-				RobobuggyConfigFile.COM_PORT_RBSM, COMMAND_PERIOD));
+		//nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.COM_PORT_GPS));
+		//nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.COM_PORT_IMU));
+		//nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING,
+		//		RobobuggyConfigFile.COM_PORT_RBSM, COMMAND_PERIOD));
+		nodeList.add(new CameraNode(NodeChannel.PUSHBAR_CAMERA, 100));
 	}
 	
 	/***************************************   Getters ********************************/

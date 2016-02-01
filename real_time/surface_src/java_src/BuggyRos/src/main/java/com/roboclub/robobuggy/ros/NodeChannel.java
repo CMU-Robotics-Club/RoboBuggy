@@ -3,6 +3,7 @@ package com.roboclub.robobuggy.ros;
 public enum NodeChannel {
 	GPS("gps"),
 	IMU("imu"),
+	PUSHBAR_CAMERA("push_bar_camera"),
 	RC("rc_angle"),
 	STEERING("steering"),
 	BRAKE("brake"),
