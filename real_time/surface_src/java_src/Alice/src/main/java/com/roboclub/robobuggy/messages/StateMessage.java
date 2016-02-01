@@ -1,17 +1,18 @@
 package com.roboclub.robobuggy.messages;
 
-import java.util.Date;
-
 import com.roboclub.robobuggy.nodes.baseNodes.NodeState;
 import com.roboclub.robobuggy.ros.Message;
+
+import java.util.Date;
 
 /**
  * Message used for passing {@link NodeState} information over BuggyROS
  */
 public class StateMessage implements Message {
+	public static final String VERSION_ID = "logic_notification";
 	private Date timestamp;
 	private NodeState state;
-	
+
 	/**
 	 * Construct a new {@link StateMessage} with time now
 	 * @param state {@link NodeState} to transmit

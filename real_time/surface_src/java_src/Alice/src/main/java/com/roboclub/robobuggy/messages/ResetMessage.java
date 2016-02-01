@@ -1,15 +1,16 @@
 package com.roboclub.robobuggy.messages;
 
-import java.util.Date;
-
 import com.roboclub.robobuggy.ros.Message;
+
+import java.util.Date;
 
 /**
  * Message for sending a reset command over BuggyROS
  */
 public class ResetMessage implements Message {
+	public static final String VERSION_ID = "reset";
 	private Date timestamp;
-	
+
 	/**
 	 * Constructs a new {@link ResetMessage}
 	 */

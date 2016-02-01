@@ -1,6 +1,6 @@
 package com.roboclub.robobuggy.main;
 
-import com.roboclub.robobuggy.messages.RobobuggyLogicNotificationMeasurment;
+import com.roboclub.robobuggy.messages.RobobuggyLogicNotificationMeasurement;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 
@@ -25,7 +25,7 @@ public class RobobuggyLogicNotification {
 	 * {@link RobobuggyLogicNotification} can be constructed.
 	 */
 	private static void setupLogicException(){
-		errorPub = new Publisher(NodeChannel.LOGIC_EXCEPTION.getMsgPath());
+		errorPub = new Publisher(NodeChannel.LOGIC_NOTIFICATION.getMsgPath());
 	}
 	
 	/**
@@ -44,8 +44,8 @@ public class RobobuggyLogicNotification {
 			setupLogicException();
 			}
 		//the message is always published 
-		errorPub.publish(new RobobuggyLogicNotificationMeasurment(exception, level));
-	
+		errorPub.publish(new RobobuggyLogicNotificationMeasurement(exception, level));
+
 		/*TODO: do something logical this segment was causing an infinite loop where the robot was being shut down and then restarted
 		//only halt the program if it is an exception 
 		if(level == RobobuggyMessageLevel.EXCEPTION){

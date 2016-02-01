@@ -1,5 +1,7 @@
 package com.roboclub.robobuggy.nodes.baseNodes;
 
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
@@ -10,10 +12,6 @@ import gnu.io.UnsupportedCommOperationException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import com.orsoncharts.util.json.JSONObject;
-import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
-import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 
 /**
  * Abstract class extended to create a decorator node that uses 
@@ -181,14 +179,6 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 	 */
 	public abstract int getBaudRate();
 	
-	/**
-	 * Called to translate a peeled message to a JSON object
-	 * @param message {@link String} of the peeled message
-	 * @return {@link JSONObject} representing the string
-	 */
-	public static JSONObject translatePeelMessageToJObject(String message) {
-		return new JSONObject();
-	}
 
 	/**
 	 * Peel is called once. User should read as many messages as possible
