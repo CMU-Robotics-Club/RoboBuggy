@@ -5,9 +5,11 @@ A project of the [Robotics Club at Carnegie Mellon University](https://roboticsc
 
 [<img src="https://travis-ci.org/CMU-Robotics-Club/RoboBuggy.svg?branch=master">](https://travis-ci.org/CMU-Robotics-Club/RoboBuggy/builds)
 
+
+> Buggy (also called Sweepstakes) is a race held annually since 1920 at Carnegie Mellon. Teams of 5 athletes (the pushers) push an un-motorized vehicle (a buggy) containing a driver around a 0.84 mile course in a relay format where the vehicle serves as the baton. Roughly half of the course is uphill, during which the pushers run and shove the buggy uphill. During the other - downhill - half, drivers are on their own to navigate tight turns at speeds of up to 35mph.
+=======
 [![Codacy Badge](https://api.codacy.com/project/badge/grade/4026f13cbb954454a4a9abe37fd49587)](https://www.codacy.com/app/Mr-Trevor-Decker/RoboBuggy)
 
-> Buggy (also called Sweepstakes) is a race held annually since 1920 at Carnegie Mellon. Teams of 5 atheletes (the pushers) push an un-motorized vehicle (a buggy) containing a driver around a 0.84 mile course in a relay format where the vehicle serves as the baton. Roughly half of the course is uphill, during which the pushers run and shove the buggy uphill. During the other - downhill - half, drivers are on their own to navigate tight turns at speeds of up to 35mph.
 
 Borrowed from the [CMU Buggy Alumni Association](http://cmubuggy.org/reference/What_is_buggy%3F). Visit them to find out more.
 
@@ -34,8 +36,8 @@ _Trevor pushing Singularity on Hill 4 during early morning rolls._
 <td align="center"><img src="readme_transistor.jpg" alt="Transistor the Buggy" style="max-width:100%;"></td>
 </tr>
 <tr>
-<td align="center">Inherrited from a past incarnation of this project, Singularity has been rolling since 1999. She features a bolted aluminum frame that was originally built around a desktop computer. These days, she features a stylish mount for a Surface on top with the control electronics inside.</td>
-<td align="center">Transistor was built for the 2015 season using modern carbon fiber shell technology. She was built to be accessable and maintainable as a platform for the futrue of Robobuggy. Debate within the team on what style she would wear was so fierce we chose to paint her chalkboard black, complete with a new chalking each race.</td>
+<td align="center">Inherited from a past incarnation of this project, Singularity has been rolling since 1999. She features a bolted aluminum frame that was originally built around a desktop computer. These days, she features a stylish mount for a Surface on top with the control electronics inside.</td>
+<td align="center">Transistor was built for the 2015 season using modern carbon fiber shell technology. She was built to be accessible and maintainable as a platform for the future of Robobuggy. Debate within the team on what style she would wear was so fierce we chose to paint her chalkboard black, complete with a new chalking each race.</td>
 </tr>
 </tbody>
 </table>
@@ -88,12 +90,12 @@ Our system architecture keeps a human in the loop all the time, even just to hit
 
 ## File Structure 
 
-The software system is seperated into two main directories (sections):
+The software system is separated into two main directories (sections):
 * offline -> where code which is not executed in realtime on the buggy is stored
 * real_time -> where code which is being run in realtime on the buggy is stored 
 
 This folder also contains: 
-* Pictures for this readmde file
+* Pictures for this readme file
 * configuration files
 
 ## Contributing

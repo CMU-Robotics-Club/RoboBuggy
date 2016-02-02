@@ -14,15 +14,15 @@ import javax.swing.SwingConstants;
 
 import com.roboclub.robobuggy.messages.ResetMessage;
 import com.roboclub.robobuggy.messages.StateMessage;
+import com.roboclub.robobuggy.nodes.baseNodes.NodeState;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.Publisher;
-import com.roboclub.robobuggy.ros.SensorChannel;
+import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
-import com.roboclub.robobuggy.sensors.SensorState;
 
 /**
- * 
+ * {@link JPanel} used to represent a switch for a robobuggy sensor
  * @author Trevor Decker
  * @author Kevin Brennan
  *
@@ -32,74 +32,90 @@ import com.roboclub.robobuggy.sensors.SensorState;
  * 
  * DESCRIPTION: TODO
  */
-
 public class SensorSwitch extends JPanel {
 	private static final long serialVersionUID = 8232116275431651229L;
-	private JButton sensor_btn;
+	private JButton sensorBtn;
 	private Publisher publisher;
 
-	public SensorSwitch(String name, SensorChannel sensor) {
+	/**
+	 * Constructs a new {@link SensorSwitch} object
+	 * @param name Name of the panel
+	 * @param sensor {@link NodeChannel} of the sensor
+	 */
+	public SensorSwitch(String name, NodeChannel sensor) {
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
 		this.setLayout(new GridLayout(1,2));
 
-		JLabel sensorName_lbl = new JLabel(name, SwingConstants.CENTER);
-		sensorName_lbl.setFont(new Font("serif", Font.BOLD, 20));
-		this.add(sensorName_lbl);
+		JLabel sensorNameLbl = new JLabel(name, SwingConstants.CENTER);
+		//sensorNameLbl.setFont(new Font("serif", Font.BOLD, 20));
+		this.add(sensorNameLbl);
 
-		sensor_btn = new JButton("OFF");
-		sensor_btn.setHorizontalTextPosition(SwingConstants.CENTER);
-		sensor_btn.setFont(new Font("serif", Font.BOLD, 20));
-		sensor_btn.setForeground(Color.WHITE);
-		this.add(sensor_btn);
-		sensor_btn.addActionListener(new ResetHandler());
+		sensorBtn = new JButton("OFF");
+		sensorBtn.setHorizontalTextPosition(SwingConstants.CENTER);
+		sensorBtn.setFont(new Font("serif", Font.BOLD, 20));
+		sensorBtn.setForeground(Color.WHITE);
+		this.add(sensorBtn);
+		sensorBtn.addActionListener(new ResetHandler());
 		
 		publisher = new Publisher(sensor.getRstPath());
 		// Subscriber for sensor state changes
 		new Subscriber(sensor.getStatePath(), new UpdateListener());
 		
 		// Default to displaying sensors as not in use
-		updateButton(SensorState.NOT_IN_USE);
+		updateButton(NodeState.NOT_IN_USE);
 	}
 
 
-	private void updateButton(SensorState state) {
+	private void updateButton(NodeState state) {
 		switch (state) {
 		case ON:
-			sensor_btn.setEnabled(true);
-			sensor_btn.setText("ON");
-			sensor_btn.setBackground(Color.GREEN);
+			sensorBtn.setEnabled(true);
+			sensorBtn.setText("ON");
+			sensorBtn.setBackground(Color.GREEN);
 			break;
 		case DISCONNECTED:
-			sensor_btn.setEnabled(true);
-			sensor_btn.setText("OFF");
-			sensor_btn.setBackground(Color.RED);
+			sensorBtn.setEnabled(true);
+			sensorBtn.setText("OFF");
+			sensorBtn.setBackground(Color.RED);
 			break;
 		case NOT_IN_USE:
-			sensor_btn.setEnabled(false);
-			sensor_btn.setText("OFF");
-			sensor_btn.setBackground(Color.BLUE);
+			sensorBtn.setEnabled(false);
+			sensorBtn.setText("OFF");
+			sensorBtn.setBackground(Color.BLUE);
 			break;
 		case FAULT:
-			sensor_btn.setEnabled(true);
-			sensor_btn.setText("FAULT");
-			sensor_btn.setBackground(Color.ORANGE);
+			sensorBtn.setEnabled(true);
+			sensorBtn.setText("FAULT");
+			sensorBtn.setBackground(Color.ORANGE);
+			break;
+		case WATCHDOG_DEAD:
+			sensorBtn.setEnabled(true);
+			sensorBtn.setText("WATCHDOG");
+			sensorBtn.setBackground(Color.PINK);
 			break;
 		case ERROR:
 		default:
-			sensor_btn.setEnabled(true);
-			sensor_btn.setText("ERROR");
-			sensor_btn.setBackground(Color.RED);
+			sensorBtn.setEnabled(true);
+			sensorBtn.setText("ERROR");
+			sensorBtn.setBackground(Color.RED);
 		}
+	 //   Gui.getInstance().fixPaint();
 	}
 
+	/**
+	 * Private class used to handle reset messages
+	 */
 	private class ResetHandler implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			updateButton(SensorState.DISCONNECTED);
+			updateButton(NodeState.DISCONNECTED);
 			publisher.publish(new ResetMessage());
 		}
 	}
 	
+	/**
+	 * Private class used to handle update messages
+	 */
 	private class UpdateListener implements MessageListener {
 		@Override
 		public void actionPerformed(String topicName, Message m) {

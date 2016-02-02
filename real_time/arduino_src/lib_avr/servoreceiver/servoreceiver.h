@@ -12,8 +12,8 @@ class ServoReceiver {
     volatile uint8_t *receiver_pin_reg_;
     uint8_t receiver_pin_num_;
     uint8_t int_num_;
-    int k_min_pulse_;
-    int k_max_pulse_;
+    uint32_t k_min_pulse_;
+    uint32_t k_max_pulse_;
     int k_offset_rc_in;
     int k_scale_rc_in;
     int k_offset_steering_out;
@@ -31,7 +31,7 @@ class ServoReceiver {
         unsigned long GetLastTimestamp();
         unsigned long GetPulseWidth();
         int GetAngle();
-        int GetAngleThousandths();
+        int GetAngleHundredths();
         void PrintDebugInfo(FILE *out_stream);
 };
 

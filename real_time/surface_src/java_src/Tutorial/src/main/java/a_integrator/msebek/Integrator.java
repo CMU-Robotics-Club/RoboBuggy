@@ -31,6 +31,22 @@ public class Integrator implements Node {
 		// No resources-needing-closing required.
 		return true;
 	}
+
+	@Override
+	public void setName(String newName) {
+		System.out.println("tried to set name");
+	}
+
+	@Override
+	public String getName() {
+		return null;
+	}
+
+	@Override
+	public boolean startNode() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 	
 	

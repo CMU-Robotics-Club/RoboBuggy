@@ -4,9 +4,18 @@ import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Publisher;
 
 public class NumberSource implements Node {
-	
+
 	Publisher p;
 
+	@Override
+	public void setName(String newName) {
+		System.out.println("tried to set name");
+	}
+
+	@Override
+	public String getName() {
+		return null;
+	}
 	public NumberSource() {
 		p = new Publisher("values"); 
 		
@@ -39,6 +48,12 @@ public class NumberSource implements Node {
 	@Override
 	public boolean shutdown() {
 		return true;
+	}
+
+	@Override
+	public boolean startNode() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 	

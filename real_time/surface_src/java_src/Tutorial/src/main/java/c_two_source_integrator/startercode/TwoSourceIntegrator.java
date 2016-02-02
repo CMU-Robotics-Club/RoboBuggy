@@ -29,6 +29,22 @@ public class TwoSourceIntegrator implements Node {
 		return false;
 	}
 
+	@Override
+	public void setName(String newName) {
+		System.out.println("tried to set name");
+	}
+
+	@Override
+	public String getName() {
+		return null;
+	}
+
+	@Override
+	public boolean startNode() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	
 	
 	

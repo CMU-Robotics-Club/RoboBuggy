@@ -5,25 +5,25 @@ import java.util.Date;
 import com.roboclub.robobuggy.ros.Message;
 
 /**
- * @author ?
- *
+ * Message used for representing the state of the brakes
  * @version 0.5
  * 
  *          CHANGELOG: NONE
  * 
  *          DESCRIPTION: TODO
  */
-
-// Represents raw measurement from the IMU
 public class BrakeMessage extends BaseMessage implements Message {
 
-	public Date timestamp;
-	public boolean down;
-	public static final String version_id = "brakeV0.1";
+	private Date timestamp;
+	private boolean down;
+	private static final String VERSION_ID = "brakeV0.1";
 
-	// Makes an encoder measurement with the time of Now.
-	public BrakeMessage(int brake_value) {
-		switch (brake_value) {
+	/**
+	 * Construct a new {@link BrakeMessage} at time now
+	 * @param brakeValue the current value of the brakes
+	 */
+	public BrakeMessage(int brakeValue) {
+		switch (brakeValue) {
 		case 0:
 			down = false;
 			break;
@@ -36,22 +36,29 @@ public class BrakeMessage extends BaseMessage implements Message {
 		this.timestamp = new Date();
 	}
 
-	public BrakeMessage(Date timestamp, boolean brake_is_down) {
-		this.down = brake_is_down;
-		this.timestamp = timestamp;
+	/**
+	 * Construct a new {@link BrakeMessage}
+	 * @param timestamp {@link Date} representing the time of the message
+	 * @param brakeValue the current value of the brakes
+	 */
+	public BrakeMessage(Date timestamp, boolean brakeValue) {
+		this.down = brakeValue;
+		this.timestamp = new Date(timestamp.getTime());
 	}
 
+	/**{@inheritDoc}*/
 	@Override
 	public String toLogString() {
-		return String.format("%s,'%s',%s\n", format_the_date(timestamp),
-				version_id, String.valueOf(down));
+		return String.format("%s,'%s',%s", formatDate(timestamp),
+				VERSION_ID, String.valueOf(down));
 	}
 
+	/**{@inheritDoc}*/
 	@Override
 	public Message fromLogString(String str) {
 		String[] spl = str.split(",");
-		Date d = try_to_parse_date(spl[0]);
-		boolean brake_state = Boolean.parseBoolean(spl[1]);
-		return new BrakeMessage(d, brake_state);
+		Date d = tryToParseDate(spl[0]);
+		boolean brakeState = Boolean.parseBoolean(spl[2]);
+		return new BrakeMessage(d, brakeState);
 	}
 }
