@@ -12,6 +12,7 @@ import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.FingerPrintMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
+import com.roboclub.robobuggy.messages.ImageMessage;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.messages.PoseMessage;
 import com.roboclub.robobuggy.messages.ResetMessage;
@@ -37,6 +38,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import org.jcodec.api.awt.SequenceEncoder;
 
 /**
  * {@link SerialNode} for reading in logging commands from the GUI
@@ -148,6 +151,7 @@ public class LoggingNode extends BuggyDecoratorNode {
         return true;
     }
 
+	private SequenceEncoder videoEncoder;
 
     /**{@inheritDoc}*/
     @Override
@@ -160,6 +164,31 @@ public class LoggingNode extends BuggyDecoratorNode {
                 loggingButtonPub.publish(m);
             }
         });
+
+        new Subscriber(NodeChannel.PUSHBAR_CAMERA.getMsgPath(), new MessageListener() {
+			@Override
+			public void actionPerformed(String topicName, Message m) {
+				if(videoEncoder == null){
+					try {
+						videoEncoder =  new SequenceEncoder(new File("test.mp4"));
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				ImageMessage img_message = (ImageMessage)m;
+				try {
+					videoEncoder.encodeImage(img_message.getImage());
+					//TODO write to text file 
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				// TODO Auto-generated method stub
+				
+			}
+		});
+        
         return true;
     }
 
@@ -201,6 +230,14 @@ public class LoggingNode extends BuggyDecoratorNode {
         @Override
         public void interrupt() {
             printDataBreakdown();
+        	if(videoEncoder != null){
+        		try {
+    				videoEncoder.finish();
+    			} catch (IOException e) {
+    				// TODO Auto-generated catch block
+    				e.printStackTrace();
+    			}
+        	}
         }
 
         /**

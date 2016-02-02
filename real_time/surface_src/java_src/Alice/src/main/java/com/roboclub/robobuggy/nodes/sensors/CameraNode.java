@@ -69,6 +69,7 @@ public class CameraNode extends PeriodicNode{
 			//TODO: check to see if the webcam is closed if so try to reconnect 
 			BufferedImage mostRecentImage = webcam.getImage();
 			imagePublisher.publish(new ImageMessage(mostRecentImage));
+		/*
 			try {
 				if(count < 100){
 					videoEncoder.encodeImage(mostRecentImage);
@@ -81,7 +82,9 @@ public class CameraNode extends PeriodicNode{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		*/
 		}
+
 	}
 
 

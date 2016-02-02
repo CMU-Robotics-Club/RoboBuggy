@@ -31,6 +31,7 @@ public class ImageViewer extends RobobuggyGUIContainer{
 			public void actionPerformed(String topicName, Message m) {
 				ImageMessage img_m = (ImageMessage)m;
 				img = img_m.getImage();
+				repaint();
 			}
 		});
         String path = "images/rc_logo.png";
