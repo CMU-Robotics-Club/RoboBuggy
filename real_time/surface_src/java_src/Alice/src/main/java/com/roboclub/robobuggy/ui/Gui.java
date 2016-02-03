@@ -7,8 +7,6 @@ import javax.swing.JFrame;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
-import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
-import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.ros.NodeChannel;
 
 /**
@@ -68,7 +66,6 @@ public final class Gui extends JFrame {
 		RobobuggyGUITabs tabs = new RobobuggyGUITabs();
 		tabs.addTab(new MainGuiWindow(),"Home");
 		tabs.addTab(new NodeViewer(),"Nodes");
-		tabs.addTab(new ImageViewer(NodeChannel.PUSHBAR_CAMERA.getMsgPath()));
 		mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
 		windowList.add(mainWindow);
 	}

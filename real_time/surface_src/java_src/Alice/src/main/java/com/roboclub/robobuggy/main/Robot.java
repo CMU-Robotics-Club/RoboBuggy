@@ -11,9 +11,6 @@ import com.roboclub.robobuggy.nodes.sensors.LoggingNode;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.NodeChannel;
 
-import java.util.LinkedList;
-import java.util.List;
-
 /**
  * 
  * The user interface controls what gui is  displayed to the user and how they can interact with system 

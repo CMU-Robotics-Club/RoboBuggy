@@ -19,18 +19,32 @@ import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.Subscriber;
 
+/**
+ * 
+ * @author Trevor Decker
+ *
+ *  A robobuggy gui element for viewing a stream from a camera 
+ * 
+ */
 public class ImageViewer extends RobobuggyGUIContainer{
-	BufferedImage img = null;
-	Subscriber imageSub;
+	private BufferedImage img = null;
+	private Subscriber imageSub;
 
-	
-	public ImageViewer(String topic_to_sub){
-		imageSub = new Subscriber(topic_to_sub, new MessageListener() {
+	/**
+	 * Constructor for this object to view images 
+	 * @param topicToSub the topic that images will be published on 
+	 */
+	public ImageViewer(String topicToSub){
+		imageSub = new Subscriber(topicToSub, new MessageListener() {
 			
 			@Override
+			/**
+			 * @param topicName that the action occurred on
+			 * @param Message m that is received
+			 */
 			public void actionPerformed(String topicName, Message m) {
-				ImageMessage img_m = (ImageMessage)m;
-				img = img_m.getImage();
+				ImageMessage imgM = (ImageMessage)m;
+				img = imgM.getImage();
 				repaint();
 			}
 		});
@@ -48,7 +62,7 @@ public class ImageViewer extends RobobuggyGUIContainer{
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g.create();
-		g.drawImage(img, 0, 0, this.getWidth(), this.getHeight(), Color.black, null);		
+		g.drawImage(img, 10, 10, this.getWidth()-20, this.getHeight()-20, Color.black, null);		
 		g2d.dispose();
 	}
 

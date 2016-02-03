@@ -36,7 +36,6 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.jcodec.api.awt.SequenceEncoder;
@@ -176,9 +175,9 @@ public class LoggingNode extends BuggyDecoratorNode {
 						e.printStackTrace();
 					}
 				}
-				ImageMessage img_message = (ImageMessage)m;
+				ImageMessage imgMessage = (ImageMessage)m;
 				try {
-					videoEncoder.encodeImage(img_message.getImage());
+					videoEncoder.encodeImage(imgMessage.getImage());
 					//TODO write to text file 
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
