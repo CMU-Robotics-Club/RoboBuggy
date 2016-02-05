@@ -7,10 +7,9 @@ import java.util.Date;
 /**
  * Message for passing steering angle measurements over BuggyROS
  */
-public class SteeringMeasurement extends BaseMessage implements Message {
+public class SteeringMeasurement extends BaseMessage {
 	public static final String VERSION_ID = "steering";
 	private int angle;
-	private Date timestamp;
 
 	/**
 	 * Construct a new {@link SteeringMeasurement} at time now

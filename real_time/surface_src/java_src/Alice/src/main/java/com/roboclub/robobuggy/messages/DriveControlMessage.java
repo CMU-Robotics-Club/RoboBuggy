@@ -7,13 +7,12 @@ import java.util.Date;
 /**
  * Message for passing the desired commanded value of the steering
  */
-public class DriveControlMessage extends BaseMessage implements Message {
+public class DriveControlMessage extends BaseMessage {
 
-	private static final String VERSION_ID = "drive_control_message";
+	public static final String VERSION_ID = "drive_control_message";
 	
 	private final double angle;
-	private final Date timestamp;
-	
+
 	/**
 	 * Construct a new DriveControlMessage
 	 * @param timestamp {@link Date} representing the creation time

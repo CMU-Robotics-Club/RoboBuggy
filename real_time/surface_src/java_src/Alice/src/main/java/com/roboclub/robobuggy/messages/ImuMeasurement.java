@@ -14,11 +14,10 @@ import java.util.Date;
  * 
  *          DESCRIPTION: TODO
  */
-public class ImuMeasurement extends BaseMessage implements Message {
+public class ImuMeasurement extends BaseMessage {
 
 	public static final String VERSION_ID = "imuV0.0";
 
-	private Date timestamp;
 
 	private double yaw;
 	private double pitch;

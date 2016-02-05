@@ -12,10 +12,9 @@ import java.util.Date;
  * 
  *          DESCRIPTION: TODO
  */
-public class BrakeMessage extends BaseMessage implements Message {
+public class BrakeMessage extends BaseMessage {
 
-	private static final String VERSION_ID = "brakeV0.1";
-	private Date timestamp;
+	public static final String VERSION_ID = "brakeV0.1";
 	private boolean down;
 
 	/**

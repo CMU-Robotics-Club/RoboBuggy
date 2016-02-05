@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.roboclub.robobuggy.messages.BrakeMessage;
 import com.roboclub.robobuggy.messages.RobobuggyLogicNotificationMeasurement;
-import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.BMMimeMultipart;
 
 /**
  * Created by vivaanbahl on 2/5/16.
@@ -35,10 +34,11 @@ public class SensorPlayerTests {
 
         RobobuggyLogicNotificationMeasurement m = gson.fromJson(logLine, RobobuggyLogicNotificationMeasurement.class);
         JsonElement logFileJson = gson.fromJson(logFile, JsonElement.class);
+        System.out.println(logFileJson.getAsString());
 
-        BrakeMessage willfail = gson.fromJson(logLine, BrakeMessage.class);
+        System.out.printf(String.valueOf((BrakeMessage) gson.fromJson(logLine, BrakeMessage.class)));
 
-        m.toString();
+        System.out.println(m.toString());
 
 
     }

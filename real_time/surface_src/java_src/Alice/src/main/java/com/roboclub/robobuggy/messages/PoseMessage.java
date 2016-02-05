@@ -10,15 +10,14 @@ import java.util.Date;
  * @author Zachary Dawson
  *
  */
-public class PoseMessage extends BaseMessage implements Message {
+public class PoseMessage extends BaseMessage {
 
-	private static final String VERSION_ID = "pose_message";
+	public static final String VERSION_ID = "pose_message";
 	
 	private final double latitude;
 	private final double longitude;
 	private final double heading;
-	private final Date timestamp;
-	
+
 	/**
 	 * Constructs a new {@link PoseMessage}
 	 * @param timestamp {@link Date} representing the creation time

@@ -191,7 +191,7 @@ public class LoggingNode extends BuggyDecoratorNode {
         private int stateHits = 0;
 
         private String name = "\"name\": \"Robobuggy Data Logs\",";
-        private String schemaVersion = "\"schema_version\": 1.0,";
+        private String schemaVersion = "\"schema_version\": 1.1,";
         private String dateRecorded = "\"date_recorded\": \"" +
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()) + "\",";
         private String swVersion = "\"software_version\": \"" + RobobuggyConfigFile.ALICE_LIBRARY_VERSION + "\",";

@@ -9,11 +9,10 @@ import java.util.Date;
 /**
  * Message for passing logic exceptions over BuggyRos
  */
-public class RobobuggyLogicNotificationMeasurement extends BaseMessage implements Message {
+public class RobobuggyLogicNotificationMeasurement extends BaseMessage {
 	public static final String VERSION_ID = "logic_notification";
 	private String message;
 	private RobobuggyMessageLevel level;
-	private Date timestamp;
 
 	/**
 	 * Constructs a new RobobuggyLogicExceptionMeasurement at time now.

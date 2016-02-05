@@ -14,12 +14,11 @@ import java.util.Date;
  * 
  *          DESCRIPTION: TODO
  */
-public class WheelAngleCommandMeasurement implements Message {
+public class WheelAngleCommandMeasurement extends BaseMessage {
 	// V0.0 had int
 	// V0.1 has float. Note that round-off is hundreths of a degree.
 	public static final String VERSION_ID = "autonomous_angleV0.1";
 
-	private Date timestamp;
 	private float angle;
 
 	/**
@@ -30,14 +29,6 @@ public class WheelAngleCommandMeasurement implements Message {
 	public WheelAngleCommandMeasurement(float angle) {
 		this.angle = angle;
 		this.timestamp = new Date();
-	}
-
-	/**
-	 * Get the timestamp of the wheel command message
-	 * @return the timestamp of this message
-	 */
-	public Date getTimestamp(){
-		return new Date(timestamp.getTime());
 	}
 
 	/**
