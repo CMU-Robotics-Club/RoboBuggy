@@ -207,7 +207,6 @@ public class LoggingNode extends BuggyDecoratorNode {
          * Instantiates a new LogWriterThread by clearing the message queue
          */
         public LogWriterThread() {
-            messageQueue.clear();
         }
 
         @Override
@@ -265,6 +264,8 @@ public class LoggingNode extends BuggyDecoratorNode {
                     fileWriteStream.println("        " + msgAsJsonString + ",");
 
                 } catch (InterruptedException e) {
+                    //flush all the messages that came after the stop button
+                    messageQueue.clear();
                     //note level since this is expected behavior
                     new RobobuggyLogicNotification("Logging was interrupted, exiting logging thread!", RobobuggyMessageLevel.NOTE);
                 }
