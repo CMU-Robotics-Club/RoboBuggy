@@ -275,7 +275,9 @@ int main(void)
     dbg_printf("Branch clean? %d\r\n", FP_CLEANSTATUS);
     dbg_printf("\nEnd of compilation information\r\n");
 
-    int auton_last = micros();
+    int auton_brake_last = micros();
+    int auton_steer_last = micros();
+
     watchdog_init();
 
     // loop forever
@@ -292,24 +294,28 @@ int main(void)
                 // dipatch complete message
                 switch(new_command.message_id) 
                 {
-                  case RBSM_MID_MEGA_STEER_COMMAND:
-                    auto_steering_angle = (int)(long)new_command.data;
-                    auton_last = micros();
-		    // dbg_printf("Got steering message for %d.\n", auto_steering_angle);
-                    break;
-		case RBSM_MID_MEGA_BRAKE_COMMAND:
-		  auto_brake_engaged = (bool)(long)new_command.data;
-		  //printf("Got brake message for %d.\n", auto_brake_engaged);
-		  break;
-		  
-		default:
-		  // report unknown message
-		  g_rbsm.Send(RBSM_MID_ERROR, RBSM_EID_RBSM_INVALID_MID);
-		  dbg_printf("Got message with invalid mid %d and data %d\n",
-			     new_command.message_id,
-			     new_command.data);
-		  break;
-                }
+                    case RBSM_MID_MEGA_STEER_COMMAND:
+                        auto_steering_angle = (int)(long)new_command.data;
+                        cli();
+                        auton_steer_last = micros();
+                        sei();
+                        // dbg_printf("Got steering message for %d.\n", auto_steering_angle);
+                        break;
+                    case RBSM_MID_MEGA_BRAKE_COMMAND:
+                        auto_brake_engaged = (bool)(long)new_command.data;
+                        cli();
+                        auton_brake_last = micros();
+                        sei();
+                        //printf("Got brake message for %d.\n", auto_brake_engaged);
+                        break;
+                    default:
+                        // report unknown message
+                        g_rbsm.Send(RBSM_MID_ERROR, RBSM_EID_RBSM_INVALID_MID);
+                        dbg_printf("Got message with invalid mid %d and data %d\n",
+                             new_command.message_id,
+                             new_command.data);
+                        break;
+                } //End switch(new_command.message_id)
             } 
             else if(read_status == RBSM_ERROR_INVALID_MESSAGE) 
             {
@@ -360,18 +366,26 @@ int main(void)
         unsigned long time1 = g_steering_rx.GetLastTimestamp();
         unsigned long time2 = g_brake_rx.GetLastTimestamp();
         unsigned long time3 = g_auton_rx.GetLastTimestamp();
+        //RC time deltas
         unsigned long delta1 = time_now - time1;
         unsigned long delta2 = time_now - time2;
         unsigned long delta3 = time_now - time3;
+        //Auton time deltas
+        unsigned long delta4 = time_now - auton_brake_last;
+        unsigned long delta5 = time_now - auton_steer_last;
         unsigned long g_encoder_ticks_safe = g_encoder_ticks;
         sei(); //enable interrupts
 
         if(delta1 > CONNECTION_TIMEOUT_US ||
            delta2 > CONNECTION_TIMEOUT_US ||
-           delta3 > CONNECTION_TIMEOUT_US) 
+           delta3 > CONNECTION_TIMEOUT_US ||
+           ((g_is_autonomous) && 
+           (delta4 > CONNECTION_TIMEOUT_US ||
+           delta5 > CONNECTION_TIMEOUT_US))
+           ) 
         {
-            // we haven't heard from the RC receiver in too long
-
+            // we haven't heard from the RC receiver or high level in too long
+            dbg_printf("Timed out connection from RC or high level!\n");
             if(g_brake_needs_reset == false) 
             {
                 g_rbsm.Send(RBSM_MID_ERROR, RBSM_EID_RC_LOST_SIGNAL);
@@ -397,21 +411,11 @@ int main(void)
 	
         if(g_is_autonomous)
         {
-	  if(auto_brake_engaged)
+            if(auto_brake_engaged)
             {
                 g_brake_state_engaged = true;                
             }
 
-            //TODO: The following needs to be fixed in order to allow for reconnects
-            /*
-            //Check for timeout
-            int timenow = micros();
-            int delta = timenow - auton_last;
-            if (delta > CONNECTION_TIMEOUT_US)
-            {
-                g_brake_state_engaged = true;
-            }
-            */
             steering_set(auto_steering_angle);
             g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)(auto_steering_angle));
         }
@@ -447,7 +451,7 @@ int main(void)
         g_rbsm.Send(RBSM_MID_MEGA_BATTERY_LEVEL, g_current_voltage);
         g_rbsm.Send(RBSM_MID_MEGA_STEER_FEEDBACK, (long int)g_steering_feedback);
         g_rbsm.Send(RBSM_MID_ENC_TICKS_RESET, g_encoder_ticks_safe);
-        g_rbsm.Send(RBSM_MID_ENC_TIMESTAMP, millis());
+        g_rbsm.Send(RBSM_MID_ENC_TIMESTAMP, millis()); //TODO: Is this safe?
         g_rbsm.Send(RBSM_MID_COMP_HASH, (long unsigned)(FP_HEXCOMMITHASH));
 
         //Feed the watchdog to indicate things aren't timing out

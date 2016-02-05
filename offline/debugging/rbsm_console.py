@@ -143,13 +143,13 @@ def command_handler(rbsm_endpoint, command_line):
         f.write(repr(command_parts))
 
         try:
-        message_id = int(command_parts[0])
-        message_data = int(command_parts[1])
-        f.write('not enpoint yet\n')
-        rbsm_endpoint.send(message_id, message_data)
-        f.write('past endpoint\n')
+            message_id = int(command_parts[0])
+            message_data = int(command_parts[1])
+            f.write('not enpoint yet\n')
+            rbsm_endpoint.send(message_id, message_data)
+            f.write('past endpoint\n')
         except:
-        error = True
+            error = True
 
     return error
 
