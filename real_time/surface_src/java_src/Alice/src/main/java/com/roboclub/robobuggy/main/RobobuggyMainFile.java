@@ -38,12 +38,11 @@ public class RobobuggyMainFile {
 		}
    
 
-                
         List<String> ports = getAvailablePorts();
         System.out.println(ports);
-        
+        Robot.getInstance();
         Gui.getInstance();
-    	
+     	
     	if (RobobuggyConfigFile.DATA_PLAY_BACK) {
     		//Play back mode enabled
     		final SensorPlayer sp = new SensorPlayer("logs/2016-01-26-00-00-53/sensors.txt");
@@ -65,10 +64,12 @@ public class RobobuggyMainFile {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			new RobobuggyLogicNotification("HELLO", RobobuggyMessageLevel.WARNING);
+			new RobobuggyLogicNotification("Robobuggy Logic Notfication started", RobobuggyMessageLevel.NOTE);
 		}
-    }
 
+
+    }
+    
     private static List<String> getAvailablePorts() {
 
         List<String> list = new ArrayList<String>();

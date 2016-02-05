@@ -3,11 +3,8 @@ package com.roboclub.robobuggy.main;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.roboclub.robobuggy.nodes.localizers.GPSLocalizer;
 import com.roboclub.robobuggy.nodes.localizers.OdomLocalizer;
 import com.roboclub.robobuggy.nodes.planners.DeadreckoningPlanner;
-import com.roboclub.robobuggy.nodes.planners.GPSTrackPlannerNode;
-import com.roboclub.robobuggy.nodes.planners.SweepNode;
 import com.roboclub.robobuggy.nodes.sensors.RBSMNode;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.NodeChannel;
@@ -54,7 +51,6 @@ public final class Robot implements RosMaster {
 		autonomous = RobobuggyConfigFile.AUTONOMOUS_DEFAULT;
 		nodeList = new LinkedList<>();
 		new RobobuggyLogicNotification("Logic Exception Setup properly" ,  RobobuggyMessageLevel.NOTE);
-		
 		// Initialize Nodes
 		//nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.COM_PORT_GPS));
 		//nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.COM_PORT_IMU));
@@ -71,6 +67,7 @@ public final class Robot implements RosMaster {
 		} catch (InterruptedException e) {
 			new RobobuggyLogicNotification("Couldn't wait for bootloader, shutting down", RobobuggyMessageLevel.EXCEPTION);
 		}
+
 	}
 	
 	/***************************************   Getters ********************************/
@@ -88,6 +85,14 @@ public final class Robot implements RosMaster {
 	 */
 	public boolean getAutonomous() {
 		return autonomous;
+	}
+	
+	/**
+	 * Returns the list of current nodes 
+	 * @return the nodeList
+	 */ 
+	public List<Node> getNodeList(){
+		return nodeList;
 	}
 	
 	/**

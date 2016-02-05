@@ -98,6 +98,10 @@ This folder also contains:
 * Pictures for this readme file
 * configuration files
 
+## Contributing
+
+We have a [contributions guide](CONTRIBUTING.md) to get you started.
+
 ## Sponsors
 
 Special thanks to Microsoft for providing Alice a host interface on a Surface Pro 3!
