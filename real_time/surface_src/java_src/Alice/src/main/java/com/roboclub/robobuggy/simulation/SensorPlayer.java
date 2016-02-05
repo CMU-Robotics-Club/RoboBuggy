@@ -52,7 +52,7 @@ public class SensorPlayer implements Runnable {
 
     // ---- Log File Defaults ----
     private static final String METADATA_NAME = "Robobuggy Data Logs";
-    private static final double METADATA_SCHEMA_VERSION = 1.1;
+    private static final String METADATA_SCHEMA_VERSION = "1.1";
     private static final String METADATA_HIGHLEVEL_SW_VERSION = "1.0.0";
     private static final String TERMINATING_VERSION_ID = "STOP";
 
@@ -214,7 +214,7 @@ public class SensorPlayer implements Runnable {
         if (!logFile.get("name").getAsString().equals(METADATA_NAME)) {
             return false;
         }
-        if (logFile.get("schema_version").getAsDouble() != METADATA_SCHEMA_VERSION) {
+        if (!logFile.get("schema_version").getAsString().equals(METADATA_SCHEMA_VERSION)) {
             return false;
         }
         if (!logFile.get("software_version").getAsString().equals(METADATA_HIGHLEVEL_SW_VERSION)) {
