@@ -7,6 +7,16 @@ public class NumberSource implements Node {
 	
 	Publisher p;
 
+	@Override
+	public void setName(String newName) {
+		System.out.println("tried to set name");
+	}
+
+	@Override
+	public String getName() {
+		return null;
+	}
+
 	public NumberSource() {
 		p = new Publisher("values"); 
 		

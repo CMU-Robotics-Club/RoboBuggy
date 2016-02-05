@@ -20,5 +20,7 @@ public interface BuggyNode extends Node {
 	 * {@link BuggyNode} implementation
 	 */
 	void setNodeState(NodeState state);
+	
+
 
 }

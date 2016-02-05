@@ -1,7 +1,6 @@
 package com.roboclub.robobuggy.ros;
 
 public interface Node {
-	String name = "Node";
 	
 	/**
 	 * Called to start running the code of the respective node
@@ -15,9 +14,8 @@ public interface Node {
 	 */
 	boolean shutdown();
 	
-	default String getName() {
-		// TODO Auto-generated method stub
-		return Node.name;
-	}
+	public void setName(String newName);
+	
+	public String getName(); 
 	
 }

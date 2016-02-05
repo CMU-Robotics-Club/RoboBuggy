@@ -29,6 +29,6 @@ public final class  RobobuggyConfigFile {
 	public static  final String COM_PORT_RBSM = "/dev/tty.usbmodem14121";
 
 	// iff false, connect to serial sensors 
-	public static final boolean DATA_PLAY_BACK = false;
+	public static final boolean DATA_PLAY_BACK = true;
 
 }
