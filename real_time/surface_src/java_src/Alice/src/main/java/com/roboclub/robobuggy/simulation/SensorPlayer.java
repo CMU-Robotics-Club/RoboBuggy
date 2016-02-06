@@ -173,7 +173,6 @@ public class SensorPlayer implements Runnable {
 							break;
 						
 						case "encoder":
-						
 							double dataword = (double) sensorParams.get("dataword");
 							double distance = (double) sensorParams.get("distance");
 							double velocity = 0;

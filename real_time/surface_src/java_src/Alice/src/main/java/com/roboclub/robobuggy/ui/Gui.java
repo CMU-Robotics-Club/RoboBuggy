@@ -3,7 +3,6 @@ package com.roboclub.robobuggy.ui;
 import java.awt.Container;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
-
 import javax.swing.JFrame;
 
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
@@ -66,6 +65,7 @@ public final class Gui extends JFrame {
 		RobobuggyGUITabs tabs = new RobobuggyGUITabs();
 		tabs.addTab(new MainGuiWindow(),"Home");
 		tabs.addTab(new NodeViewer(),"Nodes");
+		tabs.addTab(new poseViewer(),"poses");
 		mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
 		windowList.add(mainWindow);
 	}

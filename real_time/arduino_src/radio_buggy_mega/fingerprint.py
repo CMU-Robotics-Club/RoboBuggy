@@ -15,7 +15,7 @@ import socket #Used for getting hostname
 import subprocess
 
 def main():
-    print("Now creating fingerprint.h...\n")
+    print("Now creating fingerprint.h...")
 
     #If fingerprint.h already exists, it will be overwritten
     file = open("fingerprint.h", 'w')
@@ -55,6 +55,6 @@ def main():
     file.write("\n#endif")
 
     file.close()
-    print("File created.\n")
+    print("fingerprint.h created.\n")
 
 main()

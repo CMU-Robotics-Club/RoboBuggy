@@ -32,6 +32,7 @@ import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
  * @author Kevin Brennan
  * @author Zachary Dawson
  *
+ *
  * CHANGELOG: Converted to use the decorator pattern implementation of
  * {@link Node}s for buggy
  * 
@@ -143,7 +144,6 @@ public class RBSMNode extends SerialNode {
 		return BAUD_RATE;
 	}
 
-	
 	/**{@inheritDoc}*/
 	@Override
 	public int peel(byte[] buffer, int start, int bytesAvailable) 
@@ -179,18 +179,45 @@ public class RBSMNode extends SerialNode {
 			case RBSerialMessage.RBSM_MID_MEGA_STEER_FEEDBACK:
 				// This is a delta-distance! Do a thing!
 				potValue = message.getDataWord();
-				System.out.println(potValue);
 				messagePubPot.publish(new SteeringMeasurement(-(potValue + OFFSET)/ARD_TO_DEG));
 				break;
 			case RBSerialMessage.RBSM_MID_MEGA_STEER_ANGLE:
 				steeringAngle = message.getDataWord();
 				messagePubControllerSteering.publish(new SteeringMeasurement(steeringAngle));
+				System.out.println("steering:"+steeringAngle);
 				break;
 			case RBSerialMessage.FP_HASH:
-				System.out.println(message.getDataWord());
+			//	System.out.println(message.getDataWord());
 				messagePubFp.publish(new FingerPrintMessage(message.getDataWord()));
 				break;
+			case RBSerialMessage.RBSM_MID_ERROR:
+				//TODO
+				break;
+			case RBSerialMessage.ENC_TICKS_SINCE_LAST:
+				//TODO 
+				break;
+			case RBSerialMessage.ENC_MS_SINCE_RESET:
+				//TODO
+				break;
+			case RBSerialMessage.BATTERY:
+				//TODO publish message for batery level
+				break;
+			case RBSerialMessage.BRAKE:
+				//TODO publish message for brake
+				break;
+			case RBSerialMessage.AUTO:
+				//TODO publish message for atuo
+				break;
+			case RBSerialMessage.RBSM_MID_DEVICE_ID:
+				//TODO publish message for device ID
+				break;
+/*			case RBSerialMessage.STEERING:
+				//TODO publish message for steering
+				break;
+				*/
 			default: //Unhandled or invalid RBSM message header was received.
+				System.out.println("headerByte"+headerByte);
+
 				new RobobuggyLogicNotification("Invalid RBSM message header\n", RobobuggyMessageLevel.NOTE);
 				break;
 		}
@@ -252,7 +279,7 @@ public class RBSMNode extends SerialNode {
 	private final class RBSMPeriodicNode extends PeriodicNode {
 		
 		//Stored commanded values
-		private short commandedAngle = 0;
+		private int commandedAngle = 0;
 		private boolean commandedBrakeEngaged = true;
 		
 		/**
@@ -270,10 +297,10 @@ public class RBSMNode extends SerialNode {
 		 */
 		@Override
 		protected void update() {
-			commandedAngle = (short) ((commandedAngle + 1) % 256);
-			System.out.println("sending command "+commandedAngle);
-			RBSMessage msg = new RBSMessage(commandedAngle, commandedBrakeEngaged);
-			send(msg.getMessageBytes());
+			RBSMSteeringMessage msgSteer = new RBSMSteeringMessage(commandedAngle);
+			send(msgSteer.getMessageBytes());
+			RBSMBrakeMessage msgBrake = new RBSMBrakeMessage(commandedBrakeEngaged);
+			send(msgBrake.getMessageBytes());
 		}
 
 		/**{@inheritDoc}*/
@@ -284,7 +311,7 @@ public class RBSMNode extends SerialNode {
 					new MessageListener() {
 				@Override
 				public void actionPerformed(String topicName, Message m) {
-					commandedAngle = ((DriveControlMessage)m).getAngleShort();
+					commandedAngle = ((DriveControlMessage)m).getAngleInt();
 				}
 			});
 			new Subscriber(NodeChannel.BRAKE_CTRL.getMsgPath(),
@@ -304,5 +331,3 @@ public class RBSMNode extends SerialNode {
 		}	
 	}
 }
-
-

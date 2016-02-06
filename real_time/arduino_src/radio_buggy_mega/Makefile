@@ -475,37 +475,40 @@ extcoff: $(TARGET).elf
 fingerprint:
 	$(PYTHON) fingerprint.py
 
+headercheck:
+	$(PYTHON) headercheck.py
+
 
 # Compile: create object files from C source files.
-%.o : %.c fingerprint
+%.o : %.c fingerprint headercheck
 	@echo
 	@echo $(MSG_COMPILING) $<
 	$(CC) -c $(ALL_CFLAGS) $< -o $@ 
 
-%.o : %.cpp fingerprint
+%.o : %.cpp fingerprint headercheck
 	@echo
 	@echo $(MSG_COMPILING) $<
 	$(CC) -c $(ALL_CFLAGS) $< -o $@ 
 
 # Compile: create assembler files from C source files.
-%.s : %.c fingerprint
+%.s : %.c fingerprint headercheck
 	$(CC) -S $(ALL_CFLAGS) $< -o $@
 
-%.s : %.cpp fingerprint
+%.s : %.cpp fingerprint headercheck
 	$(CC) -S $(ALL_CFLAGS) $< -o $@
 
 
 # Assemble: create object files from assembler source files.
-%.o : %.S fingerprint
+%.o : %.S fingerprint headercheck
 	@echo
 	@echo $(MSG_ASSEMBLING) $<
 	$(CC) -c $(ALL_ASFLAGS) $< -o $@
 
 # Create preprocessed source for use in sending a bug report.
-%.i : %.c fingerprint
+%.i : %.c fingerprint headercheck
 	$(CC) -E -mmcu=$(MCU) -I. $(CFLAGS) $< -o $@ 
 
-%.i : %.cpp fingerprint
+%.i : %.cpp fingerprint headercheck
 	$(CC) -E -mmcu=$(MCU) -I. $(CFLAGS) $< -o $@ 
 
 
@@ -528,6 +531,7 @@ clean_list :
 	$(REMOVE) $(patsubst %.c,%.d,$(patsubst %.cpp,%.d,$(SRC)))
 	$(REMOVE) .dep/*
 	$(REMOVE) fingerprint.h
+	$(REMOVE) rbsmheaders.h
 
 
 
