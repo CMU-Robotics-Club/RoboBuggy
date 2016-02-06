@@ -183,7 +183,7 @@ public class LoggingNode extends BuggyDecoratorNode {
 			public void actionPerformed(String topicName, Message m) {
 				if(videoEncoder == null){
 					try {
-						videoEncoder =  new SequenceEncoder(new File("test.mp4"));
+						videoEncoder =  new SequenceEncoder(new File("test.mp4")); //TODO move into a folder
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
