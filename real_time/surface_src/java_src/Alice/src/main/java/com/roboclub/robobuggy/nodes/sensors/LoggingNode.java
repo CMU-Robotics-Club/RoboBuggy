@@ -53,6 +53,8 @@ public class LoggingNode extends BuggyDecoratorNode {
     private LogWriterThread loggingThread;
     private boolean keepLogging;
 
+    private static final String DATE_FILE_FORMAT = "yyyy-MM-dd-HH-mm-ss";
+
     /**
      * Create a new {@link LoggingNode} decorator
      * @param channel the {@link NodeChannel} of the {@link LoggingNode}
@@ -68,7 +70,10 @@ public class LoggingNode extends BuggyDecoratorNode {
         outputDirectory = new File(outputDirPath);
 
         setupSubscriberList();
-        setupLoggingTrigger();
+
+        if (!RobobuggyConfigFile.DATA_PLAY_BACK) {
+            setupLoggingTrigger();
+        }
 
     }
 
@@ -119,6 +124,15 @@ public class LoggingNode extends BuggyDecoratorNode {
         }
     }
 
+    /**
+     * Method to create a file name from a Date
+     * @param d date to create the file name from
+     * @return the date as a filename-compatible string
+     */
+    private static String formatDateIntoFile(Date d) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FILE_FORMAT);
+        return dateFormat.format(d);
+    }
 
     /**
      * Creates the log file, and returns the status
@@ -133,7 +147,7 @@ public class LoggingNode extends BuggyDecoratorNode {
         }
 
         // each log file is called {filename}_{date}.txt
-        outputFile = new File(outputDirectory.getPath() + "/" + RobobuggyConfigFile.LOG_FILE_NAME + "_" + BaseMessage.formatDate(new Date()) + ".txt");
+        outputFile = new File(outputDirectory.getPath() + "/" + RobobuggyConfigFile.LOG_FILE_NAME + "_" + formatDateIntoFile(new Date()) + ".txt");
         try {
             if(!outputFile.createNewFile()) {
                 new RobobuggyLogicNotification("Couldn't create log file!", RobobuggyMessageLevel.EXCEPTION);

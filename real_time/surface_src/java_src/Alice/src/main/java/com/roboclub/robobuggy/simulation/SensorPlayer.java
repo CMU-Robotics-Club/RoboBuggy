@@ -73,7 +73,7 @@ public class SensorPlayer implements Runnable {
 
         translator = new GsonBuilder().create();
 
-		System.out.println("initializing the SensorPlayer");
+		new RobobuggyLogicNotification("initializing the SensorPlayer", RobobuggyMessageLevel.NOTE);
 
 		path = filePath;
 		File f = new File(path);
@@ -183,11 +183,13 @@ public class SensorPlayer implements Runnable {
                 BaseMessage timeMessage = (BaseMessage) transmitMessage;
 
                 if (currentSensorTimeInMillis != -1) {
-                    currentSensorTimeInMillis = timeMessage.getTimestamp().getTime();
-                    long sensorTimeFromPrev = currentSensorTimeInMillis - sensorStartTimeInMilis;
+                    if (timeMessage != null) {
+                        currentSensorTimeInMillis = timeMessage.getTimestamp().getTime();
+                        long sensorTimeFromPrev = currentSensorTimeInMillis - sensorStartTimeInMilis;
 
-                    if(sensorTimeFromPrev > 0){
-                        Thread.sleep(sensorTimeFromPrev);
+                        if(sensorTimeFromPrev > 0){
+                            Thread.sleep(sensorTimeFromPrev);
+                        }
                     }
 
                     sensorStartTimeInMilis = currentSensorTimeInMillis;
