@@ -22,6 +22,7 @@
 #include <avr/io.h>
 #include <stdio.h>
 #include "../lib_avr/uart/uart_extra.h"
+#include "rbsmheaders.h"
 
 // Implementation Constants
 #define RBSM_BUFFER_OUT_LENGTH 11 // minimum to support double message
@@ -38,18 +39,7 @@
 #define RBSM_TWO_BYTE_MASK 0xFFFF
 #define RBSM_BAUD_RATE 9600
 
-// Message Types
-#define RBSM_MID_ENC_TICKS_LAST 0
-#define RBSM_MID_ENC_TICKS_RESET 1
-#define RBSM_MID_ENC_TIMESTAMP 2
-#define RBSM_MID_MEGA_BRAKE_COMMAND 18
-#define RBSM_MID_MEGA_STEER_COMMAND 19 //Steering value sent from high level to low level
-#define RBSM_MID_MEGA_STEER_ANGLE 20 //Steering value being given to servo
-#define RBSM_MID_MEGA_BRAKE_STATE 21
-#define RBSM_MID_MEGA_AUTON_STATE 22
-#define RBSM_MID_MEGA_BATTERY_LEVEL 23
-#define RBSM_MID_MEGA_STEER_FEEDBACK 24 //Steering value read from potentiometer
-#define RBSM_MID_COMP_HASH 30
+// Message types are defined in rbsmheaders.h
 
 #define RBSM_MID_RESERVED 252 // 0xFC, message head
 #define RBSM_MID_ERROR 254
