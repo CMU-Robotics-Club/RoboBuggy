@@ -47,7 +47,7 @@ public class RobobuggyMainFile {
     	
     	if (RobobuggyConfigFile.DATA_PLAY_BACK) {
     		//Play back mode enabled
-    		final SensorPlayer sp = new SensorPlayer("logs/2016-01-26-00-00-53/sensors.txt");
+    		final SensorPlayer sp = new SensorPlayer("logs/2015-11-21-06-42-24/sensors.txt");
         	new Thread(new Runnable() {
 				
 				@Override
