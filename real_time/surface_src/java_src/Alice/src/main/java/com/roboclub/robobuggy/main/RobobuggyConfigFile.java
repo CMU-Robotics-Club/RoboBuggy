@@ -29,11 +29,11 @@ public final class  RobobuggyConfigFile {
 	public static final boolean VISION_SYSTEM_ENABLED = true;
 	
 	//sensor com ports
-	public static  final String COM_PORT_IMU = "COM6";
-	public static  final String COM_PORT_GPS = "COM12";
-	public static  final String COM_PORT_RBSM = "COM3";
+	public static  final String COM_PORT_IMU = "COM7";
+	public static  final String COM_PORT_GPS = "COM8";
+	public static  final String COM_PORT_RBSM = "COM6";
 	
 	// iff false, connect to serial sensors 
-	public static final boolean DATA_PLAY_BACK = true;
+	public static final boolean DATA_PLAY_BACK = false;
 
 }

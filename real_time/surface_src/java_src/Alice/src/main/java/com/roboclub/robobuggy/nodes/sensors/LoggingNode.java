@@ -214,6 +214,8 @@ public class LoggingNode extends BuggyDecoratorNode {
 
         @Override
         public void interrupt() {
+            //// TODO: 2/6/2016 add the stop message to the end of the queue, so that we parse all
+            messageQueue.clear();
             printDataBreakdown();
         }
 
@@ -228,7 +230,11 @@ public class LoggingNode extends BuggyDecoratorNode {
 
             try {
                 fileWriteStream = new PrintStream(outputFile, "UTF-8");
-                messageTranslator = new GsonBuilder().excludeFieldsWithModifiers().create();
+                messageTranslator = new GsonBuilder()
+                                        .excludeFieldsWithModifiers()
+                                        .serializeSpecialFloatingPointValues()
+                                        .create()
+                                        ;
             } catch (FileNotFoundException | UnsupportedEncodingException e) {
                 new RobobuggyLogicNotification("Error setting up the output file. Aborting logging!", RobobuggyMessageLevel.EXCEPTION);
                 return;
@@ -241,7 +247,7 @@ public class LoggingNode extends BuggyDecoratorNode {
             while (keepLogging) {
 
                 //block until we have a message from the queue
-                Message toSort = null;
+                Message toSort;
                 try {
                     toSort = messageQueue.take();
                     String msgAsJsonString = messageTranslator.toJson(toSort);

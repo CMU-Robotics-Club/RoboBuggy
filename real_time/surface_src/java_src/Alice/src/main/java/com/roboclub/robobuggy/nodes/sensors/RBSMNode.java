@@ -190,7 +190,7 @@ public class RBSMNode extends SerialNode {
 				messagePubFp.publish(new FingerPrintMessage(message.getDataWord()));
 				break;
 			default: //Unhandled or invalid RBSM message header was received.
-				new RobobuggyLogicNotification("Invalid RBSM message header\n", RobobuggyMessageLevel.NOTE);
+				new RobobuggyLogicNotification("Invalid RBSM message header: " + headerByte, RobobuggyMessageLevel.NOTE);
 				break;
 		}
 		
