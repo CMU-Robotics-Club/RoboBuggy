@@ -1,213 +1,228 @@
-//TODO SensorPlayer is getting nerfed until we can make it work with GSON
-//package com.roboclub.robobuggy.simulation;
-//
-//import java.io.File;
-//import java.io.FileInputStream;
-//import java.io.FileReader;
-//import java.io.IOException;
-//import java.io.InputStreamReader;
-//import java.util.Date;
-//
-//import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
-//import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
-//import com.roboclub.robobuggy.messages.EncoderMeasurement;
-//import com.roboclub.robobuggy.messages.GpsMeasurement;
-//import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
-//import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage.LoggingMessage;
-//import com.roboclub.robobuggy.messages.ImuMeasurement;
-//import com.roboclub.robobuggy.messages.SteeringMeasurement;
-//import com.roboclub.robobuggy.ros.Publisher;
-//import com.roboclub.robobuggy.ros.NodeChannel;
-//import com.roboclub.robobuggy.utilities.RobobuggyDateFormatter;
-//
-///**
-// * Class used for playing back old log files. It does this by reading BuggyROS
-// * messages stored in the log file and reinjecting them into the BuggyROS network.
-// */
-//public class SensorPlayer implements Runnable {
-//
-//	private String path;
-//
-//	private Publisher imuPub;
-//	private Publisher gpsPub;
-//	private Publisher encoderPub;
-//	//private Publisher brakePub; TODO: future expansion
-//	private Publisher steeringPub;
-//	private Publisher loggingButtonPub;
-//
-//
-//	/**
-//	 * Construct a new {@link SensorPlayer} object
-//	 * @param filePath {@link String} of the name and location of the log file
-//	 */
-//	public SensorPlayer(String filePath) {
-//
-//		imuPub = new Publisher(NodeChannel.IMU.getMsgPath());
-//		gpsPub = new Publisher(NodeChannel.GPS.getMsgPath());
-//		encoderPub = new Publisher(NodeChannel.ENCODER.getMsgPath());
-//	//	brakePub = new Publisher(NodeChannel.BRAKE.getMsgPath()); TODO: future expansion
-//		steeringPub = new Publisher(NodeChannel.STEERING.getMsgPath());
-//		loggingButtonPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
-//
-//		System.out.println("initializing the SensorPlayer");
-//
-//		path = filePath;
-//		File f = new File(path);
-//		if(!f.exists()) {
-//			new RobobuggyLogicNotification("File doesn't exist!", RobobuggyMessageLevel.EXCEPTION);
-//		}
-//	}
-//
-//
-//	@Override
-//	public void run() {
-//		// TODO Auto-generated method stub
-//
-//		System.out.println("Starting to read from file!");
-//		try {
-//			JSONParser parser = new JSONParser();
-//			InputStreamReader reader = new InputStreamReader(new FileInputStream(path),"UTF-8");
-//			JSONObject completeLogFile = (JSONObject) parser.parse(reader); //may take a while, currently working on a solution to read line by line
-//
-//			//get info from the header file
-//			Date loggingDate = new Date();
-//
-//			long playBackStartTime = loggingDate.getTime();
-//
-//			JSONArray sensorDataArray = (JSONArray) completeLogFile.get("sensor_data");
-//			long sensorStartTimeInMilis = 0;
-//			for(Object senObj : sensorDataArray) {
-//
-//				JSONObject sensor = (JSONObject)senObj;
-//
-//				Date sensorTimestamp = RobobuggyDateFormatter.formatRobobuggyDate((String) sensor.get("timestamp"));
-//				long currentSensorTimeInMillis = sensorTimestamp.getTime();
-//				long currentTime = loggingDate.getTime();
-//
-//				//grab the first sensors time for reference
-//				if(sensorStartTimeInMilis == 0){
-//					sensorStartTimeInMilis = currentSensorTimeInMillis;
-//				}
-//
-//				long sensorTimeFromStart = currentSensorTimeInMillis -sensorStartTimeInMilis;
-//				long realTimeFromStart = currentTime - playBackStartTime;
-//
-//				long playbackSpeed = 100;
-//				long sleepTime = playbackSpeed*realTimeFromStart - sensorTimeFromStart;
-//				new RobobuggyLogicNotification("sleepingTime:"+sleepTime, RobobuggyMessageLevel.NOTE);
-//				if(sleepTime < 0){
-//					Thread.sleep(-sleepTime/1000);
-//				}
-//
-//				String sensorName = (String) sensor.get("name");
-//				if(sensorName == null){
-//					new RobobuggyLogicNotification("sensor name is not in this lines log line, this log cannot be repaid",
-//							RobobuggyMessageLevel.EXCEPTION);
-//				}else{
-//					JSONObject sensorParams = (JSONObject) sensor.get("params");
-//					System.out.println(sensorName);
-//					//TODO: add fp_hash
-//					//TODO: add command_steering
-//
-//					switch(sensorName) {
-//
-//						case "imu":
-//							double yaw = (double) sensorParams.get("yaw");
-//							double pitch = (double) sensorParams.get("pitch");
-//							double roll = (double) sensorParams.get("roll");
-//							imuPub.publish(new ImuMeasurement(yaw, pitch, roll));
-//							break;
-//
-//						case "GPS":
-//
-//							double latitude = (double) sensorParams.get("latitude");
-//							double longitude = (double) sensorParams.get("longitude");
-//							String latDir = (String) sensorParams.get("lat_direction");
-//							String longDir = (String) sensorParams.get("long_direction");
-//							boolean north = latDir.equals("N");
-//							boolean west = longDir.equals("W");
-//
-//							String gpsTimestampString = (String) sensor.get("timestamp");
-//							Date gpsTimestamp = RobobuggyDateFormatter.formatRobobuggyDate(gpsTimestampString);
-//							int qualityValue = Integer.parseInt((String) sensorParams.get("gps_quality"));
-//							int numSatellites = Integer.parseInt((String) sensorParams.get("num_satellites"));
-//							double hdop = (double) sensorParams.get("HDOP");
-//							double antennaAlt = (double) sensorParams.get("antenna_altitude");
-//							double rawLat = (double) sensorParams.get("raw_gps_lat");
-//							double rawLon = (double) sensorParams.get("raw_gps_lon");
-//							gpsPub.publish(new GpsMeasurement(gpsTimestamp, latitude, north, longitude, west,
-//									qualityValue, numSatellites, hdop, antennaAlt, rawLat, rawLon));
-//							break;
-//
-//						case "logging button":
-//
-//							String loggingStatus = (String) sensorParams.get("logging_status");
-//							GuiLoggingButtonMessage.LoggingMessage loggingMessage = LoggingMessage.STOP;
-//
-//							switch (loggingStatus) {
-//
-//								case "start":
-//									loggingMessage = LoggingMessage.START;
-//									break;
-//
-//								case "stop":
-//									loggingMessage = LoggingMessage.STOP;
-//									break;
-//
-//								default:
-//									new RobobuggyLogicNotification("Unknown status in the log!",
-//											RobobuggyMessageLevel.EXCEPTION);
-//									break;
-//
-//							}
-//							loggingButtonPub.publish(new GuiLoggingButtonMessage(loggingMessage));
-//							break;
-//
-//						case "Steering":
-//
-//							double steeringAngle = (double) sensorParams.get("angle");
-//							steeringPub.publish(new SteeringMeasurement((int) steeringAngle));
-//							break;
-//
-//						case "encoder":
-//							double dataword = (double) sensorParams.get("dataword");
-//							double distance = (double) sensorParams.get("distance");
-//							double velocity = 0;
-//							if(sensorParams.get("velocity") != null)
-//								velocity = (double) sensorParams.get("velocity");
-//							double accel = 0;
-//							if(sensorParams.get("acceleration") != null)
-//								accel = (double) sensorParams.get("acceleration");
-//
-//							String timestampString = (String) sensor.get("timestamp");
-//							Date timestamp = RobobuggyDateFormatter.formatRobobuggyDate(timestampString);
-//
-//							encoderPub.publish(new EncoderMeasurement(timestamp, dataword, distance, velocity, accel));
-//							break;
-//
-//						case "Brake":
-//							//we don't log brakes yet!
-//							//https://www.youtube.com/watch?v=UKDDu_0NsEk
-//							break;
-//
-//						default:
-//							//new RobobuggyLogicException("Found an unsupported sensor in the logs!",
-//							//RobobuggyMessageLevel.WARNING);
-//							break;
-//
-//				}
-//
-//
-//			}
-//			}
-//
-//		}
-//		catch(IOException e) {
-//			new RobobuggyLogicNotification("Error while trying to read from the playback file!", RobobuggyMessageLevel.EXCEPTION);
-//		} catch (InterruptedException e) {
-//			new RobobuggyLogicNotification("Something went wrong while waiting...", RobobuggyMessageLevel.WARNING);
-//		} catch (ParseException e) {
-//			new RobobuggyLogicNotification("Couldn't parse the file given. Make sure it's a proper JSON file", RobobuggyMessageLevel.EXCEPTION);
-//		}
-//	}
-//}
+package com.roboclub.robobuggy.simulation;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
+import com.roboclub.robobuggy.messages.BaseMessage;
+import com.roboclub.robobuggy.messages.BrakeControlMessage;
+import com.roboclub.robobuggy.messages.BrakeMessage;
+import com.roboclub.robobuggy.messages.DriveControlMessage;
+import com.roboclub.robobuggy.messages.EncoderMeasurement;
+import com.roboclub.robobuggy.messages.FingerPrintMessage;
+import com.roboclub.robobuggy.messages.GpsMeasurement;
+import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
+import com.roboclub.robobuggy.messages.ImuMeasurement;
+import com.roboclub.robobuggy.messages.PoseMessage;
+import com.roboclub.robobuggy.messages.RemoteWheelAngleRequest;
+import com.roboclub.robobuggy.messages.ResetMessage;
+import com.roboclub.robobuggy.messages.RobobuggyLogicNotificationMeasurement;
+import com.roboclub.robobuggy.messages.StateMessage;
+import com.roboclub.robobuggy.messages.SteeringMeasurement;
+import com.roboclub.robobuggy.messages.WheelAngleCommandMeasurement;
+import com.roboclub.robobuggy.ros.Message;
+import com.roboclub.robobuggy.ros.Publisher;
+import com.roboclub.robobuggy.ros.NodeChannel;
+
+/**
+ * Class used for playing back old log files. It does this by reading BuggyROS
+ * messages stored in the log file and reinjecting them into the BuggyROS network.
+ */
+public class SensorPlayer implements Runnable {
+
+	private String path;
+    private Gson translator;
+
+	private Publisher imuPub;
+	private Publisher gpsPub;
+	private Publisher encoderPub;
+	private Publisher brakePub;
+	private Publisher steeringPub;
+	private Publisher loggingButtonPub;
+    private Publisher logicNotificationPub;
+
+    // ---- Log File Defaults ----
+    private static final String METADATA_NAME = "Robobuggy Data Logs";
+    private static final String METADATA_SCHEMA_VERSION = "1.1";
+    private static final String METADATA_HIGHLEVEL_SW_VERSION = "1.0.0";
+    private static final String TERMINATING_VERSION_ID = "STOP";
+
+
+	/**
+	 * Construct a new {@link SensorPlayer} object
+	 * @param filePath {@link String} of the name and location of the log file
+	 */
+	public SensorPlayer(String filePath) {
+
+		imuPub = new Publisher(NodeChannel.IMU.getMsgPath());
+		gpsPub = new Publisher(NodeChannel.GPS.getMsgPath());
+		encoderPub = new Publisher(NodeChannel.ENCODER.getMsgPath());
+		brakePub = new Publisher(NodeChannel.BRAKE.getMsgPath());
+		steeringPub = new Publisher(NodeChannel.STEERING.getMsgPath());
+		loggingButtonPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
+        logicNotificationPub = new Publisher(NodeChannel.LOGIC_NOTIFICATION.getMsgPath());
+
+        translator = new GsonBuilder().create();
+
+		new RobobuggyLogicNotification("initializing the SensorPlayer", RobobuggyMessageLevel.NOTE);
+
+		path = filePath;
+		File f = new File(path);
+		if(!f.exists()) {
+			new RobobuggyLogicNotification("File doesn't exist!", RobobuggyMessageLevel.EXCEPTION);
+		}
+	}
+
+
+	@Override
+	public void run() {
+
+        try {
+
+            InputStreamReader fileReader = new InputStreamReader(new FileInputStream(new File(path)), "UTF-8");
+            JsonObject logFile = translator.fromJson(fileReader, JsonObject.class);
+
+            if(!validateLogFileMetadata(logFile)) {
+                new RobobuggyLogicNotification("Log file doesn't have the proper header metadata!", RobobuggyMessageLevel.EXCEPTION);
+                return;
+            }
+
+            long currentSensorTimeInMillis = -1;
+            long sensorStartTimeInMilis = 0;
+
+            JsonArray sensorDataArray = logFile.getAsJsonArray("sensor_data");
+            for (JsonElement sensorAsJElement: sensorDataArray) {
+
+                JsonObject sensorDataJson = sensorAsJElement.getAsJsonObject();
+                String versionID = sensorDataJson.get("VERSION_ID").getAsString();
+
+                Message transmitMessage = null;
+
+                switch (versionID) {
+                    case BrakeControlMessage.VERSION_ID:
+                        transmitMessage = translator.fromJson(sensorDataJson, BrakeControlMessage.class);
+                        break;
+                    case BrakeMessage.VERSION_ID:
+                        transmitMessage = translator.fromJson(sensorDataJson, BrakeMessage.class);
+                        brakePub.publish(transmitMessage);
+                        break;
+                    case DriveControlMessage.VERSION_ID:
+                        transmitMessage = translator.fromJson(sensorDataJson, DriveControlMessage.class);
+                        break;
+                    case EncoderMeasurement.VERSION_ID:
+                        transmitMessage = translator.fromJson(sensorDataJson, EncoderMeasurement.class);
+                        encoderPub.publish(transmitMessage);
+                        break;
+                    case FingerPrintMessage.VERSION_ID:
+                        transmitMessage = translator.fromJson(sensorDataJson, FingerPrintMessage.class);
+                        encoderPub.publish(transmitMessage);
+                        break;
+                    case GpsMeasurement.VERSION_ID:
+                        transmitMessage = translator.fromJson(sensorDataJson, GpsMeasurement.class);
+                        gpsPub.publish(transmitMessage);
+                        break;
+                    case GuiLoggingButtonMessage.VERSION_ID:
+                        transmitMessage = translator.fromJson(sensorDataJson, GuiLoggingButtonMessage.class);
+                        loggingButtonPub.publish(transmitMessage);
+                        break;
+                    case ImuMeasurement.VERSION_ID:
+                        transmitMessage = translator.fromJson(sensorDataJson, ImuMeasurement.class);
+                        imuPub.publish(transmitMessage);
+                        break;
+                    case PoseMessage.VERSION_ID:
+                        transmitMessage = translator.fromJson(sensorDataJson, PoseMessage.class);
+                        break;
+                    case RemoteWheelAngleRequest.VERSION_ID:
+                        transmitMessage = translator.fromJson(sensorDataJson, RemoteWheelAngleRequest.class);
+                        break;
+                    case ResetMessage.VERSION_ID:
+                        transmitMessage = translator.fromJson(sensorDataJson, ResetMessage.class);
+                        break;
+                    case RobobuggyLogicNotificationMeasurement.VERSION_ID:
+                        transmitMessage = translator.fromJson(sensorDataJson, RobobuggyLogicNotificationMeasurement.class);
+                        logicNotificationPub.publish(transmitMessage);
+                        break;
+                    case StateMessage.VERSION_ID:
+                        transmitMessage = translator.fromJson(sensorDataJson, StateMessage.class);
+                        break;
+                    case SteeringMeasurement.VERSION_ID:
+                        transmitMessage = translator.fromJson(sensorDataJson, SteeringMeasurement.class);
+                        steeringPub.publish(transmitMessage);
+                        break;
+                    case WheelAngleCommandMeasurement.VERSION_ID:
+                        transmitMessage = translator.fromJson(sensorDataJson, WheelAngleCommandMeasurement.class);
+                        break;
+                    case TERMINATING_VERSION_ID:
+                        new RobobuggyLogicNotification("Stopping playback, hit a STOP", RobobuggyMessageLevel.NOTE);
+                        break;
+                    default:
+                        transmitMessage = new BaseMessage() {
+                            @Override
+                            public String toLogString() {
+                                return null;
+                            }
+
+                            @Override
+                            public Message fromLogString(String str) {
+                                return null;
+                            }
+                        };
+                        new RobobuggyLogicNotification("Couldn't parse a sensor found in the file: " + versionID, RobobuggyMessageLevel.WARNING);
+                        break;
+                }
+
+                BaseMessage timeMessage = (BaseMessage) transmitMessage;
+
+                if (currentSensorTimeInMillis != -1) {
+                    if (timeMessage != null) {
+                        currentSensorTimeInMillis = timeMessage.getTimestamp().getTime();
+                        long sensorTimeFromPrev = currentSensorTimeInMillis - sensorStartTimeInMilis;
+
+                        if(sensorTimeFromPrev > 0){
+                            Thread.sleep(sensorTimeFromPrev);
+                        }
+                    }
+
+                    sensorStartTimeInMilis = currentSensorTimeInMillis;
+                }
+                else {
+                    assert timeMessage != null;
+                    currentSensorTimeInMillis = timeMessage.getTimestamp().getTime();
+                    sensorStartTimeInMilis = currentSensorTimeInMillis;
+                }
+
+            }
+
+        } catch (FileNotFoundException e) {
+            new RobobuggyLogicNotification("SensorPlayer couldn't find log file!", RobobuggyMessageLevel.EXCEPTION);
+        } catch (InterruptedException e) {
+            new RobobuggyLogicNotification("SensorPlayer was interrupted", RobobuggyMessageLevel.WARNING);
+        } catch (UnsupportedEncodingException e) {
+            new RobobuggyLogicNotification("Log file had unsupported encoding", RobobuggyMessageLevel.EXCEPTION);
+        }
+    }
+
+    private boolean validateLogFileMetadata(JsonObject logFile) {
+
+        if (!logFile.get("name").getAsString().equals(METADATA_NAME)) {
+            return false;
+        }
+        if (!logFile.get("schema_version").getAsString().equals(METADATA_SCHEMA_VERSION)) {
+            return false;
+        }
+        if (!logFile.get("software_version").getAsString().equals(METADATA_HIGHLEVEL_SW_VERSION)) {
+            return false;
+        }
+
+        return true;
+    }
+}

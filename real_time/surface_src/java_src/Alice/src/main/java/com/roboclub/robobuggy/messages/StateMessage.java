@@ -8,9 +8,8 @@ import java.util.Date;
 /**
  * Message used for passing {@link NodeState} information over BuggyROS
  */
-public class StateMessage implements Message {
-	public static final String VERSION_ID = "logic_notification";
-	private Date timestamp;
+public class StateMessage extends BaseMessage {
+	public static final String VERSION_ID = "state";
 	private NodeState state;
 
 	/**
@@ -22,14 +21,6 @@ public class StateMessage implements Message {
 		this.state = state;
 	}
 
-	/**
-	 * Get the timestamp of the state message
-	 * @return the timestamp of this message
-	 */
-	public Date getTimestamp(){
-		return new Date(timestamp.getTime());
-	}
-	
 	/**{@inheritDoc}*/
 	@Override
 	public String toLogString() {

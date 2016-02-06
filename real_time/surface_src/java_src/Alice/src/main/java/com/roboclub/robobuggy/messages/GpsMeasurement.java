@@ -16,10 +16,9 @@ import java.util.Date;
  * 
  *          DESCRIPTION: TODO
  */
-public class GpsMeasurement extends BaseMessage implements Message {
+public class GpsMeasurement extends BaseMessage {
 	public static final String VERSION_ID = "gpsV0.2";
 
-	private Date timestamp;
 	private Date gpsTimestamp;
 	private double latitude;
 	private boolean north;
