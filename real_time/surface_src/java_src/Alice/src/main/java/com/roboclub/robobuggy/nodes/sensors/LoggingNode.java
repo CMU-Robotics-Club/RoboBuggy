@@ -6,7 +6,6 @@ import com.google.gson.JsonObject;
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
-import com.roboclub.robobuggy.messages.BaseMessage;
 import com.roboclub.robobuggy.messages.BrakeMessage;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.FingerPrintMessage;
@@ -34,6 +33,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Modifier;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -227,6 +227,7 @@ public class LoggingNode extends BuggyDecoratorNode {
         private int steeringHits = 0;
         private int logicNotificationHits = 0;
         private int logButtonHits = 0;
+        private int imageHits = 0;
         private int poseMessageHits = 0;
         private int resetHits = 0;
         private int stateHits = 0;
@@ -266,7 +267,7 @@ public class LoggingNode extends BuggyDecoratorNode {
             try {
                 fileWriteStream = new PrintStream(outputFile, "UTF-8");
                 messageTranslator = new GsonBuilder()
-                                        .excludeFieldsWithModifiers()
+                                        .excludeFieldsWithModifiers(Modifier.TRANSIENT)
                                         .serializeSpecialFloatingPointValues()
                                         .create()
                                         ;
@@ -290,7 +291,7 @@ public class LoggingNode extends BuggyDecoratorNode {
                 	//handle vision stuff here 
                 	if(toSort.getClass() == ImageMessage.class){
                 		ImageMessage imgMessage = (ImageMessage)toSort;
-                		msgAsJsonString = messageTranslator.toJson("Topic:"+imgMessage.getTopic()+":ImageReceived:"+imgMessage.getFrameNumebr());
+                		msgAsJsonString = messageTranslator.toJson("Topic:"+imgMessage.getTopic()+":ImageReceived:"+imgMessage.getFrameNumber());
                 		if(videoEncoder == null){
         					try {
         						videoEncoder =  new SequenceEncoder(new File(outputDirectory.getAbsolutePath()+"/webcam.mp4")); //TODO move into a folder
@@ -301,13 +302,13 @@ public class LoggingNode extends BuggyDecoratorNode {
         				}
         				try {
         					videoEncoder.encodeImage(imgMessage.getImage());
-        					//TODO write to text file 
+        					//TODO write to text file
         				} catch (IOException e) {
         					// TODO Auto-generated catch block
         					e.printStackTrace();
         				}
                 	}else{
-                    
+
                     msgAsJsonString = messageTranslator.toJson(toSort);
 
                     // and if you look on your right you'll see the almost-unnecessary
@@ -335,7 +336,7 @@ public class LoggingNode extends BuggyDecoratorNode {
                     } else if (toSort instanceof SteeringMeasurement) {
                         steeringHits++;
                     } else if(toSort instanceof ImageMessage){
-                    	System.out.println("got an image");
+                        imageHits++;
                     } else {
                         //a new kind of message!
                         new RobobuggyLogicNotification("New message came in that we aren't tracking", RobobuggyMessageLevel.WARNING);
@@ -363,6 +364,7 @@ public class LoggingNode extends BuggyDecoratorNode {
             dataBreakdown.addProperty(NodeChannel.STEERING.getName(), steeringHits);
             dataBreakdown.addProperty(NodeChannel.FP_HASH.getName(), fingerprintHits);
             dataBreakdown.addProperty(NodeChannel.LOGIC_NOTIFICATION.getName(), logicNotificationHits);
+            dataBreakdown.addProperty(NodeChannel.PUSHBAR_CAMERA.getName(), imageHits);
             dataBreakdown.addProperty(NodeChannel.POSE.getName(), poseMessageHits);
             dataBreakdown.addProperty(NodeChannel.RESET.getName(), resetHits);
             dataBreakdown.addProperty(NodeChannel.STATE.getName(), stateHits);

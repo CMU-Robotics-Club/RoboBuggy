@@ -9,19 +9,20 @@ import com.roboclub.robobuggy.ros.Message;
  * @author Trevor Decker
  * a message for sending images between nodes 
  */
-public class ImageMessage implements Message{
-	private BufferedImage thisImage;
+public class ImageMessage extends BaseMessage {
+	// transient is used for serialization
+	private transient BufferedImage thisImage;
 	private int frameNumber;
-	private String topic;
+
+	public static final String VERSION_ID = "camera_image_v0.0";
 	
 	/**
 	 * Constructor for the image message
 	 * @param newImage the image to transmit
 	 */
-	public ImageMessage(BufferedImage newImage,int frameNumber,String topic){
+	public ImageMessage(BufferedImage newImage, int frameNumber){
 		thisImage = newImage;
 		this.frameNumber= frameNumber;
-		this.topic = topic;
 	}
 	
 	@Override
@@ -42,12 +43,8 @@ public class ImageMessage implements Message{
 		return null;
 	}
 
-	public int getFrameNumebr(){
+	public int getFrameNumber(){
 		return frameNumber;
-	}
-	
-	public String getTopic(){
-		return topic;
 	}
 	
 	/**

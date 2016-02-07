@@ -19,6 +19,7 @@ public enum NodeChannel {
 	POSE("pose"),
 	RESET("reset"),
 	STATE("state"),
+	NODE_STATUS("node_status"),
 	UNKNOWN_CHANNEL("unknown"),
 	;
 	
@@ -57,6 +58,27 @@ public enum NodeChannel {
 			}
 		}
 		return UNKNOWN_CHANNEL;
+	}
+
+	public static NodeChannel[] getLoggingChannels() {
+		return new NodeChannel[] {  GPS,
+									IMU,
+									PUSHBAR_CAMERA,
+									STEERING,
+									BRAKE,
+									LOGIC_NOTIFICATION,
+									DRIVE_CTRL,
+									BRAKE_CTRL,
+									VISION,
+									ENCODER,
+									AUTO,
+									GUI_LOGGING_BUTTON,
+									STEERING_COMMANDED,
+									FP_HASH,
+									POSE,
+									RESET,
+									STATE
+								};
 	}
 
 }

@@ -1,12 +1,6 @@
 package com.roboclub.robobuggy.nodes.sensors;
 
-import java.awt.image.BufferedImage;
-import java.util.List;
-
-
-
 import com.github.sarxos.webcam.Webcam;
-import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.messages.ImageMessage;
@@ -14,6 +8,9 @@ import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
+
+import java.awt.image.BufferedImage;
+import java.util.List;
 
 /**
  * 
@@ -26,17 +23,17 @@ import com.roboclub.robobuggy.ros.Publisher;
 public class CameraNode extends PeriodicNode{
 	private Webcam webcam;
 	private Publisher imagePublisher;
+	private Publisher imageFramePublisher;
 	private int count = 0;
 	
 	/**
-	 * 
-	 * @param channel The channel to publish messages on 
-	 * @param period  How often new images should be pulled 
+	 *  @param channel The channel to publish messages on
+	 * @param period  How often new images should be pulled
 	 */
 	public CameraNode(NodeChannel channel, int period) {
 		super(new BuggyBaseNode(channel),period);
-		
-		
+
+
 		//setup the webcam
 		List<Webcam> webcams = Webcam.getWebcams();
 		this.webcam = null;
@@ -55,8 +52,8 @@ public class CameraNode extends PeriodicNode{
 		}
 
 		webcam.open();
-		
-		//setup image publisher 
+
+		//setup image publisher
 		imagePublisher = new Publisher(channel.getMsgPath());
 	}
 
@@ -77,27 +74,21 @@ public class CameraNode extends PeriodicNode{
 	@Override
 	protected void update() {
 		if(webcam != null && imagePublisher != null){
-			//TODO: check to see if the webcam is closed if so try to reconnect 
-			BufferedImage mostRecentImage = webcam.getImage();
-			imagePublisher.publish(new ImageMessage(mostRecentImage,count,NodeChannel.PUSHBAR_CAMERA.getMsgPath()));
-			count = count+1;
+			if (webcam.isOpen()) {
+				BufferedImage mostRecentImage = webcam.getImage();
+				imagePublisher.publish(new ImageMessage(mostRecentImage, count));
+				count = count + 1;
+			}
+			else {
+				if(!webcam.open()) {
+					new RobobuggyLogicNotification("Webcam was closed and couldn't be reopened!", RobobuggyMessageLevel.EXCEPTION);
+				}
+				else {
+					new RobobuggyLogicNotification("Webcam was closed but successfully reopened!", RobobuggyMessageLevel.WARNING);
+				}
+			}
 		}
 
-	}
-
-
-	/**
-	 * produces a jsonobject from a log message
-	 * @param message the log message that the jsonobject is going to be produced from 
-	 * @return the Jsonobject 
-	 */
-	public static JSONObject toJObject(String message) {
-		JSONObject data = new JSONObject();
-		JSONObject params = new JSONObject();
-		String[] messageData = message.split(",");
-		data.put("timestamp", messageData[1]);
-		data.put("params", params);
-		return data;
 	}
 
 }
