@@ -1,5 +1,7 @@
 package com.roboclub.robobuggy.messages;
 
+import com.google.gson.JsonObject;
+import com.roboclub.robobuggy.nodes.sensors.INodeStatus;
 import com.roboclub.robobuggy.ros.Message;
 
 /**
@@ -10,20 +12,26 @@ public class NodeStatusMessage extends BaseMessage {
     public static final String VERSION_ID = "buggynode_state_v0.0";
 
     private Class node;
-    private String message;
+    private INodeStatus message;
+    private JsonObject params;
 
 
-    public NodeStatusMessage(Class node, String message) {
+    public NodeStatusMessage(Class node, INodeStatus message, JsonObject params) {
         this.node = node;
         this.message = message;
+        this.params = params;
     }
 
     public Class getNode() {
         return node;
     }
 
-    public String getMessage() {
+    public INodeStatus getMessage() {
         return message;
+    }
+
+    public JsonObject getParams() {
+        return params;
     }
 
     @Override

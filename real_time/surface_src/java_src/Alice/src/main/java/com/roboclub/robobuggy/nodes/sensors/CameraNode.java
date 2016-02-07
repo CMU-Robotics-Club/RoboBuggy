@@ -1,15 +1,19 @@
 package com.roboclub.robobuggy.nodes.sensors;
 
 import com.github.sarxos.webcam.Webcam;
+import com.google.gson.JsonObject;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.messages.ImageMessage;
+import com.roboclub.robobuggy.messages.NodeStatusMessage;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
-import com.roboclub.robobuggy.ros.NodeChannel;
-import com.roboclub.robobuggy.ros.Publisher;
+import com.roboclub.robobuggy.ros.*;
+import org.jcodec.api.awt.SequenceEncoder;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -25,7 +29,8 @@ public class CameraNode extends PeriodicNode{
 	private Publisher imagePublisher;
 	private Publisher imageFramePublisher;
 	private int count = 0;
-	
+	private SequenceEncoder videoEncoder;
+
 	/**
 	 *  @param channel The channel to publish messages on
 	 * @param period  How often new images should be pulled
@@ -55,8 +60,37 @@ public class CameraNode extends PeriodicNode{
 
 		//setup image publisher
 		imagePublisher = new Publisher(channel.getMsgPath());
+
+		setupLoggingTrigger();
 	}
 
+	private void setupLoggingTrigger() {
+
+		new Subscriber(NodeChannel.NODE_STATUS.getMsgPath(), new MessageListener() {
+			@Override
+			public void actionPerformed(String topicName, Message m) {
+				try {
+					NodeStatusMessage message = (NodeStatusMessage) m;
+					INodeStatus status = message.getMessage();
+
+					if (status.equals(LoggingNode.LoggingNodeStatus.STARTED_LOGGING)) {
+						JsonObject params = message.getParams();
+						String outputDir = params.get("outputDir").getAsString();
+						videoEncoder = new SequenceEncoder(new File(outputDir + "/webcam.mp4"));
+					} else if (status.equals(LoggingNode.LoggingNodeStatus.STOPPED_LOGGING)) {
+						videoEncoder.finish();
+						videoEncoder = null;
+					} else {
+						new RobobuggyLogicNotification("Status not recognized by CameraNode", RobobuggyMessageLevel.WARNING);
+					}
+				}
+				catch (IOException e) {
+					new RobobuggyLogicNotification("Log directory doesn't exist!", RobobuggyMessageLevel.EXCEPTION);
+				}
+			}
+		});
+
+	}
 
 
 	@Override
@@ -73,20 +107,27 @@ public class CameraNode extends PeriodicNode{
 	
 	@Override
 	protected void update() {
-		if(webcam != null && imagePublisher != null){
-			if (webcam.isOpen()) {
-				BufferedImage mostRecentImage = webcam.getImage();
-				imagePublisher.publish(new ImageMessage(mostRecentImage, count));
-				count = count + 1;
-			}
-			else {
-				if(!webcam.open()) {
-					new RobobuggyLogicNotification("Webcam was closed and couldn't be reopened!", RobobuggyMessageLevel.EXCEPTION);
+		try {
+			if (webcam != null && imagePublisher != null) {
+				if (webcam.isOpen()) {
+					BufferedImage mostRecentImage = webcam.getImage();
+					imagePublisher.publish(new ImageMessage(mostRecentImage, count));
+					count = count + 1;
+
+					if (videoEncoder != null) {
+						videoEncoder.encodeImage(mostRecentImage);
+					}
+				} else {
+					if (!webcam.open()) {
+						new RobobuggyLogicNotification("Webcam was closed and couldn't be reopened!", RobobuggyMessageLevel.EXCEPTION);
+					} else {
+						new RobobuggyLogicNotification("Webcam was closed but successfully reopened!", RobobuggyMessageLevel.WARNING);
+					}
 				}
-				else {
-					new RobobuggyLogicNotification("Webcam was closed but successfully reopened!", RobobuggyMessageLevel.WARNING);
-				}
 			}
+		}
+		catch (IOException e) {
+			new RobobuggyLogicNotification("Something went wrong trying to get image!", RobobuggyMessageLevel.EXCEPTION);
 		}
 
 	}

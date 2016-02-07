@@ -6,18 +6,7 @@ import com.google.gson.JsonObject;
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
-import com.roboclub.robobuggy.messages.BrakeMessage;
-import com.roboclub.robobuggy.messages.EncoderMeasurement;
-import com.roboclub.robobuggy.messages.FingerPrintMessage;
-import com.roboclub.robobuggy.messages.GpsMeasurement;
-import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
-import com.roboclub.robobuggy.messages.ImageMessage;
-import com.roboclub.robobuggy.messages.ImuMeasurement;
-import com.roboclub.robobuggy.messages.PoseMessage;
-import com.roboclub.robobuggy.messages.ResetMessage;
-import com.roboclub.robobuggy.messages.RobobuggyLogicNotificationMeasurement;
-import com.roboclub.robobuggy.messages.StateMessage;
-import com.roboclub.robobuggy.messages.SteeringMeasurement;
+import com.roboclub.robobuggy.messages.*;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyDecoratorNode;
 import com.roboclub.robobuggy.nodes.baseNodes.SerialNode;
@@ -55,7 +44,16 @@ public class LoggingNode extends BuggyDecoratorNode {
     private LogWriterThread loggingThread;
     private boolean keepLogging;
 
+    private Publisher statusPub;
+
     private static final String DATE_FILE_FORMAT = "yyyy-MM-dd-HH-mm-ss";
+
+
+    public enum LoggingNodeStatus implements INodeStatus {
+        INITIALIZED,
+        STARTED_LOGGING,
+        STOPPED_LOGGING,
+    }
 
     /**
      * Create a new {@link LoggingNode} decorator
@@ -71,11 +69,15 @@ public class LoggingNode extends BuggyDecoratorNode {
         keepLogging = true;
         outputDirectory = new File(outputDirPath);
 
+        statusPub = new Publisher(NodeChannel.NODE_STATUS.getMsgPath());
+
         setupSubscriberList();
 
         if (!RobobuggyConfigFile.DATA_PLAY_BACK) {
             setupLoggingTrigger();
         }
+
+        statusPub.publish(new NodeStatusMessage(LoggingNode.class, LoggingNodeStatus.INITIALIZED, null));
 
     }
 
@@ -88,24 +90,38 @@ public class LoggingNode extends BuggyDecoratorNode {
         new Subscriber(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath(), new MessageListener() {
             @Override
             public void actionPerformed(String topicName, Message m) {
+
                 GuiLoggingButtonMessage message = (GuiLoggingButtonMessage) m;
                 if (message.getLoggingMessage().equals(GuiLoggingButtonMessage.LoggingMessage.START)) {
+
                     if (!createNewLogFile()) {
+
                         new RobobuggyLogicNotification("Error creating new log file!", RobobuggyMessageLevel.EXCEPTION);
                         return;
+
                     }
+
                     keepLogging = true;
                     loggingThread = new LogWriterThread();
                     loggingThread.start();
                     new RobobuggyLogicNotification("Starting up logging thread!", RobobuggyMessageLevel.NOTE);
+                    JsonObject params = new JsonObject();
+                    params.addProperty("outputDir", outputDirectory.getPath());
+                    statusPub.publish(new NodeStatusMessage(LoggingNode.class, LoggingNodeStatus.STARTED_LOGGING, params));
+
                 }
                 else if (message.getLoggingMessage().equals(GuiLoggingButtonMessage.LoggingMessage.STOP)) {
+
                     keepLogging = false;
                     new RobobuggyLogicNotification("Stopping logging thread!", RobobuggyMessageLevel.NOTE);
+                    statusPub.publish(new NodeStatusMessage(LoggingNode.class, LoggingNodeStatus.STOPPED_LOGGING, null));
                     loggingThread.interrupt();
+
                 }
                 else {
+
                     new RobobuggyLogicNotification("Gui said something logger couldn't understand!", RobobuggyMessageLevel.EXCEPTION);
+
                 }
             }
         });
@@ -177,7 +193,6 @@ public class LoggingNode extends BuggyDecoratorNode {
         return true;
     }
 
-	private SequenceEncoder videoEncoder;
 
     /**{@inheritDoc}*/
     @Override
@@ -245,15 +260,6 @@ public class LoggingNode extends BuggyDecoratorNode {
             //// TODO: 2/6/2016 add the stop message to the end of the queue, so that we parse all
             messageQueue.clear();
             printDataBreakdown();
-        	if(videoEncoder != null){
-        		try {
-    				videoEncoder.finish();
-    				videoEncoder = null;
-    			} catch (IOException e) {
-    				// TODO Auto-generated catch block
-    				e.printStackTrace();
-    			}
-        	}
         }
 
         /**
@@ -288,27 +294,6 @@ public class LoggingNode extends BuggyDecoratorNode {
                     toSort = messageQueue.take();
                     String msgAsJsonString;
                     
-                	//handle vision stuff here 
-                	if(toSort.getClass() == ImageMessage.class){
-                		ImageMessage imgMessage = (ImageMessage)toSort;
-                		msgAsJsonString = messageTranslator.toJson("Topic:"+imgMessage.getTopic()+":ImageReceived:"+imgMessage.getFrameNumber());
-                		if(videoEncoder == null){
-        					try {
-        						videoEncoder =  new SequenceEncoder(new File(outputDirectory.getAbsolutePath()+"/webcam.mp4")); //TODO move into a folder
-        					} catch (IOException e) {
-        						// TODO Auto-generated catch block
-        						e.printStackTrace();
-        					}
-        				}
-        				try {
-        					videoEncoder.encodeImage(imgMessage.getImage());
-        					//TODO write to text file
-        				} catch (IOException e) {
-        					// TODO Auto-generated catch block
-        					e.printStackTrace();
-        				}
-                	}else{
-
                     msgAsJsonString = messageTranslator.toJson(toSort);
 
                     // and if you look on your right you'll see the almost-unnecessary
@@ -341,7 +326,6 @@ public class LoggingNode extends BuggyDecoratorNode {
                         //a new kind of message!
                         new RobobuggyLogicNotification("New message came in that we aren't tracking", RobobuggyMessageLevel.WARNING);
                     }
-                	}
                     fileWriteStream.println("        " + msgAsJsonString + ",");
 
                 } catch (InterruptedException e) {
