@@ -11,13 +11,17 @@ import com.roboclub.robobuggy.ros.Message;
  */
 public class ImageMessage implements Message{
 	private BufferedImage thisImage;
+	private int frameNumber;
+	private String topic;
 	
 	/**
 	 * Constructor for the image message
 	 * @param newImage the image to transmit
 	 */
-	public ImageMessage(BufferedImage newImage){
+	public ImageMessage(BufferedImage newImage,int frameNumber,String topic){
 		thisImage = newImage;
+		this.frameNumber= frameNumber;
+		this.topic = topic;
 	}
 	
 	@Override
@@ -38,6 +42,14 @@ public class ImageMessage implements Message{
 		return null;
 	}
 
+	public int getFrameNumebr(){
+		return frameNumber;
+	}
+	
+	public String getTopic(){
+		return topic;
+	}
+	
 	/**
 	 * 
 	 * @return the image that this message is encoding as a bufferedImage

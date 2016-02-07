@@ -63,7 +63,8 @@ public class CameraNode extends PeriodicNode{
 		if(webcam != null && imagePublisher != null){
 			//TODO: check to see if the webcam is closed if so try to reconnect 
 			BufferedImage mostRecentImage = webcam.getImage();
-			imagePublisher.publish(new ImageMessage(mostRecentImage));
+			imagePublisher.publish(new ImageMessage(mostRecentImage,count,NodeChannel.PUSHBAR_CAMERA.getMsgPath()));
+			count = count+1;
 		}
 
 	}

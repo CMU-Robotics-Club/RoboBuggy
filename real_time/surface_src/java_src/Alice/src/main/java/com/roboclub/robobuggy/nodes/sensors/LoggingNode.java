@@ -178,29 +178,15 @@ public class LoggingNode extends BuggyDecoratorNode {
             }
         });
 
+        /*
         new Subscriber(NodeChannel.PUSHBAR_CAMERA.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
-				if(videoEncoder == null){
-					try {
-						videoEncoder =  new SequenceEncoder(new File("test.mp4")); //TODO move into a folder
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-				ImageMessage imgMessage = (ImageMessage)m;
-				try {
-					videoEncoder.encodeImage(imgMessage.getImage());
-					//TODO write to text file 
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			
 				// TODO Auto-generated method stub
 				
 			}
-		});
+		});*/
         
         return true;
     }
@@ -242,10 +228,13 @@ public class LoggingNode extends BuggyDecoratorNode {
 
         @Override
         public void interrupt() {
+            //// TODO: 2/6/2016 add the stop message to the end of the queue, so that we parse all
+            messageQueue.clear();
             printDataBreakdown();
         	if(videoEncoder != null){
         		try {
     				videoEncoder.finish();
+    				videoEncoder = null;
     			} catch (IOException e) {
     				// TODO Auto-generated catch block
     				e.printStackTrace();
@@ -261,10 +250,13 @@ public class LoggingNode extends BuggyDecoratorNode {
 
         @Override
         public synchronized void run() {
-
             try {
                 fileWriteStream = new PrintStream(outputFile, "UTF-8");
-                messageTranslator = new GsonBuilder().excludeFieldsWithModifiers().create();
+                messageTranslator = new GsonBuilder()
+                                        .excludeFieldsWithModifiers()
+                                        .serializeSpecialFloatingPointValues()
+                                        .create()
+                                        ;
             } catch (FileNotFoundException | UnsupportedEncodingException e) {
                 new RobobuggyLogicNotification("Error setting up the output file. Aborting logging!", RobobuggyMessageLevel.EXCEPTION);
                 return;
@@ -277,10 +269,33 @@ public class LoggingNode extends BuggyDecoratorNode {
             while (keepLogging) {
 
                 //block until we have a message from the queue
-                Message toSort = null;
+                Message toSort;
                 try {
                     toSort = messageQueue.take();
-                    String msgAsJsonString = messageTranslator.toJson(toSort);
+                    String msgAsJsonString;
+                    
+                	//handle vision stuff here 
+                	if(toSort.getClass() == ImageMessage.class){
+                		ImageMessage imgMessage = (ImageMessage)toSort;
+                		msgAsJsonString = messageTranslator.toJson("Topic:"+imgMessage.getTopic()+":ImageReceived:"+imgMessage.getFrameNumebr());
+                		if(videoEncoder == null){
+        					try {
+        						videoEncoder =  new SequenceEncoder(new File("test.mp4")); //TODO move into a folder
+        					} catch (IOException e) {
+        						// TODO Auto-generated catch block
+        						e.printStackTrace();
+        					}
+        				}
+        				try {
+        					videoEncoder.encodeImage(imgMessage.getImage());
+        					//TODO write to text file 
+        				} catch (IOException e) {
+        					// TODO Auto-generated catch block
+        					e.printStackTrace();
+        				}
+                	}else{
+                    
+                    msgAsJsonString = messageTranslator.toJson(toSort);
 
                     // and if you look on your right you'll see the almost-unnecessary
                     // giganti-frickin-ic telemetry block
@@ -306,11 +321,13 @@ public class LoggingNode extends BuggyDecoratorNode {
                         stateHits++;
                     } else if (toSort instanceof SteeringMeasurement) {
                         steeringHits++;
+                    } else if(toSort instanceof ImageMessage){
+                    	System.out.println("got an image");
                     } else {
                         //a new kind of message!
                         new RobobuggyLogicNotification("New message came in that we aren't tracking", RobobuggyMessageLevel.WARNING);
                     }
-
+                	}
                     fileWriteStream.println("        " + msgAsJsonString + ",");
 
                 } catch (InterruptedException e) {
