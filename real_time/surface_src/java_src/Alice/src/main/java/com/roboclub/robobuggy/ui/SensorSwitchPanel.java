@@ -1,7 +1,5 @@
 package com.roboclub.robobuggy.ui;
 
-import javax.swing.JButton;
-
 import com.roboclub.robobuggy.ros.NodeChannel;
 
 /**

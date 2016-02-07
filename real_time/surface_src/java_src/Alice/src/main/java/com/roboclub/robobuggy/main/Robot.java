@@ -1,13 +1,14 @@
 package com.roboclub.robobuggy.main;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import com.roboclub.robobuggy.nodes.sensors.GpsNode;
 import com.roboclub.robobuggy.nodes.sensors.ImuNode;
+import com.roboclub.robobuggy.nodes.sensors.LoggingNode;
 import com.roboclub.robobuggy.nodes.sensors.RBSMNode;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.NodeChannel;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * 
@@ -18,6 +19,7 @@ public final class Robot implements RosMaster {
 
 	/************************************** Sets all internal private variables *************************/
 	private static final int COMMAND_PERIOD = 1000;
+	private static final int ARDUINO_BOOTLOADER_TIMEOUT = 2000;
 	private static Robot instance;
 	private boolean autonomous;
 	private List<Node> nodeList;
@@ -49,8 +51,17 @@ public final class Robot implements RosMaster {
 		// Initialize Nodes
 		nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.COM_PORT_GPS));
 		nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.COM_PORT_IMU));
-		nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING,
-				RobobuggyConfigFile.COM_PORT_RBSM, COMMAND_PERIOD));
+		nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING, RobobuggyConfigFile.COM_PORT_RBSM, COMMAND_PERIOD));
+		nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION, NodeChannel.values()));
+//		nodeList.add(new GPSTrackPlannerNode(NodeChannel.BRAKE_CTRL,
+//				RobobuggyConfigFile.LOG_FILE_LOCATION));
+//		nodeList.add(new GPSLocalizer(NodeChannel.POSE));
+		try {
+			Thread.sleep(ARDUINO_BOOTLOADER_TIMEOUT);
+		} catch (InterruptedException e) {
+			new RobobuggyLogicNotification("Couldn't wait for bootloader, shutting down", RobobuggyMessageLevel.EXCEPTION);
+			shutDown();
+		}
 	}
 	
 	/***************************************   Getters ********************************/

@@ -1,25 +1,24 @@
 package com.roboclub.robobuggy.ui;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import com.roboclub.robobuggy.messages.ResetMessage;
+import com.roboclub.robobuggy.messages.StateMessage;
+import com.roboclub.robobuggy.nodes.baseNodes.NodeState;
+import com.roboclub.robobuggy.ros.Message;
+import com.roboclub.robobuggy.ros.MessageListener;
+import com.roboclub.robobuggy.ros.NodeChannel;
+import com.roboclub.robobuggy.ros.Publisher;
+import com.roboclub.robobuggy.ros.Subscriber;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-
-import com.roboclub.robobuggy.messages.ResetMessage;
-import com.roboclub.robobuggy.messages.StateMessage;
-import com.roboclub.robobuggy.nodes.baseNodes.NodeState;
-import com.roboclub.robobuggy.ros.Message;
-import com.roboclub.robobuggy.ros.MessageListener;
-import com.roboclub.robobuggy.ros.Publisher;
-import com.roboclub.robobuggy.ros.NodeChannel;
-import com.roboclub.robobuggy.ros.Subscriber;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * {@link JPanel} used to represent a switch for a robobuggy sensor

@@ -1,8 +1,8 @@
 package com.roboclub.robobuggy.messages;
 
-import java.util.Date;
-
 import com.roboclub.robobuggy.ros.Message;
+
+import java.util.Date;
 
 /**
  * Message used to pass GPS measurements over BuggyROS
@@ -16,10 +16,9 @@ import com.roboclub.robobuggy.ros.Message;
  * 
  *          DESCRIPTION: TODO
  */
-public class GpsMeasurement extends BaseMessage implements Message {
+public class GpsMeasurement extends BaseMessage {
 	public static final String VERSION_ID = "gpsV0.2";
 
-	private Date timestamp;
 	private Date gpsTimestamp;
 	private double latitude;
 	private boolean north;

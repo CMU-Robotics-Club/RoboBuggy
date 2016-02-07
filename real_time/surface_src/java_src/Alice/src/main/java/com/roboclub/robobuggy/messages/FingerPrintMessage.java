@@ -7,11 +7,10 @@ import java.util.Date;
 /**
  * Class used to represent a message containing the low level code fingerprint
  */
-public class FingerPrintMessage extends BaseMessage implements Message
-{
+public class FingerPrintMessage extends BaseMessage {
+	public static final String VERSION_ID = "fingerprint_hash";
 	private int fpHash;
-	private Date timestamp;
-	
+
 	/**
 	 * Construct a new {@link FingerPrintMessage} at time now
 	 * @param hash the hash of the low level code

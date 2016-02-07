@@ -1,29 +1,28 @@
 package com.roboclub.robobuggy.nodes.sensors;
 
-import java.util.Date;
-
-import com.orsoncharts.util.json.JSONObject;
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
+import com.roboclub.robobuggy.messages.BrakeControlMessage;
+import com.roboclub.robobuggy.messages.DriveControlMessage;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
+import com.roboclub.robobuggy.messages.FingerPrintMessage;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.NodeState;
 import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
 import com.roboclub.robobuggy.nodes.baseNodes.SerialNode;
-import com.roboclub.robobuggy.messages.BrakeControlMessage;
-import com.roboclub.robobuggy.messages.DriveControlMessage;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
-import com.roboclub.robobuggy.messages.FingerPrintMessage;
 import com.roboclub.robobuggy.ros.Node;
-import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.NodeChannel;
+import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
 import com.roboclub.robobuggy.serial.RBPair;
 import com.roboclub.robobuggy.serial.RBSerial;
 import com.roboclub.robobuggy.serial.RBSerialMessage;
-import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
-import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
+
+import java.util.Date;
 
 /**
  * {@link SerialNode} for reading and sending RBSM data
@@ -191,7 +190,7 @@ public class RBSMNode extends SerialNode {
 				messagePubFp.publish(new FingerPrintMessage(message.getDataWord()));
 				break;
 			default: //Unhandled or invalid RBSM message header was received.
-				new RobobuggyLogicNotification("Invalid RBSM message header\n", RobobuggyMessageLevel.NOTE);
+				new RobobuggyLogicNotification("Invalid RBSM message header: " + headerByte, RobobuggyMessageLevel.NOTE);
 				break;
 		}
 		
@@ -201,47 +200,6 @@ public class RBSMNode extends SerialNode {
 		return 6;
 	}
 
-	/**
-	 * Converts a string message into a JSON object
-	 * @param message String message
-	 * @return JSON object representing the string message
-	 */
-	@SuppressWarnings("unchecked")
-	public static JSONObject translatePeelMessageToJObject(String message) 
-	{
-		String[] messageData = message.split(",");
-		String sensorName = messageData[0];
-		sensorName = sensorName.substring(sensorName.indexOf("/") + 1);
-		JSONObject data = new JSONObject();
-		JSONObject params = new JSONObject();
-		
-		data.put("timestamp", messageData[1]);
-		
-		if(sensorName.equals("steering") || sensorName.equals("commanded_steering")) 
-		{
-			params.put("angle", Float.valueOf(messageData[2]));
-		}
-		else if (sensorName.equals("fp_hash")) {
-			params.put("hash_value", messageData[2]);
-			
-		}
-		else if (sensorName.equals("encoder")) 
-		{
-			params.put("dataword", Double.valueOf(messageData[2]));
-			params.put("distance", Double.valueOf(messageData[3]));
-			params.put("velocity", Double.valueOf(messageData[4]));
-			params.put("acceleration", Double.valueOf(messageData[5]));
-		}
-		else 
-		{
-			System.err.println("WAT " + sensorName);
-		}
-		
-		data.put("params", params);
-		// TODO Auto-generated method stub
-		return data;
-	}
-	
 	/**
 	 * Private class used to handle the periodic portions of the
 	 * {@link RBSMNode}. Specifically, this will transmit the commanded

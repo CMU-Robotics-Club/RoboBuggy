@@ -1,15 +1,13 @@
 package com.roboclub.robobuggy.main;
 
+import com.roboclub.robobuggy.simulation.SensorPlayer;
+import com.roboclub.robobuggy.ui.Gui;
+import com.roboclub.robobuggy.utilities.JNISetup;
 import gnu.io.CommPortIdentifier;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-
-import com.roboclub.robobuggy.logging.RobotLogger;
-import com.roboclub.robobuggy.simulation.SensorPlayer;
-import com.roboclub.robobuggy.ui.Gui;
-import com.roboclub.robobuggy.utilities.JNISetup;
 
 
 /** This class is the driver starting up the robobuggy program, if you want the buggy to drive itself you should run this node */
@@ -45,18 +43,16 @@ public class RobobuggyMainFile {
      	
     	if (RobobuggyConfigFile.DATA_PLAY_BACK) {
     		//Play back mode enabled
-    		final SensorPlayer sp = new SensorPlayer("logs/2016-01-26-00-00-53/sensors.txt");
+    		final SensorPlayer sp = new SensorPlayer("logs/sensors_2016-02-05-20-03-47.txt");
         	new Thread(new Runnable() {
 				
 				@Override
 				public void run() {
-					// TODO Auto-generated method stub
 					sp.run();
 				}
 			}).start();
         }
         else {
-        	RobotLogger.getInstance();
         	//Play back disabled, create robot
         	Robot.getInstance().startNodes();
 			try {

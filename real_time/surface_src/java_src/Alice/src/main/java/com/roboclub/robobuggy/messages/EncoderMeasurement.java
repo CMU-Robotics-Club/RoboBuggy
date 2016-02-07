@@ -1,7 +1,8 @@
 package com.roboclub.robobuggy.messages;
 
-import java.util.Date;
 import com.roboclub.robobuggy.ros.Message;
+
+import java.util.Date;
 
 /**
  * Message for passing encoder measurements over BuggyROS
@@ -13,11 +14,10 @@ import com.roboclub.robobuggy.ros.Message;
  * 
  *          DESCRIPTION: TODO
  */
-public class EncoderMeasurement extends BaseMessage implements Message {
+public class EncoderMeasurement extends BaseMessage {
 
-	private static final String VERSION_ID = "encoderV0.0";
+	public static final String VERSION_ID = "encoderV0.0";
 
-	private Date timestamp;
 	private final double distance;
 	private final double velocity;
 	private final double dataWord;

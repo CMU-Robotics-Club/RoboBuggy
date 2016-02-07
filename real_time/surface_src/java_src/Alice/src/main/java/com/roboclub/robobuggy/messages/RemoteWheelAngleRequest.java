@@ -1,16 +1,15 @@
 package com.roboclub.robobuggy.messages;
 
-import java.util.Date;
-
 import com.roboclub.robobuggy.ros.Message;
+
+import java.util.Date;
 
 /**
  * Message to request the front wheel angle
  */
-public class RemoteWheelAngleRequest implements Message {
+public class RemoteWheelAngleRequest extends BaseMessage {
 	public static final String VERSION_ID = "rc_wheel_angleV0.1";
 
-	private Date timestamp;
 	private double angle;
 
 	/**
@@ -31,20 +30,16 @@ public class RemoteWheelAngleRequest implements Message {
 	}
 
 	/**
-	 * Get the timestamp of the request
-	 * @return the timestamp of the request
-     */
-	public Date getTimeStamp(){
-		return new Date(timestamp.getTime());
-	}
-
-	@Override
+	 * {@inheritDoc}
+	 */
 	public String toLogString() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
+	/**
+	 * {@inheritDoc}
+	 */
 	public Message fromLogString(String str) {
 		// TODO Auto-generated method stub
 		return null;

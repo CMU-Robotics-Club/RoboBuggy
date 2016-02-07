@@ -1,8 +1,8 @@
 package com.roboclub.robobuggy.messages;
 
-import java.util.Date;
-
 import com.roboclub.robobuggy.ros.Message;
+
+import java.util.Date;
 
 /**
  * Message used to pass commanded steering angle messages over BuggyROS
@@ -14,30 +14,21 @@ import com.roboclub.robobuggy.ros.Message;
  * 
  *          DESCRIPTION: TODO
  */
-public class WheelAngleCommand implements Message {
+public class WheelAngleCommandMeasurement extends BaseMessage {
 	// V0.0 had int
 	// V0.1 has float. Note that round-off is hundreths of a degree.
 	public static final String VERSION_ID = "autonomous_angleV0.1";
 
-	private Date timestamp;
 	private float angle;
 
 	/**
-	 * Construct a new {@link WheelAngleCommand} object at time now
+	 * Construct a new {@link WheelAngleCommandMeasurement} object at time now
 	 * @param angle the commanded angle 
 	 * (Note that round-off is hundreths of a degree)
 	 */
-	public WheelAngleCommand(float angle) {
+	public WheelAngleCommandMeasurement(float angle) {
 		this.angle = angle;
 		this.timestamp = new Date();
-	}
-
-	/**
-	 * Get the timestamp of the wheel command message
-	 * @return the timestamp of this message
-	 */
-	public Date getTimestamp(){
-		return new Date(timestamp.getTime());
 	}
 
 	/**
