@@ -293,7 +293,7 @@ public class LoggingNode extends BuggyDecoratorNode {
                 		msgAsJsonString = messageTranslator.toJson("Topic:"+imgMessage.getTopic()+":ImageReceived:"+imgMessage.getFrameNumebr());
                 		if(videoEncoder == null){
         					try {
-        						videoEncoder =  new SequenceEncoder(new File("test.mp4")); //TODO move into a folder
+        						videoEncoder =  new SequenceEncoder(new File(outputDirectory.getAbsolutePath()+"/webcam.mp4")); //TODO move into a folder
         					} catch (IOException e) {
         						// TODO Auto-generated catch block
         						e.printStackTrace();
