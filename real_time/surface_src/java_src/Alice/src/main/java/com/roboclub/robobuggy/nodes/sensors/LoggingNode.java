@@ -148,8 +148,21 @@ public class LoggingNode extends BuggyDecoratorNode {
             return false;
         }
 
+        Date logCreationDate = new Date();
+
+
+        outputDirectory = new File(outputDirectory.getPath() + "/"  + formatDateIntoFile(logCreationDate));
+
+        if (!outputDirectory.mkdirs()) {
+            new RobobuggyLogicNotification("Couldn't create log folder!", RobobuggyMessageLevel.EXCEPTION);
+            return false;
+        }
+
         // each log file is called {filename}_{date}.txt
-        outputFile = new File(outputDirectory.getPath() + "/" + RobobuggyConfigFile.LOG_FILE_NAME + "_" + formatDateIntoFile(new Date()) + ".txt");
+        outputFile = new File(outputDirectory.getPath() + "/" +
+                                RobobuggyConfigFile.LOG_FILE_NAME + "_" +
+                                formatDateIntoFile(logCreationDate) + ".txt")
+        ;
         try {
             if(!outputFile.createNewFile()) {
                 new RobobuggyLogicNotification("Couldn't create log file!", RobobuggyMessageLevel.EXCEPTION);
