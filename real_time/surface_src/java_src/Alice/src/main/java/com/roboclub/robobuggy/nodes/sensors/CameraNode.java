@@ -7,6 +7,8 @@ import java.util.List;
 
 import com.github.sarxos.webcam.Webcam;
 import com.orsoncharts.util.json.JSONObject;
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.messages.ImageMessage;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
@@ -37,7 +39,21 @@ public class CameraNode extends PeriodicNode{
 		
 		//setup the webcam
 		List<Webcam> webcams = Webcam.getWebcams();
-		webcam = webcams.get(0); //todo some selection logic
+		this.webcam = null;
+
+		//TODO figure out a better way to select
+		for (Webcam webcam : webcams) {
+			if (webcam.getName().contains("Logitech")) {
+				this.webcam = webcam;
+				break;
+			}
+		}
+
+		if (this.webcam == null) {
+			new RobobuggyLogicNotification("Couldn't find Logitech webcam!", RobobuggyMessageLevel.EXCEPTION);
+			return;
+		}
+
 		webcam.open();
 		
 		//setup image publisher 
