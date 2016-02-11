@@ -124,7 +124,7 @@ public class SensorPlayer implements Runnable {
                         break;
                     case FingerPrintMessage.VERSION_ID:
                         transmitMessage = translator.fromJson(sensorDataJson, FingerPrintMessage.class);
-                        encoderPub.publish(transmitMessage);
+//                        encoderPub.publish(transmitMessage);
                         break;
                     case GpsMeasurement.VERSION_ID:
                         transmitMessage = translator.fromJson(sensorDataJson, GpsMeasurement.class);
