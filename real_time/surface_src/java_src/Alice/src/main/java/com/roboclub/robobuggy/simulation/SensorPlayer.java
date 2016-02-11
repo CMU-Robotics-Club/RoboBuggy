@@ -124,7 +124,7 @@ public class SensorPlayer implements Runnable {
                         break;
                     case FingerPrintMessage.VERSION_ID:
                         transmitMessage = translator.fromJson(sensorDataJson, FingerPrintMessage.class);
-                        encoderPub.publish(transmitMessage);
+//                        encoderPub.publish(transmitMessage);
                         break;
                     case GpsMeasurement.VERSION_ID:
                         transmitMessage = translator.fromJson(sensorDataJson, GpsMeasurement.class);
@@ -180,32 +180,33 @@ public class SensorPlayer implements Runnable {
                         break;
                 }
 
-                BaseMessage timeMessage = (BaseMessage) transmitMessage;
-
-                if (currentSensorTimeInMillis != -1) {
-                    if (timeMessage != null) {
-                        currentSensorTimeInMillis = timeMessage.getTimestamp().getTime();
-                        long sensorTimeFromPrev = currentSensorTimeInMillis - sensorStartTimeInMilis;
-
-                        if(sensorTimeFromPrev > 0){
-                            Thread.sleep(sensorTimeFromPrev);
-                        }
-                    }
-
-                    sensorStartTimeInMilis = currentSensorTimeInMillis;
-                }
-                else {
-                    assert timeMessage != null;
-                    currentSensorTimeInMillis = timeMessage.getTimestamp().getTime();
-                    sensorStartTimeInMilis = currentSensorTimeInMillis;
-                }
+                // no timing for now
+//                BaseMessage timeMessage = (BaseMessage) transmitMessage;
+//
+//                if (currentSensorTimeInMillis != -1) {
+//                    if (timeMessage != null) {
+//                        currentSensorTimeInMillis = timeMessage.getTimestamp().getTime();
+//                        long sensorTimeFromPrev = currentSensorTimeInMillis - sensorStartTimeInMilis;
+//
+//                        if(sensorTimeFromPrev > 0){
+//                            Thread.sleep(sensorTimeFromPrev);
+//                        }
+//                    }
+//
+//                    sensorStartTimeInMilis = currentSensorTimeInMillis;
+//                }
+//                else {
+//                    assert timeMessage != null;
+//                    currentSensorTimeInMillis = timeMessage.getTimestamp().getTime();
+//                    sensorStartTimeInMilis = currentSensorTimeInMillis;
+//                }
 
             }
 
         } catch (FileNotFoundException e) {
             new RobobuggyLogicNotification("SensorPlayer couldn't find log file!", RobobuggyMessageLevel.EXCEPTION);
-        } catch (InterruptedException e) {
-            new RobobuggyLogicNotification("SensorPlayer was interrupted", RobobuggyMessageLevel.WARNING);
+//        } catch (InterruptedException e) {
+//            new RobobuggyLogicNotification("SensorPlayer was interrupted", RobobuggyMessageLevel.WARNING);
         } catch (UnsupportedEncodingException e) {
             new RobobuggyLogicNotification("Log file had unsupported encoding", RobobuggyMessageLevel.EXCEPTION);
         }
