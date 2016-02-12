@@ -65,6 +65,7 @@ public final class Gui extends JFrame {
 		RobobuggyGUITabs tabs = new RobobuggyGUITabs();
 		tabs.addTab(new MainGuiWindow(),"Home");
 		tabs.addTab(new NodeViewer(),"Nodes");
+		tabs.addTab(new PoseViewer(),"Pose");
 		mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
 		windowList.add(mainWindow);
 	}

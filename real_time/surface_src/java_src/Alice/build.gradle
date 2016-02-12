@@ -38,6 +38,8 @@ dependencies {
     //for jason object extraction from strings 
     compile 'com.google.code.gson:gson:2.2.+'
     compile 'jfreechart:jfreechart:1.0.0'
+    compile 'gov.nist.math:jama:1.0.2'
+
 
     // TODO: this is stupid. find a way to use mavencentral repo.
     compile files('library/orsoncharts-1.4-eval-nofx.jar')

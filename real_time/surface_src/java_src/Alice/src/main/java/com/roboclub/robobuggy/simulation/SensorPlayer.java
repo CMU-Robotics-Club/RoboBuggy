@@ -22,7 +22,7 @@ import com.roboclub.robobuggy.messages.FingerPrintMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
-import com.roboclub.robobuggy.messages.PoseMessage;
+import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.RemoteWheelAngleRequest;
 import com.roboclub.robobuggy.messages.ResetMessage;
 import com.roboclub.robobuggy.messages.RobobuggyLogicNotificationMeasurement;
@@ -138,8 +138,8 @@ public class SensorPlayer implements Runnable {
                         transmitMessage = translator.fromJson(sensorDataJson, ImuMeasurement.class);
                         imuPub.publish(transmitMessage);
                         break;
-                    case PoseMessage.VERSION_ID:
-                        transmitMessage = translator.fromJson(sensorDataJson, PoseMessage.class);
+                    case GPSPoseMessage.VERSION_ID:
+                        transmitMessage = translator.fromJson(sensorDataJson, GPSPoseMessage.class);
                         break;
                     case RemoteWheelAngleRequest.VERSION_ID:
                         transmitMessage = translator.fromJson(sensorDataJson, RemoteWheelAngleRequest.class);

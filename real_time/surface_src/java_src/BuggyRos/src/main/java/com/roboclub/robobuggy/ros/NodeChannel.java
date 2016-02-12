@@ -18,6 +18,7 @@ public enum NodeChannel {
 	POSE("pose"),
 	RESET("reset"),
 	STATE("state"),
+	SIMULATION("simulation"),
 	UNKNOWN_CHANNEL("unknown"),
 	;
 	

@@ -10,7 +10,7 @@ import java.util.Date;
  * @author Zachary Dawson
  *
  */
-public class PoseMessage extends BaseMessage {
+public class GPSPoseMessage extends BaseMessage {
 
 	public static final String VERSION_ID = "pose_message";
 	
@@ -19,13 +19,13 @@ public class PoseMessage extends BaseMessage {
 	private final double heading;
 
 	/**
-	 * Constructs a new {@link PoseMessage}
+	 * Constructs a new {@link GPSPoseMessage}
 	 * @param timestamp {@link Date} representing the creation time
 	 * @param latitude of the buggy (negative is South)
 	 * @param longitude of the buggy (negative is West)
 	 * @param heading of the buggy (in degrees from North)
 	 */
-	public PoseMessage(Date timestamp, double latitude, double longitude, double heading) {
+	public GPSPoseMessage(Date timestamp, double latitude, double longitude, double heading) {
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.heading = heading;
@@ -33,24 +33,24 @@ public class PoseMessage extends BaseMessage {
 	}
 	
 	/**
-	 * Returns the latitude of the {@link PoseMessage} (negative is South)
-	 * @return the latitude of the {@link PoseMessage} (negative is South)
+	 * Returns the latitude of the {@link GPSPoseMessage} (negative is South)
+	 * @return the latitude of the {@link GPSPoseMessage} (negative is South)
 	 */
 	public double getLatitude() {
 		return latitude;
 	}
 	
 	/**
-	 * Returns the longitude of the {@link PoseMessage} (negative is West)
-	 * @return the longitude of the {@link PoseMessage} (negative is West)
+	 * Returns the longitude of the {@link GPSPoseMessage} (negative is West)
+	 * @return the longitude of the {@link GPSPoseMessage} (negative is West)
 	 */
 	public double getLongitude() {
 		return longitude;
 	}
 	
 	/**
-	 * Returns the heading of the {@link PoseMessage} (in degrees from North)
-	 * @return the heading of the {@link PoseMessage} (in degrees from North)
+	 * Returns the heading of the {@link GPSPoseMessage} (in degrees from North)
+	 * @return the heading of the {@link GPSPoseMessage} (in degrees from North)
 	 */
 	public double getHeading() {
 		return heading;
@@ -72,7 +72,7 @@ public class PoseMessage extends BaseMessage {
 		double readLat = Double.parseDouble(spl[2]);
 		double readLon = Double.parseDouble(spl[3]);
 		double readHeading = Double.parseDouble(spl[4]);
-		return new PoseMessage(d, readLat, readLon, readHeading);
+		return new GPSPoseMessage(d, readLat, readLon, readHeading);
 	}
 	
 }

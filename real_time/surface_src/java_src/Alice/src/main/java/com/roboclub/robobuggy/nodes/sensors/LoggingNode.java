@@ -13,7 +13,7 @@ import com.roboclub.robobuggy.messages.FingerPrintMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
-import com.roboclub.robobuggy.messages.PoseMessage;
+import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.ResetMessage;
 import com.roboclub.robobuggy.messages.RobobuggyLogicNotificationMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
@@ -279,7 +279,7 @@ public class LoggingNode extends BuggyDecoratorNode {
                         logButtonHits++;
                     } else if (toSort instanceof ImuMeasurement) {
                         imuHits++;
-                    } else if (toSort instanceof PoseMessage) {
+                    } else if (toSort instanceof GPSPoseMessage) {
                         poseMessageHits++;
                     } else if (toSort instanceof ResetMessage) {
                         resetHits++;
