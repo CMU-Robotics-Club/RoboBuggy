@@ -101,7 +101,7 @@ public class SensorPlayer implements Runnable {
 
             JsonArray sensorDataArray = logFile.getAsJsonArray("sensor_data");
             for (JsonElement sensorAsJElement: sensorDataArray) {
-
+            if(sensorAsJElement.isJsonObject()){
                 JsonObject sensorDataJson = sensorAsJElement.getAsJsonObject();
                 String versionID = sensorDataJson.get("VERSION_ID").getAsString();
 
@@ -182,7 +182,11 @@ public class SensorPlayer implements Runnable {
 
                 BaseMessage timeMessage = (BaseMessage) transmitMessage;
 
-                if (currentSensorTimeInMillis != -1) {
+                if(currentSensorTimeInMillis == -1){
+                    assert timeMessage != null;
+                    currentSensorTimeInMillis = timeMessage.getTimestamp().getTime();
+                    sensorStartTimeInMilis = currentSensorTimeInMillis;
+                }else{   
                     if (timeMessage != null) {
                         currentSensorTimeInMillis = timeMessage.getTimestamp().getTime();
                         long sensorTimeFromPrev = currentSensorTimeInMillis - sensorStartTimeInMilis;
@@ -194,11 +198,7 @@ public class SensorPlayer implements Runnable {
 
                     sensorStartTimeInMilis = currentSensorTimeInMillis;
                 }
-                else {
-                    assert timeMessage != null;
-                    currentSensorTimeInMillis = timeMessage.getTimestamp().getTime();
-                    sensorStartTimeInMilis = currentSensorTimeInMillis;
-                }
+            }
 
             }
 
