@@ -29,6 +29,8 @@ public class GpsPanel extends JPanel {
 	private int frameWidth;
 	private int frameHeight;
 	
+	private double theta = 0;
+	
 	@SuppressWarnings("unused") //this subscriber is used to generate callbacks 
 	private Subscriber gpsSub;
 	
@@ -44,6 +46,7 @@ public class GpsPanel extends JPanel {
 		} catch(Exception e) {
 			System.out.println("Unable to open map!");
 		}
+		
 		setup = false;
 		
 		gpsSub = new Subscriber(NodeChannel.GPS.getMsgPath(), new MessageListener() {
@@ -96,6 +99,24 @@ public class GpsPanel extends JPanel {
 		g2d.fillOval((int)px, (int)py, cDiameter, cDiameter);
 	}
 	
+	private void drawArrow(Graphics2D g2d, double x1, double y1, double theta, double size){
+		double x2 = x1 + rotate(size, 0, theta)[0];
+		double y2 = y1 + rotate(size, 0, theta)[1];
+		g2d.drawLine((int)x1, (int)y1, (int)x2, (int)y2);
+		double x3 = x2 + rotate(size/2, 0, theta + 3*Math.PI/4)[0];
+		double y3 = y2 + rotate(size/2, 0, theta + 3*Math.PI/4)[1];
+		g2d.drawLine((int)x2, (int)y2, (int)x3, (int)y3);
+		double x4 = x2 + rotate(size/2, 0, theta - 3*Math.PI/4)[0];
+		double y4 = y2 + rotate(size/2, 0, theta - 3*Math.PI/4)[1];
+		g2d.drawLine((int)x2, (int)y2, (int)x4, (int)y4);
+	}
+	
+	private double[] rotate(double x, double y, double theta){
+		double xp = (x*Math.cos(theta) + y*Math.sin(theta));
+		double yp = (-x*Math.sin(theta) + y*Math.cos(theta));
+		return new double[] {xp, yp};
+	}
+	
 	@Override
 	public void paintComponent(Graphics g) {
 		setup();
@@ -107,10 +128,44 @@ public class GpsPanel extends JPanel {
 		Graphics2D g2d = (Graphics2D) g.create();
 
 		g.drawImage(map, 0, 0, frameWidth, frameHeight, Color.black, null);
-
+		g2d.setColor(Color.blue);
+		drawArrow(g2d, 0.5*frameWidth, 0.5*frameHeight, theta, 0.1*frameWidth);
+		theta += 0.01;
+	
 		for	(LocTuple mTuple : locs) {
 			drawTuple(g2d, mTuple);
 		}
 		g2d.dispose();
+	}
+	
+	//Ad hoc image processing code to follow
+	public BufferedImage processImage(BufferedImage image, double theta){
+		BufferedImage temp = new BufferedImage((int)(1.42*(image.getWidth()+image.getHeight())) + 2,(int)(1.42*(image.getWidth()+image.getHeight())) + 2, BufferedImage.TYPE_INT_ARGB);
+		for(int x = 0; x < temp.getWidth(); x++){
+			for(int y = 0; y < temp.getHeight(); y++){
+				temp.setRGB(x, y, new Color(255, 255, 255, 0).getRGB());
+			}
+		}
+		for(int x = 0; x < image.getWidth(); x++){
+			for(int y = 0; y < image.getHeight(); y++){
+				Color c = new Color(image.getRGB(x, y));
+				c = new Color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
+				int xp = (int)(0.71*(image.getWidth() + image.getHeight())) + 1 + (int) (x*Math.cos(theta) + y*Math.sin(theta));
+				int yp = (int)(0.71*(image.getWidth() + image.getHeight())) + 1 + (int) (-x*Math.sin(theta) + y*Math.cos(theta));
+				try{
+					//Overwrite anything within one pixel of this value to prevent rounding issues
+					for(int xd = -1; xd <= 1; xd++){
+						for(int yd = -1; yd <= 1; yd++){
+							temp.setRGB(xp+xd, yp+yd, c.getRGB());
+						}
+					}
+				}catch(Exception e)
+				{
+					System.out.println(x + " " + y + " " + xp + " " + yp);
+					System.exit(0);
+				}
+			}
+		}
+		return temp;
 	}
 }

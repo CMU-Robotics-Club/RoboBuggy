@@ -68,6 +68,7 @@ public final class Gui extends JFrame {
 		tabs.addTab(new NodeViewer(),"Nodes");
 		mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
 		windowList.add(mainWindow);
+		mainWindow.repaint();
 	}
 	
 	/**
