@@ -17,7 +17,7 @@ public class RobobuggyMainFile {
 	 * Run Alice
 	 * @param args : None
 	 */
-    public static void main(String[] args)  {
+    public static void main(String[] args) throws InterruptedException {
 
         try {
 			JNISetup.setupJNI(); //must run for jni to install
@@ -44,24 +44,21 @@ public class RobobuggyMainFile {
      	
     	if (RobobuggyConfigFile.DATA_PLAY_BACK) {
     		//Play back mode enabled
-    		final SensorPlayer sp = new SensorPlayer("logs/sensors_2016-02-05-20-03-47.txt");
-        	new Thread(new Runnable() {
-				
-				@Override
-				public void run() {
-					sp.run();
-				}
-			}).start();
+    		SensorPlayer sp = new SensorPlayer("logs/sensors_2016-02-06-22-21-59.txt");
         }
         else {
         	//Play back disabled, create robot
         	Robot.getInstance().startNodes();
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
 			new RobobuggyLogicNotification("Robobuggy Logic Notfication started", RobobuggyMessageLevel.NOTE);
+
+            Thread.sleep(5000);
+
+            new RobobuggyLogicNotification("Notification 1", RobobuggyMessageLevel.NOTE);
+            new RobobuggyLogicNotification("Notification 2", RobobuggyMessageLevel.NOTE);
+
+            Thread.sleep(500);
+
+            new RobobuggyLogicNotification("Notif 3", RobobuggyMessageLevel.NOTE);
 		}
 
 

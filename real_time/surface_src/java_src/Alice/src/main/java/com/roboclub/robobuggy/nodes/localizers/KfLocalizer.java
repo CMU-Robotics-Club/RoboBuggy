@@ -1,32 +1,42 @@
 package com.roboclub.robobuggy.nodes.localizers;
 
+import java.util.ArrayList;
 import java.util.Date;
 
+import Jama.Matrix;
+
+import com.roboclub.robobuggy.main.Util;
+import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyNode;
 import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
-/*
-public class KfLocalizer extends PeriodicNode{
-	
-	
+
+public class KfLocalizer extends PeriodicNode{	
 	private MotionModel mModel;
 	private Publisher posePub;
-	private State thisState;
-
-	
+	private Matrix state;
+	private Date startTime;
+	private Date mostRecentUpdateTime;
+	private Matrix covariance;
+	private Matrix DF;
 	
 	protected KfLocalizer(BuggyNode base, int period) {
 		super(base, period);
 		posePub = new Publisher(NodeChannel.POSE.getMsgPath());
-		// TODO Auto-generated constructor stub
+		startTime = new Date();
+		double[][] startCovariance = {{1,0,0},{0,1,0},{0,0,1}};
+		covariance = new Matrix(startCovariance);
+		state = Util.eye(3);
+		mostRecentUpdateTime = startTime;
+		//DF = //TODO
 	}
 
 	@Override
 	protected void update() {
 		 predictStep();
 		 //publish state 
-		 posePub.publish(new PoseMessage(new Date(), thisState.getX(), thisState.geyY(), thisState.getHeading()));
+		 posePub.publish(new GPSPoseMessage(new Date(), state.get(0, 0), state.get(1,0), state.get(2, 0)));
 	}
 
 	@Override
@@ -43,30 +53,31 @@ public class KfLocalizer extends PeriodicNode{
 	
 	//TODO
 	private void predictStep(){
-		//estimate state
-		state = mModel.applyMotionModel(state,time);
-		//estimate covariance
-		covariance = DF*covariance*DF.transpose;
-	}
+		
+			Date now = new Date();
+			Date dt = new Date(now.getTime() - mostRecentUpdateTime.getTime());
+			
+			//estimate state
+			state =  mModel.applyMotionModel(state,dt);
+			//estimate covariance
+			covariance = DF.times(covariance).times(DF.transpose());
+		}
+	
 	
 	//TODO
-	public void updateStep(ObservationModel oModel){
-		 predictStep();
-
-		measurement  = ?
+	public void updateStep(Matrix measurement,ObservationModel oModel,Matrix DH){
+		//run predict to get to the current time 
+		predictStep();  //TODO consider sending time to predict to 
 		
-		inovation = measurement - oModel(state);
-		innovationCovariance = DH*covariance*DH.transpose;
-		kalmanGain = covariance*DH.transpose*innovationCovariance.inverse;
-		covariance = (eye - kalmanGain*DH)*covariance;
-		state = state+kalmanGain*inovation;
-			
+		
+		Matrix inovation = measurement.minus(oModel.getObservationSpaceState(state));
+		Matrix innovationCovariance = DH.times(covariance).times(DH.transpose());
+		Matrix kalmanGain = covariance.times(DH.transpose()).times(innovationCovariance.inverse());
+		covariance = (Util.eye(3).minus(kalmanGain.times(DH)).times(covariance));
+		state = state.plus(kalmanGain.times(inovation));
+		mostRecentUpdateTime = new Date();
 	}
-	
-	//TODO set motion model                    
-	//TODO set observation model
 
 
 }
-*/
 

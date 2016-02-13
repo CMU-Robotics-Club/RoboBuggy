@@ -14,7 +14,7 @@ public class ResetMessage extends BaseMessage {
 	 * Constructs a new {@link ResetMessage}
 	 */
 	public ResetMessage() {
-		this.timestamp = new Date();
+		this.timestamp = new Date().getTime();
 	}
 
 	/**{@inheritDoc}*/

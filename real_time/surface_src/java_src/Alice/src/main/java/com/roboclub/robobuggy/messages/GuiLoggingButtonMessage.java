@@ -33,7 +33,7 @@ public class GuiLoggingButtonMessage extends BaseMessage {
 	 */
 	public GuiLoggingButtonMessage(LoggingMessage lm) {
 		this.lm = lm;
-		this.timestamp = new Date();
+		this.timestamp = new Date().getTime();
 	}
 
 	/**
@@ -42,7 +42,7 @@ public class GuiLoggingButtonMessage extends BaseMessage {
 	 * @param lm {@link LoggingMessage} state of the GUI
 	 */
 	public GuiLoggingButtonMessage(Date timestamp, LoggingMessage lm) {
-		this.timestamp = new Date(timestamp.getTime());
+		this.timestamp = new Date(timestamp.getTime()).getTime();
 		this.lm = lm;
 	}
 

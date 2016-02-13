@@ -20,7 +20,7 @@ public class DriveControlMessage extends BaseMessage {
 	 */
 	public DriveControlMessage(Date timestamp, double angle) {
 		this.angle = angle;
-		this.timestamp = new Date(timestamp.getTime());
+		this.timestamp = new Date(timestamp.getTime()).getTime();
 	}
 	
 	/**

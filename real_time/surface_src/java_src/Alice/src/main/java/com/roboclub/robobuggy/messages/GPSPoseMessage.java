@@ -29,7 +29,7 @@ public class GPSPoseMessage extends BaseMessage {
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.heading = heading;
-		this.timestamp = new Date(timestamp.getTime());
+		this.timestamp = new Date(timestamp.getTime()).getTime();
 	}
 	
 	/**
