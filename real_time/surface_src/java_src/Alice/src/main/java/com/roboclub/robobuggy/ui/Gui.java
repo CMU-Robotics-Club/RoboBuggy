@@ -3,6 +3,9 @@ package com.roboclub.robobuggy.ui;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 
+import java.awt.Container;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import javax.swing.JFrame;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -46,7 +49,7 @@ public final class Gui extends JFrame {
 	 * If none exists, one will be constructed.
 	 * @return a reference to the one instance of the {@link Gui}
 	 */
-	public static Gui getInstance() {
+	public synchronized static Gui getInstance() {
 		if (instance == null) {
 			instance = new Gui();
 		}
@@ -65,9 +68,10 @@ public final class Gui extends JFrame {
 		RobobuggyGUITabs tabs = new RobobuggyGUITabs();
 		tabs.addTab(new MainGuiWindow(),"Home");
 		tabs.addTab(new NodeViewer(),"Nodes");
-		tabs.addTab(new PoseViewer(),"Pose");
+		tabs.addTab(new PoseGraphsPanel(),"poses");
 		mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
 		windowList.add(mainWindow);
+		mainWindow.repaint();
 	}
 	
 	/**

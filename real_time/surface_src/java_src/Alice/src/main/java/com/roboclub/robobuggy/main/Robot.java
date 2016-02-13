@@ -3,10 +3,18 @@ package com.roboclub.robobuggy.main;
 import com.roboclub.robobuggy.nodes.sensors.GpsNode;
 import com.roboclub.robobuggy.nodes.sensors.ImuNode;
 import com.roboclub.robobuggy.nodes.sensors.LoggingNode;
+import java.util.LinkedList;
+import java.util.List;
+
+import com.roboclub.robobuggy.nodes.localizers.OdomLocalizer;
+import com.roboclub.robobuggy.nodes.planners.DeadreckoningPlanner;
 import com.roboclub.robobuggy.nodes.sensors.RBSMNode;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.simulation.SimulationPlayer;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -19,12 +27,13 @@ import java.util.List;
 public final class Robot implements RosMaster {
 
 	/************************************** Sets all internal private variables *************************/
-	private static final int COMMAND_PERIOD = 1000;
-	private static final int ARDUINO_BOOTLOADER_TIMEOUT = 2000;
+	private static final int COMMAND_PERIOD = 50;
 	private static Robot instance;
 	private boolean autonomous;
 	private List<Node> nodeList;
-	
+	//TODO find out the actual time we need to put here
+	private static final int ARDUINO_BOOTLOADER_TIMEOUT = 2000;
+
 	/************************************* Set of all public functions ********************************/
 
 	/**{@inheritDoc}*/
@@ -51,6 +60,7 @@ public final class Robot implements RosMaster {
 		new RobobuggyLogicNotification("Logic Exception Setup properly" ,  RobobuggyMessageLevel.NOTE);
 		// Initialize Nodes
 		nodeList.add(new SimulationPlayer());
+		nodeList.add(new OdomLocalizer());
 		//nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.COM_PORT_GPS));
 		//nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.COM_PORT_IMU));
 		//nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING, RobobuggyConfigFile.COM_PORT_RBSM, COMMAND_PERIOD));
@@ -64,6 +74,7 @@ public final class Robot implements RosMaster {
 			new RobobuggyLogicNotification("Couldn't wait for bootloader, shutting down", RobobuggyMessageLevel.EXCEPTION);
 			shutDown();
 		}
+
 	}
 	
 	/***************************************   Getters ********************************/

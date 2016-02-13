@@ -1,10 +1,10 @@
 package com.roboclub.robobuggy.ros;
 
 public enum NodeChannel {
-	GPS("gps"),
-	IMU("imu"),
-	RC("rc_angle"),
-	STEERING("steering"),
+	GPS("gps"),    								//The most recent gps coordinate 
+	IMU("imu"),									//The most recent imu measurement 
+	RC("rc_angle"),								//?
+	STEERING("steering"),						//The current angle that low level is steering to 
 	BRAKE("brake"),
 	LOGIC_NOTIFICATION("logic_notification"),
 	DRIVE_CTRL("drive_ctrl"),
@@ -13,7 +13,7 @@ public enum NodeChannel {
 	ENCODER("encoder"),
 	AUTO("auto"),
 	GUI_LOGGING_BUTTON("logging_button"),
-	STEERING_COMMANDED("commanded_steering"),
+	STEERING_COMMANDED("commanded_steering"),   // the angle that we are commanding the front wheel turn to 
 	FP_HASH("fp_hash"),
 	POSE("pose"),
 	RESET("reset"),
@@ -21,6 +21,10 @@ public enum NodeChannel {
 	SIMULATION("simulation"),
 	UNKNOWN_CHANNEL("unknown"),
 	;
+	
+	
+
+	
 	
 	private String rstPath;
 	private String msgPath;

@@ -18,10 +18,6 @@ public class PoseViewer extends RobobuggyGUIContainer{
 	private Matrix worldFrame;
 	private ArrayList<Matrix> poses;
 	
-	/*
-	double[][] array = {{1,0,0},{0,1,0},{0,0,1}};
-	Matrix View = new Matrix(array); //is the view that we are currently using to see the world
-*/
 	//constructor 
 	PoseViewer(){
 		poses = new ArrayList<Matrix>();
@@ -29,24 +25,16 @@ public class PoseViewer extends RobobuggyGUIContainer{
 		view = new Matrix(viewArray);
 		double [][] worldFrameArray = {{1,0,0,0},{0,1,0,0},{0,0,1,0},{0,0,0,1}};
 
-	/*	for(int i = 0;i < 1;i++){
-			double th = Math.PI/4;
-			double [][] anArray = {{Math.cos(th),-Math.sin(th),0,0},{Math.sin(th),Math.cos(th),0,0},{0,0,1,0},{0,0,0,1}};
-			Matrix aPose = new Matrix(anArray);
-			poses.add(aPose);
-		}*/
-		
-		//todo add live update
 	
 		new Subscriber(NodeChannel.POSE.getMsgPath(), new MessageListener() {
 			
 			@Override
 			public void actionPerformed(String topicName, Message m) {
+				System.out.println("got call back");
 				GPSPoseMessage poseM = (GPSPoseMessage)m;
 				double x = poseM.getLatitude();
 				double y = poseM.getLongitude();
 				double th = poseM.getHeading();
-				System.out.println("got message:"+x+","+y+","+th);
 				double [][] anArray = {{Math.cos(th),-Math.sin(th),0,x},{Math.sin(th),Math.cos(th),0,y},{0,0,1,0},{0,0,0,1}};
 				Matrix aPose = new Matrix(anArray);
 				if(!poses.isEmpty()){

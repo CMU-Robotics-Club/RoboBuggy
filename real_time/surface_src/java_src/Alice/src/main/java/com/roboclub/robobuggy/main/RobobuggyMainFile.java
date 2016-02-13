@@ -40,6 +40,7 @@ public class RobobuggyMainFile {
         System.out.println(ports);
         Robot.getInstance();
         Gui.getInstance();
+
      	
     	if (RobobuggyConfigFile.DATA_PLAY_BACK) {
     		//Play back mode enabled

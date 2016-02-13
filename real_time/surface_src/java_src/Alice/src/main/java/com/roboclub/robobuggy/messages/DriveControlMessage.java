@@ -32,11 +32,11 @@ public class DriveControlMessage extends BaseMessage {
 	}
 	
 	/**
-	 * Returns the commanded angle of the steering as a short (in thousandths of degrees)
-	 * @return the commanded angle of the steering as a short (in thousandths of degrees)
+	 * Returns the commanded angle of the steering as an int (in hundredths of degrees)
+	 * @return the commanded angle of the steering as an int (in hundredths of degrees)
 	 */
-	public short getAngleShort() {
-		return (short)(angle*1000.0);
+	public int getAngleInt() {
+		return (int)(angle*100.0);
 	}
 	
 	/**{@inheritDoc}*/
@@ -51,7 +51,7 @@ public class DriveControlMessage extends BaseMessage {
 	public Message fromLogString(String str) {
 		String[] spl = str.split(",");
 		Date d = tryToParseDate(spl[0]);
-		double readAngle = Short.parseShort(spl[2]);
+		double readAngle = Integer.parseInt(spl[2]);
 		return new DriveControlMessage(d, readAngle);
 	}
 
