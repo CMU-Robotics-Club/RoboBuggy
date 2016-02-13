@@ -29,8 +29,12 @@ import com.roboclub.robobuggy.messages.RobobuggyLogicNotificationMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.messages.WheelAngleCommandMeasurement;
-import com.roboclub.robobuggy.ros.*;
-import sun.management.Sensor;
+import com.roboclub.robobuggy.ros.Message;
+import com.roboclub.robobuggy.ros.MessageListener;
+import com.roboclub.robobuggy.ros.NodeChannel;
+import com.roboclub.robobuggy.ros.Publisher;
+import com.roboclub.robobuggy.ros.Subscriber;
+import com.roboclub.robobuggy.ui.Gui;
 
 /**
  * Class used for playing back old log files. It does this by reading BuggyROS
@@ -40,6 +44,7 @@ public class SensorPlayer extends Thread {
 
     private String path;
     private Gson translator;
+    private double playbackSpeed;
 
     private Publisher imuPub;
     private Publisher gpsPub;
@@ -59,8 +64,9 @@ public class SensorPlayer extends Thread {
     /**
      * Construct a new {@link SensorPlayer} object
      * @param filePath {@link String} of the name and location of the log file
+     * @param playbackSpeed the initial playback speed
      */
-    public SensorPlayer(String filePath) {
+    public SensorPlayer(String filePath, int playbackSpeed) {
 
         imuPub = new Publisher(NodeChannel.IMU.getMsgPath());
         gpsPub = new Publisher(NodeChannel.GPS.getMsgPath());
@@ -73,7 +79,6 @@ public class SensorPlayer extends Thread {
         translator = new GsonBuilder().create();
 
         new RobobuggyLogicNotification("initializing the SensorPlayer", RobobuggyMessageLevel.NOTE);
-
         path = filePath;
         File f = new File(path);
         if(!f.exists()) {
@@ -81,9 +86,14 @@ public class SensorPlayer extends Thread {
         }
 
         setupPlaybackTrigger();
+
+        this.playbackSpeed = playbackSpeed;
     }
 
 
+    /**
+     * Sets up the playback trigger - hitting the start button will go through 1 iteration of a log file
+     */
     public void setupPlaybackTrigger() {
         new Subscriber(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath(), new MessageListener() {
             @Override
@@ -186,6 +196,8 @@ public class SensorPlayer extends Thread {
                             break;
                     }
 
+                    getNewPlaybackSpeed();
+
                     BaseMessage timeMessage = (BaseMessage) transmitMessage;
 
                     if (timeMessage == null) {
@@ -199,7 +211,7 @@ public class SensorPlayer extends Thread {
                         long currentSensorTime = timeMessage.getTimestamp().getTime();
                         long timeDiff = currentSensorTime - prevSensorTime;
                         if (timeDiff > 10) {
-                            Thread.sleep(timeDiff);
+                            Thread.sleep((long) (timeDiff / playbackSpeed));
                         }
                         prevSensorTime = currentSensorTime;
                     }
@@ -226,6 +238,8 @@ public class SensorPlayer extends Thread {
                             break;
                         case SteeringMeasurement.VERSION_ID:
                             steeringPub.publish(transmitMessage);
+                            break;
+                        default:
                             break;
                     }
 
@@ -255,5 +269,12 @@ public class SensorPlayer extends Thread {
         }
 
         return true;
+    }
+
+    /**
+     * gets the new playback speed from the GUI and puts it into playbackSpeed
+     */
+    public void getNewPlaybackSpeed() {
+        playbackSpeed = Gui.getInstance().getMainGuiWindow().getCtrlPanel().getLoggingPanel().getPlaybackSpeed();
     }
 }
