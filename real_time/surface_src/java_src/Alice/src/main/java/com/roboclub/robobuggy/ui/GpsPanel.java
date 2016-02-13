@@ -107,7 +107,8 @@ public class GpsPanel extends JPanel {
 
 		g.drawImage(map, 0, 0, frameWidth, frameHeight, Color.black, null);
 
-		for	(LocTuple mTuple : locs) {
+		for (int i = 0; i < locs.size(); i++) {
+			LocTuple mTuple = locs.get(i);
 			drawTuple(g2d, mTuple);
 		}
 		g2d.dispose();

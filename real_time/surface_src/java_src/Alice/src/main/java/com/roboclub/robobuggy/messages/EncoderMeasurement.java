@@ -31,7 +31,7 @@ public class EncoderMeasurement extends BaseMessage {
 	public EncoderMeasurement(double distance, double velocity) {
 		this.distance = distance;
 		this.velocity = velocity;
-		this.timestamp = new Date();
+		this.timestamp = new Date().getTime();
 		this.dataWord = 0;
 		this.accel = 0;
 	}
@@ -43,7 +43,7 @@ public class EncoderMeasurement extends BaseMessage {
 	 * @param velocity the current velocity value from the encoder
 	 */
 	public EncoderMeasurement(Date timestamp, double distance, double velocity) {
-		this.timestamp = new Date(timestamp.getTime());
+		this.timestamp = new Date(timestamp.getTime()).getTime();
 		this.distance = distance;
 		this.velocity = velocity;
 		this.dataWord = 0;
@@ -60,7 +60,7 @@ public class EncoderMeasurement extends BaseMessage {
 	 */
 	public EncoderMeasurement(Date timestamp, double dataWord, double distance,
 			double velocity, double accel) {
-		this.timestamp = new Date(timestamp.getTime());
+		this.timestamp = new Date(timestamp.getTime()).getTime();
 		this.dataWord = dataWord;
 		this.distance = distance;
 		this.velocity = velocity;

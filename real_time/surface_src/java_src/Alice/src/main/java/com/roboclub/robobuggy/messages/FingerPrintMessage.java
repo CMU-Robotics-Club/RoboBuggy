@@ -18,7 +18,7 @@ public class FingerPrintMessage extends BaseMessage {
 	public FingerPrintMessage(int hash)
 	{
 		this.fpHash = hash;
-		this.timestamp = new Date();
+		this.timestamp = new Date().getTime();
 	}
 	
 	/**
@@ -29,7 +29,7 @@ public class FingerPrintMessage extends BaseMessage {
 	public FingerPrintMessage(Date tStamp, int hash)
 	{
 		this.fpHash = hash;
-		this.timestamp = new Date(tStamp.getTime());
+		this.timestamp = new Date(tStamp.getTime()).getTime();
 	}
 	
 	/**{@inheritDoc}*/

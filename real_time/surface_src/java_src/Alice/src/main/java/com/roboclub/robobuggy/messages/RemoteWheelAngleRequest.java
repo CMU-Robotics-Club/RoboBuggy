@@ -18,7 +18,7 @@ public class RemoteWheelAngleRequest extends BaseMessage {
 	 */
 	public RemoteWheelAngleRequest(double angle) {
 		this.angle = angle;
-		this.timestamp = new Date();
+		this.timestamp = new Date().getTime();
 	}
 
 	/**

@@ -20,7 +20,7 @@ public class BrakeControlMessage extends BaseMessage {
 	 */
 	public BrakeControlMessage(Date timestamp, boolean brakeEngagged) {
 		this.brakeEngaged = brakeEngagged;
-		this.timestamp = new Date(timestamp.getTime());
+		this.timestamp = new Date(timestamp.getTime()).getTime();
 	}
 	
 	/**

@@ -17,7 +17,7 @@ public class StateMessage extends BaseMessage {
 	 * @param state {@link NodeState} to transmit
 	 */
 	public StateMessage(NodeState state) {
-		this.timestamp = new Date();
+		this.timestamp = new Date().getTime();
 		this.state = state;
 	}
 

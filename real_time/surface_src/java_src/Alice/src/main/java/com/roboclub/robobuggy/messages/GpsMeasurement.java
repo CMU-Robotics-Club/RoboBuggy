@@ -48,7 +48,7 @@ public class GpsMeasurement extends BaseMessage {
 	public GpsMeasurement(Date gpsTimestamp, double latitude, boolean north, double longitude, 
 			boolean west, int qualityValue, int numSatellites, 
 			double horizontalDilutionOfPrecision, double antennaAltitude, double rawGPSLat, double rawGPSLong) {	
-		this.timestamp = new Date();
+		this.timestamp = new Date().getTime();
 		this.gpsTimestamp = new Date(gpsTimestamp.getTime());
 		this.latitude = latitude;
 		this.north = north;
@@ -77,7 +77,7 @@ public class GpsMeasurement extends BaseMessage {
 	 */
 	public GpsMeasurement(Date messageTimestamp, Date gpsTimestamp, double latitude, boolean north, double longitude,
 			boolean west, int qualityValue, int numSatellites, double horizontalDilutionOfPrecision, double antennaAltitude) {
-		this.timestamp = new Date(messageTimestamp.getTime());
+		this.timestamp = new Date(messageTimestamp.getTime()).getTime();
 		this.gpsTimestamp = new Date(gpsTimestamp.getTime());
 		this.latitude = latitude;
 		this.north = north;
@@ -126,7 +126,7 @@ public class GpsMeasurement extends BaseMessage {
 	public String toLogString() {
 		String s = super.formatDate(timestamp);
 		
-		s += ',' + super.formatDate(gpsTimestamp);
+		s += ',' + super.formatDate(gpsTimestamp.getTime());
 		
 		s += ',' + Double.toString(latitude);
 		if (north) s += ",N";
