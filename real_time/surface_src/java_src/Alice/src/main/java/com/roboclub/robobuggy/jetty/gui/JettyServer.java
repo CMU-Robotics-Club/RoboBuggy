@@ -28,7 +28,7 @@ public class JettyServer {
 		// Root handler for HTML
 		ResourceHandler res = new ResourceHandler();
 		res.setDirectoriesListed(true);
-		res.setWelcomeFiles(new String[]{ "index.html", "googleMaps.js", "scripts.js", "speedometer.js"});
+		res.setWelcomeFiles(new String[]{ "index.html"});
 		res.setResourceBase("../../Web GUI");
 		
 		// Root handler for WebSockets
@@ -57,10 +57,25 @@ public class JettyServer {
         ContextHandler contextHelp = new ContextHandler("/dicks");
         contextHelp.setHandler(help);
         
+        // Static handler for test
+        ResourceHandler res1 = new ResourceHandler();
+        res1.setWelcomeFiles(new String[]{"index.html"});
+        res1.setResourceBase("/home/mint/Downloads/adf-dynamic-example/public");
+        
+        ContextHandler contextTest = new ContextHandler("/test");
+        contextTest.setHandler(res1);
+        
+        // Static handler for test
+        ResourceHandler res11 = new ResourceHandler();
+        res11.setWelcomeFiles(new String[]{"ws.html", "ws.js"});
+        res11.setResourceBase("../../Web GUI");
+        
+        ContextHandler contextTest1 = new ContextHandler("/basic");
+        contextTest1.setHandler(res11);
         
         // Aggregate the various contexts
         ContextHandlerCollection contexts = new ContextHandlerCollection();
-        contexts.setHandlers(new Handler[] {contextRoot, contextHelp, new DefaultHandler()});
+        contexts.setHandlers(new Handler[] {contextRoot, contextHelp, contextTest, contextTest1, new DefaultHandler()});
         
         // Set the server appropriately for those contexts
         server.setHandler(contexts);        
