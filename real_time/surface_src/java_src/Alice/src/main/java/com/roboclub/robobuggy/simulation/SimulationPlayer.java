@@ -12,6 +12,7 @@ import javafx.scene.control.ButtonBar.ButtonData;
 
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
+import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyNode;
@@ -28,6 +29,7 @@ public class SimulationPlayer extends PeriodicNode{
 		 Publisher posePub;
 		 Publisher encoderPub = new  Publisher(NodeChannel.ENCODER.getMsgPath());
 		 Publisher steeringPub = new Publisher(NodeChannel.STEERING.getMsgPath());
+		 Publisher imuPub = new Publisher(NodeChannel.IMU.getMsgPath());
 		  Thread thread = new Thread(){
 			    public void run(){
 			    	try {
@@ -40,6 +42,7 @@ public class SimulationPlayer extends PeriodicNode{
 			for(int i = 0;i<1000;i++){
 				steeringPub.publish(new  SteeringMeasurement(i));
 				encoderPub.publish(new  EncoderMeasurement(i/100.0, 0.0));
+				imuPub.publish(new ImuMeasurement(i, i, i));
 			    		try {
 			    			this.sleep(100);
 			    		} catch (InterruptedException e) {
@@ -50,6 +53,7 @@ public class SimulationPlayer extends PeriodicNode{
 			for(int i = 0;i<90;i++){
 				steeringPub.publish(new  SteeringMeasurement(90));
 				encoderPub.publish(new  EncoderMeasurement(i, 0.0));
+				imuPub.publish(new ImuMeasurement(i, i, i));
 			    		try {
 			    			this.sleep(100);
 			    		} catch (InterruptedException e) {

@@ -69,6 +69,7 @@ public final class Gui extends JFrame {
 		tabs.addTab(new MainGuiWindow(),"Home");
 		tabs.addTab(new NodeViewer(),"Nodes");
 		tabs.addTab(new PoseGraphsPanel(),"poses");
+		tabs.addTab(new ImuPanel(),"IMU");
 		mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
 		windowList.add(mainWindow);
 		mainWindow.repaint();
