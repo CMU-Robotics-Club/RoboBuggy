@@ -1,5 +1,6 @@
 package com.roboclub.robobuggy.ui;
 
+import com.roboclub.robobuggy.messages.BrakeControlMessage;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
@@ -12,6 +13,7 @@ import com.roboclub.robobuggy.ros.Subscriber;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
 import java.awt.Color;
 import java.awt.GridLayout;
 //import com.roboclub.robobuggy.ui.GpsPanel.LocTuple;
@@ -41,6 +43,8 @@ public class DataPanel extends RobobuggyGUIContainer {
 	private JLabel velocity;
 	private JLabel distance;
 	private JLabel steeringAng;
+	private JLabel commandAng;
+	private JLabel bracking;
 	private JLabel errorNum;
 	private JLabel latitude,longitude;
 	/**
@@ -179,6 +183,20 @@ public class DataPanel extends RobobuggyGUIContainer {
 		panel.add(steeringAng);
 		
 		// Subscriber for drive control updates
+		new Subscriber(NodeChannel.STEERING.getMsgPath(), new MessageListener() {
+			@Override
+			public void actionPerformed(String topicName, Message m) {
+				steeringAng.setText(Integer.toString(((SteeringMeasurement)m).getAngle()));
+			    Gui.getInstance().fixPaint();
+			}
+		});
+		
+		commandAng = new JLabel();
+		label = new JLabel("   command: ");
+		panel.add(label);
+		panel.add(commandAng);
+		
+		// Subscriber for drive control updates
 		new Subscriber(NodeChannel.STEERING_COMMANDED.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
@@ -186,6 +204,20 @@ public class DataPanel extends RobobuggyGUIContainer {
 			    Gui.getInstance().fixPaint();
 			}
 		});
+		
+		bracking = new JLabel();
+		label = new JLabel(" Bracking: ");
+		panel.add(label);
+		panel.add(bracking);
+		new Subscriber(NodeChannel.BRAKE_CTRL.getMsgPath(), new MessageListener() {
+			
+			@Override
+			public void actionPerformed(String topicName, Message m) {
+				bracking.setText(Boolean.toString(((BrakeControlMessage)m).isBrakeEngaged()));
+				
+			}
+		});
+		
 		
 		//Subscriber for GPS data - agirish
 		new Subscriber(NodeChannel.GPS.getMsgPath(), new MessageListener() {
