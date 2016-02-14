@@ -55,9 +55,6 @@ public class SensorPlayer extends Thread {
     private Publisher logicNotificationPub;
 
     // ---- Log File Defaults ----
-    private static final String METADATA_NAME = "Robobuggy Data Logs";
-    private static final String METADATA_SCHEMA_VERSION = "1.1";
-    private static final String METADATA_HIGHLEVEL_SW_VERSION = "1.0.0";
     private static final String TERMINATING_VERSION_ID = "STOP";
 
 
@@ -116,7 +113,7 @@ public class SensorPlayer extends Thread {
             InputStreamReader fileReader = new InputStreamReader(new FileInputStream(new File(path)), "UTF-8");
             JsonObject logFile = translator.fromJson(fileReader, JsonObject.class);
 
-            if(!validateLogFileMetadata(logFile)) {
+            if(!PlayBackUtil.validateLogFileMetadata(logFile)) {
                 new RobobuggyLogicNotification("Log file doesn't have the proper header metadata!", RobobuggyMessageLevel.EXCEPTION);
                 return;
             }
@@ -257,20 +254,7 @@ public class SensorPlayer extends Thread {
         }
     }
 
-    private boolean validateLogFileMetadata(JsonObject logFile) {
 
-        if (!logFile.get("name").getAsString().equals(METADATA_NAME)) {
-            return false;
-        }
-        if (!logFile.get("schema_version").getAsString().equals(METADATA_SCHEMA_VERSION)) {
-            return false;
-        }
-        if (!logFile.get("software_version").getAsString().equals(METADATA_HIGHLEVEL_SW_VERSION)) {
-            return false;
-        }
-
-        return true;
-    }
 
     /**
      * gets the new playback speed from the GUI and puts it into playbackSpeed

@@ -67,6 +67,7 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 	// Open a serial port
 	// Returns null if unable to connect, otherwise SerialPort
 	private static SerialPort connect(String portName, int baudRate) {
+		System.out.println("tryign to connect to : "+portName);
 	        CommPortIdentifier portIdentifier;
 			try {
 				portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
@@ -74,7 +75,6 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 	        	System.err.println("Error: Port currently in use");
 	        } else { 
 	            CommPort commPort = portIdentifier.open(portName, TIMEOUT);
-	            
 	            if ( commPort instanceof SerialPort ) {
 	                SerialPort serialPort = (SerialPort) commPort;
 	                serialPort.setSerialPortParams(baudRate,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
@@ -113,6 +113,7 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 	 * {@inheritDoc}*/
 	@Override
 	protected boolean startDecoratorNode() {
+
 		// Set port to be the right baud rate
 		int baudRate = getBaudRate();
 		try {
@@ -144,7 +145,6 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 		
 		//Set the node to running
 		running = true;
-		
 		// Begin the madness
 		ioThread = new Thread(new IoThread(), threadName + "-serial");
 		ioThread.setPriority(Thread.MAX_PRIORITY);
@@ -211,6 +211,8 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 		@Override
 		public void run() {
 			while(running) {
+				System.out.println("here");
+
 				try {
 					numBytes += serialInput.read(buf, start + numBytes, buf.length - numBytes); 
 					//System.out.printf(new String(buf));
