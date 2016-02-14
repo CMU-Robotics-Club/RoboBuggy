@@ -11,6 +11,7 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
@@ -37,6 +38,9 @@ public class EncoderGraph extends RobobuggyGUIContainer{
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				EncoderMeasurement encM = (EncoderMeasurement)m;
+				while(series1.getItemCount() > RobobuggyConfigFile.GRAPH_LENGTH){
+					series1.remove(0);
+				}
 				series1.add(encM.getTimestamp().getTime(), encM.getDistance());getClass();
 				
 

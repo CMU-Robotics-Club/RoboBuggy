@@ -11,6 +11,7 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.ros.Message;
@@ -38,6 +39,9 @@ public class ImuRollGraph extends RobobuggyGUIContainer{
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				ImuMeasurement imuM = (ImuMeasurement)m;
+				while(series1.getItemCount() > RobobuggyConfigFile.GRAPH_LENGTH){
+					series1.remove(0);
+				}
 				series1.add(imuM.getTimestamp().getTime(), imuM.getRoll());
 				
 

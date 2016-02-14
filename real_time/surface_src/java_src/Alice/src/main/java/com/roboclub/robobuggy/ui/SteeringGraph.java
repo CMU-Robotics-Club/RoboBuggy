@@ -11,6 +11,7 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.ros.Message;
@@ -38,6 +39,9 @@ public class SteeringGraph extends RobobuggyGUIContainer{
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				SteeringMeasurement steerM = (SteeringMeasurement)m;
+				while(series1.getItemCount() > RobobuggyConfigFile.GRAPH_LENGTH){
+					series1.remove(0);
+				}
 				series1.add(steerM.getTimestamp().getTime(), steerM.getAngle());
 				
 

@@ -11,6 +11,8 @@ public final class  RobobuggyConfigFile {
 	// for what messages should be printed to the console
 	public static final RobobuggyMessageLevel REPORTING_LEVEL = RobobuggyMessageLevel.NOTE;
 
+	public static final int GRAPH_LENGTH = 100;
+	
 	// default logging state, should the buggy start logging as soon as this
 	// program is started
 	public static final boolean LOGGING = true;
