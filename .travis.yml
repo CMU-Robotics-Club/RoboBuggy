@@ -20,6 +20,7 @@ script:
     - echo $HOME
     - echo $BUGGY_ROOT
     - (cd real_time/surface_src/java_src/Alice && $GRADLE_BIN/gradle build)
+    - cat /home/travis/build/CMU-Robotics-Club/RoboBuggy/real_time/surface_src/java_src/Alice/build/reports/findbugs/main.xml
     
 notifications:
   slack: robobuggy:bnKltZMACloBdOGvYOINInyE
