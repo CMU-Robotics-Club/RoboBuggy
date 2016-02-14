@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -37,16 +38,21 @@ import com.roboclub.robobuggy.simulation.PlayBackUtil;
  * @author Trevor Decker
  *
  */
-public class CreateWayPointsFromLog {
+public class WayPointUtil {
 	
-	public CreateWayPointsFromLog(String path) throws UnsupportedEncodingException, FileNotFoundException{
-			    Gson translator = new GsonBuilder().create();
+
+	
+	public static ArrayList CreateWayPointsFromLog(String path) throws UnsupportedEncodingException, FileNotFoundException{
+			   
+				ArrayList messages = new ArrayList();
+		
+				Gson translator = new GsonBuilder().create();
 	            InputStreamReader fileReader = new InputStreamReader(new FileInputStream(new File(path)), "UTF-8");
 	            JsonObject logFile = translator.fromJson(fileReader, JsonObject.class);
 
 	            if(!PlayBackUtil.validateLogFileMetadata(logFile)) {
 	                new RobobuggyLogicNotification("Log file doesn't have the proper header metadata!", RobobuggyMessageLevel.EXCEPTION);
-	                return;
+	                return messages;
 	            }
 
 	            long prevSensorTime = -1;
@@ -57,21 +63,16 @@ public class CreateWayPointsFromLog {
 	                    JsonObject sensorDataJson = sensorAsJElement.getAsJsonObject();
 	                    String versionID = sensorDataJson.get("VERSION_ID").getAsString();
 
-	                    Message transmitMessage = null;
 
 	                    switch (versionID) {
-	                        case GPSPoseMessage.VERSION_ID:
-	                            transmitMessage = translator.fromJson(sensorDataJson, GPSPoseMessage.class);
+	                        case GpsMeasurement.VERSION_ID:
+	                        	GpsMeasurement transmitMessage = translator.fromJson(sensorDataJson, GpsMeasurement.class);
+	                            messages.add(transmitMessage);
 	                            break;
 	                    };
-
-
-
-
-
-	                    }
-
-	                }
+	                   }
+	                }//for loop
+	            return messages;
 	}
 
 		 

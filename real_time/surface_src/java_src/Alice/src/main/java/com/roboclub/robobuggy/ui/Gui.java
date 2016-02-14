@@ -66,17 +66,17 @@ public final class Gui extends JFrame {
 	private Gui() {
 		new RobobuggyLogicNotification("StartingGUI", RobobuggyMessageLevel.NOTE);
 		RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow",1.0,1.0);	
-		RobobuggyGUITabs tabs = new RobobuggyGUITabs();
 		mainGuiWindow = new MainGuiWindow();
+		RobobuggyGUITabs tabs = new RobobuggyGUITabs();
 		tabs.addTab(mainGuiWindow, "Home");
 		tabs.addTab(new NodeViewer(),"Nodes");
 		tabs.addTab(new PoseGraphsPanel(),"poses");
 		tabs.addTab(new ImuPanel(),"IMU");
 		mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
+		mainWindow.repaint();		
 		windowList.add(mainWindow);
-		mainWindow.repaint();
-
 	}
+	
 
 	/**
 	 * @return the main gui window

@@ -62,7 +62,7 @@ public class GpsPanel extends JPanel {
 //					locs.remove(0);
 //				}
 			 // refresh screen
-			    Gui.getInstance().fixPaint();
+			//    Gui.getInstance().fixPaint();
 			}
 		});
 		
