@@ -43,7 +43,7 @@ public class RobobuggyMainFile {
      	
     	if (RobobuggyConfigFile.DATA_PLAY_BACK) {
     		//Play back mode enabled
-    		SensorPlayer sp = new SensorPlayer("logs/2016-02-12-21-52-18/sensors_2016-02-12-21-52-18.txt", 100);
+    		new SensorPlayer("logs/2016-02-12-21-52-18/sensors_2016-02-12-21-52-18.txt", 1);
         }
         else {
         	//Play back disabled, create robot
