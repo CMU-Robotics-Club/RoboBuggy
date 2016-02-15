@@ -4,6 +4,7 @@ import java.io.*;
 import java.lang.reflect.Array;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 
 import com.google.gson.Gson;
@@ -53,6 +54,36 @@ public class WayPointUtil {
 				break;
 			}
 			waypoints.add(translator.fromJson(nextline, GpsMeasurement.class));
+		}
+
+		return waypoints;
+	}
+
+	public static ArrayList<GpsMeasurement> CreateWaypointsFromOdomLocalizerLog(String filename) throws FileNotFoundException {
+		File odomLog = new File(filename);
+		Gson translator = new GsonBuilder().create();
+		ArrayList<GpsMeasurement> waypoints = new ArrayList<>();
+
+		InputStreamReader stream = new InputStreamReader(new FileInputStream(odomLog));
+		JsonObject logFile = translator.fromJson(stream, JsonObject.class);
+
+		if(PlayBackUtil.validateLogFileMetadata(logFile)) {
+			JsonArray sensorDataArray = logFile.getAsJsonArray("sensor_data");
+			for (JsonElement sensorAsJElement : sensorDataArray) {
+				JsonObject sensorDataJson = sensorAsJElement.getAsJsonObject();
+				String versionId = sensorDataJson.get("VERSION_ID").getAsString();
+
+				Message transmit;
+
+				switch (versionId) {
+					case GPSPoseMessage.VERSION_ID:
+						transmit = translator.fromJson(sensorDataJson, GPSPoseMessage.class);
+						GPSPoseMessage pose = (GPSPoseMessage) transmit;
+						GpsMeasurement waypoint = new GpsMeasurement(new Date(), pose.getLatitude(), true, pose.getLongitude(), true, 0, 0, 0, 0, 0, 0);
+						waypoints.add(waypoint);
+						break;
+				}
+			}
 		}
 
 		return waypoints;
