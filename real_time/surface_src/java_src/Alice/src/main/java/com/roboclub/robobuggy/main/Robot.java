@@ -4,12 +4,15 @@ import com.roboclub.robobuggy.nodes.sensors.GpsNode;
 import com.roboclub.robobuggy.nodes.sensors.ImuNode;
 import com.roboclub.robobuggy.nodes.sensors.LoggingNode;
 
+import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.List;
 
 import com.roboclub.robobuggy.nodes.localizers.OdomLocalizer;
 import com.roboclub.robobuggy.nodes.planners.DeadreckoningPlanner;
 import com.roboclub.robobuggy.nodes.planners.SweepNode;
+import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
+import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
 import com.roboclub.robobuggy.nodes.sensors.RBSMNode;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.NodeChannel;
@@ -69,7 +72,12 @@ public final class Robot implements RosMaster {
 		nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING, RobobuggyConfigFile.COM_PORT_RBSM, COMMAND_PERIOD));
 		nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION, NodeChannel.values()));
 //		nodeList.add(new SweepNode(NodeChannel.DRIVE_CTRL));
-//		nodeList.add(new GPSTrackPlannerNode(NodeChannel.BRAKE_CTRL,
+		try {
+			nodeList.add(new WayPointFollowerPlanner(NodeChannel.UNKNOWN_CHANNEL,WayPointUtil.CreateWayPointsFromWaypointList("logs/2016-02-13-21-21-41/waypoints.txt")));
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 //				RobobuggyConfigFile.LOG_FILE_LOCATION));
 //		nodeList.add(new GPSLocalizer(NodeChannel.POSE));
 		try {

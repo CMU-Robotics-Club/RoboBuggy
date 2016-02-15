@@ -31,7 +31,7 @@ public class MessageServer {
 
 	private static MessageServer _master;
 	private static Lock singleton_lock = new ReentrantLock();
-	public static final int MAX_MESSAGE_QUEUE = 10;
+	public static final int MAX_MESSAGE_QUEUE = 20;
 
 	private Map<String, List<Subscriber>> outbox_mapping = new HashMap<String, List<Subscriber>>();
 	private ReadWriteLock outbox_lock = new ReentrantReadWriteLock(true);
