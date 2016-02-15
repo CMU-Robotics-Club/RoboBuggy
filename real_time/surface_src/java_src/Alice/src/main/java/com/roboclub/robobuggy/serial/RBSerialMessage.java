@@ -81,7 +81,7 @@ public class RBSerialMessage
 			case BRAKE:
 			case AUTO:
 			case BATTERY:
-	//		case RBSM_MID_MEGA_STEER_FEEDBACK:
+			case RBSM_MID_MEGA_STEER_ANGLE:
 			case RBSM_MID_MEGA_STEER_COMMAND:
 			case FP_HASH:
 				

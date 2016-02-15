@@ -3,11 +3,13 @@ package com.roboclub.robobuggy.main;
 import com.roboclub.robobuggy.nodes.sensors.GpsNode;
 import com.roboclub.robobuggy.nodes.sensors.ImuNode;
 import com.roboclub.robobuggy.nodes.sensors.LoggingNode;
+
 import java.util.LinkedList;
 import java.util.List;
 
 import com.roboclub.robobuggy.nodes.localizers.OdomLocalizer;
 import com.roboclub.robobuggy.nodes.planners.DeadreckoningPlanner;
+import com.roboclub.robobuggy.nodes.planners.SweepNode;
 import com.roboclub.robobuggy.nodes.sensors.RBSMNode;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.NodeChannel;
@@ -15,7 +17,6 @@ import com.roboclub.robobuggy.simulation.SimulationPlayer;
 
 import java.util.LinkedList;
 import java.util.List;
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -64,9 +65,10 @@ public final class Robot implements RosMaster {
 		//nodeList.add(new SimulationPlayer());
 		nodeList.add(new OdomLocalizer());
 		//nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.COM_PORT_GPS));
-		//nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.COM_PORT_IMU));
+		nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.COM_PORT_IMU));
 		nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING, RobobuggyConfigFile.COM_PORT_RBSM, COMMAND_PERIOD));
 		nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION, NodeChannel.values()));
+//		nodeList.add(new SweepNode(NodeChannel.DRIVE_CTRL));
 //		nodeList.add(new GPSTrackPlannerNode(NodeChannel.BRAKE_CTRL,
 //				RobobuggyConfigFile.LOG_FILE_LOCATION));
 //		nodeList.add(new GPSLocalizer(NodeChannel.POSE));

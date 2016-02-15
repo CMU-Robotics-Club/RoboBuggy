@@ -30,7 +30,6 @@ public class PoseViewer extends RobobuggyGUIContainer{
 			
 			@Override
 			public void actionPerformed(String topicName, Message m) {
-				System.out.println("got call back");
 				GPSPoseMessage poseM = (GPSPoseMessage)m;
 				double x = poseM.getLatitude();
 				double y = poseM.getLongitude();

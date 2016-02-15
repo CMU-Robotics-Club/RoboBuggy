@@ -63,7 +63,7 @@ public class OdomLocalizer  extends PeriodicNode{
 			pose = pose.mult(deltaPose);
 			posePub.publish(new GPSPoseMessage(new Date(), pose.getX(), pose.getY(), pose.getOrintation()));
 			//posePub.publish(new PoseMessage(new Date(), mostRecentEncoder, 0, 0));
-			System.out.println("x:"+pose.getX()+"\t y:"+pose.getY()+"\t orintation"+pose.getOrintation());
+			//System.out.println("x:"+pose.getX()+"\t y:"+pose.getY()+"\t orintation"+pose.getOrintation());
 			secondOldestAngle = mostRecentAngle;
 			//}
 			
@@ -72,7 +72,7 @@ public class OdomLocalizer  extends PeriodicNode{
 		});
 			
 		//Initialize subscriber for what steering angle low level is currently at
-		new Subscriber(NodeChannel.STEERING.getMsgPath(), new MessageListener() {
+		new Subscriber(NodeChannel.STEERING_COMMANDED.getMsgPath(), new MessageListener() {
 			
 			@Override
 			public void actionPerformed(String topicName, Message m) {

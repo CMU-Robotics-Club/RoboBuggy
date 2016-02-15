@@ -47,9 +47,9 @@ public class RBSMNode extends SerialNode {
 	private static final double M_PER_REV = 0.61;
 	
 	/** Steering Angle Conversion Rate */
-	private static final int ARD_TO_DEG = 100;
+	private static final int ARD_TO_DEG = 1;
 	/** Steering Angle offset?? */
-	private static final int OFFSET = -200;
+	private static final int OFFSET = 0;
 
 	// accumulated
 	private int encTicks = 0;
@@ -168,6 +168,7 @@ public class RBSMNode extends SerialNode {
 		
 		RBSerialMessage message = rbp.getMessage();
 		byte headerByte = message.getHeaderByte();
+		System.out.println("headerByte: "+headerByte);
 		switch (headerByte)
 		{
 			case RBSerialMessage.ENC_TICK_SINCE_RESET:
@@ -175,14 +176,14 @@ public class RBSMNode extends SerialNode {
 				encTicks = message.getDataWord() & 0xFFFF;
 				messagePubEnc.publish(estimateVelocity(message.getDataWord()));
 				break;
-			case RBSerialMessage.RBSM_MID_MEGA_STEER_FEEDBACK:
+			case RBSerialMessage.RBSM_MID_MEGA_STEER_FEEDBACK:   //steering angle feedback reported from mega singed int in thosands of degree
 				// This is a delta-distance! Do a thing!
 				potValue = message.getDataWord();
 				messagePubPot.publish(new SteeringMeasurement(-(potValue + OFFSET)/ARD_TO_DEG));
 				break;
-			case RBSerialMessage.RBSM_MID_MEGA_STEER_ANGLE:
+			case RBSerialMessage.RBSM_MID_MEGA_STEER_ANGLE: //angle sent to/ reported from the mega
 				steeringAngle = message.getDataWord();
-				messagePubControllerSteering.publish(new SteeringMeasurement(steeringAngle));
+				messagePubControllerSteering.publish(new SteeringMeasurement(-(steeringAngle+211.5)/106.85));
 				System.out.println("steering:"+steeringAngle);
 				break;
 			case RBSerialMessage.FP_HASH:

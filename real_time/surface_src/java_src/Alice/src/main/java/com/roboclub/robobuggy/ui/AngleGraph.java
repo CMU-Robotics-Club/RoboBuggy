@@ -35,9 +35,9 @@ public class AngleGraph extends RobobuggyGUIContainer {
 	 * Update the {@link AngleGraph} with a new value
 	 * @param angle new value to display
 	 */
-	public void updateGraph(int angle) {
+	public void updateGraph(double angle) {
 		this.graph.updateGraph(angle);
-		this.reading.setText(Integer.toString(angle));
+		this.reading.setText(Double.toString(angle));
 	}
 	
 	/**
@@ -90,7 +90,7 @@ public class AngleGraph extends RobobuggyGUIContainer {
 			g.drawLine(startX, startY, endx, endy);
 		}
 		
-		public void updateGraph(int angle) {
+		public void updateGraph(double angle) {
 			endx = startX - (int)(radius * Math.sin(Math.toRadians(angle)));
 			endy = startY - (int)(radius * Math.cos(Math.toRadians(angle)));
 			Gui.getInstance().fixPaint();
