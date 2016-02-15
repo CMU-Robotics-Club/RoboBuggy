@@ -46,6 +46,8 @@
     #define PWM_SCALE_STORED_ANGLE 1000 // in hundredths of a degree for precision
     #define POT_OFFSET_STEERING_IN 121
     #define POT_SCALE_STEERING_IN -10
+    #define STEERING_LIMIT_LEFT -1280
+    #define STEERING_LIMIT_RIGHT 857
 #elif BUGGY == nixie
     #define PWM_OFFSET_STEERING_OUT 1789
     #define PWM_SCALE_STEERING_OUT -150
@@ -392,6 +394,15 @@ int main(void)
 
         if(g_is_autonomous)
         {
+
+            // make sure that high-level can't send us obscenely large angles
+            if(auto_steering_angle < STEERING_LIMIT_LEFT) {
+                auto_steering_angle = STEERING_LIMIT_LEFT;
+            }
+            else if (auto_steering_angle > STEERING_LIMIT_RIGHT) {
+                auto_steering_angle = STEERING_LIMIT_RIGHT;
+            }
+
             steering_set(auto_steering_angle);
             g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)(auto_steering_angle));
         }
