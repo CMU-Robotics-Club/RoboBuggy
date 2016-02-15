@@ -31,7 +31,7 @@
 #define SERVO_DDR  DDRB
 #define SERVO_PORT PORTB
 #define SERVO_PINN PB5 // arduino 11 TODO: this is not used here
-#define CONNECTION_TIMEOUT_US 1000000L // 1000ms
+#define CONNECTION_TIMEOUT_US 10000000L // 10000ms
 
 /*
  * These values map the physical input/output (voltage/ms of pwm pulse) to a
@@ -371,18 +371,19 @@ int main(void)
         unsigned long delta2 = time_now - time2;
         unsigned long delta3 = time_now - time3;
         //Auton time deltas
-        unsigned long delta4 = time_now - auton_brake_last;
-        unsigned long delta5 = time_now - auton_steer_last;
+	// unsigned long delta4 = time_now - auton_brake_last;
+        //unsigned long delta5 = time_now - auton_steer_last;
         unsigned long g_encoder_ticks_safe = g_encoder_ticks;
         sei(); //enable interrupts
 
         if(delta1 > CONNECTION_TIMEOUT_US ||
            delta2 > CONNECTION_TIMEOUT_US ||
-           delta3 > CONNECTION_TIMEOUT_US ||
+           delta3 > CONNECTION_TIMEOUT_US )
+	  /*||
            ((g_is_autonomous) && 
            (delta4 > CONNECTION_TIMEOUT_US ||
            delta5 > CONNECTION_TIMEOUT_US))
-           ) 
+           )*/ 
         {
             // we haven't heard from the RC receiver or high level in too long
             dbg_printf("Timed out connection from RC or high level!\n");

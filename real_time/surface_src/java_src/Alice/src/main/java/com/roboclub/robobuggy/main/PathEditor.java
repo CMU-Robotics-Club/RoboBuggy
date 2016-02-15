@@ -17,13 +17,15 @@ import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ui.GpsPanel;
+import com.roboclub.robobuggy.ui.LocTuple;
+import com.roboclub.robobuggy.ui.Map;
 import com.roboclub.robobuggy.ui.RobobuggyJFrame;
 
 public class PathEditor {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-			System.out.println("Hello World!");
+			System.out.println("Starting Path Editor");
 			try {
 				ArrayList<GpsMeasurement> wayPoints = WayPointUtil.CreateWayPointsFromLog("logs/2016-02-13-21-21-41", "sensors_2016-02-13-21-21-41.txt");
 				
@@ -35,15 +37,19 @@ public class PathEditor {
 
 				//Display the way points 
 				RobobuggyJFrame mainWindow = new RobobuggyJFrame("Path Viewer",1.0,1.0);	
-				mainWindow.addComponent(new GpsPanel(), 0.0, 0.0, 1.0, 1.0);
+				//mainWindow.addComponent(new GpsPanel(), 0.0, 0.0, 1.0, 1.0);
+				Map thisMap = new Map();
+				mainWindow.addComponent(thisMap,0.0,0.0,1.0,1.0);
 				mainWindow.repaint();
 				
-				
-				Publisher gpsPub = new Publisher(NodeChannel.GPS.getMsgPath());
+				//displaying points to the user
 				for(int i = 0;i<wayPoints.size();i++){
-					gpsPub.publish(wayPoints.get(i));
+					System.out.println("lat:"+wayPoints.get(i).getLatitude()+" lon:"+wayPoints.get(i).getLongitude());
+					thisMap.addPoint(new LocTuple(wayPoints.get(i).getLatitude(), -wayPoints.get(i).getLongitude()));
+					thisMap.repaint();
 				}
 				
+				/*
 				WayPointFollowerPlanner planer = new WayPointFollowerPlanner(NodeChannel.UNKNOWN_CHANNEL,wayPoints);
 			
 				for(int i = 0;i<wayPoints.size();i++){
@@ -57,6 +63,7 @@ public class PathEditor {
 						}
 					}
 				}
+				*/
 
 				//TODO add zoom and ability to edit 
 				
