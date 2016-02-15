@@ -107,7 +107,7 @@ public class RBSMNode extends SerialNode {
 	private EncoderMeasurement estimateVelocity(int dataWord) 
 	{
 		Date currTime = new Date();
-		double accDist = ((double)(encTicks)) * M_PER_REV / TICKS_PER_REV;
+		double accDist = (((double)(encTicks)) * M_PER_REV / TICKS_PER_REV)/.49;
 		double instVelocity = (accDist - accDistLast) * 1000 / (currTime.getTime() - timeLast.getTime());
 		double instAccel = (instVelocity - instVelocityLast) * 1000 / (currTime.getTime() - timeLast.getTime());
 		accDistLast = accDist;

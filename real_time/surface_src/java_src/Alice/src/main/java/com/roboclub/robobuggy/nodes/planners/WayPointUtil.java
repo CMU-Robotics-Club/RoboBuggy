@@ -1,11 +1,10 @@
 package com.roboclub.robobuggy.nodes.planners;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
+import java.lang.reflect.Array;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -39,15 +38,35 @@ import com.roboclub.robobuggy.simulation.PlayBackUtil;
  *
  */
 public class WayPointUtil {
-	
 
+
+	public static ArrayList<Message> CreateWayPointsFromWaypointList(String filename) throws FileNotFoundException {
+		ArrayList<Message> waypoints = new ArrayList<>();
+
+		File waypointFile = new File(filename);
+		Gson translator = new GsonBuilder().serializeSpecialFloatingPointValues().create();
+		Scanner fileReader = new Scanner(new FileInputStream(waypointFile));
+
+		while (fileReader.hasNextLine()) {
+			String nextline = fileReader.nextLine();
+			if (nextline.equals("")) {
+				break;
+			}
+			waypoints.add(translator.fromJson(nextline, GpsMeasurement.class));
+		}
+
+		return waypoints;
+	}
 	
-	public static ArrayList CreateWayPointsFromLog(String path) throws UnsupportedEncodingException, FileNotFoundException{
+	public static ArrayList CreateWayPointsFromLog(String folder, String filename) throws IOException {
 			   
 				ArrayList messages = new ArrayList();
-		
-				Gson translator = new GsonBuilder().create();
-	            InputStreamReader fileReader = new InputStreamReader(new FileInputStream(new File(path)), "UTF-8");
+				File outputFile = new File(folder + "/waypoints.txt");
+				outputFile.createNewFile();
+				FileWriter writer = new FileWriter(outputFile);
+
+				Gson translator = new GsonBuilder().serializeSpecialFloatingPointValues().create();
+	            InputStreamReader fileReader = new InputStreamReader(new FileInputStream(new File(folder + "/" + filename)), "UTF-8");
 	            JsonObject logFile = translator.fromJson(fileReader, JsonObject.class);
 
 	            if(!PlayBackUtil.validateLogFileMetadata(logFile)) {
@@ -55,7 +74,6 @@ public class WayPointUtil {
 	                return messages;
 	            }
 
-	            long prevSensorTime = -1;
 
 	            JsonArray sensorDataArray = logFile.getAsJsonArray("sensor_data");
 	            for (JsonElement sensorAsJElement: sensorDataArray) {
@@ -66,12 +84,16 @@ public class WayPointUtil {
 
 	                    switch (versionID) {
 	                        case GpsMeasurement.VERSION_ID:
-	                        	GpsMeasurement transmitMessage = translator.fromJson(sensorDataJson, GpsMeasurement.class);
+	                        	Message transmitMessage = translator.fromJson(sensorDataJson, GpsMeasurement.class);
 	                            messages.add(transmitMessage);
+								writer.write(sensorDataJson.toString() + "\n");
 	                            break;
 	                    };
 	                   }
 	                }//for loop
+
+			writer.flush();
+		writer.close();
 	            return messages;
 	}
 

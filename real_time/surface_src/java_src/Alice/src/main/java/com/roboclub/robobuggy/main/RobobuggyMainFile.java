@@ -44,7 +44,7 @@ public class RobobuggyMainFile {
      	
     	if (RobobuggyConfigFile.DATA_PLAY_BACK) {
     		//Play back mode enabled
-    		new SensorPlayer("logs/2016-02-12-21-52-18/sensors_2016-02-12-21-52-18.txt", 1);
+    		new SensorPlayer("logs/2016-02-14-20-09-32/sensors_2016-02-14-20-09-32.txt", 1);
         }
         else {
         	//Play back disabled, create robot

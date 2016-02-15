@@ -38,7 +38,7 @@ public class EncoderGraph extends RobobuggyGUIContainer{
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				EncoderMeasurement encM = (EncoderMeasurement)m;
-				while(series1.getItemCount() > RobobuggyConfigFile.GRAPH_LENGTH){
+				while(series1.getItemCount() >= RobobuggyConfigFile.GRAPH_LENGTH){
 					series1.remove(0);
 				}
 				series1.add(encM.getTimestamp().getTime(), encM.getDistance());getClass();

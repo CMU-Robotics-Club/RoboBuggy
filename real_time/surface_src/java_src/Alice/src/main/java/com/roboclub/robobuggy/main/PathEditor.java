@@ -1,6 +1,7 @@
 package com.roboclub.robobuggy.main;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,18 +19,20 @@ import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ui.GpsPanel;
 import com.roboclub.robobuggy.ui.RobobuggyJFrame;
 
-public class PathEdditor {
+public class PathEditor {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 			System.out.println("Hello World!");
 			try {
-				ArrayList<GpsMeasurement> wayPoints = WayPointUtil.CreateWayPointsFromLog("logs/2016-02-13-21-21-41/sensors_2016-02-13-21-21-41.txt");
+				ArrayList<GpsMeasurement> wayPoints = WayPointUtil.CreateWayPointsFromLog("logs/2016-02-13-21-21-41", "sensors_2016-02-13-21-21-41.txt");
 				
 				
 				//save the path to a new jason file type 
 				
-				//read back in the jason file type 
+				//read back in the jason file type
+				ArrayList<Message> waypointsFromFile = WayPointUtil.CreateWayPointsFromWaypointList("logs/2016-02-13-21-21-41/waypoints.txt");
+
 				//Display the way points 
 				RobobuggyJFrame mainWindow = new RobobuggyJFrame("Path Viewer",1.0,1.0);	
 				mainWindow.addComponent(new GpsPanel(), 0.0, 0.0, 1.0, 1.0);
@@ -62,6 +65,8 @@ public class PathEdditor {
 				
 			} catch (UnsupportedEncodingException | FileNotFoundException e) {
 				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 	}

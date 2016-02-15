@@ -69,7 +69,7 @@ public class SensorPlayer extends Thread {
         gpsPub = new Publisher(NodeChannel.GPS.getMsgPath());
         encoderPub = new Publisher(NodeChannel.ENCODER.getMsgPath());
         brakePub = new Publisher(NodeChannel.BRAKE.getMsgPath());
-        steeringPub = new Publisher(NodeChannel.STEERING.getMsgPath());
+        steeringPub = new Publisher(NodeChannel.DRIVE_CTRL.getMsgPath());
         loggingButtonPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
         logicNotificationPub = new Publisher(NodeChannel.LOGIC_NOTIFICATION.getMsgPath());
 

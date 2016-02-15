@@ -8,7 +8,7 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 
-import javafx.scene.control.ButtonBar.ButtonData;
+//import javafx.scene.control.ButtonBar.ButtonData;
 
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;

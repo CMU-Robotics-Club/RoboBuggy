@@ -67,7 +67,6 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 	// Open a serial port
 	// Returns null if unable to connect, otherwise SerialPort
 	private static SerialPort connect(String portName, int baudRate) {
-		System.out.println("tryign to connect to : "+portName);
 	        CommPortIdentifier portIdentifier;
 			try {
 				portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
@@ -211,7 +210,6 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 		@Override
 		public void run() {
 			while(running) {
-				System.out.println("here");
 
 				try {
 					numBytes += serialInput.read(buf, start + numBytes, buf.length - numBytes); 
