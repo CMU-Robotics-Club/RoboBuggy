@@ -43,7 +43,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 		int targetIndex = closestIndex + 2;
 		
 		//if we are out of points then just go straight
-		if(targetIndex > wayPoints.size())
+		if(targetIndex >= wayPoints.size())
 		{
 			return 0;
 		}
