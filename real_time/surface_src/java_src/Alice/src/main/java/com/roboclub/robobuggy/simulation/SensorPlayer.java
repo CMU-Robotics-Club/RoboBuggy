@@ -193,6 +193,7 @@ public class SensorPlayer extends Thread {
                             break;
                     }
 
+<<<<<<< HEAD
 
                     getNewPlaybackSpeed();
 
@@ -242,13 +243,113 @@ public class SensorPlayer extends Thread {
                     }
 
                 }
+=======
+                JsonObject sensorDataJson = sensorAsJElement.getAsJsonObject();
+                String versionID = sensorDataJson.get("VERSION_ID").getAsString();
+
+                Message transmitMessage = null;
+
+                switch (versionID) {
+                    case BrakeControlMessage.VERSION_ID:
+                        transmitMessage = translator.fromJson(sensorDataJson, BrakeControlMessage.class);
+                        break;
+                    case BrakeMessage.VERSION_ID:
+                        transmitMessage = translator.fromJson(sensorDataJson, BrakeMessage.class);
+                        brakePub.publish(transmitMessage);
+                        break;
+                    case DriveControlMessage.VERSION_ID:
+                        transmitMessage = translator.fromJson(sensorDataJson, DriveControlMessage.class);
+                        break;
+                    case EncoderMeasurement.VERSION_ID:
+                        transmitMessage = translator.fromJson(sensorDataJson, EncoderMeasurement.class);
+                        encoderPub.publish(transmitMessage);
+                        break;
+                    case FingerPrintMessage.VERSION_ID:
+                        transmitMessage = translator.fromJson(sensorDataJson, FingerPrintMessage.class);
+//                        encoderPub.publish(transmitMessage);
+                        break;
+                    case GpsMeasurement.VERSION_ID:
+                        transmitMessage = translator.fromJson(sensorDataJson, GpsMeasurement.class);
+                        gpsPub.publish(transmitMessage);
+                        break;
+                    case GuiLoggingButtonMessage.VERSION_ID:
+                        transmitMessage = translator.fromJson(sensorDataJson, GuiLoggingButtonMessage.class);
+                        loggingButtonPub.publish(transmitMessage);
+                        break;
+                    case ImuMeasurement.VERSION_ID:
+                        transmitMessage = translator.fromJson(sensorDataJson, ImuMeasurement.class);
+                        imuPub.publish(transmitMessage);
+                        break;
+                    case PoseMessage.VERSION_ID:
+                        transmitMessage = translator.fromJson(sensorDataJson, PoseMessage.class);
+                        break;
+                    case RemoteWheelAngleRequest.VERSION_ID:
+                        transmitMessage = translator.fromJson(sensorDataJson, RemoteWheelAngleRequest.class);
+                        break;
+                    case ResetMessage.VERSION_ID:
+                        transmitMessage = translator.fromJson(sensorDataJson, ResetMessage.class);
+                        break;
+                    case RobobuggyLogicNotificationMeasurement.VERSION_ID:
+                        transmitMessage = translator.fromJson(sensorDataJson, RobobuggyLogicNotificationMeasurement.class);
+                        logicNotificationPub.publish(transmitMessage);
+                        break;
+                    case StateMessage.VERSION_ID:
+                        transmitMessage = translator.fromJson(sensorDataJson, StateMessage.class);
+                        break;
+                    case SteeringMeasurement.VERSION_ID:
+                        transmitMessage = translator.fromJson(sensorDataJson, SteeringMeasurement.class);
+                        steeringPub.publish(transmitMessage);
+                        break;
+                    case WheelAngleCommandMeasurement.VERSION_ID:
+                        transmitMessage = translator.fromJson(sensorDataJson, WheelAngleCommandMeasurement.class);
+                        break;
+                    case TERMINATING_VERSION_ID:
+                        new RobobuggyLogicNotification("Stopping playback, hit a STOP", RobobuggyMessageLevel.NOTE);
+                        break;
+                    default:
+                        transmitMessage = new BaseMessage() {
+                            @Override
+                            public String toLogString() {
+                                return null;
+                            }
+
+                            @Override
+                            public Message fromLogString(String str) {
+                                return null;
+                            }
+                        };
+                        new RobobuggyLogicNotification("Couldn't parse a sensor found in the file: " + versionID, RobobuggyMessageLevel.WARNING);
+                        break;
+                }
+
+                // no timing for now
+//                BaseMessage timeMessage = (BaseMessage) transmitMessage;
+//
+//                if (currentSensorTimeInMillis != -1) {
+//                    if (timeMessage != null) {
+//                        currentSensorTimeInMillis = timeMessage.getTimestamp().getTime();
+//                        long sensorTimeFromPrev = currentSensorTimeInMillis - sensorStartTimeInMilis;
+//
+//                        if(sensorTimeFromPrev > 0){
+//                            Thread.sleep(sensorTimeFromPrev);
+//                        }
+//                    }
+//
+//                    sensorStartTimeInMilis = currentSensorTimeInMillis;
+//                }
+//                else {
+//                    assert timeMessage != null;
+//                    currentSensorTimeInMillis = timeMessage.getTimestamp().getTime();
+//                    sensorStartTimeInMilis = currentSensorTimeInMillis;
+//                }
+>>>>>>> origin/trevor-vision
 
             }
 
         } catch (FileNotFoundException e) {
             new RobobuggyLogicNotification("SensorPlayer couldn't find log file!", RobobuggyMessageLevel.EXCEPTION);
-        } catch (InterruptedException e) {
-            new RobobuggyLogicNotification("SensorPlayer was interrupted", RobobuggyMessageLevel.WARNING);
+//        } catch (InterruptedException e) {
+//            new RobobuggyLogicNotification("SensorPlayer was interrupted", RobobuggyMessageLevel.WARNING);
         } catch (UnsupportedEncodingException e) {
             new RobobuggyLogicNotification("Log file had unsupported encoding", RobobuggyMessageLevel.EXCEPTION);
         }

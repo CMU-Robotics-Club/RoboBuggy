@@ -5,6 +5,7 @@ public enum NodeChannel {
 	IMU("imu"),									//The most recent imu measurement 
 	RC("rc_angle"),								//?
 	STEERING("steering"),						//The current angle that low level is steering to 
+	PUSHBAR_CAMERA("push_bar_camera"),
 	BRAKE("brake"),
 	LOGIC_NOTIFICATION("logic_notification"),
 	DRIVE_CTRL("drive_ctrl"),
@@ -19,6 +20,7 @@ public enum NodeChannel {
 	RESET("reset"),
 	STATE("state"),
 	SIMULATION("simulation"),
+	NODE_STATUS("node_status"),
 	UNKNOWN_CHANNEL("unknown"),
 	;
 	
@@ -61,6 +63,27 @@ public enum NodeChannel {
 			}
 		}
 		return UNKNOWN_CHANNEL;
+	}
+
+	public static NodeChannel[] getLoggingChannels() {
+		return new NodeChannel[] {  GPS,
+									IMU,
+									PUSHBAR_CAMERA,
+									STEERING,
+									BRAKE,
+									LOGIC_NOTIFICATION,
+									DRIVE_CTRL,
+									BRAKE_CTRL,
+									VISION,
+									ENCODER,
+									AUTO,
+									GUI_LOGGING_BUTTON,
+									STEERING_COMMANDED,
+									FP_HASH,
+									POSE,
+									RESET,
+									STATE
+								};
 	}
 
 }

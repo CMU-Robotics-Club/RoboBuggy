@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
+import com.roboclub.robobuggy.ros.NodeChannel;
 
 /**
  * {@link JFrame} used to represent the robobuggy gui

@@ -18,6 +18,7 @@ import com.roboclub.robobuggy.messages.ResetMessage;
 import com.roboclub.robobuggy.messages.RobobuggyLogicNotificationMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
+import com.roboclub.robobuggy.messages.*;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyDecoratorNode;
 import com.roboclub.robobuggy.nodes.baseNodes.SerialNode;
@@ -33,10 +34,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Modifier;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import org.jcodec.api.awt.SequenceEncoder;
 
 /**
  * {@link SerialNode} for reading in logging commands from the GUI
@@ -53,7 +56,16 @@ public class LoggingNode extends BuggyDecoratorNode {
     private LogWriterThread loggingThread;
     private boolean keepLogging;
 
+    private Publisher statusPub;
+
     private static final String DATE_FILE_FORMAT = "yyyy-MM-dd-HH-mm-ss";
+
+
+    public enum LoggingNodeStatus implements INodeStatus {
+        INITIALIZED,
+        STARTED_LOGGING,
+        STOPPED_LOGGING,
+    }
 
     /**
      * Create a new {@link LoggingNode} decorator
@@ -69,11 +81,15 @@ public class LoggingNode extends BuggyDecoratorNode {
         keepLogging = true;
         outputDirectory = new File(outputDirPath);
 
+        statusPub = new Publisher(NodeChannel.NODE_STATUS.getMsgPath());
+
         setupSubscriberList();
 
         if (!RobobuggyConfigFile.DATA_PLAY_BACK) {
             setupLoggingTrigger();
         }
+
+        statusPub.publish(new NodeStatusMessage(LoggingNode.class, LoggingNodeStatus.INITIALIZED, null));
 
     }
 
@@ -86,24 +102,38 @@ public class LoggingNode extends BuggyDecoratorNode {
         new Subscriber(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath(), new MessageListener() {
             @Override
             public void actionPerformed(String topicName, Message m) {
+
                 GuiLoggingButtonMessage message = (GuiLoggingButtonMessage) m;
                 if (message.getLoggingMessage().equals(GuiLoggingButtonMessage.LoggingMessage.START)) {
+
                     if (!createNewLogFile()) {
+
                         new RobobuggyLogicNotification("Error creating new log file!", RobobuggyMessageLevel.EXCEPTION);
                         return;
+
                     }
+
                     keepLogging = true;
                     loggingThread = new LogWriterThread();
                     loggingThread.start();
                     new RobobuggyLogicNotification("Starting up logging thread!", RobobuggyMessageLevel.NOTE);
+                    JsonObject params = new JsonObject();
+                    params.addProperty("outputDir", outputDirectory.getPath());
+                    statusPub.publish(new NodeStatusMessage(LoggingNode.class, LoggingNodeStatus.STARTED_LOGGING, params));
+
                 }
                 else if (message.getLoggingMessage().equals(GuiLoggingButtonMessage.LoggingMessage.STOP)) {
+
                     keepLogging = false;
                     new RobobuggyLogicNotification("Stopping logging thread!", RobobuggyMessageLevel.NOTE);
+                    statusPub.publish(new NodeStatusMessage(LoggingNode.class, LoggingNodeStatus.STOPPED_LOGGING, null));
                     loggingThread.interrupt();
+
                 }
                 else {
+
                     new RobobuggyLogicNotification("Gui said something logger couldn't understand!", RobobuggyMessageLevel.EXCEPTION);
+
                 }
             }
         });
@@ -187,6 +217,17 @@ public class LoggingNode extends BuggyDecoratorNode {
                 loggingButtonPub.publish(m);
             }
         });
+
+        /*
+        new Subscriber(NodeChannel.PUSHBAR_CAMERA.getMsgPath(), new MessageListener() {
+			@Override
+			public void actionPerformed(String topicName, Message m) {
+			
+				// TODO Auto-generated method stub
+				
+			}
+		});*/
+        
         return true;
     }
 
@@ -213,6 +254,7 @@ public class LoggingNode extends BuggyDecoratorNode {
         private int steeringHits = 0;
         private int logicNotificationHits = 0;
         private int logButtonHits = 0;
+        private int imageHits = 0;
         private int poseMessageHits = 0;
         private int resetHits = 0;
         private int stateHits = 0;
@@ -240,11 +282,10 @@ public class LoggingNode extends BuggyDecoratorNode {
 
         @Override
         public synchronized void run() {
-
             try {
                 fileWriteStream = new PrintStream(outputFile, "UTF-8");
                 messageTranslator = new GsonBuilder()
-                                        .excludeFieldsWithModifiers()
+                                        .excludeFieldsWithModifiers(Modifier.TRANSIENT)
                                         .serializeSpecialFloatingPointValues()
                                         .create()
                                         ;
@@ -263,7 +304,9 @@ public class LoggingNode extends BuggyDecoratorNode {
                 Message toSort;
                 try {
                     toSort = messageQueue.take();
-                    String msgAsJsonString = messageTranslator.toJson(toSort);
+                    String msgAsJsonString;
+                    
+                    msgAsJsonString = messageTranslator.toJson(toSort);
 
                     // and if you look on your right you'll see the almost-unnecessary
                     // giganti-frickin-ic telemetry block
@@ -289,11 +332,12 @@ public class LoggingNode extends BuggyDecoratorNode {
                         stateHits++;
                     } else if (toSort instanceof SteeringMeasurement) {
                         steeringHits++;
+                    } else if(toSort instanceof ImageMessage){
+                        imageHits++;
                     } else {
                         //a new kind of message!
                         new RobobuggyLogicNotification("New message came in that we aren't tracking", RobobuggyMessageLevel.WARNING);
                     }
-
                     fileWriteStream.println("        " + msgAsJsonString + ",");
 
                 } catch (InterruptedException e) {
@@ -316,6 +360,7 @@ public class LoggingNode extends BuggyDecoratorNode {
             dataBreakdown.addProperty(NodeChannel.STEERING.getName(), steeringHits);
             dataBreakdown.addProperty(NodeChannel.FP_HASH.getName(), fingerprintHits);
             dataBreakdown.addProperty(NodeChannel.LOGIC_NOTIFICATION.getName(), logicNotificationHits);
+            dataBreakdown.addProperty(NodeChannel.PUSHBAR_CAMERA.getName(), imageHits);
             dataBreakdown.addProperty(NodeChannel.POSE.getName(), poseMessageHits);
             dataBreakdown.addProperty(NodeChannel.RESET.getName(), resetHits);
             dataBreakdown.addProperty(NodeChannel.STATE.getName(), stateHits);
