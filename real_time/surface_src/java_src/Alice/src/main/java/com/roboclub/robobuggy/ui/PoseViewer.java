@@ -2,6 +2,8 @@ package com.roboclub.robobuggy.ui;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
@@ -13,6 +15,8 @@ import com.sun.javafx.geom.Vec2d;
 
 import Jama.Matrix;
 
+import javax.swing.*;
+
 /**
  * pose viewer - has a world frame and a buggy relative to it
  */
@@ -20,12 +24,40 @@ public class PoseViewer extends RobobuggyGUIContainer{
 	private Matrix view;
 	private Matrix worldFrame;
 	private ArrayList<Matrix> poses;
+	private JButton zoomIn, zoomOut;
+	private JSlider zoomMag;
 
 	/**
 	 * makes a new poseviewer
 	 */
 	//constructor
-	PoseViewer(){
+	public PoseViewer(){
+
+		zoomIn = new JButton("+");
+		zoomIn.setBounds(0, 0, 50, 50);
+		zoomIn.setVisible(true);
+		zoomIn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				worldFrame = worldFrame.times(1.1);
+				repaint();
+			}
+		});
+
+		zoomOut = new JButton("-");
+		zoomOut.setBounds(0, zoomIn.getY() + zoomIn.getHeight(), 50, 50);
+		zoomOut.setVisible(true);
+		zoomOut.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				worldFrame = worldFrame.times(0.9);
+				repaint();
+			}
+		});
+
+		this.addComponent(zoomIn, 0, 0, 0.1, 0.1);
+		this.addComponent(zoomOut, 0, 0.1, 0.1, 0.1);
+
 		poses = new ArrayList<Matrix>();
 		double [][] viewArray = {{1,0,0,0},{0,1,0,0},{0,0,1,0},{0,0,0,1}};
 		view = new Matrix(viewArray);
@@ -63,7 +95,7 @@ public class PoseViewer extends RobobuggyGUIContainer{
 	 */
 	public Vec2d projectToView(Matrix m){
 		//TODO 
-		return new Vec2d(100*m.get(0, 0)+500, -100*m.get(1, 0)+500);
+		return new Vec2d(100*m.get(0, 0)+200, -100*m.get(1, 0)+400);
 	}
 
 	/**
@@ -129,7 +161,7 @@ public class PoseViewer extends RobobuggyGUIContainer{
 	    for(int i = 0;i<poses.size();i++){
 		    drawMatrix( g,poses.get(i),"poses:"+i);
 	    }
-	    
+
 	}
 	
 
