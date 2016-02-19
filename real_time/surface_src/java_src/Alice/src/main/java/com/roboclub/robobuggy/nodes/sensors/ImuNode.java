@@ -1,6 +1,7 @@
 package com.roboclub.robobuggy.nodes.sensors;
 
 import com.roboclub.robobuggy.messages.ImuMeasurement;
+import com.roboclub.robobuggy.messages.MagneticMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.NodeState;
@@ -14,6 +15,7 @@ import java.io.UnsupportedEncodingException;
  * {@link SerialNode} for reading in IMU data
  * @author Matt Sebek 
  * @author Kevin Brennan
+ * @author Trevor Decker
  */
 public final class ImuNode extends SerialNode {
 	/** Baud rate for serial port */
@@ -21,7 +23,9 @@ public final class ImuNode extends SerialNode {
 	// how long the system should wait until a sensor switches to Disconnected
 	private static final long SENSOR_TIME_OUT = 5000;
 	
-	private Publisher msgPub;
+	private Publisher msgPub_IMU;
+	private Publisher msgPub_MAG;
+
 	private Publisher statePub;
 	
 	/**
@@ -31,7 +35,8 @@ public final class ImuNode extends SerialNode {
 	 */
 	public ImuNode(NodeChannel sensor, String portName) {
 		super(new BuggyBaseNode(sensor), "IMU", portName, BAUDRATE);
-		msgPub = new Publisher(sensor.getMsgPath());
+		msgPub_IMU = new Publisher(sensor.getMsgPath());
+		msgPub_MAG = new Publisher(sensor.getMsgPath());
 		statePub = new Publisher(sensor.getStatePath());
 		
 		
@@ -85,7 +90,7 @@ public final class ImuNode extends SerialNode {
 			return 1;
 		}
 		
-		double[] vals = new double[3];
+		double[] vals = new double[5];
 		String imuRawStr;
 		try {
 			imuRawStr = new String(buffer, start+5, bytesAvailable-5, "UTF-8");
@@ -94,7 +99,7 @@ public final class ImuNode extends SerialNode {
 		} //TODO check +5 -5
 
 		int origLength = imuRawStr.length();
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 5; i++) {
 			// TODO: need less than bytes_availble
 			int commaIndex = imuRawStr.indexOf(',');
 			try {
@@ -112,7 +117,8 @@ public final class ImuNode extends SerialNode {
 		vals[2] = Double.parseDouble(imuRawStr.substring(0, hashIndex));
 		imuRawStr = imuRawStr.substring(hashIndex);	
 			
-		msgPub.publish(new ImuMeasurement(vals[0], vals[1], vals[2]));
+		msgPub_IMU.publish(new ImuMeasurement(vals[0], vals[1], vals[2]));
+		msgPub_MAG.publish(new MagneticMeasurement(vals[3],vals[4],vals[5]));
 		//Feed the watchdog
 		setNodeState(NodeState.ON);
 		return 4 + (origLength - imuRawStr.length());

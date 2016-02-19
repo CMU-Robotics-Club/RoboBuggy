@@ -17,16 +17,17 @@ void output_angles()
     Serial.print("#YPR=");
     Serial.print(TO_DEG(yaw)); Serial.print(",");
     Serial.print(TO_DEG(pitch)); Serial.print(",");
-    Serial.print(TO_DEG(roll)); Serial.println();
+    Serial.print(TO_DEG(roll)); Serial.print(",");
 	// Output everything.
 //   Serial.print("#ACG=");
 //   Serial.print(accel[0]); Serial.print(",");
 //   Serial.print(accel[1]); Serial.print(",");
 //   Serial.print(accel[2]); Serial.print(",");
 //   //comapas
-//   Serial.print(magnetom[0]); Serial.print(",");
-//   Serial.print(magnetom[1]); Serial.print(",");
-//   Serial.print(magnetom[2]); Serial.print(",");
+   Serial.print(magnetom[0]); Serial.print(",");
+   Serial.print(magnetom[1]); Serial.print(",");
+   Serial.print(magnetom[2]); Serial.print(",");
+   Serial.println();
 //   //gyro
 //   Serial.print(TO_DEG(yaw)); Serial.print(",");
 //   Serial.print(TO_DEG(pitch)); Serial.print(",");

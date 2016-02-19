@@ -72,15 +72,16 @@ public final class Robot implements RosMaster {
 		nodeList.add(new OdomLocalizer());
 		//nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.COM_PORT_GPS));
 		nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.COM_PORT_IMU));
-		nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING, RobobuggyConfigFile.COM_PORT_RBSM, COMMAND_PERIOD));
-		nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION, NodeChannel.values()));
+	//	nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING, RobobuggyConfigFile.COM_PORT_RBSM, COMMAND_PERIOD));
+	//	nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION, NodeChannel.values()));
 //		nodeList.add(new SweepNode(NodeChannel.DRIVE_CTRL));
-		try {
+/*		try {
 			nodeList.add(new WayPointFollowerPlanner(NodeChannel.UNKNOWN_CHANNEL,WayPointUtil.CreateWayPointsFromWaypointList("logs/2016-02-13-21-21-41/waypoints.txt")));
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		*/
 
 		nodeList.add(new CameraNode(NodeChannel.PUSHBAR_CAMERA, 100));
 //		nodeList.add(new GPSTrackPlannerNode(NodeChannel.BRAKE_CTRL,

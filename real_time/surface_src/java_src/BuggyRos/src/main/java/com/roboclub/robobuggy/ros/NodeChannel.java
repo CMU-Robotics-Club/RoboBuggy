@@ -3,6 +3,7 @@ package com.roboclub.robobuggy.ros;
 public enum NodeChannel {
 	GPS("gps"),    								//The most recent gps coordinate 
 	IMU("imu"),									//The most recent imu measurement 
+	IMU_MAGNETIC("mag"),
 	RC("rc_angle"),								//?
 	STEERING("steering"),						//The current angle that low level is steering to 
 	PUSHBAR_CAMERA("push_bar_camera"),
