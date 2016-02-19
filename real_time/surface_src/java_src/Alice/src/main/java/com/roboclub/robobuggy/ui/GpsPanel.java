@@ -20,12 +20,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 
-import org.openstreetmap.gui.jmapviewer.Coordinate;
-import org.openstreetmap.gui.jmapviewer.JMapViewerTree;
-import org.openstreetmap.gui.jmapviewer.MapMarkerDot;
-import org.openstreetmap.gui.jmapviewer.MemoryTileCache;
-import org.openstreetmap.gui.jmapviewer.OsmTileLoader;
-import org.openstreetmap.gui.jmapviewer.Tile;
+import org.openstreetmap.gui.jmapviewer.*;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileCache;
 import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
 
@@ -76,9 +71,10 @@ public class GpsPanel extends JPanel {
 			}
 		});
 
-//		mapTree.getViewer().addMapPolygon(new MapPolygonImpl(new Coordinate(mapViewerLat, mapViewerLon),
-// 													new Coordinate(mapViewerLat + 0.0001, mapViewerLon),
-// 													new Coordinate(mapViewerLat, mapViewerLon)));
+		mapTree.getViewer().addMapPolygon(new MapPolygonImpl(new Coordinate(mapViewerLat, mapViewerLon),
+ 													new Coordinate(mapViewerLat + 0.0001, mapViewerLon),
+ 													new Coordinate(mapViewerLat, mapViewerLon)));
+
 
 	}
 	
@@ -120,6 +116,29 @@ public class GpsPanel extends JPanel {
 		catch (IOException e) {
 			new RobobuggyLogicNotification("Something is wrong with the map cache: " + e.getMessage(), RobobuggyMessageLevel.EXCEPTION);
 		}
+	}
+
+	public void addPointsToMapTree(LocTuple...points) {
+		for (LocTuple point : points) {
+			mapTree.getViewer().addMapMarker(new MapMarkerDot(Color.BLUE, point.getLatitude(), point.getLongitude()));
+		}
+	}
+
+	public void addLineToMap(LocTuple point1, LocTuple point2) {
+		mapTree.getViewer().addMapPolygon(new MapPolygonImpl(
+				new Coordinate(point1.getLatitude(), point1.getLongitude()),
+				new Coordinate(point1.getLatitude(), point1.getLongitude()),
+				new Coordinate(point2.getLatitude(), point2.getLongitude())
+		));
+	}
+
+	public void addLineToMap(LocTuple originPoint, double angle) {
+		double scalingFactor = 0.001;
+		double dx = originPoint.getLatitude() + Math.cos(angle) * scalingFactor;
+		double dy = originPoint.getLongitude() + Math.sin(angle) * scalingFactor;
+
+		LocTuple endpoint = new LocTuple(originPoint.getLatitude() + dx, originPoint.getLongitude() + dy);
+		addLineToMap(originPoint, endpoint);
 	}
 
 	private void initMapTree() {

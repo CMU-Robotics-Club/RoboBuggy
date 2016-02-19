@@ -47,6 +47,7 @@ public class DataPanel extends RobobuggyGUIContainer {
 	private JLabel bracking;
 	private JLabel errorNum;
 	private JLabel latitude,longitude;
+
 	/**
 	 * Construct a new {@link DataPanel}
 	 */
@@ -254,6 +255,13 @@ public class DataPanel extends RobobuggyGUIContainer {
 		values += "mZ: "+mZ.getText() + " ";
 		
 		return values;
+	}
+
+	/**
+	 * @return the gps panel
+	 */
+	public GpsPanel getGpsPanel() {
+		return gpsPanel;
 	}
 	
 	

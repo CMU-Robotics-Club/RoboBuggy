@@ -110,7 +110,7 @@ public class WayPointUtil {
 				File outputFile = new File(folder + "/waypoints.txt");
 				if (!outputFile.createNewFile()) {
 					new RobobuggyLogicNotification("couldn't create file", RobobuggyMessageLevel.EXCEPTION);
-					return null;
+//					return null;
 				}
 				OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(outputFile), "UTF-8");
 
