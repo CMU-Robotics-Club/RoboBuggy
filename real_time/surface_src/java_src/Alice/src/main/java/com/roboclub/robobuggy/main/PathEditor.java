@@ -45,17 +45,19 @@ public class PathEditor {
 
 				//displaying points to the user
 				for(int i = 0;i<wayPoints.size();i++){
-					Gui.getInstance().getMainGuiWindow().getAnalyPane().getDataPanel().getGpsPanel().addPointsToMapTree(new LocTuple(wayPoints.get(i).getLatitude(), -wayPoints.get(i).getLongitude()));
+					Gui.getInstance().getMainGuiWindow().getAnalyPane().getDataPanel().getGpsPanel().
+							addPointsToMapTree(new LocTuple(wayPoints.get(i).getLatitude(),
+									-wayPoints.get(i).getLongitude()));
 					Gui.getInstance().fixPaint();
 				}
 
 				WayPointFollowerPlanner planer = new WayPointFollowerPlanner(NodeChannel.UNKNOWN_CHANNEL,wayPoints);
 			
 				for(int i = 0;i<wayPoints.size();i++){
-					double LAT_ERROR = 1/111131.745;
-					double LON_ERROR = 1/78846.81;
-					for(double latError = -LAT_ERROR;latError<LAT_ERROR;latError+=LAT_ERROR/5){
-						for(double lonError = -LON_ERROR;lonError<LON_ERROR;lonError+=LON_ERROR/5){
+					final double latErrorFinal = 1/111131.745;
+					final double lonErrorFinal = 1/78846.81;
+					for(double latError = -latErrorFinal;latError<latErrorFinal;latError+=latErrorFinal/5){
+						for(double lonError = -lonErrorFinal;lonError<lonErrorFinal;lonError+=lonErrorFinal/5){
 							double lat = wayPoints.get(i).getLatitude() + latError;
 							double lon = wayPoints.get(i).getLongitude() + lonError;
 
@@ -63,7 +65,9 @@ public class PathEditor {
 								lat, lon, 0));
 							planer.getCommandedSteeringAngle();
 
-							Gui.getInstance().getMainGuiWindow().getAnalyPane().getDataPanel().getGpsPanel().addLineToMap(new LocTuple(lat, lon), planer.getCommandedSteeringAngle());
+							Gui.getInstance().getMainGuiWindow().getAnalyPane().getDataPanel().
+									getGpsPanel().addLineToMap(new LocTuple(lat, lon),
+									planer.getCommandedSteeringAngle());
 						}
 					}
 				}

@@ -20,7 +20,13 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 
-import org.openstreetmap.gui.jmapviewer.*;
+import org.openstreetmap.gui.jmapviewer.Coordinate;
+import org.openstreetmap.gui.jmapviewer.JMapViewerTree;
+import org.openstreetmap.gui.jmapviewer.MapMarkerDot;
+import org.openstreetmap.gui.jmapviewer.MapPolygonImpl;
+import org.openstreetmap.gui.jmapviewer.MemoryTileCache;
+import org.openstreetmap.gui.jmapviewer.OsmTileLoader;
+import org.openstreetmap.gui.jmapviewer.Tile;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileCache;
 import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
 
@@ -118,12 +124,19 @@ public class GpsPanel extends JPanel {
 		}
 	}
 
+	/**
+	 * @param points points to add to the map
+	 */
 	public void addPointsToMapTree(LocTuple...points) {
 		for (LocTuple point : points) {
 			mapTree.getViewer().addMapMarker(new MapMarkerDot(Color.BLUE, point.getLatitude(), point.getLongitude()));
 		}
 	}
 
+	/**
+	 * @param point1 1st endpoint of line to add
+	 * @param point2 2nd endpoint of line to add
+	 */
 	public void addLineToMap(LocTuple point1, LocTuple point2) {
 		mapTree.getViewer().addMapPolygon(new MapPolygonImpl(
 				new Coordinate(point1.getLatitude(), point1.getLongitude()),
@@ -132,6 +145,10 @@ public class GpsPanel extends JPanel {
 		));
 	}
 
+	/**
+	 * @param originPoint the origin point of the ray
+	 * @param angle the heading of the ray
+	 */
 	public void addLineToMap(LocTuple originPoint, double angle) {
 		double scalingFactor = 0.001;
 		double dx = originPoint.getLatitude() + Math.cos(angle) * scalingFactor;
