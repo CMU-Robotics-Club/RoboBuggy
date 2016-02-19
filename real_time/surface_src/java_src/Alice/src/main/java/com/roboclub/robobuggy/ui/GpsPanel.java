@@ -75,7 +75,11 @@ public class GpsPanel extends JPanel {
 
 			}
 		});
-		
+
+//		mapTree.getViewer().addMapPolygon(new MapPolygonImpl(new Coordinate(mapViewerLat, mapViewerLon),
+// 													new Coordinate(mapViewerLat + 0.0001, mapViewerLon),
+// 													new Coordinate(mapViewerLat, mapViewerLon)));
+
 	}
 	
 	private void addCacheToTree() {
