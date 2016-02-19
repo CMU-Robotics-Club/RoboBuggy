@@ -9,3 +9,5 @@
 *.log
 *~
 *.mp4
+/real_time/surface_src/java_src/Alice/logs
+/real_time/surface_src/java_src/Alice/LOG_FILES

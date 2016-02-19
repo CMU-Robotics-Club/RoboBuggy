@@ -52,6 +52,7 @@ dependencies {
     compile files('library/orsoncharts-1.4-eval-nofx.jar')
 
     compile files('library/RXTXcomm.jar')
+    compile files('library/JMapViewer.jar')
 }
 
 uploadArchives {
