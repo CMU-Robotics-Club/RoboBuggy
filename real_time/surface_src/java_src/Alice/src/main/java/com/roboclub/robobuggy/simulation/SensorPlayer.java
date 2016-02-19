@@ -23,6 +23,7 @@ import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
+import com.roboclub.robobuggy.messages.MagneticMeasurement;
 import com.roboclub.robobuggy.messages.RemoteWheelAngleRequest;
 import com.roboclub.robobuggy.messages.ResetMessage;
 import com.roboclub.robobuggy.messages.RobobuggyLogicNotificationMeasurement;
@@ -47,6 +48,7 @@ public class SensorPlayer extends Thread {
     private double playbackSpeed;
 
     private Publisher imuPub;
+    private Publisher magPub;
     private Publisher gpsPub;
     private Publisher encoderPub;
     private Publisher brakePub;
@@ -66,6 +68,7 @@ public class SensorPlayer extends Thread {
     public SensorPlayer(String filePath, int playbackSpeed) {
 
         imuPub = new Publisher(NodeChannel.IMU.getMsgPath());
+        magPub = new Publisher(NodeChannel.IMU_MAGNETIC.getMsgPath());
         gpsPub = new Publisher(NodeChannel.GPS.getMsgPath());
         encoderPub = new Publisher(NodeChannel.ENCODER.getMsgPath());
         brakePub = new Publisher(NodeChannel.BRAKE.getMsgPath());
@@ -134,6 +137,9 @@ public class SensorPlayer extends Thread {
                             break;
                         case BrakeMessage.VERSION_ID:
                             transmitMessage = translator.fromJson(sensorDataJson, BrakeMessage.class);
+                            break;
+                        case MagneticMeasurement.VERSION_ID:
+                            transmitMessage = translator.fromJson(sensorDataJson, MagneticMeasurement.class);
                             break;
                         case DriveControlMessage.VERSION_ID:
                             transmitMessage = translator.fromJson(sensorDataJson, DriveControlMessage.class);
@@ -235,6 +241,9 @@ public class SensorPlayer extends Thread {
                             break;
                         case SteeringMeasurement.VERSION_ID:
                             steeringPub.publish(transmitMessage);
+                            break;
+                        case MagneticMeasurement.VERSION_ID:
+                            magPub.publish(transmitMessage);
                             break;
                         default:
                             break;
