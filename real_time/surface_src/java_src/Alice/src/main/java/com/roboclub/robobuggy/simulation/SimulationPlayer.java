@@ -20,9 +20,15 @@ import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 
+/**
+ * synthesizes values so that we can test without the actual peripherals
+ */
 public class SimulationPlayer extends PeriodicNode{
 
-	
+
+	/**
+	 * instantiates a simulationplayer
+	 */
 	public SimulationPlayer() {
 		super(new BuggyBaseNode(NodeChannel.SIMULATION), 1000);  //TODO figure out why this can't run faster
 	//	posePub = new Publisher(NodeChannel.POSE.getMsgPath());
@@ -70,7 +76,6 @@ public class SimulationPlayer extends PeriodicNode{
 	}
 	
 
-int i = 0;
 	@Override
 	protected void update() {
 	//	posePub.publish(new GPSPoseMessage(new Date(), i/100.0, i/50.0, i/45.0));

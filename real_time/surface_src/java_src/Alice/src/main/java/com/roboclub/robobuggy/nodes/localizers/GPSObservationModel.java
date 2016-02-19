@@ -2,6 +2,9 @@ package com.roboclub.robobuggy.nodes.localizers;
 
 import java.util.ArrayList;
 
+/**
+ * Gps observation model - keeps track of state? TODO
+ */
 public class GPSObservationModel {
 
 	 ArrayList getObservationSpaceState(ArrayList state){

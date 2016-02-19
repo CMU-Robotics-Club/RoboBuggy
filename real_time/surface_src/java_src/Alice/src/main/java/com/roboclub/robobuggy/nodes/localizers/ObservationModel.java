@@ -4,8 +4,11 @@ import java.util.ArrayList;
 
 import Jama.Matrix;
 
+/**
+ * Observation model - TODO
+ */
 public abstract class ObservationModel {
 
-	abstract Matrix getObservationSpaceState(Matrix State);
+	abstract Matrix getObservationSpaceState(Matrix state);
 
 }

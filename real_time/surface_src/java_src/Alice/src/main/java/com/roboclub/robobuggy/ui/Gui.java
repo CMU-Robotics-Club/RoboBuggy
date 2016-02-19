@@ -3,14 +3,9 @@ package com.roboclub.robobuggy.ui;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 
-import java.awt.Container;
-import java.awt.event.WindowEvent;
-import java.util.ArrayList;
 import javax.swing.JFrame;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
-
-import com.roboclub.robobuggy.ros.NodeChannel;
 
 /**
  * {@link JFrame} used to represent the robobuggy gui
@@ -26,7 +21,11 @@ import com.roboclub.robobuggy.ros.NodeChannel;
 public final class Gui extends JFrame {
 	private static final long serialVersionUID = 670947948979376738L;
 
-	
+
+	//The windowList is a list of all of the windows that are a part of the gui
+	private ArrayList<RobobuggyJFrame> windowList = new ArrayList<RobobuggyJFrame>();
+	private MainGuiWindow mainGuiWindow;
+
 	private static Gui instance;
 	
 	/**
@@ -50,17 +49,13 @@ public final class Gui extends JFrame {
 	 * If none exists, one will be constructed.
 	 * @return a reference to the one instance of the {@link Gui}
 	 */
-	public synchronized static Gui getInstance() {
+	public static synchronized Gui getInstance() {
 		if (instance == null) {
 			instance = new Gui();
 		}
 		return instance;
 	}
 
-	//The windowList is a list of all of the windows that are a part of the gui
-	private ArrayList<RobobuggyJFrame> windowList = new ArrayList<RobobuggyJFrame>();
-	private MainGuiWindow mainGuiWindow;
-	
 	/**
 	 * Construct a new {@link Gui} object
 	 */

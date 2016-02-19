@@ -20,12 +20,18 @@ import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 import com.sun.javafx.geom.Vec2d;
 
+/**
+ * imu's yaw graph
+ */
 public class ImuYawGraph extends RobobuggyGUIContainer{
-	ArrayList<Vec2d> list = new ArrayList();
-	ChartPanel chartPanel;
-	JFreeChart chart;
+	private ArrayList<Vec2d> list = new ArrayList();
+	private ChartPanel chartPanel;
+	private JFreeChart chart;
 
-	
+
+	/**
+	 * makes a new IMU yaw graph
+	 */
 	public ImuYawGraph(){
 		XYSeries series1 = new XYSeries("Planned");
 		
@@ -53,7 +59,8 @@ public class ImuYawGraph extends RobobuggyGUIContainer{
 			}
 		});
 		
-		chart = ChartFactory.createXYLineChart("yaw", "xAxisLabel", "yAxisLabel", dataset, PlotOrientation.VERTICAL, true, true, true);					
+		chart = ChartFactory.createXYLineChart("yaw", "xAxisLabel", "yAxisLabel", dataset,
+				PlotOrientation.VERTICAL, true, true, true);
 		chartPanel = new ChartPanel(chart);			
 		add(chartPanel);
 
@@ -61,7 +68,8 @@ public class ImuYawGraph extends RobobuggyGUIContainer{
 			    public void run(){
 			    	while(true){
 			    		//TODO get sizing to be better 
-			    		JFreeChart chart = ChartFactory.createXYLineChart("yaw", "xAxisLabel", "yAxisLabel", dataset, PlotOrientation.VERTICAL, true, true, true);					
+			    		JFreeChart chart = ChartFactory.createXYLineChart("yaw", "xAxisLabel", "yAxisLabel", dataset,
+								PlotOrientation.VERTICAL, true, true, true);
 				/*        XYPlot xyPlot = (XYPlot) chart.getPlot();
 				        NumberAxis domainAxis = (NumberAxis) xyPlot.getRangeAxis();
 				        NumberAxis rangeAxis = (NumberAxis) xyPlot.getDomainAxis();

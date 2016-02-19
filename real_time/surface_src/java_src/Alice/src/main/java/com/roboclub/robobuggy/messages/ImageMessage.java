@@ -18,7 +18,8 @@ public class ImageMessage extends BaseMessage {
 	
 	/**
 	 * Constructor for the image message
-	 * @param newImage the image to transmit
+	 * @param newImage the image to transmit;
+	 * @param frameNumber the frame number
 	 */
 	public ImageMessage(BufferedImage newImage, int frameNumber){
 		thisImage = newImage;
@@ -43,6 +44,9 @@ public class ImageMessage extends BaseMessage {
 		return null;
 	}
 
+	/**
+	 * @return the frame number of the image
+	 */
 	public int getFrameNumber(){
 		return frameNumber;
 	}

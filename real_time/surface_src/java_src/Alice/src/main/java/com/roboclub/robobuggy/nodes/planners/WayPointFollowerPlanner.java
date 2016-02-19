@@ -7,11 +7,18 @@ import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.ros.NodeChannel;
 
+/**
+ * Plans a path based on a set of waypoints
+ */
 public class WayPointFollowerPlanner extends PathPlannerNode{
 	private ArrayList<GpsMeasurement> wayPoints;
 	private GPSPoseMessage pose; //TODO change this to a reasonable type
-	
-	
+
+
+	/**
+	 * @param channel for buggybasenode
+	 * @param wayPoints the list of waypoints to follow
+	 */
 	public WayPointFollowerPlanner(NodeChannel channel,ArrayList wayPoints) {
 		super(channel);
 		this.wayPoints = wayPoints;

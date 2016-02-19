@@ -19,12 +19,18 @@ import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 import com.sun.javafx.geom.Vec2d;
 
+/**
+ * A graph of encoder ticks/distances
+ */
 public class EncoderGraph extends RobobuggyGUIContainer{
-	ArrayList<Vec2d> list = new ArrayList();
-	ChartPanel chartPanel;
-	JFreeChart chart;
+	private ArrayList<Vec2d> list = new ArrayList();
+	private ChartPanel chartPanel;
+	private JFreeChart chart;
 
-	
+
+	/**
+	 * makes a new encoderGraph
+	 */
 	public EncoderGraph(){
 		XYSeries series1 = new XYSeries("Planned");
 		
@@ -52,7 +58,8 @@ public class EncoderGraph extends RobobuggyGUIContainer{
 			}
 		});
 		
-		chart = ChartFactory.createXYLineChart("title", "xAxisLabel", "yAxisLabel", dataset, PlotOrientation.VERTICAL, true, true, true);					
+		chart = ChartFactory.createXYLineChart("title", "xAxisLabel", "yAxisLabel",
+				dataset, PlotOrientation.VERTICAL, true, true, true);
 		chartPanel = new ChartPanel(chart);			
 		add(chartPanel);
 
@@ -60,7 +67,8 @@ public class EncoderGraph extends RobobuggyGUIContainer{
 			    public void run(){
 			    	while(true){
 			    		//TODO get sizing to be better 
-			    		JFreeChart chart = ChartFactory.createXYLineChart("Encoder", "xAxisLabel", "yAxisLabel", dataset, PlotOrientation.VERTICAL, true, true, true);					
+			    		JFreeChart chart = ChartFactory.createXYLineChart("Encoder", "xAxisLabel",
+								"yAxisLabel", dataset, PlotOrientation.VERTICAL, true, true, true);
 				/*        XYPlot xyPlot = (XYPlot) chart.getPlot();
 				        NumberAxis domainAxis = (NumberAxis) xyPlot.getRangeAxis();
 				        NumberAxis rangeAxis = (NumberAxis) xyPlot.getDomainAxis();

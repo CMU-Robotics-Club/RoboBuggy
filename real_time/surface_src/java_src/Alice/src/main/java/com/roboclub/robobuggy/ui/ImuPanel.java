@@ -6,8 +6,14 @@ import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 
+/**
+ * Imu panel - shows values from the IMU
+ */
 public class ImuPanel extends RobobuggyGUIContainer{
 
+	/**
+	 * makes a new imupanel
+	 */
 	public ImuPanel(){
 		this.addComponent(new ImuYawGraph(), 0.0, 0.0, .5, .5);
 		this.addComponent(new ImuRollGraph(), 0.5, 0.0, .5, .5);

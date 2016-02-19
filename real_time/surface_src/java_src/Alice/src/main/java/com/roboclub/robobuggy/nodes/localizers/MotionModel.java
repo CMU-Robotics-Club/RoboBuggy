@@ -5,6 +5,9 @@ import java.util.Date;
 
 import Jama.Matrix;
 
+/**
+ * Motion model - TODO
+ */
 public class MotionModel {
 
 	MotionModel(){

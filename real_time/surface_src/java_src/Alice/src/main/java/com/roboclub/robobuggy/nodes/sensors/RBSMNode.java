@@ -179,7 +179,7 @@ public class RBSMNode extends SerialNode {
 			case RBSerialMessage.RBSM_MID_MEGA_STEER_FEEDBACK:   //steering angle feedback reported from mega singed int in thosands of degree
 				// This is a delta-distance! Do a thing!
 				potValue = message.getDataWord();
-				messagePubPot.publish(new SteeringMeasurement(-(potValue + OFFSET)/ARD_TO_DEG));
+				messagePubPot.publish(new SteeringMeasurement((double)(-(potValue + OFFSET)/(double) ARD_TO_DEG)));
 				break;
 			case RBSerialMessage.RBSM_MID_MEGA_STEER_ANGLE: //angle sent to/ reported from the mega
 				steeringAngle = message.getDataWord();

@@ -10,39 +10,40 @@ import Jama.Matrix;
  */
 public class So2Pose {
 	private Point location;
-	private double orintation; 
-	
+	private double orientation;
+
 	/**
 	 * 
-	 * @param newLocation
-	 * @param newOrintation
+	 * @param newLocation the new location
+	 * @param newOrientation the new orientation
 	 */
-	So2Pose(Point newLocation,double newOrintation){
-		this.location = location;
-		this.orintation = newOrintation;
+	public So2Pose(Point newLocation,double newOrientation){
+		this.location = newLocation;
+		this.orientation = newOrientation;
 	}
 	
 	/**
 	 * 
-	 * @param x
-	 * @param y
-	 * @param newOrintation
+	 * @param x x coord of the point
+	 * @param y y coord of the point
+	 * @param newOrientation the new orientation
 	 */
-	public So2Pose(double x,double y,double newOrintation){
+	public So2Pose(double x,double y,double newOrientation){
 		location = new Point(x, y);
-		orintation = newOrintation;
+		orientation = newOrientation;
 	}
 	
 	/**
 	 * 
 	 * @param postPose the pose that is being applied to the right of the expresion
+	 * @return the new So2Pose TODO
 	 */
 	public So2Pose mult(So2Pose postPose){
-		double[][] aM = {{Math.cos(orintation), -Math.sin(orintation), getX()},
-				         {Math.sin(orintation), Math.cos(orintation),getY()},
+		double[][] aM = {{Math.cos(orientation), -Math.sin(orientation), getX()},
+				         {Math.sin(orientation), Math.cos(orientation),getY()},
 				         {0,0,1}};
-		double[][] bM = {{Math.cos(postPose.orintation), -Math.sin(postPose.orintation), postPose.getX()},
-		         		{Math.sin(postPose.orintation), Math.cos(postPose.orintation),postPose.getY()},
+		double[][] bM = {{Math.cos(postPose.orientation), -Math.sin(postPose.orientation), postPose.getX()},
+		         		{Math.sin(postPose.orientation), Math.cos(postPose.orientation),postPose.getY()},
 		         		{0,0,1}};
 		Matrix a = new Matrix(aM);
 		Matrix b = new Matrix(bM);
@@ -54,14 +55,14 @@ public class So2Pose {
 	}
 	
 	
-	/*
+	/**
 	 * updates the values of the pose
-	 * @param Point newPoint the new se2 point to be set
-	 * @param double newOrintation the new orientation 
+	 * @param newPoint the new se2 point to be set
+	 * @param newOrientation the new orientation
 	 */
-	public void updatePoint(Point newPoint,double newOrintation){
-		this.orintation = orintation;
-		this.location = location;
+	public void updatePoint(Point newPoint, double newOrientation){
+		this.orientation = newOrientation;
+		this.location = newPoint;
 
 	}
 	
@@ -93,8 +94,8 @@ public class So2Pose {
 	 * 
 	 * @return the orientation of the pose
 	 */
-	public double getOrintation(){
-		return orintation;
+	public double getOrientation(){
+		return orientation;
 	}
 
 }

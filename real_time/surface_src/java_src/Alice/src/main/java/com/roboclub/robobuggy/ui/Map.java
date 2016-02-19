@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+/**
+ * the map, it plots points where we are based on gps
+ */
 public class Map extends JPanel {
 	private BufferedImage map;
 	private ArrayList<LocTuple> locs;
@@ -17,6 +20,9 @@ public class Map extends JPanel {
 	private LocTuple imgSouthEast;
 
 
+	/**
+	 * makes the new map
+	 */
 	public Map(){
 		try {
 			map = ImageIO.read(new File("images/lat_long_course_map.png"));
@@ -27,14 +33,21 @@ public class Map extends JPanel {
 		imgSouthEast = new LocTuple(40.436597411027364, -79.93596322545625);
 		locs = new ArrayList<LocTuple>();
 	}
-	
-	
+
+
+	/**
+	 * @param newPoint the point to add to the map
+	 */
 	public void addPoint(LocTuple newPoint){
 		locs.add(newPoint);
 		this.repaint();
 	}
-	
-	public void addArrow(LocTuple newPoint,double orintation){
+
+	/**
+	 * @param newPoint point to add
+	 * @param orientation the orientation to put the arrow at
+	 */
+	public void addArrow(LocTuple newPoint,double orientation){
 		//TODO
 	}
 

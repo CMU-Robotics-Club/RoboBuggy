@@ -8,7 +8,11 @@ import com.roboclub.robobuggy.messages.ImageMessage;
 import com.roboclub.robobuggy.messages.NodeStatusMessage;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
-import com.roboclub.robobuggy.ros.*;
+import com.roboclub.robobuggy.ros.Message;
+import com.roboclub.robobuggy.ros.MessageListener;
+import com.roboclub.robobuggy.ros.NodeChannel;
+import com.roboclub.robobuggy.ros.Publisher;
+import com.roboclub.robobuggy.ros.Subscriber;
 import org.jcodec.api.awt.SequenceEncoder;
 
 import java.awt.image.BufferedImage;
@@ -27,7 +31,6 @@ import java.util.List;
 public class CameraNode extends PeriodicNode{
 	private Webcam webcam;
 	private Publisher imagePublisher;
-	private Publisher imageFramePublisher;
 	private int count = 0;
 	private SequenceEncoder videoEncoder;
 

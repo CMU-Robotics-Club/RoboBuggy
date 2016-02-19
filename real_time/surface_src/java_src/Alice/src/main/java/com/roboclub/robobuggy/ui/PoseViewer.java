@@ -13,12 +13,18 @@ import com.sun.javafx.geom.Vec2d;
 
 import Jama.Matrix;
 
+/**
+ * pose viewer - has a world frame and a buggy relative to it
+ */
 public class PoseViewer extends RobobuggyGUIContainer{
 	private Matrix view;
 	private Matrix worldFrame;
 	private ArrayList<Matrix> poses;
-	
-	//constructor 
+
+	/**
+	 * makes a new poseviewer
+	 */
+	//constructor
 	PoseViewer(){
 		poses = new ArrayList<Matrix>();
 		double [][] viewArray = {{1,0,0,0},{0,1,0,0},{0,0,1,0},{0,0,0,1}};
@@ -50,12 +56,21 @@ public class PoseViewer extends RobobuggyGUIContainer{
 		worldFrame = new Matrix(worldFrameArray);
 		//TODO add poses 
 	}
-	
+
+	/**
+	 * @param m matrix to project
+	 * @return the vec that is getting projected
+	 */
 	public Vec2d projectToView(Matrix m){
 		//TODO 
 		return new Vec2d(100*m.get(0, 0)+500, -100*m.get(1, 0)+500);
 	}
-	
+
+	/**
+	 * @param g the graphics instance to draw with
+	 * @param m matrix to draw
+	 * @param name name of the matrix
+	 */
 	public void drawMatrix(Graphics g,Matrix m,String name){
 		double [][] origin = {{0},{0},{0},{1}};
 		double [][] xAxis = {{1},{0},{0},{1}};

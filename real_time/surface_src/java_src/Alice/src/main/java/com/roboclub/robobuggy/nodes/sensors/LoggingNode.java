@@ -6,19 +6,19 @@ import com.google.gson.JsonObject;
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
-import com.roboclub.robobuggy.messages.BaseMessage;
 import com.roboclub.robobuggy.messages.BrakeMessage;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.FingerPrintMessage;
+import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
+import com.roboclub.robobuggy.messages.ImageMessage;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
-import com.roboclub.robobuggy.messages.GPSPoseMessage;
+import com.roboclub.robobuggy.messages.NodeStatusMessage;
 import com.roboclub.robobuggy.messages.ResetMessage;
 import com.roboclub.robobuggy.messages.RobobuggyLogicNotificationMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
-import com.roboclub.robobuggy.messages.*;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyDecoratorNode;
 import com.roboclub.robobuggy.nodes.baseNodes.SerialNode;
@@ -38,8 +38,6 @@ import java.lang.reflect.Modifier;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.LinkedBlockingQueue;
-
-import org.jcodec.api.awt.SequenceEncoder;
 
 /**
  * {@link SerialNode} for reading in logging commands from the GUI
@@ -61,6 +59,9 @@ public class LoggingNode extends BuggyDecoratorNode {
     private static final String DATE_FILE_FORMAT = "yyyy-MM-dd-HH-mm-ss";
 
 
+    /**
+     * the statuses of the logging node
+     */
     public enum LoggingNodeStatus implements INodeStatus {
         INITIALIZED,
         STARTED_LOGGING,

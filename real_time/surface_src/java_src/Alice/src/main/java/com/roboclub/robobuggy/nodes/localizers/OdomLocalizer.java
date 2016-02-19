@@ -5,18 +5,14 @@ import java.util.Date;
 import com.roboclub.robobuggy.map.So2Pose;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
-import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
-import com.roboclub.robobuggy.nodes.baseNodes.BuggyNode;
-import com.roboclub.robobuggy.nodes.baseNodes.NodeState;
 import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
-import com.roboclub.robobuggy.ui.LocTuple;
 
 
 /**
@@ -35,8 +31,11 @@ public class OdomLocalizer  extends PeriodicNode{
 	private double secondOldestEncoder = 0;
 	private double mostRecentAngle = 0;
 	private double secondOldestAngle = 0;
-	
-	
+
+
+	/**
+	 * initializes a new odomlocalizer
+	 */
 	public OdomLocalizer() {
 		super(new  BuggyBaseNode(NodeChannel.POSE), 100);
 		
@@ -49,7 +48,7 @@ public class OdomLocalizer  extends PeriodicNode{
 			//TODO add locks 
 			double dist = encM.getDistance();
 			//to stop small value errors
-			double delta = dist - mostRecentEncoder;
+//			double delta = dist - mostRecentEncoder;
 			//System.out.println("delta:"+delta);
 			//if(Math.abs(delta) > .01){
 				secondOldestEncoder = mostRecentEncoder;
@@ -61,9 +60,9 @@ public class OdomLocalizer  extends PeriodicNode{
 			double deltaEncoder = mostRecentEncoder - secondOldestEncoder;
 			So2Pose deltaPose = new So2Pose(deltaEncoder, 0.0, deltaAngle);
 			pose = pose.mult(deltaPose);
-			posePub.publish(new GPSPoseMessage(new Date(), pose.getX(), pose.getY(), pose.getOrintation()));
+			posePub.publish(new GPSPoseMessage(new Date(), pose.getX(), pose.getY(), pose.getOrientation()));
 			//posePub.publish(new PoseMessage(new Date(), mostRecentEncoder, 0, 0));
-			//System.out.println("x:"+pose.getX()+"\t y:"+pose.getY()+"\t orintation"+pose.getOrintation());
+			//System.out.println("x:"+pose.getX()+"\t y:"+pose.getY()+"\t orintation"+pose.getOrientation());
 			secondOldestAngle = mostRecentAngle;
 			//}
 			
