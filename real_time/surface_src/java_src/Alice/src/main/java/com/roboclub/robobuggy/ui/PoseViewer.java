@@ -15,7 +15,8 @@ import com.sun.javafx.geom.Vec2d;
 
 import Jama.Matrix;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JSlider;
 
 /**
  * pose viewer - has a world frame and a buggy relative to it
