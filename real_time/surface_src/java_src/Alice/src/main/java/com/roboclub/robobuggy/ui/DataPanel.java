@@ -120,6 +120,8 @@ public class DataPanel extends RobobuggyGUIContainer {
 		new Subscriber(NodeChannel.IMU.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
+				System.out.println("here");
+				
 				ImuMeasurement msg = (ImuMeasurement)m;
 				
 				// Limit measurement values to 10 characters				
