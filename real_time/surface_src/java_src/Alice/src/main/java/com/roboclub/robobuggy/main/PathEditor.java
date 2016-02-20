@@ -70,9 +70,6 @@ public class PathEditor {
 				
 				
 				
-			} catch (UnsupportedEncodingException | FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
