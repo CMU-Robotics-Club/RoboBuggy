@@ -57,9 +57,9 @@ public class ImuVisualPanel extends JPanel {
 				//If I'm reading this correctly, this should activate by itself when I get a message
 				System.out.println("IMU MESSAGE!!!");
 				
-				yaw = ((ImuMeasurement)m).getYaw();
-				pitch = ((ImuMeasurement)m).getPitch();
-				roll = ((ImuMeasurement)m).getRoll();
+				yaw = Math.PI/180*((ImuMeasurement)m).getYaw();
+				pitch = Math.PI/180*((ImuMeasurement)m).getPitch();
+				roll = Math.PI/180*((ImuMeasurement)m).getRoll();
 				
 				//Keep this
 			    Gui.getInstance().fixPaint();
