@@ -210,6 +210,7 @@ void watchdog_init()
     cli();
 
     //Set the watchdog timer control register
+    wdt_reset();
 
     //This line enables the watchdog timer to be configured. Do not change.
     WDTCSR |= (1 << WDCE) | (1 << WDE);
@@ -275,8 +276,11 @@ int main(void)
     dbg_printf("Branch clean? %d\r\n", FP_CLEANSTATUS);
     dbg_printf("\nEnd of compilation information\r\n");
 
-    int auton_brake_last = micros();
-    int auton_steer_last = micros();
+    unsigned long time_start = micros();
+    unsigned long auton_brake_last = time_start;
+    unsigned long auton_steer_last = time_start;
+
+    printf("Brake initial: %lu Steer initial: %lu\n", auton_brake_last, auton_steer_last);
 
     watchdog_init();
 
@@ -371,19 +375,22 @@ int main(void)
         unsigned long delta2 = time_now - time2;
         unsigned long delta3 = time_now - time3;
         //Auton time deltas
-	// unsigned long delta4 = time_now - auton_brake_last;
-        //unsigned long delta5 = time_now - auton_steer_last;
+        unsigned long delta5 = time_now - auton_steer_last;
+        unsigned long delta4 = time_now - auton_brake_last;
+
         unsigned long g_encoder_ticks_safe = g_encoder_ticks;
         sei(); //enable interrupts
 
+
+        printf("Timenow: %lu Delta4: %lu Delta5: %lu\n", time_now, delta4, delta5);
+
         if(delta1 > CONNECTION_TIMEOUT_US ||
            delta2 > CONNECTION_TIMEOUT_US ||
-           delta3 > CONNECTION_TIMEOUT_US )
-	  /*||
+           delta3 > CONNECTION_TIMEOUT_US ||
            ((g_is_autonomous) && 
            (delta4 > CONNECTION_TIMEOUT_US ||
            delta5 > CONNECTION_TIMEOUT_US))
-           )*/ 
+           )
         {
             // we haven't heard from the RC receiver or high level in too long
             dbg_printf("Timed out connection from RC or high level!\n");

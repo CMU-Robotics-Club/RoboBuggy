@@ -26,7 +26,7 @@ void output_angles()
 //   //comapas
    Serial.print(magnetom[0]); Serial.print(",");
    Serial.print(magnetom[1]); Serial.print(",");
-   Serial.print(magnetom[2]); Serial.print(",");
+   Serial.print(magnetom[2]); //Serial.print(",");
    Serial.println();
 //   //gyro
 //   Serial.print(TO_DEG(yaw)); Serial.print(",");
