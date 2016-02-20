@@ -29,7 +29,7 @@ public class PathEditor {
 			System.out.println("Starting Path Editor");
 			try {
 				ArrayList<GpsMeasurement> wayPoints =
-						WayPointUtil.createWayPointsFromLog("logs/", "cleaned.txt");
+						WayPointUtil.createWayPointsFromLog("logs/", "2016-02-19-23-12-47/sensors_2016-02-19-23-12-47.txt");
 				//save the path to a new jason file type 
 				
 				//read back in the jason file type
@@ -49,35 +49,26 @@ public class PathEditor {
 					Gui.getInstance().fixPaint();
 				}
 
-				WayPointFollowerPlanner planer = new WayPointFollowerPlanner(NodeChannel.UNKNOWN_CHANNEL,wayPoints);
-			
-				for(int i = 0;i<wayPoints.size();i++){
-					final double latErrorFinal = 1/111131.745;
-					final double lonErrorFinal = 1/78846.81;
-
-					Color pointAttemptColor = new Color((float) Math.random(), (float) Math.random(), (float) Math.random());
-
-					for(double latError = -latErrorFinal;latError<latErrorFinal;latError+=latErrorFinal * 4){
-						for(double lonError = -lonErrorFinal;lonError<lonErrorFinal;lonError+=lonErrorFinal * 4){
-							double lat = wayPoints.get(i).getLatitude() + latError;
-							double lon = wayPoints.get(i).getLongitude() + lonError;
-							double waypointlat = wayPoints.get(i).getLatitude();
-							double waypointlon = wayPoints.get(i).getLongitude();
-
-							double angle = planer.getCommandedSteeringAngle();
-
-							planer.updatePositionEstimate(new GPSPoseMessage(new Date(),
-								lat, lon, 0));
-
-							Gui.getInstance().getMainGuiWindow().getAnalyPane().getDataPanel().
-									getGpsPanel().addLineToMap(new LocTuple(waypointlat, -waypointlon),
-									angle, pointAttemptColor);
-							Gui.getInstance().getMainGuiWindow().getAnalyPane().getDataPanel().
-									getGpsPanel().addLineToMap(new LocTuple(waypointlat, -waypointlon),
-									angle + Math.PI/2, pointAttemptColor.darker());
-						}
-					}
-				}
+//				WayPointFollowerPlanner planer = new WayPointFollowerPlanner(NodeChannel.UNKNOWN_CHANNEL,wayPoints);
+//
+//				for(int i = 0;i<wayPoints.size();i++){
+//					final double latErrorFinal = 1/111131.745;
+//					final double lonErrorFinal = 1/78846.81;
+//					for(double latError = -latErrorFinal;latError<latErrorFinal;latError+=latErrorFinal/5){
+//						for(double lonError = -lonErrorFinal;lonError<lonErrorFinal;lonError+=lonErrorFinal/5){
+//							double lat = wayPoints.get(i).getLatitude() + latError;
+//							double lon = wayPoints.get(i).getLongitude() + lonError;
+//
+//							planer.updatePositionEstimate(new GPSPoseMessage(new Date(),
+//								lat, lon, 0));
+//							planer.getCommandedSteeringAngle();
+//
+//							Gui.getInstance().getMainGuiWindow().getAnalyPane().getDataPanel().
+//									getGpsPanel().addLineToMap(new LocTuple(lat, lon),
+//									planer.getCommandedSteeringAngle());
+//						}
+//					}
+//				}
 
 				//TODO add zoom and ability to edit 
 				

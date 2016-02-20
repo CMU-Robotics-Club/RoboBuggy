@@ -7,11 +7,15 @@ import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
+import org.openstreetmap.gui.jmapviewer.*;
+import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
+import org.openstreetmap.gui.jmapviewer.interfaces.MapPolygon;
+import org.openstreetmap.gui.jmapviewer.interfaces.TileCache;
+import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
 
 import javax.imageio.ImageIO;
-import javax.swing.JPanel;
-import java.awt.Color;
-import java.awt.Graphics;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -19,16 +23,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-
-import org.openstreetmap.gui.jmapviewer.Coordinate;
-import org.openstreetmap.gui.jmapviewer.JMapViewerTree;
-import org.openstreetmap.gui.jmapviewer.MapMarkerDot;
-import org.openstreetmap.gui.jmapviewer.MapPolygonImpl;
-import org.openstreetmap.gui.jmapviewer.MemoryTileCache;
-import org.openstreetmap.gui.jmapviewer.OsmTileLoader;
-import org.openstreetmap.gui.jmapviewer.Tile;
-import org.openstreetmap.gui.jmapviewer.interfaces.TileCache;
-import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
+import java.util.List;
 
 
 /**
@@ -37,6 +32,9 @@ import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
 public class GpsPanel extends JPanel {
 	
 	private static final long serialVersionUID = 42L;
+	
+	private double theta = 0;
+	private MapPolygonImpl directionLine;
 	
 	private JMapViewerTree mapTree;
 	
@@ -47,19 +45,24 @@ public class GpsPanel extends JPanel {
 	private double mapDragX = -1;
 	private double mapDragY = -1;
 
-	@SuppressWarnings("unused") //this subscriber is used to generate callbacks 
+	@SuppressWarnings("unused") //this subscriber is used to generate callbacks
 	private Subscriber gpsSub;
 	
 	/**
 	 * Construct a new {@link GpsPanel}
 	 */
 	public GpsPanel(){
-		
+
+		directionLine = new MapPolygonImpl(
+				new Coordinate(0, 0),
+				new Coordinate(0, 0),
+				new Coordinate(0, 1)
+		);
+
 		initMapTree();
 		addCacheToTree();
 		
 		this.add(mapTree);
-		
 		gpsSub = new Subscriber(NodeChannel.GPS.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
@@ -72,20 +75,32 @@ public class GpsPanel extends JPanel {
 				}
 				
 				mapTree.getViewer().addMapMarker(new MapMarkerDot(Color.BLUE, latitude, longitude));
+				updateArrow();
 				GpsPanel.this.repaint();  // refresh screen
 
 			}
 		});
 
-		MapPolygonImpl polygon = new MapPolygonImpl(new Coordinate(mapViewerLat, mapViewerLon),
- 													new Coordinate(mapViewerLat + 0.0001, mapViewerLon),
- 													new Coordinate(mapViewerLat, mapViewerLon));
-		polygon.setColor(Color.RED);
-		mapTree.getViewer().addMapPolygon(polygon);
+		mapTree.getViewer().addMapPolygon(directionLine);
 
 
 	}
-	
+
+	private void updateArrow() {
+		List<MapPolygon> polygons = mapTree.getViewer().getMapPolygonList();
+			List<MapMarker> markers = mapTree.getViewer().getMapMarkerList();
+			if (markers.size() >= 2) {
+				MapMarker backMarker = markers.get(markers.size() - 2);
+				MapMarker frontMarker = markers.get(markers.size() - 1);
+
+				double endpointLat = 50 * (frontMarker.getLat() - backMarker.getLat()) + frontMarker.getLat();
+				double endpointLon = 50 * (frontMarker.getLon() - backMarker.getLon()) + frontMarker.getLon();
+
+				polygons.clear();
+				addLineToMap(new LocTuple(frontMarker.getLat(), frontMarker.getLon()), new LocTuple(endpointLat, endpointLon), Color.RED);
+			}
+	}
+
 	private void addCacheToTree() {
 		try {
 			TileCache courseCache = new MemoryTileCache();
@@ -138,7 +153,11 @@ public class GpsPanel extends JPanel {
 	/**
 	 * @param point1 1st endpoint of line to add
 	 * @param point2 2nd endpoint of line to add
+<<<<<<< HEAD
 	 * @param lineColor color of the line
+=======
+	 * @param lineColor
+>>>>>>> trevor-test2
 	 */
 	public void addLineToMap(LocTuple point1, LocTuple point2, Color lineColor) {
 		MapPolygonImpl polygon = new MapPolygonImpl(
@@ -222,6 +241,55 @@ public class GpsPanel extends JPanel {
 				mapTree.getViewer().setDisplayPosition(new Coordinate(mapViewerLat, mapViewerLon), zoomLevel);
 			}
 		});
+	}
+	
+//	/**
+//	 * Draws an arrow in the buggy's current direction
+//	 * @param g2d - Graphics stuff
+//	 * @param size - Length of the arrow. Should probably be dependent on actual speed, but I leave someone else to do math
+//	 */
+//	//I think this code should work, but I have no way of testing this
+//	private void drawArrowRT(Graphics2D g2d, double size){
+//		if(locs.size() < 2){
+//			//There's not enough data to get a position and direction
+//			return;
+//		}
+//
+//		LocTuple p1 = locs.get(locs.size()-2);
+//		LocTuple p2 = locs.get(locs.size()-1);
+//		double deltax = p2.getLongitude() - p1.getLongitude();
+//		double deltay = p2.getLatitude() - p1.getLatitude();
+//		theta = Math.atan2(deltay, deltax);
+//
+//		//I took this code from the drawTuple code and I assume it gets the screen location of mTuple (now p2)
+//		double dx = Math.abs(imgSouthEast.getLongitude() - imgNorthWest.getLongitude());
+//		double dy = Math.abs(imgSouthEast.getLatitude() - imgNorthWest.getLatitude());
+//
+//		double latdiff = Math.abs(p2.getLatitude() - imgNorthWest.getLatitude());
+//		double londiff = Math.abs(p2.getLongitude() - imgNorthWest.getLongitude());
+//
+//		double px = (londiff * frameWidth) / dx;
+//		double py = (latdiff * frameHeight) / dy;
+//
+//		drawArrow(g2d, px, py, theta, size);
+//	}
+	
+	private void drawArrow(Graphics2D g2d, double x1, double y1, double theta, double size){
+		double x2 = x1 + rotate(size, 0, theta)[0];
+		double y2 = y1 + rotate(size, 0, theta)[1];
+		g2d.drawLine((int)x1, (int)y1, (int)x2, (int)y2);
+		double x3 = x2 + rotate(size/2, 0, theta + 3*Math.PI/4)[0];
+		double y3 = y2 + rotate(size/2, 0, theta + 3*Math.PI/4)[1];
+		g2d.drawLine((int)x2, (int)y2, (int)x3, (int)y3);
+		double x4 = x2 + rotate(size/2, 0, theta - 3*Math.PI/4)[0];
+		double y4 = y2 + rotate(size/2, 0, theta - 3*Math.PI/4)[1];
+		g2d.drawLine((int)x2, (int)y2, (int)x4, (int)y4);
+	}
+	
+	private double[] rotate(double x, double y, double theta){
+		double xp = (x*Math.cos(theta) + y*Math.sin(theta));
+		double yp = (-x*Math.sin(theta) + y*Math.cos(theta));
+		return new double[] {xp, yp};
 	}
 	
 

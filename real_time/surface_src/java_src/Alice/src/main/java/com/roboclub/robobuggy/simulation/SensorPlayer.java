@@ -125,6 +125,8 @@ public class SensorPlayer extends Thread {
 
             JsonArray sensorDataArray = logFile.getAsJsonArray("sensor_data");
             for (JsonElement sensorAsJElement: sensorDataArray) {
+                boolean waitForTimeDiff = true;
+
                 if(sensorAsJElement.isJsonObject()){
                     JsonObject sensorDataJson = sensorAsJElement.getAsJsonObject();
                     String versionID = sensorDataJson.get("VERSION_ID").getAsString();
@@ -184,19 +186,12 @@ public class SensorPlayer extends Thread {
                             new RobobuggyLogicNotification("Stopping playback, hit a STOP", RobobuggyMessageLevel.NOTE);
                             break;
                         default:
-                            transmitMessage = new BaseMessage() {
-                                @Override
-                                public String toLogString() {
-                                    return null;
-                                }
-
-                                @Override
-                                public Message fromLogString(String str) {
-                                    return null;
-                                }
-                            };
-                            new RobobuggyLogicNotification("Couldn't parse a sensor found in the file: " + versionID, RobobuggyMessageLevel.WARNING);
+                            waitForTimeDiff = false;
                             break;
+                    }
+
+                    if (!waitForTimeDiff) {
+                        continue;
                     }
 
                     getNewPlaybackSpeed();

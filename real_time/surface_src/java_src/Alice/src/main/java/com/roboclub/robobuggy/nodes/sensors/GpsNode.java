@@ -168,7 +168,7 @@ public final class GpsNode extends SerialNode {
 				west = false;
 				break;
 			default:
-				System.out.println("uhoh, you can't go not north or south!");
+				System.out.println("uhoh, you can't go not east or west!");
 				throw new RuntimeException();
 		}
 		

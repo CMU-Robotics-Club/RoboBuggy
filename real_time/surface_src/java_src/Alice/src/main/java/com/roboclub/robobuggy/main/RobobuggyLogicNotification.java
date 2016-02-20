@@ -54,7 +54,7 @@ public class RobobuggyLogicNotification {
 		*/
 	}
 
-	//a function to check if a message level is signfigent enough to display to the user
+	//a function to check if a message level is significant enough to display to the user
 	//note that this function will need to be updated if message level ever 
 	private boolean shouldMessageBeDisplayed(RobobuggyMessageLevel level){
 		switch(level){
