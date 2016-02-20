@@ -77,9 +77,11 @@ public class GpsPanel extends JPanel {
 			}
 		});
 
-		mapTree.getViewer().addMapPolygon(new MapPolygonImpl(new Coordinate(mapViewerLat, mapViewerLon),
+		MapPolygonImpl polygon = new MapPolygonImpl(new Coordinate(mapViewerLat, mapViewerLon),
  													new Coordinate(mapViewerLat + 0.0001, mapViewerLon),
- 													new Coordinate(mapViewerLat, mapViewerLon)));
+ 													new Coordinate(mapViewerLat, mapViewerLon));
+		polygon.setColor(Color.RED);
+		mapTree.getViewer().addMapPolygon(polygon);
 
 
 	}
@@ -136,26 +138,30 @@ public class GpsPanel extends JPanel {
 	/**
 	 * @param point1 1st endpoint of line to add
 	 * @param point2 2nd endpoint of line to add
+	 * @param lineColor color of the line
 	 */
-	public void addLineToMap(LocTuple point1, LocTuple point2) {
-		mapTree.getViewer().addMapPolygon(new MapPolygonImpl(
+	public void addLineToMap(LocTuple point1, LocTuple point2, Color lineColor) {
+		MapPolygonImpl polygon = new MapPolygonImpl(
 				new Coordinate(point1.getLatitude(), point1.getLongitude()),
 				new Coordinate(point1.getLatitude(), point1.getLongitude()),
 				new Coordinate(point2.getLatitude(), point2.getLongitude())
-		));
+		);
+		polygon.setColor(lineColor);
+		mapTree.getViewer().addMapPolygon(polygon);
 	}
 
 	/**
 	 * @param originPoint the origin point of the ray
 	 * @param angle the heading of the ray
+	 * @param lineColor the color of the line
 	 */
-	public void addLineToMap(LocTuple originPoint, double angle) {
-		double scalingFactor = 0.001;
-		double dx = originPoint.getLatitude() + Math.cos(angle) * scalingFactor;
-		double dy = originPoint.getLongitude() + Math.sin(angle) * scalingFactor;
+	public void addLineToMap(LocTuple originPoint, double angle, Color lineColor) {
+		double scalingFactor = 0.00005;
+		double dx = Math.cos(angle) * scalingFactor;
+		double dy = Math.sin(angle) * scalingFactor;
 
 		LocTuple endpoint = new LocTuple(originPoint.getLatitude() + dx, originPoint.getLongitude() + dy);
-		addLineToMap(originPoint, endpoint);
+		addLineToMap(originPoint, endpoint, lineColor);
 	}
 
 	private void initMapTree() {

@@ -1,5 +1,6 @@
 package com.roboclub.robobuggy.main;
 
+import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -10,12 +11,9 @@ import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
 import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
-import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ui.Gui;
 import com.roboclub.robobuggy.ui.LocTuple;
-import com.roboclub.robobuggy.ui.Map;
-import com.roboclub.robobuggy.ui.RobobuggyJFrame;
 
 /**
  * Path Editor - Takes a log file and makes a waypoint list from it
@@ -56,18 +54,27 @@ public class PathEditor {
 				for(int i = 0;i<wayPoints.size();i++){
 					final double latErrorFinal = 1/111131.745;
 					final double lonErrorFinal = 1/78846.81;
-					for(double latError = -latErrorFinal;latError<latErrorFinal;latError+=latErrorFinal/5){
-						for(double lonError = -lonErrorFinal;lonError<lonErrorFinal;lonError+=lonErrorFinal/5){
+
+					Color pointAttemptColor = new Color((float) Math.random(), (float) Math.random(), (float) Math.random());
+
+					for(double latError = -latErrorFinal;latError<latErrorFinal;latError+=latErrorFinal * 4){
+						for(double lonError = -lonErrorFinal;lonError<lonErrorFinal;lonError+=lonErrorFinal * 4){
 							double lat = wayPoints.get(i).getLatitude() + latError;
 							double lon = wayPoints.get(i).getLongitude() + lonError;
+							double waypointlat = wayPoints.get(i).getLatitude();
+							double waypointlon = wayPoints.get(i).getLongitude();
+
+							double angle = planer.getCommandedSteeringAngle();
 
 							planer.updatePositionEstimate(new GPSPoseMessage(new Date(),
 								lat, lon, 0));
-							planer.getCommandedSteeringAngle();
 
 							Gui.getInstance().getMainGuiWindow().getAnalyPane().getDataPanel().
-									getGpsPanel().addLineToMap(new LocTuple(lat, lon),
-									planer.getCommandedSteeringAngle());
+									getGpsPanel().addLineToMap(new LocTuple(waypointlat, -waypointlon),
+									angle, pointAttemptColor);
+							Gui.getInstance().getMainGuiWindow().getAnalyPane().getDataPanel().
+									getGpsPanel().addLineToMap(new LocTuple(waypointlat, -waypointlon),
+									angle + Math.PI/2, pointAttemptColor.darker());
 						}
 					}
 				}
