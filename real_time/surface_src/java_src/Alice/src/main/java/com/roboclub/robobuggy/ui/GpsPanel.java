@@ -7,9 +7,14 @@ import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
+import org.openstreetmap.gui.jmapviewer.*;
+import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
+import org.openstreetmap.gui.jmapviewer.interfaces.MapPolygon;
+import org.openstreetmap.gui.jmapviewer.interfaces.TileCache;
+import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
 
 import javax.imageio.ImageIO;
-import javax.swing.JPanel;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -18,16 +23,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-
-import org.openstreetmap.gui.jmapviewer.Coordinate;
-import org.openstreetmap.gui.jmapviewer.JMapViewerTree;
-import org.openstreetmap.gui.jmapviewer.MapMarkerDot;
-import org.openstreetmap.gui.jmapviewer.MapPolygonImpl;
-import org.openstreetmap.gui.jmapviewer.MemoryTileCache;
-import org.openstreetmap.gui.jmapviewer.OsmTileLoader;
-import org.openstreetmap.gui.jmapviewer.Tile;
-import org.openstreetmap.gui.jmapviewer.interfaces.TileCache;
-import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
+import java.util.List;
 
 
 /**
@@ -38,6 +34,7 @@ public class GpsPanel extends JPanel {
 	private static final long serialVersionUID = 42L;
 	
 	private double theta = 0;
+	private MapPolygonImpl directionLine;
 	
 	private JMapViewerTree mapTree;
 	
@@ -55,7 +52,13 @@ public class GpsPanel extends JPanel {
 	 * Construct a new {@link GpsPanel}
 	 */
 	public GpsPanel(){
-		
+
+		directionLine = new MapPolygonImpl(
+				new Coordinate(0, 0),
+				new Coordinate(0, 0),
+				new Coordinate(0, 1)
+		);
+
 		initMapTree();
 		addCacheToTree();
 		
@@ -72,15 +75,32 @@ public class GpsPanel extends JPanel {
 				}
 				
 				mapTree.getViewer().addMapMarker(new MapMarkerDot(Color.BLUE, latitude, longitude));
+				updateArrow();
 				GpsPanel.this.repaint();  // refresh screen
 
 			}
 		});
 
+		mapTree.getViewer().addMapPolygon(directionLine);
 
 
 	}
-	
+
+	private void updateArrow() {
+		List<MapPolygon> polygons = mapTree.getViewer().getMapPolygonList();
+			List<MapMarker> markers = mapTree.getViewer().getMapMarkerList();
+			if (markers.size() >= 2) {
+				MapMarker backMarker = markers.get(markers.size() - 2);
+				MapMarker frontMarker = markers.get(markers.size() - 1);
+
+				double endpointLat = 50 * (frontMarker.getLat() - backMarker.getLat()) + frontMarker.getLat();
+				double endpointLon = 50 * (frontMarker.getLon() - backMarker.getLon()) + frontMarker.getLon();
+
+				polygons.clear();
+				addLineToMap(new LocTuple(frontMarker.getLat(), frontMarker.getLon()), new LocTuple(endpointLat, endpointLon), Color.RED);
+			}
+	}
+
 	private void addCacheToTree() {
 		try {
 			TileCache courseCache = new MemoryTileCache();
@@ -133,13 +153,16 @@ public class GpsPanel extends JPanel {
 	/**
 	 * @param point1 1st endpoint of line to add
 	 * @param point2 2nd endpoint of line to add
+	 * @param lineColor
 	 */
-	public void addLineToMap(LocTuple point1, LocTuple point2) {
-		mapTree.getViewer().addMapPolygon(new MapPolygonImpl(
+	public void addLineToMap(LocTuple point1, LocTuple point2, Color lineColor) {
+		MapPolygonImpl polygon = new MapPolygonImpl(
 				new Coordinate(point1.getLatitude(), point1.getLongitude()),
 				new Coordinate(point1.getLatitude(), point1.getLongitude()),
 				new Coordinate(point2.getLatitude(), point2.getLongitude())
-		));
+		);
+		polygon.setColor(lineColor);
+		mapTree.getViewer().addMapPolygon(polygon);
 	}
 
 	/**
@@ -152,7 +175,7 @@ public class GpsPanel extends JPanel {
 		double dy = originPoint.getLongitude() + Math.sin(angle) * scalingFactor;
 
 		LocTuple endpoint = new LocTuple(originPoint.getLatitude() + dx, originPoint.getLongitude() + dy);
-		addLineToMap(originPoint, endpoint);
+		addLineToMap(originPoint, endpoint, Color.BLUE);
 	}
 
 	private void initMapTree() {
