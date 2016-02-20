@@ -35,8 +35,8 @@ public final class ImuNode extends SerialNode {
 	 */
 	public ImuNode(NodeChannel sensor, String portName) {
 		super(new BuggyBaseNode(sensor), "IMU", portName, BAUDRATE);
-		msgPubIMU = new Publisher(sensor.getMsgPath());
-		msgPubMAG = new Publisher(sensor.getMsgPath());
+		msgPubIMU = new Publisher(NodeChannel.IMU.getMsgPath());
+		msgPubMAG = new Publisher(NodeChannel.IMU_MAGNETIC.getMsgPath());
 		statePub = new Publisher(sensor.getStatePath());
 		
 		
@@ -66,7 +66,7 @@ public final class ImuNode extends SerialNode {
 	@Override
 	public int peel(byte[] buffer, int start, int bytesAvailable) {
 		// TODO replace 80 with max message length
-		if(bytesAvailable < 30) {
+		if(bytesAvailable < 50) {
 			// Not enough bytes...maybe?
 			return 0;
 		}
@@ -90,10 +90,11 @@ public final class ImuNode extends SerialNode {
 			return 1;
 		}
 		
-		double[] vals = new double[5];
+		double[] vals = new double[6];
 		String imuRawStr;
 		try {
 			imuRawStr = new String(buffer, start+5, bytesAvailable-5, "UTF-8");
+
 		} catch (UnsupportedEncodingException e) {
 			return 1;
 		} //TODO check +5 -5
@@ -106,22 +107,26 @@ public final class ImuNode extends SerialNode {
 				Double d = Double.parseDouble(imuRawStr.substring(0, commaIndex));
 				vals[i] = d;
 			} catch (NumberFormatException nfe) {
-				System.out.println("maligned input; skipping...");
 				return 1;
 			}
 			imuRawStr = imuRawStr.substring(commaIndex+1);	
 		}
 		
+		
 		// The last one, we use the hash as the symbol!
 		int hashIndex = imuRawStr.indexOf('#');
-		vals[2] = Double.parseDouble(imuRawStr.substring(0, hashIndex));
-		imuRawStr = imuRawStr.substring(hashIndex);	
+		if(hashIndex == -1){
+			return 1;
+		}
+		    vals[5] = Double.parseDouble(imuRawStr.substring(0, hashIndex));
+			imuRawStr = imuRawStr.substring(hashIndex);	
 			
-		msgPubIMU.publish(new ImuMeasurement(vals[0], vals[1], vals[2]));
-		msgPubMAG.publish(new MagneticMeasurement(vals[3],vals[4],vals[5]));
-		//Feed the watchdog
-		setNodeState(NodeState.ON);
-		return 4 + (origLength - imuRawStr.length());
+			msgPubIMU.publish(new ImuMeasurement(vals[0], vals[1], vals[2]));
+			msgPubMAG.publish(new MagneticMeasurement(vals[3],vals[4],vals[5]));
+			//Feed the watchdog
+			setNodeState(NodeState.ON);
+			return 4 + (origLength - imuRawStr.length());
+
 	}
 
 }
