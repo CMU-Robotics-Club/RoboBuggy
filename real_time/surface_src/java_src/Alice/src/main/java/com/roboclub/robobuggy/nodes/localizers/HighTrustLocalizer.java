@@ -1,108 +1,154 @@
 package com.roboclub.robobuggy.nodes.localizers;
 
+import java.awt.Point;
+import java.util.Date;
+
+import com.roboclub.robobuggy.map.So2Pose;
+import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
+import com.roboclub.robobuggy.messages.GpsMeasurement;
+import com.roboclub.robobuggy.messages.ImuMeasurement;
+import com.roboclub.robobuggy.messages.MagneticMeasurement;
+import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
+import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
 
-import java.util.Date;
+public class HighTrustLocalizer implements Node{
+	private double wheelOrintation_buggyFrame;
+	private double buggyFrame_gps_x;
+	private double buggyFrame_gps_y;
+	private double buggyFrame_rot_z;
+	private double mostRecentEncoder = 0;
+	private double secondOldestEncoder = 0;
 
-/**
- * Treats each gps value we get as true - good way for quick prototyping
- */
-public class HighTrustLocalizer {
-	private Publisher posePub;
-	private double wheelOrientationBuggyFrame;
-	private double buggyFrameGpsX;
-	private double buggyFrameGpsY;
-	private double buggyFrameGpsZ;
+	private double LATITUDE_ZERO = 40.44288816666667;
+	private double LONGITUDE_ZERO = -79.9427065; 
 	
-	HighTrustLocalizer(){
+	private Publisher posePub = new Publisher(NodeChannel.POSE.getMsgPath());
+
+	
+	public HighTrustLocalizer(){
 		//init values
-		wheelOrientationBuggyFrame = 0.0;
-		buggyFrameGpsX = 0.0;
-		buggyFrameGpsY = 0.0;
-		buggyFrameGpsZ = 0.0;
-		wheelOrientationBuggyFrame = 0.0;
+		wheelOrintation_buggyFrame = 0.0;
+		buggyFrame_gps_x = 0.0;
+		buggyFrame_gps_y = 0.0;
+		wheelOrintation_buggyFrame = 0.0;
+
+		
+		//steering
+		new Subscriber(NodeChannel.STEERING.getMsgPath(), new MessageListener() {
+			
+			@Override
+			public void actionPerformed(String topicName, Message m) {
+				SteeringMeasurement steerM = (SteeringMeasurement)m;
+				wheelOrintation_buggyFrame = steerM.getAngle();
+				
+			}
+		});
 		
 		//add subscribers 
 		//Initialize subscriber to encoder measurements
 		new Subscriber(NodeChannel.ENCODER.getMsgPath(), new MessageListener() {
 				@Override
 				public void actionPerformed(String topicName, Message m) {
-								
+						EncoderMeasurement encM = (EncoderMeasurement)m;
+						secondOldestEncoder = mostRecentEncoder;
+						mostRecentEncoder = encM.getDistance();
+						
+						//Get orientation in world frame
+						double worldOrintation = buggyFrame_rot_z+wheelOrintation_buggyFrame;
+						//TODO move us forward by that amount 
+						double deltaEncoder = mostRecentEncoder - secondOldestEncoder;
+						So2Pose deltaPose = new So2Pose(deltaEncoder, 0.0, worldOrintation);
+						com.roboclub.robobuggy.map.Point deltaPoint = deltaPose.getSe2Point();
+					//	buggyFrame_gps_x = buggyFrame_gps_x + deltaPoint.getX();
+					//	buggyFrame_gps_y= buggyFrame_gps_y + deltaPoint.getY();
+						
+						//now publisher the point
+					//	publishUpdate();	
+
+					}
+				}); 
+		
+		//add subscribers 
+		//Initialize subscriber to GPS measurements
+		new Subscriber(NodeChannel.GPS.getMsgPath(), new MessageListener() {
+				@Override
+				public void actionPerformed(String topicName, Message m) {
+					  GpsMeasurement gpsM = (GpsMeasurement)m;
+					  double thisLon = -gpsM.getLongitude();
+					  double thisLat = gpsM.getLatitude();
+					  double dLongitude = thisLon - LONGITUDE_ZERO;
+					  double dLatitude= thisLat - LATITUDE_ZERO;
+
+					  double oldX = buggyFrame_gps_x;
+					  double oldY = buggyFrame_gps_y;
+					  buggyFrame_gps_x = Math.cos(thisLon) * 69.172*5280*dLongitude;  
+					  buggyFrame_gps_y = 365228*dLatitude;
+					  double dx = buggyFrame_gps_x - oldX;
+					  double dy = buggyFrame_gps_y - oldY;
+					  buggyFrame_rot_z = Math.atan2(dy, dx);
+						publishUpdate();	
 					}
 				});
+		
+		//add subscribers 
+		//Initialize subscriber to IMU measurements
+		new Subscriber(NodeChannel.IMU.getMsgPath(), new MessageListener() {
+				@Override
+				public void actionPerformed(String topicName, Message m) {
+						ImuMeasurement imuM = (ImuMeasurement)m;
+						//TODO useful things
+				//		publishUpdate();	
 
-		posePub = new Publisher(NodeChannel.POSE.getMsgPath());
+					}
+				});
+		
+		//add subscribers 
+		//Initialize subscriber to IMU MAGNITOMETER measurements
+		new Subscriber(NodeChannel.IMU_MAGNETIC.getMsgPath(), new MessageListener() {
+				@Override
+				public void actionPerformed(String topicName, Message m) {
+								MagneticMeasurement magM = (MagneticMeasurement)m;
+								//TODO useful things
+				//				publishUpdate();	
+
+					}
+				});
+		
 	}
 
-
-	/**
-	 * Sends a new pose message on the publishers
-	 * @param lat pose's latitude
-	 * @param lon pose's longitude
-	 * @param heading pose's heading
-	 */
-	public void sendNewPoseMessage(double lat, double lon, double heading) {
-		posePub.publish(new GPSPoseMessage(new Date(), lat, lon, heading));
+	private void publishUpdate(){
+		posePub.publish(new GPSPoseMessage(new Date(), buggyFrame_gps_x, buggyFrame_gps_y, buggyFrame_rot_z));
 	}
 
-	/**
-	 * @return the wheel orientation
-	 */
-	public double getWheelOrientationBuggyFrame() {
-		return wheelOrientationBuggyFrame;
+	@Override
+	public boolean startNode() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
-	/**
-	 * @param wheelOrientationBuggyFrame new wheel orientation
-	 */
-	public void setWheelOrientationBuggyFrame(double wheelOrientationBuggyFrame) {
-		this.wheelOrientationBuggyFrame = wheelOrientationBuggyFrame;
+	@Override
+	public boolean shutdown() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
-	/**
-	 * @return the frame gps x coord
-	 */
-	public double getBuggyFrameGpsX() {
-		return buggyFrameGpsX;
+	@Override
+	public void setName(String newName) {
+		// TODO Auto-generated method stub
+		
 	}
 
-	/**
-	 * @param buggyFrameGpsX new frame gps x coord
-	 */
-	public void setBuggyFrameGpsX(double buggyFrameGpsX) {
-		this.buggyFrameGpsX = buggyFrameGpsX;
+	@Override
+	public String getName() {
+		return "highTrustLocalizer";
 	}
-
-	/**
-	 * @return the frame gps y coord
-	 */
-	public double getBuggyFrameGpsY() {
-		return buggyFrameGpsY;
-	}
-
-	/**
-	 * @param buggyFrameGpsY new frame gps y coord
-	 */
-	public void setBuggyFrameGpsY(double buggyFrameGpsY) {
-		this.buggyFrameGpsY = buggyFrameGpsY;
-	}
-
-	/**
-	 * @return the frame gps z coord
-	 */
-	public double getBuggyFrameGpsZ() {
-		return buggyFrameGpsZ;
-	}
-
-	/**
-	 * @param buggyFrameGpsZ new frame gps z coord
-	 */
-	public void setBuggyFrameGpsZ(double buggyFrameGpsZ) {
-		this.buggyFrameGpsZ = buggyFrameGpsZ;
-	}
+	
+	
+	
 }

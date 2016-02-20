@@ -1,14 +1,19 @@
 package com.roboclub.robobuggy.main;
 
+import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
+import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
 import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
+import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ui.Gui;
 import com.roboclub.robobuggy.ui.LocTuple;
 
+import java.awt.Color;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Path Editor - Takes a log file and makes a waypoint list from it
@@ -20,11 +25,13 @@ public class PathEditor {
 	 * @param args args
 	 */
 	public static void main(String[] args) {
+		double currentHeading = 0*Math.PI/180;
+		
 		// TODO Auto-generated method stub
 			System.out.println("Starting Path Editor");
 			try {
 				ArrayList<GpsMeasurement> wayPoints =
-						WayPointUtil.createWayPointsFromLog("logs/", "2016-02-19-23-12-47/sensors_2016-02-19-23-12-47.txt");
+						WayPointUtil.createWayPointsFromLog("logs/", "2016-02-19-23-08-24/sensors_2016-02-19-23-08-24.txt");
 				//save the path to a new jason file type 
 				
 				//read back in the jason file type
@@ -39,31 +46,33 @@ public class PathEditor {
 				//displaying points to the user
 				for(int i = 0;i<wayPoints.size();i++){
 					Gui.getInstance().getMainGuiWindow().getAnalyPane().getDataPanel().getGpsPanel().
-							addPointsToMapTree(new LocTuple(wayPoints.get(i).getLatitude(),
+							addPointsToMapTree(Color.BLUE,new LocTuple(wayPoints.get(i).getLatitude(),
 									-wayPoints.get(i).getLongitude()));
 					Gui.getInstance().fixPaint();
 				}
 
-//				WayPointFollowerPlanner planer = new WayPointFollowerPlanner(NodeChannel.UNKNOWN_CHANNEL,wayPoints);
-//
-//				for(int i = 0;i<wayPoints.size();i++){
-//					final double latErrorFinal = 1/111131.745;
-//					final double lonErrorFinal = 1/78846.81;
-//					for(double latError = -latErrorFinal;latError<latErrorFinal;latError+=latErrorFinal/5){
-//						for(double lonError = -lonErrorFinal;lonError<lonErrorFinal;lonError+=lonErrorFinal/5){
-//							double lat = wayPoints.get(i).getLatitude() + latError;
-//							double lon = wayPoints.get(i).getLongitude() + lonError;
-//
-//							planer.updatePositionEstimate(new GPSPoseMessage(new Date(),
-//								lat, lon, 0));
-//							planer.getCommandedSteeringAngle();
+				WayPointFollowerPlanner planer = new WayPointFollowerPlanner(NodeChannel.UNKNOWN_CHANNEL,wayPoints);
+
+				
+				for(int i = 0;i<wayPoints.size();i++){
+					final double latErrorFinal = 2/111131.745;
+					final double lonErrorFinal = 2/78846.81;
+					for(double latError = -latErrorFinal;latError<=latErrorFinal;latError+=5*latErrorFinal){
+						for(double lonError = -lonErrorFinal;lonError<=lonErrorFinal;lonError+=5*lonErrorFinal){
+							double lat = wayPoints.get(i).getLatitude() + latError;
+							double lon = wayPoints.get(i).getLongitude() + lonError;
+							planer.updatePositionEstimate(new GPSPoseMessage(new Date(), lat, lon, currentHeading));
+							double angle = planer.getCommandedSteeringAngle();
+							Gui.getInstance().getMainGuiWindow().getAnalyPane().getDataPanel().getGpsPanel().
+							addPointsToMapTree(Color.RED,new LocTuple(lat,-lon));
+							Gui.getInstance().getMainGuiWindow().getAnalyPane().getDataPanel().getGpsPanel().addLineToMap(new LocTuple(lat,	-lon), angle, Color.RED);
 //
 //							Gui.getInstance().getMainGuiWindow().getAnalyPane().getDataPanel().
 //									getGpsPanel().addLineToMap(new LocTuple(lat, lon),
 //									planer.getCommandedSteeringAngle());
-//						}
-//					}
-//				}
+						}
+					}
+				}
 
 				//TODO add zoom and ability to edit 
 				

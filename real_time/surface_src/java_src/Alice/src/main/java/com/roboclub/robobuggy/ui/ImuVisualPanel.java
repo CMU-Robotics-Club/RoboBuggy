@@ -55,7 +55,6 @@ public class ImuVisualPanel extends JPanel {
 			public void actionPerformed(String topicName, Message m) {
 				
 				//If I'm reading this correctly, this should activate by itself when I get a message
-				System.out.println("IMU MESSAGE!!!");
 				
 				yaw = Math.PI/180*((ImuMeasurement)m).getYaw();
 				pitch = Math.PI/180*((ImuMeasurement)m).getPitch();

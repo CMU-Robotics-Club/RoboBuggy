@@ -96,7 +96,7 @@ public class PoseViewer extends RobobuggyGUIContainer{
 	 */
 	public Vec2d projectToView(Matrix m){
 		//TODO 
-		return new Vec2d(100*m.get(0, 0)+200, -100*m.get(1, 0)+400);
+		return new Vec2d(1*m.get(0, 0)+200, -1*m.get(1, 0)+400);
 	}
 
 	/**
@@ -105,10 +105,11 @@ public class PoseViewer extends RobobuggyGUIContainer{
 	 * @param name name of the matrix
 	 */
 	public void drawMatrix(Graphics g,Matrix m,String name){
+		double AXIS_LENGTH = 100;
 		double [][] origin = {{0},{0},{0},{1}};
-		double [][] xAxis = {{1},{0},{0},{1}};
-		double [][] yAxis = {{0},{1},{0},{1}};
-		double [][] zAxis = {{0},{0},{1},{1}};
+		double [][] xAxis = {{AXIS_LENGTH},{0},{0},{1}};
+		double [][] yAxis = {{0},{AXIS_LENGTH},{0},{1}};
+		double [][] zAxis = {{0},{0},{AXIS_LENGTH},{1}};
 		
 		Matrix originMatrix = new Matrix(origin);
 		Matrix xMatrix = new Matrix(xAxis);

@@ -152,9 +152,9 @@ public class GpsPanel extends JPanel {
 	/**
 	 * @param points points to add to the map
 	 */
-	public void addPointsToMapTree(LocTuple...points) {
+	public void addPointsToMapTree(Color thisColor,LocTuple...points) {
 		for (LocTuple point : points) {
-			mapTree.getViewer().addMapMarker(new MapMarkerDot(Color.BLUE, point.getLatitude(), point.getLongitude()));
+			mapTree.getViewer().addMapMarker(new MapMarkerDot(thisColor, point.getLatitude(), point.getLongitude()));
 		}
 	}
 
@@ -179,6 +179,7 @@ public class GpsPanel extends JPanel {
 	 * @param lineColor the color of the line
 	 */
 	public void addLineToMap(LocTuple originPoint, double angle, Color lineColor) {
+		angle = -angle;
 		double scalingFactor = 0.00005;
 		double dx = Math.cos(angle) * scalingFactor;
 		double dy = Math.sin(angle) * scalingFactor;

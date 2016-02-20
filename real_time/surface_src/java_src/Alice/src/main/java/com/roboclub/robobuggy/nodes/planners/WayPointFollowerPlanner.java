@@ -47,7 +47,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 		System.out.println("Closest Point: "+closestIndex);
 		
 		//pick the point to follow 
-		int targetIndex = closestIndex + 2;
+		int targetIndex = closestIndex + 10;
 		
 		//if we are out of points then just go straight
 		if(targetIndex >= wayPoints.size())
@@ -64,7 +64,9 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 		
 		
 		//find the angle we need to reach that point 
-		return desiredHeading-pose.getHeading();
+		//return pose.getHeading() - desiredHeading;
+		return  desiredHeading - pose.getHeading();
+
 	}
 
 	@Override
