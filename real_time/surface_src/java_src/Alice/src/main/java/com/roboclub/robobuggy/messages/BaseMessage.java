@@ -1,27 +1,37 @@
 package com.roboclub.robobuggy.messages;
 
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
+import com.roboclub.robobuggy.ros.Message;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
-import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
-
 /**
  * Abstract class used to represent the base message sent over BuggyROS
  */
-public abstract class BaseMessage {
+public abstract class BaseMessage implements Message {
 	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
+	protected long timestamp;
+
+	/**
+	 * sets the date of the message to the current time
+	 */
+	public BaseMessage() {
+		timestamp = new Date().getTime();
+	}
 
 	/**
 	 * Creates a {@link String} representing the {@link Date}
 	 * @param dt {@link Date} to format
 	 * @return a {@link String} representing the {@link Date} dt
 	 */
-	public static String formatDate(Date dt) {
+	public static String formatDate(long dt) {
+		Date date = new Date(dt);
 		DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
-		return formatter.format(dt);
+		return formatter.format(date);
 	}
 
 	/**
@@ -38,5 +48,13 @@ public abstract class BaseMessage {
 			new RobobuggyLogicNotification("could not parse date stack trace: "+ e.getMessage(), RobobuggyMessageLevel.WARNING);
 			return null;
 		}
+	}
+
+	/**
+	 * Returns the timestamp of the message
+	 * @return time that this message was instantiated
+	 */
+	public Date getTimestamp() {
+		return new Date(timestamp);
 	}
 }

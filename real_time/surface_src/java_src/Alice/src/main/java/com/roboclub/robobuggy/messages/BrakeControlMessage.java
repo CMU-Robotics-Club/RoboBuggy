@@ -1,19 +1,18 @@
 package com.roboclub.robobuggy.messages;
 
-import java.util.Date;
-
 import com.roboclub.robobuggy.ros.Message;
+
+import java.util.Date;
 
 /**
  * Message for passing the desired commanded value of the brakes
  */
-public class BrakeControlMessage extends BaseMessage implements Message {
+public class BrakeControlMessage extends BaseMessage {
 
-	private static final String VERSION_ID = "brake_control_message";
+	public static final String VERSION_ID = "brake_control_message";
 	
 	private final boolean brakeEngaged;
-	private final Date timestamp;
-	
+
 	/**
 	 * Construct a new BrakeControlMessage
 	 * @param timestamp {@link Date} representing the creation time
@@ -21,7 +20,7 @@ public class BrakeControlMessage extends BaseMessage implements Message {
 	 */
 	public BrakeControlMessage(Date timestamp, boolean brakeEngagged) {
 		this.brakeEngaged = brakeEngagged;
-		this.timestamp = new Date(timestamp.getTime());
+		this.timestamp = new Date(timestamp.getTime()).getTime();
 	}
 	
 	/**

@@ -1,7 +1,8 @@
 package com.roboclub.robobuggy.messages;
 
-import java.util.Date;
 import com.roboclub.robobuggy.ros.Message;
+
+import java.util.Date;
 
 /**
  * Message for passing IMU measurements within BuggyROS
@@ -13,11 +14,10 @@ import com.roboclub.robobuggy.ros.Message;
  * 
  *          DESCRIPTION: TODO
  */
-public class ImuMeasurement extends BaseMessage implements Message {
+public class ImuMeasurement extends BaseMessage {
 
 	public static final String VERSION_ID = "imuV0.0";
 
-	private Date timestamp;
 
 	private double yaw;
 	private double pitch;
@@ -30,7 +30,7 @@ public class ImuMeasurement extends BaseMessage implements Message {
 	 * @param r roll value
 	 */
 	public ImuMeasurement(double y, double p, double r) {
-		this.timestamp = new Date();
+		this.timestamp = new Date().getTime();
 		this.yaw = y;
 		this.pitch = p;
 		this.roll = r;
@@ -77,7 +77,7 @@ public class ImuMeasurement extends BaseMessage implements Message {
 
 		// Creating SimpleDateFormat with yyyyMMdd format e.g."20110914"
 		String yyyyMMdd = ar[0];
-		timestamp = tryToParseDate(yyyyMMdd);
+		timestamp = tryToParseDate(yyyyMMdd).getTime();
 
 		Double y = Double.parseDouble(ar[1]);
 		Double p = Double.parseDouble(ar[2]);

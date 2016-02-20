@@ -1,20 +1,19 @@
 package com.roboclub.robobuggy.ui;
 
+import com.roboclub.robobuggy.messages.GpsMeasurement;
+import com.roboclub.robobuggy.ros.Message;
+import com.roboclub.robobuggy.ros.MessageListener;
+import com.roboclub.robobuggy.ros.NodeChannel;
+import com.roboclub.robobuggy.ros.Subscriber;
+
+import javax.imageio.ImageIO;
+import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
-
-import javax.imageio.ImageIO;
-import javax.swing.JPanel;
-
-import com.roboclub.robobuggy.messages.GpsMeasurement;
-import com.roboclub.robobuggy.ros.Message;
-import com.roboclub.robobuggy.ros.MessageListener;
-import com.roboclub.robobuggy.ros.NodeChannel;
-import com.roboclub.robobuggy.ros.Subscriber;
 
 /**
  * {@link JPanel} used to display GPS data
@@ -66,7 +65,7 @@ public class GpsPanel extends JPanel {
 //					locs.remove(0);
 //				}
 			 // refresh screen
-			    Gui.getInstance().fixPaint();
+			//    Gui.getInstance().fixPaint();
 			}
 		});
 		
@@ -159,6 +158,7 @@ public class GpsPanel extends JPanel {
 		Graphics2D g2d = (Graphics2D) g.create();
 
 		g.drawImage(map, 0, 0, frameWidth, frameHeight, Color.black, null);
+
 		g2d.setColor(Color.blue);
 		drawArrowRT(g2d, 0.1*frameWidth); //TODO: Make the size of this arrow dependent on the velocity (so I need time stamps)
 		
@@ -166,7 +166,10 @@ public class GpsPanel extends JPanel {
 		//drawArrow(g2d, 0.5*frameWidth, 0.5*frameHeight, theta, 0.1*frameWidth);
 		//theta += 0.01;
 	
-		for	(LocTuple mTuple : locs) {
+
+
+		for (int i = 0; i < locs.size(); i++) {
+			LocTuple mTuple = locs.get(i);
 			drawTuple(g2d, mTuple);
 		}
 		g2d.dispose();

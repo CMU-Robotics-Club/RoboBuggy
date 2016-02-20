@@ -7,11 +7,10 @@ import java.util.Date;
 /**
  * Class used to represent a message containing the low level code fingerprint
  */
-public class FingerPrintMessage extends BaseMessage implements Message
-{
+public class FingerPrintMessage extends BaseMessage {
+	public static final String VERSION_ID = "fingerprint_hash";
 	private int fpHash;
-	private Date timestamp;
-	
+
 	/**
 	 * Construct a new {@link FingerPrintMessage} at time now
 	 * @param hash the hash of the low level code
@@ -19,7 +18,7 @@ public class FingerPrintMessage extends BaseMessage implements Message
 	public FingerPrintMessage(int hash)
 	{
 		this.fpHash = hash;
-		this.timestamp = new Date();
+		this.timestamp = new Date().getTime();
 	}
 	
 	/**
@@ -30,7 +29,7 @@ public class FingerPrintMessage extends BaseMessage implements Message
 	public FingerPrintMessage(Date tStamp, int hash)
 	{
 		this.fpHash = hash;
-		this.timestamp = new Date(tStamp.getTime());
+		this.timestamp = new Date(tStamp.getTime()).getTime();
 	}
 	
 	/**{@inheritDoc}*/

@@ -1,22 +1,33 @@
 package com.roboclub.robobuggy.ros;
 
 public enum NodeChannel {
-	GPS("gps"),
-	IMU("imu"),
-	RC("rc_angle"),
-	STEERING("steering"),
+	GPS("gps"),    								//The most recent gps coordinate 
+	IMU("imu"),									//The most recent imu measurement 
+	IMU_MAGNETIC("mag"),
+	RC("rc_angle"),								//?
+	STEERING("steering"),						//The current angle that low level is steering to 
+	PUSHBAR_CAMERA("push_bar_camera"),
 	BRAKE("brake"),
-	LOGIC_EXCEPTION("logic_exception"),
+	LOGIC_NOTIFICATION("logic_notification"),
 	DRIVE_CTRL("drive_ctrl"),
 	BRAKE_CTRL("commanded brake"),
 	VISION("vision"),
 	ENCODER("encoder"),
 	AUTO("auto"),
 	GUI_LOGGING_BUTTON("logging_button"),
-	STEERING_COMMANDED("commanded_steering"),
+	STEERING_COMMANDED("commanded_steering"),   // the angle that we are commanding the front wheel turn to 
 	FP_HASH("fp_hash"),
+	POSE("pose"),
+	RESET("reset"),
+	STATE("state"),
+	SIMULATION("simulation"),
+	NODE_STATUS("node_status"),
 	UNKNOWN_CHANNEL("unknown"),
 	;
+	
+	
+
+	
 	
 	private String rstPath;
 	private String msgPath;
@@ -54,4 +65,26 @@ public enum NodeChannel {
 		}
 		return UNKNOWN_CHANNEL;
 	}
+
+	public static NodeChannel[] getLoggingChannels() {
+		return new NodeChannel[] {  GPS,
+									IMU,
+									PUSHBAR_CAMERA,
+									STEERING,
+									BRAKE,
+									LOGIC_NOTIFICATION,
+									DRIVE_CTRL,
+									BRAKE_CTRL,
+									VISION,
+									ENCODER,
+									AUTO,
+									GUI_LOGGING_BUTTON,
+									STEERING_COMMANDED,
+									FP_HASH,
+									POSE,
+									RESET,
+									STATE
+								};
+	}
+
 }

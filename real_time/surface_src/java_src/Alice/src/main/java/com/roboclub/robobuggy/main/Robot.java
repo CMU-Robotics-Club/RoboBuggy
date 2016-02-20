@@ -1,13 +1,21 @@
 package com.roboclub.robobuggy.main;
 
-import java.util.LinkedList;
-import java.util.List;
-
+import com.roboclub.robobuggy.nodes.localizers.OdomLocalizer;
+import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
+import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
+import com.roboclub.robobuggy.nodes.sensors.CameraNode;
 import com.roboclub.robobuggy.nodes.sensors.GpsNode;
 import com.roboclub.robobuggy.nodes.sensors.ImuNode;
+import com.roboclub.robobuggy.nodes.sensors.LoggingNode;
 import com.roboclub.robobuggy.nodes.sensors.RBSMNode;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.NodeChannel;
+
+import java.io.FileNotFoundException;
+import java.util.LinkedList;
+import java.util.List;
+
+//TODO break into a separate util class 
 
 /**
  * 
@@ -17,11 +25,13 @@ import com.roboclub.robobuggy.ros.NodeChannel;
 public final class Robot implements RosMaster {
 
 	/************************************** Sets all internal private variables *************************/
-	private static final int COMMAND_PERIOD = 1000;
+	private static final int COMMAND_PERIOD = 50;
 	private static Robot instance;
 	private boolean autonomous;
 	private List<Node> nodeList;
-	
+	//TODO find out the actual time we need to put here
+	private static final int ARDUINO_BOOTLOADER_TIMEOUT = 2000;
+
 	/************************************* Set of all public functions ********************************/
 
 	/**{@inheritDoc}*/
@@ -43,14 +53,38 @@ public final class Robot implements RosMaster {
 	/************************************* Set of all internal private functions ************************/
 	private Robot() {
 		System.out.println("Starting Robot");
+		try {
+			Thread.sleep(ARDUINO_BOOTLOADER_TIMEOUT);
+		} catch (InterruptedException e) {
+			new RobobuggyLogicNotification("Couldn't wait for bootloader, shutting down", RobobuggyMessageLevel.EXCEPTION);
+			shutDown();
+		}
 		autonomous = RobobuggyConfigFile.AUTONOMOUS_DEFAULT;
 		nodeList = new LinkedList<>();
 		new RobobuggyLogicNotification("Logic Exception Setup properly" ,  RobobuggyMessageLevel.NOTE);
 		// Initialize Nodes
-	//	nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.COM_PORT_GPS));
+
+		//nodeList.add(new SimulationPlayer());
+		nodeList.add(new OdomLocalizer());
+//		nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.COM_PORT_GPS));
 		nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.COM_PORT_IMU));
-	//	nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING,
-	//			RobobuggyConfigFile.COM_PORT_RBSM, COMMAND_PERIOD));
+//		nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING, RobobuggyConfigFile.COM_PORT_RBSM, COMMAND_PERIOD));
+//		nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION, NodeChannel.values()));
+//		nodeList.add(new SweepNode(NodeChannel.DRIVE_CTRL));
+
+//		try {
+//			nodeList.add(new WayPointFollowerPlanner(NodeChannel.UNKNOWN_CHANNEL,
+//					WayPointUtil.createWayPointsFromWaypointList("logs/2016-02-13-21-21-41/waypoints.txt")));
+//		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+
+//		nodeList.add(new CameraNode(NodeChannel.PUSHBAR_CAMERA, 100));
+//		nodeList.add(new GPSTrackPlannerNode(NodeChannel.BRAKE_CTRL,
+//				RobobuggyConfigFile.LOG_FILE_LOCATION));
+//		nodeList.add(new GPSLocalizer(NodeChannel.POSE));
+
 	}
 	
 	/***************************************   Getters ********************************/

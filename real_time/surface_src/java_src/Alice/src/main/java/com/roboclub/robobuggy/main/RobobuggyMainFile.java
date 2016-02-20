@@ -1,15 +1,13 @@
 package com.roboclub.robobuggy.main;
 
+import com.roboclub.robobuggy.simulation.SensorPlayer;
+import com.roboclub.robobuggy.ui.Gui;
+import com.roboclub.robobuggy.utilities.JNISetup;
 import gnu.io.CommPortIdentifier;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-
-import com.roboclub.robobuggy.logging.RobotLogger;
-import com.roboclub.robobuggy.simulation.SensorPlayer;
-import com.roboclub.robobuggy.ui.Gui;
-import com.roboclub.robobuggy.utilities.JNISetup;
 
 
 /** This class is the driver starting up the robobuggy program, if you want the buggy to drive itself you should run this node */
@@ -19,7 +17,7 @@ public class RobobuggyMainFile {
 	 * Run Alice
 	 * @param args : None
 	 */
-    public static void main(String[] args)  {
+    public static void main(String[] args) {
 
         try {
 			JNISetup.setupJNI(); //must run for jni to install
@@ -42,29 +40,30 @@ public class RobobuggyMainFile {
         System.out.println(ports);
         Robot.getInstance();
         Gui.getInstance();
+
      	
     	if (RobobuggyConfigFile.DATA_PLAY_BACK) {
     		//Play back mode enabled
-    		final SensorPlayer sp = new SensorPlayer("logs/2016-01-26-00-00-53/sensors.txt");
-        	new Thread(new Runnable() {
-				
-				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-					sp.run();
-				}
-			}).start();
+    		new SensorPlayer("logs/2016-02-14-20-09-32/sensors_2016-02-14-20-09-32.txt", 1);
         }
         else {
-        	RobotLogger.getInstance();
         	//Play back disabled, create robot
         	Robot.getInstance().startNodes();
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
 			new RobobuggyLogicNotification("Robobuggy Logic Notfication started", RobobuggyMessageLevel.NOTE);
+
+            try {
+                Thread.sleep(5000);
+
+                new RobobuggyLogicNotification("Notification 1", RobobuggyMessageLevel.NOTE);
+                new RobobuggyLogicNotification("Notification 2", RobobuggyMessageLevel.NOTE);
+
+                Thread.sleep(500);
+
+                new RobobuggyLogicNotification("Notif 3", RobobuggyMessageLevel.NOTE);
+            }
+            catch (InterruptedException e) {
+                new RobobuggyLogicNotification("interreupted", RobobuggyMessageLevel.NOTE);
+            }
 		}
 
 

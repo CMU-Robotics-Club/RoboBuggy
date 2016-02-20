@@ -1,8 +1,8 @@
 package com.roboclub.robobuggy.messages;
 
-import java.util.Date;
-
 import com.roboclub.robobuggy.ros.Message;
+
+import java.util.Date;
 
 /**
  * Message used to pass GPS measurements over BuggyROS
@@ -16,10 +16,9 @@ import com.roboclub.robobuggy.ros.Message;
  * 
  *          DESCRIPTION: TODO
  */
-public class GpsMeasurement extends BaseMessage implements Message {
+public class GpsMeasurement extends BaseMessage {
 	public static final String VERSION_ID = "gpsV0.2";
 
-	private Date timestamp;
 	private Date gpsTimestamp;
 	private double latitude;
 	private boolean north;
@@ -49,7 +48,7 @@ public class GpsMeasurement extends BaseMessage implements Message {
 	public GpsMeasurement(Date gpsTimestamp, double latitude, boolean north, double longitude, 
 			boolean west, int qualityValue, int numSatellites, 
 			double horizontalDilutionOfPrecision, double antennaAltitude, double rawGPSLat, double rawGPSLong) {	
-		this.timestamp = new Date();
+		this.timestamp = new Date().getTime();
 		this.gpsTimestamp = new Date(gpsTimestamp.getTime());
 		this.latitude = latitude;
 		this.north = north;
@@ -78,7 +77,7 @@ public class GpsMeasurement extends BaseMessage implements Message {
 	 */
 	public GpsMeasurement(Date messageTimestamp, Date gpsTimestamp, double latitude, boolean north, double longitude,
 			boolean west, int qualityValue, int numSatellites, double horizontalDilutionOfPrecision, double antennaAltitude) {
-		this.timestamp = new Date(messageTimestamp.getTime());
+		this.timestamp = new Date(messageTimestamp.getTime()).getTime();
 		this.gpsTimestamp = new Date(gpsTimestamp.getTime());
 		this.latitude = latitude;
 		this.north = north;
@@ -127,7 +126,7 @@ public class GpsMeasurement extends BaseMessage implements Message {
 	public String toLogString() {
 		String s = super.formatDate(timestamp);
 		
-		s += ',' + super.formatDate(gpsTimestamp);
+		s += ',' + super.formatDate(gpsTimestamp.getTime());
 		
 		s += ',' + Double.toString(latitude);
 		if (north) s += ",N";

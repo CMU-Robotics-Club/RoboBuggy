@@ -1,19 +1,18 @@
 package com.roboclub.robobuggy.messages;
 
-import java.util.Date;
-
 import com.roboclub.robobuggy.ros.Message;
+
+import java.util.Date;
 
 /**
  * Message for passing the desired commanded value of the steering
  */
-public class DriveControlMessage extends BaseMessage implements Message {
+public class DriveControlMessage extends BaseMessage {
 
-	private static final String VERSION_ID = "drive_control_message";
+	public static final String VERSION_ID = "drive_control_message";
 	
 	private final double angle;
-	private final Date timestamp;
-	
+
 	/**
 	 * Construct a new DriveControlMessage
 	 * @param timestamp {@link Date} representing the creation time
@@ -21,7 +20,7 @@ public class DriveControlMessage extends BaseMessage implements Message {
 	 */
 	public DriveControlMessage(Date timestamp, double angle) {
 		this.angle = angle;
-		this.timestamp = new Date(timestamp.getTime());
+		this.timestamp = new Date(timestamp.getTime()).getTime();
 	}
 	
 	/**
@@ -33,11 +32,11 @@ public class DriveControlMessage extends BaseMessage implements Message {
 	}
 	
 	/**
-	 * Returns the commanded angle of the steering as a short (in thousandths of degrees)
-	 * @return the commanded angle of the steering as a short (in thousandths of degrees)
+	 * Returns the commanded angle of the steering as an int (in hundredths of degrees)
+	 * @return the commanded angle of the steering as an int (in hundredths of degrees)
 	 */
-	public short getAngleShort() {
-		return (short)(angle*1000.0);
+	public int getAngleInt() {
+		return (int)(angle*100.0);
 	}
 	
 	/**{@inheritDoc}*/
@@ -52,7 +51,7 @@ public class DriveControlMessage extends BaseMessage implements Message {
 	public Message fromLogString(String str) {
 		String[] spl = str.split(",");
 		Date d = tryToParseDate(spl[0]);
-		double readAngle = Short.parseShort(spl[2]);
+		double readAngle = Integer.parseInt(spl[2]);
 		return new DriveControlMessage(d, readAngle);
 	}
 

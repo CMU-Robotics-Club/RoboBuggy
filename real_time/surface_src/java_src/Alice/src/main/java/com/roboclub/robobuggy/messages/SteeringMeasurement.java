@@ -1,29 +1,30 @@
 package com.roboclub.robobuggy.messages;
 
-import java.util.Date;
 import com.roboclub.robobuggy.ros.Message;
+
+import java.util.Date;
 
 /**
  * Message for passing steering angle measurements over BuggyROS
  */
-public class SteeringMeasurement extends BaseMessage implements Message {
-	private int angle;
-	private Date timestamp;
-	
+public class SteeringMeasurement extends BaseMessage {
+	public static final String VERSION_ID = "steering";
+	private double angle;
+
 	/**
 	 * Construct a new {@link SteeringMeasurement} at time now
-	 * @param angle front wheel angle
+	 * @param d front wheel angle
 	 */
-	public SteeringMeasurement(int angle) {
-		this.timestamp = new Date();
-		this.angle = angle;
+	public SteeringMeasurement(double d) {
+		this.timestamp = new Date().getTime();
+		this.angle = d;
 	}
 	
 	/**
 	 * Returns the angle of the {@link SteeringMeasurement}
 	 * @return the angle of the {@link SteeringMeasurement}
 	 */
-	public int getAngle() {
+	public double getAngle() {
 		return angle;
 	}
 	
@@ -39,7 +40,7 @@ public class SteeringMeasurement extends BaseMessage implements Message {
 	public Message fromLogString(String str) {
 		String delims = ",";
 		String[] ar = str.split(delims);
-		timestamp = new Date(tryToParseDate(ar[0]).getTime());
+		timestamp = new Date(tryToParseDate(ar[0]).getTime()).getTime();
 		int angle = Integer.parseInt(ar[1]);
 		return new SteeringMeasurement(angle);
 	}

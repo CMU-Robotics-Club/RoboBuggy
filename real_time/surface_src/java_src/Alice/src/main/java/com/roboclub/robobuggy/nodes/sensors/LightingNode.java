@@ -1,11 +1,11 @@
 package com.roboclub.robobuggy.nodes.sensors;
 
-import java.io.UnsupportedEncodingException;
-import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.NodeState;
 import com.roboclub.robobuggy.nodes.baseNodes.SerialNode;
 import com.roboclub.robobuggy.ros.NodeChannel;
+
+import java.io.UnsupportedEncodingException;
 
 /**
  * {@link SerialNode} for reading in lighting data
@@ -110,14 +110,6 @@ public class LightingNode extends SerialNode {
 		return 4 + (origLength - lightingRawStr.length());
 	}
 
-	/**
-	 * Called to translate a peeled message to a JSON object
-	 * @param message {@link String} of the peeled message
-	 * @return {@link JSONObject} representing the string
-	 */
-	public static JSONObject translatePeelMessageToJObject(String message) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 
 }

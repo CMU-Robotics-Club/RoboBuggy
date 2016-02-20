@@ -13,9 +13,11 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.Subscriber;
+import com.sun.glass.ui.Robot;
 
 /**
  * @author Matt Sebek
+ * @author Trevor Decker
  *
  * @version 0.5
  * 
@@ -29,14 +31,14 @@ public class MessageServer {
 
 	private static MessageServer _master;
 	private static Lock singleton_lock = new ReentrantLock();
+	public static final int MAX_MESSAGE_QUEUE = 20;
 
 	private Map<String, List<Subscriber>> outbox_mapping = new HashMap<String, List<Subscriber>>();
 	private ReadWriteLock outbox_lock = new ReentrantReadWriteLock(true);
 
 	// Contains all messages that threads want sent.
 	// TODO: confirm threadsafety.
-	private LinkedBlockingQueue<Map.Entry<String, Message>> inbox = new LinkedBlockingQueue<Map.Entry<String, Message>>();
-
+	private LinkedBlockingQueue<Map.Entry<String, Message>> inbox = new LinkedBlockingQueue<Map.Entry<String, Message>>(MAX_MESSAGE_QUEUE);
 	// Picks up post, and delivers it.
 	private class MailmanThread implements Runnable {
 
@@ -103,7 +105,9 @@ public class MessageServer {
 	}
 
 	// Puts message in mailbox. Will be handled later.
-	public void sendMessage(String s, Message m) {
-		inbox.add(new AbstractMap.SimpleEntry<String, Message>(s, m));
+	public synchronized void sendMessage(String s, Message m) {
+		inbox.offer(new AbstractMap.SimpleEntry<String, Message>(s, m));
+//		inbox.add(new AbstractMap.SimpleEntry<String, Message>(s, m));
+
 	}
 }

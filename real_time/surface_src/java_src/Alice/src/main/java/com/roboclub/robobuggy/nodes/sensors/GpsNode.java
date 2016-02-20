@@ -1,6 +1,5 @@
 package com.roboclub.robobuggy.nodes.sensors;
 
-import com.orsoncharts.util.json.JSONObject;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
@@ -43,6 +42,8 @@ public final class GpsNode extends SerialNode {
 	 */
 	public GpsNode(NodeChannel sensor, String portName) {
 		super(new BuggyBaseNode(sensor), "GPS", portName, BAUD_RATE);
+		
+		System.out.println("starting gps");
 		msgPub = new Publisher(sensor.getMsgPath());
 		statePub = new Publisher(sensor.getStatePath());
 		statePub.publish(new StateMessage(NodeState.DISCONNECTED));
@@ -92,6 +93,7 @@ public final class GpsNode extends SerialNode {
 	/**{@inheritDoc}*/
 	@Override
 	public int peel(byte[] buffer, int start, int bytesAvailable) {
+		System.out.println("in gps peel");
 		// TODO replace 80 with max message length
 		// This lets us avoid handling arcane failure cases about not-enough message.
 		if(bytesAvailable < 80) {
@@ -186,29 +188,5 @@ public final class GpsNode extends SerialNode {
 				+ ar[8].length() + ar[9].length();
 	}
 
-	/**
-	 * Called to translate a peeled message to a JSON object
-	 * @param message {@link String} of the peeled message
-	 * @return {@link JSONObject} representing the string
-	 */
-	@SuppressWarnings("unchecked")
-	public static JSONObject translatePeelMessageToJObject(String message) {
-		// TODO Auto-generated method stub
-		JSONObject data = new JSONObject();
-		JSONObject params = new JSONObject();
-		String[] messageData = message.split(",");
-		params.put("latitude", Double.valueOf(messageData[3]));
-		params.put("lat_direction", messageData[4]);
-		params.put("longitude", Double.valueOf(messageData[5]));
-		params.put("long_direction", messageData[6]);
-		params.put("gps_quality", messageData[7]);
-		params.put("num_satellites", messageData[8]);
-		params.put("HDOP", Double.valueOf(messageData[9]));
-		params.put("antenna_altitude", Float.valueOf(messageData[10]));
-		params.put("raw_gps_lat", Double.valueOf(messageData[11]));
-		params.put("raw_gps_lon", Double.valueOf(messageData[12]));
-		data.put("timestamp", messageData[1]);
-		data.put("params", params);
-		return data;
-	}
+
 }

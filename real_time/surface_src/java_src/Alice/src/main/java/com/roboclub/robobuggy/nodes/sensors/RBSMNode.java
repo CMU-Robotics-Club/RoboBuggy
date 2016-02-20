@@ -1,29 +1,28 @@
 package com.roboclub.robobuggy.nodes.sensors;
 
-import java.util.Date;
-
-import com.orsoncharts.util.json.JSONObject;
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
+import com.roboclub.robobuggy.messages.BrakeControlMessage;
+import com.roboclub.robobuggy.messages.DriveControlMessage;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
+import com.roboclub.robobuggy.messages.FingerPrintMessage;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.NodeState;
 import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
 import com.roboclub.robobuggy.nodes.baseNodes.SerialNode;
-import com.roboclub.robobuggy.messages.BrakeControlMessage;
-import com.roboclub.robobuggy.messages.DriveControlMessage;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
-import com.roboclub.robobuggy.messages.FingerPrintMessage;
 import com.roboclub.robobuggy.ros.Node;
-import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.NodeChannel;
+import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
 import com.roboclub.robobuggy.serial.RBPair;
 import com.roboclub.robobuggy.serial.RBSerial;
 import com.roboclub.robobuggy.serial.RBSerialMessage;
-import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
-import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
+
+import java.util.Date;
 
 /**
  * {@link SerialNode} for reading and sending RBSM data
@@ -31,6 +30,7 @@ import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
  * @author Matt Sebek
  * @author Kevin Brennan
  * @author Zachary Dawson
+ *
  *
  * CHANGELOG: Converted to use the decorator pattern implementation of
  * {@link Node}s for buggy
@@ -47,9 +47,9 @@ public class RBSMNode extends SerialNode {
 	private static final double M_PER_REV = 0.61;
 	
 	/** Steering Angle Conversion Rate */
-	private static final int ARD_TO_DEG = 100;
+	private static final int ARD_TO_DEG = 1;
 	/** Steering Angle offset?? */
-	private static final int OFFSET = -200;
+	private static final int OFFSET = 0;
 
 	// accumulated
 	private int encTicks = 0;
@@ -107,7 +107,7 @@ public class RBSMNode extends SerialNode {
 	private EncoderMeasurement estimateVelocity(int dataWord) 
 	{
 		Date currTime = new Date();
-		double accDist = ((double)(encTicks)) * M_PER_REV / TICKS_PER_REV;
+		double accDist = (((double)(encTicks)) * M_PER_REV / TICKS_PER_REV)/.49;
 		double instVelocity = (accDist - accDistLast) * 1000 / (currTime.getTime() - timeLast.getTime());
 		double instAccel = (instVelocity - instVelocityLast) * 1000 / (currTime.getTime() - timeLast.getTime());
 		accDistLast = accDist;
@@ -143,7 +143,6 @@ public class RBSMNode extends SerialNode {
 		return BAUD_RATE;
 	}
 
-	
 	/**{@inheritDoc}*/
 	@Override
 	public int peel(byte[] buffer, int start, int bytesAvailable) 
@@ -169,6 +168,7 @@ public class RBSMNode extends SerialNode {
 		
 		RBSerialMessage message = rbp.getMessage();
 		byte headerByte = message.getHeaderByte();
+		System.out.println("headerByte: "+headerByte);
 		switch (headerByte)
 		{
 			case RBSerialMessage.ENC_TICK_SINCE_RESET:
@@ -176,22 +176,48 @@ public class RBSMNode extends SerialNode {
 				encTicks = message.getDataWord() & 0xFFFF;
 				messagePubEnc.publish(estimateVelocity(message.getDataWord()));
 				break;
-			case RBSerialMessage.RBSM_MID_MEGA_STEER_FEEDBACK:
+			case RBSerialMessage.RBSM_MID_MEGA_STEER_FEEDBACK:   //steering angle feedback reported from mega singed int in thosands of degree
 				// This is a delta-distance! Do a thing!
 				potValue = message.getDataWord();
-				System.out.println(potValue);
-				messagePubPot.publish(new SteeringMeasurement(-(potValue + OFFSET)/ARD_TO_DEG));
+				messagePubPot.publish(new SteeringMeasurement((double)(-(potValue + OFFSET)/(double) ARD_TO_DEG)));
 				break;
-			case RBSerialMessage.RBSM_MID_MEGA_STEER_ANGLE:
+			case RBSerialMessage.RBSM_MID_MEGA_STEER_ANGLE: //angle sent to/ reported from the mega
 				steeringAngle = message.getDataWord();
-				messagePubControllerSteering.publish(new SteeringMeasurement(steeringAngle));
+				messagePubControllerSteering.publish(new SteeringMeasurement(-(steeringAngle+211.5)/106.85));
+				System.out.println("steering:"+steeringAngle);
 				break;
 			case RBSerialMessage.FP_HASH:
-				System.out.println(message.getDataWord());
+			//	System.out.println(message.getDataWord());
 				messagePubFp.publish(new FingerPrintMessage(message.getDataWord()));
 				break;
+			case RBSerialMessage.RBSM_MID_ERROR:
+				//TODO
+				break;
+			case RBSerialMessage.ENC_TICKS_SINCE_LAST:
+				//TODO 
+				break;
+			case RBSerialMessage.ENC_MS_SINCE_RESET:
+				//TODO
+				break;
+			case RBSerialMessage.BATTERY:
+				//TODO publish message for batery level
+				break;
+			case RBSerialMessage.BRAKE:
+				//TODO publish message for brake
+				break;
+			case RBSerialMessage.AUTO:
+				//TODO publish message for atuo
+				break;
+			case RBSerialMessage.RBSM_MID_DEVICE_ID:
+				//TODO publish message for device ID
+				break;
+/*			case RBSerialMessage.STEERING:
+				//TODO publish message for steering
+				break;
+				*/
 			default: //Unhandled or invalid RBSM message header was received.
-				new RobobuggyLogicNotification("Invalid RBSM message header\n", RobobuggyMessageLevel.NOTE);
+				new RobobuggyLogicNotification("Invalid RBSM message header: " + headerByte, RobobuggyMessageLevel.NOTE);
+
 				break;
 		}
 		
@@ -202,47 +228,6 @@ public class RBSMNode extends SerialNode {
 	}
 
 	/**
-	 * Converts a string message into a JSON object
-	 * @param message String message
-	 * @return JSON object representing the string message
-	 */
-	@SuppressWarnings("unchecked")
-	public static JSONObject translatePeelMessageToJObject(String message) 
-	{
-		String[] messageData = message.split(",");
-		String sensorName = messageData[0];
-		sensorName = sensorName.substring(sensorName.indexOf("/") + 1);
-		JSONObject data = new JSONObject();
-		JSONObject params = new JSONObject();
-		
-		data.put("timestamp", messageData[1]);
-		
-		if(sensorName.equals("steering") || sensorName.equals("commanded_steering")) 
-		{
-			params.put("angle", Float.valueOf(messageData[2]));
-		}
-		else if (sensorName.equals("fp_hash")) {
-			params.put("hash_value", messageData[2]);
-			
-		}
-		else if (sensorName.equals("encoder")) 
-		{
-			params.put("dataword", Double.valueOf(messageData[2]));
-			params.put("distance", Double.valueOf(messageData[3]));
-			params.put("velocity", Double.valueOf(messageData[4]));
-			params.put("acceleration", Double.valueOf(messageData[5]));
-		}
-		else 
-		{
-			System.err.println("WAT " + sensorName);
-		}
-		
-		data.put("params", params);
-		// TODO Auto-generated method stub
-		return data;
-	}
-	
-	/**
 	 * Private class used to handle the periodic portions of the
 	 * {@link RBSMNode}. Specifically, this will transmit the commanded
 	 * steering and brake values periodically.
@@ -252,7 +237,7 @@ public class RBSMNode extends SerialNode {
 	private final class RBSMPeriodicNode extends PeriodicNode {
 		
 		//Stored commanded values
-		private short commandedAngle = 0;
+		private int commandedAngle = 0;
 		private boolean commandedBrakeEngaged = true;
 		
 		/**
@@ -270,10 +255,10 @@ public class RBSMNode extends SerialNode {
 		 */
 		@Override
 		protected void update() {
-			commandedAngle = (short) ((commandedAngle + 1) % 256);
-			System.out.println("sending command "+commandedAngle);
-			RBSMessage msg = new RBSMessage(commandedAngle, commandedBrakeEngaged);
-			send(msg.getMessageBytes());
+			RBSMSteeringMessage msgSteer = new RBSMSteeringMessage(commandedAngle);
+			send(msgSteer.getMessageBytes());
+			RBSMBrakeMessage msgBrake = new RBSMBrakeMessage(commandedBrakeEngaged);
+			send(msgBrake.getMessageBytes());
 		}
 
 		/**{@inheritDoc}*/
@@ -284,7 +269,7 @@ public class RBSMNode extends SerialNode {
 					new MessageListener() {
 				@Override
 				public void actionPerformed(String topicName, Message m) {
-					commandedAngle = ((DriveControlMessage)m).getAngleShort();
+					commandedAngle = ((DriveControlMessage)m).getAngleInt();
 				}
 			});
 			new Subscriber(NodeChannel.BRAKE_CTRL.getMsgPath(),
@@ -304,5 +289,3 @@ public class RBSMNode extends SerialNode {
 		}	
 	}
 }
-
-
