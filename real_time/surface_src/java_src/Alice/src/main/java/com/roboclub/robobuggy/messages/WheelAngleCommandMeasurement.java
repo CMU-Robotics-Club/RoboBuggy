@@ -28,7 +28,7 @@ public class WheelAngleCommandMeasurement extends BaseMessage {
 	 */
 	public WheelAngleCommandMeasurement(float angle) {
 		this.angle = angle;
-		this.timestamp = new Date();
+		this.timestamp = new Date().getTime();
 	}
 
 	/**

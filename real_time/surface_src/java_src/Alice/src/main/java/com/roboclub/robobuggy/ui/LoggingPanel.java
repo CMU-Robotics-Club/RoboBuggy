@@ -9,6 +9,7 @@ import com.roboclub.robobuggy.ros.Publisher;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import java.awt.Color;
@@ -32,6 +33,7 @@ public class LoggingPanel extends RobobuggyGUIContainer{
 	//to make logging panel accessible to button callbacks
 	private LoggingPanel thisLoggingPanel = this;
 	private JLabel filenameLabel;
+	private JTextField playbackSpeed;
 
 	/**
 	 * Construct a new {@link LoggingPanel} object
@@ -64,9 +66,13 @@ public class LoggingPanel extends RobobuggyGUIContainer{
 		timeLbl.setColumns(7);
 		timeLbl.setValue(startTime);
 
+		playbackSpeed = new JTextField("1");
+		playbackSpeed.setHorizontalAlignment(JTextField.CENTER);
+
 		this.addComponent(playBtn, 0, 0, 1.0, .25);
-		this.addComponent(filenameLabel, 0, .25, 1.0, .25);
+		this.addComponent(filenameLabel, 0, .25, 0.5, .25);
 		this.addComponent(timeLbl, 0, .5, 1, .5);
+		this.addComponent(playbackSpeed, .5, .25, 0.5, .25);
 	}
 
 
@@ -76,6 +82,22 @@ public class LoggingPanel extends RobobuggyGUIContainer{
 	 */
 	public void setFileName(String fileName) {
 		filenameLabel.setText("File: " + fileName);
+	}
+
+	/**
+	 * safe returns the speed
+	 * @return the speed, or 1 if the text in the field can't be serialized
+	 */
+	public double getPlaybackSpeed() {
+		String speedStr = playbackSpeed.getText();
+		if (speedStr.equals("")) return 1;
+
+		try {
+			return Double.valueOf(speedStr);
+		}
+		catch (NumberFormatException e) {
+			return 1;
+		}
 	}
 
 	/**

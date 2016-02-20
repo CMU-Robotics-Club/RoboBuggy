@@ -30,7 +30,7 @@ public class ImuMeasurement extends BaseMessage {
 	 * @param r roll value
 	 */
 	public ImuMeasurement(double y, double p, double r) {
-		this.timestamp = new Date();
+		this.timestamp = new Date().getTime();
 		this.yaw = y;
 		this.pitch = p;
 		this.roll = r;
@@ -77,7 +77,7 @@ public class ImuMeasurement extends BaseMessage {
 
 		// Creating SimpleDateFormat with yyyyMMdd format e.g."20110914"
 		String yyyyMMdd = ar[0];
-		timestamp = tryToParseDate(yyyyMMdd);
+		timestamp = tryToParseDate(yyyyMMdd).getTime();
 
 		Double y = Double.parseDouble(ar[1]);
 		Double p = Double.parseDouble(ar[2]);

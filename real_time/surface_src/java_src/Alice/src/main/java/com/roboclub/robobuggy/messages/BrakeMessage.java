@@ -32,7 +32,7 @@ public class BrakeMessage extends BaseMessage {
 		default:
 			down = false;
 		}
-		this.timestamp = new Date();
+		this.timestamp = new Date().getTime();
 	}
 
 	/**
@@ -42,7 +42,7 @@ public class BrakeMessage extends BaseMessage {
 	 */
 	public BrakeMessage(Date timestamp, boolean brakeValue) {
 		this.down = brakeValue;
-		this.timestamp = new Date(timestamp.getTime());
+		this.timestamp = new Date(timestamp.getTime()).getTime();
 	}
 
 	/**{@inheritDoc}*/
