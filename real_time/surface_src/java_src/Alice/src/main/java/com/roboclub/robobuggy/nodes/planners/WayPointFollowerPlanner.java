@@ -48,6 +48,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 		
 		//pick the point to follow 
 		int targetIndex = closestIndex + 10;
+
 		
 		//if we are out of points then just go straight
 		if(targetIndex >= wayPoints.size())
