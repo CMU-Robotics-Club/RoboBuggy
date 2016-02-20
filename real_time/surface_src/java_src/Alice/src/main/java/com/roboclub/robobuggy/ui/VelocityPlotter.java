@@ -1,15 +1,19 @@
 package com.roboclub.robobuggy.ui;
 
-import java.io.File;
-
-import javax.swing.*;
-
-import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
-import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.main.Robot;
 
+/**
+ * Stand-alone file to test my code
+ * @author davidneiman
+ *
+ */
 public class VelocityPlotter {
 
+	/**
+	 * Main file to test stuff (seriously, why do I need a JavaDoc comment here?)
+	 * @param args - Same argument that always gets passed to the SPVM
+	 * @throws InterruptedException - Same exception that all these main files throw
+	 */
 	public static void main(String[] args) throws InterruptedException {
 		Robot.getInstance(); //Uncomment
         //Gui g = Gui.getInstance();
@@ -35,29 +39,36 @@ public class VelocityPlotter {
 		/**/
 	}
 	
-	public static void printArray(double[] A){
+	/**
+	 * Utility function to print an array
+	 * (Mostly for debugging, as is this whole file)
+	 * @param myA - the array being printed
+	 */
+	public static void printArray(double[] myA){
 		System.out.print("{");
-		for(int x = 0; x < A.length; x++){
-			System.out.print(A[x]);
-			if(x < A.length-1){
+		for(int x = 0; x < myA.length; x++){
+			System.out.print(myA[x]);
+			if(x < myA.length-1){
 				System.out.print(", ");
 			}
 		}
 		System.out.println("}");
 	}
 	
+	/**
+	 * Rotates a point
+	 * I define +x to be to the right (on screen), +y down, and +z out of the screen (right-handed coordinates)
+	 * I assume the buggy is initially facing right
+	 * Yaw/pitch/roll definitions from Wikipedia
+	 * 
+	 * I'm using aliasing intentionally
+	 * 
+	 * @param xyz - length 3 array with the x, y, and z coordinates to be rotated
+	 * @param yaw - yaw value to rotate by (positive yaw = right turn)
+	 * @param pitch - pitch value to rotate by (positive pitch = nose points upward)
+	 * @param roll - roll value to rotate by (positive roll = right wing/side rotates down)
+	 */
 	public static void rotateYPR(double[] xyz, double yaw, double pitch, double roll){
-		//I assume positive yaw is a right turn
-		//positive pitch is upward
-		//and positive roll is right side down
-		//as per Wikipedia's definition
-
-		//I define +x as to the right on screen, +y as down on screen, and +z as out of the screen
-		//I assume the buggy is facing right (+x direction)
-
-		//Also, I'm using aliasing intentionally here
-
-		//Can I really just keep applying transformations in series like this?
 
 		//Do yaw:
 		double temp = xyz[0]*Math.cos(yaw) - xyz[2]*Math.sin(yaw);

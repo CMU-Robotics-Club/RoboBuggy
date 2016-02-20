@@ -66,6 +66,8 @@ public final class Gui extends JFrame {
 		RobobuggyGUITabs tabs = new RobobuggyGUITabs();
 		tabs.addTab(new MainGuiWindow(),"Home");
 		tabs.addTab(new NodeViewer(),"Nodes");
+		tabs.addTab(new ImuVisualWindow(), "IMU");
+		tabs.addTab(new VelocityWindow(), "Velocity");
 		mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
 		windowList.add(mainWindow);
 		mainWindow.repaint();

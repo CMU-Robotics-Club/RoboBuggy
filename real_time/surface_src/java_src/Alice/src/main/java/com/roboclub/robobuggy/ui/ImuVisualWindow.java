@@ -1,10 +1,17 @@
 package com.roboclub.robobuggy.ui;
-
+/**
+ * Creates a window to display the IMU visualization
+ * @author davidneiman
+ *
+ */
 public class ImuVisualWindow extends RobobuggyGUIContainer{
 
+	/**
+	 * Creates an ImuVisualWindow
+	 */
 	public ImuVisualWindow(){
-		ImuVisualPanel ImuVP = new ImuVisualPanel();
-		addComponent(ImuVP, 0, 0, 1, 1);
+		ImuVisualPanel imuVP = new ImuVisualPanel();
+		addComponent(imuVP, 0, 0, 1, 1);
 	}
 
 }

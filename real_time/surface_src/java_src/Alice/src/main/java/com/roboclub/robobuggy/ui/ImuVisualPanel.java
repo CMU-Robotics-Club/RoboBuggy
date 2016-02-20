@@ -10,13 +10,18 @@ import java.util.Arrays;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
-/*import com.roboclub.robobuggy.messages.GpsMeasurement;
+import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
-import com.roboclub.robobuggy.ros.Subscriber;*/
+import com.roboclub.robobuggy.ros.Subscriber;
 
 
+/**
+ * Creates a panel for visualizing the IMU results
+ * @author davidneiman
+ *
+ */
 public class ImuVisualPanel extends JPanel {	
 	
 	//Variables go here
@@ -29,6 +34,13 @@ public class ImuVisualPanel extends JPanel {
 	private BufferedImage background;
 	//It'll need a subscriber eventually
 	
+	//Modified from GpsPanel
+	@SuppressWarnings("unused") //this subscriber is used to generate callbacks 
+	private Subscriber imuSub;
+	
+	/**
+	 * Creates an IMU panel
+	 */
 	public ImuVisualPanel(){
 		try {
 			background = ImageIO.read(new File("images/background.png"));
@@ -37,28 +49,22 @@ public class ImuVisualPanel extends JPanel {
 		}
 		setup = false;
 		
-		//GPS subscriber code for future reference
 		
-		/*gpsSub = new Subscriber(NodeChannel.GPS.getMsgPath(), new MessageListener() {
+		imuSub = new Subscriber(NodeChannel.IMU.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
-				double latitude = ((GpsMeasurement)m).getLatitude();
-				double longitude = ((GpsMeasurement)m).getLongitude();
-
-				//todo put mag based on dir
-				if(((GpsMeasurement)m).getWest()) {
-					longitude = -longitude;
-				}
 				
-				locs.add(new LocTuple(latitude, longitude));
-//				int gpsSize = locs.size(); // This is new: looks locs.size
-//				if (gpsSize > 20) {        // if size > 20, remove first object
-//					locs.remove(0);
-//				}
-			 // refresh screen
+				//If I'm reading this correctly, this should activate by itself when I get a message
+				System.out.println("IMU MESSAGE!!!");
+				
+				yaw = ((ImuMeasurement)m).getYaw();
+				pitch = ((ImuMeasurement)m).getPitch();
+				roll = ((ImuMeasurement)m).getRoll();
+				
+				//Keep this
 			    Gui.getInstance().fixPaint();
 			}
-		});*/
+		});
 
 	}
 	
@@ -116,7 +122,7 @@ public class ImuVisualPanel extends JPanel {
 		p1[0]*=p1[2]; p1[1]*=p1[2]; //If larger z, scale the x and y so it looks like it's in perspective
 		
 		//Scale x2,y2 relative to z2
-		p2[2] /= sideLength; //Get z between 0 and 1
+		p2[2] /= sideLength;
 		p2[2] *= scalescale; //Scale that interval if needed
 		p2[2] ++; //Shift that interval so it's centered at 1
 		p2[0]*=p2[2]; p2[1]*=p2[2]; //Scale x and y
@@ -176,15 +182,16 @@ public class ImuVisualPanel extends JPanel {
 		drawSide(g2d, vertices[5], vertices[7]);
 		drawSide(g2d, vertices[7], vertices[6]);
 		drawSide(g2d, vertices[4], vertices[6]);
-		
+
 		drawSide(g2d, vertices[0], vertices[4]);
 		drawSide(g2d, vertices[1], vertices[5]);
 		drawSide(g2d, vertices[2], vertices[6]);
 		drawSide(g2d, vertices[3], vertices[7]);
 		
-		yaw += 0.01;
-		pitch += 0.02;
-		roll += 0.03;
+		//Only used for testing
+		//yaw += 0.01;
+		//pitch += 0.02;
+		//roll += 0.03;
 		
 		g2d.dispose();
 	}/**/

@@ -55,7 +55,7 @@ public class GpsPanel extends JPanel {
 				double latitude = ((GpsMeasurement)m).getLatitude();
 				double longitude = ((GpsMeasurement)m).getLongitude();
 
-				//todo put mag based on dir
+				//todo put map based on dir
 				if(((GpsMeasurement)m).getWest()) {
 					longitude = -longitude;
 				}
@@ -99,6 +99,37 @@ public class GpsPanel extends JPanel {
 		g2d.fillOval((int)px, (int)py, cDiameter, cDiameter);
 	}
 	
+	/**
+	 * Draws an arrow in the buggy's current direction
+	 * @param g2d - Graphics stuff
+	 * @param size - Length of the arrow. Should probably be dependent on actual speed, but I leave someone else to do math
+	 */
+	//I think this code should work, but I have no way of testing this
+	private void drawArrowRT(Graphics2D g2d, double size){
+		if(locs.size() < 2){
+			//There's not enough data to get a position and direction
+			return;
+		}
+		
+		LocTuple p1 = locs.get(locs.size()-2);
+		LocTuple p2 = locs.get(locs.size()-1);
+		double deltax = p2.getLongitude() - p1.getLongitude();
+		double deltay = p2.getLatitude() - p1.getLatitude();
+		theta = Math.atan2(deltay, deltax);
+		
+		//I took this code from the drawTuple code and I assume it gets the screen location of mTuple (now p2)
+		double dx = Math.abs(imgSouthEast.getLongitude() - imgNorthWest.getLongitude());
+		double dy = Math.abs(imgSouthEast.getLatitude() - imgNorthWest.getLatitude());
+		
+		double latdiff = Math.abs(p2.getLatitude() - imgNorthWest.getLatitude());
+		double londiff = Math.abs(p2.getLongitude() - imgNorthWest.getLongitude());
+		
+		double px = (londiff * frameWidth) / dx;
+		double py = (latdiff * frameHeight) / dy;
+		
+		drawArrow(g2d, px, py, theta, size);
+	}
+	
 	private void drawArrow(Graphics2D g2d, double x1, double y1, double theta, double size){
 		double x2 = x1 + rotate(size, 0, theta)[0];
 		double y2 = y1 + rotate(size, 0, theta)[1];
@@ -129,43 +160,15 @@ public class GpsPanel extends JPanel {
 
 		g.drawImage(map, 0, 0, frameWidth, frameHeight, Color.black, null);
 		g2d.setColor(Color.blue);
-		drawArrow(g2d, 0.5*frameWidth, 0.5*frameHeight, theta, 0.1*frameWidth);
-		theta += 0.01;
+		drawArrowRT(g2d, 0.1*frameWidth); //TODO: Make the size of this arrow dependent on the velocity (so I need time stamps)
+		
+		//Old code for testing; no idea if the new code works so I'm keeping it in for now
+		//drawArrow(g2d, 0.5*frameWidth, 0.5*frameHeight, theta, 0.1*frameWidth);
+		//theta += 0.01;
 	
 		for	(LocTuple mTuple : locs) {
 			drawTuple(g2d, mTuple);
 		}
 		g2d.dispose();
-	}
-	
-	//Ad hoc image processing code to follow
-	public BufferedImage processImage(BufferedImage image, double theta){
-		BufferedImage temp = new BufferedImage((int)(1.42*(image.getWidth()+image.getHeight())) + 2,(int)(1.42*(image.getWidth()+image.getHeight())) + 2, BufferedImage.TYPE_INT_ARGB);
-		for(int x = 0; x < temp.getWidth(); x++){
-			for(int y = 0; y < temp.getHeight(); y++){
-				temp.setRGB(x, y, new Color(255, 255, 255, 0).getRGB());
-			}
-		}
-		for(int x = 0; x < image.getWidth(); x++){
-			for(int y = 0; y < image.getHeight(); y++){
-				Color c = new Color(image.getRGB(x, y));
-				c = new Color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
-				int xp = (int)(0.71*(image.getWidth() + image.getHeight())) + 1 + (int) (x*Math.cos(theta) + y*Math.sin(theta));
-				int yp = (int)(0.71*(image.getWidth() + image.getHeight())) + 1 + (int) (-x*Math.sin(theta) + y*Math.cos(theta));
-				try{
-					//Overwrite anything within one pixel of this value to prevent rounding issues
-					for(int xd = -1; xd <= 1; xd++){
-						for(int yd = -1; yd <= 1; yd++){
-							temp.setRGB(xp+xd, yp+yd, c.getRGB());
-						}
-					}
-				}catch(Exception e)
-				{
-					System.out.println(x + " " + y + " " + xp + " " + yp);
-					System.exit(0);
-				}
-			}
-		}
-		return temp;
 	}
 }
