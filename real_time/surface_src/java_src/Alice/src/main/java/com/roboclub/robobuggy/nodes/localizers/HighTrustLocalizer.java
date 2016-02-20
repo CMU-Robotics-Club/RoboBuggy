@@ -24,6 +24,10 @@ public class HighTrustLocalizer implements Node{
 	private double buggyFrame_rot_z;
 	private double mostRecentEncoder = 0;
 	private double secondOldestEncoder = 0;
+
+	private double LATITUDE_ZERO = 40.44288816666667;
+	private double LONGITUDE_ZERO = -79.9427065; 
+	
 	private Publisher posePub = new Publisher(NodeChannel.POSE.getMsgPath());
 
 	
@@ -61,11 +65,12 @@ public class HighTrustLocalizer implements Node{
 						double deltaEncoder = mostRecentEncoder - secondOldestEncoder;
 						So2Pose deltaPose = new So2Pose(deltaEncoder, 0.0, worldOrintation);
 						com.roboclub.robobuggy.map.Point deltaPoint = deltaPose.getSe2Point();
-						buggyFrame_gps_x = buggyFrame_gps_x + deltaPoint.getX();
-						buggyFrame_gps_y= buggyFrame_gps_y + deltaPoint.getY();
+						//TODO actually integrate encoder
+					//	buggyFrame_gps_x = buggyFrame_gps_x + deltaPoint.getX();
+					//	buggyFrame_gps_y= buggyFrame_gps_y + deltaPoint.getY();
 						
 						//now publisher the point
-						publishUpdate();	
+					//	publishUpdate();	
 
 					}
 				}); 
@@ -76,8 +81,18 @@ public class HighTrustLocalizer implements Node{
 				@Override
 				public void actionPerformed(String topicName, Message m) {
 					  GpsMeasurement gpsM = (GpsMeasurement)m;
-					  buggyFrame_gps_x = gpsM.getLatitude();
-					  buggyFrame_gps_y = gpsM.getLongitude();
+					  double thisLon = -gpsM.getLongitude();
+					  double thisLat = gpsM.getLatitude();
+					  double dLongitude = thisLon - LONGITUDE_ZERO;
+					  double dLatitude= thisLat - LATITUDE_ZERO;
+
+					  double oldX = buggyFrame_gps_x;
+					  double oldY = buggyFrame_gps_y;
+					  buggyFrame_gps_x = Math.cos(thisLon) * 69.172*5280*dLongitude;  
+					  buggyFrame_gps_y = 365228*dLatitude;
+					  double dx = buggyFrame_gps_x - oldX;
+					  double dy = buggyFrame_gps_y - oldY;
+					  buggyFrame_rot_z = Math.atan2(dy, dx);
 						publishUpdate();	
 					}
 				});
@@ -89,7 +104,7 @@ public class HighTrustLocalizer implements Node{
 				public void actionPerformed(String topicName, Message m) {
 						ImuMeasurement imuM = (ImuMeasurement)m;
 						//TODO useful things
-						publishUpdate();	
+				//		publishUpdate();	
 
 					}
 				});
@@ -101,7 +116,7 @@ public class HighTrustLocalizer implements Node{
 				public void actionPerformed(String topicName, Message m) {
 								MagneticMeasurement magM = (MagneticMeasurement)m;
 								//TODO useful things
-								publishUpdate();	
+				//				publishUpdate();	
 
 					}
 				});

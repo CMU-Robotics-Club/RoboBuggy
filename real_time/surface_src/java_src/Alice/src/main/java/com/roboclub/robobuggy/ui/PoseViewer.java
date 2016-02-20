@@ -95,7 +95,7 @@ public class PoseViewer extends RobobuggyGUIContainer{
 	 */
 	public Vec2d projectToView(Matrix m){
 		//TODO 
-		return new Vec2d(100*m.get(0, 0)+200, -100*m.get(1, 0)+400);
+		return new Vec2d(1*m.get(0, 0)+200, -1*m.get(1, 0)+400);
 	}
 
 	/**

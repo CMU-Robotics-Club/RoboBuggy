@@ -1,5 +1,7 @@
 package com.roboclub.robobuggy.ui;
 
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
@@ -8,126 +10,241 @@ import com.roboclub.robobuggy.ros.Subscriber;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.ArrayList;
+import java.io.FilenameFilter;
+import java.io.IOException;
+
+import org.openstreetmap.gui.jmapviewer.Coordinate;
+import org.openstreetmap.gui.jmapviewer.JMapViewerTree;
+import org.openstreetmap.gui.jmapviewer.MapMarkerDot;
+import org.openstreetmap.gui.jmapviewer.MapPolygonImpl;
+import org.openstreetmap.gui.jmapviewer.MemoryTileCache;
+import org.openstreetmap.gui.jmapviewer.OsmTileLoader;
+import org.openstreetmap.gui.jmapviewer.Tile;
+import org.openstreetmap.gui.jmapviewer.interfaces.TileCache;
+import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
+
 
 /**
- * {@link JPanel} used to display GPS data
+ * panel for dynamic map
  */
-public class GpsPanel extends JPanel {	
+public class GpsPanel extends JPanel {
+	
 	private static final long serialVersionUID = 42L;
-	private ArrayList<LocTuple> locs;
-	private LocTuple imgNorthWest;
-	private LocTuple imgSouthEast;
-	private BufferedImage map;
-	private boolean setup;
-	private int frameWidth;
-	private int frameHeight;
 	
 	private double theta = 0;
 	
-	@SuppressWarnings("unused") //this subscriber is used to generate callbacks 
+	private JMapViewerTree mapTree;
+	
+	private double mapViewerLat = 40.440138;
+	private double mapViewerLon = -79.945306;
+	private String mapCacheFolderDiskPath = "images/cachedCourseMap";
+	
+	private double mapDragX = -1;
+	private double mapDragY = -1;
+
+	@SuppressWarnings("unused") //this subscriber is used to generate callbacks
 	private Subscriber gpsSub;
 	
 	/**
 	 * Construct a new {@link GpsPanel}
 	 */
 	public GpsPanel(){
-		locs = new ArrayList<LocTuple>();
-		imgNorthWest = new LocTuple(40.443946388131266, -79.95532877484377);
-		imgSouthEast = new LocTuple(40.436597411027364, -79.93596322545625);
-		try {
-			map = ImageIO.read(new File("images/lat_long_course_map.png"));
-		} catch(Exception e) {
-			System.out.println("Unable to open map!");
-		}
 		
-		setup = false;
+		initMapTree();
+		addCacheToTree();
 		
+		this.add(mapTree);
 		gpsSub = new Subscriber(NodeChannel.GPS.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
-				double latitude = ((GpsMeasurement)m).getLatitude();
-				double longitude = ((GpsMeasurement)m).getLongitude();
 
-				//todo put map based on dir
+				double latitude = ((GpsMeasurement)m).getLatitude();
+				double longitude = ((GpsMeasurement) m).getLongitude();
+
 				if(((GpsMeasurement)m).getWest()) {
 					longitude = -longitude;
 				}
 				
-				locs.add(new LocTuple(latitude, longitude));
-//				int gpsSize = locs.size(); // This is new: looks locs.size
-//				if (gpsSize > 20) {        // if size > 20, remove first object
-//					locs.remove(0);
-//				}
-			 // refresh screen
-			//    Gui.getInstance().fixPaint();
+				mapTree.getViewer().addMapMarker(new MapMarkerDot(Color.BLUE, latitude, longitude));
+				GpsPanel.this.repaint();  // refresh screen
+
 			}
 		});
-		
-//		locs.add(new LocTuple(40.440443, -79.9427212));
+
+
+
 	}
 	
-	private void setup() {
-		frameWidth = getWidth();
-		frameHeight = getHeight();
-	}
-	
-	private void drawTuple(Graphics2D g2d, LocTuple mTuple){
-//		double dx = imgSouthWest.getLatitude() - imgNorthEast.getLatitude();
-//		double dy = imgSouthWest.getLongitude() - imgNorthEast.getLongitude();
-//		double x = (mTuple.getLatitude() - imgNorthEast.getLatitude()) / dx * frameWidth;
-//		double y = (mTuple.getLongitude() - imgSouthWest.getLongitude()) / dy * frameHeight;
-		
-		double dx = Math.abs(imgSouthEast.getLongitude() - imgNorthWest.getLongitude());
-		double dy = Math.abs(imgSouthEast.getLatitude() - imgNorthWest.getLatitude());
-		
-		double latdiff = Math.abs(mTuple.getLatitude() - imgNorthWest.getLatitude());
-		double londiff = Math.abs(mTuple.getLongitude() - imgNorthWest.getLongitude());
-		
-		double px = (londiff * frameWidth) / dx;
-		double py = (latdiff * frameHeight) / dy;
-		
-		
-		int cDiameter = 5;
-		g2d.setColor(Color.RED);
-		g2d.fillOval((int)px, (int)py, cDiameter, cDiameter);
-	}
-	
-	/**
-	 * Draws an arrow in the buggy's current direction
-	 * @param g2d - Graphics stuff
-	 * @param size - Length of the arrow. Should probably be dependent on actual speed, but I leave someone else to do math
-	 */
-	//I think this code should work, but I have no way of testing this
-	private void drawArrowRT(Graphics2D g2d, double size){
-		if(locs.size() < 2){
-			//There's not enough data to get a position and direction
-			return;
+	private void addCacheToTree() {
+		try {
+			TileCache courseCache = new MemoryTileCache();
+			File mapCacheDir = new File(mapCacheFolderDiskPath);
+			if(!mapCacheDir.isDirectory() || !mapCacheDir.exists()) {
+				throw new IOException("cache dir isn't properly structured or doesn't exist");
+			}
+			
+			FilenameFilter filter = new FilenameFilter() {
+				
+				@Override
+				public boolean accept(File dir, String name) {
+					// TODO Auto-generated method stub
+					if(name.contains("png")) {
+						return true;
+					}
+					return false;
+				}
+			};
+			String[] cachedImages = mapCacheDir.list(filter);
+			for(String imageName : cachedImages) {
+				BufferedImage tileImageSource = ImageIO.read(new File(mapCacheDir.getAbsolutePath() + "/" + imageName));
+				String[] tileCoords = imageName.substring(0, imageName.indexOf(".")).split("_");
+				int xCoord = Integer.parseInt(tileCoords[0]);
+				int yCoord = Integer.parseInt(tileCoords[1]);
+				int zoomLevel = Integer.parseInt(tileCoords[2]);
+				
+				Tile cacheInsert = new Tile(mapTree.getViewer().getTileController().getTileSource(),
+						xCoord, yCoord, zoomLevel, tileImageSource);
+				cacheInsert.setLoaded(true);
+				courseCache.addTile(cacheInsert);
+			}
+			
+			mapTree.getViewer().getTileController().setTileCache(courseCache);
 		}
-		
-		LocTuple p1 = locs.get(locs.size()-2);
-		LocTuple p2 = locs.get(locs.size()-1);
-		double deltax = p2.getLongitude() - p1.getLongitude();
-		double deltay = p2.getLatitude() - p1.getLatitude();
-		theta = Math.atan2(deltay, deltax);
-		
-		//I took this code from the drawTuple code and I assume it gets the screen location of mTuple (now p2)
-		double dx = Math.abs(imgSouthEast.getLongitude() - imgNorthWest.getLongitude());
-		double dy = Math.abs(imgSouthEast.getLatitude() - imgNorthWest.getLatitude());
-		
-		double latdiff = Math.abs(p2.getLatitude() - imgNorthWest.getLatitude());
-		double londiff = Math.abs(p2.getLongitude() - imgNorthWest.getLongitude());
-		
-		double px = (londiff * frameWidth) / dx;
-		double py = (latdiff * frameHeight) / dy;
-		
-		drawArrow(g2d, px, py, theta, size);
+		catch (IOException e) {
+			new RobobuggyLogicNotification("Something is wrong with the map cache: " + e.getMessage(), RobobuggyMessageLevel.EXCEPTION);
+		}
 	}
+
+	/**
+	 * @param points points to add to the map
+	 */
+	public void addPointsToMapTree(LocTuple...points) {
+		for (LocTuple point : points) {
+			mapTree.getViewer().addMapMarker(new MapMarkerDot(Color.BLUE, point.getLatitude(), point.getLongitude()));
+		}
+	}
+
+	/**
+	 * @param point1 1st endpoint of line to add
+	 * @param point2 2nd endpoint of line to add
+	 */
+	public void addLineToMap(LocTuple point1, LocTuple point2) {
+		mapTree.getViewer().addMapPolygon(new MapPolygonImpl(
+				new Coordinate(point1.getLatitude(), point1.getLongitude()),
+				new Coordinate(point1.getLatitude(), point1.getLongitude()),
+				new Coordinate(point2.getLatitude(), point2.getLongitude())
+		));
+	}
+
+	/**
+	 * @param originPoint the origin point of the ray
+	 * @param angle the heading of the ray
+	 */
+	public void addLineToMap(LocTuple originPoint, double angle) {
+		double scalingFactor = 0.001;
+		double dx = originPoint.getLatitude() + Math.cos(angle) * scalingFactor;
+		double dy = originPoint.getLongitude() + Math.sin(angle) * scalingFactor;
+
+		LocTuple endpoint = new LocTuple(originPoint.getLatitude() + dx, originPoint.getLongitude() + dy);
+		addLineToMap(originPoint, endpoint);
+	}
+
+	private void initMapTree() {
+		mapTree = new JMapViewerTree("Buggy");
+		mapTree.getViewer().setTileSource(new BingAerialTileSource());
+		mapTree.setSize(getWidth(), getHeight());
+		mapTree.getViewer().setSize(getWidth(), getHeight());
+		mapTree.getViewer().setTileLoader(new OsmTileLoader(mapTree.getViewer()));
+		mapTree.getViewer().setDisplayPosition(new Coordinate(mapViewerLat, mapViewerLon), 17);
+		mapTree.getViewer().addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				mapDragX = e.getX();
+				mapDragY = e.getY();
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		mapTree.getViewer().addMouseMotionListener(new MouseMotionListener() {
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+				int zoomLevel = mapTree.getViewer().getZoom();
+
+				mapViewerLat -= ((mapDragY - e.getY()) * 0.001) / (zoomLevel * 1000);
+				mapViewerLon -= ((e.getX() - mapDragX) * 0.001) / (zoomLevel * 1000);
+				mapTree.getViewer().setDisplayPosition(new Coordinate(mapViewerLat, mapViewerLon), zoomLevel);
+			}
+		});
+	}
+	
+//	/**
+//	 * Draws an arrow in the buggy's current direction
+//	 * @param g2d - Graphics stuff
+//	 * @param size - Length of the arrow. Should probably be dependent on actual speed, but I leave someone else to do math
+//	 */
+//	//I think this code should work, but I have no way of testing this
+//	private void drawArrowRT(Graphics2D g2d, double size){
+//		if(locs.size() < 2){
+//			//There's not enough data to get a position and direction
+//			return;
+//		}
+//
+//		LocTuple p1 = locs.get(locs.size()-2);
+//		LocTuple p2 = locs.get(locs.size()-1);
+//		double deltax = p2.getLongitude() - p1.getLongitude();
+//		double deltay = p2.getLatitude() - p1.getLatitude();
+//		theta = Math.atan2(deltay, deltax);
+//
+//		//I took this code from the drawTuple code and I assume it gets the screen location of mTuple (now p2)
+//		double dx = Math.abs(imgSouthEast.getLongitude() - imgNorthWest.getLongitude());
+//		double dy = Math.abs(imgSouthEast.getLatitude() - imgNorthWest.getLatitude());
+//
+//		double latdiff = Math.abs(p2.getLatitude() - imgNorthWest.getLatitude());
+//		double londiff = Math.abs(p2.getLongitude() - imgNorthWest.getLongitude());
+//
+//		double px = (londiff * frameWidth) / dx;
+//		double py = (latdiff * frameHeight) / dy;
+//
+//		drawArrow(g2d, px, py, theta, size);
+//	}
 	
 	private void drawArrow(Graphics2D g2d, double x1, double y1, double theta, double size){
 		double x2 = x1 + rotate(size, 0, theta)[0];
@@ -147,31 +264,12 @@ public class GpsPanel extends JPanel {
 		return new double[] {xp, yp};
 	}
 	
+
 	@Override
 	public void paintComponent(Graphics g) {
-		setup();
-		super.paintComponent(g);
-		if (!setup){
-			setup();
-			setup = true;
-		}
-		Graphics2D g2d = (Graphics2D) g.create();
 
-		g.drawImage(map, 0, 0, frameWidth, frameHeight, Color.black, null);
-
-		g2d.setColor(Color.blue);
-		drawArrowRT(g2d, 0.1*frameWidth); //TODO: Make the size of this arrow dependent on the velocity (so I need time stamps)
+		mapTree.setBounds(0, 0, getWidth(), getHeight());
+		mapTree.getViewer().setSize(getWidth(), getHeight());
 		
-		//Old code for testing; no idea if the new code works so I'm keeping it in for now
-		//drawArrow(g2d, 0.5*frameWidth, 0.5*frameHeight, theta, 0.1*frameWidth);
-		//theta += 0.01;
-	
-
-
-		for (int i = 0; i < locs.size(); i++) {
-			LocTuple mTuple = locs.get(i);
-			drawTuple(g2d, mTuple);
-		}
-		g2d.dispose();
 	}
 }
