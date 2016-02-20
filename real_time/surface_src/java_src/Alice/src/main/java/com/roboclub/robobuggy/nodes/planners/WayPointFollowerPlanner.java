@@ -61,7 +61,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 		//find a path from our current location to that point 
 		double dx = targetPoint.getLatitude() - pose.getLatitude();
 		double dy = targetPoint.getLongitude() - pose.getLongitude();
-		double desiredHeading = Math.atan2(dy, dx);
+		double desiredHeading = 180*Math.atan2(dy, dx)/Math.PI;
 		
 		
 		//find the angle we need to reach that point 

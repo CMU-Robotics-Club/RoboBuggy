@@ -7,6 +7,7 @@ import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ui.Gui;
 import com.roboclub.robobuggy.ui.LocTuple;
+import com.roboclub.robobuggy.utilities.JNISetup;
 
 import java.awt.Color;
 import java.io.FileNotFoundException;
@@ -25,7 +26,23 @@ public class PathEditor {
 	 * @param args args
 	 */
 	public static void main(String[] args) {
-		double currentHeading = 0*Math.PI/180;
+		double currentHeading = 0;
+		
+		  try {
+				JNISetup.setupJNI(); //must run for jni to install
+				//note that errors are just printed to the console since the gui and logging system  has not been created yet
+			} catch (NoSuchFieldException e1) {
+				e1.printStackTrace();
+			} catch (SecurityException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (IllegalArgumentException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (IllegalAccessException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		
 		// TODO Auto-generated method stub
 			System.out.println("Starting Path Editor");
@@ -62,14 +79,12 @@ public class PathEditor {
 							double lat = wayPoints.get(i).getLatitude() + latError;
 							double lon = wayPoints.get(i).getLongitude() + lonError;
 							planer.updatePositionEstimate(new GPSPoseMessage(new Date(), lat, lon, currentHeading));
-							double angle = planer.getCommandedSteeringAngle();
+							double angle = Math.PI*planer.getCommandedSteeringAngle()/180;
+		
 							Gui.getInstance().getMainGuiWindow().getAnalyPane().getDataPanel().getGpsPanel().
 							addPointsToMapTree(Color.RED,new LocTuple(lat,-lon));
 							Gui.getInstance().getMainGuiWindow().getAnalyPane().getDataPanel().getGpsPanel().addLineToMap(new LocTuple(lat,	-lon), angle, Color.RED);
-//
-//							Gui.getInstance().getMainGuiWindow().getAnalyPane().getDataPanel().
-//									getGpsPanel().addLineToMap(new LocTuple(lat, lon),
-//									planer.getCommandedSteeringAngle());
+
 						}
 					}
 				}

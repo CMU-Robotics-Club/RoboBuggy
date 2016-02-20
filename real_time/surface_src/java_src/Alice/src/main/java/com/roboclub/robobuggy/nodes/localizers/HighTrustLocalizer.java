@@ -91,7 +91,7 @@ public class HighTrustLocalizer implements Node{
 					  buggyFrame_gps_y = 365228*dLatitude;
 					  double dx = buggyFrame_gps_x - oldX;
 					  double dy = buggyFrame_gps_y - oldY;
-					  buggyFrame_rot_z = Math.atan2(dy, dx);
+					  buggyFrame_rot_z = 180*Math.atan2(dy, dx)/Math.PI;
 						publishUpdate();	
 					}
 				});
