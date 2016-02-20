@@ -1,16 +1,19 @@
 package com.roboclub.robobuggy.main;
 
+import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Date;
 
+import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
+import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
 import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
-import com.roboclub.robobuggy.ros.Message;
+import com.roboclub.robobuggy.ros.NodeChannel;
+import com.roboclub.robobuggy.ui.Gui;
 import com.roboclub.robobuggy.ui.LocTuple;
-import com.roboclub.robobuggy.ui.Map;
-import com.roboclub.robobuggy.ui.RobobuggyJFrame;
 
 /**
  * Path Editor - Takes a log file and makes a waypoint list from it
@@ -26,44 +29,55 @@ public class PathEditor {
 			System.out.println("Starting Path Editor");
 			try {
 				ArrayList<GpsMeasurement> wayPoints =
-						WayPointUtil.createWayPointsFromLog("logs/2016-02-13-21-21-41", "sensors_2016-02-13-21-21-41.txt");
-				
-				
+						WayPointUtil.createWayPointsFromLog("logs/", "cleaned.txt");
 				//save the path to a new jason file type 
 				
 				//read back in the jason file type
 //				ArrayList<Message> waypointsFromFile = WayPointUtil.createWayPointsFromWaypointList("logs/2016-02-13-21-21-41/waypoints.txt");
 
 				//Display the way points 
-				RobobuggyJFrame mainWindow = new RobobuggyJFrame("Path Viewer",1.0,1.0);	
+//				RobobuggyJFrame mainWindow = new RobobuggyJFrame("Path Viewer",1.0,1.0);
 				//mainWindow.addComponent(new GpsPanel(), 0.0, 0.0, 1.0, 1.0);
-				Map thisMap = new Map();
-				mainWindow.addComponent(thisMap,0.0,0.0,1.0,1.0);
-				mainWindow.repaint();
-				
+				Gui.getInstance();
+
+
 				//displaying points to the user
 				for(int i = 0;i<wayPoints.size();i++){
-					System.out.println("lat:"+wayPoints.get(i).getLatitude()+" lon:"+wayPoints.get(i).getLongitude());
-					thisMap.addPoint(new LocTuple(wayPoints.get(i).getLatitude(), -wayPoints.get(i).getLongitude()));
-					thisMap.repaint();
+					Gui.getInstance().getMainGuiWindow().getAnalyPane().getDataPanel().getGpsPanel().
+							addPointsToMapTree(new LocTuple(wayPoints.get(i).getLatitude(),
+									-wayPoints.get(i).getLongitude()));
+					Gui.getInstance().fixPaint();
 				}
-				
-				/*
+
 				WayPointFollowerPlanner planer = new WayPointFollowerPlanner(NodeChannel.UNKNOWN_CHANNEL,wayPoints);
 			
 				for(int i = 0;i<wayPoints.size();i++){
-					double LAT_ERROR = 1/111131.745;
-					double LON_ERROR = 1/78846.81;
-					for(double latError = -LAT_ERROR;latError<LAT_ERROR;latError+=LAT_ERROR/5){
-						for(double lonError = -LON_ERROR;lonError<LON_ERROR;lonError+=LON_ERROR/5){
+					final double latErrorFinal = 1/111131.745;
+					final double lonErrorFinal = 1/78846.81;
+
+					Color pointAttemptColor = new Color((float) Math.random(), (float) Math.random(), (float) Math.random());
+
+					for(double latError = -latErrorFinal;latError<latErrorFinal;latError+=latErrorFinal * 4){
+						for(double lonError = -lonErrorFinal;lonError<lonErrorFinal;lonError+=lonErrorFinal * 4){
+							double lat = wayPoints.get(i).getLatitude() + latError;
+							double lon = wayPoints.get(i).getLongitude() + lonError;
+							double waypointlat = wayPoints.get(i).getLatitude();
+							double waypointlon = wayPoints.get(i).getLongitude();
+
+							double angle = planer.getCommandedSteeringAngle();
+
 							planer.updatePositionEstimate(new GPSPoseMessage(new Date(),
-								wayPoints.get(i).getLatitude()+latError, wayPoints.get(i).getLongitude()+lonError, 0));
-							planer.getCommandedSteeringAngle();
-							//TODO plot in a useful way
+								lat, lon, 0));
+
+							Gui.getInstance().getMainGuiWindow().getAnalyPane().getDataPanel().
+									getGpsPanel().addLineToMap(new LocTuple(waypointlat, -waypointlon),
+									angle, pointAttemptColor);
+							Gui.getInstance().getMainGuiWindow().getAnalyPane().getDataPanel().
+									getGpsPanel().addLineToMap(new LocTuple(waypointlat, -waypointlon),
+									angle + Math.PI/2, pointAttemptColor.darker());
 						}
 					}
 				}
-				*/
 
 				//TODO add zoom and ability to edit 
 				
