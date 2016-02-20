@@ -12,6 +12,7 @@ import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.NodeChannel;
 
 import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -65,18 +66,17 @@ public final class Robot implements RosMaster {
 		// Initialize Nodes
 
 		//nodeList.add(new SimulationPlayer());
-		//nodeList.add(new OdomLocalizer());
+		nodeList.add(new OdomLocalizer());
 //		nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.COM_PORT_GPS));
-//		nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.COM_PORT_IMU));
-//		nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING, RobobuggyConfigFile.COM_PORT_RBSM, COMMAND_PERIOD));
+		nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.COM_PORT_IMU));
+		nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING, RobobuggyConfigFile.COM_PORT_RBSM, COMMAND_PERIOD));
 		nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION, NodeChannel.getLoggingChannels()));
 //		nodeList.add(new SweepNode(NodeChannel.DRIVE_CTRL));
 
 //		try {
 //			nodeList.add(new WayPointFollowerPlanner(NodeChannel.UNKNOWN_CHANNEL,
-//					WayPointUtil.createWayPointsFromWaypointList("logs/2016-02-13-21-21-41/waypoints.txt")));
-//		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
+//					WayPointUtil.createWaypointsFromOdomLocalizerLog("logs/2016-02-20-04-13-14/sensors_2016-02-20-04-13-14.txt")));
+//		} catch (FileNotFoundException | UnsupportedEncodingException e1) {
 //			e1.printStackTrace();
 //		}
 

@@ -47,7 +47,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 		System.out.println("Closest Point: "+closestIndex);
 		
 		//pick the point to follow 
-		int targetIndex = closestIndex + 2;
+		int targetIndex = closestIndex + 1;
 		
 		//if we are out of points then just go straight
 		if(targetIndex >= wayPoints.size())

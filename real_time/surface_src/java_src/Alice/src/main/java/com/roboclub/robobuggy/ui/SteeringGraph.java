@@ -40,7 +40,7 @@ public class SteeringGraph extends RobobuggyGUIContainer{
 
 		
 
-		new Subscriber(NodeChannel.STEERING_COMMANDED.getMsgPath(), new MessageListener() {
+		new Subscriber(NodeChannel.STEERING.getMsgPath(), new MessageListener() {
 		
 			@Override
 			public void actionPerformed(String topicName, Message m) {

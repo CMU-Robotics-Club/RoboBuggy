@@ -71,7 +71,7 @@ public class OdomLocalizer  extends PeriodicNode{
 		});
 			
 		//Initialize subscriber for what steering angle low level is currently at
-		new Subscriber(NodeChannel.STEERING_COMMANDED.getMsgPath(), new MessageListener() {
+		new Subscriber(NodeChannel.STEERING.getMsgPath(), new MessageListener() {
 			
 			@Override
 			public void actionPerformed(String topicName, Message m) {

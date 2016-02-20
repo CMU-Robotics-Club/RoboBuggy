@@ -85,7 +85,7 @@ public class RBSMNode extends SerialNode {
 		//messagePubs forward exact information received from arduino
 		messagePubEnc = new Publisher(sensorEnc.getMsgPath());
 		messagePubPot = new Publisher(sensorPot.getMsgPath());
-		messagePubControllerSteering = new Publisher(NodeChannel.STEERING_COMMANDED.getMsgPath());
+		messagePubControllerSteering = new Publisher(NodeChannel.STEERING.getMsgPath());
 //		brakePub = new Publisher(NodeChannel.BRAKE.getMsgPath()); //todo future expansion 
 		messagePubFp = new Publisher(NodeChannel.FP_HASH.getMsgPath());
 
@@ -168,7 +168,7 @@ public class RBSMNode extends SerialNode {
 		
 		RBSerialMessage message = rbp.getMessage();
 		byte headerByte = message.getHeaderByte();
-		System.out.println("headerByte: "+headerByte);
+//		System.out.println("headerByte: "+headerByte);
 		switch (headerByte)
 		{
 			case RBSerialMessage.ENC_TICK_SINCE_RESET:
@@ -179,12 +179,12 @@ public class RBSMNode extends SerialNode {
 			case RBSerialMessage.RBSM_MID_MEGA_STEER_FEEDBACK:   //steering angle feedback reported from mega singed int in thosands of degree
 				// This is a delta-distance! Do a thing!
 				potValue = message.getDataWord();
-				messagePubPot.publish(new SteeringMeasurement((double)(-(potValue + OFFSET)/(double) ARD_TO_DEG)));
+//				messagePubPot.publish(new SteeringMeasurement((double)(-(potValue + OFFSET)/(double) ARD_TO_DEG)));
 				break;
 			case RBSerialMessage.RBSM_MID_MEGA_STEER_ANGLE: //angle sent to/ reported from the mega
 				steeringAngle = message.getDataWord();
 				messagePubControllerSteering.publish(new SteeringMeasurement(-(steeringAngle+211.5)/106.85));
-				System.out.println("steering:"+steeringAngle);
+//				System.out.println("steering:"+steeringAngle);
 				break;
 			case RBSerialMessage.FP_HASH:
 			//	System.out.println(message.getDataWord());

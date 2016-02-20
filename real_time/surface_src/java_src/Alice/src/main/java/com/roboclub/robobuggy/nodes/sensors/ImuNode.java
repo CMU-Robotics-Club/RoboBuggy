@@ -118,7 +118,11 @@ public final class ImuNode extends SerialNode {
 		if(hashIndex == -1){
 			return 1;
 		}
-		    vals[5] = Double.parseDouble(imuRawStr.substring(0, hashIndex));
+		try {
+			vals[5] = Double.parseDouble(imuRawStr.substring(0, hashIndex));
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		}
 			imuRawStr = imuRawStr.substring(hashIndex);	
 			
 			msgPubIMU.publish(new ImuMeasurement(vals[0], vals[1], vals[2]));

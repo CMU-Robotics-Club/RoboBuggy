@@ -32,12 +32,12 @@ package com.roboclub.robobuggy.main;
 	public static final boolean VISION_SYSTEM_ENABLED = true;
 	
 	//sensor com ports
-	public static  final String COM_PORT_IMU = "COM7";
+	public static  final String COM_PORT_IMU = "/dev/tty.usbserial-A6026UA0";
 
 	public static  final String COM_PORT_GPS = "COM8";
-	public static  final String COM_PORT_RBSM = "COM6";
+	public static  final String COM_PORT_RBSM = "/dev/tty.usbmodem1D1131";
 
 	// iff false, connect to serial sensors 
-	public static final boolean DATA_PLAY_BACK = true;
+	public static final boolean DATA_PLAY_BACK = false;
 
 }

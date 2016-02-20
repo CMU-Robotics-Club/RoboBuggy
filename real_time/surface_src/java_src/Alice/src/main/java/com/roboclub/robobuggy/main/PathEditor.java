@@ -24,7 +24,7 @@ public class PathEditor {
 			System.out.println("Starting Path Editor");
 			try {
 				ArrayList<GpsMeasurement> wayPoints =
-						WayPointUtil.createWayPointsFromLog("logs/", "2016-02-19-23-12-47/sensors_2016-02-19-23-12-47.txt");
+						WayPointUtil.createWaypointsFromOdomLocalizerLog("logs/2016-02-20-03-38-01/sensors_2016-02-20-03-38-01.txt");
 				//save the path to a new jason file type 
 				
 				//read back in the jason file type
