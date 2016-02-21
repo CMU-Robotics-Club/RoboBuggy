@@ -33,7 +33,7 @@ public class PathEditor {
 			System.out.println("Starting Path Editor");
 			try {
 				ArrayList<GpsMeasurement> wayPoints =
-						WayPointUtil.createWayPointsFromLog("logs/", "2016-02-19-23-08-24/sensors_2016-02-19-23-08-24.txt");
+						WayPointUtil.createWayPointsFromLog("logs/", "spring1data/2016-02-20-06-50-45/sensors_2016-02-20-06-50-45.txt");
 				//save the path to a new jason file type 
 				
 				//read back in the jason file type

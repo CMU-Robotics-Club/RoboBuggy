@@ -55,10 +55,10 @@ public class RoboBuggyGraph extends RobobuggyGUIContainer{
 			public void actionPerformed(String topicName, Message m) {
 				
 				while(series1.getItemCount() > RobobuggyConfigFile.GRAPH_LENGTH){
+					//TODO add a lock 
 					series1.remove(0);
 				}
 				
-				func.getY(m);
 				series1.add(func.getX(m), func.getY(m));
 		
 			}

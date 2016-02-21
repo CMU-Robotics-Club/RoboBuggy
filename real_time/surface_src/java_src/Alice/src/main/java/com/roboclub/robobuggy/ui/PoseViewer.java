@@ -72,7 +72,7 @@ public class PoseViewer extends RobobuggyGUIContainer{
 				GPSPoseMessage poseM = (GPSPoseMessage)m;
 				double x = poseM.getLatitude();
 				double y = poseM.getLongitude();
-				double th = poseM.getHeading();
+				double th = Math.PI*poseM.getHeading()/180;
 				double [][] anArray = {{Math.cos(th),-Math.sin(th),0,x},{Math.sin(th),Math.cos(th),0,y},{0,0,1,0},{0,0,0,1}};
 				Matrix aPose = new Matrix(anArray);
 				if(!poses.isEmpty()){
@@ -139,7 +139,7 @@ public class PoseViewer extends RobobuggyGUIContainer{
 	}
 	
 	double get2dth(Matrix m){
-		return Math.atan2(m.get(1, 0),m.get(0, 0));
+		return 180*Math.atan2(m.get(1, 0),m.get(0, 0))/Math.PI;
 		
 	}
 	

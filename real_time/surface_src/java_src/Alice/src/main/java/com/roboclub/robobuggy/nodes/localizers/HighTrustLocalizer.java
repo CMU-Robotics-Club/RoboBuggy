@@ -96,11 +96,11 @@ public class HighTrustLocalizer implements Node{
 */
 					double oldX = buggyFrame_gps_x;
 					double oldY = buggyFrame_gps_y;
-					buggyFrame_gps_x = gpsM.getLongitude();
-					buggyFrame_gps_y = gpsM.getLatitude();
+					buggyFrame_gps_y = gpsM.getLongitude();
+					buggyFrame_gps_x = gpsM.getLatitude();
 					double dy = buggyFrame_gps_y - oldY;
 					double dx = buggyFrame_gps_x - oldX;
-					buggyFrame_rot_z = 180*Math.atan2(dy,dx)/Math.PI;
+					buggyFrame_rot_z = 180*Math.atan2(dy,dx)/Math.PI;  //might be atan2(dx,dy)
 
 						publishUpdate();	
 					}

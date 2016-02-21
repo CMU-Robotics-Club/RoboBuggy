@@ -13,7 +13,7 @@ import com.roboclub.robobuggy.ros.NodeChannel;
 public class WayPointFollowerPlanner extends PathPlannerNode{
 	private ArrayList<GpsMeasurement> wayPoints;
 	private GPSPoseMessage pose; //TODO change this to a reasonable type
-
+	private int bestGuess = 0; //what point we think we are around
 
 	/**
 	 * @param channel for buggybasenode
@@ -34,16 +34,19 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 	@Override
 	public double getCommandedSteeringAngle() {
 		//find the closest way point 
-		double min = 10000;//note that the breaks will defiantly deploy at this 
+		double min = Double.MAX_VALUE;//note that the breaks will defiantly deploy at this 
 		int closestIndex = -1;
-		for(int i = 0;i<wayPoints.size();i++){
+		for(int i = Math.max(bestGuess-50,0);i<Math.min(wayPoints.size(),bestGuess+50);i++){
 			double d = getDistince(pose,wayPoints.get(i));
 			if(d < min){
 				min = d;
 				closestIndex = i;
 			}
 		}
-		
+		if(closestIndex == -1){
+			return 17433504; //A dummy value that we can never get
+		}
+		bestGuess  = closestIndex;
 		System.out.println("Closest Point: "+closestIndex);
 		
 		//pick the point to follow 

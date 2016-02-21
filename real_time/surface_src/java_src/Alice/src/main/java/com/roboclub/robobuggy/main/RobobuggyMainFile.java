@@ -44,7 +44,7 @@ public class RobobuggyMainFile {
      	
     	if (RobobuggyConfigFile.DATA_PLAY_BACK) {
     		//Play back mode enabled
-    		new SensorPlayer("logs/2016-02-19-23-08-24/sensors_2016-02-19-23-08-24.txt", 1);
+    		new SensorPlayer("logs/spring1data/2016-02-20-06-50-45/sensors_2016-02-20-06-50-45.txt", 1);
         }
         
         	//Play back disabled, create robot
