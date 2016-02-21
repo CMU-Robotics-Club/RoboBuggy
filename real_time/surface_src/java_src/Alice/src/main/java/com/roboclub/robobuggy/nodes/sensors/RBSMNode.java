@@ -255,6 +255,12 @@ public class RBSMNode extends SerialNode {
 		 */
 		@Override
 		protected void update() {
+			if(commandedAngle > 1000) {
+				commandedAngle = 1000;
+			}
+			else if (commandedAngle < -1000) {
+				commandedAngle = -1000;
+			}
 			RBSMSteeringMessage msgSteer = new RBSMSteeringMessage(commandedAngle);
 			send(msgSteer.getMessageBytes());
 			RBSMBrakeMessage msgBrake = new RBSMBrakeMessage(commandedBrakeEngaged);

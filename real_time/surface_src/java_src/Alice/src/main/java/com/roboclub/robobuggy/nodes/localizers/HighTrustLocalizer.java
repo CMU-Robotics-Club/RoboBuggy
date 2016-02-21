@@ -80,6 +80,7 @@ public class HighTrustLocalizer implements Node{
 				@Override
 				public void actionPerformed(String topicName, Message m) {
 					  GpsMeasurement gpsM = (GpsMeasurement)m;
+					/*
 					  double thisLon = -gpsM.getLongitude();
 					  double thisLat = gpsM.getLatitude();
 					  double dLongitude = thisLon - LONGITUDE_ZERO;
@@ -92,6 +93,15 @@ public class HighTrustLocalizer implements Node{
 					  double dx = buggyFrame_gps_x - oldX;
 					  double dy = buggyFrame_gps_y - oldY;
 					  buggyFrame_rot_z = 180*Math.atan2(dy, dx)/Math.PI;
+*/
+					double oldX = buggyFrame_gps_x;
+					double oldY = buggyFrame_gps_y;
+					buggyFrame_gps_x = gpsM.getLongitude();
+					buggyFrame_gps_y = gpsM.getLatitude();
+					double dy = buggyFrame_gps_y - oldY;
+					double dx = buggyFrame_gps_x - oldX;
+					buggyFrame_rot_z = 180*Math.atan2(dy,dx)/Math.PI;
+
 						publishUpdate();	
 					}
 				});
