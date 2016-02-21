@@ -2,6 +2,8 @@ package com.roboclub.robobuggy.main;
 
 import com.roboclub.robobuggy.nodes.localizers.HighTrustLocalizer;
 import com.roboclub.robobuggy.nodes.localizers.OdomLocalizer;
+import com.roboclub.robobuggy.nodes.planners.GPSTrackPlannerNode;
+import com.roboclub.robobuggy.nodes.planners.SweepNode;
 import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
 import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
 import com.roboclub.robobuggy.nodes.sensors.CameraNode;
@@ -31,6 +33,7 @@ public final class Robot implements RosMaster {
 	private static final int COMMAND_PERIOD = 50;
 	private static Robot instance;
 	private boolean autonomous;
+	private boolean collectingData;
 	private List<Node> nodeList;
 	//TODO find out the actual time we need to put here
 	private static final int ARDUINO_BOOTLOADER_TIMEOUT = 2000;
@@ -54,8 +57,9 @@ public final class Robot implements RosMaster {
 	}
 	
 	/************************************* Set of all internal private functions ************************/
-	private Robot() {
+	private Robot(boolean collectingData) {
 		System.out.println("Starting Robot");
+		this.collectingData = collectingData;  //tells us to add or not add online sensors 
 		try {
 			Thread.sleep(ARDUINO_BOOTLOADER_TIMEOUT);
 		} catch (InterruptedException e) {
@@ -66,29 +70,34 @@ public final class Robot implements RosMaster {
 		nodeList = new LinkedList<>();
 		new RobobuggyLogicNotification("Logic Exception Setup properly" ,  RobobuggyMessageLevel.NOTE);
 		// Initialize Nodes
-
+		
+		//nodeList.add(new SweepNode());
 	//	nodeList.add(new SimulationPlayer());
 		//nodeList.add(new OdomLocalizer());
 		nodeList.add(new HighTrustLocalizer());
 		
-		//nodeList.add(new SimulationPlayer());
-		//nodeList.add(new OdomLocalizer());
-//		nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.COM_PORT_GPS));
-		nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.COM_PORT_IMU));
-		nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING, RobobuggyConfigFile.COM_PORT_RBSM, COMMAND_PERIOD));
-		nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION, NodeChannel.getLoggingChannels()));
+	//	nodeList.add(new OdomLocalizer());
+		
+		//this subset of nodes is only added when we are in online mode 
+		if(collectingData){
+			nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.COM_PORT_GPS));
+			nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.COM_PORT_IMU));
+			nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING, RobobuggyConfigFile.COM_PORT_RBSM, COMMAND_PERIOD));
+			nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION, NodeChannel.getLoggingChannels()));
+		}
 //		nodeList.add(new SweepNode(NodeChannel.DRIVE_CTRL));
 
-//		try {
-//			nodeList.add(new WayPointFollowerPlanner(NodeChannel.UNKNOWN_CHANNEL,
-//					WayPointUtil.createWaypointsFromOdomLocalizerLog("logs/2016-02-20-04-13-14/sensors_2016-02-20-04-13-14.txt")));
-//		} catch (FileNotFoundException | UnsupportedEncodingException e1) {
-//			e1.printStackTrace();
-//		}
+	
+		try {
+		nodeList.add(new WayPointFollowerPlanner(NodeChannel.UNKNOWN_CHANNEL,
+					WayPointUtil.createWaypointsFromOdomLocalizerLog("logs/2016-02-19-23-08-24/sensors_2016-02-19-23-08-24.txt")));
+		} catch (FileNotFoundException | UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+		}
+
 
 //		nodeList.add(new CameraNode(NodeChannel.PUSHBAR_CAMERA, 100));
-//		nodeList.add(new GPSTrackPlannerNode(NodeChannel.BRAKE_CTRL,
-//				RobobuggyConfigFile.LOG_FILE_LOCATION));
+//		nodeList.add(new GPSTrackPlannerNode(NodeChannel.BRAKE_CTRL,RobobuggyConfigFile.LOG_FILE_LOCATION));
 //		nodeList.add(new GPSLocalizer(NodeChannel.POSE));
 
 	}
@@ -125,7 +134,7 @@ public final class Robot implements RosMaster {
 	 */
 	public static Robot getInstance() {
 		if (instance == null) {
-			instance = new Robot();
+			instance = new Robot(!RobobuggyConfigFile.DATA_PLAY_BACK);
 		}
 		return instance;
 	}

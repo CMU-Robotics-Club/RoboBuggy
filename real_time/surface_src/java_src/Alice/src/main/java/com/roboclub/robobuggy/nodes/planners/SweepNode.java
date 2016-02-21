@@ -27,8 +27,8 @@ public class SweepNode extends PathPlannerNode {
      * @param channel {@link NodeChannel} on which to broadcast status
      *                information about the node
      */
-    public SweepNode(NodeChannel channel)  {
-        super(channel);
+    public SweepNode()  {
+        super(NodeChannel.UNKNOWN_CHANNEL);
 
         steeringPublisher = new Publisher(NodeChannel.DRIVE_CTRL.getMsgPath());
         brakePublisher = new Publisher(NodeChannel.BRAKE_CTRL.getMsgPath());
@@ -39,6 +39,7 @@ public class SweepNode extends PathPlannerNode {
             public void run()
             {
                 while(true){
+                	System.out.println("in sweep");
                 	if(!sweepUp && currentCommandedSteeringAngle <= STEERING_ANGLE_LOWER_BOUND) {
                 		sweepUp = true;
                 	}else if(sweepUp && currentCommandedSteeringAngle >= STEERING_ANGLE_UPPER_BOUND){

@@ -28,21 +28,6 @@ public class PathEditor {
 	public static void main(String[] args) {
 		double currentHeading = 0;
 		
-		  try {
-				JNISetup.setupJNI(); //must run for jni to install
-				//note that errors are just printed to the console since the gui and logging system  has not been created yet
-			} catch (NoSuchFieldException e1) {
-				e1.printStackTrace();
-			} catch (SecurityException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (IllegalArgumentException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (IllegalAccessException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
 		
 		// TODO Auto-generated method stub
 			System.out.println("Starting Path Editor");

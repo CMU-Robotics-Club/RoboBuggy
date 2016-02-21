@@ -46,7 +46,7 @@ public class RobobuggyMainFile {
     		//Play back mode enabled
     		new SensorPlayer("logs/2016-02-19-23-08-24/sensors_2016-02-19-23-08-24.txt", 1);
         }
-        else {
+        
         	//Play back disabled, create robot
         	Robot.getInstance().startNodes();
 			new RobobuggyLogicNotification("Robobuggy Logic Notfication started", RobobuggyMessageLevel.NOTE);
@@ -64,7 +64,6 @@ public class RobobuggyMainFile {
             catch (InterruptedException e) {
                 new RobobuggyLogicNotification("interreupted", RobobuggyMessageLevel.NOTE);
             }
-		}
 
 
     }
