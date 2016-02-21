@@ -1,7 +1,7 @@
 window.onload = read();
 
 function read() {
-    var socket = new WebSocket("ws://Spearmint.local:8080");
+    var socket = new WebSocket("ws://127.0.0.1:8080");
     socket.onmessage = onMessage;
 }
 
