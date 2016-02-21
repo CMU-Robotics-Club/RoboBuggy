@@ -39,5 +39,7 @@ package com.roboclub.robobuggy.main;
 
 	// iff false, connect to serial sensors 
 	public static final boolean DATA_PLAY_BACK = true;
+	
+	public static final String WAYPOINT_SOURCE_LOG_FILE ="spring1data/2016-02-20-06-50-45/sensors_2016-02-20-06-50-45.txt";
 
 }

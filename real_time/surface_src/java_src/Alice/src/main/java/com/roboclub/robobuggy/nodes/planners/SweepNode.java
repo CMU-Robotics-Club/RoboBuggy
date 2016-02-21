@@ -27,8 +27,8 @@ public class SweepNode extends PathPlannerNode {
      * @param channel {@link NodeChannel} on which to broadcast status
      *                information about the node
      */
-    public SweepNode()  {
-        super(NodeChannel.UNKNOWN_CHANNEL);
+    public SweepNode(NodeChannel channel)  {
+        super(channel);
 
         steeringPublisher = new Publisher(NodeChannel.DRIVE_CTRL.getMsgPath());
         brakePublisher = new Publisher(NodeChannel.BRAKE_CTRL.getMsgPath());

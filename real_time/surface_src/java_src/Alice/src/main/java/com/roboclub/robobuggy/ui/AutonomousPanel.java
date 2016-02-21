@@ -6,6 +6,11 @@ import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ui.RoboBuggyGraph.getGraphValues;
 
+/**
+ * 
+ * @author Trevor Decker
+ *
+ */
 public class AutonomousPanel extends RobobuggyGUIContainer{
 	
 	public AutonomousPanel() {

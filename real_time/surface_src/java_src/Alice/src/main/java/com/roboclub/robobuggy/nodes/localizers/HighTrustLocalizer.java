@@ -17,26 +17,34 @@ import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
 
+/**
+ * 
+ * This class runs a Node that will build a fused position estimate by trusting all new measurements completely 
+ * @author Trevor Decker
+ *
+ */
 public class HighTrustLocalizer implements Node{
-	private double wheelOrintation_buggyFrame;
-	private double buggyFrame_gps_x;
-	private double buggyFrame_gps_y;
-	private double buggyFrame_rot_z;
+	private double wheelOrintationBuggyFrame;
+	private double buggyFrameGpsX;
+	private double buggyFrameGpsY;
+	private double buggyFrameRotZ;
 	private double mostRecentEncoder = 0;
 	private double secondOldestEncoder = 0;
 
-	private double LATITUDE_ZERO = 40.44288816666667;
-	private double LONGITUDE_ZERO = -79.9427065; 
+	//private double LATITUDE_ZERO = 40.44288816666667;
+	//private double LONGITUDE_ZERO = -79.9427065; 
 	
 	private Publisher posePub = new Publisher(NodeChannel.POSE.getMsgPath());
 
-	
+	/**
+	 * Constructor for the High Trust Localizer which will initialize the system to an identity (zero position) 
+	 */
 	public HighTrustLocalizer(){
 		//init values
-		wheelOrintation_buggyFrame = 0.0;
-		buggyFrame_gps_x = 0.0;
-		buggyFrame_gps_y = 0.0;
-		wheelOrintation_buggyFrame = 0.0;
+		wheelOrintationBuggyFrame = 0.0;
+		buggyFrameGpsX = 0.0;
+		buggyFrameGpsY = 0.0;
+		wheelOrintationBuggyFrame = 0.0;
 
 		
 		//steering
@@ -45,7 +53,7 @@ public class HighTrustLocalizer implements Node{
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				SteeringMeasurement steerM = (SteeringMeasurement)m;
-				wheelOrintation_buggyFrame = steerM.getAngle();
+				wheelOrintationBuggyFrame = steerM.getAngle();
 				
 			}
 		});
@@ -60,7 +68,7 @@ public class HighTrustLocalizer implements Node{
 						mostRecentEncoder = encM.getDistance();
 						
 						//Get orientation in world frame
-						double worldOrintation = buggyFrame_rot_z+wheelOrintation_buggyFrame;
+						double worldOrintation = buggyFrameRotZ+wheelOrintationBuggyFrame;
 						//TODO move us forward by that amount 
 						double deltaEncoder = mostRecentEncoder - secondOldestEncoder;
 						So2Pose deltaPose = new So2Pose(deltaEncoder, 0.0, worldOrintation);
@@ -94,13 +102,13 @@ public class HighTrustLocalizer implements Node{
 					  double dy = buggyFrame_gps_y - oldY;
 					  buggyFrame_rot_z = 180*Math.atan2(dy, dx)/Math.PI;
 */
-					double oldX = buggyFrame_gps_x;
-					double oldY = buggyFrame_gps_y;
-					buggyFrame_gps_y = gpsM.getLongitude();
-					buggyFrame_gps_x = gpsM.getLatitude();
-					double dy = buggyFrame_gps_y - oldY;
-					double dx = buggyFrame_gps_x - oldX;
-					buggyFrame_rot_z = 180*Math.atan2(dy,dx)/Math.PI;  //might be atan2(dx,dy)
+					double oldX = buggyFrameGpsX;
+					double oldY = buggyFrameGpsY;
+					buggyFrameGpsY = gpsM.getLongitude();
+					buggyFrameGpsX = gpsM.getLatitude();
+					double dy = buggyFrameGpsY - oldY;
+					double dx = buggyFrameGpsX - oldX;
+					buggyFrameRotZ = 180*Math.atan2(dy,dx)/Math.PI;  //might be atan2(dx,dy)
 
 						publishUpdate();	
 					}
@@ -133,7 +141,7 @@ public class HighTrustLocalizer implements Node{
 	}
 
 	private void publishUpdate(){
-		posePub.publish(new GPSPoseMessage(new Date(), buggyFrame_gps_x, buggyFrame_gps_y, buggyFrame_rot_z));
+		posePub.publish(new GPSPoseMessage(new Date(), buggyFrameGpsX, buggyFrameGpsY, buggyFrameRotZ));
 	}
 
 	@Override

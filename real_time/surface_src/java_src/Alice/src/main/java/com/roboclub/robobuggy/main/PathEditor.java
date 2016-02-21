@@ -18,6 +18,8 @@ import java.util.Date;
 
 /**
  * Path Editor - Takes a log file and makes a waypoint list from it
+ * @author Trevor Decker
+ * @author vivaanbahl
  */
 public class PathEditor {
 
@@ -29,19 +31,11 @@ public class PathEditor {
 		double currentHeading = 0;
 		
 		
-		// TODO Auto-generated method stub
 			System.out.println("Starting Path Editor");
 			try {
 				ArrayList<GpsMeasurement> wayPoints =
-						WayPointUtil.createWayPointsFromLog("logs/", "spring1data/2016-02-20-06-50-45/sensors_2016-02-20-06-50-45.txt");
-				//save the path to a new jason file type 
-				
-				//read back in the jason file type
-//				ArrayList<Message> waypointsFromFile = WayPointUtil.createWayPointsFromWaypointList("logs/2016-02-13-21-21-41/waypoints.txt");
-
-				//Display the way points 
-//				RobobuggyJFrame mainWindow = new RobobuggyJFrame("Path Viewer",1.0,1.0);
-				//mainWindow.addComponent(new GpsPanel(), 0.0, 0.0, 1.0, 1.0);
+						WayPointUtil.createWayPointsFromLog("logs/", RobobuggyConfigFile.WAYPOINT_SOURCE_LOG_FILE);
+			
 				Gui.getInstance();
 
 
@@ -66,9 +60,11 @@ public class PathEditor {
 							planer.updatePositionEstimate(new GPSPoseMessage(new Date(), lat, lon, currentHeading));
 							double angle = Math.PI*planer.getCommandedSteeringAngle()/180;
 		
+							//TODO make this cleaner, so much cleaner 
 							Gui.getInstance().getMainGuiWindow().getAnalyPane().getDataPanel().getGpsPanel().
 							addPointsToMapTree(Color.RED,new LocTuple(lat,-lon));
-							Gui.getInstance().getMainGuiWindow().getAnalyPane().getDataPanel().getGpsPanel().addLineToMap(new LocTuple(lat,	-lon), angle, Color.RED);
+							Gui.getInstance().getMainGuiWindow().getAnalyPane().getDataPanel().getGpsPanel().
+							addLineToMap(new LocTuple(lat,	-lon), angle, Color.RED);
 
 						}
 					}
