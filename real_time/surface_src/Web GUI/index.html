@@ -1,0 +1,177 @@
+<!doctype html>
+<html>
+		<head>
+			<title> Robobuggy UI </title>
+			<link rel = "stylesheeet" href = "styles/main.css">
+
+			<!-- Latest compiled and minified CSS -->
+			<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+			<!-- Optional theme -->
+			<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+		</head>
+		<body>
+
+			<script>
+			var x = document.getElementById("demo");
+			function getLocation() {
+			    if (navigator.geolocation) {
+			        navigator.geolocation.getCurrentPosition(showPosition, showError);
+			    } else { 
+			        x.innerHTML = "Geolocation is not supported by this browser.";
+			    }
+			}
+
+			function showPosition(position) {
+			    lat = position.coords.latitude;
+			    lon = position.coords.longitude;
+			    latlon = new google.maps.LatLng(lat, lon)
+			    mapholder = document.getElementById('mapholder')
+			    mapholder.style.height = '250px';
+			    mapholder.style.width = '500px';
+
+			    var myOptions = {
+			    center:latlon,zoom:14,
+			    mapTypeId:google.maps.MapTypeId.ROADMAP,
+			    mapTypeControl:false,
+			    navigationControlOptions:{style:google.maps.NavigationControlStyle.SMALL}
+			    }
+			    
+			    var map = new google.maps.Map(document.getElementById("mapholder"), myOptions);
+			    var marker = new google.maps.Marker({position:latlon,map:map,title:"You are here!"});
+			}
+
+			function showError(error) {
+			    switch(error.code) {
+			        case error.PERMISSION_DENIED:
+			            x.innerHTML = "User denied the request for Geolocation."
+			            break;
+			        case error.POSITION_UNAVAILABLE:
+			            x.innerHTML = "Location information is unavailable."
+			            break;
+			        case error.TIMEOUT:
+			            x.innerHTML = "The request to get user location timed out."
+			            break;
+			        case error.UNKNOWN_ERROR:
+			            x.innerHTML = "An unknown error occurred."
+			            break;
+			    }
+			}
+			</script>
+
+
+
+
+
+							<nav class="navbar navbar-default">
+							  <div class="container-fluid">
+							    <!-- Brand and toggle get grouped for better mobile display -->
+							    <div class="navbar-header">
+							      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+							        <span class="sr-only">Toggle navigation</span>
+							        <span class="icon-bar"></span>
+							        <span class="icon-bar"></span>
+							        <span class="icon-bar"></span>
+							      </button>
+							      <a class="navbar-brand" href="#">Brand</a>
+							    </div>
+
+							    <!-- Collect the nav links, forms, and other content for toggling -->
+							    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+							      <ul class="nav navbar-nav">
+							        <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
+							        <li><a href="#">Link</a></li>
+							        <li class="dropdown">
+							          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+							          <ul class="dropdown-menu">
+							            <li><a href="#">Action</a></li>
+							            <li><a href="#">Another action</a></li>
+							            <li><a href="#">Something else here</a></li>
+							            <li role="separator" class="divider"></li>
+							            <li><a href="#">Separated link</a></li>
+							            <li role="separator" class="divider"></li>
+							            <li><a href="#">One more separated link</a></li>
+							          </ul>
+							        </li>
+							      </ul>
+							      <ul class="nav navbar-nav navbar-right">
+							        <li><a href="#">Link</a></li>
+							        <li class="dropdown">
+							          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+							          <ul class="dropdown-menu">
+							            <li><a href="#">Action</a></li>
+							            <li><a href="#">Another action</a></li>
+							            <li><a href="#">Something else here</a></li>
+							            <li role="separator" class="divider"></li>
+							            <li><a href="#">Separated link</a></li>
+							          </ul>
+							        </li>
+							      </ul>
+							    </div><!-- /.navbar-collapse -->
+							  </div><!-- /.container-fluid -->
+							</nav>
+
+				<div class="col-sm-2">
+					<div class = "row"> 
+						<button type="button" class="btn btn-default">Auto</button>
+					</div>
+					<div class = "row">
+						<button type="button" class="btn btn-default">IMU</button>
+					</div>
+					<div class = "row">
+						<button type="button" class="btn btn-default">Vision</button>
+					</div>
+				</div>
+
+
+				<div class="row">
+					<div class="col-sm-9">
+					    <script> getLocation() </script>
+						<div id="mapholder"></div>
+
+					    <div class="row">
+					      <div class="col-xs-8 col-sm-6" onload='draw(0);'>
+					        <canvas id="tutorial" width="220" height="110">
+								Canvas not available.
+							</canvas>
+							<div>
+								<form id="drawTemp">
+									<input type="text" id="txtSpeed" name="txtSpeed" value="0" maxlength="2"/>
+									<input type="button" value="Draw" onclick="drawWithInputValue();">
+								</form>
+							</div>
+					      </div>
+					      <div class="col-xs-4 col-sm-6" onload='draw(0);'>
+					        <canvas id="tutorial" width="220" height="110">
+								Canvas not available.
+							</canvas>
+							<div>
+								<form id="drawTemp">
+									<input type="text" id="txtSpeed" name="txtSpeed" value="0" maxlength="2"/>
+									<input type="button" value="Draw" onclick="draw;">
+								</form>
+							</div>
+					      </div>
+					    </div>
+					  </div>
+					</div>
+				
+				</div>
+
+
+
+
+
+			<script src="speedometer.js"></script>
+			<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+			<!-- Latest compiled and minified JavaScript -->
+			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+			<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+		</body>
+
+</html>
+
+
+<!-- Credit for spedometer goes to https://github.com/rheh/HTML5-canvas-projects -->

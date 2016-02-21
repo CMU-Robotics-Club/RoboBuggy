@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
+import com.roboclub.robobuggy.jetty.gui.JettyServer;
+
 
 /** This class is the driver starting up the robobuggy program, if you want the buggy to drive itself you should run this node */
 public class RobobuggyMainFile {
@@ -17,8 +19,10 @@ public class RobobuggyMainFile {
 	 * Run Alice
 	 * @param args : None
 	 */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
+    	JettyServer js = new JettyServer();
+    	
         try {
 			JNISetup.setupJNI(); //must run for jni to install
 			//note that errors are just printed to the console since the gui and logging system  has not been created yet
@@ -44,7 +48,7 @@ public class RobobuggyMainFile {
      	
     	if (RobobuggyConfigFile.DATA_PLAY_BACK) {
     		//Play back mode enabled
-    		new SensorPlayer("logs/2016-02-19-23-08-24/sensors_2016-02-19-23-08-24.txt", 1);
+    		new SensorPlayer("logs/2016-02-19-23-12-47/sensors_2016-02-19-23-12-47.txt", 1);
         }
         
         	//Play back disabled, create robot
