@@ -1,19 +1,14 @@
 package com.roboclub.robobuggy.main;
 
-import com.roboclub.robobuggy.nodes.localizers.HighTrustLocalizer;
-import com.roboclub.robobuggy.nodes.localizers.OdomLocalizer;
-import com.roboclub.robobuggy.nodes.planners.GPSTrackPlannerNode;
-import com.roboclub.robobuggy.nodes.planners.SweepNode;
+import com.roboclub.robobuggy.nodes.localizers.HighTrustGPSLocalizer;
 import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
 import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
-import com.roboclub.robobuggy.nodes.sensors.CameraNode;
 import com.roboclub.robobuggy.nodes.sensors.GpsNode;
 import com.roboclub.robobuggy.nodes.sensors.ImuNode;
 import com.roboclub.robobuggy.nodes.sensors.LoggingNode;
 import com.roboclub.robobuggy.nodes.sensors.RBSMNode;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.NodeChannel;
-import com.roboclub.robobuggy.simulation.SimulationPlayer;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -75,7 +70,7 @@ public final class Robot implements RosMaster {
 		//nodeList.add(new SweepNode());
 	//	nodeList.add(new SimulationPlayer());
 		//nodeList.add(new OdomLocalizer());
-		nodeList.add(new HighTrustLocalizer());
+		nodeList.add(new HighTrustGPSLocalizer());
 		
 	//	nodeList.add(new OdomLocalizer());
 		
