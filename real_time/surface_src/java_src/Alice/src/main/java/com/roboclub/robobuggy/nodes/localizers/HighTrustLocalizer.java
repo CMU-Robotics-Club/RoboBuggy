@@ -18,8 +18,8 @@ import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
 
 /**
- * 
- * This class runs a Node that will build a fused position estimate by trusting all new measurements completely 
+ *
+ * This class runs a Node that will build a fused position estimate by trusting all new GPS measurements completely
  * @author Trevor Decker
  *
  */
@@ -33,7 +33,7 @@ public class HighTrustLocalizer implements Node{
 
 	//private double LATITUDE_ZERO = 40.44288816666667;
 	//private double LONGITUDE_ZERO = -79.9427065; 
-	
+
 	private Publisher posePub = new Publisher(NodeChannel.POSE.getMsgPath());
 
 	/**
@@ -46,98 +46,84 @@ public class HighTrustLocalizer implements Node{
 		buggyFrameGpsY = 0.0;
 		wheelOrintationBuggyFrame = 0.0;
 
-		
+
 		//steering
 		new Subscriber(NodeChannel.STEERING.getMsgPath(), new MessageListener() {
-			
+
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				SteeringMeasurement steerM = (SteeringMeasurement)m;
 				wheelOrintationBuggyFrame = steerM.getAngle();
-				
+
 			}
 		});
-		
+
 		//add subscribers 
 		//Initialize subscriber to encoder measurements
 		new Subscriber(NodeChannel.ENCODER.getMsgPath(), new MessageListener() {
-				@Override
-				public void actionPerformed(String topicName, Message m) {
-						EncoderMeasurement encM = (EncoderMeasurement)m;
-						secondOldestEncoder = mostRecentEncoder;
-						mostRecentEncoder = encM.getDistance();
-						
-						//Get orientation in world frame
-						double worldOrintation = buggyFrameRotZ+wheelOrintationBuggyFrame;
-						//TODO move us forward by that amount 
-						double deltaEncoder = mostRecentEncoder - secondOldestEncoder;
-						So2Pose deltaPose = new So2Pose(deltaEncoder, 0.0, worldOrintation);
-						com.roboclub.robobuggy.map.Point deltaPoint = deltaPose.getSe2Point();
-					//	buggyFrame_gps_x = buggyFrame_gps_x + deltaPoint.getX();
-					//	buggyFrame_gps_y= buggyFrame_gps_y + deltaPoint.getY();
-						
-						//now publisher the point
-					//	publishUpdate();	
+			@Override
+			public void actionPerformed(String topicName, Message m) {
+				EncoderMeasurement encM = (EncoderMeasurement)m;
+				secondOldestEncoder = mostRecentEncoder;
+				mostRecentEncoder = encM.getDistance();
 
-					}
-				}); 
-		
+				//Get orientation in world frame
+				double worldOrintation = buggyFrameRotZ + wheelOrintationBuggyFrame;
+				//TODO move us forward by that amount
+				double deltaEncoder = mostRecentEncoder - secondOldestEncoder;
+				So2Pose deltaPose = new So2Pose(deltaEncoder, 0.0, worldOrintation);
+				com.roboclub.robobuggy.map.Point deltaPoint = deltaPose.getSe2Point();
+				//	buggyFrame_gps_x = buggyFrame_gps_x + deltaPoint.getX();
+				//	buggyFrame_gps_y= buggyFrame_gps_y + deltaPoint.getY();
+
+				//now publisher the point
+				//	publishUpdate();
+
+			}
+		});
+
 		//add subscribers 
 		//Initialize subscriber to GPS measurements
 		new Subscriber(NodeChannel.GPS.getMsgPath(), new MessageListener() {
-				@Override
-				public void actionPerformed(String topicName, Message m) {
-					  GpsMeasurement gpsM = (GpsMeasurement)m;
-					/*
-					  double thisLon = -gpsM.getLongitude();
-					  double thisLat = gpsM.getLatitude();
-					  double dLongitude = thisLon - LONGITUDE_ZERO;
-					  double dLatitude= thisLat - LATITUDE_ZERO;
+			@Override
+			public void actionPerformed(String topicName, Message m) {
+				GpsMeasurement gpsM = (GpsMeasurement)m;
+				double oldX = buggyFrameGpsX;
+				double oldY = buggyFrameGpsY;
+				buggyFrameGpsY = gpsM.getLongitude();
+				buggyFrameGpsX = gpsM.getLatitude();
+				double dy = buggyFrameGpsY - oldY;
+				double dx = buggyFrameGpsX - oldX;
+				buggyFrameRotZ = 180*Math.atan2(dy,dx)/Math.PI;  //might be atan2(dx,dy)
 
-					  double oldX = buggyFrame_gps_x;
-					  double oldY = buggyFrame_gps_y;
-					  buggyFrame_gps_x = Math.cos(thisLon) * 69.172*5280*dLongitude;  
-					  buggyFrame_gps_y = 365228*dLatitude;
-					  double dx = buggyFrame_gps_x - oldX;
-					  double dy = buggyFrame_gps_y - oldY;
-					  buggyFrame_rot_z = 180*Math.atan2(dy, dx)/Math.PI;
-*/
-					double oldX = buggyFrameGpsX;
-					double oldY = buggyFrameGpsY;
-					buggyFrameGpsY = gpsM.getLongitude();
-					buggyFrameGpsX = gpsM.getLatitude();
-					double dy = buggyFrameGpsY - oldY;
-					double dx = buggyFrameGpsX - oldX;
-					buggyFrameRotZ = 180*Math.atan2(dy,dx)/Math.PI;  //might be atan2(dx,dy)
+				publishUpdate();
+			}
+		});
 
-						publishUpdate();	
-					}
-				});
-		
 		//add subscribers 
 		//Initialize subscriber to IMU measurements
 		new Subscriber(NodeChannel.IMU.getMsgPath(), new MessageListener() {
-				@Override
-				public void actionPerformed(String topicName, Message m) {
-						ImuMeasurement imuM = (ImuMeasurement)m;
-						//TODO useful things
+			@Override
+			public void actionPerformed(String topicName, Message m) {
+				ImuMeasurement imuM = (ImuMeasurement)m;
+				//TODO useful things
 				//		publishUpdate();	
 
-					}
-				});
-		
+			}
+		});
+
 		//add subscribers 
 		//Initialize subscriber to IMU MAGNITOMETER measurements
 		new Subscriber(NodeChannel.IMU_MAGNETIC.getMsgPath(), new MessageListener() {
-				@Override
-				public void actionPerformed(String topicName, Message m) {
-								MagneticMeasurement magM = (MagneticMeasurement)m;
-								//TODO useful things
+			@Override
+			public void actionPerformed(String topicName, Message m) {
+				MagneticMeasurement magM = (MagneticMeasurement)m;
+				//TODO useful things
 				//				publishUpdate();	
 
-					}
-				});
-		
+			}
+		});
+
 	}
 
 	private void publishUpdate(){
@@ -159,14 +145,14 @@ public class HighTrustLocalizer implements Node{
 	@Override
 	public void setName(String newName) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public String getName() {
 		return "highTrustLocalizer";
 	}
-	
-	
-	
+
+
+
 }
