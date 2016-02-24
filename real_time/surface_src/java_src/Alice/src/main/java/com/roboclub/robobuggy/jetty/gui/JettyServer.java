@@ -22,14 +22,13 @@ public class JettyServer {
 		
 		// Have something to publish data to all of the connected clients
 		ClientDataUpdater cu = new ClientDataUpdater();
-		// Have something to push images to all of the connected clients
 		ClientImageUpdater ciu = new ClientImageUpdater();
 		
 		// Root handler for HTML
 		ResourceHandler res = new ResourceHandler();
 		res.setDirectoriesListed(true);
 		res.setWelcomeFiles(new String[]{ "index.html"});
-		res.setResourceBase("../../Web GUI");
+		res.setResourceBase("../../Web GUI/root");
 		
 		// Root handler for WebSockets
 		WebSocketHandler wsHandler = new WebSocketHandler() {
@@ -44,38 +43,19 @@ public class JettyServer {
         HandlerList handlers = new HandlerList();
         handlers.setHandlers(new Handler[] {wsHandler, res, new DefaultHandler()});
         gzip.setHandler(handlers);
-        
-        // Root context manager
         ContextHandler contextRoot = new ContextHandler("/");
         contextRoot.setHandler(gzip);
-        
-        
-        // Help handler for HTML
-        RootHandler help = new RootHandler();
-        
-        // Help context manager
-        ContextHandler contextHelp = new ContextHandler("/dicks");
-        contextHelp.setHandler(help);
-        
-        // Static handler for test
-        ResourceHandler res1 = new ResourceHandler();
-        res1.setWelcomeFiles(new String[]{"index.html"});
-        res1.setResourceBase("/home/mint/Downloads/adf-dynamic-example/public");
-        
-        ContextHandler contextTest = new ContextHandler("/test");
-        contextTest.setHandler(res1);
-        
+                
         // Static handler for test
         ResourceHandler res11 = new ResourceHandler();
-        res11.setWelcomeFiles(new String[]{"ws.html", "ws.js"});
-        res11.setResourceBase("../../Web GUI");
-        
+        res11.setWelcomeFiles(new String[]{"ws.html"});
+        res11.setResourceBase("../../Web GUI/basic");
         ContextHandler contextTest1 = new ContextHandler("/basic");
         contextTest1.setHandler(res11);
         
         // Aggregate the various contexts
         ContextHandlerCollection contexts = new ContextHandlerCollection();
-        contexts.setHandlers(new Handler[] {contextRoot, contextHelp, contextTest, contextTest1, new DefaultHandler()});
+        contexts.setHandlers(new Handler[] {contextRoot, contextTest1, new DefaultHandler()});
         
         // Set the server appropriately for those contexts
         server.setHandler(contexts);        

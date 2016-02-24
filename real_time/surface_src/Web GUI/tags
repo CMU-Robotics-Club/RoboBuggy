@@ -1,5 +1,0 @@
-!_TAG_FILE_SORTED	2	/0=unsorted, 1=sorted, 2=foldcase/
-onMessage	/home/mint/Documents/Roboclub/RoboBuggy/real_time/surface_src/Web GUI/ws.js	/^function onMessage(event) {$/;"	f	language:JavaScript
-read	/home/mint/Documents/Roboclub/RoboBuggy/real_time/surface_src/Web GUI/ws.js	/^function read() {$/;"	f	language:JavaScript
-updateEncoder	/home/mint/Documents/Roboclub/RoboBuggy/real_time/surface_src/Web GUI/ws.js	/^function updateEncoder(msg) {$/;"	f	language:JavaScript
-updateIMU	/home/mint/Documents/Roboclub/RoboBuggy/real_time/surface_src/Web GUI/ws.js	/^function updateIMU(msg) {$/;"	f	language:JavaScript
