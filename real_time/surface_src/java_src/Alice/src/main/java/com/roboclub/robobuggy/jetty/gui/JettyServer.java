@@ -18,12 +18,12 @@ public class JettyServer {
 	
 	public JettyServer() throws Exception {
 		
-		System.out.println(System.getProperty("user.dir"));
 		server = new Server(8080);
 		
-		
-		// Have something to publish to all of the connected clients
-		ClientUpdater cu = new ClientUpdater();
+		// Have something to publish data to all of the connected clients
+		ClientDataUpdater cu = new ClientDataUpdater();
+		// Have something to push images to all of the connected clients
+		ClientImageUpdater ciu = new ClientImageUpdater();
 		
 		// Root handler for HTML
 		ResourceHandler res = new ResourceHandler();
@@ -38,7 +38,7 @@ public class JettyServer {
                 factory.register(WSHandler.class);
             }
         };
-                
+                        
         // Root handler collection
         GzipHandler gzip = new GzipHandler();
         HandlerList handlers = new HandlerList();

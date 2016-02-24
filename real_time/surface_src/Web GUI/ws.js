@@ -3,6 +3,9 @@ window.onload = read();
 function read() {
     var socket = new WebSocket("ws://127.0.0.1:8080");
     socket.onmessage = onMessage;
+    socket.onopen = function() {
+        socket.send("Please add me to the data group!");    
+    }
 }
 
 function updateIMU(msg) {
@@ -25,7 +28,16 @@ function updateSteering(msg) {
 }
 
 function onMessage(event) {
+
+    // if this is an image
+    if (event.data.indexOf("data:image/png;base64,") > -1) {
+        document.getElementById('img').setAttribute('src', event.data);
+        console.log("updating image");
+        return;
+    }
+
     console.log(event.data);
+    // otherwise
     var msg = JSON.parse(event.data);
     var name = msg.VERSION_ID.toLowerCase();
 

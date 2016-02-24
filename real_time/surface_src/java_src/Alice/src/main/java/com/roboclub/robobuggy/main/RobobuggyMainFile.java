@@ -48,7 +48,7 @@ public class RobobuggyMainFile {
      	
     	if (RobobuggyConfigFile.DATA_PLAY_BACK) {
     		//Play back mode enabled
-    		new SensorPlayer("logs/spring1data/2016-02-20-06-50-45/sensors_2016-02-20-06-50-45.txt", 1);
+    		new SensorPlayer("logs/2016-02-19-23-12-47/sensors_2016-02-19-23-12-47.txt", 1);
 
         }
         
