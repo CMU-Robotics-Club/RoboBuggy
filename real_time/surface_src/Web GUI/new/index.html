@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>RoboBuggy | Alice</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/imgs/favicon.ico">
+    <meta name="mobile-web-app-capable" content="yes"/>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="main.css" />
+</head>
+<body>
+    <div>
+        <h2>IMU Readings</h2>
+        <div id="imu-canvas1" class="AngleViewer"></div>
+        <div id="imu-canvas2" class="AngleViewer"></div>
+        <div id="imu-canvas3" class="AngleViewer"></div>
+        <div id="imu-canvas4" class="AngleViewer"></div>
+    </div>
+    <div>
+        <h2>Map</h2>
+        <div id="gps-canvas" class="GPSViewer"></div>
+    </div>
+    <div>
+        <h2>Camera</h2>
+        <div id="camera-pushbar">
+            <canvas id="camera-pushbar-canvas" width="1280" height="720" style="border:1px solid #000000;"></canvas>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="math.min.js"></script>
+    <script src="three.min.js"></script>
+    <script src="maps.js"></script>
+    <script src="d3.v3.min.js"></script>
+    <script type="text/javascript" src="jquery-2.2.1.min.js"></script>
+    <script src="imu.js"></script>
+    <script src="gps.js"></script>
+    <script src="index.js"></script>
+    <script src="ws.js"></script>
+</body>
+</html>

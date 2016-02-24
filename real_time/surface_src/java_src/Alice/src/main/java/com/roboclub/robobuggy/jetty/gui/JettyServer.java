@@ -47,15 +47,22 @@ public class JettyServer {
         contextRoot.setHandler(gzip);
                 
         // Static handler for test
-        ResourceHandler res11 = new ResourceHandler();
-        res11.setWelcomeFiles(new String[]{"ws.html"});
-        res11.setResourceBase("../../Web GUI/basic");
-        ContextHandler contextTest1 = new ContextHandler("/basic");
-        contextTest1.setHandler(res11);
+        ResourceHandler basicRes= new ResourceHandler();
+        basicRes.setWelcomeFiles(new String[]{"ws.html"});
+        basicRes.setResourceBase("../../Web GUI/basic");
+        ContextHandler basicContext = new ContextHandler("/basic");
+        basicContext.setHandler(basicRes);
+        
+        // Static handler for test
+        ResourceHandler newRes = new ResourceHandler();
+        newRes.setWelcomeFiles(new String[]{"index.html"});
+        newRes.setResourceBase("../../Web GUI/new");
+        ContextHandler newContext = new ContextHandler("/new");
+        newContext.setHandler(newRes);
         
         // Aggregate the various contexts
         ContextHandlerCollection contexts = new ContextHandlerCollection();
-        contexts.setHandlers(new Handler[] {contextRoot, contextTest1, new DefaultHandler()});
+        contexts.setHandlers(new Handler[] {contextRoot, basicContext, newContext, new DefaultHandler()});
         
         // Set the server appropriately for those contexts
         server.setHandler(contexts);        

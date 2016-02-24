@@ -53,7 +53,6 @@ public class SessionGroupManager {
 				return session;
 			}
 		}
-		
 		return null;
 	}
 	

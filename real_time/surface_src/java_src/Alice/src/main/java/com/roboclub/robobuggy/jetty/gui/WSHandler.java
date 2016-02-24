@@ -16,34 +16,34 @@ public class WSHandler {
     @OnWebSocketClose
     public void onClose(int statusCode, String reason) {
     	sgm.removeSession(clientID);
-        System.out.println("Close: statusCode=" + statusCode + ", reason=" + reason);
+//        System.out.println("Close: statusCode=" + statusCode + ", reason=" + reason + " ID: " + clientID);
     }
 
     @OnWebSocketError
     public void onError(Throwable t) {
     	sgm.removeSession(clientID);
-        System.out.println("Error: " + t.getMessage());
+//        System.out.println("Error: " + t.getMessage());
     }
 
     @OnWebSocketConnect
     public void onConnect(Session session) {
     	clientID = sgm.addSessionToGroup("unsorted", session);    	
-        System.out.println("Connect: " + session.getRemoteAddress().getAddress() + " ID: " + clientID);
+//        System.out.println("Connect: " + session.getRemoteAddress().getAddress() + " ID: " + clientID);
     }
 
     // Switch own socket grouping here
     @OnWebSocketMessage
     public void onMessage(String message) {
-    	System.out.println(message);
+//    	System.out.println(message);
     	Session session = sgm.removeSession(clientID);
     	
     	for (String groupName : sgm.getClients().keySet()) {
     		if (message.toLowerCase().contains(groupName)) {
-    			sgm.addSessionToGroup(groupName,  session);
+    			clientID = sgm.addSessionToGroup(groupName,  session);
     			return;
     		}
     	}
     	
-    	sgm.addSessionToGroup("unsorted", session);
+    	clientID = sgm.addSessionToGroup("unsorted", session);
     }
 }

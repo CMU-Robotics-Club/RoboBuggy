@@ -1,0 +1,11 @@
+# @author odb@andrew (Oscar Bezi)
+# The static files for a web interface for the RoboBuggy.
+#
+# At the moment shows IMU and GPS data in simple panels, loading the data
+# straight from files.  Need to merge with jetty code to get that to play
+# nicely.
+#
+# TODO:
+# - [ ] Implement all of the necessary viewers.
+# - [ ] Put all the viewers into a nice layout.
+# - [ ] Code cleanup
