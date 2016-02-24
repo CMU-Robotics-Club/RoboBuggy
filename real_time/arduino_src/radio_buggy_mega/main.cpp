@@ -11,7 +11,7 @@
 #include <avr/sleep.h>
 #include <avr/interrupt.h>
 #include <stdio.h>
-#include <avr/wdt.h> 
+#include <avr/wdt.h>
 
 #include "../lib_avr/rbserialmessages/rbserialmessages.h"
 #include "../lib_avr/servoreceiver/servoreceiver.h"
@@ -102,6 +102,10 @@
 #define WDT_INT WDT_vect
 
 
+#define min(X,Y) ((X < Y) ? (X) : (Y))
+#define max(X,Y) ((X > Y) ? (X) : (Y))
+
+
 // Global state
 static bool g_brake_state_engaged; // 0 = disengaged, !0 = engaged.
 static bool g_brake_needs_reset; // 0 = nominal, !0 = needs reset
@@ -132,6 +136,13 @@ inline long map_signal(long x,
                        long out_scale) 
 {
     return ((x - in_offset) * out_scale / in_scale) + out_offset;
+}
+
+inline long clamp(long input,
+                  long upper,
+                  long lower)
+{
+    return (max(min(input, upper), lower));
 }
 
 
@@ -394,20 +405,25 @@ int main(void)
 
         if(g_is_autonomous)
         {
+            printf("Original auton steering angle: %d\n", auto_steering_angle);
+            auto_steering_angle = clamp(auto_steering_angle, 
+                                        STEERING_LIMIT_RIGHT,
+                                        STEERING_LIMIT_LEFT);
 
-            // make sure that high-level can't send us obscenely large angles
-            if(auto_steering_angle < STEERING_LIMIT_LEFT) {
-                auto_steering_angle = STEERING_LIMIT_LEFT;
-            }
-            else if (auto_steering_angle > STEERING_LIMIT_RIGHT) {
-                auto_steering_angle = STEERING_LIMIT_RIGHT;
-            }
+            printf("Clamped auton steering angle: %d\n", auto_steering_angle);
 
             steering_set(auto_steering_angle);
             g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)(auto_steering_angle));
         }
         else
         {
+            printf("Original rc steering angle: %d\n", steer_angle);
+            steer_angle = clamp(steer_angle,
+                                STEERING_LIMIT_RIGHT,
+                                STEERING_LIMIT_LEFT);
+
+            printf("Clamped rc steering angle: %d\n", steer_angle);
+
             steering_set(steer_angle);
             g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
         }
