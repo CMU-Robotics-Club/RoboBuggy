@@ -30,11 +30,12 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 		pose = m;
 		
 	}
-
-	@Override
-	public double getCommandedSteeringAngle() {
-		//find the closest way point 
+	
+	//find the closest way point 
+	//TODO turn into a binary search 
+	private int getClosestIndex(){
 		double min = Double.MAX_VALUE;//note that the breaks will defiantly deploy at this 
+
 		int closestIndex = -1;
 		for(int i = Math.max(bestGuess-50,0);i<Math.min(wayPoints.size(),bestGuess+50);i++){
 			double d = getDistince(pose,wayPoints.get(i));
@@ -43,14 +44,26 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 				closestIndex = i;
 			}
 		}
+		return closestIndex;
+	}
+
+	@Override
+	public double getCommandedSteeringAngle() {
+		int closestIndex = getClosestIndex();
 		if(closestIndex == -1){
 			return 17433504; //A dummy value that we can never get
 		}
 		bestGuess  = closestIndex;
 		System.out.println("Closest Point: "+closestIndex);
 		
+		double delta = 10/100000.0;
+		//pick the first point that is at least delta away
 		//pick the point to follow 
-		int targetIndex = closestIndex + 10;
+		int targetIndex = closestIndex;
+		while(getDistince(pose,wayPoints.get(targetIndex)) < delta){
+			targetIndex = targetIndex+1;
+		}
+		
 
 		
 		//if we are out of points then just go straight
@@ -75,16 +88,18 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 
 	@Override
 	protected boolean getDeployBrakeValue() {
-		// if closest point is too far away throw breaks 
-		for(int i = 0;i<wayPoints.size();i++){
-			double d = getDistince(pose,wayPoints.get(i));
-			if(d < 1.0){
-				//if we are within 1 meter of any point then do not throw breaks 
-				return false;
-			}
+		
+		int closestIndex = getClosestIndex();
+		if(closestIndex == -1){
+			return true;
 		}
 		
-		return true;
+		// if closest point is too far away throw breaks 
+			if(getDistince(pose,wayPoints.get(closestIndex)) < 1.0){
+				//if we are within 1 meter of any point then do not throw breaks 
+				return false;
+	}
+			return true;
 	}
 	
 	private double getDistince(GPSPoseMessage a,GpsMeasurement b){
