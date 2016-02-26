@@ -14,13 +14,13 @@ import java.util.Date;
  */
 public abstract class BaseMessage implements Message {
 	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
-	protected Date timestamp;
+	protected long timestamp;
 
 	/**
 	 * sets the date of the message to the current time
 	 */
 	public BaseMessage() {
-		timestamp = new Date();
+		timestamp = new Date().getTime();
 	}
 
 	/**
@@ -28,9 +28,10 @@ public abstract class BaseMessage implements Message {
 	 * @param dt {@link Date} to format
 	 * @return a {@link String} representing the {@link Date} dt
 	 */
-	public static String formatDate(Date dt) {
+	public static String formatDate(long dt) {
+		Date date = new Date(dt);
 		DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
-		return formatter.format(dt);
+		return formatter.format(date);
 	}
 
 	/**
@@ -54,6 +55,6 @@ public abstract class BaseMessage implements Message {
 	 * @return time that this message was instantiated
 	 */
 	public Date getTimestamp() {
-		return new Date(timestamp.getTime());
+		return new Date(timestamp);
 	}
 }

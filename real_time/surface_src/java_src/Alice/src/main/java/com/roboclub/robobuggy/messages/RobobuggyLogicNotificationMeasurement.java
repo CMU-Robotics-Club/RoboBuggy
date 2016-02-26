@@ -23,7 +23,7 @@ public class RobobuggyLogicNotificationMeasurement extends BaseMessage {
 	public RobobuggyLogicNotificationMeasurement(String message, RobobuggyMessageLevel level) {
 		this.message = message;
 		this.level = level;
-		this.timestamp = new Date();
+		this.timestamp = new Date().getTime();
 	}
 
 	/**

@@ -55,6 +55,7 @@ public final class Gui extends JFrame {
 
 	//The windowList is a list of all of the windows that are a part of the gui
 	private ArrayList<RobobuggyJFrame> windowList = new ArrayList<RobobuggyJFrame>();
+	private MainGuiWindow mainGuiWindow;
 	
 	/**
 	 * Construct a new {@link Gui} object
@@ -63,10 +64,19 @@ public final class Gui extends JFrame {
 		new RobobuggyLogicNotification("StartingGUI", RobobuggyMessageLevel.NOTE);
 		RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow",1.0,1.0);	
 		RobobuggyGUITabs tabs = new RobobuggyGUITabs();
-		tabs.addTab(new MainGuiWindow(),"Home");
+		mainGuiWindow = new MainGuiWindow();
+		tabs.addTab(mainGuiWindow, "Home");
 		tabs.addTab(new NodeViewer(),"Nodes");
 		mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
 		windowList.add(mainWindow);
+
+	}
+
+	/**
+	 * @return the main gui window
+	 */
+	public MainGuiWindow getMainGuiWindow() {
+		return mainGuiWindow;
 	}
 	
 	/**

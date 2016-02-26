@@ -16,7 +16,7 @@ public class SteeringMeasurement extends BaseMessage {
 	 * @param angle front wheel angle
 	 */
 	public SteeringMeasurement(int angle) {
-		this.timestamp = new Date();
+		this.timestamp = new Date().getTime();
 		this.angle = angle;
 	}
 	
@@ -40,7 +40,7 @@ public class SteeringMeasurement extends BaseMessage {
 	public Message fromLogString(String str) {
 		String delims = ",";
 		String[] ar = str.split(delims);
-		timestamp = new Date(tryToParseDate(ar[0]).getTime());
+		timestamp = new Date(tryToParseDate(ar[0]).getTime()).getTime();
 		int angle = Integer.parseInt(ar[1]);
 		return new SteeringMeasurement(angle);
 	}
