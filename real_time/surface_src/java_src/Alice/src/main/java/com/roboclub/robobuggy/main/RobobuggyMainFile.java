@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-import com.roboclub.robobuggy.jetty.gui.JettyServer;
-
 
 /** This class is the driver starting up the robobuggy program, if you want the buggy to drive itself you should run this node */
 public class RobobuggyMainFile {
@@ -21,8 +19,7 @@ public class RobobuggyMainFile {
 	 */
     public static void main(String[] args) {
 
-    	new JettyServer();
-    	
+
         try {
 			JNISetup.setupJNI(); //must run for jni to install
 			//note that errors are just printed to the console since the gui and logging system  has not been created yet
