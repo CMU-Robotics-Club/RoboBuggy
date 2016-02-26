@@ -407,7 +407,7 @@ int main(void)
             brake_drop();
         }
 
-        if(true)
+        if(g_is_autonomous)
         {
             steering_set(auto_steering_angle);
             g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)(auto_steering_angle));
