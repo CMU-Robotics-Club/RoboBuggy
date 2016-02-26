@@ -11,7 +11,7 @@
 #include <avr/sleep.h>
 #include <avr/interrupt.h>
 #include <stdio.h>
-#include <avr/wdt.h> 
+#include <avr/wdt.h>
 
 #include "../lib_avr/rbserialmessages/rbserialmessages.h"
 #include "../lib_avr/servoreceiver/servoreceiver.h"
@@ -40,12 +40,14 @@
  * should be adjusted until a 10 deg input/output is seen/observed.
  */
 #if BUGGY == transistor 
-    #define PWM_OFFSET_STEERING_OUT 1850
+    #define PWM_OFFSET_STEERING_OUT 1905
     #define PWM_SCALE_STEERING_OUT -220
     #define PWM_OFFSET_STORED_ANGLE 0
     #define PWM_SCALE_STORED_ANGLE 1000 // in hundredths of a degree for precision
     #define POT_OFFSET_STEERING_IN 121
     #define POT_SCALE_STEERING_IN -10
+    #define STEERING_LIMIT_LEFT -1000
+    #define STEERING_LIMIT_RIGHT 1000
 #elif BUGGY == nixie
     #define PWM_OFFSET_STEERING_OUT 1789
     #define PWM_SCALE_STEERING_OUT -150
@@ -100,6 +102,10 @@
 #define WDT_INT WDT_vect
 
 
+#define min(X,Y) ((X < Y) ? (X) : (Y))
+#define max(X,Y) ((X > Y) ? (X) : (Y))
+
+
 // Global state
 static bool g_brake_state_engaged; // 0 = disengaged, !0 = engaged.
 static bool g_brake_needs_reset; // 0 = nominal, !0 = needs reset
@@ -132,6 +138,13 @@ inline long map_signal(long x,
     return ((x - in_offset) * out_scale / in_scale) + out_offset;
 }
 
+inline long clamp(long input,
+                  long upper,
+                  long lower)
+{
+    return (max(min(input, upper), lower));
+}
+
 
 void adc_init(void) 
 {
@@ -156,6 +169,10 @@ uint8_t adc_read_blocking(uint8_t channel)
 
 void steering_set(int angle) 
 {
+    angle = clamp(angle, 
+                  STEERING_LIMIT_RIGHT,
+                  STEERING_LIMIT_LEFT);
+
     int servo_value_us = map_signal(angle,
                                     PWM_OFFSET_STORED_ANGLE,
                                     PWM_SCALE_STORED_ANGLE,
