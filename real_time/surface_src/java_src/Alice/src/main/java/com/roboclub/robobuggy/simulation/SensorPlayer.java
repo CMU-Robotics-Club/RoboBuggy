@@ -104,6 +104,11 @@ public class SensorPlayer extends Thread {
                         SensorPlayer.this.start();
                     }
                 }
+                else if (message.getLoggingMessage().equals(GuiLoggingButtonMessage.LoggingMessage.STOP)) {
+                    if (SensorPlayer.this.isAlive()) {
+                        SensorPlayer.this.interrupt();
+                    }
+                }
             }
         });
     }
