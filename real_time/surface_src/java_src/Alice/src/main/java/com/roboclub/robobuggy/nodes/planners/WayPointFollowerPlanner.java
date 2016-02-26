@@ -22,19 +22,19 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 	public WayPointFollowerPlanner(NodeChannel channel,ArrayList wayPoints) {
 		super(channel);
 		this.wayPoints = wayPoints;
-		pose = new GPSPoseMessage(new Date(0), 0, 0, 0);// temp measurment 
+		pose = new GPSPoseMessage(new Date(0), 0, 0, 0);// temp measurment
 	}
 
 	@Override
 	public void updatePositionEstimate(GPSPoseMessage m) {
 		pose = m;
-		
+
 	}
-	
-	//find the closest way point 
-	//TODO turn into a binary search 
+
+	//find the closest way point
+	//TODO turn into a binary search
 	private int getClosestIndex(){
-		double min = Double.MAX_VALUE;//note that the breaks will defiantly deploy at this 
+		double min = Double.MAX_VALUE;//note that the breaks will defiantly deploy at this
 
 		int closestIndex = -1;
 		for(int i = Math.max(bestGuess-50,0);i<Math.min(wayPoints.size(),bestGuess+50);i++){
@@ -55,32 +55,32 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 		}
 		bestGuess  = closestIndex;
 		System.out.println("Closest Point: "+closestIndex);
-		
+
 		double delta = 10/100000.0;
 		//pick the first point that is at least delta away
-		//pick the point to follow 
+		//pick the point to follow
 		int targetIndex = closestIndex;
 		while(getDistince(pose,wayPoints.get(targetIndex)) < delta){
 			targetIndex = targetIndex+1;
 		}
-		
 
-		
+
+
 		//if we are out of points then just go straight
 		if(targetIndex >= wayPoints.size())
 		{
 			return 0;
 		}
-		
+
 		GpsMeasurement targetPoint = wayPoints.get(targetIndex);
-						
-		//find a path from our current location to that point 
+
+		//find a path from our current location to that point
 		double dx = targetPoint.getLatitude() - pose.getLatitude();
 		double dy = targetPoint.getLongitude() - pose.getLongitude();
 		double desiredHeading = 180*Math.atan2(dy, dx)/Math.PI;
-		
-		
-		//find the angle we need to reach that point 
+
+
+		//find the angle we need to reach that point
 		//return pose.getHeading() - desiredHeading;
 		return  desiredHeading - pose.getHeading();
 
@@ -88,20 +88,20 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 
 	@Override
 	protected boolean getDeployBrakeValue() {
-		
+
 		int closestIndex = getClosestIndex();
 		if(closestIndex == -1){
 			return true;
 		}
-		
-		// if closest point is too far away throw breaks 
-			if(getDistince(pose,wayPoints.get(closestIndex)) < 1.0){
-				//if we are within 1 meter of any point then do not throw breaks 
-				return false;
+
+		// if closest point is too far away throw breaks
+		if(getDistince(pose,wayPoints.get(closestIndex)) < 1.0){
+			//if we are within 1 meter of any point then do not throw breaks
+			return false;
+		}
+		return true;
 	}
-			return true;
-	}
-	
+
 	private double getDistince(GPSPoseMessage a,GpsMeasurement b){
 		double dx = a.getLatitude() - b.getLatitude();
 		double dy = a.getLongitude() - b.getLongitude();
