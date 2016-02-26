@@ -19,9 +19,9 @@ public class RobobuggyMainFile {
 	 * Run Alice
 	 * @param args : None
 	 */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
 
-    	JettyServer js = new JettyServer();
+    	new JettyServer();
     	
         try {
 			JNISetup.setupJNI(); //must run for jni to install
@@ -55,21 +55,6 @@ public class RobobuggyMainFile {
         	//Play back disabled, create robot
         	Robot.getInstance().startNodes();
 			new RobobuggyLogicNotification("Robobuggy Logic Notfication started", RobobuggyMessageLevel.NOTE);
-
-            try {
-                Thread.sleep(5000);
-
-                new RobobuggyLogicNotification("Notification 1", RobobuggyMessageLevel.NOTE);
-                new RobobuggyLogicNotification("Notification 2", RobobuggyMessageLevel.NOTE);
-
-                Thread.sleep(500);
-
-                new RobobuggyLogicNotification("Notif 3", RobobuggyMessageLevel.NOTE);
-            }
-            catch (InterruptedException e) {
-                new RobobuggyLogicNotification("interreupted", RobobuggyMessageLevel.NOTE);
-            }
-
 
     }
     

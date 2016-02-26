@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import org.eclipse.jetty.websocket.api.Session;
 
 import com.google.gson.Gson;
@@ -14,22 +15,25 @@ import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 
+/**
+ * acts as a data hub for robobuggy messages, sends them off to the multiple clients
+ */
 public class ClientUpdater {
 	
 	// Shouldn't actually need to be threadsafe, I don't think it gets accessed anywhere else
 	private static LinkedBlockingQueue<String> updates = new LinkedBlockingQueue<String>();
 	private Gson messageTranslator;
-	
+
+	/**
+	 * starts a new client updater
+	 */
 	public ClientUpdater() {
-		try {
             messageTranslator = new GsonBuilder()
                                     .excludeFieldsWithModifiers(Modifier.TRANSIENT)
                                     .serializeSpecialFloatingPointValues()
                                     .create()
                                     ;
-        } catch (Exception e) {
-        }
-		
+
 		
 		// Once we're subscribed to all the things, we shouldn't need to do more other than push.
         for (NodeChannel filter : NodeChannel.getLoggingChannels()) {
@@ -50,7 +54,7 @@ public class ClientUpdater {
 		
 		Thread updater = new Thread() {
 			
-			ConcurrentHashMap<Integer, Session> clients = WSHandler.clients;
+			private ConcurrentHashMap<Integer, Session> clients = WSHandler.getClients();
 			private LinkedBlockingQueue<String> updates = ClientUpdater.updates;		
 			
 			public void run() {

@@ -105,11 +105,11 @@ public class PoseViewer extends RobobuggyGUIContainer{
 	 * @param name name of the matrix
 	 */
 	public void drawMatrix(Graphics g,Matrix m,String name){
-		double AXIS_LENGTH = 100;
+		double axisLength = 100;
 		double [][] origin = {{0},{0},{0},{1}};
-		double [][] xAxis = {{AXIS_LENGTH},{0},{0},{1}};
-		double [][] yAxis = {{0},{AXIS_LENGTH},{0},{1}};
-		double [][] zAxis = {{0},{0},{AXIS_LENGTH},{1}};
+		double [][] xAxis = {{axisLength},{0},{0},{1}};
+		double [][] yAxis = {{0},{axisLength},{0},{1}};
+		double [][] zAxis = {{0},{0},{axisLength},{1}};
 		
 		Matrix originMatrix = new Matrix(origin);
 		Matrix xMatrix = new Matrix(xAxis);

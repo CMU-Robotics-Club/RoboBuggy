@@ -117,18 +117,17 @@ public class GpsPanel extends JPanel {
 				throw new IOException("cache dir isn't properly structured or doesn't exist");
 			}
 			
-			FilenameFilter filter = new FilenameFilter() {
-				
-				@Override
-				public boolean accept(File dir, String name) {
-					// TODO Auto-generated method stub
-					if(name.contains("png")) {
-						return true;
-					}
-					return false;
-				}
-			};
+			FilenameFilter filter = (dir, name) -> {
+                // TODO Auto-generated method stub
+                if(name.contains("png")) {
+                    return true;
+                }
+                return false;
+            };
 			String[] cachedImages = mapCacheDir.list(filter);
+			if (cachedImages == null) {
+				return;
+			}
 			for(String imageName : cachedImages) {
 				BufferedImage tileImageSource = ImageIO.read(new File(mapCacheDir.getAbsolutePath() + "/" + imageName));
 				String[] tileCoords = imageName.substring(0, imageName.indexOf(".")).split("_");
@@ -151,6 +150,7 @@ public class GpsPanel extends JPanel {
 
 	/**
 	 * @param points points to add to the map
+	 * @param thisColor color of the point
 	 */
 	public void addPointsToMapTree(Color thisColor,LocTuple...points) {
 		for (LocTuple point : points) {

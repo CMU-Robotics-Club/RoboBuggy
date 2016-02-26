@@ -11,19 +11,25 @@ import org.eclipse.jetty.servlets.gzip.GzipHandler;
 import org.eclipse.jetty.websocket.server.WebSocketHandler;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 
+/**
+ * a server for hosting the GUI and delivering
+ */
 public class JettyServer {
 	
 	private Server server;
 	private Thread serverThread;
-	
-	public JettyServer() throws Exception {
+
+    /**
+     * initializes the jetty server
+     */
+    public JettyServer() {
 		
 		System.out.println(System.getProperty("user.dir"));
 		server = new Server(8080);
 		
 		
 		// Have something to publish to all of the connected clients
-		ClientUpdater cu = new ClientUpdater();
+		new ClientUpdater();
 		
 		// Root handler for HTML
 		ResourceHandler res = new ResourceHandler();

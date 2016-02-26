@@ -10,8 +10,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
+/**
+ * Handler for a client
+ */
 public class RootHandler extends AbstractHandler {
-	
+
+	/**
+	 * initializes the roothandler
+	 */
 	public RootHandler() {
 	}
 
@@ -22,7 +28,7 @@ public class RootHandler extends AbstractHandler {
 		response.setContentType("text/html; charset=utf-8");
 		response.setStatus(HttpServletResponse.SC_OK);
 		PrintWriter out = response.getWriter();
-		out.println("<h1>Go fuck yourself</h1>");
+		out.println("<h1>Robobuggy GUI</h1>");
 		baseRequest.setHandled(true);
 	}
 }

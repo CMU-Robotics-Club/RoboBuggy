@@ -9,14 +9,30 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import org.eclipse.jetty.websocket.jsr356.decoders.IntegerDecoder;
 
+/**
+ * websocket handler
+ */
 @WebSocket
 public class WSHandler {
 	
-	static public ConcurrentHashMap<Integer, Session> clients = new ConcurrentHashMap<Integer, Session>();
-	static private int clientCount = 0;
+	private static ConcurrentHashMap<Integer, Session> clients = new ConcurrentHashMap<Integer, Session>();
+	private int clientCount = 0;
 	private int clientID = 0;
-	
+
+    /**
+     * @return the clients in the current session
+     */
+    public static ConcurrentHashMap<Integer, Session> getClients() {
+        return clients;
+    }
+
+    /**
+     * we needed to close connection to this client
+     * @param statusCode client status
+     * @param reason client reason
+     */
     @OnWebSocketClose
     public void onClose(int statusCode, String reason) {
     	clients.remove(clientID);
@@ -24,6 +40,10 @@ public class WSHandler {
         System.out.println("Close: statusCode=" + statusCode + ", reason=" + reason);
     }
 
+    /**
+     * client had an error
+     * @param t the error that occurred
+     */
     @OnWebSocketError
     public void onError(Throwable t) {
     	clients.remove(clientID);
@@ -31,6 +51,10 @@ public class WSHandler {
         System.out.println("Error: " + t.getMessage());
     }
 
+    /**
+     * new client connected
+     * @param session session that connected
+     */
     @OnWebSocketConnect
     public void onConnect(Session session) {
     	// Save the session to be pushed to later
@@ -48,6 +72,10 @@ public class WSHandler {
         clientCount++;
     }
 
+    /**
+     * new message happened
+     * @param message new message
+     */
     @OnWebSocketMessage
     public void onMessage(String message) {
         System.out.println("Message: " + message);

@@ -128,7 +128,15 @@ public final class Robot implements RosMaster {
 	public List<Node> getNodeList(){
 		return nodeList;
 	}
-	
+
+	/**
+	 * Returns whether the robot is collecting data or not
+	 * @return the robot's data collection state
+	 */
+	public boolean getIsCollectingData() {
+		return collectingData;
+	}
+
 	/**
 	 * Returns a reference to the one instance of the {@link Robot} object.
 	 * If no instance exists, a new one is created.
