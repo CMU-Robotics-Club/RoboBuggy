@@ -169,12 +169,9 @@ uint8_t adc_read_blocking(uint8_t channel)
 
 void steering_set(int angle) 
 {
-    printf("Here's your bullshit: %d\n", angle);
     angle = clamp(angle, 
                   STEERING_LIMIT_RIGHT,
                   STEERING_LIMIT_LEFT);
-
-    printf("Here's your clamped bullshit: %d\n", angle);
 
     int servo_value_us = map_signal(angle,
                                     PWM_OFFSET_STORED_ANGLE,
