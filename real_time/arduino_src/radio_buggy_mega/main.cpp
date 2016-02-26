@@ -40,14 +40,14 @@
  * should be adjusted until a 10 deg input/output is seen/observed.
  */
 #if BUGGY == transistor 
-    #define PWM_OFFSET_STEERING_OUT 1850
+    #define PWM_OFFSET_STEERING_OUT 1905
     #define PWM_SCALE_STEERING_OUT -220
     #define PWM_OFFSET_STORED_ANGLE 0
     #define PWM_SCALE_STORED_ANGLE 1000 // in hundredths of a degree for precision
     #define POT_OFFSET_STEERING_IN 121
     #define POT_SCALE_STEERING_IN -10
-    #define STEERING_LIMIT_LEFT -1280
-    #define STEERING_LIMIT_RIGHT 857
+    #define STEERING_LIMIT_LEFT -1000
+    #define STEERING_LIMIT_RIGHT 1000
 #elif BUGGY == nixie
     #define PWM_OFFSET_STEERING_OUT 1789
     #define PWM_SCALE_STEERING_OUT -150
@@ -169,6 +169,13 @@ uint8_t adc_read_blocking(uint8_t channel)
 
 void steering_set(int angle) 
 {
+    printf("Here's your bullshit: %d\n", angle);
+    angle = clamp(angle, 
+                  STEERING_LIMIT_RIGHT,
+                  STEERING_LIMIT_LEFT);
+
+    printf("Here's your clamped bullshit: %d\n", angle);
+
     int servo_value_us = map_signal(angle,
                                     PWM_OFFSET_STORED_ANGLE,
                                     PWM_SCALE_STORED_ANGLE,
@@ -403,27 +410,13 @@ int main(void)
             brake_drop();
         }
 
-        if(g_is_autonomous)
+        if(true)
         {
-            printf("Original auton steering angle: %d\n", auto_steering_angle);
-            auto_steering_angle = clamp(auto_steering_angle, 
-                                        STEERING_LIMIT_RIGHT,
-                                        STEERING_LIMIT_LEFT);
-
-            printf("Clamped auton steering angle: %d\n", auto_steering_angle);
-
             steering_set(auto_steering_angle);
             g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)(auto_steering_angle));
         }
         else
         {
-            printf("Original rc steering angle: %d\n", steer_angle);
-            steer_angle = clamp(steer_angle,
-                                STEERING_LIMIT_RIGHT,
-                                STEERING_LIMIT_LEFT);
-
-            printf("Clamped rc steering angle: %d\n", steer_angle);
-
             steering_set(steer_angle);
             g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
         }
