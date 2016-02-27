@@ -20,7 +20,11 @@ import org.openstreetmap.gui.jmapviewer.interfaces.TileCache;
 import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.Color;
@@ -33,9 +37,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
-import java.util.Vector;
 
 
 /**
@@ -289,6 +291,9 @@ public class GpsPanel extends JPanel {
 		return new double[] {xp, yp};
 	}
 
+	/**
+	 * Waypoint list that keeps track of the points currently on the map
+	 */
 	private class WaypointList extends JList<String> {
 
 		WaypointList() {
