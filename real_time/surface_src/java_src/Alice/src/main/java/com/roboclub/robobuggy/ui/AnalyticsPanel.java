@@ -31,5 +31,12 @@ public class AnalyticsPanel extends RobobuggyGUIContainer {
 	{
 	  return dataPanel.getValues();	
 	}
-	
+
+
+	/**
+	 * @return the data panel
+	 */
+	public DataPanel getDataPanel() {
+		return dataPanel;
+	}
 }

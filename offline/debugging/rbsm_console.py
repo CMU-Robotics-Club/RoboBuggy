@@ -23,9 +23,13 @@ import time
 import struct
 
 
+INPUTUPPERBOUND = 60
+
 # kill the main thread on sigint
 import signal
 signal.signal(signal.SIGINT, signal.SIG_DFL)
+
+screenCopy = None
 
 #Create a dictionary of message headers
 mid_to_str = {
@@ -51,24 +55,28 @@ def redraw(state):
     (max_y, max_x) = screen.getmaxyx()
     row_id = 2
 
-    try:
+    if status_line == 'Locked.':
         for mid in message_cache.keys():
             # clear line and write new data
-            screen.addstr(row_id, 2, " " * (max_x - 2))
-            screen.addstr(row_id, 2, "{} {} {}".format(mid_to_str.get(mid, "MID %d"%(mid)),
-                                                                                         message_cache[mid]["data"],
-                                                                                         message_cache[mid]["update_time"]))
+            # screen.addstr(row_id, 2, " " * (max_x - 4))
+            s = "{:20} {:>10} {:>20}".format(mid_to_str.get(mid, "MID {}".format(mid)),
+                                                                            message_cache[mid]["data"],
+                                                                            message_cache[mid]["update_time"])
+            screen.addstr(row_id, 2, s)
+
+            # with open('someshit.txt', 'at') as f:
+            #     f.write(s + "\n")
+
             row_id = row_id + 1
-    except:
-        pass
+
 
     # update status line
-    screen.addstr(max_y-3, 2, " " * (max_x - 2 - 8))
-    screen.addstr(max_y-3, 2, "status: %s" % status_line)
+    screen.addstr(max_y-3, 2, "status: {:<15}".format(status_line))
 
     # clear command line an write the current one
     screen.addstr(max_y-2, 2, " " * (max_x - 2 - 6))
-    screen.addstr(max_y-2, 2, "send? %s" % command_line)
+    screen.addstr(max_y-2, 2, "send? {}".format(command_line))
+
 
     screen.refresh()
 
@@ -86,7 +94,8 @@ def rbsm_worker(state):
             state["status_line"] = "Locked."
 
             if (new_message["id"] == 0):
-                print("Found encoder")
+                # print("Found encoder")
+                pass
 
             # save new data
             message_cache.update([
@@ -99,7 +108,7 @@ def rbsm_worker(state):
                 f.write("\n")
 
             # update remotely
-            redraw(state)
+            # redraw(state)
         else:
             state["status_line"] = "Unlocked!"
     f.close() 
@@ -109,9 +118,17 @@ def rbsm_worker(state):
 
 def command_worker(state):
     screen = state["screen"]
+    with open('other.txt', 'at') as f:
+                f.write('alive\n')
 
-    while(1):
+    while(True):
         new_char = screen.getch()
+
+        if (new_char == curses.KEY_RIGHT or 
+            new_char == curses.KEY_LEFT or
+            new_char == curses.KEY_UP or
+            new_char == curses.KEY_DOWN):
+            continue
 
         # backspace
         if(new_char == 8 or new_char == 127):
@@ -127,10 +144,12 @@ def command_worker(state):
             state["command_line"] = ""
 
         # standard ascii characters
-        elif(new_char < 128):
-            state["command_line"] = state["command_line"] + chr(new_char)
+        elif(new_char < 128) and len(state["command_line"]) < INPUTUPPERBOUND:
+            state["command_line"] += chr(new_char)
+            with open('someshit.txt', 'at') as f:
+                f.write(state["command_line"])
 
-        redraw(state)
+        # redraw(state)
 
     return None
 
@@ -145,7 +164,7 @@ def command_handler(rbsm_endpoint, command_line):
         try:
             message_id = int(command_parts[0])
             message_data = int(command_parts[1])
-            f.write('not enpoint yet\n')
+            f.write('not endpoint yet\n')
             rbsm_endpoint.send(message_id, message_data)
             f.write('past endpoint\n')
         except:
@@ -154,6 +173,10 @@ def command_handler(rbsm_endpoint, command_line):
     return error
 
 
+def console_drawer(state):
+    while(True):
+        time.sleep(0.05)
+        redraw(state)
 
 def main():
     if(len(sys.argv) < 2):
@@ -169,33 +192,49 @@ def main():
         "rbsm_endpoint": None,
     }
     screen = state["screen"]
+
+
+    # setup incomming messages
+    try:
+        rbsm_endpoint = rbsm_lib.RBSerialMessage(sys.argv[1])
+    except:
+        print("Probably could not find the specified USB device.")
+        print('Please find the correct /dev/tty.* file and try again.')
+        return
+    
+    state["rbsm_endpoint"] = rbsm_endpoint
+    rbsm_thread = threading.Thread(target=rbsm_worker, args=(state,))
+    rbsm_thread.daemon = True
+
+    # setup reading commands
+    command_thread = threading.Thread(target=command_worker, args=(state,))
+    command_thread.daemon = True
+
+    #redraw thread
+    drawer = threading.Thread(target=console_drawer, args=(state,))
+    drawer.daemon = True
+
     
     # setup program window
     screen = curses.initscr()
     
     curses.noecho()
     screen.clear()
+    screen.keypad(1)
     screen.border(0)
-    screen.addstr(1, 2, "Message Data Time")
+    screen.addstr(1, 2, '{:20} {:>10} {:>20}'.format("Message", 'Data', 'Time'))
     state["screen"] = screen
-    redraw(state)
+    # redraw(state)
 
+    screenCopy = screen
 
-
-    # setup incomming messages
-    rbsm_endpoint = rbsm_lib.RBSerialMessage(sys.argv[1])
-    state["rbsm_endpoint"] = rbsm_endpoint
-    rbsm_thread = threading.Thread(target=rbsm_worker, args=(state,))
-    rbsm_thread.daemon = True
     rbsm_thread.start()
-
-    # setup reading commands
-    command_thread = threading.Thread(target=command_worker, args=(state,))
-    command_thread.daemon = True
     command_thread.start()
+    drawer.start()
 
     rbsm_thread.join()
     command_thread.join()
+    drawer.join()
 
     clean_up()
 
@@ -203,6 +242,9 @@ def main():
 @atexit.register
 def clean_up():
     try:
+        curses.echo()
+        curses.nocbreak()
+        screenCopy.keypad(0)
         curses.endwin()
     except:
         pass

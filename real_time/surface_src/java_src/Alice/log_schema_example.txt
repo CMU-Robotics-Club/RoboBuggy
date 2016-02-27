@@ -6,27 +6,48 @@
     "sensor_data":
     [
         {
-            "timestamp": "17:34:44.123",
-            "name": "imu",
-            "params": {
-                "roll": "-120.3141",
-                "pitch": "0.123456",
-                "yaw": "3.14159"
-            }
-        },
+		"VERSION_ID":"logic_notification",
+		"message":"StartingGUI",
+		"level":"NOTE",
+		"DATE_FORMAT":"yyyy-MM-dd HH:mm:ss.SSS",
+		"timestamp":1455959586014
+	 },
         {
-            "timestamp": "17:37:31.999",
-            "name": "gps",
-            "params": {
-                "lat": "40.4344535",
-                "lon": "-79.3848573",
-                "quality": "1",
-                "alt": "34",
-            }
-        }
+		"VERSION_ID":"imuV0.0",
+		"yaw":28.19,
+		"pitch":4.92,
+		"roll":6.89,
+		"DATE_FORMAT":"yyyy-MM-dd HH:mm:ss.SSS",
+		"timestamp":1455959589484
+	 },
+        {
+		"VERSION_ID":"fingerprint_hash",
+		"fpHash":87751369,
+		"DATE_FORMAT":"yyyy-MM-dd HH:mm:ss.SSS",
+		"timestamp":1455959589515
+	 },
+        {
+		"VERSION_ID":"steering",
+		"angle":0.26672905942910624,
+		"DATE_FORMAT":"yyyy-MM-dd HH:mm:ss.SSS",
+		"timestamp":1455959589516
+	 },
+        {
+		"VERSION_ID":"encoderV0.0",
+		"distance":1.0670553935860059,
+		"velocity":0.22487995649863138,
+		"dataWord":6.0,
+		"accel":0.04739303614302031,
+		"DATE_FORMAT":"yyyy-MM-dd HH:mm:ss.SSS",
+		"timestamp":1455959589516
+	 },
     ],
     "data_breakdown": {
+	“logic_notification”:1,
         "imu": 1,
+	“fp_hash”:1,
+	“steering”: 1,
+	“encoder”: 1,
         "gps": 1
     }
 }

@@ -72,7 +72,7 @@ public class SensorPlayer extends Thread {
         gpsPub = new Publisher(NodeChannel.GPS.getMsgPath());
         encoderPub = new Publisher(NodeChannel.ENCODER.getMsgPath());
         brakePub = new Publisher(NodeChannel.BRAKE.getMsgPath());
-        steeringPub = new Publisher(NodeChannel.DRIVE_CTRL.getMsgPath());
+        steeringPub = new Publisher(NodeChannel.STEERING_COMMANDED.getMsgPath());
         loggingButtonPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
         logicNotificationPub = new Publisher(NodeChannel.LOGIC_NOTIFICATION.getMsgPath());
 
@@ -104,6 +104,11 @@ public class SensorPlayer extends Thread {
                         SensorPlayer.this.start();
                     }
                 }
+                else if (message.getLoggingMessage().equals(GuiLoggingButtonMessage.LoggingMessage.STOP)) {
+                    if (SensorPlayer.this.isAlive()) {
+                        SensorPlayer.this.interrupt();
+                    }
+                }
             }
         });
     }
@@ -125,6 +130,8 @@ public class SensorPlayer extends Thread {
 
             JsonArray sensorDataArray = logFile.getAsJsonArray("sensor_data");
             for (JsonElement sensorAsJElement: sensorDataArray) {
+                boolean waitForTimeDiff = true;
+
                 if(sensorAsJElement.isJsonObject()){
                     JsonObject sensorDataJson = sensorAsJElement.getAsJsonObject();
                     String versionID = sensorDataJson.get("VERSION_ID").getAsString();
@@ -184,19 +191,12 @@ public class SensorPlayer extends Thread {
                             new RobobuggyLogicNotification("Stopping playback, hit a STOP", RobobuggyMessageLevel.NOTE);
                             break;
                         default:
-                            transmitMessage = new BaseMessage() {
-                                @Override
-                                public String toLogString() {
-                                    return null;
-                                }
-
-                                @Override
-                                public Message fromLogString(String str) {
-                                    return null;
-                                }
-                            };
-                            new RobobuggyLogicNotification("Couldn't parse a sensor found in the file: " + versionID, RobobuggyMessageLevel.WARNING);
+                            waitForTimeDiff = false;
                             break;
+                    }
+
+                    if (!waitForTimeDiff) {
+                        continue;
                     }
 
                     getNewPlaybackSpeed();

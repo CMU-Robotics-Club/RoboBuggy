@@ -21,7 +21,7 @@ public class VelocityPlotter {
 		String myFile = "/Users/davidneiman/Desktop/MyFile.txt";
 		
 		try {
-			WayPointUtil.addWaypoint(myFile, 54, true, 40, true);
+			WayPointUtil.changeWaypoint(myFile, 2, 54.0, true, 40.0, true);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -23,7 +23,6 @@ import java.util.Date;
  * {@link RobobuggyGUIContainer} used for logging information
  */
 public class LoggingPanel extends RobobuggyGUIContainer{
-	//TODO: test to make sure all these dont need to be static
 	private JButton playBtn;
 	private JFormattedTextField timeLbl;
 	private static final int TIME_ZONE_OFFSET = 18000000;//5 hours
@@ -90,7 +89,9 @@ public class LoggingPanel extends RobobuggyGUIContainer{
 	 */
 	public double getPlaybackSpeed() {
 		String speedStr = playbackSpeed.getText();
-		if (speedStr.equals("")) return 1;
+		if (speedStr.equals("")) {
+			return 1;
+		}
 
 		try {
 			return Double.valueOf(speedStr);

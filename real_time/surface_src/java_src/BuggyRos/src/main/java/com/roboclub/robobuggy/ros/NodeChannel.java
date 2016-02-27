@@ -22,6 +22,7 @@ public enum NodeChannel {
 	STATE("state"),
 	SIMULATION("simulation"),
 	NODE_STATUS("node_status"),
+	PATH_PLANNER("path_planner"),
 	UNKNOWN_CHANNEL("unknown"),
 	;
 	

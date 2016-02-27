@@ -47,10 +47,6 @@ public class OdomLocalizer  extends PeriodicNode{
 			EncoderMeasurement encM = (EncoderMeasurement)m;
 			//TODO add locks 
 			double dist = encM.getDistance();
-			//to stop small value errors
-//			double delta = dist - mostRecentEncoder;
-			//System.out.println("delta:"+delta);
-			//if(Math.abs(delta) > .01){
 				secondOldestEncoder = mostRecentEncoder;
 				mostRecentEncoder = dist;
 			if (pose == null) {
@@ -61,17 +57,14 @@ public class OdomLocalizer  extends PeriodicNode{
 			So2Pose deltaPose = new So2Pose(deltaEncoder, 0.0, deltaAngle);
 			pose = pose.mult(deltaPose);
 			posePub.publish(new GPSPoseMessage(new Date(), pose.getX(), pose.getY(), pose.getOrientation()));
-			//posePub.publish(new PoseMessage(new Date(), mostRecentEncoder, 0, 0));
-			//System.out.println("x:"+pose.getX()+"\t y:"+pose.getY()+"\t orintation"+pose.getOrientation());
 			secondOldestAngle = mostRecentAngle;
-			//}
 			
 						
 			}
 		});
 			
 		//Initialize subscriber for what steering angle low level is currently at
-		new Subscriber(NodeChannel.STEERING_COMMANDED.getMsgPath(), new MessageListener() {
+		new Subscriber(NodeChannel.STEERING.getMsgPath(), new MessageListener() {
 			
 			@Override
 			public void actionPerformed(String topicName, Message m) {

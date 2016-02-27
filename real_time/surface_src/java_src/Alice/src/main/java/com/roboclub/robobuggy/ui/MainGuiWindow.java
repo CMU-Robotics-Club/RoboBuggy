@@ -8,11 +8,12 @@ package com.roboclub.robobuggy.ui;
 public class MainGuiWindow extends RobobuggyGUIContainer{
 
 	private ControlPanel ctrlPanel;
+	private AnalyticsPanel analyPane;
 	/**
 	 * constructor for the main gui window, sets up what is shown on the window
 	 */
 	public MainGuiWindow(){
-		AnalyticsPanel analyPane = new AnalyticsPanel();
+		analyPane = new AnalyticsPanel();
 		ctrlPanel = new ControlPanel();
 		//addComponent syntax is (newComponent,percentageLeft,percentageTop,percentageWidth,percentageHeight)
 		addComponent(ctrlPanel, 0.0, 0.0, .3, 1.0);
@@ -24,6 +25,13 @@ public class MainGuiWindow extends RobobuggyGUIContainer{
 	 */
 	public ControlPanel getCtrlPanel() {
 		return ctrlPanel;
+	}
+
+	/**
+	 * @return the analytics panel
+	 */
+	public AnalyticsPanel getAnalyPane() {
+		return analyPane;
 	}
 
 }

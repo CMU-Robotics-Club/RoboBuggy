@@ -47,6 +47,7 @@ public class DataPanel extends RobobuggyGUIContainer {
 	private JLabel bracking;
 	private JLabel errorNum;
 	private JLabel latitude,longitude;
+
 	/**
 	 * Construct a new {@link DataPanel}
 	 */
@@ -120,7 +121,6 @@ public class DataPanel extends RobobuggyGUIContainer {
 		new Subscriber(NodeChannel.IMU.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
-				System.out.println("here");
 				
 				ImuMeasurement msg = (ImuMeasurement)m;
 				
@@ -256,6 +256,13 @@ public class DataPanel extends RobobuggyGUIContainer {
 		values += "mZ: "+mZ.getText() + " ";
 		
 		return values;
+	}
+
+	/**
+	 * @return the gps panel
+	 */
+	public GpsPanel getGpsPanel() {
+		return gpsPanel;
 	}
 	
 	

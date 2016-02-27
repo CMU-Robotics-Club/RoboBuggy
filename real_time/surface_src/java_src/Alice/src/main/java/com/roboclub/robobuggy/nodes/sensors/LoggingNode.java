@@ -180,7 +180,7 @@ public class LoggingNode extends BuggyDecoratorNode {
         Date logCreationDate = new Date();
 
 
-        outputDirectory = new File(outputDirectory.getPath() + "/"  + formatDateIntoFile(logCreationDate));
+        outputDirectory = new File(RobobuggyConfigFile.LOG_FILE_LOCATION + "/"  + formatDateIntoFile(logCreationDate));
 
         if (!outputDirectory.mkdirs()) {
             new RobobuggyLogicNotification("Couldn't create log folder!", RobobuggyMessageLevel.EXCEPTION);
@@ -278,7 +278,7 @@ public class LoggingNode extends BuggyDecoratorNode {
         /**
          * Instantiates a new LogWriterThread by clearing the message queue
          */
-        public LogWriterThread() {
+        LogWriterThread() {
         }
 
         @Override

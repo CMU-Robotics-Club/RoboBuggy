@@ -15,7 +15,8 @@ import com.sun.javafx.geom.Vec2d;
 
 import Jama.Matrix;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JSlider;
 
 /**
  * pose viewer - has a world frame and a buggy relative to it
@@ -71,7 +72,7 @@ public class PoseViewer extends RobobuggyGUIContainer{
 				GPSPoseMessage poseM = (GPSPoseMessage)m;
 				double x = poseM.getLatitude();
 				double y = poseM.getLongitude();
-				double th = poseM.getHeading();
+				double th = Math.PI*poseM.getHeading()/180;
 				double [][] anArray = {{Math.cos(th),-Math.sin(th),0,x},{Math.sin(th),Math.cos(th),0,y},{0,0,1,0},{0,0,0,1}};
 				Matrix aPose = new Matrix(anArray);
 				if(!poses.isEmpty()){
@@ -95,7 +96,7 @@ public class PoseViewer extends RobobuggyGUIContainer{
 	 */
 	public Vec2d projectToView(Matrix m){
 		//TODO 
-		return new Vec2d(100*m.get(0, 0)+200, -100*m.get(1, 0)+400);
+		return new Vec2d(1*m.get(0, 0)+200, -1*m.get(1, 0)+400);
 	}
 
 	/**
@@ -104,10 +105,11 @@ public class PoseViewer extends RobobuggyGUIContainer{
 	 * @param name name of the matrix
 	 */
 	public void drawMatrix(Graphics g,Matrix m,String name){
+		double axisLength = 100;
 		double [][] origin = {{0},{0},{0},{1}};
-		double [][] xAxis = {{1},{0},{0},{1}};
-		double [][] yAxis = {{0},{1},{0},{1}};
-		double [][] zAxis = {{0},{0},{1},{1}};
+		double [][] xAxis = {{axisLength},{0},{0},{1}};
+		double [][] yAxis = {{0},{axisLength},{0},{1}};
+		double [][] zAxis = {{0},{0},{axisLength},{1}};
 		
 		Matrix originMatrix = new Matrix(origin);
 		Matrix xMatrix = new Matrix(xAxis);
@@ -137,7 +139,7 @@ public class PoseViewer extends RobobuggyGUIContainer{
 	}
 	
 	double get2dth(Matrix m){
-		return Math.atan2(m.get(1, 0),m.get(0, 0));
+		return 180*Math.atan2(m.get(1, 0),m.get(0, 0))/Math.PI;
 		
 	}
 	

@@ -59,7 +59,7 @@ public class AngleGraph extends RobobuggyGUIContainer {
 		/**
 		 * Construct a new {@link Graph}
 		 */
-		public Graph() {
+		Graph() {
 			this.setPreferredSize(new Dimension(graphWidth + 2*offset, 
 					graphHeight + 2*offset));	
 		}

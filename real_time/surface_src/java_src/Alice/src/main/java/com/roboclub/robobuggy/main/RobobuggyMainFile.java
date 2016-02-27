@@ -19,6 +19,7 @@ public class RobobuggyMainFile {
 	 */
     public static void main(String[] args) {
 
+
         try {
 			JNISetup.setupJNI(); //must run for jni to install
 			//note that errors are just printed to the console since the gui and logging system  has not been created yet
@@ -44,28 +45,14 @@ public class RobobuggyMainFile {
      	
     	if (RobobuggyConfigFile.DATA_PLAY_BACK) {
     		//Play back mode enabled
-    		new SensorPlayer("logs/2016-02-14-20-09-32/sensors_2016-02-14-20-09-32.txt", 1);
+    		new SensorPlayer("/Volumes/DAVID/2016-02-20-06-50-45/sensors_2016-02-20-06-50-45.txt", 1);
+    		//new SensorPlayer("logs/spring1data/2016-02-20-06-50-45/sensors_2016-02-20-06-50-45.txt", 1);
+
         }
-        else {
+        
         	//Play back disabled, create robot
         	Robot.getInstance().startNodes();
 			new RobobuggyLogicNotification("Robobuggy Logic Notfication started", RobobuggyMessageLevel.NOTE);
-
-            try {
-                Thread.sleep(5000);
-
-                new RobobuggyLogicNotification("Notification 1", RobobuggyMessageLevel.NOTE);
-                new RobobuggyLogicNotification("Notification 2", RobobuggyMessageLevel.NOTE);
-
-                Thread.sleep(500);
-
-                new RobobuggyLogicNotification("Notif 3", RobobuggyMessageLevel.NOTE);
-            }
-            catch (InterruptedException e) {
-                new RobobuggyLogicNotification("interreupted", RobobuggyMessageLevel.NOTE);
-            }
-		}
-
 
     }
     

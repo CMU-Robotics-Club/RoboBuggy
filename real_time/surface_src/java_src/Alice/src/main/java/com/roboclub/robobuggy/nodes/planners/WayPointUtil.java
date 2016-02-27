@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Modifier;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,25 +37,37 @@ import java.util.Scanner;
  */
 public class WayPointUtil {
 	
-	public static void addWaypoint(String filename, double latitude, boolean north, double longitude, boolean west) throws IOException{
+	public static void changeWaypoint(String filename, int npoint, double latitude, boolean north, double longitude, boolean west) throws IOException{
 		//Create a new waypoint and put it on the end of the file
 		
 		GpsMeasurement newpoint = new GpsMeasurement(Date.from(Instant.now()), Date.from(Instant.now()),
 				latitude, north, longitude, west, -1, -1, -1, -1);
+		
+        Gson messageTranslator = new GsonBuilder()
+                .excludeFieldsWithModifiers(Modifier.TRANSIENT)
+                .serializeSpecialFloatingPointValues()
+                .create()
+                ;
+		String newstring = messageTranslator.toJson(newpoint);
+		
 		ArrayList<String> al = new ArrayList<String>();
 		
 		//Read the file; store the lines; insert the new reading at the end of the sensor part
 		BufferedReader input = new BufferedReader(new FileReader(filename));
+		int x = 0;
 		while(input.ready()){
 			String instring = input.readLine();
-			if(instring.contains("]")){ //I assume we won't have any other arrays of stuff
-				al.add(newpoint.toLogString());
+			if(x == npoint){
+				al.add(newstring);
 			}
-			al.add(instring);
+			else{
+				al.add(instring);
+			}
+			x++;
 		}
 		input.close();
 		BufferedWriter output = new BufferedWriter(new FileWriter(filename));
-		output.write("Modified file\n");
+		//output.write("Modified file\n");
 		while(al.size()>0){
 			output.write(al.remove(0) + "\n");
 		}
@@ -140,7 +153,7 @@ public class WayPointUtil {
 				File outputFile = new File(folder + "/waypoints.txt");
 				if (!outputFile.createNewFile()) {
 					new RobobuggyLogicNotification("couldn't create file", RobobuggyMessageLevel.EXCEPTION);
-					return null;
+//					return null;
 				}
 				OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(outputFile), "UTF-8");
 
