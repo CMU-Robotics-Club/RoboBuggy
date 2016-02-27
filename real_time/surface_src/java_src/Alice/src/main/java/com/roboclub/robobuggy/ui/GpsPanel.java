@@ -20,23 +20,20 @@ import org.openstreetmap.gui.jmapviewer.interfaces.TileCache;
 import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
 
 import javax.imageio.ImageIO;
-import javax.swing.DefaultListModel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.text.TextAction;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.*;
+import java.awt.geom.Arc2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.DoubleSummaryStatistics;
 import java.util.List;
 
 
@@ -61,6 +58,7 @@ public class GpsPanel extends JPanel {
 
 	private JScrollPane waypointListContainer;
 	private WaypointList waypointList;
+	private WaypointEditor waypointEditor;
 
 	@SuppressWarnings("unused") //this subscriber is used to generate callbacks
 	private Subscriber gpsSub;
@@ -102,15 +100,20 @@ public class GpsPanel extends JPanel {
 		waypointList = new WaypointList();
 
 		waypointListContainer = new JScrollPane(waypointList);
-		waypointListContainer.setBounds(0, 0, 100, this.getHeight());
+		waypointListContainer.setBounds(0, 0, 0, 0);
 		waypointListContainer.setBackground(Color.RED);
 		waypointListContainer.setVisible(true);
 
-		this.add(waypointListContainer, 0);
+		waypointEditor = new WaypointEditor(200, 100);
+		waypointEditor.setVisible(true);
+		waypointEditor.setBackground(Color.GRAY);
 
+		this.add(waypointEditor, 0);
+		this.add(waypointListContainer, 0);
 		this.repaint();
 		waypointListContainer.repaint();
 		waypointList.repaint();
+		waypointEditor.repaint();
 
 
 		addPointsToMapTree(Color.BLUE, new LocTuple(mapViewerLat, mapViewerLon));
@@ -311,27 +314,75 @@ public class GpsPanel extends JPanel {
 						MapMarkerDot dot = (MapMarkerDot) marker;
 						dot.setBackColor(Color.YELLOW);
 					}
-					((MapMarkerDot) markers.get(index)).setBackColor(Color.RED);
-					mapTree.repaint();
+					MapMarkerDot dot = ((MapMarkerDot) markers.get(index));
+					dot.setBackColor(Color.RED);
+					waypointEditor.editPoint(dot);
 
-					//for some reason the map tree is incredibly aggressive with its window placement
-					// need to add the list back again
-
-					GpsPanel.this.remove(waypointListContainer);
-					GpsPanel.this.add(waypointListContainer, 0);
+					mapTree.getViewer().repaint();
 				}
 			});
 		}
 
 	}
 
+	private class WaypointEditor extends JPanel {
+
+		public JTextField latField;
+		public JTextField lonField;
+		private MapMarkerDot dotToEdit;
+
+		/**
+		 * Waypoint editor - allows us to modify waypoints on the fly
+		 */
+		WaypointEditor(int width, int height) {
+			super();
+
+			setSize(width, height);
+
+			latField = new JTextField();
+			lonField = new JTextField();
+
+			latField.setBounds(0, 0, this.getWidth(), this.getHeight()/2);
+			lonField.setBounds(0, this.getHeight()/2, this.getWidth(), this.getHeight()/2);
+
+			dotToEdit = new MapMarkerDot(0, 0);
+
+			latField.addActionListener(e -> {
+				dotToEdit.setLat(Double.parseDouble(latField.getText()));
+				mapTree.getViewer().repaint();
+			});
+			lonField.addActionListener(e -> {
+				dotToEdit.setLon(Double.parseDouble(lonField.getText()));
+				mapTree.getViewer().repaint();
+			});
+
+			this.add(latField);
+			this.add(lonField);
+		}
+
+		public void editPoint(MapMarkerDot dot) {
+			dotToEdit = dot;
+			latField.setText(String.valueOf(dot.getLat()));
+			lonField.setText(String.valueOf(dot.getLon()));
+		}
+
+		@Override
+		public void paint(Graphics g) {
+			super.paint(g);
+
+			latField.setBounds(0, 0, this.getWidth(), getHeight()/2);
+			lonField.setBounds(0, getHeight()/2, getWidth(), getHeight()/2);
+		}
+	}
+
 	@Override
 	public void paintComponent(Graphics g) {
 
-		mapTree.setBounds(0, 0, getWidth(), getHeight());
-		mapTree.getViewer().setSize(getWidth(), getHeight());
+		mapTree.setBounds(200, 0, getWidth() - 200, getHeight());
+		mapTree.getViewer().setSize(getWidth() - 200, getHeight());
 
-		waypointListContainer.setBounds(0, 0, 200, getHeight());
-		
+		waypointListContainer.setBounds(0, 0, 200, getHeight() - 100);
+		waypointEditor.setBounds(0, getHeight() - 100, 200, 100);
+
 	}
 }
