@@ -20,20 +20,24 @@ import org.openstreetmap.gui.jmapviewer.interfaces.TileCache;
 import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.text.TextAction;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.event.*;
-import java.awt.geom.Arc2D;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.DoubleSummaryStatistics;
 import java.util.List;
 
 
@@ -43,6 +47,9 @@ import java.util.List;
 public class GpsPanel extends JPanel {
 	
 	private static final long serialVersionUID = 42L;
+
+	private static final int WAYPOINT_EDITOR_PANEL_WIDTH = 200;
+	private static final int WAYPOINT_EDITOR_PANEL_HEIGHT = 100;
 	
 	private double theta = 0;
 	private MapPolygonImpl directionLine;
@@ -325,15 +332,15 @@ public class GpsPanel extends JPanel {
 
 	}
 
+	/**
+	 * Waypoint editor - allows us to modify waypoints on the fly
+	 */
 	private class WaypointEditor extends JPanel {
 
-		public JTextField latField;
-		public JTextField lonField;
+		private JTextField latField;
+		private JTextField lonField;
 		private MapMarkerDot dotToEdit;
 
-		/**
-		 * Waypoint editor - allows us to modify waypoints on the fly
-		 */
 		WaypointEditor(int width, int height) {
 			super();
 
@@ -350,10 +357,12 @@ public class GpsPanel extends JPanel {
 			latField.addActionListener(e -> {
 				dotToEdit.setLat(Double.parseDouble(latField.getText()));
 				mapTree.getViewer().repaint();
+				waypointList.repaint();
 			});
 			lonField.addActionListener(e -> {
 				dotToEdit.setLon(Double.parseDouble(lonField.getText()));
 				mapTree.getViewer().repaint();
+				waypointList.repaint();
 			});
 
 			this.add(latField);
@@ -378,11 +387,10 @@ public class GpsPanel extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 
-		mapTree.setBounds(200, 0, getWidth() - 200, getHeight());
-		mapTree.getViewer().setSize(getWidth() - 200, getHeight());
+		mapTree.setBounds(WAYPOINT_EDITOR_PANEL_WIDTH, 0, getWidth() - WAYPOINT_EDITOR_PANEL_WIDTH, getHeight());
+		mapTree.getViewer().setSize(getWidth() - WAYPOINT_EDITOR_PANEL_WIDTH, getHeight());
 
-		waypointListContainer.setBounds(0, 0, 200, getHeight() - 100);
-		waypointEditor.setBounds(0, getHeight() - 100, 200, 100);
-
+		waypointListContainer.setBounds(0, 0, WAYPOINT_EDITOR_PANEL_WIDTH, getHeight() - WAYPOINT_EDITOR_PANEL_HEIGHT);
+		waypointEditor.setBounds(0, getHeight() - WAYPOINT_EDITOR_PANEL_HEIGHT, WAYPOINT_EDITOR_PANEL_WIDTH, WAYPOINT_EDITOR_PANEL_HEIGHT);
 	}
 }
