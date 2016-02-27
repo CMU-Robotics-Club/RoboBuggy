@@ -20,7 +20,9 @@ import org.openstreetmap.gui.jmapviewer.interfaces.TileCache;
 import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
 
 import javax.imageio.ImageIO;
-import javax.swing.JPanel;
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -31,7 +33,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Vector;
 
 
 /**
@@ -52,6 +56,9 @@ public class GpsPanel extends JPanel {
 	
 	private double mapDragX = -1;
 	private double mapDragY = -1;
+
+	private JScrollPane waypointListContainer;
+	private WaypointList waypointList;
 
 	@SuppressWarnings("unused") //this subscriber is used to generate callbacks
 	private Subscriber gpsSub;
@@ -81,9 +88,8 @@ public class GpsPanel extends JPanel {
 				if(((GpsMeasurement)m).getWest()) {
 					longitude = -longitude;
 				}
-				
-				mapTree.getViewer().addMapMarker(new MapMarkerDot(Color.BLUE, latitude, longitude));
-				updateArrow();
+
+				GpsPanel.this.addPointsToMapTree(Color.BLUE, new LocTuple(latitude, longitude));
 				GpsPanel.this.repaint();  // refresh screen
 
 			}
@@ -91,7 +97,22 @@ public class GpsPanel extends JPanel {
 
 		mapTree.getViewer().addMapPolygon(directionLine);
 
+		waypointList = new WaypointList();
 
+		waypointListContainer = new JScrollPane(waypointList);
+		waypointListContainer.setBounds(0, 0, 100, this.getHeight());
+		waypointListContainer.setBackground(Color.RED);
+		waypointListContainer.setVisible(true);
+
+		this.add(waypointListContainer, 0);
+
+		this.repaint();
+		waypointListContainer.repaint();
+		waypointList.repaint();
+
+
+		addPointsToMapTree(Color.BLUE, new LocTuple(mapViewerLat, mapViewerLon));
+		addPointsToMapTree(Color.BLUE, new LocTuple(mapViewerLat + 0.001, mapViewerLon));
 	}
 
 	private void updateArrow() {
@@ -155,6 +176,8 @@ public class GpsPanel extends JPanel {
 	public void addPointsToMapTree(Color thisColor,LocTuple...points) {
 		for (LocTuple point : points) {
 			mapTree.getViewer().addMapMarker(new MapMarkerDot(thisColor, point.getLatitude(), point.getLongitude()));
+			((DefaultListModel<String>) waypointList.getModel()).addElement(point.getLatitude() + ", " + point.getLongitude());
+			waypointListContainer.repaint();
 		}
 	}
 
@@ -248,37 +271,6 @@ public class GpsPanel extends JPanel {
 		});
 	}
 	
-//	/**
-//	 * Draws an arrow in the buggy's current direction
-//	 * @param g2d - Graphics stuff
-//	 * @param size - Length of the arrow. Should probably be dependent on actual speed, but I leave someone else to do math
-//	 */
-//	//I think this code should work, but I have no way of testing this
-//	private void drawArrowRT(Graphics2D g2d, double size){
-//		if(locs.size() < 2){
-//			//There's not enough data to get a position and direction
-//			return;
-//		}
-//
-//		LocTuple p1 = locs.get(locs.size()-2);
-//		LocTuple p2 = locs.get(locs.size()-1);
-//		double deltax = p2.getLongitude() - p1.getLongitude();
-//		double deltay = p2.getLatitude() - p1.getLatitude();
-//		theta = Math.atan2(deltay, deltax);
-//
-//		//I took this code from the drawTuple code and I assume it gets the screen location of mTuple (now p2)
-//		double dx = Math.abs(imgSouthEast.getLongitude() - imgNorthWest.getLongitude());
-//		double dy = Math.abs(imgSouthEast.getLatitude() - imgNorthWest.getLatitude());
-//
-//		double latdiff = Math.abs(p2.getLatitude() - imgNorthWest.getLatitude());
-//		double londiff = Math.abs(p2.getLongitude() - imgNorthWest.getLongitude());
-//
-//		double px = (londiff * frameWidth) / dx;
-//		double py = (latdiff * frameHeight) / dy;
-//
-//		drawArrow(g2d, px, py, theta, size);
-//	}
-	
 	private void drawArrow(Graphics2D g2d, double x1, double y1, double theta, double size){
 		double x2 = x1 + rotate(size, 0, theta)[0];
 		double y2 = y1 + rotate(size, 0, theta)[1];
@@ -296,13 +288,45 @@ public class GpsPanel extends JPanel {
 		double yp = (-x*Math.sin(theta) + y*Math.cos(theta));
 		return new double[] {xp, yp};
 	}
-	
+
+	private class WaypointList extends JList<String> {
+
+		WaypointList() {
+			super(new DefaultListModel<>());
+			setVisibleRowCount(-1);
+			setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+			setLayoutOrientation(JList.VERTICAL);
+
+			addListSelectionListener(new ListSelectionListener() {
+				@Override
+				public void valueChanged(ListSelectionEvent e) {
+					int index = waypointList.getSelectedIndex();
+					List<MapMarker> markers = mapTree.getViewer().getMapMarkerList();
+					for (MapMarker marker : markers) {
+						MapMarkerDot dot = (MapMarkerDot) marker;
+						dot.setBackColor(Color.YELLOW);
+					}
+					((MapMarkerDot) markers.get(index)).setBackColor(Color.RED);
+					mapTree.repaint();
+
+					//for some reason the map tree is incredibly aggressive with its window placement
+					// need to add the list back again
+
+					GpsPanel.this.remove(waypointListContainer);
+					GpsPanel.this.add(waypointListContainer, 0);
+				}
+			});
+		}
+
+	}
 
 	@Override
 	public void paintComponent(Graphics g) {
 
 		mapTree.setBounds(0, 0, getWidth(), getHeight());
 		mapTree.getViewer().setSize(getWidth(), getHeight());
+
+		waypointListContainer.setBounds(0, 0, 200, getHeight());
 		
 	}
 }

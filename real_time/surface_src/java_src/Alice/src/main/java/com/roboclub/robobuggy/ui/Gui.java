@@ -74,6 +74,7 @@ public final class Gui extends JFrame {
 		mainWindow.repaint();		
 		windowList.add(mainWindow);
 		mainWindow.repaint();
+		this.repaint();
 	}
 	
 
