@@ -1,6 +1,9 @@
 package com.roboclub.robobuggy.ui;
 
+import java.io.IOException;
+
 import com.roboclub.robobuggy.main.Robot;
+import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
 
 /**
  * Stand-alone file to test my code
@@ -15,6 +18,17 @@ public class VelocityPlotter {
 	 * @throws InterruptedException - Same exception that all these main files throw
 	 */
 	public static void main(String[] args) throws InterruptedException {
+		String myFile = "/Users/davidneiman/Desktop/MyFile.txt";
+		
+		try {
+			WayPointUtil.addWaypoint(myFile, 54, true, 40, true);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		/*
 		Robot.getInstance(); //Uncomment
         //Gui g = Gui.getInstance();
 		

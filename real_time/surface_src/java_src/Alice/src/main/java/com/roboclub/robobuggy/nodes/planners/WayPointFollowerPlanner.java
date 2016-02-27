@@ -37,7 +37,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 		double min = 10000;//note that the breaks will defiantly deploy at this 
 		int closestIndex = -1;
 		for(int i = 0;i<wayPoints.size();i++){
-			double d = getDistince(pose,wayPoints.get(i));
+			double d = getDistance(pose,wayPoints.get(i));
 			if(d < min){
 				min = d;
 				closestIndex = i;
@@ -71,7 +71,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 	protected boolean getDeployBrakeValue() {
 		// if closest point is too far away throw breaks 
 		for(int i = 0;i<wayPoints.size();i++){
-			double d = getDistince(pose,wayPoints.get(i));
+			double d = getDistance(pose,wayPoints.get(i));
 			if(d < 1.0){
 				//if we are within 1 meter of any point then do not throw breaks 
 				return false;
@@ -81,7 +81,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 		return true;
 	}
 	
-	private double getDistince(GPSPoseMessage a,GpsMeasurement b){
+	private double getDistance(GPSPoseMessage a,GpsMeasurement b){
 		double dx = a.getLatitude() - b.getLatitude();
 		double dy = a.getLongitude() - b.getLongitude();
 		return Math.sqrt(dx*dx + dy*dy);

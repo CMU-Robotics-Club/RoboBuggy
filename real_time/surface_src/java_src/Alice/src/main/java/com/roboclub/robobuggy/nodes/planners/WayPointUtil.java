@@ -12,14 +12,19 @@ import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.simulation.PlayBackUtil;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
@@ -30,6 +35,31 @@ import java.util.Scanner;
  *
  */
 public class WayPointUtil {
+	
+	public static void addWaypoint(String filename, double latitude, boolean north, double longitude, boolean west) throws IOException{
+		//Create a new waypoint and put it on the end of the file
+		
+		GpsMeasurement newpoint = new GpsMeasurement(Date.from(Instant.now()), Date.from(Instant.now()),
+				latitude, north, longitude, west, -1, -1, -1, -1);
+		ArrayList<String> al = new ArrayList<String>();
+		
+		//Read the file; store the lines; insert the new reading at the end of the sensor part
+		BufferedReader input = new BufferedReader(new FileReader(filename));
+		while(input.ready()){
+			String instring = input.readLine();
+			if(instring.contains("]")){ //I assume we won't have any other arrays of stuff
+				al.add(newpoint.toLogString());
+			}
+			al.add(instring);
+		}
+		input.close();
+		BufferedWriter output = new BufferedWriter(new FileWriter(filename));
+		output.write("Modified file\n");
+		while(al.size()>0){
+			output.write(al.remove(0) + "\n");
+		}
+		output.close();
+	}
 
 
 	/**
