@@ -60,6 +60,28 @@ public class HighTrustGPSLocalizer implements Node{
                 publishUpdate();
             }
         });
+        
+        new Subscriber(NodeChannel.IMU_MAGNETIC.getMsgPath(),new MessageListener() {
+			
+			@Override
+			public void actionPerformed(String topicName, Message m) {
+				MagneticMeasurement magM = (MagneticMeasurement)m;
+			//	System.out.println("magM:"+magM.getX()+","+magM.getY()+","+magM.getz());
+				double currAngle = Math.atan2(magM.getY(), magM.getX());
+				//TODO stop this from being a 5:29 am hack 
+				double offset = 0.0;
+				buggyFrameRotZ = currAngle - offset;
+				System.out.println("magAng:"+offset);
+				/* 
+				 * magM.getX();
+				
+				magM.getY();
+				magM.getz();
+				*/
+				// TODO Auto-generated method stub
+			System.out.println("YO WE GOT A MESSAGE ");	
+			}
+		});
 
     }
 

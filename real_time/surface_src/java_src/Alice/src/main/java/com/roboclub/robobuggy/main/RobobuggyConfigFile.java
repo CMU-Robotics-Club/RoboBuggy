@@ -32,13 +32,13 @@ package com.roboclub.robobuggy.main;
 	public static final boolean VISION_SYSTEM_ENABLED = true;
 	
 	//sensor com ports
-	public static  final String COM_PORT_IMU = "/dev/tty.usbserial-A6026UA0";
+	public static  final String COM_PORT_IMU = "/dev/tty.usbserial-A600eI9k";//"/dev/tty.usbserial-A6026UA0";
 
 	public static  final String COM_PORT_GPS = "/dev/tty.usbserial14141";
 	public static  final String COM_PORT_RBSM = "/dev/tty.usbmodem14231";
 
 	// iff false, connect to serial sensors 
-	public static final boolean DATA_PLAY_BACK = true;
+	public static final boolean DATA_PLAY_BACK = false;
 	
 	public static final String WAYPOINT_SOURCE_LOG_FILE ="2016-02-20-06-50-45/sensors_2016-02-20-06-50-45.txt";
 
