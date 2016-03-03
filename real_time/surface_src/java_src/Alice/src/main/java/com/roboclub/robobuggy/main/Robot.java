@@ -26,7 +26,6 @@ import java.util.List;
 public final class Robot implements RosMaster {
 
 	/************************************** Sets all internal private variables *************************/
-	private static final int COMMAND_PERIOD = 50;
 	private static Robot instance;
 	private boolean autonomous;
 	private boolean collectingData;
@@ -78,8 +77,10 @@ public final class Robot implements RosMaster {
 		if(collectingData){
 			nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.COM_PORT_GPS));
 			nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.COM_PORT_IMU));
-			nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION, NodeChannel.getLoggingChannels()));
-			nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING, RobobuggyConfigFile.COM_PORT_RBSM, COMMAND_PERIOD));
+			nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION,
+					NodeChannel.getLoggingChannels()));
+			nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING, RobobuggyConfigFile.COM_PORT_RBSM,
+					RobobuggyConfigFile.RBSM_COMMAND_PERIOD));
 		}
 		
 
@@ -89,8 +90,6 @@ public final class Robot implements RosMaster {
 		try {
 		nodeList.add(new WayPointFollowerPlanner(NodeChannel.UNKNOWN_CHANNEL,
 					WayPointUtil.createWayPointsFromLog("logs/", "spring1data/2016-02-20-06-50-45/sensors_2016-02-20-06-50-45.txt")));
-		} catch (FileNotFoundException | UnsupportedEncodingException e1) {
-			e1.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -105,14 +104,7 @@ public final class Robot implements RosMaster {
 	}
 	
 	/***************************************   Getters ********************************/
-	/**
-	 * Returns the period at which commands are sent to the actuators
-	 * @return the period at which commands are sent to the actuators
-	 */
-	public static int getCommandPeriod() {
-		return COMMAND_PERIOD;
-	}
-	
+
 	/**
 	 * Returns true iff the robot has autonomous mode enabled
 	 * @return true iff the robot has autonomous mode enabled

@@ -27,10 +27,10 @@ public class OdomLocalizer  extends PeriodicNode{
 	private So2Pose pose;
 	private Publisher posePub = new Publisher(NodeChannel.POSE.getMsgPath());
 
-	private double mostRecentEncoder = 0;
-	private double secondOldestEncoder = 0;
-	private double mostRecentAngle = 0;
-	private double secondOldestAngle = 0;
+	private double currentEncoderVal = 0;
+	private double previousEncoderVal = 0;
+	private double currentAngle = 0;
+	private double previousAngle = 0;
 
 
 	/**
@@ -47,17 +47,17 @@ public class OdomLocalizer  extends PeriodicNode{
 			EncoderMeasurement encM = (EncoderMeasurement)m;
 			//TODO add locks 
 			double dist = encM.getDistance();
-				secondOldestEncoder = mostRecentEncoder;
-				mostRecentEncoder = dist;
+				previousEncoderVal = currentEncoderVal;
+				currentEncoderVal = dist;
 			if (pose == null) {
 				pose = new So2Pose(0.0, 0.0, 0.0);
 			}
-			double deltaAngle = mostRecentAngle - secondOldestAngle;
-			double deltaEncoder = mostRecentEncoder - secondOldestEncoder;
+			double deltaAngle = currentAngle - previousAngle;
+			double deltaEncoder = currentEncoderVal - previousEncoderVal;
 			So2Pose deltaPose = new So2Pose(deltaEncoder, 0.0, deltaAngle);
 			pose = pose.mult(deltaPose);
 			posePub.publish(new GPSPoseMessage(new Date(), pose.getX(), pose.getY(), pose.getOrientation()));
-			secondOldestAngle = mostRecentAngle;
+			previousAngle = currentAngle;
 			
 						
 			}
@@ -70,8 +70,8 @@ public class OdomLocalizer  extends PeriodicNode{
 			public void actionPerformed(String topicName, Message m) {
 				SteeringMeasurement steerMeasur =  (SteeringMeasurement)m;
 				//TODO add locks
-				mostRecentAngle = (steerMeasur.getAngle())*Math.PI/180;
-				System.out.println("angle:"+mostRecentAngle);
+				currentAngle = (steerMeasur.getAngle())*Math.PI/180;
+				System.out.println("angle:"+ currentAngle);
 			}
 		});
 	}
