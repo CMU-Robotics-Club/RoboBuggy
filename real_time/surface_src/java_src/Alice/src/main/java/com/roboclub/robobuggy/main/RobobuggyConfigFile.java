@@ -34,6 +34,6 @@ public final class  RobobuggyConfigFile {
 	public static  final String COM_PORT_RBSM = "COM6";
 	
 	// iff false, connect to serial sensors 
-	public static final boolean DATA_PLAY_BACK = true;
+	public static final boolean DATA_PLAY_BACK = false;
 
 }

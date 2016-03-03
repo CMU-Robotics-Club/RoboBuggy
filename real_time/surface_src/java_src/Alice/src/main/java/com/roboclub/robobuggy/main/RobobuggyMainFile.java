@@ -56,12 +56,12 @@ public class RobobuggyMainFile {
                 new RobobuggyLogicNotification("Notification 1", RobobuggyMessageLevel.NOTE);
                 new RobobuggyLogicNotification("Notification 2", RobobuggyMessageLevel.NOTE);
 
-                Thread.sleep(500);
+                Thread.sleep(2000);
 
                 new RobobuggyLogicNotification("Notif 3", RobobuggyMessageLevel.NOTE);
             }
             catch (InterruptedException e) {
-                new RobobuggyLogicNotification("interreupted", RobobuggyMessageLevel.NOTE);
+                new RobobuggyLogicNotification("interrupted", RobobuggyMessageLevel.NOTE);
             }
 		}
 
