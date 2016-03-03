@@ -219,16 +219,6 @@ public class LoggingNode extends BuggyDecoratorNode {
             }
         });
 
-        /*
-        new Subscriber(NodeChannel.PUSHBAR_CAMERA.getMsgPath(), new MessageListener() {
-			@Override
-			public void actionPerformed(String topicName, Message m) {
-			
-				// TODO Auto-generated method stub
-				
-			}
-		});*/
-        
         return true;
     }
 
