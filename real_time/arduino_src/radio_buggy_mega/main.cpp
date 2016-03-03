@@ -297,8 +297,6 @@ int main(void)
     unsigned long auton_brake_last = time_start;
     unsigned long auton_steer_last = time_start;
 
-    printf("Brake initial: %lu Steer initial: %lu\n", auton_brake_last, auton_steer_last);
-
     watchdog_init();
 
     // loop forever
