@@ -1,7 +1,5 @@
 package com.roboclub.robobuggy.messages;
 
-import com.roboclub.robobuggy.ros.Message;
-
 import java.util.Date;
 
 /**
@@ -120,51 +118,5 @@ public class GpsMeasurement extends BaseMessage {
 	public boolean getNorth() {
 		return north;
 	}
-	
-	/**{@inheritDoc}*/
-	@Override
-	public String toLogString() {
-		String s = super.formatDate(timestamp);
-		
-		s += ',' + super.formatDate(gpsTimestamp.getTime());
-		
-		s += ',' + Double.toString(latitude);
-		if (north) s += ",N";
-		else s += ",S";
-		
-		s += ',' + Double.toString(longitude);
-		if (west) s += ",W";
-		else s += ",E";
-	
-		s += "," + Integer.toString(qualityValue);
-		s += "," + Integer.toString(numSatellites);
-		s += "," + Double.toString(horizontalDilutionOfPrecision);
-		s += "," + Double.toString(antennaAltitude);
-		s += "," + Double.toString(rawGPSLat);
-		s += "," + Double.toString(rawGPSLong);
-		
-		return s;
-	}
 
-	/**{@inheritDoc}*/
-	@Override
-	public Message fromLogString(String str) {
-		String[] ar = str.split(",");
-
-		Date messageTimestamp = super.tryToParseDate(ar[1]);
-		Date gpsTimestamp = super.tryToParseDate(ar[0]);
-		if(messageTimestamp == null || gpsTimestamp == null) {
-			return null;
-		}
-		double latitude = Double.parseDouble(ar[1]);
-		boolean north = ar[2].equalsIgnoreCase("N");
-		double longitude = Double.parseDouble(ar[3]);
-		boolean west = ar[3].equalsIgnoreCase("W");
-		int qualityValue = Integer.parseInt(ar[4]);
-		int numSatellites = Integer.parseInt(ar[5]);
-		double horizontalDiluation = Double.parseDouble(ar[6]);
-		double antennaAltitude = Double.parseDouble(ar[7]);
-		return new GpsMeasurement(messageTimestamp, gpsTimestamp, latitude, north, longitude,
-				west, qualityValue, numSatellites, horizontalDiluation, antennaAltitude);
-	}
 }
