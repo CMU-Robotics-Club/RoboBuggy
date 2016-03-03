@@ -235,7 +235,7 @@ public class LoggingNode extends BuggyDecoratorNode {
         /**
          * Instantiates a new LogWriterThread by clearing the message queue
          */
-        public LogWriterThread() {
+        LogWriterThread() {
         }
 
         @Override

@@ -96,6 +96,11 @@ public class RBSMNode extends SerialNode {
 		//Initialize publishers to indicate the sensor is disconnected
 		statePubEnc.publish(new StateMessage(NodeState.DISCONNECTED));
 		statePubPot.publish(new StateMessage(NodeState.DISCONNECTED));
+
+		//Initialize message headers
+		if (!RBSerialMessage.initializeHeaders()) {
+			return;
+		}
 	}
 	
 	/**
@@ -168,30 +173,28 @@ public class RBSMNode extends SerialNode {
 		
 		RBSerialMessage message = rbp.getMessage();
 		byte headerByte = message.getHeaderByte();
-		switch (headerByte)
-		{
-			case RBSerialMessage.ENC_TICK_SINCE_RESET:
-				// This is a delta-distance! Do a thing!
-				encTicks = message.getDataWord() & 0xFFFF;
-				messagePubEnc.publish(estimateVelocity(message.getDataWord()));
-				break;
-			case RBSerialMessage.RBSM_MID_MEGA_STEER_FEEDBACK:
-				// This is a delta-distance! Do a thing!
-				potValue = message.getDataWord();
-				System.out.println(potValue);
-				messagePubPot.publish(new SteeringMeasurement(-(potValue + OFFSET)/ARD_TO_DEG));
-				break;
-			case RBSerialMessage.RBSM_MID_MEGA_STEER_ANGLE:
-				steeringAngle = message.getDataWord();
-				messagePubControllerSteering.publish(new SteeringMeasurement(steeringAngle));
-				break;
-			case RBSerialMessage.FP_HASH:
-				System.out.println(message.getDataWord());
-				messagePubFp.publish(new FingerPrintMessage(message.getDataWord()));
-				break;
-			default: //Unhandled or invalid RBSM message header was received.
+
+		if (headerByte == RBSerialMessage.getHeaderByte("ENC_TICKS_SINCE_RESET")) {
+			// This is a delta-distance! Do a thing!
+			encTicks = message.getDataWord() & 0xFFFF;
+			messagePubEnc.publish(estimateVelocity(message.getDataWord()));
+		}
+		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_STEER_FEEDBACK")) {
+			// This is a delta-distance! Do a thing!
+			potValue = message.getDataWord();
+			System.out.println(potValue);
+			messagePubPot.publish(new SteeringMeasurement(-(potValue + OFFSET) / ARD_TO_DEG));
+		}
+		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_STEER_ANGLE")) {
+			steeringAngle = message.getDataWord();
+			messagePubControllerSteering.publish(new SteeringMeasurement(steeringAngle));
+		}
+		else if (headerByte == RBSerialMessage.getHeaderByte("FP_HASH")) {
+			System.out.println(message.getDataWord());
+			messagePubFp.publish(new FingerPrintMessage(message.getDataWord()));
+		}
+		else {
 				new RobobuggyLogicNotification("Invalid RBSM message header: " + headerByte, RobobuggyMessageLevel.NOTE);
-				break;
 		}
 		
 		//Feed the watchdog
@@ -218,7 +221,7 @@ public class RBSMNode extends SerialNode {
 		 * @param period of the periodic behavior
 		 * @param channel of the RSBM node
 		 */
-		public RBSMPeriodicNode(NodeChannel channel, int period) {
+		RBSMPeriodicNode(NodeChannel channel, int period) {
 			super(new BuggyBaseNode(channel), period);
 		}
 
