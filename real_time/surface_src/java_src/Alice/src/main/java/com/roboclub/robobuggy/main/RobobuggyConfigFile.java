@@ -39,7 +39,7 @@ public final class  RobobuggyConfigFile {
 	public static  final String COM_PORT_RBSM = "/dev/tty.usbmodem14231";
 
 	// iff false, connect to serial sensors 
-	public static final boolean DATA_PLAY_BACK = true;
+	public static final boolean DATA_PLAY_BACK = false;
 
 	public static final String WAYPOINT_SOURCE_LOG_FILE ="2016-02-20-06-50-45/sensors_2016-02-20-06-50-45.txt";
 
