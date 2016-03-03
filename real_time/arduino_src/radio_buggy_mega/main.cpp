@@ -397,8 +397,6 @@ int main(void)
         sei(); //enable interrupts
 
 
-        printf("Timenow: %lu Delta4: %lu Delta5: %lu\n", time_now, delta4, delta5);
-
         if(delta1 > CONNECTION_TIMEOUT_US ||
            delta2 > CONNECTION_TIMEOUT_US ||
            delta3 > CONNECTION_TIMEOUT_US ||
