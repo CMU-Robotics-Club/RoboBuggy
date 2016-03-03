@@ -31,7 +31,7 @@
 #define SERVO_DDR  DDRB
 #define SERVO_PORT PORTB
 #define SERVO_PINN PB5 // arduino 11 TODO: this is not used here
-#define CONNECTION_TIMEOUT_US 10000000L // 10000ms
+#define CONNECTION_TIMEOUT_US 1000000L // 1000ms
 
 /*
  * These values map the physical input/output (voltage/ms of pwm pulse) to a
