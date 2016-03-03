@@ -92,6 +92,10 @@ public class LoggingNode extends BuggyDecoratorNode {
                         new RobobuggyLogicNotification("Error creating new log file!", RobobuggyMessageLevel.EXCEPTION);
                         return;
                     }
+
+                    // we want to clear out old messages every time we start to log
+                    messageQueue.clear();
+
                     keepLogging = true;
                     loggingThread = new LogWriterThread();
                     loggingThread.start();
