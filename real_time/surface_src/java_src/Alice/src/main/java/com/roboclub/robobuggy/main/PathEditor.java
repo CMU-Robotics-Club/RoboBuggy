@@ -29,7 +29,8 @@ public class PathEditor {
 	 */
 	public static void main(String[] args) {
 		double currentHeading = 0;
-		
+		final double latErrorFinal = 2/111131.745;
+		final double lonErrorFinal = 2/78846.81;	
 		
 			System.out.println("Starting Path Editor");
 			try {
@@ -51,8 +52,6 @@ public class PathEditor {
 
 				
 				for(int i = 0;i<wayPoints.size();i++){
-					final double latErrorFinal = 2/111131.745;
-					final double lonErrorFinal = 2/78846.81;
 					for(double latError = -latErrorFinal;latError<=latErrorFinal;latError+=5*latErrorFinal){
 						for(double lonError = -lonErrorFinal;lonError<=lonErrorFinal;lonError+=5*lonErrorFinal){
 							double lat = wayPoints.get(i).getLatitude() + latError;
