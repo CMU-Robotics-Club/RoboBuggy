@@ -77,7 +77,7 @@ public final class Robot implements RosMaster {
 		//this subset of nodes is only added when we are in online mode 
 		if(collectingData){
 //			nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.COM_PORT_GPS));
-			nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.COM_PORT_IMU));
+//			nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.COM_PORT_IMU));
 //			nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION, NodeChannel.getLoggingChannels()));
 //			nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING, RobobuggyConfigFile.COM_PORT_RBSM, COMMAND_PERIOD));
 		}
@@ -85,7 +85,7 @@ public final class Robot implements RosMaster {
 
 //		nodeList.add(new SweepNode(NodeChannel.DRIVE_CTRL));
 
-	
+/*
 		try {
 		nodeList.add(new WayPointFollowerPlanner(NodeChannel.UNKNOWN_CHANNEL,
 					WayPointUtil.createWayPointsFromLog("logs/", "spring1data/2016-02-20-06-50-45/sensors_2016-02-20-06-50-45.txt")));
@@ -94,6 +94,7 @@ public final class Robot implements RosMaster {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		*/
 
 
 

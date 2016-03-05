@@ -1,5 +1,8 @@
 package com.roboclub.robobuggy.ui;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
@@ -20,24 +23,20 @@ import org.openstreetmap.gui.jmapviewer.interfaces.TileCache;
 import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
 
 import javax.imageio.ImageIO;
-import javax.swing.DefaultListModel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.lang.reflect.Modifier;
+import java.util.Date;
 import java.util.List;
 
 
@@ -50,6 +49,7 @@ public class GpsPanel extends JPanel {
 
 	private static final int WAYPOINT_EDITOR_PANEL_WIDTH = 200;
 	private static final int WAYPOINT_EDITOR_PANEL_HEIGHT = 100;
+	private static final int WAYPOINT_SAVER_PANEL_HEIGHT = 50;
 	
 	private double theta = 0;
 	private MapPolygonImpl directionLine;
@@ -66,6 +66,7 @@ public class GpsPanel extends JPanel {
 	private JScrollPane waypointListContainer;
 	private WaypointList waypointList;
 	private WaypointEditor waypointEditor;
+	private WaypointSaver waypointSaver;
 
 	@SuppressWarnings("unused") //this subscriber is used to generate callbacks
 	private Subscriber gpsSub;
@@ -111,16 +112,20 @@ public class GpsPanel extends JPanel {
 		waypointListContainer.setBackground(Color.RED);
 		waypointListContainer.setVisible(true);
 
-		waypointEditor = new WaypointEditor(200, 100);
+		waypointEditor = new WaypointEditor(WAYPOINT_EDITOR_PANEL_WIDTH, WAYPOINT_EDITOR_PANEL_HEIGHT);
 		waypointEditor.setVisible(true);
 		waypointEditor.setBackground(Color.GRAY);
 
+		waypointSaver = new WaypointSaver(WAYPOINT_SAVER_PANEL_HEIGHT);
+
 		this.add(waypointEditor, 0);
 		this.add(waypointListContainer, 0);
+		this.add(waypointSaver);
 		this.repaint();
 		waypointListContainer.repaint();
 		waypointList.repaint();
 		waypointEditor.repaint();
+		waypointSaver.repaint();
 
 
 		addPointsToMapTree(Color.BLUE, new LocTuple(mapViewerLat, mapViewerLon));
@@ -384,13 +389,43 @@ public class GpsPanel extends JPanel {
 		}
 	}
 
+	private class WaypointSaver extends JButton {
+
+		public WaypointSaver(int height) {
+			setSize(WAYPOINT_EDITOR_PANEL_WIDTH, height);
+			setText("Save to file");
+			addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					try {
+						Gson translator = new GsonBuilder().excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
+						File outputFolder = new File(RobobuggyConfigFile.LOG_FILE_LOCATION + "/waypoints/");
+						outputFolder.mkdirs();
+						FileWriter writer = new FileWriter(outputFolder.getPath() + "/waypoints.txt");
+						for (MapMarker mapMarker : mapTree.getViewer().getMapMarkerList()) {
+							GpsMeasurement m = new GpsMeasurement(new Date(), new Date(), mapMarker.getLat(), true, mapMarker.getLon(), true, 0, 0, 0, 0);
+							String serialize = translator.toJson(m);
+							writer.write(serialize + "\n");
+							writer.flush();
+						}
+						writer.close();
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+				}
+			});
+		}
+
+	}
+
 	@Override
 	public void paintComponent(Graphics g) {
 
 		mapTree.setBounds(WAYPOINT_EDITOR_PANEL_WIDTH, 0, getWidth() - WAYPOINT_EDITOR_PANEL_WIDTH, getHeight());
 		mapTree.getViewer().setSize(getWidth() - WAYPOINT_EDITOR_PANEL_WIDTH, getHeight());
 
-		waypointListContainer.setBounds(0, 0, WAYPOINT_EDITOR_PANEL_WIDTH, getHeight() - WAYPOINT_EDITOR_PANEL_HEIGHT);
-		waypointEditor.setBounds(0, getHeight() - WAYPOINT_EDITOR_PANEL_HEIGHT, WAYPOINT_EDITOR_PANEL_WIDTH, WAYPOINT_EDITOR_PANEL_HEIGHT);
+		waypointListContainer.setBounds(0, 0, WAYPOINT_EDITOR_PANEL_WIDTH, getHeight() - WAYPOINT_EDITOR_PANEL_HEIGHT - WAYPOINT_SAVER_PANEL_HEIGHT);
+		waypointEditor.setBounds(0, getHeight() - WAYPOINT_EDITOR_PANEL_HEIGHT - WAYPOINT_SAVER_PANEL_HEIGHT, WAYPOINT_EDITOR_PANEL_WIDTH, WAYPOINT_EDITOR_PANEL_HEIGHT);
+		waypointSaver.setBounds(0, getHeight() - WAYPOINT_SAVER_PANEL_HEIGHT, WAYPOINT_EDITOR_PANEL_WIDTH, WAYPOINT_SAVER_PANEL_HEIGHT);
 	}
 }
