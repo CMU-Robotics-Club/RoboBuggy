@@ -1,10 +1,10 @@
 /********************************************************************************
  * All rights are open to the public, to use, share, dump, spread for the       *
- * foreseeable future. This software and documentation constitutes purely 		*
- * published and public work, and contains open source knowledge by a bunch		*
- * of college kids who just want to have fun. All the material and code may be 	*
- * used, copied, duplicated, changed, disclosed... with any human's free will.	*
- * Have a nice day! :)															*
+ * foreseeable future. This software and documentation constitutes purely       *
+ * published and public work, and contains open source knowledge by a bunch     *
+ * of college kids who just want to have fun. All the material and code may be  *
+ * used, copied, duplicated, changed, disclosed... with any human's free will.  *
+ * Have a nice day! :)                                                          *
  ********************************************************************************/
 
 /**
@@ -22,6 +22,7 @@
 #include <avr/io.h>
 #include <stdio.h>
 #include "../lib_avr/uart/uart_extra.h"
+#include "rbsmheaders.h"
 
 // Implementation Constants
 #define RBSM_BUFFER_OUT_LENGTH 11 // minimum to support double message
@@ -38,16 +39,7 @@
 #define RBSM_TWO_BYTE_MASK 0xFFFF
 #define RBSM_BAUD_RATE 9600
 
-// Message Types
-#define RBSM_MID_ENC_TICKS_LAST 0
-#define RBSM_MID_ENC_TICKS_RESET 1
-#define RBSM_MID_ENC_TIMESTAMP 2
-#define RBSM_MID_MEGA_STEER_ANGLE 20
-#define RBSM_MID_MEGA_BRAKE_STATE 21
-#define RBSM_MID_MEGA_AUTON_STATE 22
-#define RBSM_MID_MEGA_BATTERY_LEVEL 23
-#define RBSM_MID_MEGA_STEER_FEEDBACK 24
-#define RBSM_MID_COMP_HASH 30
+// Message types are defined in rbsmheaders.h
 
 #define RBSM_MID_RESERVED 252 // 0xFC, message head
 #define RBSM_MID_ERROR 254
