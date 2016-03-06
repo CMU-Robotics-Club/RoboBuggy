@@ -145,10 +145,10 @@ public class WayPointUtil {
 	                   }
 	                }//for loop
 
-			writer.flush();
+		writer.flush();
 		writer.close();
 		fileReader.close();
-	            return messages;
+		return messages;
 	}
 
 		 

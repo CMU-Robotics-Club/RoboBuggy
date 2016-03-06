@@ -78,7 +78,7 @@ public final class Robot implements RosMaster {
 		if(collectingData){
 //			nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.COM_PORT_GPS));
 //			nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.COM_PORT_IMU));
-//			nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION, NodeChannel.getLoggingChannels()));
+			nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION, NodeChannel.getLoggingChannels()));
 //			nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING, RobobuggyConfigFile.COM_PORT_RBSM, COMMAND_PERIOD));
 		}
 		
