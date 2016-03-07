@@ -28,7 +28,6 @@ public class HighTrustGPSLocalizer implements Node{
     private double buggyFrameGpsY;
     private double buggyFrameRotZ;
 
-
     private Publisher posePub;
 
     /**
@@ -45,41 +44,27 @@ public class HighTrustGPSLocalizer implements Node{
             @Override
             public void actionPerformed(String topicName, Message m) {
                 GpsMeasurement newGPSData = (GpsMeasurement)m;
-
-                // Get the delta latitude and longitude, use that to figure out how far we've travelled
-                double oldGPSX = buggyFrameGpsX;
-                double oldGPSY = buggyFrameGpsY;
-                buggyFrameGpsY = newGPSData.getLongitude();
                 buggyFrameGpsX = newGPSData.getLatitude();
-                double dy = buggyFrameGpsY - oldGPSY;
-                double dx = buggyFrameGpsX - oldGPSX;
+                buggyFrameGpsY = newGPSData.getLongitude();
+                // no verification yet - we are running high-trust
 
-                // take the arctangent in order to get the heading (in degrees)
-                buggyFrameRotZ = Math.toDegrees(Math.atan2(dy,dx));
+                //we're going to keep the same orientation as before
 
                 publishUpdate();
             }
         });
         
-        new Subscriber(NodeChannel.IMU_MAGNETIC.getMsgPath(),new MessageListener() {
+        new Subscriber(NodeChannel.IMU_MAGNETIC.getMsgPath(), new MessageListener() {
 			
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				MagneticMeasurement magM = (MagneticMeasurement)m;
-			//	System.out.println("magM:"+magM.getX()+","+magM.getY()+","+magM.getz());
-				double currAngle = Math.atan2(magM.getY(), magM.getX());
-				//TODO stop this from being a 5:29 am hack 
-				double offset = 0.0;
-				buggyFrameRotZ = currAngle - offset;
-				System.out.println("magAng:"+offset);
-				/* 
-				 * magM.getX();
-				
-				magM.getY();
-				magM.getz();
-				*/
-				// TODO Auto-generated method stub
-			System.out.println("YO WE GOT A MESSAGE ");	
+                // no verification yet - running in high trust mode
+                buggyFrameRotZ = Math.atan2(magM.getY(), magM.getX());
+
+                // we're going to keep the same position as before
+
+                publishUpdate();
 			}
 		});
 

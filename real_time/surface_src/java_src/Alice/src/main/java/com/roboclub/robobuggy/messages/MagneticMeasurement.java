@@ -24,7 +24,7 @@ public class MagneticMeasurement extends BaseMessage {
 	private double z;
 
 	/**
-	 * Constructs a new {@link MagMeasurement} at time now
+	 * Constructs a new {@link MagneticMeasurement} at time now
 	 * @param x x value
 	 * @param y y value
 	 * @param z z value
@@ -37,24 +37,24 @@ public class MagneticMeasurement extends BaseMessage {
 	}
 	
 	/**
-	 * Returns the x value of the {@link MagMeasurement}
-	 * @return the x value of the {@link MagMeasurement}
+	 * Returns the x value of the {@link MagneticMeasurement}
+	 * @return the x value of the {@link MagneticMeasurement}
 	 */
 	public double getX() {
 		return x;
 	}
 	
 	/**
-	 * Returns the y value of the {@link MagMeasurement}
-	 * @return the y value of the {@link MagMeasurement}
+	 * Returns the y value of the {@link MagneticMeasurement}
+	 * @return the y value of the {@link MagneticMeasurement}
 	 */
 	public double getY() {
 		return y;
 	}
 	
 	/**
-	 * Returns the z value of the {@link MagMeasurement}
-	 * @return the z value of the {@link MagMeasurement}
+	 * Returns the z value of the {@link MagneticMeasurement}
+	 * @return the z value of the {@link MagneticMeasurement}
 	 */
 	public double getz() {
 		return z;
