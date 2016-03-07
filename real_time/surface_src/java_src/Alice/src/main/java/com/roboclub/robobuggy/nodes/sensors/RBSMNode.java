@@ -186,7 +186,7 @@ public class RBSMNode extends SerialNode {
 		}
 		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_ENC_TIMESTAMP")){
 			//Stubbed out
-			//System.out.println(String.format("Encoder timestamp: %d", message.getDataWord()));
+			System.out.println(String.format("Encoder timestamp: %d", message.getDataWord()));
 		}
 		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_STEER_FEEDBACK")) {
 			// This is a delta-distance! Do a thing!
@@ -204,17 +204,20 @@ public class RBSMNode extends SerialNode {
 		}
 		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_BATTERY_LEVEL")){
 			//TODO: Display the battery level in the GUI
-			//System.out.println(String.format("Battery level: %d", message.getDataWord()));
+			System.out.println(String.format("Battery level: %d", message.getDataWord()));
 			
 		}
 		else if (headerByte == RBSerialMessage.getHeaderByte("DEVICE_ID")){
 			//Stubbed out
+			System.out.println(String.format("Device ID: %d", message.getDataWord()));
 		}
 		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_BRAKE_STATE")){
 			//Stubbed out
+			System.out.println(String.format("Brake state: %d", message.getDataWord()));
 		}
 		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_AUTON_STATE")){
 			//Stubbed out
+			System.out.println(String.format("Auton state: %d", message.getDataWord()));
 		}
 		else {
 				new RobobuggyLogicNotification("Invalid RBSM message header: " + headerByte, RobobuggyMessageLevel.NOTE);
