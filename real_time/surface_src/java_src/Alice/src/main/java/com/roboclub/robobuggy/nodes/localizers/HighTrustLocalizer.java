@@ -23,7 +23,7 @@ import com.roboclub.robobuggy.ros.Subscriber;
  * @author Trevor Decker
  *
  */
-public class HighTrustGPSLocalizer implements Node{
+public class HighTrustLocalizer implements Node {
     private double buggyFrameGpsX;
     private double buggyFrameGpsY;
     private double buggyFrameRotZ;
@@ -33,7 +33,7 @@ public class HighTrustGPSLocalizer implements Node{
     /**
      * Constructor for the High Trust Localizer which will initialize the system to an identity (zero position)
      */
-    public HighTrustGPSLocalizer(){
+    public HighTrustLocalizer(){
         //init values
         buggyFrameGpsX = 0.0;
         buggyFrameGpsY = 0.0;
@@ -67,6 +67,13 @@ public class HighTrustGPSLocalizer implements Node{
                 publishUpdate();
 			}
 		});
+
+        new Subscriber(NodeChannel.ENCODER.getMsgPath(), new MessageListener() {
+            @Override
+            public void actionPerformed(String topicName, Message m) {
+                //update odometry
+            }
+        });
 
     }
 
