@@ -48,12 +48,9 @@ public class RobobuggyMainFile {
     		new SensorPlayer("logs/spring1data/2016-02-20-06-50-45/sensors_2016-02-20-06-50-45.txt", 1);
 
         }
-        else {
-            //Play back disabled, create robot
-            Robot.getInstance().startNodes();
-            new RobobuggyLogicNotification("Robobuggy Logic Notfication started", RobobuggyMessageLevel.NOTE);
-        }
 
+        Robot.getInstance().startNodes();
+        new RobobuggyLogicNotification("Robobuggy Logic Notfication started", RobobuggyMessageLevel.NOTE);
         Gui.getInstance().fixPaint();
 
     }

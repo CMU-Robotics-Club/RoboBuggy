@@ -114,6 +114,9 @@ public class LoggingNode extends BuggyDecoratorNode {
 
                     }
 
+                    // we want to clear out old messages every time we start to log
+                    messageQueue.clear();
+
                     keepLogging = true;
                     loggingThread = new LogWriterThread();
                     loggingThread.start();
