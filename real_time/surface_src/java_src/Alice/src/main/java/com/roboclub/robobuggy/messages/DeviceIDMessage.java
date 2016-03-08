@@ -21,7 +21,7 @@ public class DeviceIDMessage extends BaseMessage {
 
 	/**
 	 * Construct a new {@link BatteryLevelMessage} at time now
-	 * @param batteryValue the current value of the brakes
+	 * @param idValue the id of the sending device
 	 */
 	public DeviceIDMessage(int idValue) {
 		this.id = idValue;
@@ -31,7 +31,7 @@ public class DeviceIDMessage extends BaseMessage {
 	/**
 	 * Construct a new {@link BatteryMessage}
 	 * @param timestamp {@link Date} representing the time of the message
-	 * @param batteryValue the current value of the brakes
+	 * @param idValue the current value of the brakes
 	 */
 	public DeviceIDMessage(Date timestamp, int idValue) {
 		this.id = idValue;

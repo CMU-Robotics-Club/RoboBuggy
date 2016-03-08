@@ -58,7 +58,6 @@ public class RBSMNode extends SerialNode {
 	// accumulated
 	private int encTicks = 0;
 	private int potValue = -1;
-	private int steeringAngle = 0;
 	
 	// last state
 	private double accDistLast = 0.0;
