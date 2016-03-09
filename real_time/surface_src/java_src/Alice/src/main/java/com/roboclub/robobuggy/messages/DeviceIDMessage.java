@@ -37,20 +37,13 @@ public class DeviceIDMessage extends BaseMessage {
 		this.id = idValue;
 		this.timestamp = new Date(timestamp.getTime()).getTime();
 	}
-
-	/**{@inheritDoc}*/
-	@Override
-	public String toLogString() {
-		return String.format("%s,'%s',%s", formatDate(timestamp),
-				VERSION_ID, String.valueOf(this.id));
+	
+	/**
+	 * evaluates to the device id
+	 * @return the device id
+	 */
+	public int getID(){
+		return id;
 	}
 
-	/**{@inheritDoc}*/
-	@Override
-	public Message fromLogString(String str) {
-		String[] spl = str.split(",");
-		Date d = tryToParseDate(spl[0]);
-		int idLevel = Integer.parseInt(spl[2]);
-		return new DeviceIDMessage(d, idLevel);
-	}
 }

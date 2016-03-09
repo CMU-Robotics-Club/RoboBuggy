@@ -14,7 +14,6 @@ import java.util.Scanner;
  */
 public class RBSerialMessage
 {
-
 	private static JsonObject headers;
 
 	private byte headerByte;
@@ -103,6 +102,7 @@ public class RBSerialMessage
 	 */
 	public static boolean isValidHeader(byte headerByte)
 	{
+
 		//see if that's a value in the headers object
 		for (Map.Entry<String, JsonElement> object : headers.entrySet()) {
 			if (object.getValue().getAsByte() == headerByte) {

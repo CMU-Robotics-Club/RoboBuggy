@@ -1,7 +1,5 @@
 package com.roboclub.robobuggy.messages;
 
-import com.roboclub.robobuggy.ros.Message;
-
 import java.util.Date;
 
 /**
@@ -53,19 +51,4 @@ public class GuiLoggingButtonMessage extends BaseMessage {
 		return lm;
 	}
 
-	/**{@inheritDoc}*/
-	@Override
-	public String toLogString() {
-		String s = formatDate(timestamp);
-		return s + ',' + lm.toString();
-	}
-
-	/**{@inheritDoc}*/
-	@Override
-	public Message fromLogString(String str) {
-		String[] ar = str.split(",");
-		Date d = tryToParseDate(ar[0]);
-		LoggingMessage lm = LoggingMessage.valueOf(ar[1]);
-		return new GuiLoggingButtonMessage(d, lm);
-	}
 }

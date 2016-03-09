@@ -42,6 +42,8 @@ public final class GpsNode extends SerialNode {
 	 */
 	public GpsNode(NodeChannel sensor, String portName) {
 		super(new BuggyBaseNode(sensor), "GPS", portName, BAUD_RATE);
+		
+		System.out.println("starting gps");
 		msgPub = new Publisher(sensor.getMsgPath());
 		statePub = new Publisher(sensor.getStatePath());
 		statePub.publish(new StateMessage(NodeState.DISCONNECTED));
@@ -91,6 +93,7 @@ public final class GpsNode extends SerialNode {
 	/**{@inheritDoc}*/
 	@Override
 	public int peel(byte[] buffer, int start, int bytesAvailable) {
+		System.out.println("in gps peel");
 		// TODO replace 80 with max message length
 		// This lets us avoid handling arcane failure cases about not-enough message.
 		if(bytesAvailable < 80) {
@@ -165,7 +168,7 @@ public final class GpsNode extends SerialNode {
 				west = false;
 				break;
 			default:
-				System.out.println("uhoh, you can't go not north or south!");
+				System.out.println("uhoh, you can't go not east or west!");
 				throw new RuntimeException();
 		}
 		

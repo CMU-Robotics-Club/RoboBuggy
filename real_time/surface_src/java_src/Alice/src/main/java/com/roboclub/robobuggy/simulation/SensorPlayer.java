@@ -22,7 +22,8 @@ import com.roboclub.robobuggy.messages.FingerPrintMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
-import com.roboclub.robobuggy.messages.PoseMessage;
+import com.roboclub.robobuggy.messages.GPSPoseMessage;
+import com.roboclub.robobuggy.messages.MagneticMeasurement;
 import com.roboclub.robobuggy.messages.RemoteWheelAngleRequest;
 import com.roboclub.robobuggy.messages.ResetMessage;
 import com.roboclub.robobuggy.messages.RobobuggyLogicNotificationMeasurement;
@@ -47,6 +48,7 @@ public class SensorPlayer extends Thread {
     private double playbackSpeed;
 
     private Publisher imuPub;
+    private Publisher magPub;
     private Publisher gpsPub;
     private Publisher encoderPub;
     private Publisher brakePub;
@@ -55,9 +57,6 @@ public class SensorPlayer extends Thread {
     private Publisher logicNotificationPub;
 
     // ---- Log File Defaults ----
-    private static final String METADATA_NAME = "Robobuggy Data Logs";
-    private static final String METADATA_SCHEMA_VERSION = "1.1";
-    private static final String METADATA_HIGHLEVEL_SW_VERSION = "1.0.0";
     private static final String TERMINATING_VERSION_ID = "STOP";
 
 
@@ -69,10 +68,11 @@ public class SensorPlayer extends Thread {
     public SensorPlayer(String filePath, int playbackSpeed) {
 
         imuPub = new Publisher(NodeChannel.IMU.getMsgPath());
+        magPub = new Publisher(NodeChannel.IMU_MAGNETIC.getMsgPath());
         gpsPub = new Publisher(NodeChannel.GPS.getMsgPath());
         encoderPub = new Publisher(NodeChannel.ENCODER.getMsgPath());
         brakePub = new Publisher(NodeChannel.BRAKE.getMsgPath());
-        steeringPub = new Publisher(NodeChannel.STEERING.getMsgPath());
+        steeringPub = new Publisher(NodeChannel.STEERING_COMMANDED.getMsgPath());
         loggingButtonPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
         logicNotificationPub = new Publisher(NodeChannel.LOGIC_NOTIFICATION.getMsgPath());
 
@@ -104,6 +104,11 @@ public class SensorPlayer extends Thread {
                         SensorPlayer.this.start();
                     }
                 }
+                else if (message.getLoggingMessage().equals(GuiLoggingButtonMessage.LoggingMessage.STOP)) {
+                    if (SensorPlayer.this.isAlive()) {
+                        SensorPlayer.this.interrupt();
+                    }
+                }
             }
         });
     }
@@ -116,7 +121,7 @@ public class SensorPlayer extends Thread {
             InputStreamReader fileReader = new InputStreamReader(new FileInputStream(new File(path)), "UTF-8");
             JsonObject logFile = translator.fromJson(fileReader, JsonObject.class);
 
-            if(!validateLogFileMetadata(logFile)) {
+            if(!PlayBackUtil.validateLogFileMetadata(logFile)) {
                 new RobobuggyLogicNotification("Log file doesn't have the proper header metadata!", RobobuggyMessageLevel.EXCEPTION);
                 return;
             }
@@ -125,6 +130,8 @@ public class SensorPlayer extends Thread {
 
             JsonArray sensorDataArray = logFile.getAsJsonArray("sensor_data");
             for (JsonElement sensorAsJElement: sensorDataArray) {
+                boolean waitForTimeDiff = true;
+
                 if(sensorAsJElement.isJsonObject()){
                     JsonObject sensorDataJson = sensorAsJElement.getAsJsonObject();
                     String versionID = sensorDataJson.get("VERSION_ID").getAsString();
@@ -137,6 +144,9 @@ public class SensorPlayer extends Thread {
                             break;
                         case BrakeMessage.VERSION_ID:
                             transmitMessage = translator.fromJson(sensorDataJson, BrakeMessage.class);
+                            break;
+                        case MagneticMeasurement.VERSION_ID:
+                            transmitMessage = translator.fromJson(sensorDataJson, MagneticMeasurement.class);
                             break;
                         case DriveControlMessage.VERSION_ID:
                             transmitMessage = translator.fromJson(sensorDataJson, DriveControlMessage.class);
@@ -156,8 +166,8 @@ public class SensorPlayer extends Thread {
                         case ImuMeasurement.VERSION_ID:
                             transmitMessage = translator.fromJson(sensorDataJson, ImuMeasurement.class);
                             break;
-                        case PoseMessage.VERSION_ID:
-                            transmitMessage = translator.fromJson(sensorDataJson, PoseMessage.class);
+                        case GPSPoseMessage.VERSION_ID:
+                            transmitMessage = translator.fromJson(sensorDataJson, GPSPoseMessage.class);
                             break;
                         case RemoteWheelAngleRequest.VERSION_ID:
                             transmitMessage = translator.fromJson(sensorDataJson, RemoteWheelAngleRequest.class);
@@ -181,19 +191,12 @@ public class SensorPlayer extends Thread {
                             new RobobuggyLogicNotification("Stopping playback, hit a STOP", RobobuggyMessageLevel.NOTE);
                             break;
                         default:
-                            transmitMessage = new BaseMessage() {
-                                @Override
-                                public String toLogString() {
-                                    return null;
-                                }
-
-                                @Override
-                                public Message fromLogString(String str) {
-                                    return null;
-                                }
-                            };
-                            new RobobuggyLogicNotification("Couldn't parse a sensor found in the file: " + versionID, RobobuggyMessageLevel.WARNING);
+                            waitForTimeDiff = false;
                             break;
+                    }
+
+                    if (!waitForTimeDiff) {
+                        continue;
                     }
 
                     getNewPlaybackSpeed();
@@ -239,12 +242,14 @@ public class SensorPlayer extends Thread {
                         case SteeringMeasurement.VERSION_ID:
                             steeringPub.publish(transmitMessage);
                             break;
+                        case MagneticMeasurement.VERSION_ID:
+                            magPub.publish(transmitMessage);
+                            break;
                         default:
                             break;
                     }
 
                 }
-
             }
 
         } catch (FileNotFoundException e) {
@@ -256,20 +261,7 @@ public class SensorPlayer extends Thread {
         }
     }
 
-    private boolean validateLogFileMetadata(JsonObject logFile) {
 
-        if (!logFile.get("name").getAsString().equals(METADATA_NAME)) {
-            return false;
-        }
-        if (!logFile.get("schema_version").getAsString().equals(METADATA_SCHEMA_VERSION)) {
-            return false;
-        }
-        if (!logFile.get("software_version").getAsString().equals(METADATA_HIGHLEVEL_SW_VERSION)) {
-            return false;
-        }
-
-        return true;
-    }
 
     /**
      * gets the new playback speed from the GUI and puts it into playbackSpeed
