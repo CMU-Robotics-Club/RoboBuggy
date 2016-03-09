@@ -10,8 +10,11 @@ package com.roboclub.robobuggy.main;
  */
 public final class  RobobuggyConfigFile {
 
-	//Library info
-	public static final String ALICE_LIBRARY_VERSION = "1.0.0";
+    //Library info
+    public static final String ALICE_LIBRARY_VERSION = "1.0.0";
+	public static final String RBSM_HEADER_FILE_LOCATION = "../../../arduino_src/lib_avr/rbserialmessages/rbsm_headers.txt";
+
+	// for what messages should be printed to the console
 	public static final RobobuggyMessageLevel REPORTING_LEVEL = RobobuggyMessageLevel.NOTE;
 	// for what messages should be printed to the console
 	public static final int GRAPH_LENGTH = 100;

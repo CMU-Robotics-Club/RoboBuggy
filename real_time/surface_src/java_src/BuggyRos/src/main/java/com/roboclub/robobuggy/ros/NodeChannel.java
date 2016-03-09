@@ -23,6 +23,11 @@ public enum NodeChannel {
 	SIMULATION("simulation"),
 	NODE_STATUS("node_status"),
 	PATH_PLANNER("path_planner"),
+	BATTERY("battery"),
+	ENCODERTIME("encoder_time"),
+	DEVICE_ID("device_id"),
+	BRAKE_STATE("brake_state"),
+	AUTON_STATE("auton_state"),
 	UNKNOWN_CHANNEL("unknown"),
 	;
 	

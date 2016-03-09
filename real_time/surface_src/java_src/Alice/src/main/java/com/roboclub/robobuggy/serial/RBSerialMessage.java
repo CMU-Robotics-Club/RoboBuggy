@@ -1,45 +1,78 @@
 package com.roboclub.robobuggy.serial;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.roboclub.robobuggy.main.RobobuggyConfigFile;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Map;
+import java.util.Scanner;
+
 /**
  * Class representing a robobuggy serial message
  */
-public class RBSerialMessage 
+public class RBSerialMessage
 {
-
-	public static final byte ENC_TICKS_SINCE_LAST = (byte)0;
-	public static final byte ENC_TICK_SINCE_RESET = (byte)1;
-	public static final byte ENC_MS_SINCE_RESET = (byte)2;
-
-	public static final byte RBSM_MID_MEGA_BRAKE_COMMAND = (byte)18;
-	public static final byte RBSM_MID_MEGA_STEER_COMMAND = (byte)19;
-	public static final byte BRAKE = (byte)21;
-	public static final byte AUTO = (byte)22;
-	public static final byte BATTERY = (byte)23;
-	public static final byte RBSM_MID_MEGA_STEER_FEEDBACK = (byte)24; //potentiometer
-	public static final byte RBSM_MID_MEGA_STEER_ANGLE = (byte)20; //Arduino to servo
-	public static final byte FP_HASH = (byte)30;
-	
-	public static final byte LIGHTING_ID = (byte)50;
-	
-	public static final byte RBSM_MID_RESERVED = (byte)252;
-	public static final byte RBSM_MID_ERROR = (byte)254;
-	public static final byte RBSM_MID_DEVICE_ID = (byte)255;
-	
-	public static final byte ERROR = (byte) -2;
-	public static final byte DEVICE_ID = (byte) -1;
-
-	public static final byte FOOTER = (byte)0x0A;
+	private static JsonObject headers;
 
 	private byte headerByte;
 	private int dataBytes;
-	
+
+	/**
+	 * reads the headers text file and puts it into the headers object
+	 * @return whether initialization succeeded or not
+	 */
+	public static boolean initializeHeaders() {
+
+		headers = new JsonObject();
+
+		try {
+			Scanner fileIn = new Scanner(new File(RobobuggyConfigFile.RBSM_HEADER_FILE_LOCATION), "UTF-8");
+			while (fileIn.hasNextLine()) {
+				String line = fileIn.nextLine();
+				if (!line.equals("")) {
+					String[] lineContents = line.split(", ");
+					String headerName = lineContents[0];
+					byte headerByte = Byte.parseByte(lineContents[1]);
+
+					headers.addProperty(headerName, headerByte);
+				}
+			}
+
+			return true;
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
+	 * @param headerName the name of the header as it appears in the text file
+	 * @return the byte for that header name
+	 */
+	public static byte getHeaderByte(String headerName) {
+		return headers.get(headerName).getAsByte();
+	}
+
 	/**
 	 * Construct a new {@link RBSerialMessage} object
-	 * @param header byte of the RBSM message header
+	 * @param headerName byte of the RBSM message header
 	 * @param data 4 bytes of the RBSM message payload
 	 */
-	public RBSerialMessage(byte header, int data) 
+	public RBSerialMessage(String headerName, int data)
 	{
+		headerByte = headers.get(headerName).getAsByte();
+		dataBytes = data;
+	}
+
+	/**
+	 * Constructs a direct {@link RBSerialMessage} object
+	 * Rather than use the existing headers, this is meant for constructing from peel
+	 * @param header the direct header
+	 * @param data the data
+	 */
+	public RBSerialMessage(byte header, int data) {
 		headerByte = header;
 		dataBytes = data;
 	}
@@ -48,7 +81,7 @@ public class RBSerialMessage
 	 * Returns the header byte of the {@link RBSerialMessage}
 	 * @return the header byte of the {@link RBSerialMessage}
 	 */
-	public byte getHeaderByte() 
+	public byte getHeaderByte()
 	{
 		return headerByte;
 	}
@@ -57,37 +90,26 @@ public class RBSerialMessage
 	 * Returns the payload bytes of the {@link RBSerialMessage}
 	 * @return the payload bytes of the {@link RBSerialMessage}
 	 */
-	public int getDataWord() 
+	public int getDataWord()
 	{
 		return dataBytes;
 	}
-	
+
 	/**
 	 * Determines if the headerByte is a valid RBSM header
 	 * @param headerByte header byte
 	 * @return true iff the headerByte is valid
 	 */
-	public static boolean isValidHeader(byte headerByte) 
+	public static boolean isValidHeader(byte headerByte)
 	{
-		switch (headerByte) 
-		{
-			default:
-				return false; 
-			case ENC_MS_SINCE_RESET:
-			case ENC_TICK_SINCE_RESET:
-			case ENC_TICKS_SINCE_LAST:
-				
-			case RBSM_MID_MEGA_STEER_FEEDBACK:
-			case BRAKE:
-			case AUTO:
-			case BATTERY:
-			case RBSM_MID_MEGA_STEER_ANGLE:
-			case RBSM_MID_MEGA_STEER_COMMAND:
-			case FP_HASH:
-				
-			case ERROR:
-			case DEVICE_ID:
+
+		//see if that's a value in the headers object
+		for (Map.Entry<String, JsonElement> object : headers.entrySet()) {
+			if (object.getValue().getAsByte() == headerByte) {
 				return true;
+			}
 		}
+
+		return false;
 	}
 }
