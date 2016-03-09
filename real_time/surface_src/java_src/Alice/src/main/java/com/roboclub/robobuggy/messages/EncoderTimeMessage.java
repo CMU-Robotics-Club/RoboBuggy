@@ -5,7 +5,7 @@ import com.roboclub.robobuggy.ros.Message;
 import java.util.Date;
 
 /**
- * Message used for representing the level of the battery
+ * Message used for representing the timestamp of the encoder
  * @version 0.5
  * @author Sean
  * 
@@ -51,6 +51,6 @@ public class EncoderTimeMessage extends BaseMessage {
 		String[] spl = str.split(",");
 		Date d = tryToParseDate(spl[0]);
 		int timeValue = Integer.parseInt(spl[2]);
-		return new BatteryLevelMessage(d, timeValue);
+		return new EncoderTimeMessage(d, timeValue);
 	}
 }

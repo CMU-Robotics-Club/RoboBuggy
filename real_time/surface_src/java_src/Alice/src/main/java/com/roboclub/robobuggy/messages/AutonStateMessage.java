@@ -51,6 +51,6 @@ public class AutonStateMessage extends BaseMessage {
 		String[] spl = str.split(",");
 		Date d = tryToParseDate(spl[0]);
 		int stateLevel = Integer.parseInt(spl[2]);
-		return new BatteryLevelMessage(d, stateLevel);
+		return new AutonStateMessage(d, stateLevel);
 	}
 }

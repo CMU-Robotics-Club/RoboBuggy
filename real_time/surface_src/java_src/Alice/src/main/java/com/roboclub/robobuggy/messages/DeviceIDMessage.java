@@ -20,7 +20,7 @@ public class DeviceIDMessage extends BaseMessage {
 	private int id;
 
 	/**
-	 * Construct a new {@link BatteryLevelMessage} at time now
+	 * Construct a new {@link DeviceIDMessage} at time now
 	 * @param idValue the id of the sending device
 	 */
 	public DeviceIDMessage(int idValue) {
@@ -29,7 +29,7 @@ public class DeviceIDMessage extends BaseMessage {
 	}
 
 	/**
-	 * Construct a new {@link BatteryMessage}
+	 * Construct a new {@link DeviceIDMessage}
 	 * @param timestamp {@link Date} representing the time of the message
 	 * @param idValue the current value of the brakes
 	 */
@@ -51,6 +51,6 @@ public class DeviceIDMessage extends BaseMessage {
 		String[] spl = str.split(",");
 		Date d = tryToParseDate(spl[0]);
 		int idLevel = Integer.parseInt(spl[2]);
-		return new BatteryLevelMessage(d, idLevel);
+		return new DeviceIDMessage(d, idLevel);
 	}
 }

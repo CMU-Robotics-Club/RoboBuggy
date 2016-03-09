@@ -29,7 +29,7 @@ public class BrakeStateMessage extends BaseMessage {
 	}
 
 	/**
-	 * Construct a new {@link BatteryMessage}
+	 * Construct a new {@link BrakeStateMessage}
 	 * @param timestamp {@link Date} representing the time of the message
 	 * @param stateValue  the current value of the brakes according to low level
 	 */
@@ -51,6 +51,6 @@ public class BrakeStateMessage extends BaseMessage {
 		String[] spl = str.split(",");
 		Date d = tryToParseDate(spl[0]);
 		int stateValue = Integer.parseInt(spl[2]);
-		return new BatteryLevelMessage(d, stateValue);
+		return new BrakeStateMessage(d, stateValue);
 	}
 }
