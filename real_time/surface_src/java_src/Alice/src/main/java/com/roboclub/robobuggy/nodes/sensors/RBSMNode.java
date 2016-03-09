@@ -118,10 +118,6 @@ public class RBSMNode extends SerialNode {
 		statePubEnc.publish(new StateMessage(NodeState.DISCONNECTED));
 		statePubPot.publish(new StateMessage(NodeState.DISCONNECTED));
 
-		//Initialize message headers
-		if (!RBSerialMessage.initializeHeaders()) {
-			return;
-		}
 	}
 	
 	/**
@@ -278,6 +274,7 @@ public class RBSMNode extends SerialNode {
 			else if (commandedAngle < -1000) {
 				commandedAngle = -1000;
 			}
+			
 			RBSMSteeringMessage msgSteer = new RBSMSteeringMessage(commandedAngle);
 			send(msgSteer.getMessageBytes());
 			RBSMBrakeMessage msgBrake = new RBSMBrakeMessage(commandedBrakeEngaged);

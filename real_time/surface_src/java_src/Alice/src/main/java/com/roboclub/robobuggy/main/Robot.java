@@ -1,6 +1,7 @@
 package com.roboclub.robobuggy.main;
 
 import com.roboclub.robobuggy.nodes.localizers.HighTrustGPSLocalizer;
+import com.roboclub.robobuggy.nodes.planners.SweepNode;
 import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
 import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
 import com.roboclub.robobuggy.nodes.sensors.GpsNode;
@@ -66,7 +67,6 @@ public final class Robot implements RosMaster {
 		new RobobuggyLogicNotification("Logic Exception Setup properly" ,  RobobuggyMessageLevel.NOTE);
 		// Initialize Nodes
 		
-		//nodeList.add(new SweepNode());
 	//	nodeList.add(new SimulationPlayer());
 		//nodeList.add(new OdomLocalizer());
 		nodeList.add(new HighTrustGPSLocalizer());
@@ -84,9 +84,9 @@ public final class Robot implements RosMaster {
 		}
 		
 
-//		nodeList.add(new SweepNode(NodeChannel.DRIVE_CTRL));
+		nodeList.add(new SweepNode(NodeChannel.DRIVE_CTRL));
 
-	
+	/*
 		try {
 		nodeList.add(new WayPointFollowerPlanner(NodeChannel.UNKNOWN_CHANNEL,
 					WayPointUtil.createWayPointsFromLog("logs/", "spring1data/2016-02-20-06-50-45/sensors_2016-02-20-06-50-45.txt")));
@@ -95,7 +95,7 @@ public final class Robot implements RosMaster {
 			e.printStackTrace();
 		}
 
-
+*/
 
 //		nodeList.add(new CameraNode(NodeChannel.PUSHBAR_CAMERA, 100));
 //		nodeList.add(new GPSTrackPlannerNode(NodeChannel.BRAKE_CTRL,RobobuggyConfigFile.LOG_FILE_LOCATION));
