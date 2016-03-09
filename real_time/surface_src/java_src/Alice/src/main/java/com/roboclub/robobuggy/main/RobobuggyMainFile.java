@@ -41,17 +41,14 @@ public class RobobuggyMainFile {
         System.out.println(ports);
         Robot.getInstance();
         Gui.getInstance();
+        new RobobuggyLogicNotification("Robobuggy Logic Notfication started", RobobuggyMessageLevel.NOTE);
 
-     	
+
     	if (RobobuggyConfigFile.DATA_PLAY_BACK) {
     		//Play back mode enabled
     		new SensorPlayer("logs/spring1data/2016-02-20-06-50-45/sensors_2016-02-20-06-50-45.txt", 1);
 
         }
-
-        Robot.getInstance().startNodes();
-        new RobobuggyLogicNotification("Robobuggy Logic Notfication started", RobobuggyMessageLevel.NOTE);
-        Gui.getInstance().fixPaint();
 
     }
     

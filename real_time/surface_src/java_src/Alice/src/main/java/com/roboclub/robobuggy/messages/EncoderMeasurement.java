@@ -1,7 +1,5 @@
 package com.roboclub.robobuggy.messages;
 
-import com.roboclub.robobuggy.ros.Message;
-
 import java.util.Date;
 
 /**
@@ -99,26 +97,4 @@ public class EncoderMeasurement extends BaseMessage {
 		return accel;
 	}
 
-	/**{@inheritDoc}*/
-	@Override
-	public String toLogString() {
-		return formatDate(timestamp) + ','
-				+ Double.toString(dataWord) + ','
-				+ Double.toString(distance) + ',' 
-				+ Double.toString(velocity) + ','
-				+ Double.toString(accel);
-	}
-
-	/**{@inheritDoc}*/
-	@Override
-	public Message fromLogString(String str) {
-		String[] ar = str.split(",");
-		Date d = tryToParseDate(ar[0]);
-		double distance = Double.parseDouble(ar[1]);
-		double velocity = Double.parseDouble(ar[2]);
-		double dataWord = Double.parseDouble(ar[3]);
-		double accel = Double.parseDouble(ar[4]);
-		//TODO calculate acceleration
-		return new EncoderMeasurement(d, distance, velocity, dataWord, accel);
-	}
 }

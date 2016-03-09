@@ -31,7 +31,7 @@
 #define SERVO_DDR  DDRB
 #define SERVO_PORT PORTB
 #define SERVO_PINN PB5 // arduino 11 TODO: this is not used here
-#define CONNECTION_TIMEOUT_US 10000000L // 10000ms
+#define CONNECTION_TIMEOUT_US 1000000L // 1000ms
 
 /*
  * These values map the physical input/output (voltage/ms of pwm pulse) to a
@@ -297,8 +297,6 @@ int main(void)
     unsigned long auton_brake_last = time_start;
     unsigned long auton_steer_last = time_start;
 
-    printf("Brake initial: %lu Steer initial: %lu\n", auton_brake_last, auton_steer_last);
-
     watchdog_init();
 
     // loop forever
@@ -398,8 +396,6 @@ int main(void)
         unsigned long g_encoder_ticks_safe = g_encoder_ticks;
         sei(); //enable interrupts
 
-
-        printf("Timenow: %lu Delta4: %lu Delta5: %lu\n", time_now, delta4, delta5);
 
         if(delta1 > CONNECTION_TIMEOUT_US ||
            delta2 > CONNECTION_TIMEOUT_US ||

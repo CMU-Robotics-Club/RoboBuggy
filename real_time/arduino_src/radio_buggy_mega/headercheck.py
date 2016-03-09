@@ -10,6 +10,13 @@
 *   By Sean Buckley
 """
 
+<<<<<<< HEAD
+=======
+
+import datetime
+import socket #Used for getting hostname
+import subprocess
+>>>>>>> master
 import sys
 
 def main():
@@ -30,11 +37,36 @@ def main():
 
     for lineNum, line in enumerate(settingsFile):
         definition = line.split(", ")
+<<<<<<< HEAD
         try:
             file.write("#define %s %s" %(definition[0], definition[1]))
         except:
             print("Error at line %d rbsm_headers.txt format! Is it 'HEADER, VALUE' ?" %(lineNum + 1))
             sys.exit()
+=======
+
+        #Ignore empty lines and anything without enough information
+        if (len(definition) < 2):
+            print("Skipping line %d for insufficient length" %lineNum)
+            continue
+
+        headerValue = -1
+
+        try:
+            headerValue = int(definition[1]) % 256
+        except:
+            print("Error at line %d rbsm_headers.txt format! Is 'HEADER, VALUE' 'string, integer' ?" %(lineNum + 1))
+            continue
+
+        if (headerValue < 0) or (headerValue >= 256):
+            print("Error! Invalid value for header!")
+
+        try:
+            file.write("#define %s %d\n" %(definition[0], headerValue))
+        except:
+            print("Error at line %d rbsm_headers.txt format! Is it 'HEADER, VALUE' ?" %(lineNum + 1))
+            continue
+>>>>>>> master
 
 
     file.write("\n#endif")

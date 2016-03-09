@@ -39,7 +39,6 @@ public class SweepNode extends PathPlannerNode {
             public void run()
             {
                 while(true){
-                	System.out.println("in sweep");
                 	if(!sweepUp && currentCommandedSteeringAngle <= STEERING_ANGLE_LOWER_BOUND) {
                 		sweepUp = true;
                 	}else if(sweepUp && currentCommandedSteeringAngle >= STEERING_ANGLE_UPPER_BOUND){
@@ -69,6 +68,7 @@ public class SweepNode extends PathPlannerNode {
     protected void updatePositionEstimate(GPSPoseMessage m) {
         // do nothing here, this is just a simple sweep
         // we don't need to know the position
+        // STUB
     }
 
     @Override

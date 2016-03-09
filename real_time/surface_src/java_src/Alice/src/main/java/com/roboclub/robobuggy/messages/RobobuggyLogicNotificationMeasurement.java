@@ -2,7 +2,6 @@ package com.roboclub.robobuggy.messages;
 
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
-import com.roboclub.robobuggy.ros.Message;
 
 import java.util.Date;
 
@@ -27,14 +26,6 @@ public class RobobuggyLogicNotificationMeasurement extends BaseMessage {
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toLogString() {
-		return formatDate(timestamp) + "," + level.toString() + "," + message;
-	}
-
-	/**
 	 * Returns the {@link String} representing the contents of the {@link RobobuggyLogicNotification}
 	 *
 	 * @return the {@link String} representing the contents of the {@link RobobuggyLogicNotification}
@@ -52,28 +43,5 @@ public class RobobuggyLogicNotificationMeasurement extends BaseMessage {
 		return level;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Message fromLogString(String str) {
-		int splitPoint = str.indexOf("\t");
-		if (splitPoint < 0) {
-			//error
-			return null;
-		} else {
-			String thisLevelStr = str.substring(0, splitPoint);
-			RobobuggyMessageLevel thisLevel = null;
-			if (thisLevelStr.equals(RobobuggyMessageLevel.EXCEPTION.toString())) {
-				thisLevel = RobobuggyMessageLevel.EXCEPTION;
-			} else if (thisLevelStr.equals(RobobuggyMessageLevel.NOTE.toString())) {
-				thisLevel = RobobuggyMessageLevel.NOTE;
-			} else if (thisLevelStr.equals(RobobuggyMessageLevel.WARNING.toString())) {
-				thisLevel = RobobuggyMessageLevel.WARNING;
-			}
-			String thisMessage = str.substring(splitPoint, str.length());
-			return new RobobuggyLogicNotificationMeasurement(thisMessage, thisLevel);
-		}
-	}
 }
 

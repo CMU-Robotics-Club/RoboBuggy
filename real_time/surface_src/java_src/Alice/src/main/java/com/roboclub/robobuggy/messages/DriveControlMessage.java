@@ -1,7 +1,5 @@
 package com.roboclub.robobuggy.messages;
 
-import com.roboclub.robobuggy.ros.Message;
-
 import java.util.Date;
 
 /**
@@ -37,22 +35,6 @@ public class DriveControlMessage extends BaseMessage {
 	 */
 	public int getAngleInt() {
 		return (int)(angle*100.0);
-	}
-	
-	/**{@inheritDoc}*/
-	@Override
-	public String toLogString() {
-		return String.format("%s,'%s',%s", formatDate(timestamp),
-				VERSION_ID, String.valueOf(angle));
-	}
-
-	/**{@inheritDoc}*/
-	@Override
-	public Message fromLogString(String str) {
-		String[] spl = str.split(",");
-		Date d = tryToParseDate(spl[0]);
-		double readAngle = Integer.parseInt(spl[2]);
-		return new DriveControlMessage(d, readAngle);
 	}
 
 }

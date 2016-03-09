@@ -1,7 +1,5 @@
 package com.roboclub.robobuggy.messages;
 
-import com.roboclub.robobuggy.ros.Message;
-
 import java.util.Date;
 
 /**
@@ -30,22 +28,6 @@ public class FingerPrintMessage extends BaseMessage {
 	{
 		this.fpHash = hash;
 		this.timestamp = new Date(tStamp.getTime()).getTime();
-	}
-	
-	/**{@inheritDoc}*/
-	@Override
-	public String toLogString() {
-		return formatDate(timestamp) + ',' 
-				+ Integer.toString(this.fpHash);
-	}
-
-	/**{@inheritDoc}*/
-	@Override
-	public Message fromLogString(String str) {
-		String[] ar = str.split(",");
-		Date d = tryToParseDate(ar[0]);
-		int hash = Integer.parseInt(ar[1]);
-		return new FingerPrintMessage(d, hash);
 	}
 
 }
