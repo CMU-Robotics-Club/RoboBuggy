@@ -18,6 +18,11 @@ public enum NodeChannel {
 	POSE("pose"),
 	RESET("reset"),
 	STATE("state"),
+	BATTERY("battery"),
+	ENCODERTIME("encoder_time"),
+	DEVICE_ID("device_id"),
+	BRAKE_STATE("brake_state"),
+	AUTON_STATE("auton_state"),
 	UNKNOWN_CHANNEL("unknown"),
 	;
 	

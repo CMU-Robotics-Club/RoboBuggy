@@ -60,54 +60,11 @@ public class LightingNode extends SerialNode {
 			// Not enough bytes...maybe?
 			return 0;
 		}
-		
-		// Check the prefix.
-		if(buffer[start] != '#') {
-			return 1;
-		}
-		if(buffer[start+1] != 'A') {
-			return 1;
-		}
-		if(buffer[start+2] != 'C') {
-			return 1;
-		}
-		if(buffer[start+3] != 'G') {
-			return 1;
-		}
-		if(buffer[start+4] != '=') {
-			return 1;
-		}
-		double[] vals = new double[9];
-		String lightingRawStr;
-		try {
-			lightingRawStr = new String(buffer, start+5, bytesAvailable-5, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			return 1;
-		}//TODO check +5 -5
 
-		int origLength = lightingRawStr.length();
-		for (int i = 0; i < 8; i++) {
-			// TODO: need less than bytes_availble
-			int commaIndex = lightingRawStr.indexOf(',');
-			try {
-				vals[i] = Double.parseDouble(lightingRawStr.substring(0, commaIndex)); 
-			} catch (NumberFormatException nfe) {
-				System.out.println("maligned input; skipping...");
-				return 1;
-			}
-			lightingRawStr = lightingRawStr.substring(commaIndex+1);	
-		}
+		//TODO useless method for now
 		
-		// The last one, we use the hash as the symbol!
-		int hashIndex = lightingRawStr.indexOf('#');
-		vals[8] = Double.parseDouble(lightingRawStr.substring(0, hashIndex));
-		lightingRawStr = lightingRawStr.substring(hashIndex);	
-			
-//		msgPub.publish(new ImuMeasurement(vals[0], vals[1],vals[2], 
-//				vals[3], vals[4], vals[5], vals[6], vals[7], vals[8]));
-		//Feed the watchdog
-		setNodeState(NodeState.ON);
-		return 4 + (origLength - lightingRawStr.length());
+		return 1;
+
 	}
 
 

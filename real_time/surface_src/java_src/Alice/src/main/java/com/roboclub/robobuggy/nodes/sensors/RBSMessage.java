@@ -6,8 +6,8 @@ import com.roboclub.robobuggy.serial.RBSerialMessage;
  * Private class used to represent RBSM messages
  */
 public class RBSMessage {
-	private static final byte HEADER = RBSerialMessage.RBSM_MID_MEGA_COMMAND;
-	private static final byte FOOTER = RBSerialMessage.FOOTER;
+	private static final byte HEADER = RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_COMMAND");
+	private static final byte FOOTER = RBSerialMessage.getHeaderByte("FOOTER");
 
 	private short angle;
 	private boolean brakesEngaged;
