@@ -315,17 +315,13 @@ int main(void)
                 {
                     case RBSM_MID_MEGA_STEER_COMMAND:
                         auto_steering_angle = (int)(long)new_command.data;
-                        cli();
                         auton_steer_last = micros();
-                        sei();
-                        // dbg_printf("Got steering message for %d.\n", auto_steering_angle);
+                        dbg_printf("Got steering message for %d.\n", auto_steering_angle);
                         break;
                     case RBSM_MID_MEGA_BRAKE_COMMAND:
                         auto_brake_engaged = (bool)(long)new_command.data;
-                        cli();
                         auton_brake_last = micros();
-                        sei();
-                        //printf("Got brake message for %d.\n", auto_brake_engaged);
+                        printf("Got brake message for %d.\n", auto_brake_engaged);
                         break;
                     default:
                         // report unknown message

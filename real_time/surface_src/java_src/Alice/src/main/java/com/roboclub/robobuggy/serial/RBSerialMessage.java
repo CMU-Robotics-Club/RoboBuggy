@@ -25,6 +25,10 @@ public class RBSerialMessage
 	 */
 	public static boolean initializeHeaders() {
 
+		if (headers != null){
+			return true;
+		}
+
 		headers = new JsonObject();
 
 		try {
@@ -39,7 +43,6 @@ public class RBSerialMessage
 					headers.addProperty(headerName, headerByte);
 				}
 			}
-
 			return true;
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

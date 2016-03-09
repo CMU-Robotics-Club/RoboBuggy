@@ -1,8 +1,10 @@
 package com.roboclub.robobuggy.main;
 
+import com.roboclub.robobuggy.serial.RBSerialMessage;
 import com.roboclub.robobuggy.simulation.SensorPlayer;
 import com.roboclub.robobuggy.ui.Gui;
 import com.roboclub.robobuggy.utilities.JNISetup;
+
 import gnu.io.CommPortIdentifier;
 
 import java.util.ArrayList;
@@ -38,10 +40,14 @@ public class RobobuggyMainFile {
    
 
         List<String> ports = getAvailablePorts();
+		//Initialize message headers
+		RBSerialMessage.initializeHeaders();
+
         System.out.println(ports);
         Robot.getInstance();
         Gui.getInstance();
 
+        
      	
     	if (RobobuggyConfigFile.DATA_PLAY_BACK) {
     		//Play back mode enabled
