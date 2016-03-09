@@ -28,14 +28,13 @@ public class RBSerialMessage
 
 		if (headers == null){
 			instance = new RBSerialMessage();
+			headers = new JsonObject();
 		}
 		return true;
 
 	}
 	
-	private  RBSerialMessage(){
-
-		headers = new JsonObject();
+	private RBSerialMessage() {
 
 		try {
 			Scanner fileIn = new Scanner(new File(RobobuggyConfigFile.RBSM_HEADER_FILE_LOCATION), "UTF-8");
