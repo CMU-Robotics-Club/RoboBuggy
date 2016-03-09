@@ -24,6 +24,7 @@ import java.util.Date;
  */
 public class LoggingPanel extends RobobuggyGUIContainer{
 	//TODO: test to make sure all these dont need to be static
+	private JButton resetBtn;
 	private JButton playBtn;
 	private JFormattedTextField timeLbl;
 	private static final int TIME_ZONE_OFFSET = 18000000;//5 hours
@@ -54,6 +55,12 @@ public class LoggingPanel extends RobobuggyGUIContainer{
 		playBtn.addActionListener(new PlayButtonHandler());
 		playBtn.setEnabled(true);
 		playBtn.setBackground(Color.BLUE);
+		
+		resetBtn = new JButton("Reset encoder");
+		resetBtn.setFont(new Font("seif", Font.PLAIN, 50));
+		resetBtn.addActionListener(new ResetButtonHandler());
+		resetBtn.setEnabled(true);
+		resetBtn.setBackground(Color.BLUE);
 	
 		filenameLabel = new JLabel("File: ",
 				SwingConstants.CENTER);
@@ -97,6 +104,12 @@ public class LoggingPanel extends RobobuggyGUIContainer{
 		}
 		catch (NumberFormatException e) {
 			return 1;
+		}
+	}
+	
+	private class ResetButtonHandler implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			
 		}
 	}
 
