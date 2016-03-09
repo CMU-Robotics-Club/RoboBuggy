@@ -27,8 +27,8 @@ public class RBSerialMessage
 	public static synchronized boolean initializeHeaders() {
 
 		if (headers == null){
-			instance = new RBSerialMessage();
 			headers = new JsonObject();
+			instance = new RBSerialMessage();
 		}
 		return true;
 
