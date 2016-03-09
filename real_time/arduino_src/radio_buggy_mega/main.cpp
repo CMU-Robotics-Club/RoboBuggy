@@ -300,18 +300,26 @@ int main(void)
                 // dipatch complete message
                 switch(new_command.message_id) 
                 {
-                  case RBSM_MID_MEGA_STEER_ANGLE:
-                    auto_steering_angle = (int)(long)new_command.data;
-                    printf("Got steering message for %d.\n", auto_steering_angle);
-                    break;
+                    case RBSM_MID_MEGA_STEER_ANGLE:
+                        auto_steering_angle = (int)(long)new_command.data;
+                        printf("Got steering message for %d.\n", auto_steering_angle);
+                        break;
 
-                  default:
-                    // report unknown message
-                    g_rbsm.Send(RBSM_MID_ERROR, RBSM_EID_RBSM_INVALID_MID);
-                    printf("Got message with invalid mid %d and data %d",
+                    case RBSM_MID_ENC_RESET_REQUEST:
+                        cli();
+                        g_encoder_ticks = 0;
+                        sei();
+                        //Let high level know that the request went through
+                        g_rbsm.Send(RBSM_MID_ENC_RESET_CONFIRM, 1);
+                        break;
+
+                    default:
+                        // report unknown message
+                        g_rbsm.Send(RBSM_MID_ERROR, RBSM_EID_RBSM_INVALID_MID);
+                        printf("Got message with invalid mid %d and data %d",
                            new_command.message_id,
                            new_command.data);
-                    break;
+                        break;
                 }
             } 
             else if(read_status == RBSM_ERROR_INVALID_MESSAGE) 
