@@ -20,16 +20,17 @@ import com.roboclub.robobuggy.ros.Subscriber;
  *
  */
 public class HighTrustLocalizer implements Node {
-    private double buggyFrameGpsX;
-    private double buggyFrameGpsY;
-    private double buggyFrameRotZ;
+    private double buggyFrameGpsLat;
+    private double buggyFrameGpsLon;
+    private double buggyFrameHeading;
 
     private Publisher posePub;
 
-    private double lastEncoderMeasurment;
+    private double lastEncoderMeasurement;
 
     // some math for the conversion of latitude to meters
     private static final double ONE_DEG_LAT_TO_METERS_EQUATOR = 111319.9;
+    private static final double ONE_DEG_LON_TO_METERS = ONE_DEG_LAT_TO_METERS_EQUATOR; // Lon doesn't depend on degree
     private static final double LAT_DEGREE_PITTSBURGH = 40.440310; // center of Schenley
     private static final double ONE_DEG_LAT_TO_METERS_PITTSBURGH =
             ONE_DEG_LAT_TO_METERS_EQUATOR * Math.cos(Math.toRadians(LAT_DEGREE_PITTSBURGH));
@@ -40,9 +41,9 @@ public class HighTrustLocalizer implements Node {
      */
     public HighTrustLocalizer(){
         //init values
-        buggyFrameGpsX = 0.0;
-        buggyFrameGpsY = 0.0;
-        lastEncoderMeasurment = 0;
+        buggyFrameGpsLat = 0.0;
+        buggyFrameGpsLon = 0.0;
+        lastEncoderMeasurement = 0;
 
 
         //Initialize subscriber to GPS measurements
@@ -50,8 +51,8 @@ public class HighTrustLocalizer implements Node {
             @Override
             public void actionPerformed(String topicName, Message m) {
                 GpsMeasurement newGPSData = (GpsMeasurement)m;
-                buggyFrameGpsX = newGPSData.getLatitude();
-                buggyFrameGpsY = newGPSData.getLongitude();
+                buggyFrameGpsLat = newGPSData.getLatitude();
+                buggyFrameGpsLon = newGPSData.getLongitude();
                 // no verification yet - we are running high-trust
 
                 //we're going to keep the same orientation as before
@@ -66,7 +67,7 @@ public class HighTrustLocalizer implements Node {
 			public void actionPerformed(String topicName, Message m) {
 				MagneticMeasurement magM = (MagneticMeasurement)m;
                 // no verification yet - running in high trust mode
-                buggyFrameRotZ = Math.atan2(magM.getY(), magM.getX());
+                buggyFrameHeading = Math.atan2(magM.getY(), magM.getX());
 
                 // we're going to keep the same position as before
 
@@ -74,6 +75,8 @@ public class HighTrustLocalizer implements Node {
 			}
 		});
 
+        // TODO note that we will probably run into precision errors since the changes are so small
+        // would be good to batch up the encoder updates until we get a margin that we know can be represented proeprly
         new Subscriber(NodeChannel.ENCODER.getMsgPath(), new MessageListener() {
             @Override
             public void actionPerformed(String topicName, Message m) {
@@ -81,15 +84,16 @@ public class HighTrustLocalizer implements Node {
 
                 // convert the feet from the last message into a delta degree, and update our position
                 double currentEncoderMeasurement = measurement.getDistance();
-                double deltaDistance = currentEncoderMeasurement - lastEncoderMeasurment;
+                double deltaDistance = currentEncoderMeasurement - lastEncoderMeasurement;
                 double deltaMeters = deltaDistance * FEET_TO_METERS;
-                double deltaDegrees = deltaMeters/ONE_DEG_LAT_TO_METERS_PITTSBURGH;
+                double deltaMetersX = deltaMeters * Math.cos(buggyFrameHeading);
+                double deltaMetersY = deltaMeters * Math.sin(buggyFrameHeading);
 
-                double deltaLat = deltaDegrees * Math.sin(buggyFrameRotZ);
-                double deltaLon = deltaDegrees * Math.cos(buggyFrameRotZ);
+                double deltaDegreesLat = deltaMetersY/ONE_DEG_LAT_TO_METERS_PITTSBURGH;
+                double deltaDegreesLon = deltaMetersX/ONE_DEG_LON_TO_METERS;
 
-                buggyFrameGpsX += deltaLat;
-                buggyFrameGpsY += deltaLon;
+                buggyFrameGpsLat += deltaDegreesLat;
+                buggyFrameGpsLon += deltaDegreesLon;
 
                 publishUpdate();
             }
@@ -98,7 +102,7 @@ public class HighTrustLocalizer implements Node {
     }
 
     private void publishUpdate(){
-        posePub.publish(new GPSPoseMessage(new Date(), buggyFrameGpsX, buggyFrameGpsY, buggyFrameRotZ));
+        posePub.publish(new GPSPoseMessage(new Date(), buggyFrameGpsLat, buggyFrameGpsLon, buggyFrameHeading));
     }
 
     @Override
@@ -110,8 +114,8 @@ public class HighTrustLocalizer implements Node {
     @Override
     public boolean shutdown() {
         posePub = null;
-        buggyFrameGpsX = 0.0;
-        buggyFrameGpsY = 0.0;
+        buggyFrameGpsLat = 0.0;
+        buggyFrameGpsLon = 0.0;
         return true;
     }
 
