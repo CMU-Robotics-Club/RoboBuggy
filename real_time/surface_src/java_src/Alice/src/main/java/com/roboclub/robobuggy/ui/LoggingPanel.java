@@ -51,13 +51,13 @@ public class LoggingPanel extends RobobuggyGUIContainer{
 		startTime = new Date();
 		
 		playBtn = new JButton("START");
-		playBtn.setFont(new Font("serif", Font.PLAIN, 70));
+		playBtn.setFont(new Font("serif", Font.PLAIN, 25));
 		playBtn.addActionListener(new PlayButtonHandler());
 		playBtn.setEnabled(true);
 		playBtn.setBackground(Color.BLUE);
 		
-		resetBtn = new JButton("Reset encoder");
-		resetBtn.setFont(new Font("seif", Font.PLAIN, 50));
+		resetBtn = new JButton("RESET ENCODER");
+		resetBtn.setFont(new Font("seif", Font.PLAIN, 25));
 		resetBtn.addActionListener(new ResetButtonHandler());
 		resetBtn.setEnabled(true);
 		resetBtn.setBackground(Color.BLUE);
@@ -76,7 +76,8 @@ public class LoggingPanel extends RobobuggyGUIContainer{
 		playbackSpeed = new JTextField("1");
 		playbackSpeed.setHorizontalAlignment(JTextField.CENTER);
 
-		this.addComponent(playBtn, 0, 0, 1.0, .25);
+		this.addComponent(playBtn, 0, 0, 1.0, .125);
+		this.addComponent(resetBtn, 0, .13, 1.0, 0.125);
 		this.addComponent(filenameLabel, 0, .25, 0.5, .25);
 		this.addComponent(timeLbl, 0, .5, 1, .5);
 		this.addComponent(playbackSpeed, .5, .25, 0.5, .25);
@@ -109,7 +110,7 @@ public class LoggingPanel extends RobobuggyGUIContainer{
 	
 	private class ResetButtonHandler implements ActionListener{
 		public void actionPerformed(ActionEvent e){
-			
+			System.out.println("Resetting encoder...");
 		}
 	}
 

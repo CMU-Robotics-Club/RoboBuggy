@@ -24,10 +24,10 @@ public final class  RobobuggyConfigFile {
 	public static final boolean AUTONOMOUS_DEFAULT = false;
 
 	// sensor default settings (true for on false for off
-	public static final boolean IMU_ENABLED = true;
-	public static final boolean GPS_ENABLED = true;
-	public static final boolean ENCODER_ENABLED = true;
-	public static final boolean VISION_SYSTEM_ENABLED = true;
+	public static final boolean IMU_ENABLED = false;
+	public static final boolean GPS_ENABLED = false;
+	public static final boolean ENCODER_ENABLED = false;
+	public static final boolean VISION_SYSTEM_ENABLED = false;
 	
 	//sensor com ports
 	public static  final String COM_PORT_IMU = "COM7";
