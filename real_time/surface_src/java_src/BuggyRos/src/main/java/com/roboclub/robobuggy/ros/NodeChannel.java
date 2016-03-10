@@ -75,6 +75,7 @@ public enum NodeChannel {
 	public static NodeChannel[] getLoggingChannels() {
 		return new NodeChannel[] {  GPS,
 									IMU,
+									IMU_MAGNETIC,
 									PUSHBAR_CAMERA,
 									STEERING,
 									BRAKE,
