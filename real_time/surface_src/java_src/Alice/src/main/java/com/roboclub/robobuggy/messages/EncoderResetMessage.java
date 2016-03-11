@@ -34,14 +34,12 @@ public class EncoderResetMessage extends BaseMessage {
 	}
 
 	/**{@inheritDoc}*/
-	@Override
 	public String toLogString() {
 		return String.format("%s,'%s'", formatDate(timestamp),
 				VERSION_ID);
 	}
 
 	/**{@inheritDoc}*/
-	@Override
 	public Message fromLogString(String str) {
 		String[] spl = str.split(",");
 		Date d = tryToParseDate(spl[0]);

@@ -319,7 +319,7 @@ int main(void)
                         sei();
                         //Let high level know that the request went through
                         g_rbsm.Send(RBSM_MID_ENC_RESET_CONFIRM, 1);
-                        printf("Encoder reset request received!");
+                        printf("Encoder reset request received!\n");
                         break;
                     case RBSM_MID_MEGA_STEER_COMMAND:
                         auto_steering_angle = (int)(long)new_command.data;
