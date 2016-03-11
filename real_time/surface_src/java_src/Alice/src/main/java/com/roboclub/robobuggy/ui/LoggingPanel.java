@@ -117,6 +117,14 @@ public class LoggingPanel extends RobobuggyGUIContainer{
 		}
 	}
 	
+	/**
+	 *  ResetEncoderButtonHandler
+	 * @author Sean
+	 * 
+	 * Sends a reset request message to low level when the "Reset Encoder" 
+	 * button on the gui is pressed
+	 *
+	 */
 	private class ResetEncoderButtonHandler implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			encoderResetPub.publish(new EncoderResetMessage());
