@@ -14,9 +14,9 @@ import java.util.Scanner;
  */
 public class RBSerialMessage
 {
-
 	private static JsonObject headers;
-
+	private static RBSerialMessage instance; 
+	
 	private byte headerByte;
 	private int dataBytes;
 
@@ -24,9 +24,17 @@ public class RBSerialMessage
 	 * reads the headers text file and puts it into the headers object
 	 * @return whether initialization succeeded or not
 	 */
-	public static boolean initializeHeaders() {
+	public static synchronized boolean initializeHeaders() {
 
-		headers = new JsonObject();
+		if (headers == null){
+			headers = new JsonObject();
+			instance = new RBSerialMessage();
+		}
+		return true;
+
+	}
+	
+	private RBSerialMessage() {
 
 		try {
 			Scanner fileIn = new Scanner(new File(RobobuggyConfigFile.RBSM_HEADER_FILE_LOCATION), "UTF-8");
@@ -40,11 +48,8 @@ public class RBSerialMessage
 					headers.addProperty(headerName, headerByte);
 				}
 			}
-
-			return true;
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-			return false;
 		}
 	}
 
@@ -52,7 +57,7 @@ public class RBSerialMessage
 	 * @param headerName the name of the header as it appears in the text file
 	 * @return the byte for that header name
 	 */
-	public static byte getHeaderByte(String headerName) {
+	public static  synchronized byte getHeaderByte(String headerName) {
 		return headers.get(headerName).getAsByte();
 	}
 
@@ -103,6 +108,7 @@ public class RBSerialMessage
 	 */
 	public static boolean isValidHeader(byte headerByte)
 	{
+
 		//see if that's a value in the headers object
 		for (Map.Entry<String, JsonElement> object : headers.entrySet()) {
 			if (object.getValue().getAsByte() == headerByte) {

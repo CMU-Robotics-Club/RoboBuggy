@@ -105,7 +105,9 @@ public class LoggingPanel extends RobobuggyGUIContainer{
 	 */
 	public double getPlaybackSpeed() {
 		String speedStr = playbackSpeed.getText();
-		if (speedStr.equals("")) return 1;
+		if (speedStr.equals("")) {
+			return 1;
+		}
 
 		try {
 			return Double.valueOf(speedStr);

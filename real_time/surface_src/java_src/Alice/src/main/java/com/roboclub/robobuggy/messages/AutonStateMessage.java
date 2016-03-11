@@ -37,20 +37,13 @@ public class AutonStateMessage extends BaseMessage {
 		this.state = stateValue;
 		this.timestamp = new Date(timestamp.getTime()).getTime();
 	}
-
-	/**{@inheritDoc}*/
-	@Override
-	public String toLogString() {
-		return String.format("%s,'%s',%s", formatDate(timestamp),
-				VERSION_ID, String.valueOf(this.state));
+	
+	/**
+	 * Evaluates to the current state 
+	 * @return state 
+	 */
+	public int getState(){
+		return this.state;
 	}
 
-	/**{@inheritDoc}*/
-	@Override
-	public Message fromLogString(String str) {
-		String[] spl = str.split(",");
-		Date d = tryToParseDate(spl[0]);
-		int stateLevel = Integer.parseInt(spl[2]);
-		return new AutonStateMessage(d, stateLevel);
-	}
 }

@@ -37,20 +37,13 @@ public class BrakeStateMessage extends BaseMessage {
 		this.state = stateValue;
 		this.timestamp = new Date(timestamp.getTime()).getTime();
 	}
-
-	/**{@inheritDoc}*/
-	@Override
-	public String toLogString() {
-		return String.format("%s,'%s',%s", formatDate(timestamp),
-				VERSION_ID, String.valueOf(this.state));
+	
+	/**
+	 * evaluates to the brake state
+	 * @return brakestate
+	 */
+	public int getBrakeState(){
+		return  state;
 	}
 
-	/**{@inheritDoc}*/
-	@Override
-	public Message fromLogString(String str) {
-		String[] spl = str.split(",");
-		Date d = tryToParseDate(spl[0]);
-		int stateValue = Integer.parseInt(spl[2]);
-		return new BrakeStateMessage(d, stateValue);
-	}
 }

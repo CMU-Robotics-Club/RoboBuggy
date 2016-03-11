@@ -7,7 +7,6 @@ import javax.swing.JFrame;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
-
 /**
  * {@link JFrame} used to represent the robobuggy gui
  * @author Trevor Decker
@@ -22,7 +21,11 @@ import java.util.ArrayList;
 public final class Gui extends JFrame {
 	private static final long serialVersionUID = 670947948979376738L;
 
-	
+
+	//The windowList is a list of all of the windows that are a part of the gui
+	private ArrayList<RobobuggyJFrame> windowList = new ArrayList<RobobuggyJFrame>();
+	private MainGuiWindow mainGuiWindow;
+
 	private static Gui instance;
 	
 	/**
@@ -46,31 +49,33 @@ public final class Gui extends JFrame {
 	 * If none exists, one will be constructed.
 	 * @return a reference to the one instance of the {@link Gui}
 	 */
-	public static Gui getInstance() {
+	public static synchronized Gui getInstance() {
 		if (instance == null) {
 			instance = new Gui();
 		}
 		return instance;
 	}
 
-	//The windowList is a list of all of the windows that are a part of the gui
-	private ArrayList<RobobuggyJFrame> windowList = new ArrayList<RobobuggyJFrame>();
-	private MainGuiWindow mainGuiWindow;
-	
 	/**
 	 * Construct a new {@link Gui} object
 	 */
 	private Gui() {
 		new RobobuggyLogicNotification("StartingGUI", RobobuggyMessageLevel.NOTE);
 		RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow",1.0,1.0);	
-		RobobuggyGUITabs tabs = new RobobuggyGUITabs();
 		mainGuiWindow = new MainGuiWindow();
+		RobobuggyGUITabs tabs = new RobobuggyGUITabs();
 		tabs.addTab(mainGuiWindow, "Home");
-		tabs.addTab(new NodeViewer(),"Nodes");
+		tabs.addTab(new ImuVisualWindow(), "IMU");
+		tabs.addTab(new VelocityWindow(), "Velocity");
+		tabs.addTab(new PoseGraphsPanel(),"poses");
+		tabs.addTab(new ImuPanel(),"IMU");
+		tabs.addTab(new  AutonomousPanel(),"Autonomous");
 		mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
+		mainWindow.repaint();		
 		windowList.add(mainWindow);
-
+		mainWindow.repaint();
 	}
+	
 
 	/**
 	 * @return the main gui window

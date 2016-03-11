@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+
 /**
  * Abstract class extended to create a decorator node that uses 
  * serial communications
@@ -50,7 +51,7 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 		this.setName(threadName);
 		this.threadName = threadName;
 		this.sp = connect(portName, baudRate);
-	}
+    }
 	
 	// Open a serial port
 	// Returns null if unable to connect, otherwise SerialPort
@@ -62,7 +63,6 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 	        	System.err.println("Error: Port currently in use");
 	        } else { 
 	            CommPort commPort = portIdentifier.open(portName, TIMEOUT);
-	            
 	            if ( commPort instanceof SerialPort ) {
 	                SerialPort serialPort = (SerialPort) commPort;
 	                serialPort.setSerialPortParams(baudRate,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
@@ -88,6 +88,7 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 	
 		try {
 			serialOutput.write(bytes);
+			serialOutput.flush();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -100,6 +101,7 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 	 * {@inheritDoc}*/
 	@Override
 	protected boolean startDecoratorNode() {
+
 		// Set port to be the right baud rate
 		int baudRate = getBaudRate();
 		try {
@@ -131,7 +133,6 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 		
 		//Set the node to running
 		running = true;
-		
 		// Begin the madness
 		ioThread = new Thread(new IoThread(), threadName + "-serial");
 		ioThread.setPriority(Thread.MAX_PRIORITY);
@@ -198,6 +199,7 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 		@Override
 		public void run() {
 			while(running) {
+
 				try {
 					numBytes += serialInput.read(buf, start + numBytes, buf.length - numBytes); 
 					//System.out.printf(new String(buf));

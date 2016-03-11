@@ -1,8 +1,10 @@
 package com.roboclub.robobuggy.main;
 
+import com.roboclub.robobuggy.serial.RBSerialMessage;
 import com.roboclub.robobuggy.simulation.SensorPlayer;
 import com.roboclub.robobuggy.ui.Gui;
 import com.roboclub.robobuggy.utilities.JNISetup;
+
 import gnu.io.CommPortIdentifier;
 
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ public class RobobuggyMainFile {
 	 * @param args : None
 	 */
     public static void main(String[] args) {
+
 
         try {
 			JNISetup.setupJNI(); //must run for jni to install
@@ -37,34 +40,24 @@ public class RobobuggyMainFile {
    
 
         List<String> ports = getAvailablePorts();
+		//Initialize message headers
+		RBSerialMessage.initializeHeaders();
+
         System.out.println(ports);
         Robot.getInstance();
         Gui.getInstance();
+
+        
      	
     	if (RobobuggyConfigFile.DATA_PLAY_BACK) {
     		//Play back mode enabled
-    		new SensorPlayer("logs/2016-02-12-21-52-18/sensors_2016-02-12-21-52-18.txt", 1);
+    		new SensorPlayer("logs/spring1data/2016-02-20-06-50-45/sensors_2016-02-20-06-50-45.txt", 1);
+
         }
-        else {
+        
         	//Play back disabled, create robot
         	Robot.getInstance().startNodes();
 			new RobobuggyLogicNotification("Robobuggy Logic Notfication started", RobobuggyMessageLevel.NOTE);
-
-            try {
-                Thread.sleep(5000);
-
-                new RobobuggyLogicNotification("Notification 1", RobobuggyMessageLevel.NOTE);
-                new RobobuggyLogicNotification("Notification 2", RobobuggyMessageLevel.NOTE);
-
-                Thread.sleep(2000);
-
-                new RobobuggyLogicNotification("Notif 3", RobobuggyMessageLevel.NOTE);
-            }
-            catch (InterruptedException e) {
-                new RobobuggyLogicNotification("interrupted", RobobuggyMessageLevel.NOTE);
-            }
-		}
-
 
     }
     

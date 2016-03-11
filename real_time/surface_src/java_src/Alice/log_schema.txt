@@ -6,14 +6,10 @@
     "sensor_data":
     [
         {
-            "timestamp":"HH:mm:ss.SSS",
-            "name": "sensorX",
-            "params": {
-                "param1": "val1",
-                "param2": "val2",
-                ...
-                "paramN": "valN"
-            }
+        	“VERSION_ID”:”sensor_id”,
+		. . .
+		"DATE_FORMAT":"yyyy-MM-dd HH:mm:ss.SSS",
+		"timestamp”:time_in_millis
         },
         ...
     ],

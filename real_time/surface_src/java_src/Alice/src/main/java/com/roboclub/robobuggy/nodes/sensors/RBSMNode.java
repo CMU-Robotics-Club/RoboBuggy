@@ -36,6 +36,7 @@ import java.util.Date;
  * @author Kevin Brennan
  * @author Zachary Dawson
  *
+ *
  * CHANGELOG: Converted to use the decorator pattern implementation of
  * {@link Node}s for buggy
  * 
@@ -51,13 +52,14 @@ public  class  RBSMNode extends SerialNode {
 	private static final double M_PER_REV = 0.61;
 	
 	/** Steering Angle Conversion Rate */
-	private static final int ARD_TO_DEG = 100;
+	private static final double ARD_TO_DEG = 1;
 	/** Steering Angle offset?? */
-	private static final int OFFSET = -200;
+	private static final double OFFSET = 0;
 
 	// accumulated
 	private int encTicks = 0;
-	private int potValue = -1;
+	private double potValue = -1.0;
+
 	
 	// last state
 	private double accDistLast = 0.0;
@@ -117,10 +119,6 @@ public  class  RBSMNode extends SerialNode {
 		statePubEnc.publish(new StateMessage(NodeState.DISCONNECTED));
 		statePubPot.publish(new StateMessage(NodeState.DISCONNECTED));
 
-		//Initialize message headers
-		if (!RBSerialMessage.initializeHeaders()) {
-			return;
-		}
 	}
 	
 	/**
@@ -131,7 +129,7 @@ public  class  RBSMNode extends SerialNode {
 	private EncoderMeasurement estimateVelocity(int dataWord) 
 	{
 		Date currTime = new Date();
-		double accDist = ((double)(encTicks)) * M_PER_REV / TICKS_PER_REV;
+		double accDist = (((double)(encTicks)) * M_PER_REV / TICKS_PER_REV)/.49;
 		double instVelocity = (accDist - accDistLast) * 1000 / (currTime.getTime() - timeLast.getTime());
 		double instAccel = (instVelocity - instVelocityLast) * 1000 / (currTime.getTime() - timeLast.getTime());
 		accDistLast = accDist;
@@ -167,7 +165,6 @@ public  class  RBSMNode extends SerialNode {
 		return BAUD_RATE;
 	}
 
-	
 	/**{@inheritDoc}*/
 	@Override
 	public int peel(byte[] buffer, int start, int bytesAvailable) 
@@ -193,8 +190,7 @@ public  class  RBSMNode extends SerialNode {
 		
 		RBSerialMessage message = rbp.getMessage();
 		byte headerByte = message.getHeaderByte();
-
-		
+	
 		//TODO: The following statements should be reformatted because:
 		// 1: Calling getHeaderByte so many times is inefficient
 		// 2: Header values don't change so this can be made into a switch 
@@ -256,7 +252,7 @@ public  class  RBSMNode extends SerialNode {
 	private final class RBSMPeriodicNode extends PeriodicNode {
 		
 		//Stored commanded values
-		private short commandedAngle = 0;
+		private int commandedAngle = 0;
 		private boolean commandedBrakeEngaged = true;
 		
 		/**
@@ -274,10 +270,17 @@ public  class  RBSMNode extends SerialNode {
 		 */
 		@Override
 		protected void update() {
-			commandedAngle = (short) ((commandedAngle + 1) % 256);
-			System.out.println("sending command "+commandedAngle);
-			RBSMessage msg = new RBSMessage(commandedAngle, commandedBrakeEngaged);
-			send(msg.getMessageBytes());
+			if(commandedAngle > 1000) {
+				commandedAngle = 1000;
+			}
+			else if (commandedAngle < -1000) {
+				commandedAngle = -1000;
+			}
+			
+			RBSMSteeringMessage msgSteer = new RBSMSteeringMessage(commandedAngle);
+			send(msgSteer.getMessageBytes());
+			RBSMBrakeMessage msgBrake = new RBSMBrakeMessage(commandedBrakeEngaged);
+			send(msgBrake.getMessageBytes());
 		}
 
 		/**{@inheritDoc}*/
@@ -288,7 +291,7 @@ public  class  RBSMNode extends SerialNode {
 					new MessageListener() {
 				@Override
 				public void actionPerformed(String topicName, Message m) {
-					commandedAngle = ((DriveControlMessage)m).getAngleShort();
+					commandedAngle = ((DriveControlMessage)m).getAngleInt();
 				}
 			});
 			new Subscriber(NodeChannel.BRAKE_CTRL.getMsgPath(),
@@ -323,5 +326,3 @@ public  class  RBSMNode extends SerialNode {
 		}	
 	}
 }
-
-

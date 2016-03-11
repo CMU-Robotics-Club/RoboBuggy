@@ -37,20 +37,13 @@ public class EncoderTimeMessage extends BaseMessage {
 		this.timeValue = timeValue;
 		this.timestamp = new Date(timestamp.getTime()).getTime();
 	}
-
-	/**{@inheritDoc}*/
-	@Override
-	public String toLogString() {
-		return String.format("%s,'%s',%s", formatDate(timestamp),
-				VERSION_ID, String.valueOf(this.timeValue));
+	
+	/**
+	 * evaluates to the timeValue of the encoder
+	 * @return timeValue
+	 */
+	public int getTimeValue(){
+		return timeValue;
 	}
 
-	/**{@inheritDoc}*/
-	@Override
-	public Message fromLogString(String str) {
-		String[] spl = str.split(",");
-		Date d = tryToParseDate(spl[0]);
-		int timeValue = Integer.parseInt(spl[2]);
-		return new EncoderTimeMessage(d, timeValue);
-	}
 }

@@ -42,6 +42,8 @@ public final class GpsNode extends SerialNode {
 	 */
 	public GpsNode(NodeChannel sensor, String portName) {
 		super(new BuggyBaseNode(sensor), "GPS", portName, BAUD_RATE);
+		
+		System.out.println("starting gps");
 		msgPub = new Publisher(sensor.getMsgPath());
 		statePub = new Publisher(sensor.getStatePath());
 		statePub.publish(new StateMessage(NodeState.DISCONNECTED));
@@ -165,7 +167,7 @@ public final class GpsNode extends SerialNode {
 				west = false;
 				break;
 			default:
-				System.out.println("uhoh, you can't go not north or south!");
+				System.out.println("uhoh, you can't go not east or west!");
 				throw new RuntimeException();
 		}
 		

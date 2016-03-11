@@ -26,13 +26,12 @@ public class GraphPanel extends RobobuggyGUIContainer {
 		steeringGraph = new AngleGraph("STEERING");
 		rollGraph = new AngleGraph("ROLL");
 		pitchGraph = new AngleGraph("PITCH");
-		yawGraph = new AngleGraph("YAW");
 		
 		//add the graphs to the container
 		this.addComponent(steeringGraph, 0, 0, .25, 1.0);
 		this.addComponent(rollGraph, .25, 0, .25, 1.0);
 		this.addComponent(pitchGraph, .50, 0, .25, 1.0);
-		this.addComponent(yawGraph, .75, 0, .25, 1.0);
+		this.addComponent(new ImageViewer(NodeChannel.PUSHBAR_CAMERA.getMsgPath()), .75, 0, .25, 1.0);
 		
 		// Subscriber for drive control updates
 		new Subscriber(NodeChannel.STEERING.getMsgPath(), new MessageListener() {

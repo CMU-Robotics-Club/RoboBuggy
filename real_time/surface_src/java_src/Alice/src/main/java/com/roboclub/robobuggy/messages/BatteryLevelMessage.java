@@ -1,6 +1,5 @@
 package com.roboclub.robobuggy.messages;
 
-import com.roboclub.robobuggy.ros.Message;
 
 import java.util.Date;
 
@@ -37,20 +36,13 @@ public class BatteryLevelMessage extends BaseMessage {
 		this.level = batteryValue;
 		this.timestamp = new Date(timestamp.getTime()).getTime();
 	}
-
-	/**{@inheritDoc}*/
-	@Override
-	public String toLogString() {
-		return String.format("%s,'%s',%s", formatDate(timestamp),
-				VERSION_ID, String.valueOf(this.level));
+	
+	/**
+	 * evaluates to the battery level 
+	 * @return batteryLevel
+	 */
+	public int getBatteryLevel(){
+		return this.level;
 	}
 
-	/**{@inheritDoc}*/
-	@Override
-	public Message fromLogString(String str) {
-		String[] spl = str.split(",");
-		Date d = tryToParseDate(spl[0]);
-		int batteryLevel = Integer.parseInt(spl[2]);
-		return new BatteryLevelMessage(d, batteryLevel);
-	}
 }

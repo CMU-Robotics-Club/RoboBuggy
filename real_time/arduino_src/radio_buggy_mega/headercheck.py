@@ -10,10 +10,6 @@
 *   By Sean Buckley
 """
 
-
-import datetime
-import socket #Used for getting hostname
-import subprocess
 import sys
 
 def main():

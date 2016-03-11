@@ -36,7 +36,10 @@ public class RobobuggyGUIContainer extends JPanel{
 			int subComponentWidth = (int)(thisComponet.getPercentageWidth()*frameWidth);
 			int subComponentHeight = (int)(thisComponet.getPercentageHeight()*frameHeight);
 			//actually set the size bound 
+			
+			//Is the spelling supposed to be this way?
 			thisComponet.getComponent().setBounds(subComponetX,subComponetY,subComponentWidth,subComponentHeight);
+			
 			// we don't know if the component is a robobuggy container or a primitive component, 
 			// if it is a primitive then we are finished otherwise we need to recursively apply the size change 
 			if(thisComponet.getComponent() instanceof RobobuggyGUIContainer){
