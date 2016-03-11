@@ -311,6 +311,7 @@ int main(void)
                         sei();
                         //Let high level know that the request went through
                         g_rbsm.Send(RBSM_MID_ENC_RESET_CONFIRM, 1);
+                        printf("Encoder reset request received!");
                         break;
 
                     default:

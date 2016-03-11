@@ -42,7 +42,7 @@ import java.util.Date;
  * DESCRIPTION: node for talking to the the low level controller via rbsm
  */
 
-public class RBSMNode extends SerialNode {
+public  class  RBSMNode extends SerialNode {
 	
 	private static final int BAUD_RATE = 76800;
 	
@@ -79,6 +79,7 @@ public class RBSMNode extends SerialNode {
 	private Publisher messagePubEncTime;
 	
 	private Publisher messagePubFp; //Fingerprint for low level hash
+	
 	
 	/**
 	 * Construct a new RBSMNode object
@@ -243,6 +244,7 @@ public class RBSMNode extends SerialNode {
 		
 		return 6;
 	}
+	
 
 	/**
 	 * Private class used to handle the periodic portions of the
@@ -296,6 +298,21 @@ public class RBSMNode extends SerialNode {
 					commandedBrakeEngaged = ((BrakeControlMessage)m).isBrakeEngaged();
 				}
 			});
+			new Subscriber(NodeChannel.ENCODER_RESET.getMsgPath(), new MessageListener() {
+				@Override
+				public void actionPerformed(String topicName, Message m) {
+					byte[] bytes = new byte[6];
+					bytes[0] = (byte)RBSerialMessage.getHeaderByte("RBSM_MID_ENC_RESET_REQUEST"); //Reset request header
+					bytes[1] = (byte)0;
+					bytes[2] = (byte)0;
+					bytes[3] = (byte)0;
+					bytes[4] = (byte)(0xc0);  
+					bytes[5] = (byte)RBSerialMessage.getHeaderByte("FOOTER");
+					send(bytes);
+					}
+				
+			});
+			
 			return true;
 		}
 
