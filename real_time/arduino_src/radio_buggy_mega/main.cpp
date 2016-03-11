@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <avr/wdt.h>
 
+#include "../lib_avr/encoder/encoder.h"
 #include "../lib_avr/rbserialmessages/rbserialmessages.h"
 #include "../lib_avr/servoreceiver/servoreceiver.h"
 #include "../lib_avr/uart/uart_extra.h"
@@ -102,7 +103,7 @@
 #define WDT_INT WDT_vect
 
 //Uncomment the line below for testing. Otherwise leave commented out
-// #define DEBUG
+#define DEBUG
 
 #ifdef DEBUG
     #define dbg_printf(...) printf(__VA_ARGS__)
@@ -120,7 +121,6 @@ static bool g_brake_needs_reset; // 0 = nominal, !0 = needs reset
 static bool g_is_autonomous;
 static unsigned long g_current_voltage;
 static unsigned long g_steering_feedback;
-static volatile unsigned long g_encoder_ticks;
 static int smoothed_thr;
 static int smoothed_auton;
 static int steer_angle;
@@ -132,6 +132,7 @@ rb_message_t g_new_rbsm;
 ServoReceiver g_steering_rx;
 ServoReceiver g_brake_rx;
 ServoReceiver g_auton_rx;
+Encoder g_encoder_distance;
 
 UARTFILE g_uart_rbsm;
 UARTFILE g_uart_debug;
@@ -252,10 +253,16 @@ int main(void)
     DEBUG_DDR |= _BV(DEBUG_PINN);
 
     // setup encoder pin and interrupt
-    ENCODER_PORT |= _BV(ENCODER_PINN);
-    ENCODER_DDR &= ~_BV(ENCODER_PINN); 
+    // ENCODER_PORT |= _BV(ENCODER_PINN);
+    // ENCODER_DDR &= ~_BV(ENCODER_PINN); 
     EIMSK |= _BV(INT2);
-    EICRA |= _BV(ISC20) | _BV(ISC21);
+    EICRA |= _BV(ISC20);
+    EICRA &= ~_BV(ISC21);
+    EIMSK |= _BV(INT3);
+    EICRA |= _BV(ISC30);
+    EICRA &= ~_BV(ISC31);
+    // g_encoder_distance.Init(&ENCODER_PIN, ENCODER_PINN);
+    g_encoder_distance.InitQuad(&ENCODER_PIN, ENCODER_PINN, &PIND, PD3);
 
     // prepare uart0 (onboard usb) for rbsm
     uart0_init(UART_BAUD_SELECT(BAUD, F_CPU));
@@ -328,9 +335,7 @@ int main(void)
                 switch(new_command.message_id)
                 {
                     case RBSM_MID_ENC_RESET_REQUEST:
-                        cli();
-                        g_encoder_ticks = 0;
-                        sei();
+                        g_encoder_distance.Reset();
                         //Let high level know that the request went through
                         g_rbsm.Send(RBSM_MID_ENC_RESET_CONFIRM, 1);
                         dbg_printf("Encoder reset request received!\n");
@@ -407,6 +412,7 @@ int main(void)
         unsigned long time1 = g_steering_rx.GetLastTimestamp();
         unsigned long time2 = g_brake_rx.GetLastTimestamp();
         unsigned long time3 = g_auton_rx.GetLastTimestamp();
+        sei(); //enable interrupts
         //RC time deltas
         unsigned long delta1 = time_now - time1;
         unsigned long delta2 = time_now - time2;
@@ -415,16 +421,11 @@ int main(void)
         unsigned long delta5 = time_now - auton_steer_last;
         unsigned long delta4 = time_now - auton_brake_last;
 
-        unsigned long g_encoder_ticks_safe = g_encoder_ticks;
-        sei(); //enable interrupts
-
-
         if(delta1 > CONNECTION_TIMEOUT_US ||
            delta2 > CONNECTION_TIMEOUT_US ||
            delta3 > CONNECTION_TIMEOUT_US)
         {
             // we haven't heard from the RC receiver in too long
-            dbg_printf("Timed out connection from RC!\n");
             if(g_brake_needs_reset == false) 
             {
                 g_rbsm.Send(RBSM_MID_ERROR, RBSM_EID_RC_LOST_SIGNAL);
@@ -436,7 +437,6 @@ int main(void)
            (delta4 > CONNECTION_TIMEOUT_US ||
            delta5 > CONNECTION_TIMEOUT_US))
         {
-            dbg_printf("Timed out connection from high level!\n");
             if(g_brake_needs_reset == false) 
             {
                 g_rbsm.Send(RBSM_MID_ERROR, RBSM_EID_AUTON_LOST_SIGNAL);
@@ -503,8 +503,8 @@ int main(void)
         g_rbsm.Send(RBSM_MID_MEGA_AUTON_STATE, (long unsigned)g_is_autonomous);
         g_rbsm.Send(RBSM_MID_MEGA_BATTERY_LEVEL, g_current_voltage);
         g_rbsm.Send(RBSM_MID_MEGA_STEER_FEEDBACK, (long int)g_steering_feedback);
-        g_rbsm.Send(RBSM_MID_ENC_TICKS_RESET, g_encoder_ticks_safe);
-        g_rbsm.Send(RBSM_MID_ENC_TIMESTAMP, millis()); //TODO: Is this safe?
+        g_rbsm.Send(RBSM_MID_ENC_TICKS_RESET, g_encoder_distance.GetTicks());
+        g_rbsm.Send(RBSM_MID_ENC_TIMESTAMP, millis());
         g_rbsm.Send(RBSM_MID_COMP_HASH, (long unsigned)(FP_HEXCOMMITHASH));
 
         //Feed the watchdog to indicate things aren't timing out
@@ -544,7 +544,11 @@ ISR(RX_AUTON_INT)
 
 ISR(ENCODER_INT) 
 {
-    unsigned long time_now = micros();
-    g_encoder_ticks++;
+    g_encoder_distance.OnInterruptQuad();
+    // g_encoder_distance.OnInterrupt();
+}
+
+ISR(INT3_vect) {
+    g_encoder_distance.OnInterruptQuad();
 }
 
