@@ -1,13 +1,9 @@
 package com.roboclub.robobuggy.main;
 
-import com.roboclub.robobuggy.messages.EncoderResetMessage;
-import com.roboclub.robobuggy.ros.NodeChannel;
-import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.serial.RBSerialMessage;
 import com.roboclub.robobuggy.simulation.SensorPlayer;
 import com.roboclub.robobuggy.ui.Gui;
 import com.roboclub.robobuggy.utilities.JNISetup;
-
 import gnu.io.CommPortIdentifier;
 
 import java.util.ArrayList;

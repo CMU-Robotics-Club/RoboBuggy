@@ -1,23 +1,17 @@
 package com.roboclub.robobuggy.ui;
 
+import com.roboclub.robobuggy.messages.ImageMessage;
+import com.roboclub.robobuggy.ros.Message;
+import com.roboclub.robobuggy.ros.MessageListener;
+import com.roboclub.robobuggy.ros.Subscriber;
+
+import javax.imageio.ImageIO;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-
-import com.roboclub.robobuggy.messages.ImageMessage;
-import com.roboclub.robobuggy.nodes.baseNodes.BuggyNode;
-import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
-import com.roboclub.robobuggy.ros.Message;
-import com.roboclub.robobuggy.ros.MessageListener;
-import com.roboclub.robobuggy.ros.Subscriber;
 
 /**
  * 

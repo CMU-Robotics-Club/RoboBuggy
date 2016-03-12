@@ -1,13 +1,11 @@
 package com.roboclub.robobuggy.ui;
 
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
-import com.roboclub.robobuggy.nodes.sensors.RBSMNode;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
+import com.roboclub.robobuggy.messages.EncoderResetMessage;
 import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
-import com.roboclub.robobuggy.ros.Subscriber;
-import com.roboclub.robobuggy.messages.EncoderResetMessage;
 
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
@@ -15,7 +13,6 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
