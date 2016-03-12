@@ -138,8 +138,9 @@ public class GpsPanel extends JPanel {
 		waypointSaver.repaint();
 
 
-		addPointsToMapTree(Color.BLUE, new LocTuple(mapViewerLat, mapViewerLon));
-		addPointsToMapTree(Color.BLUE, new LocTuple(mapViewerLat + 0.001, mapViewerLon));
+		// testing code
+//		addPointsToMapTree(Color.BLUE, new LocTuple(mapViewerLat, mapViewerLon));
+//		addPointsToMapTree(Color.BLUE, new LocTuple(mapViewerLat + 0.001, mapViewerLon));
 	}
 
 	private void updateArrow() {
@@ -167,11 +168,8 @@ public class GpsPanel extends JPanel {
 			
 			FilenameFilter filter = (dir, name) -> {
                 // TODO Auto-generated method stub
-                if(name.contains("png")) {
-                    return true;
-                }
-                return false;
-            };
+				return name.contains("png");
+			};
 			String[] cachedImages = mapCacheDir.list(filter);
 			if (cachedImages == null) {
 				return;
@@ -340,6 +338,7 @@ public class GpsPanel extends JPanel {
 					dot.setBackColor(Color.RED);
 					waypointEditor.editPoint(index);
 
+					mapTree.getViewer().setDisplayPosition(new Coordinate(dot.getLat(), dot.getLon()), mapTree.getViewer().getZoom());
 					mapTree.getViewer().repaint();
 				}
 			});
