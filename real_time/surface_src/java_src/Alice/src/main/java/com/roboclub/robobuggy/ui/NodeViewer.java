@@ -5,7 +5,8 @@ import java.util.List;
 
 import javax.swing.JButton;
 
-import com.roboclub.robobuggy.main.Robot;
+import com.roboclub.robobuggy.main.RobobuggyMainFile;
+import com.roboclub.robobuggy.robots.AbstractRobot;
 import com.roboclub.robobuggy.ros.Node;
 
 /**
@@ -28,8 +29,8 @@ public class NodeViewer extends RobobuggyGUIContainer{
 		nodeLocList = new ArrayList<>();
 		nodeLocList.add(-0.1);
 
-		Robot aRobot = Robot.getInstance();
-		List<Node> nodeList = aRobot.getNodeList();
+		AbstractRobot aRobot = RobobuggyMainFile.robot;
+		List<Node> nodeList = aRobot.getNodes();
 
 		for (Node aNodeList : nodeList) {
 			JButton thisNode = new JButton(aNodeList.getName());

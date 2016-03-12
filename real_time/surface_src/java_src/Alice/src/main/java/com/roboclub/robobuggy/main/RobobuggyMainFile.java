@@ -1,5 +1,8 @@
 package com.roboclub.robobuggy.main;
 
+import com.roboclub.robobuggy.robots.AbstractRobot;
+import com.roboclub.robobuggy.robots.SimRobot;
+import com.roboclub.robobuggy.robots.TransistorDataCollection;
 import com.roboclub.robobuggy.serial.RBSerialMessage;
 import com.roboclub.robobuggy.simulation.SensorPlayer;
 import com.roboclub.robobuggy.ui.Gui;
@@ -14,7 +17,15 @@ import java.util.List;
 
 /** This class is the driver starting up the robobuggy program, if you want the buggy to drive itself you should run this node */
 public class RobobuggyMainFile {
+    static public AbstractRobot robot;
+	
+    /*
+    public static getRobot(){
+    	
+    }
+    */
     
+	
     /**
 	 * Run Alice
 	 * @param args : None
@@ -44,19 +55,22 @@ public class RobobuggyMainFile {
 		RBSerialMessage.initializeHeaders();
 
         System.out.println(ports);
-        Robot.getInstance();
-        Gui.getInstance();
 
         
      	
     	if (RobobuggyConfigFile.DATA_PLAY_BACK) {
+            robot = SimRobot.getInstance();//TransistorAuton;//SimRobot.getInstance();
     		//Play back mode enabled
-    		new SensorPlayer("logs/spring1data/2016-02-20-06-50-45/sensors_2016-02-20-06-50-45.txt", 1);
-
+    		new SensorPlayer("logs/2016-03-12-18-15-17/sensors_2016-03-12-18-15-17.txt",1);//"logs/2016-03-12-17-37-04/sensors_2016-03-12-17-37-04.txt", 1);
+        }else{
+        	robot = TransistorDataCollection.getInstance();
         }
+    	
+        Gui.getInstance();
+
         
         	//Play back disabled, create robot
-        	Robot.getInstance().startNodes();
+        	robot.startNodes();
 			new RobobuggyLogicNotification("Robobuggy Logic Notfication started", RobobuggyMessageLevel.NOTE);
 
     }

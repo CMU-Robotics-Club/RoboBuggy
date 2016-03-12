@@ -36,14 +36,14 @@ public final class  RobobuggyConfigFile {
 	public static final boolean VISION_SYSTEM_ENABLED = true;
 
 	//sensor com ports
-	public static  final String COM_PORT_IMU = "/dev/tty.usbserial-A6026UA0";
+	public static  final String COM_PORT_IMU = "/dev/tty.usbserial-A6026UA0";//"/dev/tty.usbserial-A600eI9k";//";
 
 	public static  final String COM_PORT_GPS = "/dev/tty.usbmodem142141";
 	public static  final String COM_PORT_RBSM = "/dev/tty.usbmodem142111";
 
 	// iff false, connect to serial sensors 
-	public static final boolean DATA_PLAY_BACK = false;
+	public static final boolean DATA_PLAY_BACK = true;
 
-	public static final String WAYPOINT_SOURCE_LOG_FILE ="2016-02-20-06-50-45/sensors_2016-02-20-06-50-45.txt";
+	public static final String WAYPOINT_SOURCE_LOG_FILE ="2016-03-12-17-37-04/sensors_2016-03-12-17-37-04.txt";
 
 }

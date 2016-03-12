@@ -27,6 +27,9 @@ public class HighTrustGPSLocalizer implements Node{
     private double buggyFrameGpsX;
     private double buggyFrameGpsY;
     private double buggyFrameRotZ;
+    private double roll = 0;
+    private double pitch = 0;
+    private double yaw = 0;
 
 
     private Publisher posePub;
@@ -38,6 +41,8 @@ public class HighTrustGPSLocalizer implements Node{
         //init values
         buggyFrameGpsX = 0.0;
         buggyFrameGpsY = 0.0;
+        posePub = new Publisher(NodeChannel.POSE.getMsgPath());
+
 
 
         //Initialize subscriber to GPS measurements
@@ -55,11 +60,43 @@ public class HighTrustGPSLocalizer implements Node{
                 double dx = buggyFrameGpsX - oldGPSX;
 
                 // take the arctangent in order to get the heading (in degrees)
-                buggyFrameRotZ = Math.toDegrees(Math.atan2(dy,dx));
+             //   buggyFrameRotZ = Math.toDegrees(Math.atan2(dy,dx));
 
                 publishUpdate();
             }
         });
+        
+        new Subscriber(NodeChannel.IMU.getMsgPath(), new MessageListener() {
+			
+			@Override
+			public void actionPerformed(String topicName, Message m) {
+				ImuMeasurement imuM = (ImuMeasurement)m;
+				//updates roll,pitch,yaw
+				roll = Math.PI*imuM.getRoll()/180;
+				pitch = Math.PI*imuM.getPitch()/180;
+				yaw = Math.PI*imuM.getYaw()/180;
+			}
+		});
+        
+        new Subscriber(NodeChannel.IMU_MAGNETIC.getMsgPath(),new MessageListener() {	 			
+        	 			@Override
+        	 			public void actionPerformed(String topicName, Message m) {
+        	 				MagneticMeasurement magM = (MagneticMeasurement)m;
+        	 			
+        	 				// Tilt compensated magnetic field X
+        	 				  double mag_x = magM.getX() * Math.cos(pitch) + magM.getY() * Math.sin(roll) * Math.sin(pitch) + magM.getZ() * Math.cos(roll) * Math.sin(pitch);
+        	 				  // Tilt compensated magnetic field Y
+        	 				  double mag_y = magM.getY() * Math.cos(roll) - magM.getZ() * Math.sin(roll);
+        	 				
+        	 				double currAngle = -180*Math.atan2(-mag_y, mag_x)/Math.PI;
+        	 				//TODO stop this from being a 5:29 am hack 
+        	 				double offset = 0.0;
+        	 				buggyFrameRotZ = currAngle - offset;
+        	 				publishUpdate();
+        	 				System.out.println("yo");
+        	 				//TODO add a calibration step 
+        	 			}
+        	 		});
 
     }
 
@@ -69,7 +106,6 @@ public class HighTrustGPSLocalizer implements Node{
 
     @Override
     public boolean startNode() {
-        posePub = new Publisher(NodeChannel.POSE.getMsgPath());
         return true;
     }
 
