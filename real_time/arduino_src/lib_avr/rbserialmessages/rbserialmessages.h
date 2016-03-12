@@ -45,6 +45,9 @@
 #define RBSM_MID_ERROR 254
 #define RBSM_MID_DEVICE_ID 255
 
+// Message verification types
+#define RBSM_VID_ENCODER_RESET 0x0C0 // to combat sign extension
+
 // Device Types
 #define RBSM_DID_MEGA 0
 #define RBSM_DID_DRIVE_ENCODER 1

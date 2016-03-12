@@ -311,15 +311,17 @@ int main(void)
             if(read_status == 0) 
             {
                 // dipatch complete message
-                switch(new_command.message_id) 
-                {
+                switch(new_command.message_id) {
                     case RBSM_MID_ENC_RESET_REQUEST:
-                        cli();
-                        g_encoder_ticks = 0;
-                        sei();
-                        //Let high level know that the request went through
-                        g_rbsm.Send(RBSM_MID_ENC_RESET_CONFIRM, 1);
-                        printf("Encoder reset request received!\n");
+                        // we only reset if high level sends us the correct message
+                        if (new_command.data == RBSM_VID_ENCODER_RESET) {
+                            cli();
+                            g_encoder_ticks = 0;
+                            sei();
+                            //Let high level know that the request went through
+                            g_rbsm.Send(RBSM_MID_ENC_RESET_CONFIRM, 1);
+                            dbg_printf("Encoder reset request received!\n");
+                        }
                         break;
                     case RBSM_MID_MEGA_STEER_COMMAND:
                         auto_steering_angle = (int)(long)new_command.data;

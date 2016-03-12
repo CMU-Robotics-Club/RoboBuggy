@@ -60,6 +60,9 @@ public  class  RBSMNode extends SerialNode {
 	private int encTicks = 0;
 	private double potValue = -1.0;
 
+	//default values
+	private static final int ENCODER_RESET_VERIFICATION = 0xC0;
+
 	
 	// last state
 	private double accDistLast = 0.0;
@@ -304,15 +307,15 @@ public  class  RBSMNode extends SerialNode {
 			new Subscriber(NodeChannel.ENCODER_RESET.getMsgPath(), new MessageListener() {
 				@Override
 				public void actionPerformed(String topicName, Message m) {
-					byte[] bytes = new byte[6];
-					bytes[0] = (byte)RBSerialMessage.getHeaderByte("RBSM_MID_ENC_RESET_REQUEST"); //Reset request header
-					bytes[1] = (byte)0;
-					bytes[2] = (byte)0;
-					bytes[3] = (byte)0;
-					bytes[4] = (byte)(0xc0);  
-					bytes[5] = (byte)RBSerialMessage.getHeaderByte("FOOTER");
-					send(bytes);
-					}
+					byte[] message = new byte[6];
+					message[0] = (byte)RBSerialMessage.getHeaderByte("RBSM_MID_ENC_RESET_REQUEST"); //Reset request header
+					message[1] = (byte)(ENCODER_RESET_VERIFICATION >> 24);
+					message[2] = (byte)(ENCODER_RESET_VERIFICATION >> 16);
+					message[3] = (byte)(ENCODER_RESET_VERIFICATION >> 8);
+					message[4] = (byte)(ENCODER_RESET_VERIFICATION);
+					message[5] = (byte)RBSerialMessage.getHeaderByte("FOOTER");
+					send(message);
+				}
 				
 			});
 			
