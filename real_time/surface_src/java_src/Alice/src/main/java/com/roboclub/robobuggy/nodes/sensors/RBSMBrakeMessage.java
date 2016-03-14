@@ -6,7 +6,7 @@ import com.roboclub.robobuggy.serial.RBSerialMessage;
  * Class used to represent RBSM brake messages
  */
 public class RBSMBrakeMessage {
-	private static final byte HEADER = RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_BRAKE_STATE");
+	private static final byte HEADER = RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_BRAKE_COMMAND");
 	private static final byte FOOTER = RBSerialMessage.getHeaderByte("FOOTER");
 
 	private boolean brakesEngaged;

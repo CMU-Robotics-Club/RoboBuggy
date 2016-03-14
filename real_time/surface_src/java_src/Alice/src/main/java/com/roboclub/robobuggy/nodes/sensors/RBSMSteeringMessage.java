@@ -6,7 +6,7 @@ import com.roboclub.robobuggy.serial.RBSerialMessage;
  * Class used to represent RBSM steering messages
  */
 public class RBSMSteeringMessage {
-	private static final byte HEADER = RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_STEER_ANGLE");
+	private static final byte HEADER = RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_STEER_COMMAND");
 	private static final byte FOOTER = RBSerialMessage.getHeaderByte("FOOTER");
 
 	private int angle;
