@@ -1,7 +1,5 @@
 package com.roboclub.robobuggy.messages;
 
-import com.roboclub.robobuggy.ros.Message;
-
 import java.util.Date;
 
 /**
@@ -33,16 +31,4 @@ public class EncoderResetMessage extends BaseMessage {
 		this.timestamp = new Date(timestamp.getTime()).getTime();
 	}
 
-	/**{@inheritDoc}*/
-	public String toLogString() {
-		return String.format("%s,'%s'", formatDate(timestamp),
-				VERSION_ID);
-	}
-
-	/**{@inheritDoc}*/
-	public Message fromLogString(String str) {
-		String[] spl = str.split(",");
-		Date d = tryToParseDate(spl[0]);
-		return new EncoderResetMessage(d);
-	}
 }
