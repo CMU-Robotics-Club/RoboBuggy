@@ -40,7 +40,9 @@ public final class Robot implements RosMaster {
 	@Override
 	public boolean shutDown() {
 		new RobobuggyLogicNotification("Shutting down Robot", RobobuggyMessageLevel.WARNING);
-		return nodeList.stream().map(n -> n.shutdown()).reduce(true, (a,b) -> a&&b);
+		boolean result = nodeList.stream().map(n -> n.shutdown()).reduce(true, (a,b) -> a&&b);
+		instance = null;
+		return result;
 	}
 	
 	/**

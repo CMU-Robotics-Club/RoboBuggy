@@ -1,5 +1,11 @@
 package com.roboclub.robobuggy.main;
 
+import gnu.io.CommPortIdentifier;
+
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+
 import Jama.Matrix;
 
 /**
@@ -20,5 +26,21 @@ public final class Util {
 		return result;
 	}
 
+    public static List<String> getAvailablePorts() {
+
+        List<String> list = new ArrayList<String>();
+
+        Enumeration<?> portList = CommPortIdentifier.getPortIdentifiers();
+
+        while (portList.hasMoreElements()) {
+            CommPortIdentifier portId = (CommPortIdentifier) portList.nextElement();
+            if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL) {
+                list.add(portId.getName());
+            }
+        }
+
+        return list;
+    }
+	
 	
 }

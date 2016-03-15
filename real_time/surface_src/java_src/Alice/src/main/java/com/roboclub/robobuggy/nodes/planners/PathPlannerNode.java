@@ -56,7 +56,7 @@ public abstract class PathPlannerNode extends BuggyDecoratorNode {
 	
 	/**{@inheritDoc}*/
 	@Override
-	protected final boolean shutdownDecoratorNode() {
+	protected boolean shutdownDecoratorNode() {
 		//Always shuts down properly
 		return true;
 	}

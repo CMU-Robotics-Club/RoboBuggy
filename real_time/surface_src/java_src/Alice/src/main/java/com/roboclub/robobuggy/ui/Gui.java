@@ -70,6 +70,7 @@ public final class Gui extends JFrame {
 		tabs.addTab(new PoseGraphsPanel(),"poses");
 		tabs.addTab(new ImuPanel(),"IMU");
 		tabs.addTab(new  AutonomousPanel(),"Autonomous");
+		tabs.addTab(new ConfigurationPanel(),"Configuration");
 		mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
 		mainWindow.repaint();		
 		windowList.add(mainWindow);
@@ -87,10 +88,11 @@ public final class Gui extends JFrame {
 	/**
 	 * Closes the {@link Gui}
 	 */
-	public static void close() {
+	public synchronized static void close() {
 		new RobobuggyLogicNotification("trying to close gui", RobobuggyMessageLevel.NOTE);
 		instance.dispatchEvent(new WindowEvent(instance, WindowEvent.WINDOW_CLOSING));
 		new RobobuggyLogicNotification("gui has been closed", RobobuggyMessageLevel.NOTE);
+		instance = null;
 	}
 
 }
