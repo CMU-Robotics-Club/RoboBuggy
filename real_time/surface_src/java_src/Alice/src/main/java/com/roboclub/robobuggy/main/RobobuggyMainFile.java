@@ -28,7 +28,6 @@ public class RobobuggyMainFile {
 	 */
     public static void main(String[] args) {
 
-
         try {
 			JNISetup.setupJNI(); //must run for jni to install
 			//note that errors are just printed to the console since the gui and logging system  has not been created yet

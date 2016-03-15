@@ -1,5 +1,9 @@
 package com.roboclub.robobuggy.main;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.orsoncharts.util.json.JSONObject;
+
 
 
 
@@ -51,5 +55,22 @@ public final class  RobobuggyConfigFile {
 	//is where values from this file are saved so that they can be updated between runs
 	public static String CONFIG_FILE ="THIS FEATURE HAS NOT BEEN IMPLEMENTED YET";
 	
-
+	public static void saveConfigFile(){
+		JsonObject settings = new JsonObject();
+		settings.addProperty("COM_PORT_IMU", COM_PORT_IMU);
+		settings.addProperty("COM_PORT_RBSM", COM_PORT_RBSM);
+		settings.addProperty("PORT_VISION", PORT_VISION);
+		settings.addProperty("COM_PORT_GPS", COM_PORT_GPS);
+		settings.addProperty("WAYPOINT_SOURCE_LOG_FILE", WAYPOINT_SOURCE_LOG_FILE);
+		settings.addProperty("PLAY_BACK_SOURCE_FILE", PLAY_BACK_SOURCE_FILE);
+		
+		//TODO add other settings as they are created 
+	}
+	
+	public static boolean loadConfigFile(){
+		//TODO
+		return false;
+	}
+	
+	
 }
