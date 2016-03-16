@@ -88,7 +88,7 @@ public final class Gui extends JFrame {
 	/**
 	 * Closes the {@link Gui}
 	 */
-	public synchronized static void close() {
+	public static synchronized  void close() {
 		new RobobuggyLogicNotification("trying to close gui", RobobuggyMessageLevel.NOTE);
 		instance.dispatchEvent(new WindowEvent(instance, WindowEvent.WINDOW_CLOSING));
 		new RobobuggyLogicNotification("gui has been closed", RobobuggyMessageLevel.NOTE);

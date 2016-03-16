@@ -27,7 +27,8 @@ public class RobobuggyMainFile {
 	 * @param args : None
 	 */
     public static void main(String[] args) {
-
+    	
+    	
         try {
 			JNISetup.setupJNI(); //must run for jni to install
 			//note that errors are just printed to the console since the gui and logging system  has not been created yet
@@ -43,6 +44,9 @@ public class RobobuggyMainFile {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+        
+    	RobobuggyConfigFile.loadConfigFile(); //TODO make sure that logic Notification is setup before this point
+
    
 
 		//Initialize message headers
@@ -53,9 +57,9 @@ public class RobobuggyMainFile {
 
         
      	
-    	if (RobobuggyConfigFile.DATA_PLAY_BACK) {
+    	if (RobobuggyConfigFile.isDataPlayBack()) {
     		//Play back mode enabled
-    		new SensorPlayer(RobobuggyConfigFile.PLAY_BACK_SOURCE_FILE, 1);
+    		new SensorPlayer(RobobuggyConfigFile.getPLAY_BACK_SOURCE_FILE(), 1);
 
         }
         

@@ -33,7 +33,7 @@ public class ConfigurationPanel extends RobobuggyGUIContainer{
 		
 		
 		addComponent(new JLabel("Config File"), 0, 0, .1, .1);
-		JLabel currentConfigFileLabel = new JLabel(RobobuggyConfigFile.CONFIG_FILE);
+		JLabel currentConfigFileLabel = new JLabel(RobobuggyConfigFile.getCONFIG_FILE());
 		addComponent(currentConfigFileLabel ,.3,0,.4,.1);
 
 		JButton ConfigFileSelectBtn = new JButton("Select File");
@@ -44,15 +44,15 @@ public class ConfigurationPanel extends RobobuggyGUIContainer{
 			public void actionPerformed(ActionEvent e) {
 				//Create a file chooser
 				final JFileChooser fc = new JFileChooser();
+				fc.setCurrentDirectory(new File(RobobuggyConfigFile.getCONFIG_FILE()));
 				int returnVal = fc.showOpenDialog(null);
 				
 				//only update the file if a file was selected properly 
 				if(returnVal == fc.APPROVE_OPTION){
 					File SelectedFile = fc.getSelectedFile();
-					RobobuggyConfigFile.CONFIG_FILE = SelectedFile.getAbsolutePath();
-					currentConfigFileLabel.setText(RobobuggyConfigFile.CONFIG_FILE);
+					RobobuggyConfigFile.setCONFIG_FILE(SelectedFile.getAbsolutePath());
+					currentConfigFileLabel.setText(RobobuggyConfigFile.getCONFIG_FILE());
 						RobobuggyMainFile.resetSystem();
-					//TODO update stuff in the back end
 				}else{
 					new RobobuggyLogicNotification("did not select a file properly", RobobuggyMessageLevel.WARNING);
 				}
@@ -66,7 +66,8 @@ public class ConfigurationPanel extends RobobuggyGUIContainer{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
+		    	RobobuggyConfigFile.saveConfigFile();
+
 			}
 		});
 		addComponent(SaveConfigButton, .9, 0, .1, .1);
@@ -75,7 +76,7 @@ public class ConfigurationPanel extends RobobuggyGUIContainer{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
+		    	RobobuggyConfigFile.loadConfigFile();
 			}
 		});
 		addComponent(loadConfigButton, .8, 0, .1, .1);
@@ -84,7 +85,7 @@ public class ConfigurationPanel extends RobobuggyGUIContainer{
 		addComponent(new JLabel("Way Point File"),0,.1,.1,.1);
 		JButton WayPointFileSelectBtn = new JButton("Select File"); 
 		addComponent(WayPointFileSelectBtn, .1, .1, .2, .1);
-		JLabel currentWayPointLable = new  JLabel(RobobuggyConfigFile.WAYPOINT_SOURCE_LOG_FILE);
+		JLabel currentWayPointLable = new  JLabel(RobobuggyConfigFile.getWAYPOINT_SOURCE_LOG_FILE());
 		addComponent(currentWayPointLable,.3,.1,.4,.1);
 
 		WayPointFileSelectBtn.addActionListener(new ActionListener() {
@@ -93,13 +94,14 @@ public class ConfigurationPanel extends RobobuggyGUIContainer{
 			public void actionPerformed(ActionEvent e) {
 				//Create a file chooser
 				final JFileChooser fc = new JFileChooser();
+				fc.setCurrentDirectory(new File(RobobuggyConfigFile.getCONFIG_FILE()));
 				int returnVal = fc.showOpenDialog(null);
 				
 				//only update the file if a file was selected properly 
 				if(returnVal == fc.APPROVE_OPTION){
 					File SelectedFile = fc.getSelectedFile();
-					RobobuggyConfigFile.WAYPOINT_SOURCE_LOG_FILE = SelectedFile.getAbsolutePath();
-					currentWayPointLable.setText(RobobuggyConfigFile.WAYPOINT_SOURCE_LOG_FILE);
+					RobobuggyConfigFile.setWAYPOINT_SOURCE_LOG_FILE(SelectedFile.getAbsolutePath());
+					currentWayPointLable.setText(RobobuggyConfigFile.getWAYPOINT_SOURCE_LOG_FILE());
 					//TODO update stuff in the back end
 				}else{
 					new RobobuggyLogicNotification("did not select a file properly", RobobuggyMessageLevel.WARNING);
@@ -112,7 +114,7 @@ public class ConfigurationPanel extends RobobuggyGUIContainer{
 		addComponent(new JLabel("Play Back Log"),0,.2,.1,.1);
 		JButton playBackSlectFileButton = new JButton("Select File");
 		addComponent(playBackSlectFileButton, .1, .2, .2, .1);
-		JLabel currentPlayBackSourceFileLabel = new JLabel(RobobuggyConfigFile.PLAY_BACK_SOURCE_FILE);
+		JLabel currentPlayBackSourceFileLabel = new JLabel(RobobuggyConfigFile.getPLAY_BACK_SOURCE_FILE());
 		addComponent(currentPlayBackSourceFileLabel,.3,.2,.4,.1);
 		playBackSlectFileButton.addActionListener(new ActionListener() {
 			
@@ -121,13 +123,14 @@ public class ConfigurationPanel extends RobobuggyGUIContainer{
 				
 				//Create a file chooser
 				final JFileChooser fc = new JFileChooser();
+				fc.setCurrentDirectory(new File(RobobuggyConfigFile.getCONFIG_FILE()));
 				int returnVal = fc.showOpenDialog(null);
 				
 				//only update the file if a file was selected properly 
 				if(returnVal == fc.APPROVE_OPTION){
 					File SelectedFile = fc.getSelectedFile();
-					RobobuggyConfigFile.PLAY_BACK_SOURCE_FILE = SelectedFile.getAbsolutePath();
-					currentPlayBackSourceFileLabel.setText(RobobuggyConfigFile.PLAY_BACK_SOURCE_FILE);
+					RobobuggyConfigFile.setPLAY_BACK_SOURCE_FILE(SelectedFile.getAbsolutePath());
+					currentPlayBackSourceFileLabel.setText(RobobuggyConfigFile.getPLAY_BACK_SOURCE_FILE());
 					//TODO update stuff in the back end
 				}else{
 					new RobobuggyLogicNotification("did not select a file properly", RobobuggyMessageLevel.WARNING);
@@ -141,6 +144,7 @@ public class ConfigurationPanel extends RobobuggyGUIContainer{
 		///////////////////////// IMU ////////////////////////////////
 		addComponent(new JLabel("IMU Port"), 0, .4, .1, .05);
 		JComboBox imuPortSelector = new JComboBox(portOptions);
+		imuPortSelector.setSelectedIndex(findPortIndex(RobobuggyConfigFile.getCOM_PORT_IMU(),portOptions));
 		addComponent(imuPortSelector, .1, .4, .2, .05);
 		
 		imuPortSelector.addActionListener(new ActionListener() {
@@ -149,15 +153,15 @@ public class ConfigurationPanel extends RobobuggyGUIContainer{
 			public void actionPerformed(ActionEvent e) {
 				//TODO bring down the system 
 				int index = imuPortSelector.getSelectedIndex(); //TODO lots of port logic 
-				RobobuggyConfigFile.COM_PORT_IMU = portOptions[index];
+				RobobuggyConfigFile.setCOM_PORT_IMU(portOptions[index]);
 				if(index == 0){
 					//then we decided to select no port so we should not use this sensor 
-					RobobuggyConfigFile.IMU_ENABLED = false;
+					RobobuggyConfigFile.setImuEnabled(false);
 				}else{
-					RobobuggyConfigFile.IMU_ENABLED = true;
+					RobobuggyConfigFile.setImuEnabled(true);
 
 				}
-				
+				System.out.println(RobobuggyConfigFile.getCOM_PORT_IMU());
 				//TODO bring back up the system
 				
 			}
@@ -166,6 +170,7 @@ public class ConfigurationPanel extends RobobuggyGUIContainer{
 		/////////////////////////// GPS /////////////////////////////////
 		addComponent(new JLabel("GPS Port"), 0, .45, .1, .05);
 		JComboBox gpsPortSelector = new JComboBox(portOptions);
+		gpsPortSelector.setSelectedIndex(findPortIndex(RobobuggyConfigFile.getCOM_PORT_GPS(),portOptions));
 		addComponent(gpsPortSelector, .1, .45, .2, .05);
 		gpsPortSelector.addActionListener(new ActionListener() {
 			
@@ -173,12 +178,12 @@ public class ConfigurationPanel extends RobobuggyGUIContainer{
 			public void actionPerformed(ActionEvent e) {
 				//TODO bring down the system 
 				int index = gpsPortSelector.getSelectedIndex(); //TODO lots of port logic 
-				RobobuggyConfigFile.COM_PORT_GPS = portOptions[index];
+				RobobuggyConfigFile.setCOM_PORT_GPS(portOptions[index]);
 				if(index == 0){
 					//then we decided to select no port so we should not use this sensor 
-					RobobuggyConfigFile.GPS_ENABLED = false;
+					RobobuggyConfigFile.setGps_enabled(false);
 				}else{
-					RobobuggyConfigFile.GPS_ENABLED = true;
+					RobobuggyConfigFile.setGps_enabled(true);
 				}
 				
 				//TODO bring back up the system				
@@ -188,6 +193,7 @@ public class ConfigurationPanel extends RobobuggyGUIContainer{
 		///////////////////////////// RBSM ////////////////////////////////
 		addComponent(new JLabel("RBSM Port"), 0, .5, .1, .05);
 		JComboBox rbsmPortSelector = new JComboBox(portOptions);
+		rbsmPortSelector.setSelectedIndex(findPortIndex(RobobuggyConfigFile.getCOM_PORT_RBSM(),portOptions));
 		addComponent(rbsmPortSelector, .1, .5, .2, .05);
 		rbsmPortSelector.addActionListener(new ActionListener() {
 			
@@ -195,12 +201,12 @@ public class ConfigurationPanel extends RobobuggyGUIContainer{
 			public void actionPerformed(ActionEvent e) {
 				//TODO bring down the system 
 				int index = rbsmPortSelector.getSelectedIndex(); //TODO lots of port logic 
-				RobobuggyConfigFile.COM_PORT_RBSM = portOptions[index];
+				RobobuggyConfigFile.setCOM_PORT_RBSM(portOptions[index]);
 				if(index == 0){
 					//then we decided to select no port so we should not use this sensor 
-					RobobuggyConfigFile.ENCODER_ENABLED = false;
+					RobobuggyConfigFile.setEncoder_enabled(false);
 				}else{
-					RobobuggyConfigFile.ENCODER_ENABLED = true;
+					RobobuggyConfigFile.setEncoder_enabled(true);
 				}
 				
 				//TODO bring back up the system						
@@ -209,8 +215,10 @@ public class ConfigurationPanel extends RobobuggyGUIContainer{
 		
 		
 		///////////////////////////// VISION System ////////////////////////
+		//TODO have the vison system ports reported and make the vision system follow this system
 		addComponent(new JLabel("Vision System Port"), 0, .55, .1, .05);
 		JComboBox visionSystemPortSelector = new JComboBox(portOptions);
+		visionSystemPortSelector.setSelectedIndex(findPortIndex(RobobuggyConfigFile.getPORT_VISION(),portOptions));
 		addComponent(visionSystemPortSelector, .1, .55, .2, .05);  //TODO do this for cams
 		visionSystemPortSelector.addActionListener(new ActionListener() {
 			
@@ -218,12 +226,12 @@ public class ConfigurationPanel extends RobobuggyGUIContainer{
 			public void actionPerformed(ActionEvent e) {
 				//TODO bring down the system 
 				int index = visionSystemPortSelector.getSelectedIndex(); //TODO lots of port logic 
-				RobobuggyConfigFile.PORT_VISION = portOptions[index];
+				RobobuggyConfigFile.setPORT_VISION(portOptions[index]);
 				if(index == 0){
 					//then we decided to select no port so we should not use this sensor 
-					RobobuggyConfigFile.VISION_SYSTEM_ENABLED = false;
+					RobobuggyConfigFile.setVisionSystemEnabled(false);
 				}else{
-					RobobuggyConfigFile.VISION_SYSTEM_ENABLED = true;
+					RobobuggyConfigFile.setVisionSystemEnabled(true);
 				}
 				
 				//TODO bring back up the system				
@@ -233,8 +241,27 @@ public class ConfigurationPanel extends RobobuggyGUIContainer{
 		
 	}
 	
-	//TODO select port default 
 	
+	/**
+	 * evaluates to index of when the string port is in the portList if the string port is in the portList
+	 * otherwise evaluate to 0
+	 * @param port
+	 * @param portList
+	 * @return
+	 */
+	public int findPortIndex(String port,String[] portList){
+		int result = 0; //the default should be 0, since it represents no port selected
+		for(int i = 1;i<portList.length;i++){
+			if(portList[i].equals(port)){
+				result = i;
+			}
+		}
+		return result;
+	}
+	
+	/*
+	 * Evaluates to a string array of all available com ports and the option "NO PORT SELECTED"
+	 */
 	public String[] getPortOptions(){
 		List<String> ports = Util.getAvailablePorts();
 		String[] portOptions = new String[1+ports.size()];

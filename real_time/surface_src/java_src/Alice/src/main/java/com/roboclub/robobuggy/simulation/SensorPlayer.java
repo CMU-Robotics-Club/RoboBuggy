@@ -7,6 +7,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
+import com.roboclub.robobuggy.main.Util;
 import com.roboclub.robobuggy.messages.BaseMessage;
 import com.roboclub.robobuggy.messages.BrakeControlMessage;
 import com.roboclub.robobuggy.messages.BrakeMessage;
@@ -44,7 +45,6 @@ import java.io.UnsupportedEncodingException;
 public class SensorPlayer extends Thread {
 
     private String path;
-    private Gson translator;
     private double playbackSpeed;
     private boolean isPaused = false;
 
@@ -77,7 +77,6 @@ public class SensorPlayer extends Thread {
         loggingButtonPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
         logicNotificationPub = new Publisher(NodeChannel.LOGIC_NOTIFICATION.getMsgPath());
 
-        translator = new GsonBuilder().create();
 
         new RobobuggyLogicNotification("initializing the SensorPlayer", RobobuggyMessageLevel.NOTE);
         path = filePath;
@@ -129,11 +128,9 @@ public class SensorPlayer extends Thread {
     @Override
     public void run() {
 
+        Gson translator = new GsonBuilder().create();
         try {
-
-            InputStreamReader fileReader = new InputStreamReader(new FileInputStream(new File(path)), "UTF-8");
-            JsonObject logFile = translator.fromJson(fileReader, JsonObject.class);
-
+        	JsonObject logFile  = Util.readJSONFile(path);
             if(!PlayBackUtil.validateLogFileMetadata(logFile)) {
                 new RobobuggyLogicNotification("Log file doesn't have the proper header metadata!", RobobuggyMessageLevel.EXCEPTION);
                 return;
