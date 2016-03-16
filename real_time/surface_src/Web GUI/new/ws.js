@@ -43,12 +43,15 @@ function read() {
         dataSocket.send("Please add me to the data group!");    
     }
 
+    var cs = new CameraStream("camera");
     var cameraSocket = new WebSocket("ws://127.0.0.1:8080");
     cameraSocket.binaryType = "arraybuffer";
-    cameraSocket.onmessage = onCameraMessage;
+    cameraSocket.onmessage = function(event) {
+        cs.handlePacket(event);
+    };
     cameraSocket.onopen = function() {
         cameraSocket.send("I wanna see the freaking camera plz");
-    }
+    };
 }
 
 function updateIMU(msg) {
@@ -64,8 +67,6 @@ function updateIMU(msg) {
     imu2.setAngles(r, p, y);
     imu3.setAngles(r, p, y);
     imu4.setAngles(r, p, y);
-
-
 }
 
 function updateEncoder(msg) {
@@ -101,61 +102,3 @@ function onDataMessage(event) {
         return;
     }
 }
-
-function onCameraMessage(event) {
-
-    blob=event;
-    var r=String.fromCharCode.apply(null, new Uint8Array(blob.data));
-     
-
-    if (started==false){
-            if (r==9){
-                    imageSize=parseInt(r);
-            }else{
-                    imageSize=parseInt(r.substring(0,9));
-                    image64+=r.substring(9);
-                    readSize+=parseInt(r.length-9);
-            }
-            started=true;
-    }else{
-            image64+=r;
-            readSize+=parseInt(r.length);
-    }
-    if (readSize==imageSize){
-            img=new Image();
-        img.onload=function(){
-            ctx.drawImage(img,0,0,img.width,img.height,0,0,width,height);
-        }
-            img.src='data:image/jpg;base64,'+image64;
-
-            readSize=0;
-            started=false;
-            image64="";
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

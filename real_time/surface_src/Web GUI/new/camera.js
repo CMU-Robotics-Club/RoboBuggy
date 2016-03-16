@@ -2,16 +2,14 @@
 
 class CameraStream {
     constructor(id) {
-        //this.div = document.getElementById(id);
-        //console.log(this.div.height);
-        //console.log(this.div.width);
+        this.div = document.getElementById(id);
+        console.log(this.div.height);
+        console.log(this.div.width);
 
-        //this.canvas = document.createElement('canvas');
-        //this.canvas.height = this.div.getAttribute("height");
-        //this.canvas.width = this.div.getAttribute("width");
-        //this.div.appendChild(this.canvas);
-
-        this.canvas = document.getElementById(id);
+        this.canvas = document.createElement('canvas');
+        this.canvas.height = this.div.getAttribute("height");
+        this.canvas.width = this.div.getAttribute("width");
+        this.div.appendChild(this.canvas);
 
         this.currentString = "";
         var ctx = this.canvas.getContext("2d");
@@ -68,14 +66,10 @@ class CameraStream {
 
 window.onload = function() {
     var cs = new CameraStream("camera");
-    var cs1 = new CameraStream("camera1");
-    var cs2 = new CameraStream("camera2");
     var cameraSocket = new WebSocket("ws://127.0.0.1:8080");
     cameraSocket.binaryType = "arraybuffer";
     cameraSocket.onmessage = function(event) {
         cs.handlePacket(event);
-        cs1.handlePacket(event);
-        cs2.handlePacket(event);
     };
     cameraSocket.onopen = function() {
         cameraSocket.send("I wanna see camera pls");
