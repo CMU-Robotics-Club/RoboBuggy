@@ -46,6 +46,7 @@ public class SensorPlayer extends Thread {
     private String path;
     private Gson translator;
     private double playbackSpeed;
+    private boolean isPaused = false;
 
     private Publisher imuPub;
     private Publisher magPub;
@@ -97,18 +98,30 @@ public class SensorPlayer extends Thread {
     public void setupPlaybackTrigger() {
         new Subscriber(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath(), new MessageListener() {
             @Override
-            public void actionPerformed(String topicName, Message m) {
+            public synchronized void actionPerformed(String topicName, Message m) {
                 GuiLoggingButtonMessage message = (GuiLoggingButtonMessage)m;
                 if (message.getLoggingMessage().equals(GuiLoggingButtonMessage.LoggingMessage.START)) {
-                    if (!SensorPlayer.this.isAlive()) {
+
+                    //unpause it if we paused, or start fresh if we haven't paused
+                    if (SensorPlayer.this.isPaused) {
+                        SensorPlayer.this.isPaused = false;
+                        new RobobuggyLogicNotification("Resumed playback", RobobuggyMessageLevel.NOTE);
+                    }
+                    else {
                         SensorPlayer.this.start();
+                        new RobobuggyLogicNotification("Started playback", RobobuggyMessageLevel.NOTE);
                     }
                 }
                 else if (message.getLoggingMessage().equals(GuiLoggingButtonMessage.LoggingMessage.STOP)) {
-                    if (SensorPlayer.this.isAlive()) {
-                        SensorPlayer.this.interrupt();
+                    if (!SensorPlayer.this.isPaused) {
+                        SensorPlayer.this.isPaused = true;
+                        new RobobuggyLogicNotification("Paused playback", RobobuggyMessageLevel.NOTE);
+                    }
+                    else {
+                        new RobobuggyLogicNotification("Quit playback, please restart GUI to reset", RobobuggyMessageLevel.NOTE);
                     }
                 }
+
             }
         });
     }
@@ -130,6 +143,12 @@ public class SensorPlayer extends Thread {
 
             JsonArray sensorDataArray = logFile.getAsJsonArray("sensor_data");
             for (JsonElement sensorAsJElement: sensorDataArray) {
+
+                // spin in a tight loop until we've unpaused
+                while (isPaused) {
+                    Thread.sleep(100);
+                }
+
                 boolean waitForTimeDiff = true;
 
                 if(sensorAsJElement.isJsonObject()){
@@ -189,7 +208,7 @@ public class SensorPlayer extends Thread {
                             break;
                         case TERMINATING_VERSION_ID:
                             new RobobuggyLogicNotification("Stopping playback, hit a STOP", RobobuggyMessageLevel.NOTE);
-                            break;
+                            return;
                         default:
                             waitForTimeDiff = false;
                             break;
@@ -260,7 +279,6 @@ public class SensorPlayer extends Thread {
             new RobobuggyLogicNotification("Log file had unsupported encoding", RobobuggyMessageLevel.EXCEPTION);
         }
     }
-
 
 
     /**
