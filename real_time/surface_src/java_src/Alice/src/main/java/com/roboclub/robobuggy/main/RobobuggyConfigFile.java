@@ -1,21 +1,11 @@
 package com.roboclub.robobuggy.main;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.orsoncharts.util.json.JSONObject;
-
-
-
 
 // add JSON parser for RobobuggyConfigFile
 
@@ -108,7 +98,6 @@ public final class  RobobuggyConfigFile {
 		try {
 			JsonObject configJson = Util.readJSONFile(getCONFIG_FILE());
 			setCOM_PORT_IMU(removeQuotes(configJson.get("COM_PORT_IMU").toString()));
-			System.out.println("comPORT:"+getCOM_PORT_IMU());
 			setCOM_PORT_GPS(removeQuotes(configJson.get("COM_PORT_GPS").toString()));
 			setCOM_PORT_RBSM(removeQuotes(configJson.get("COM_PORT_RBSM").toString()));
 			setPORT_VISION(removeQuotes(configJson.get("PORT_VISION").toString()));
