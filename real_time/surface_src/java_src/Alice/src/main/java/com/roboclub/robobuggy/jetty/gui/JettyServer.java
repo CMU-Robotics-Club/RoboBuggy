@@ -60,9 +60,16 @@ public class JettyServer {
         ContextHandler newContext = new ContextHandler("/new");
         newContext.setHandler(newRes);
         
+        // Static handler for test
+        ResourceHandler cameraRes = new ResourceHandler();
+        cameraRes.setWelcomeFiles(new String[]{"index.html"});
+        cameraRes.setResourceBase("../../Web GUI/camera");
+        ContextHandler cameraContext = new ContextHandler("/camera");
+        cameraContext.setHandler(cameraRes);
+        
         // Aggregate the various contexts
         ContextHandlerCollection contexts = new ContextHandlerCollection();
-        contexts.setHandlers(new Handler[] {contextRoot, basicContext, newContext, new DefaultHandler()});
+        contexts.setHandlers(new Handler[] {contextRoot, basicContext, newContext, cameraContext, new DefaultHandler()});
         
         // Set the server appropriately for those contexts
         server.setHandler(contexts);        

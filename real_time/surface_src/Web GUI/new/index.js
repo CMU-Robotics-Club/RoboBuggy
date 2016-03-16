@@ -26,7 +26,7 @@ class AngleViewer {
     this.renderer = new THREE.WebGLRenderer({
       'canvas': this.canvas,
     });
-    this.renderer.setSize(this.canvas.height, this.canvas.width);
+    this.renderer.setSize(this.canvas.height, this.canvas.width); 
 
     this.robot = this.createRobot(3, 1, 1);
     this.scene.add(this.robot);
