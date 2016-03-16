@@ -2,8 +2,6 @@ package com.roboclub.robobuggy.main;
 
 import com.roboclub.robobuggy.nodes.localizers.HighTrustGPSLocalizer;
 import com.roboclub.robobuggy.nodes.planners.SweepNode;
-import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
-import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
 import com.roboclub.robobuggy.nodes.sensors.GpsNode;
 import com.roboclub.robobuggy.nodes.sensors.ImuNode;
 import com.roboclub.robobuggy.nodes.sensors.LoggingNode;
@@ -11,9 +9,6 @@ import com.roboclub.robobuggy.nodes.sensors.RBSMNode;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.NodeChannel;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.LinkedList;
 import java.util.List;
 

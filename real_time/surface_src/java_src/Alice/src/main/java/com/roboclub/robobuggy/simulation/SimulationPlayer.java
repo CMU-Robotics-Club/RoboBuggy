@@ -1,24 +1,14 @@
 package com.roboclub.robobuggy.simulation;
 
-import java.beans.Encoder;
-import java.util.Date;
-
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
-
-//import javafx.scene.control.ButtonBar.ButtonData;
-
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
-import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
-import com.roboclub.robobuggy.nodes.baseNodes.BuggyNode;
 import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
+
+//import javafx.scene.control.ButtonBar.ButtonData;
 
 /**
  * synthesizes values so that we can test without the actual peripherals

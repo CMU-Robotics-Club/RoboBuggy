@@ -1,12 +1,11 @@
 package com.roboclub.robobuggy.ui;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.JButton;
-
 import com.roboclub.robobuggy.main.Robot;
 import com.roboclub.robobuggy.ros.Node;
+
+import javax.swing.JButton;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class creates a gui element for showing the status of every node that is currently running on buggy
