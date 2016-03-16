@@ -86,7 +86,7 @@ public class LoggingNode extends BuggyDecoratorNode {
 
         setupSubscriberList();
 
-        if (!RobobuggyConfigFile.DATA_PLAY_BACK) {
+        if (!RobobuggyConfigFile.isDataPlayBack()) {
             setupLoggingTrigger();
         }
 

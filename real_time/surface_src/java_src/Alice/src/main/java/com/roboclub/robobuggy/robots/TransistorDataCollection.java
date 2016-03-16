@@ -40,7 +40,7 @@ public class TransistorDataCollection extends AbstractRobot {
 	}
 	new RobobuggyLogicNotification("Logic Exception Setup properly" ,  RobobuggyMessageLevel.NOTE);
 	// Initialize Nodes
-		nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.COM_PORT_IMU));
+		nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.getCOM_PORT_IMU()));
 		nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION,
 				NodeChannel.getLoggingChannels()));
 		nodeList.add(new HighTrustGPSLocalizer());

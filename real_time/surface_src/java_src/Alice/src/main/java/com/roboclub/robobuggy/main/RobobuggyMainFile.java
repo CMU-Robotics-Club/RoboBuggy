@@ -10,9 +10,16 @@ import com.roboclub.robobuggy.utilities.JNISetup;
 
 import gnu.io.CommPortIdentifier;
 
+import java.awt.Window;
+import java.io.File;
+import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+
+import jdk.nashorn.internal.runtime.regexp.joni.Config;
 
 
 /** This class is the driver starting up the robobuggy program, if you want the buggy to drive itself you should run this node */
@@ -31,8 +38,8 @@ public class RobobuggyMainFile {
 	 * @param args : None
 	 */
     public static void main(String[] args) {
-
-
+    	
+    	
         try {
 			JNISetup.setupJNI(); //must run for jni to install
 			//note that errors are just printed to the console since the gui and logging system  has not been created yet
@@ -48,22 +55,24 @@ public class RobobuggyMainFile {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+        
+    	RobobuggyConfigFile.loadConfigFile(); //TODO make sure that logic Notification is setup before this point
+
    
 
-        List<String> ports = getAvailablePorts();
 		//Initialize message headers
 		RBSerialMessage.initializeHeaders();
 
-        System.out.println(ports);
 
         
      	
     	if (RobobuggyConfigFile.DATA_PLAY_BACK) {
             robot = SimRobot.getInstance();//TransistorAuton;//SimRobot.getInstance();
     		//Play back mode enabled
-    		new SensorPlayer("logs/2016-03-12-18-15-17/sensors_2016-03-12-18-15-17.txt",1);//"logs/2016-03-12-17-37-04/sensors_2016-03-12-17-37-04.txt", 1);
+    		new SensorPlayer(RobobuggyConfigFile.getPLAY_BACK_SOURCE_FILE(),1);
         }else{
         	robot = TransistorDataCollection.getInstance();
+
         }
     	
         Gui.getInstance();
@@ -75,20 +84,20 @@ public class RobobuggyMainFile {
 
     }
     
-    private static List<String> getAvailablePorts() {
-
-        List<String> list = new ArrayList<String>();
-
-        Enumeration<?> portList = CommPortIdentifier.getPortIdentifiers();
-
-        while (portList.hasMoreElements()) {
-            CommPortIdentifier portId = (CommPortIdentifier) portList.nextElement();
-            if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL) {
-                list.add(portId.getName());
-            }
-        }
-
-        return list;
+    
+    /**
+     * This method will reset and reload all parameters 
+     * NOTE this method does not reset the ConfigurationPanel
+     * @return 
+     */
+    public static void resetSystem(){
+    	Robot.getInstance().shutDown();
+ //   	Gui.close();
+ //   	Gui.getInstance();
+    	Robot.getInstance();
+    	//TODO make this work for real 
+    	
     }
+    
 
 }
