@@ -249,7 +249,8 @@ public  class  RBSMNode extends SerialNode {
 			//System.out.println(String.format("Auton state: %d", message.getDataWord()));
 		}
 		else {
-				new RobobuggyLogicNotification("Invalid RBSM message header: " + headerByte+" Message:"+message.getDataWord(), RobobuggyMessageLevel.NOTE);
+				new RobobuggyLogicNotification("Invalid RBSM message header: " + headerByte+ 
+						" Message:"+message.getDataWord(), RobobuggyMessageLevel.NOTE);
 		}
 		
 		//Feed the watchdog
