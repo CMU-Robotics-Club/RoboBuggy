@@ -200,6 +200,23 @@ public  class  RBSMNode extends SerialNode {
 			encTicks = message.getDataWord() & 0xFFFF;
 			messagePubEnc.publish(estimateVelocity(message.getDataWord()));
 		}
+		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_ERROR")) {
+			new RobobuggyLogicNotification("RBSM_MID_ERROR:"+message.getDataWord(), RobobuggyMessageLevel.EXCEPTION);
+		}
+		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_ENC_RESET_REQUEST")) {
+			new RobobuggyLogicNotification("RBSM_MID_ENC_RESET_REQUEST:", RobobuggyMessageLevel.NOTE);
+		}
+		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_ENC_RESET_CONFIRM")) {
+			new RobobuggyLogicNotification("RBSM_MID_ENC_RESET_CONFIRM:", RobobuggyMessageLevel.NOTE);
+		}
+		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_BRAKE_COMMAND")) {
+			new RobobuggyLogicNotification("RBSM_MID_MEGA_BRAKE_COMMAND:"+message.getDataWord(), RobobuggyMessageLevel.NOTE);
+
+		}		
+		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_STEER_COMMAND")) {
+			new RobobuggyLogicNotification("RBSM_MID_MEGA_STEER_COMMAND:"+message.getDataWord(), RobobuggyMessageLevel.NOTE);
+		}
+		
 		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_ENC_TIMESTAMP")){
 			messagePubEncTime.publish(new EncoderTimeMessage(message.getDataWord()));
 			//System.out.println(String.format("Encoder timestamp: %d", message.getDataWord()));
@@ -232,7 +249,7 @@ public  class  RBSMNode extends SerialNode {
 			//System.out.println(String.format("Auton state: %d", message.getDataWord()));
 		}
 		else {
-				new RobobuggyLogicNotification("Invalid RBSM message header: " + headerByte, RobobuggyMessageLevel.NOTE);
+				new RobobuggyLogicNotification("Invalid RBSM message header: " + headerByte+" Message:"+message.getDataWord(), RobobuggyMessageLevel.NOTE);
 		}
 		
 		//Feed the watchdog
