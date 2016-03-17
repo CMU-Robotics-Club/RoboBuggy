@@ -48,11 +48,11 @@ public class TransistorAuton extends AbstractRobot{
 //	nodeList.add(new OdomLocalizer());
 	
 	//this subset of nodes is only added when we are in online mode 
-		nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.getCOM_PORT_GPS()));
-		nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.getCOM_PORT_IMU()));
+		nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.getComPortGPS()));
+		nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.getComPortImu()));
 		nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION,
 				NodeChannel.getLoggingChannels()));
-		nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING, RobobuggyConfigFile.getCOM_PORT_RBSM(),
+		nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING, RobobuggyConfigFile.getComPortRBSM(),
 				RobobuggyConfigFile.RBSM_COMMAND_PERIOD));
 	
 

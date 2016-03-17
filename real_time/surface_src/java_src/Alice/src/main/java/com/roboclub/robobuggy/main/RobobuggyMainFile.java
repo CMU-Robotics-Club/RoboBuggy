@@ -69,7 +69,7 @@ public class RobobuggyMainFile {
     	if (RobobuggyConfigFile.DATA_PLAY_BACK) {
             robot = SimRobot.getInstance();//TransistorAuton;//SimRobot.getInstance();
     		//Play back mode enabled
-    		new SensorPlayer(RobobuggyConfigFile.getPLAY_BACK_SOURCE_FILE(),1);
+    		new SensorPlayer(RobobuggyConfigFile.getPlayBackSourceFile(),1);
         }else{
         	robot = TransistorDataCollection.getInstance();
 

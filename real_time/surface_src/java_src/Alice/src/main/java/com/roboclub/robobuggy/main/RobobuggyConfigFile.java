@@ -1,9 +1,14 @@
 package com.roboclub.robobuggy.main;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 
 import com.google.gson.JsonObject;
 
@@ -63,14 +68,18 @@ public final class  RobobuggyConfigFile {
 	 */
 	public static void saveConfigFile(){
 		JsonObject settings = new JsonObject();
-		settings.addProperty("COM_PORT_IMU", getCOM_PORT_IMU());
-		settings.addProperty("COM_PORT_RBSM", getCOM_PORT_RBSM());
-		settings.addProperty("PORT_VISION", getPORT_VISION());
-		settings.addProperty("COM_PORT_GPS", getCOM_PORT_GPS());
-		settings.addProperty("WAYPOINT_SOURCE_LOG_FILE", getWAYPOINT_SOURCE_LOG_FILE());
-		settings.addProperty("PLAY_BACK_SOURCE_FILE", getPLAY_BACK_SOURCE_FILE());
-		try (FileWriter file = new FileWriter(getCONFIG_FILE())) {
-			file.write(settings.toString());
+		settings.addProperty("COM_PORT_IMU", getComPortImu());
+		settings.addProperty("COM_PORT_RBSM", getComPortRBSM());
+		settings.addProperty("PORT_VISION", getPortVision());
+		settings.addProperty("COM_PORT_GPS", getComPortGPS());
+		settings.addProperty("WAYPOINT_SOURCE_LOG_FILE", getWaypointSourceLogFile());
+		settings.addProperty("PLAY_BACK_SOURCE_FILE", getPlayBackSourceFile());
+		try  {
+			File file = new File(getConfigFile());
+			Writer w = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
+			PrintWriter pw = new PrintWriter(w);
+			pw.println(settings.toString());
+			pw.close();
 		}
 		//TODO add other settings as they are created 
 		catch (IOException e) {
@@ -98,13 +107,13 @@ public final class  RobobuggyConfigFile {
 	 */
 	public static void loadConfigFile(){
 		try {
-			JsonObject configJson = Util.readJSONFile(getCONFIG_FILE());
-			setCOM_PORT_IMU(removeQuotes(configJson.get("COM_PORT_IMU").toString()));
-			setCOM_PORT_GPS(removeQuotes(configJson.get("COM_PORT_GPS").toString()));
-			setCOM_PORT_RBSM(removeQuotes(configJson.get("COM_PORT_RBSM").toString()));
-			setPORT_VISION(removeQuotes(configJson.get("PORT_VISION").toString()));
-			setWAYPOINT_SOURCE_LOG_FILE(removeQuotes(configJson.get("WAYPOINT_SOURCE_LOG_FILE").toString()));
-			setPLAY_BACK_SOURCE_FILE(removeQuotes(configJson.get("PLAY_BACK_SOURCE_FILE").toString()));
+			JsonObject configJson = Util.readJSONFile(getConfigFile());
+			setComPortImu(removeQuotes(configJson.get("COM_PORT_IMU").toString()));
+			setComPortGps(removeQuotes(configJson.get("COM_PORT_GPS").toString()));
+			setComPortRBSM(removeQuotes(configJson.get("COM_PORT_RBSM").toString()));
+			setPortVision(removeQuotes(configJson.get("PORT_VISION").toString()));
+			setWayPointSourceLogFile(removeQuotes(configJson.get("WAYPOINT_SOURCE_LOG_FILE").toString()));
+			setPlayBackSourceFile(removeQuotes(configJson.get("PLAY_BACK_SOURCE_FILE").toString()));
 
 			
 		} catch (UnsupportedEncodingException | FileNotFoundException e) {
@@ -114,7 +123,7 @@ public final class  RobobuggyConfigFile {
 
 	/**
 	 * evaluates to the current value of imuEnabled
-	 * @return
+	 * @return current value of imuEnabled
 	 */
 	public static boolean isImuEnabled() {
 		return imuEnabled;
@@ -122,7 +131,7 @@ public final class  RobobuggyConfigFile {
 
 	/**
 	 * sets imuEnabled to a new value
-	 * @param imuEnabled
+	 * @param imuEnabled boolean newValue
 	 */
 	public static void setImuEnabled(boolean imuEnabled) {
 		RobobuggyConfigFile.imuEnabled = imuEnabled;
@@ -130,7 +139,7 @@ public final class  RobobuggyConfigFile {
 
 	/**
 	 * evaluates to the current value of dataPlayBack
-	 * @return
+	 * @return current value of dataPlayBack
 	 */
 	public static boolean isDataPlayBack() {
 		return DATA_PLAY_BACK;
@@ -138,160 +147,159 @@ public final class  RobobuggyConfigFile {
 
 	/**
 	 * evaluates to the current value of comPortImu 
-	 * @return
+	 * @return current value of comPortImu 
 	 */
-	public static String getCOM_PORT_IMU() {
+	public static String getComPortImu() {
 		return comPortImu;
 	}
 
 	/**
 	 * sets a new value to comPortImu
-	 * @param cOM_PORT_IMU
+	 * @param comPortImu boolean newValue
 	 */
-	public static void setCOM_PORT_IMU(String cOM_PORT_IMU) {
-		comPortImu = cOM_PORT_IMU;
+	public static void setComPortImu(String comPortImu) {
+		RobobuggyConfigFile.comPortImu = comPortImu;
 	}
 
 	/**
 	 * evaluates to the current value of configFile
-	 * @return
+	 * @return current value of configFile
 	 */
-	public static String getCONFIG_FILE() {
+	public static String getConfigFile() {
 		return configFile;
 	}
 
 	/**
 	 * sets a new value to configFile
-	 * @param cONFIG_FILE
+	 * @param configFile new value
 	 */
-	public static void setCONFIG_FILE(String cONFIG_FILE) {
-		configFile = cONFIG_FILE;
+	public static void setConfigFile(String configFile) {
+		RobobuggyConfigFile.configFile = configFile;
 	}
 
 	/**
 	 * evaluates to the current value of waypointSourceLogFile
-	 * @return
+	 * @return current value of waypointSourceLogFile
 	 */
-	public static String getWAYPOINT_SOURCE_LOG_FILE() {
+	public static String getWaypointSourceLogFile() {
 		return waypointSourceLogFile;
 	}
 
 	/**
 	 * sets a new value to waypointSourceLogFile
-	 * @param wAYPOINT_SOURCE_LOG_FILE
+	 * @param waypointSourceLogFile new String 
 	 */
-	public static void setWAYPOINT_SOURCE_LOG_FILE(
-			String wAYPOINT_SOURCE_LOG_FILE) {
-		waypointSourceLogFile = wAYPOINT_SOURCE_LOG_FILE;
+	public static void setWayPointSourceLogFile(String waypointSourceLogFile) {
+		RobobuggyConfigFile.waypointSourceLogFile = waypointSourceLogFile;
 	}
 
 	/**
      * evaluates to the current value of playBackSourceFile
-	 * @return
+	 * @return current value of playBackSourceFile
 	 */
-	public static String getPLAY_BACK_SOURCE_FILE() {
+	public static String getPlayBackSourceFile() {
 		return playBackSourceFile;
 	}
 
 	/**
 	 * sets a new value to playBackSourceFile
-	 * @param pLAY_BACK_SOURCE_FILE
+	 * @param playBackSourceFile new String
 	 */
-	public static void setPLAY_BACK_SOURCE_FILE(String pLAY_BACK_SOURCE_FILE) {
-		playBackSourceFile = pLAY_BACK_SOURCE_FILE;
+	public static void setPlayBackSourceFile(String playBackSourceFile) {
+		RobobuggyConfigFile.playBackSourceFile = playBackSourceFile;
 	}
 
 	/**
 	 * evaluates to the currentValue of comPortGps
-	 * @return
+	 * @return currentValue of comPortGps
 	 */
-	public static String getCOM_PORT_GPS() {
+	public static String getComPortGPS() {
 		return comPortGps;
 	}
 
 	/**
 	 * sets a  new value to comPortGps
-	 * @param cOM_PORT_GPS
+	 * @param comPortGPS String new value
 	 */
-	public static void setCOM_PORT_GPS(String cOM_PORT_GPS) {
-		comPortGps = cOM_PORT_GPS;
+	public static void setComPortGps(String comPortGPS) {
+		comPortGps = comPortGPS;
 	}
 
 	/**
 	 * evaluates to the current value of gpsEnabled
-	 * @return
+	 * @return current value of gpsEnabled
 	 */
-	public static boolean isGps_enabled() {
+	public static boolean isGpsEnabled() {
 		return gpsEnabled;
 	}
 
 	/**
 	 * sets a new value to gpsEnabled
-	 * @param gps_enabled
+	 * @param gpsEnabled boolean new Value
 	 */
-	public static void setGps_enabled(boolean gps_enabled) {
-		RobobuggyConfigFile.gpsEnabled = gps_enabled;
+	public static void setGpsEnabled(boolean gpsEnabled) {
+		RobobuggyConfigFile.gpsEnabled = gpsEnabled;
 	}
 
 	/**
 	 * evaluates to the current value of comPortRBSM
-	 * @return
+	 * @return  current value of comPortRBSM
 	 */
-	public static String getCOM_PORT_RBSM() {
+	public static String getComPortRBSM() {
 		return comPortRBSM;
 	}
 
 	/**
 	 * sets a new value to comPortRBSM
-	 * @param cOM_PORT_RBSM
+	 * @param comPortRBSM String new value
 	 */
-	public static void setCOM_PORT_RBSM(String cOM_PORT_RBSM) {
-		comPortRBSM = cOM_PORT_RBSM;
+	public static void setComPortRBSM(String comPortRBSM) {
+		RobobuggyConfigFile.comPortRBSM = comPortRBSM;
 	}
 
 	/**
 	 * evaluates to the current value of encoderEnabled
-	 * @return
+	 * @return current value of encoderEnabled
 	 */
-	public static boolean isEncoder_enabled() {
+	public static boolean isEncoderEnabled() {
 		return encoderEnabled;
 	}
 
 	/**
 	 * sets a new value to encoderEnabled
-	 * @param encoder_enabled
+	 * @param encoderEnabled boolean new value
 	 */
-	public static void setEncoder_enabled(boolean encoder_enabled) {
-		RobobuggyConfigFile.encoderEnabled = encoder_enabled;
+	public static void setEncoderEnabled(boolean encoderEnabled) {
+		RobobuggyConfigFile.encoderEnabled = encoderEnabled;
 	}
 
 	/**
 	 * Evaluates to the current value of portVision
-	 * @return
+	 * @return current value of portVision
 	 */
-	public static String getPORT_VISION() {
+	public static String getPortVision() {
 		return portVision;
 	}
 
 	/**
 	 * sets a new value to portVision
-	 * @param pORT_VISION
+	 * @param portVision new String
 	 */
-	public static void setPORT_VISION(String pORT_VISION) {
-		portVision = pORT_VISION;
+	public static void setPortVision(String portVision) {
+		RobobuggyConfigFile.portVision = portVision;
 	}
 
 	/**
 	 * evaluates to the current value of visionSystemEnabled
-	 * @return
+	 * @return current value of visionSystemEnabled
 	 */
-	public static boolean isVISION_SYSTEM_ENABLED() {
+	public static boolean isVisionSystemEnabled() {
 		return visionSystemEnabled;
 	}
 
 	/**
 	 * sets a new value for visionSystemEnabled
-	 * @param visionSystemEnabled
+	 * @param visionSystemEnabled boolean new value
 	 */
 	public static void setVisionSystemEnabled(boolean visionSystemEnabled) {
 		RobobuggyConfigFile.visionSystemEnabled = visionSystemEnabled;
