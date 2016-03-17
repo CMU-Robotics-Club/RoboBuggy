@@ -59,7 +59,7 @@ public class RobobuggyMainFile {
      	
     	if (RobobuggyConfigFile.isDataPlayBack()) {
     		//Play back mode enabled
-    		new SensorPlayer(RobobuggyConfigFile.getPLAY_BACK_SOURCE_FILE(), 1);
+    		new SensorPlayer(RobobuggyConfigFile.getPlayBackSourceFile(), 1);
 
         }
         

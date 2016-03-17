@@ -35,6 +35,10 @@ public final class Util {
 		return result;
 	}
 
+	/**
+	 * Evaluates to a List of the com ports(serial) which are available on the computer 
+	 * @return List<String> of available com ports
+	 */
     public static List<String> getAvailablePorts() {
 
         List<String> list = new ArrayList<String>();
@@ -54,8 +58,10 @@ public final class Util {
     /**
      * This is a helper function which evaluates to a Json object encoding the same 
      * information as the file which was passed to this function
-     * @param filePath
-     * @return
+     * @param path a string of the path to a file containing a Json object
+     * @return JsonObject of the contents of the file 
+     * @throws UnsupportedEncodingException if the file is not JSON
+     * @throws FileNotFoundException if the file is not found
      */
 	public static JsonObject readJSONFile(String path) throws UnsupportedEncodingException, FileNotFoundException{
 	       Gson translator = new GsonBuilder().create();
