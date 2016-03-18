@@ -41,10 +41,6 @@ public class GpsPanel extends JPanel {
 	
 	private static final long serialVersionUID = 42L;
 
-	private static final int WAYPOINT_EDITOR_PANEL_WIDTH = 200;
-	private static final int WAYPOINT_EDITOR_PANEL_HEIGHT = 100;
-	private static final int WAYPOINT_SAVER_PANEL_HEIGHT = 50;
-	
 	private double theta = 0;
 	private MapPolygonImpl directionLine;
 	
