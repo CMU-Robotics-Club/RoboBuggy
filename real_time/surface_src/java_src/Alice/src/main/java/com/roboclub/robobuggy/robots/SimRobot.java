@@ -7,6 +7,8 @@ import com.roboclub.robobuggy.nodes.localizers.KfLocalizer;
 import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
 import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
 import com.roboclub.robobuggy.ros.NodeChannel;
+import com.roboclub.robobuggy.simulation.SimulatedRBSMNode;
+import com.roboclub.robobuggy.simulation.SimulationPlayer;
 
 public class SimRobot extends AbstractRobot{
 
@@ -25,14 +27,17 @@ public class SimRobot extends AbstractRobot{
 	private SimRobot(){
 		super();
 		
-		nodeList.add(new HighTrustGPSLocalizer());
+	//	nodeList.add(new HighTrustGPSLocalizer());
+		nodeList.add(new SimulatedRBSMNode());
 		
+		/*
 		try {
 			nodeList.add(new WayPointFollowerPlanner(NodeChannel.UNKNOWN_CHANNEL,
 						WayPointUtil.createWayPointsFromLog("logs/", "3_9_16/2016-03-09-22-56-53/sensors_2016-03-09-22-56-53.txt")));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}	
+			}
+			*/	
 	}
 }
