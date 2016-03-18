@@ -1,7 +1,5 @@
 package com.roboclub.robobuggy.messages;
 
-import com.roboclub.robobuggy.ros.Message;
-
 import java.util.Date;
 
 /**
@@ -60,28 +58,4 @@ public class MagneticMeasurement extends BaseMessage {
 		return z;
 	}
 
-	/**{@inheritDoc}*/
-	@Override
-	public String toLogString() {
-		String s = formatDate(timestamp);
-		return s + "," + Double.toString(x) + "," 
-				+ Double.toString(y) + "," 
-				+ Double.toString(z);
-	}
-
-	/**{@inheritDoc}*/
-	@Override
-	public Message fromLogString(String str) {
-		String delims = ",";
-		String[] ar = str.split(delims);
-
-		// Creating SimpleDateFormat with yyyyMMdd format e.g."20110914"
-		String yyyyMMdd = ar[0];
-		timestamp = tryToParseDate(yyyyMMdd).getTime();
-
-		Double x = Double.parseDouble(ar[1]);
-		Double y = Double.parseDouble(ar[2]);
-		Double z = Double.parseDouble(ar[3]);
-		return new MagneticMeasurement(x, y, z);
-	}
 }

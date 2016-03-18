@@ -3,7 +3,6 @@ package com.roboclub.robobuggy.nodes.planners;
 import com.roboclub.robobuggy.messages.BrakeControlMessage;
 import com.roboclub.robobuggy.messages.DriveControlMessage;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
-import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 
@@ -20,6 +19,7 @@ public class SweepNode extends PathPlannerNode {
     private static final double STEERING_ANGLE_INCREMENT = 1;
     private Publisher steeringPublisher;
     private Publisher brakePublisher;
+    private Thread t1;
 
     /**
      * Construct a new {@link PathPlannerNode}
@@ -33,13 +33,12 @@ public class SweepNode extends PathPlannerNode {
         steeringPublisher = new Publisher(NodeChannel.DRIVE_CTRL.getMsgPath());
         brakePublisher = new Publisher(NodeChannel.BRAKE_CTRL.getMsgPath());
 
-        Thread t1 = new Thread(new Runnable() {
+        t1 = new Thread(new Runnable() {
             private boolean sweepUp = false;
 
             public void run()
             {
                 while(true){
-                	System.out.println("in sweep");
                 	if(!sweepUp && currentCommandedSteeringAngle <= STEERING_ANGLE_LOWER_BOUND) {
                 		sweepUp = true;
                 	}else if(sweepUp && currentCommandedSteeringAngle >= STEERING_ANGLE_UPPER_BOUND){
@@ -69,6 +68,7 @@ public class SweepNode extends PathPlannerNode {
     protected void updatePositionEstimate(GPSPoseMessage m) {
         // do nothing here, this is just a simple sweep
         // we don't need to know the position
+        // STUB
     }
 
     @Override
@@ -85,4 +85,11 @@ public class SweepNode extends PathPlannerNode {
     public String getName() {
         return "Sweep Test";
     }
+    
+	/**{@inheritDoc}*/
+	@Override
+	protected final boolean shutdownDecoratorNode() {
+        t1.interrupt();
+		return true;
+	}
 }

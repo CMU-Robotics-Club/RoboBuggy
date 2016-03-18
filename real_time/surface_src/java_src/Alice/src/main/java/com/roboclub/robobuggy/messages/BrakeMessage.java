@@ -1,7 +1,5 @@
 package com.roboclub.robobuggy.messages;
 
-import com.roboclub.robobuggy.ros.Message;
-
 import java.util.Date;
 
 /**
@@ -45,19 +43,4 @@ public class BrakeMessage extends BaseMessage {
 		this.timestamp = new Date(timestamp.getTime()).getTime();
 	}
 
-	/**{@inheritDoc}*/
-	@Override
-	public String toLogString() {
-		return String.format("%s,'%s',%s", formatDate(timestamp),
-				VERSION_ID, String.valueOf(down));
-	}
-
-	/**{@inheritDoc}*/
-	@Override
-	public Message fromLogString(String str) {
-		String[] spl = str.split(",");
-		Date d = tryToParseDate(spl[0]);
-		boolean brakeState = Boolean.parseBoolean(spl[2]);
-		return new BrakeMessage(d, brakeState);
-	}
 }

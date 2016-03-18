@@ -1,7 +1,5 @@
 package com.roboclub.robobuggy.messages;
 
-import com.roboclub.robobuggy.ros.Message;
-
 import java.util.Date;
 
 /**
@@ -60,28 +58,4 @@ public class ImuMeasurement extends BaseMessage {
 		return roll;
 	}
 
-	/**{@inheritDoc}*/
-	@Override
-	public String toLogString() {
-		String s = formatDate(timestamp);
-		return s + "," + Double.toString(yaw) + "," 
-				+ Double.toString(pitch) + "," 
-				+ Double.toString(roll);
-	}
-
-	/**{@inheritDoc}*/
-	@Override
-	public Message fromLogString(String str) {
-		String delims = ",";
-		String[] ar = str.split(delims);
-
-		// Creating SimpleDateFormat with yyyyMMdd format e.g."20110914"
-		String yyyyMMdd = ar[0];
-		timestamp = tryToParseDate(yyyyMMdd).getTime();
-
-		Double y = Double.parseDouble(ar[1]);
-		Double p = Double.parseDouble(ar[2]);
-		Double r = Double.parseDouble(ar[3]);
-		return new ImuMeasurement(y, p, r);
-	}
 }

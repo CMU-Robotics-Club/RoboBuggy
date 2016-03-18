@@ -1,7 +1,5 @@
 package com.roboclub.robobuggy.nodes.planners;
 
-import java.util.Date;
-
 import com.roboclub.robobuggy.messages.BrakeControlMessage;
 import com.roboclub.robobuggy.messages.DriveControlMessage;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
@@ -13,6 +11,8 @@ import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
+
+import java.util.Date;
 
 /**
  * Abstract class used to represent all {@link BuggyNode}s used as path 
@@ -56,7 +56,7 @@ public abstract class PathPlannerNode extends BuggyDecoratorNode {
 	
 	/**{@inheritDoc}*/
 	@Override
-	protected final boolean shutdownDecoratorNode() {
+	protected boolean shutdownDecoratorNode() {
 		//Always shuts down properly
 		return true;
 	}

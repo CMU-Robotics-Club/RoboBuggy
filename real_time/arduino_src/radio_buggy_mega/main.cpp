@@ -31,7 +31,7 @@
 #define SERVO_DDR  DDRB
 #define SERVO_PORT PORTB
 #define SERVO_PINN PB5 // arduino 11 TODO: this is not used here
-#define CONNECTION_TIMEOUT_US 10000000L // 10000ms
+#define CONNECTION_TIMEOUT_US 1000000L // 1000ms
 
 /*
  * These values map the physical input/output (voltage/ms of pwm pulse) to a
@@ -297,8 +297,6 @@ int main(void)
     unsigned long auton_brake_last = time_start;
     unsigned long auton_steer_last = time_start;
 
-    printf("Brake initial: %lu Steer initial: %lu\n", auton_brake_last, auton_steer_last);
-
     watchdog_init();
 
     // loop forever
@@ -313,21 +311,25 @@ int main(void)
             if(read_status == 0) 
             {
                 // dipatch complete message
-                switch(new_command.message_id) 
+                switch(new_command.message_id)
                 {
+                    case RBSM_MID_ENC_RESET_REQUEST:
+                        cli();
+                        g_encoder_ticks = 0;
+                        sei();
+                        //Let high level know that the request went through
+                        g_rbsm.Send(RBSM_MID_ENC_RESET_CONFIRM, 1);
+                        dbg_printf("Encoder reset request received!\n");
+                        break;
                     case RBSM_MID_MEGA_STEER_COMMAND:
                         auto_steering_angle = (int)(long)new_command.data;
-                        cli();
                         auton_steer_last = micros();
-                        sei();
-                        // dbg_printf("Got steering message for %d.\n", auto_steering_angle);
+                        dbg_printf("Got steering message for %d.\n", auto_steering_angle);
                         break;
                     case RBSM_MID_MEGA_BRAKE_COMMAND:
                         auto_brake_engaged = (bool)(long)new_command.data;
-                        cli();
                         auton_brake_last = micros();
-                        sei();
-                        //printf("Got brake message for %d.\n", auto_brake_engaged);
+                        printf("Got brake message for %d.\n", auto_brake_engaged);
                         break;
                     default:
                         // report unknown message
@@ -398,8 +400,6 @@ int main(void)
         unsigned long g_encoder_ticks_safe = g_encoder_ticks;
         sei(); //enable interrupts
 
-
-        printf("Timenow: %lu Delta4: %lu Delta5: %lu\n", time_now, delta4, delta5);
 
         if(delta1 > CONNECTION_TIMEOUT_US ||
            delta2 > CONNECTION_TIMEOUT_US ||

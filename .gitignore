@@ -21,7 +21,7 @@ surface_src/java_src/Alice/src/com/roboclub/robobuggy/main/config.java
 *~
 .dep
 
-#version number
+#Files generated at compilation
 real_time/arduino_src/radio_buggy_mega/fingerprint.h
 #rbsm headers
 real_time/arduino_src/lib_avr/rbserialmessages/rbsmheaders.h
