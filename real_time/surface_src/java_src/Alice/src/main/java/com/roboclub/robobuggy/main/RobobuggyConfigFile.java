@@ -44,6 +44,6 @@ public final class  RobobuggyConfigFile {
 	// iff false, connect to serial sensors 
 	public static final boolean DATA_PLAY_BACK = false;
 
-	public static final String WAYPOINT_SOURCE_LOG_FILE ="2016-02-20-06-50-45/sensors_2016-02-20-06-50-45.txt";
+	public static final String WAYPOINT_SOURCE_LOG_FILE ="logs/sensors_2016-02-28-06-23-58.txt";
 
 }

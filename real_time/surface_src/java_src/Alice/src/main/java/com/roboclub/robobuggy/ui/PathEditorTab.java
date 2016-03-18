@@ -6,6 +6,7 @@ import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
+import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
 import org.openstreetmap.gui.jmapviewer.*;
 import org.openstreetmap.gui.jmapviewer.interfaces.ICoordinate;
 import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
@@ -20,11 +21,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -35,7 +34,8 @@ public class PathEditorTab extends RobobuggyGUIContainer {
 
 	private static final int WAYPOINT_EDITOR_PANEL_WIDTH = 200;
 	private static final int WAYPOINT_EDITOR_PANEL_HEIGHT = 100;
-	private static final int WAYPOINT_SAVER_PANEL_HEIGHT = 50;
+	private static final int WAYPOINT_CONTROL_PANEL_HEIGHT = 100;
+	private static final int WAYPOINT_CONTROL_PANEL_BUTTON_HEIGHT = 50;
 
 	private JMapViewerTree mapTree;
 
@@ -50,6 +50,7 @@ public class PathEditorTab extends RobobuggyGUIContainer {
 	private WaypointList waypointList;
 	private WaypointEditor waypointEditor;
 	private WaypointSaver waypointSaver;
+	private WaypointLoader waypointLoader;
 
 
 	public PathEditorTab() {
@@ -59,28 +60,36 @@ public class PathEditorTab extends RobobuggyGUIContainer {
 
 		this.add(mapTree);
 
-		
+
 		waypointList = new WaypointList();
 
 		waypointListContainer = new JScrollPane(waypointList);
 		waypointListContainer.setBounds(0, 0, 0, 0);
-		waypointListContainer.setBackground(Color.RED);
+		waypointListContainer.setBackground(new Color(1, 1, 1, 0));
 		waypointListContainer.setVisible(true);
 
 		waypointEditor = new WaypointEditor(WAYPOINT_EDITOR_PANEL_WIDTH, WAYPOINT_EDITOR_PANEL_HEIGHT);
 		waypointEditor.setVisible(true);
 		waypointEditor.setBackground(Color.GRAY);
 
-		waypointSaver = new WaypointSaver(WAYPOINT_SAVER_PANEL_HEIGHT);
+		waypointSaver = new WaypointSaver(WAYPOINT_CONTROL_PANEL_BUTTON_HEIGHT);
 
-		this.add(waypointEditor, 0);
-		this.add(waypointListContainer, 0);
+		waypointLoader = new WaypointLoader(WAYPOINT_CONTROL_PANEL_BUTTON_HEIGHT);
+
+		this.add(waypointEditor);
+		this.add(waypointListContainer);
 		this.add(waypointSaver);
+		this.add(waypointLoader);
 		this.repaint();
 		waypointListContainer.repaint();
 		waypointList.repaint();
 		waypointEditor.repaint();
 		waypointSaver.repaint();
+		waypointLoader.repaint();
+
+
+		addPointsToMapTree(Color.BLUE, new LocTuple(mapViewerLat, mapViewerLon));
+		addPointsToMapTree(Color.BLUE, new LocTuple(mapViewerLat + 0.001, mapViewerLon));
 	}
 
 
@@ -107,20 +116,20 @@ public class PathEditorTab extends RobobuggyGUIContainer {
 
 				ICoordinate coordinate = mapTree.getViewer().getPosition((int) mapDragX, (int) mapDragY);
 
-//				List<MapMarker> markers = mapTree.getViewer().getMapMarkerList();
-//				double toleranceDist = 0.0002;
-//				for (int i = 0; i < markers.size(); i++) {
-//					MapMarker marker = markers.get(i);
-//					double dlat = marker.getLat() - coordinate.getLat();
-//					double dlon = marker.getLon() - coordinate.getLon();
-//
-//					double dist = Math.sqrt(dlat * dlat + dlon * dlon);
-//					if (dist <= toleranceDist) {
-//						mapTree.getViewer().setDisplayPosition(marker.getCoordinate(), mapTree.getViewer().getZoom());
-//						waypointList.setSelectedIndex(i);
-//						return;
-//					}
-//				}
+				List<MapMarker> markers = mapTree.getViewer().getMapMarkerList();
+				double toleranceDist = 0.0002;
+				for (int i = 0; i < markers.size(); i++) {
+					MapMarker marker = markers.get(i);
+					double dlat = marker.getLat() - coordinate.getLat();
+					double dlon = marker.getLon() - coordinate.getLon();
+
+					double dist = Math.sqrt(dlat * dlat + dlon * dlon);
+					if (dist <= toleranceDist) {
+						mapTree.getViewer().setDisplayPosition(marker.getCoordinate(), mapTree.getViewer().getZoom());
+						waypointList.setSelectedIndex(i);
+						return;
+					}
+				}
 			}
 
 			@Override
@@ -197,6 +206,18 @@ public class PathEditorTab extends RobobuggyGUIContainer {
 		}
 	}
 
+	/**
+	 * @param points points to add to the map
+	 * @param thisColor color of the point
+	 */
+	public void addPointsToMapTree(Color thisColor,LocTuple...points) {
+		for (LocTuple point : points) {
+			mapTree.getViewer().addMapMarker(new MapMarkerDot(thisColor, point.getLatitude(), point.getLongitude()));
+			((DefaultListModel<String>) waypointList.getModel()).addElement(point.getLatitude() + ", " + point.getLongitude());
+			waypointListContainer.repaint();
+		}
+	}
+
 
 	@Override
 	protected void paintComponent(Graphics g) {
@@ -209,19 +230,25 @@ public class PathEditorTab extends RobobuggyGUIContainer {
 				0,
 				0,
 				WAYPOINT_EDITOR_PANEL_WIDTH,
-				getHeight() - WAYPOINT_EDITOR_PANEL_HEIGHT - WAYPOINT_SAVER_PANEL_HEIGHT
+				getHeight() - WAYPOINT_EDITOR_PANEL_HEIGHT - WAYPOINT_CONTROL_PANEL_HEIGHT
 		);
 		waypointEditor.setBounds(
 				0,
-				getHeight() - WAYPOINT_EDITOR_PANEL_HEIGHT - WAYPOINT_SAVER_PANEL_HEIGHT,
+				getHeight() - WAYPOINT_EDITOR_PANEL_HEIGHT - WAYPOINT_CONTROL_PANEL_HEIGHT,
 				WAYPOINT_EDITOR_PANEL_WIDTH,
 				WAYPOINT_EDITOR_PANEL_HEIGHT
 		);
 		waypointSaver.setBounds(
 				0,
-				getHeight() - WAYPOINT_SAVER_PANEL_HEIGHT,
+				getHeight() - WAYPOINT_CONTROL_PANEL_HEIGHT + (waypointSaver.INDEX * WAYPOINT_CONTROL_PANEL_BUTTON_HEIGHT),
 				WAYPOINT_EDITOR_PANEL_WIDTH,
-				WAYPOINT_SAVER_PANEL_HEIGHT
+				WAYPOINT_CONTROL_PANEL_BUTTON_HEIGHT
+		);
+		waypointLoader.setBounds(
+				0,
+				getHeight() - WAYPOINT_CONTROL_PANEL_HEIGHT + (waypointLoader.INDEX * WAYPOINT_CONTROL_PANEL_BUTTON_HEIGHT),
+				WAYPOINT_EDITOR_PANEL_WIDTH,
+				WAYPOINT_CONTROL_PANEL_BUTTON_HEIGHT
 		);
 	}
 
@@ -325,6 +352,8 @@ public class PathEditorTab extends RobobuggyGUIContainer {
 	 */
 	private class WaypointSaver extends JButton {
 
+		public final int INDEX = 0;
+
 		WaypointSaver(int height) {
 			setSize(WAYPOINT_EDITOR_PANEL_WIDTH, height);
 			setText("Save to file");
@@ -343,12 +372,13 @@ public class PathEditorTab extends RobobuggyGUIContainer {
 						for (MapMarker mapMarker : mapTree.getViewer().getMapMarkerList()) {
 							//initialize a garbage holder for the lat and lon
 							GpsMeasurement m = new GpsMeasurement(
-											new Date(),
-											new Date(),
-											mapMarker.getLat(),
-											true,
-											mapMarker.getLon(),
-											true, 0, 0, 0, 0);
+									new Date(),
+									new Date(),
+									mapMarker.getLat(),
+									true,
+									Math.abs(mapMarker.getLon()),
+									mapMarker.getLon() < 0,
+									0, 0, 0, 0);
 							String serialize = translator.toJson(m);
 							writer.println(serialize);
 						}
@@ -362,6 +392,73 @@ public class PathEditorTab extends RobobuggyGUIContainer {
 				}
 			});
 		}
+
+	}
+
+	/**
+	 * Loads in a waypoint list from a log or waypoint file
+	 */
+	private class WaypointLoader extends JButton {
+
+		public final int INDEX = 1;
+
+		WaypointLoader(int height) {
+			setSize(WAYPOINT_EDITOR_PANEL_WIDTH, height);
+			setText("Load from file");
+			addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					JFileChooser chooser = new JFileChooser(RobobuggyConfigFile.LOG_FILE_LOCATION);
+					int status = chooser.showOpenDialog(PathEditorTab.this);
+					if (status == JFileChooser.APPROVE_OPTION) {
+						File gpsFile = chooser.getSelectedFile();
+						loadWaypointsFromFile(gpsFile);
+					}
+				}
+			});
+		}
+
+		public void loadWaypointsFromFile(File waypointFile) {
+
+
+			waypointList.clearSelection();
+			((DefaultListModel<String>) waypointList.getModel()).clear();
+			mapTree.getViewer().removeAllMapMarkers();
+
+			ArrayList<GpsMeasurement> waypointList = new ArrayList<>();
+
+			try {
+				waypointList = WayPointUtil.createWayPointsFromWaypointList(waypointFile.getAbsolutePath());
+			} catch (Exception e) {
+				e.printStackTrace();
+				new RobobuggyLogicNotification("Wasn't a waypoint file, trying to parse as log file!", RobobuggyMessageLevel.WARNING);
+
+				try {
+					waypointList = WayPointUtil.createWayPointsFromLog(RobobuggyConfigFile.LOG_FILE_LOCATION, waypointFile.getAbsolutePath());
+				} catch (Exception e2) {
+					e2.printStackTrace();
+					new RobobuggyLogicNotification("Wasn't a log file either, couldn't parse given file!", RobobuggyMessageLevel.EXCEPTION);
+				}
+			}
+
+
+			for (GpsMeasurement measurement : waypointList) {
+				double lat = measurement.getLatitude();
+				double lon = measurement.getLongitude();
+				lon = measurement.getWest() ? -lon : lon;
+				addPointsToMapTree(Color.GREEN, new LocTuple(lat, lon));
+			}
+			mapTree.getViewer().repaint();
+			PathEditorTab.this.waypointList.repaint();
+
+		}
+
+	}
+
+	/**
+	 * moves the currently selected waypoint to wherever the user clicks
+	 */
+	private class WaypointMover extends JButton {
 
 	}
 

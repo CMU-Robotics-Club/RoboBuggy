@@ -8,7 +8,6 @@ import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 import org.openstreetmap.gui.jmapviewer.*;
-import org.openstreetmap.gui.jmapviewer.interfaces.ICoordinate;
 import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
 import org.openstreetmap.gui.jmapviewer.interfaces.MapPolygon;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileCache;
@@ -207,23 +206,6 @@ public class GpsPanel extends JPanel {
 				// TODO Auto-generated method stub
 				mapDragX = e.getX();
 				mapDragY = e.getY();
-
-				ICoordinate coordinate = mapTree.getViewer().getPosition((int) mapDragX, (int) mapDragY);
-
-//				List<MapMarker> markers = mapTree.getViewer().getMapMarkerList();
-//				double toleranceDist = 0.0002;
-//				for (int i = 0; i < markers.size(); i++) {
-//					MapMarker marker = markers.get(i);
-//					double dlat = marker.getLat() - coordinate.getLat();
-//					double dlon = marker.getLon() - coordinate.getLon();
-//
-//					double dist = Math.sqrt(dlat * dlat + dlon * dlon);
-//					if (dist <= toleranceDist) {
-//						mapTree.getViewer().setDisplayPosition(marker.getCoordinate(), mapTree.getViewer().getZoom());
-//						waypointList.setSelectedIndex(i);
-//						return;
-//					}
-//				}
 			}
 			
 			@Override
