@@ -7,21 +7,40 @@ import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
-import org.openstreetmap.gui.jmapviewer.*;
+import org.openstreetmap.gui.jmapviewer.Coordinate;
+import org.openstreetmap.gui.jmapviewer.JMapViewerTree;
+import org.openstreetmap.gui.jmapviewer.MapMarkerDot;
+import org.openstreetmap.gui.jmapviewer.MemoryTileCache;
+import org.openstreetmap.gui.jmapviewer.OsmTileLoader;
+import org.openstreetmap.gui.jmapviewer.Tile;
 import org.openstreetmap.gui.jmapviewer.interfaces.ICoordinate;
 import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileCache;
 import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Date;
@@ -58,6 +77,9 @@ public class PathEditorTab extends RobobuggyGUIContainer {
 	private boolean editingWaypoint;
 
 
+	/**
+	 * Initializes the editor tab
+	 */
 	public PathEditorTab() {
 
 		initMapTree();
@@ -269,19 +291,19 @@ public class PathEditorTab extends RobobuggyGUIContainer {
 		);
 		waypointSaver.setBounds(
 				0,
-				getHeight() - WAYPOINT_CONTROL_PANEL_HEIGHT + (waypointSaver.INDEX * WAYPOINT_CONTROL_PANEL_BUTTON_HEIGHT),
+				getHeight() - WAYPOINT_CONTROL_PANEL_HEIGHT + (WaypointSaver.INDEX * WAYPOINT_CONTROL_PANEL_BUTTON_HEIGHT),
 				WAYPOINT_EDITOR_PANEL_WIDTH,
 				WAYPOINT_CONTROL_PANEL_BUTTON_HEIGHT
 		);
 		waypointLoader.setBounds(
 				0,
-				getHeight() - WAYPOINT_CONTROL_PANEL_HEIGHT + (waypointLoader.INDEX * WAYPOINT_CONTROL_PANEL_BUTTON_HEIGHT),
+				getHeight() - WAYPOINT_CONTROL_PANEL_HEIGHT + (WaypointLoader.INDEX * WAYPOINT_CONTROL_PANEL_BUTTON_HEIGHT),
 				WAYPOINT_EDITOR_PANEL_WIDTH,
 				WAYPOINT_CONTROL_PANEL_BUTTON_HEIGHT
 		);
 		waypointMover.setBounds(
 				0,
-				getHeight() - WAYPOINT_CONTROL_PANEL_HEIGHT + (waypointMover.INDEX * WAYPOINT_CONTROL_PANEL_BUTTON_HEIGHT),
+				getHeight() - WAYPOINT_CONTROL_PANEL_HEIGHT + (WaypointMover.INDEX * WAYPOINT_CONTROL_PANEL_BUTTON_HEIGHT),
 				WAYPOINT_EDITOR_PANEL_WIDTH,
 				WAYPOINT_CONTROL_PANEL_BUTTON_HEIGHT
 		);
@@ -387,7 +409,7 @@ public class PathEditorTab extends RobobuggyGUIContainer {
 	 */
 	private class WaypointSaver extends JButton {
 
-		public final int INDEX = 0;
+		private static final int INDEX = 0;
 
 		WaypointSaver() {
 			setSize(WAYPOINT_EDITOR_PANEL_WIDTH, WAYPOINT_CONTROL_PANEL_BUTTON_HEIGHT);
@@ -435,7 +457,7 @@ public class PathEditorTab extends RobobuggyGUIContainer {
 	 */
 	private class WaypointLoader extends JButton {
 
-		public final int INDEX = 1;
+		private static final int INDEX = 1;
 
 		WaypointLoader() {
 			setSize(WAYPOINT_EDITOR_PANEL_WIDTH, WAYPOINT_CONTROL_PANEL_BUTTON_HEIGHT);
@@ -469,7 +491,9 @@ public class PathEditorTab extends RobobuggyGUIContainer {
 				new RobobuggyLogicNotification("Wasn't a waypoint file, trying to parse as log file!", RobobuggyMessageLevel.WARNING);
 
 				try {
-					waypointList = WayPointUtil.createWayPointsFromLog(RobobuggyConfigFile.LOG_FILE_LOCATION, waypointFile.getAbsolutePath());
+					waypointList = WayPointUtil.createWayPointsFromLog(
+							RobobuggyConfigFile.LOG_FILE_LOCATION, waypointFile.getAbsolutePath()
+					);
 				} catch (Exception e2) {
 					e2.printStackTrace();
 					new RobobuggyLogicNotification("Wasn't a log file either, couldn't parse given file!", RobobuggyMessageLevel.EXCEPTION);
@@ -495,7 +519,7 @@ public class PathEditorTab extends RobobuggyGUIContainer {
 	 */
 	private class WaypointMover extends JButton {
 
-		public final int INDEX = 2;
+		private static final int INDEX = 2;
 
 		WaypointMover() {
 			setSize(WAYPOINT_EDITOR_PANEL_WIDTH, WAYPOINT_CONTROL_PANEL_BUTTON_HEIGHT);

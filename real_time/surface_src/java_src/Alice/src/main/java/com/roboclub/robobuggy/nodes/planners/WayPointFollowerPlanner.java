@@ -1,11 +1,11 @@
 package com.roboclub.robobuggy.nodes.planners;
 
-import java.util.ArrayList;
-import java.util.Date;
-
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.ros.NodeChannel;
+
+import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Plans a path based on a set of waypoints

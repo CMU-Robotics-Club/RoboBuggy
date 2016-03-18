@@ -2,8 +2,6 @@ package com.roboclub.robobuggy.main;
 
 import com.roboclub.robobuggy.nodes.localizers.HighTrustLocalizer;
 import com.roboclub.robobuggy.nodes.planners.SweepNode;
-import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
-import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
 import com.roboclub.robobuggy.nodes.sensors.GpsNode;
 import com.roboclub.robobuggy.nodes.sensors.ImuNode;
 import com.roboclub.robobuggy.nodes.sensors.LoggingNode;

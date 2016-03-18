@@ -1,7 +1,5 @@
 package com.roboclub.robobuggy.nodes.localizers;
 
-import java.util.Date;
-
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
@@ -12,6 +10,8 @@ import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
+
+import java.util.Date;
 
 /**
  *

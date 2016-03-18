@@ -1,9 +1,8 @@
 package com.roboclub.robobuggy.nodes.localizers;
 
-import java.util.ArrayList;
-import java.util.Date;
-
 import Jama.Matrix;
+
+import java.util.Date;
 
 /**
  * Motion model - TODO

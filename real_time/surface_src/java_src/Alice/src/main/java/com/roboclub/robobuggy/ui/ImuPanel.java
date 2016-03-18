@@ -1,6 +1,5 @@
 package com.roboclub.robobuggy.ui;
 
-import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.messages.MagneticMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.NodeChannel;

@@ -1,8 +1,11 @@
 package com.roboclub.robobuggy.ui;
 
 
-import java.util.ArrayList;
-
+import com.roboclub.robobuggy.main.RobobuggyConfigFile;
+import com.roboclub.robobuggy.ros.Message;
+import com.roboclub.robobuggy.ros.MessageListener;
+import com.roboclub.robobuggy.ros.Subscriber;
+import com.sun.javafx.geom.Vec2d;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -10,11 +13,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-import com.roboclub.robobuggy.main.RobobuggyConfigFile;
-import com.roboclub.robobuggy.ros.Message;
-import com.roboclub.robobuggy.ros.MessageListener;
-import com.roboclub.robobuggy.ros.Subscriber;
-import com.sun.javafx.geom.Vec2d;
+import java.util.ArrayList;
 
 
 
