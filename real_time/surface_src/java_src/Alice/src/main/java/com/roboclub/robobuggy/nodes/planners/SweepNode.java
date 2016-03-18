@@ -19,6 +19,7 @@ public class SweepNode extends PathPlannerNode {
     private static final double STEERING_ANGLE_INCREMENT = 1;
     private Publisher steeringPublisher;
     private Publisher brakePublisher;
+    private Thread t1;
 
     /**
      * Construct a new {@link PathPlannerNode}
@@ -32,7 +33,7 @@ public class SweepNode extends PathPlannerNode {
         steeringPublisher = new Publisher(NodeChannel.DRIVE_CTRL.getMsgPath());
         brakePublisher = new Publisher(NodeChannel.BRAKE_CTRL.getMsgPath());
 
-        Thread t1 = new Thread(new Runnable() {
+        t1 = new Thread(new Runnable() {
             private boolean sweepUp = false;
 
             public void run()
@@ -84,4 +85,11 @@ public class SweepNode extends PathPlannerNode {
     public String getName() {
         return "Sweep Test";
     }
+    
+	/**{@inheritDoc}*/
+	@Override
+	protected final boolean shutdownDecoratorNode() {
+        t1.interrupt();
+		return true;
+	}
 }

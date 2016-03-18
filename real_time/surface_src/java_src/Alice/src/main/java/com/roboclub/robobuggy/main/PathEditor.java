@@ -32,7 +32,7 @@ public class PathEditor {
 			System.out.println("Starting Path Editor");
 			try {
 				ArrayList<GpsMeasurement> wayPoints =
-						WayPointUtil.createWayPointsFromLog("logs/", RobobuggyConfigFile.WAYPOINT_SOURCE_LOG_FILE);
+						WayPointUtil.createWayPointsFromLog("logs/", RobobuggyConfigFile.getWaypointSourceLogFile());
 			
 				Gui.getInstance();
 
