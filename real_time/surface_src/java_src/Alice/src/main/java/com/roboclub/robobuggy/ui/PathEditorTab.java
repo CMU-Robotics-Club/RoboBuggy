@@ -329,12 +329,15 @@ public class PathEditorTab extends RobobuggyGUIContainer {
 						MapMarkerDot dot = (MapMarkerDot) marker;
 						dot.setBackColor(Color.YELLOW);
 					}
-					MapMarkerDot dot = ((MapMarkerDot) markers.get(index));
-					dot.setBackColor(Color.RED);
-					waypointEditor.editPoint(index);
 
-					mapTree.getViewer().setDisplayPosition(new Coordinate(dot.getLat(), dot.getLon()), mapTree.getViewer().getZoom());
-					mapTree.getViewer().repaint();
+					if (index >= 0) {
+						MapMarkerDot dot = ((MapMarkerDot) markers.get(index));
+						dot.setBackColor(Color.RED);
+						waypointEditor.editPoint(index);
+
+						mapTree.getViewer().setDisplayPosition(new Coordinate(dot.getLat(), dot.getLon()), mapTree.getViewer().getZoom());
+						mapTree.getViewer().repaint();
+					}
 				}
 			});
 		}
