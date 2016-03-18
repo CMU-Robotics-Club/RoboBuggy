@@ -45,6 +45,7 @@
 #define RBSM_MID_ERROR 254
 #define RBSM_MID_DEVICE_ID 255
 
+
 // Device Types
 #define RBSM_DID_MEGA 0
 #define RBSM_DID_DRIVE_ENCODER 1
