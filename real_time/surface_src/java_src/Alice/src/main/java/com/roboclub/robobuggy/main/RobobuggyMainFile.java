@@ -43,7 +43,7 @@ public class RobobuggyMainFile {
 		RBSerialMessage.initializeHeaders();
 
         System.out.println(ports);
-        Robot.getInstance();
+        Robot.getInstance().startNodes();
         Gui.getInstance();
         new RobobuggyLogicNotification("Robobuggy Logic Notfication started", RobobuggyMessageLevel.NOTE);
 
