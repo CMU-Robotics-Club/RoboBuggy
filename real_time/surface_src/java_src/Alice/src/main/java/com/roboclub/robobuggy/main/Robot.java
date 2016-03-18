@@ -37,11 +37,11 @@ public final class Robot implements RosMaster {
 	public synchronized boolean shutDown() {
 		new RobobuggyLogicNotification("Shutting down Robot", RobobuggyMessageLevel.WARNING);
 		boolean result = nodeList.stream().map(n -> n.shutdown()).reduce(true, (a,b) -> a&&b);
-		removeInstance();
+		invalidateInstance();
 		return result;
 	}
 	
-	private static synchronized void removeInstance(){
+	private static synchronized void invalidateInstance(){
 		instance = null;
 	}
 	
