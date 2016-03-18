@@ -52,8 +52,8 @@ public class SimulatedBuggy {
 		            	double dt = dt_mili/1000.0;
 		            
 		            	//now update the internal state
-		            	x = x +dx*dt;
-		            	y = y +dy*dt;
+		            	x = x +dx*Math.cos(th)*dt + dy*Math.sin(th)*dt;
+		            	y = y +dx*-Math.sin(th)*dt+dy*Math.cos(th)*dt;
 		            	th = th +dth*dt;
 		            	
 		            }

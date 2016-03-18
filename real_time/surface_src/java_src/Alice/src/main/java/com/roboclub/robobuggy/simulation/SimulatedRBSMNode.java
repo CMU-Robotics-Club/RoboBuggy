@@ -28,7 +28,7 @@ import com.roboclub.robobuggy.ros.Subscriber;
 public class SimulatedRBSMNode extends PeriodicNode{
 	//for determining the encoder and commanded angle based on the 
 	//transform between the current pose and the last pose
-	private So2Pose lastPose;
+	private So2Pose lastPose = new So2Pose(0,0,0);
 	private double encoderDistance = 0;
 	private Publisher messagePubEnc;
 	private Publisher messagePubControllerSteering;
@@ -64,7 +64,7 @@ public class SimulatedRBSMNode extends PeriodicNode{
 	}
 
 	@Override
-	protected void update() {
+	protected void  update() {
 		//get an updated representation of the buggy current pose
 		SimulatedBuggy simBuggy = SimulatedBuggy.GetInstance();
 		So2Pose newPose = new So2Pose(simBuggy.getX(),simBuggy.getY(), simBuggy.getTh());

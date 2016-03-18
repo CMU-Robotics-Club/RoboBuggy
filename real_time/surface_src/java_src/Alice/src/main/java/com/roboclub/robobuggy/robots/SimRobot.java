@@ -7,6 +7,7 @@ import com.roboclub.robobuggy.nodes.localizers.KfLocalizer;
 import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
 import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
 import com.roboclub.robobuggy.ros.NodeChannel;
+import com.roboclub.robobuggy.simulation.SimulatedBuggy;
 import com.roboclub.robobuggy.simulation.SimulatedRBSMNode;
 import com.roboclub.robobuggy.simulation.SimulationPlayer;
 
@@ -27,8 +28,11 @@ public class SimRobot extends AbstractRobot{
 	private SimRobot(){
 		super();
 		
-	//	nodeList.add(new HighTrustGPSLocalizer());
+//		nodeList.add(new HighTrustGPSLocalizer());
 		nodeList.add(new SimulatedRBSMNode());
+		
+		SimulatedBuggy simBuggy = SimulatedBuggy.GetInstance();
+		simBuggy.setDx(1.0);
 		
 		/*
 		try {
