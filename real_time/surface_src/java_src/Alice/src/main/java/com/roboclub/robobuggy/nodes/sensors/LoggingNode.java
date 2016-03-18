@@ -54,8 +54,6 @@ public class LoggingNode extends BuggyDecoratorNode {
     private LogWriterThread loggingThread;
     private boolean keepLogging;
 
-    private boolean subscribersActive;
-
     private Publisher statusPub;
 
     private static final String DATE_FILE_FORMAT = "yyyy-MM-dd-HH-mm-ss";
