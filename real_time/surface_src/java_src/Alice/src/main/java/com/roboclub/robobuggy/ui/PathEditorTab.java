@@ -335,7 +335,11 @@ public class PathEditorTab extends RobobuggyGUIContainer {
 						dot.setBackColor(Color.RED);
 						waypointEditor.editPoint(index);
 
-						mapTree.getViewer().setDisplayPosition(new Coordinate(dot.getLat(), dot.getLon()), mapTree.getViewer().getZoom());
+						mapTree.getViewer().setDisplayPosition(new Coordinate(
+								dot.getLat(),
+								dot.getLon()),
+								mapTree.getViewer().getZoom()
+						);
 						mapTree.getViewer().repaint();
 					}
 				}
