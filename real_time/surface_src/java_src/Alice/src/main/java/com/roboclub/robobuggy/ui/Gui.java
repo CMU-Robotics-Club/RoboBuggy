@@ -27,6 +27,8 @@ public final class Gui extends JFrame {
 	private MainGuiWindow mainGuiWindow;
 
 	private static Gui instance;
+	private static RobobuggyJFrame rmw;
+	private static RobobuggyGUITabs tabs;
 	
 	/**
 	 * Enum of {@link Gui} publisher and subscriber topics
@@ -61,9 +63,10 @@ public final class Gui extends JFrame {
 	 */
 	private Gui() {
 		new RobobuggyLogicNotification("StartingGUI", RobobuggyMessageLevel.NOTE);
-		RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow",1.0,1.0);	
+		/*RobobuggyJFrame mainWindow*/rmw = new RobobuggyJFrame("MainWindow",1.0,1.0);
+		RobobuggyJFrame mainWindow = rmw;
 		mainGuiWindow = new MainGuiWindow();
-		RobobuggyGUITabs tabs = new RobobuggyGUITabs();
+		/*RobobuggyGUITabs */tabs = new RobobuggyGUITabs();
 		tabs.addTab(mainGuiWindow, "Home");
 		tabs.addTab(new ImuVisualWindow(), "IMU");
 		tabs.addTab(new VelocityWindow(), "Velocity");
@@ -88,6 +91,21 @@ public final class Gui extends JFrame {
 	/**
 	 * Closes the {@link Gui}
 	 */
+	
+	public static synchronized void reset(){
+		rmw.removeComponent(tabs);
+		tabs = new RobobuggyGUITabs();
+		tabs.addTab(new MainGuiWindow(), "Home");
+		tabs.addTab(new ImuVisualWindow(), "IMU");
+		tabs.addTab(new VelocityWindow(), "Velocity");
+		tabs.addTab(new PoseGraphsPanel(),"poses");
+		tabs.addTab(new ImuPanel(),"IMU");
+		tabs.addTab(new  AutonomousPanel(),"Autonomous");
+		tabs.addTab(new ConfigurationPanel(),"Configuration");
+		rmw.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
+		rmw.repaint();
+	}
+	
 	public static synchronized  void close() {
 		new RobobuggyLogicNotification("trying to close gui", RobobuggyMessageLevel.NOTE);
 		instance.dispatchEvent(new WindowEvent(instance, WindowEvent.WINDOW_CLOSING));

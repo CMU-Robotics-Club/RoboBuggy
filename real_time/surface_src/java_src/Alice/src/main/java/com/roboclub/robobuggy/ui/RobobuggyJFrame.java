@@ -84,7 +84,9 @@ public class RobobuggyJFrame extends JFrame {
 		this.setLayout(t);
 	}
 	
-
+	public void removeComponent(Component comp){
+		this.remove(comp);
+	}
 	
 	
 

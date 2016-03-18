@@ -1,5 +1,7 @@
 package com.roboclub.robobuggy.main;
 
+import javax.swing.JFrame;
+
 import com.roboclub.robobuggy.serial.RBSerialMessage;
 import com.roboclub.robobuggy.simulation.SensorPlayer;
 import com.roboclub.robobuggy.ui.Gui;
@@ -14,8 +16,6 @@ public class RobobuggyMainFile {
 	 * @param args : None
 	 */
     public static void main(String[] args) {
-    	//THIS COMMMENT SHOULDN'T MAKE IT TO MASTER!!!
-    	
         try {
 			JNISetup.setupJNI(); //must run for jni to install
 			//note that errors are just printed to the console since the gui and logging system  has not been created yet
@@ -42,7 +42,6 @@ public class RobobuggyMainFile {
         Robot.getInstance();
         Gui.getInstance();
 
-        
      	
     	if (RobobuggyConfigFile.isDataPlayBack()) {
     		//Play back mode enabled
@@ -63,9 +62,9 @@ public class RobobuggyMainFile {
      * @return 
      */
     public static void resetSystem(){
+    	System.out.println("Resetting");
     	Robot.getInstance().shutDown();
- //   	Gui.close();
- //   	Gui.getInstance();
+    	Gui.reset();
     	Robot.getInstance();
     	//TODO make this work for real 
     	
