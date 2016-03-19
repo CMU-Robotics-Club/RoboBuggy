@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+    <link rel="stylesheet" href="main.css" />
+
+
+    
+</head>
+
+<body>
+
+    <div id="CameraGroup">
+        <canvas id="camera" class="CameraViewer"></canvas>
+    </div>
+
+
+    <div id="ImuGroup">
+        <div id="imu-canvas1" class="AngleViewer"></div>
+        <div id="imu-canvas2" class="AngleViewer"></div>
+        <div id="imu-canvas3" class="AngleViewer"></div>
+        <div id="imu-canvas4" class="AngleViewer"></div>
+    </div>
+
+    <div id="EncoderGroup">
+        <div id="gauge-velocity" class="Gauge"></div>
+        <div id="gauge-acceleration" class="Gauge"></div>
+    </div>
+    
+    <script src="reconnecting-websocket.js"></script>
+    <script src="camera.js"></script>
+
+    <script src="math.min.js"></script>
+    <script src="three.min.js"></script>
+    <script src="d3.v3.min.js"></script>
+    <script src="index.js"></script>
+
+    <script src="raphael-2.1.4.min.js"></script>
+    <script src="justgage.js"></script>
+
+
+    <script src="ws.js"></script>
+</body>
+</html>
