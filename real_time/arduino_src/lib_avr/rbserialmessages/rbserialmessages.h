@@ -1,10 +1,10 @@
 /********************************************************************************
  * All rights are open to the public, to use, share, dump, spread for the       *
- * foreseeable future. This software and documentation constitutes purely 		*
- * published and public work, and contains open source knowledge by a bunch		*
- * of college kids who just want to have fun. All the material and code may be 	*
- * used, copied, duplicated, changed, disclosed... with any human's free will.	*
- * Have a nice day! :)															*
+ * foreseeable future. This software and documentation constitutes purely       *
+ * published and public work, and contains open source knowledge by a bunch     *
+ * of college kids who just want to have fun. All the material and code may be  *
+ * used, copied, duplicated, changed, disclosed... with any human's free will.  *
+ * Have a nice day! :)                                                          *
  ********************************************************************************/
 
 /**
@@ -44,6 +44,7 @@
 #define RBSM_MID_RESERVED 252 // 0xFC, message head
 #define RBSM_MID_ERROR 254
 #define RBSM_MID_DEVICE_ID 255
+
 
 // Device Types
 #define RBSM_DID_MEGA 0

@@ -2,6 +2,7 @@ package com.roboclub.robobuggy.ui;
 
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
+import com.roboclub.robobuggy.messages.EncoderResetMessage;
 import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
@@ -24,6 +25,7 @@ import java.util.Date;
  */
 public class LoggingPanel extends RobobuggyGUIContainer{
 	//TODO: test to make sure all these dont need to be static
+	private JButton resetBtn;
 	private JButton playBtn;
 	private JFormattedTextField timeLbl;
 	private static final int TIME_ZONE_OFFSET = 18000000;//5 hours
@@ -34,6 +36,7 @@ public class LoggingPanel extends RobobuggyGUIContainer{
 	private LoggingPanel thisLoggingPanel = this;
 	private JLabel filenameLabel;
 	private JTextField playbackSpeed;
+	private Publisher encoderResetPub;
 
 	/**
 	 * Construct a new {@link LoggingPanel} object
@@ -41,19 +44,26 @@ public class LoggingPanel extends RobobuggyGUIContainer{
 	public LoggingPanel(){
 		name = "LoggingPanel";
 		loggingButtonPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
+		encoderResetPub = new Publisher(NodeChannel.ENCODER_RESET.getMsgPath());
 
 		timer = new Timer(10, new TimerHandler());// updates every .01 seconds
 		timer.setDelay(100);
 		timer.setRepeats(true); // timer needs to be setup before startpause_btn
 
-		//should be the time that we start the sytem at 
+		//should be the time that we start the system at 
 		startTime = new Date();
 		
 		playBtn = new JButton("START");
-		playBtn.setFont(new Font("serif", Font.PLAIN, 70));
+		playBtn.setFont(new Font("serif", Font.PLAIN, 25));
 		playBtn.addActionListener(new PlayButtonHandler());
 		playBtn.setEnabled(true);
 		playBtn.setBackground(Color.BLUE);
+		
+		resetBtn = new JButton("RESET ENCODER");
+		resetBtn.setFont(new Font("seif", Font.PLAIN, 25));
+		resetBtn.addActionListener(new ResetEncoderButtonHandler());
+		resetBtn.setEnabled(true);
+		resetBtn.setBackground(Color.BLUE);
 	
 		filenameLabel = new JLabel("File: ",
 				SwingConstants.CENTER);
@@ -70,9 +80,11 @@ public class LoggingPanel extends RobobuggyGUIContainer{
 		playbackSpeed.setHorizontalAlignment(JTextField.CENTER);
 
 		this.addComponent(playBtn, 0, 0, 1.0, .25);
-		this.addComponent(filenameLabel, 0, .25, 0.5, .25);
-		this.addComponent(timeLbl, 0, .5, 1, .5);
-		this.addComponent(playbackSpeed, .5, .25, 0.5, .25);
+		this.addComponent(resetBtn, 0, .25, 1.0, 0.25);
+		this.addComponent(filenameLabel, 0, .5, 0.5, .25);
+		this.addComponent(playbackSpeed, .5, .5, 0.5, .25);
+		this.addComponent(timeLbl, 0, .75, 1, .25);
+
 	}
 
 
@@ -90,13 +102,29 @@ public class LoggingPanel extends RobobuggyGUIContainer{
 	 */
 	public double getPlaybackSpeed() {
 		String speedStr = playbackSpeed.getText();
-		if (speedStr.equals("")) return 1;
+		if (speedStr.equals("")) {
+			return 1;
+		}
 
 		try {
 			return Double.valueOf(speedStr);
 		}
 		catch (NumberFormatException e) {
 			return 1;
+		}
+	}
+	
+	/**
+	 *  ResetEncoderButtonHandler
+	 * @author Sean
+	 * 
+	 * Sends a reset request message to low level when the "Reset Encoder" 
+	 * button on the gui is pressed
+	 *
+	 */
+	private class ResetEncoderButtonHandler implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			encoderResetPub.publish(new EncoderResetMessage());
 		}
 	}
 

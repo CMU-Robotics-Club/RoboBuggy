@@ -12,11 +12,22 @@ function read() {
         dataSocket.send("Please add me to the data group!");    
     }
 
+    var localDataSocket = new ReconnectingWebSocket("ws://127.0.0.1:8080");
+    localDataSocket.onmessage = onDataMessage;
+    localDataSocket.onopen = function() {
+        localDataSocket.send("Please add me to the data group!");    
+    }
+
     cs = new CameraStream("camera");
     var cameraSocket = new ReconnectingWebSocket("ws://buggy:8080", null,
         {binaryType: 'arraybuffer'});
     cameraSocket.onmessage = function(event) { cs.handlePacket(event); };
     cameraSocket.onopen = function() { cameraSocket.send("I see camera pls"); };
+
+    var localCameraSocket = new ReconnectingWebSocket("ws://127.0.0.1:8080", null,
+        {binaryType: 'arraybuffer'});
+    localCameraSocket.onmessage = function(event) { cs.handlePacket(event); };
+    localCameraSocket.onopen = function() { localCameraSocket.send("I see camera pls"); };
 
     velocityGauge = new JustGage({
         id: "gauge-velocity",

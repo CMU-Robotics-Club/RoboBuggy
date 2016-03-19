@@ -55,24 +55,5 @@ public class GPSPoseMessage extends BaseMessage {
 	public double getHeading() {
 		return heading;
 	}
-	
-	/**{@inheritDoc}*/
-	@Override
-	public String toLogString() {
-		return String.format("%s,'%s',%s,%s,%s", formatDate(timestamp),
-				VERSION_ID, String.valueOf(latitude),
-				String.valueOf(longitude), String.valueOf(heading));
-	}
 
-	/**{@inheritDoc}*/
-	@Override
-	public Message fromLogString(String str) {
-		String[] spl = str.split(",");
-		Date d = tryToParseDate(spl[0]);
-		double readLat = Double.parseDouble(spl[2]);
-		double readLon = Double.parseDouble(spl[3]);
-		double readHeading = Double.parseDouble(spl[4]);
-		return new GPSPoseMessage(d, readLat, readLon, readHeading);
-	}
-	
 }

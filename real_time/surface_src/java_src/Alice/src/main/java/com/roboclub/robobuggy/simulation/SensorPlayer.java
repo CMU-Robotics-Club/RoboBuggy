@@ -1,11 +1,5 @@
 package com.roboclub.robobuggy.simulation;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -13,16 +7,17 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
+import com.roboclub.robobuggy.main.Util;
 import com.roboclub.robobuggy.messages.BaseMessage;
 import com.roboclub.robobuggy.messages.BrakeControlMessage;
 import com.roboclub.robobuggy.messages.BrakeMessage;
 import com.roboclub.robobuggy.messages.DriveControlMessage;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.FingerPrintMessage;
+import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
-import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.MagneticMeasurement;
 import com.roboclub.robobuggy.messages.RemoteWheelAngleRequest;
 import com.roboclub.robobuggy.messages.ResetMessage;
@@ -37,6 +32,10 @@ import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
 import com.roboclub.robobuggy.ui.Gui;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
+
 /**
  * Class used for playing back old log files. It does this by reading BuggyROS
  * messages stored in the log file and reinjecting them into the BuggyROS network.
@@ -44,8 +43,8 @@ import com.roboclub.robobuggy.ui.Gui;
 public class SensorPlayer extends Thread {
 
     private String path;
-    private Gson translator;
     private double playbackSpeed;
+    private boolean isPaused = false;
 
     private Publisher imuPub;
     private Publisher magPub;
@@ -76,7 +75,6 @@ public class SensorPlayer extends Thread {
         loggingButtonPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
         logicNotificationPub = new Publisher(NodeChannel.LOGIC_NOTIFICATION.getMsgPath());
 
-        translator = new GsonBuilder().create();
 
         new RobobuggyLogicNotification("initializing the SensorPlayer", RobobuggyMessageLevel.NOTE);
         path = filePath;
@@ -97,13 +95,30 @@ public class SensorPlayer extends Thread {
     public void setupPlaybackTrigger() {
         new Subscriber(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath(), new MessageListener() {
             @Override
-            public void actionPerformed(String topicName, Message m) {
+            public synchronized void actionPerformed(String topicName, Message m) {
                 GuiLoggingButtonMessage message = (GuiLoggingButtonMessage)m;
                 if (message.getLoggingMessage().equals(GuiLoggingButtonMessage.LoggingMessage.START)) {
-                    if (!SensorPlayer.this.isAlive()) {
+
+                    //unpause it if we paused, or start fresh if we haven't paused
+                    if (SensorPlayer.this.isPaused) {
+                        SensorPlayer.this.isPaused = false;
+                        new RobobuggyLogicNotification("Resumed playback", RobobuggyMessageLevel.NOTE);
+                    }
+                    else {
                         SensorPlayer.this.start();
+                        new RobobuggyLogicNotification("Started playback", RobobuggyMessageLevel.NOTE);
                     }
                 }
+                else if (message.getLoggingMessage().equals(GuiLoggingButtonMessage.LoggingMessage.STOP)) {
+                    if (!SensorPlayer.this.isPaused) {
+                        SensorPlayer.this.isPaused = true;
+                        new RobobuggyLogicNotification("Paused playback", RobobuggyMessageLevel.NOTE);
+                    }
+                    else {
+                        new RobobuggyLogicNotification("Quit playback, please restart GUI to reset", RobobuggyMessageLevel.NOTE);
+                    }
+                }
+
             }
         });
     }
@@ -111,11 +126,9 @@ public class SensorPlayer extends Thread {
     @Override
     public void run() {
 
+        Gson translator = new GsonBuilder().create();
         try {
-
-            InputStreamReader fileReader = new InputStreamReader(new FileInputStream(new File(path)), "UTF-8");
-            JsonObject logFile = translator.fromJson(fileReader, JsonObject.class);
-
+        	JsonObject logFile  = Util.readJSONFile(path);
             if(!PlayBackUtil.validateLogFileMetadata(logFile)) {
                 new RobobuggyLogicNotification("Log file doesn't have the proper header metadata!", RobobuggyMessageLevel.EXCEPTION);
                 return;
@@ -125,6 +138,12 @@ public class SensorPlayer extends Thread {
 
             JsonArray sensorDataArray = logFile.getAsJsonArray("sensor_data");
             for (JsonElement sensorAsJElement: sensorDataArray) {
+
+                // spin in a tight loop until we've unpaused
+                while (isPaused) {
+                    Thread.sleep(100);
+                }
+
                 boolean waitForTimeDiff = true;
 
                 if(sensorAsJElement.isJsonObject()){
@@ -184,7 +203,7 @@ public class SensorPlayer extends Thread {
                             break;
                         case TERMINATING_VERSION_ID:
                             new RobobuggyLogicNotification("Stopping playback, hit a STOP", RobobuggyMessageLevel.NOTE);
-                            break;
+                            return;
                         default:
                             waitForTimeDiff = false;
                             break;
@@ -255,7 +274,6 @@ public class SensorPlayer extends Thread {
             new RobobuggyLogicNotification("Log file had unsupported encoding", RobobuggyMessageLevel.EXCEPTION);
         }
     }
-
 
 
     /**

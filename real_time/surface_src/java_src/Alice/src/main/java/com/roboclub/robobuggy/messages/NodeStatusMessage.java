@@ -2,7 +2,6 @@ package com.roboclub.robobuggy.messages;
 
 import com.google.gson.JsonObject;
 import com.roboclub.robobuggy.nodes.sensors.INodeStatus;
-import com.roboclub.robobuggy.ros.Message;
 
 /**
  * Created by vivaanbahl on 2/7/16.
@@ -48,13 +47,4 @@ public class NodeStatusMessage extends BaseMessage {
         return params;
     }
 
-    @Override
-    public String toLogString() {
-        return null;
-    }
-
-    @Override
-    public Message fromLogString(String str) {
-        return null;
-    }
 }

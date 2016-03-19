@@ -1,11 +1,6 @@
 package com.roboclub.robobuggy.ui;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-
+import Jama.Matrix;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
@@ -13,10 +8,13 @@ import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 import com.sun.javafx.geom.Vec2d;
 
-import Jama.Matrix;
-
 import javax.swing.JButton;
 import javax.swing.JSlider;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 /**
  * pose viewer - has a world frame and a buggy relative to it
@@ -105,11 +103,11 @@ public class PoseViewer extends RobobuggyGUIContainer{
 	 * @param name name of the matrix
 	 */
 	public void drawMatrix(Graphics g,Matrix m,String name){
-		double AXIS_LENGTH = 100;
+		double axisLength = 100;
 		double [][] origin = {{0},{0},{0},{1}};
-		double [][] xAxis = {{AXIS_LENGTH},{0},{0},{1}};
-		double [][] yAxis = {{0},{AXIS_LENGTH},{0},{1}};
-		double [][] zAxis = {{0},{0},{AXIS_LENGTH},{1}};
+		double [][] xAxis = {{axisLength},{0},{0},{1}};
+		double [][] yAxis = {{0},{axisLength},{0},{1}};
+		double [][] zAxis = {{0},{0},{axisLength},{1}};
 		
 		Matrix originMatrix = new Matrix(origin);
 		Matrix xMatrix = new Matrix(xAxis);

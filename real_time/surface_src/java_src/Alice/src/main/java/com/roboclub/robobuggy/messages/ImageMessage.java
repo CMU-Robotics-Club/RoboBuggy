@@ -2,8 +2,6 @@ package com.roboclub.robobuggy.messages;
 
 import java.awt.image.BufferedImage;
 
-import com.roboclub.robobuggy.ros.Message;
-
 /**
  * 
  * @author Trevor Decker
@@ -24,24 +22,6 @@ public class ImageMessage extends BaseMessage {
 	public ImageMessage(BufferedImage newImage, int frameNumber){
 		thisImage = newImage;
 		this.frameNumber= frameNumber;
-	}
-	
-	@Override
-	/**
-	 * @return string this message as a log string  
-	 */
-	public String toLogString() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	/**
-	 * @param String str this message created from a log String
-	 */
-	public Message fromLogString(String str) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	/**

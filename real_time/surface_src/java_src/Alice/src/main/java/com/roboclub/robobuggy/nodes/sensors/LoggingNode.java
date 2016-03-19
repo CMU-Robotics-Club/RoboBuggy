@@ -86,7 +86,7 @@ public class LoggingNode extends BuggyDecoratorNode {
 
         setupSubscriberList();
 
-        if (!RobobuggyConfigFile.DATA_PLAY_BACK) {
+        if (!RobobuggyConfigFile.isDataPlayBack()) {
             setupLoggingTrigger();
         }
 
@@ -113,6 +113,9 @@ public class LoggingNode extends BuggyDecoratorNode {
                         return;
 
                     }
+
+                    // we want to clear out old messages every time we start to log
+                    messageQueue.clear();
 
                     keepLogging = true;
                     loggingThread = new LogWriterThread();
@@ -219,16 +222,6 @@ public class LoggingNode extends BuggyDecoratorNode {
             }
         });
 
-        /*
-        new Subscriber(NodeChannel.PUSHBAR_CAMERA.getMsgPath(), new MessageListener() {
-			@Override
-			public void actionPerformed(String topicName, Message m) {
-			
-				// TODO Auto-generated method stub
-				
-			}
-		});*/
-        
         return true;
     }
 
@@ -278,7 +271,7 @@ public class LoggingNode extends BuggyDecoratorNode {
         /**
          * Instantiates a new LogWriterThread by clearing the message queue
          */
-        public LogWriterThread() {
+        LogWriterThread() {
         }
 
         @Override

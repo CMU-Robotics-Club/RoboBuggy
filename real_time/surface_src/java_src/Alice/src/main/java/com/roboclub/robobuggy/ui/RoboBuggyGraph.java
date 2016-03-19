@@ -1,25 +1,19 @@
 package com.roboclub.robobuggy.ui;
 
 
-import java.util.ArrayList;
-
+import com.roboclub.robobuggy.main.RobobuggyConfigFile;
+import com.roboclub.robobuggy.ros.Message;
+import com.roboclub.robobuggy.ros.MessageListener;
+import com.roboclub.robobuggy.ros.Subscriber;
+import com.sun.javafx.geom.Vec2d;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-import com.roboclub.robobuggy.main.RobobuggyConfigFile;
-import com.roboclub.robobuggy.messages.EncoderMeasurement;
-import com.roboclub.robobuggy.messages.ImuMeasurement;
-import com.roboclub.robobuggy.ros.Message;
-import com.roboclub.robobuggy.ros.MessageListener;
-import com.roboclub.robobuggy.ros.NodeChannel;
-import com.roboclub.robobuggy.ros.Subscriber;
-import com.sun.javafx.geom.Vec2d;
+import java.util.ArrayList;
 
 
 
@@ -30,18 +24,32 @@ public class RoboBuggyGraph extends RobobuggyGUIContainer{
 	private ArrayList<Vec2d> list = new ArrayList();
 	private ChartPanel chartPanel;
 	private JFreeChart chart;
-	
-	public interface getGraphValues {
-		public double getX(Message m);
-		public double getY(Message m);
 
+	/**
+	 * returns a new point in x and y coords
+	 */
+	public interface GetGraphValues {
+		/**
+		 * @param m message to derive x and y from
+		 * @return the x coord of the new point to add to the graph
+		 */
+		double getX(Message m);
+
+		/**
+		 * @param m message to derive x and y from
+		 * @return the y coord of the new point to add to the graph
+		 */
+		double getY(Message m);
 	}
 	
 
 	/**
 	 * makes a new imurollgraph
+	 * @param func the function that gets the points for the graph
+	 * @param title title of the graph
+	 * @param topic topic for the subscriber
 	 */
-	public RoboBuggyGraph(String title,String topic,getGraphValues func){
+	public RoboBuggyGraph(String title,String topic, GetGraphValues func){
 		XYSeries series1 = new XYSeries(title);
 		
 		XYSeriesCollection dataset = new XYSeriesCollection();

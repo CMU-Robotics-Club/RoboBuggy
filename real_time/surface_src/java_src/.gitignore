@@ -7,6 +7,8 @@
 **/.settings
 **/.project
 *.log
+*.txt
+*.config
 *~
 *.mp4
 /real_time/surface_src/java_src/Alice/logs
