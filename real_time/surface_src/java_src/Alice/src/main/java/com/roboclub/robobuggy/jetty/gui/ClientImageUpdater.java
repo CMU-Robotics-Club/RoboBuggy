@@ -1,5 +1,7 @@
 package com.roboclub.robobuggy.jetty.gui;
 
+import java.util.Base64;
+import java.util.Base64.Encoder;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
@@ -9,19 +11,26 @@ import javax.imageio.ImageIO;
 import org.eclipse.jetty.websocket.api.Session;
 import com.roboclub.robobuggy.messages.ImageMessage;
 import com.roboclub.robobuggy.ros.Message;
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
+/**
+ * Updates connected clients with ImageMessages.
+ * @author Vasu Agrawal
+ *
+ */
 public class ClientImageUpdater extends ClientUpdater {
 	
 	private Thread updater;
 	
+	/**
+	 * Subscribe to "camera" group and initialize the things.
+	 */
 	public ClientImageUpdater() {
 		super(); // subscribe to all the things
-		WSHandler.sgm.newGroup("camera");
+		WSHandler.getSGM().newGroup("camera");
 
 		updater = new Thread() {
 			
-			ConcurrentHashMap<Integer, Session> clients;
+			private ConcurrentHashMap<Integer, Session> clients;
 			// probably should initialize this with a specific size based on the expected inputs
 			// 1.2 is a scaling factor since apparently there's still a resize if the size is exact.
 			private ByteArrayOutputStream baos = new ByteArrayOutputStream((int) (1920 * 1080 * 1.2));
@@ -31,16 +40,14 @@ public class ClientImageUpdater extends ClientUpdater {
 			
 			private byte[] imageBytes;
 			private String imageBase64Encode;
-			private byte[] payloadHeader;
-			private byte[] payloadData;
-			
+			private Encoder encoder = Base64.getEncoder();
 			
 			public void run() {
 				while (true) {
 					try {
 						// Since the clients list may have changed from the last time we grabbed it, we'll
 						// constantly
-						clients = WSHandler.sgm.getGroup("camera");
+						clients = WSHandler.getSGM().getGroup("camera");
 						update = updates.take();
 						
 						// At the moment, we're passing any and all image messages. In the future, I need
@@ -51,20 +58,21 @@ public class ClientImageUpdater extends ClientUpdater {
 							BufferedImage image = ((ImageMessage) update).getImage();
 							
 							baos.reset();
-							ImageIO.write(image,  "jpg",  baos); // need more jpeg
+							ImageIO.write(image,  "png",  baos); // need more jpeg
 							baos.flush();
 
 							imageBytes = baos.toByteArray();
-							imageBase64Encode = Base64.encode(imageBytes);
+							imageBase64Encode = encoder.encodeToString(imageBytes);
 							
 							/* Header Format
 							 * [10 chars] Frame Number
 							 * [10 chars] Image Base 64 String Size in bytes
 							 */
-							String headerString = String.format("%010d%010d", ((ImageMessage) update).getFrameNumber(),
-																	   imageBase64Encode.length());
-							byte[] header = headerString.getBytes();
-							byte[] data = imageBase64Encode.getBytes();
+							String headerString = String.format("%010d%010d",
+									((ImageMessage) update).getFrameNumber(),
+									imageBase64Encode.length());
+							byte[] header = headerString.getBytes("UTF-8");
+							byte[] data = imageBase64Encode.getBytes("UTF-8");
 														
 							payload = new byte[header.length + data.length];
 							

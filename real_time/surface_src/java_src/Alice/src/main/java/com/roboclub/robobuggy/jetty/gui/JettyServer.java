@@ -1,5 +1,7 @@
 package com.roboclub.robobuggy.jetty.gui;
 
+import java.util.ArrayList;
+
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandler;
@@ -11,19 +13,29 @@ import org.eclipse.jetty.servlets.gzip.GzipHandler;
 import org.eclipse.jetty.websocket.server.WebSocketHandler;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 
+/**
+ * Webserver class running inside the buggy. Only instantiate one.
+ * @author Vasu Agrawal
+ *
+ */
 public class JettyServer {
 	
 	private Server server;
 	private Thread serverThread;
+	private ArrayList<ClientUpdater> updaters;
 	
+	/**
+	 * Starts a new Jetty instance and manages directories correctly.
+	 * @throws Exception unable to start server
+	 */
 	public JettyServer() throws Exception {
 		
 		server = new Server(8080);
 		
-		// Have something to publish data to all of the connected clients
-		ClientDataUpdater cu = new ClientDataUpdater();
-		ClientImageUpdater ciu = new ClientImageUpdater();
-		
+		updaters = new ArrayList<ClientUpdater>();
+		updaters.add(new ClientDataUpdater());
+		updaters.add(new ClientImageUpdater());
+
 		// Root handler for HTML
 		ResourceHandler res = new ResourceHandler();
 		res.setDirectoriesListed(true);
@@ -45,21 +57,7 @@ public class JettyServer {
         gzip.setHandler(handlers);
         ContextHandler contextRoot = new ContextHandler("/");
         contextRoot.setHandler(gzip);
-                
-        // Static handler for test
-        ResourceHandler basicRes= new ResourceHandler();
-        basicRes.setWelcomeFiles(new String[]{"ws.html"});
-        basicRes.setResourceBase("../../Web GUI/basic");
-        ContextHandler basicContext = new ContextHandler("/basic");
-        basicContext.setHandler(basicRes);
-        
-        // Static handler for test
-        ResourceHandler newRes = new ResourceHandler();
-        newRes.setWelcomeFiles(new String[]{"index.html"});
-        newRes.setResourceBase("../../Web GUI/new");
-        ContextHandler newContext = new ContextHandler("/new");
-        newContext.setHandler(newRes);
-        
+                        
         // Static handler for test
         ResourceHandler cameraRes = new ResourceHandler();
         cameraRes.setWelcomeFiles(new String[]{"index.html"});
@@ -69,7 +67,7 @@ public class JettyServer {
         
         // Aggregate the various contexts
         ContextHandlerCollection contexts = new ContextHandlerCollection();
-        contexts.setHandlers(new Handler[] {contextRoot, basicContext, newContext, cameraContext, new DefaultHandler()});
+        contexts.setHandlers(new Handler[] {contextRoot, cameraContext, new DefaultHandler()});
         
         // Set the server appropriately for those contexts
         server.setHandler(contexts);        

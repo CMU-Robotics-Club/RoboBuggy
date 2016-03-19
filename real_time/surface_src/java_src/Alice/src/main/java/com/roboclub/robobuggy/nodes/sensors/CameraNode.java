@@ -46,27 +46,25 @@ public class CameraNode extends PeriodicNode{
 
 		//setup the webcam
 		List<Webcam> webcams = Webcam.getWebcams();
-		this.webcam = webcam.getDefault();
 
-//		//TODO figure out a better way to select
-//		for (Webcam webcam : webcams) {
-//			if (webcam.getName().contains("Logitech")) {
-//				this.webcam = webcam;
-//				break;
-//			}
-//		}
-//
-//		if (this.webcam == null) {
-//			new RobobuggyLogicNotification("Couldn't find Logitech webcam!", RobobuggyMessageLevel.EXCEPTION);
-//			return;
-//		}
+		//TODO figure out a better way to select
+		for (Webcam webcam : webcams) {
+			if (webcam.getName().contains("Logitech")) {
+				this.webcam = webcam;
+				break;
+			}
+		}
+
+		if (this.webcam == null) {
+			new RobobuggyLogicNotification("Couldn't find Logitech webcam!", RobobuggyMessageLevel.EXCEPTION);
+			this.webcam = Webcam.getDefault();
+			// your camera have to support HD720p to run this code
+			Webcam webcam = Webcam.getDefault();
+			webcam.setCustomViewSizes(new Dimension[] {WebcamResolution.HD720.getSize()});
+			webcam.setViewSize(WebcamResolution.HD720.getSize());
+			webcam.open();
+		}
 		
-		// your camera have to support HD720p to run this code
-		Webcam webcam = Webcam.getDefault();
-		webcam.setCustomViewSizes(new Dimension[] {WebcamResolution.HD720.getSize()});
-		webcam.setViewSize(WebcamResolution.HD720.getSize());
-		webcam.open();
-
 		//setup image publisher
 		imagePublisher = new Publisher(channel.getMsgPath());
 
