@@ -17,7 +17,7 @@ public class RobobuggyMainFile {
     public static void main(String[] args) {
     	
     	try {
-			JettyServer js = new JettyServer();
+			new JettyServer();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
