@@ -57,7 +57,7 @@ public class SimulatedBuggy {
 		            	th = th +dth*dt;
 		            	
 		            }
-		        }, 0, 1000);
+		        }, 1000, 100);
 	}
 
 	/**

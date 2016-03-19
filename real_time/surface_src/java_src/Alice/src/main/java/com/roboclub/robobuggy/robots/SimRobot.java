@@ -4,10 +4,12 @@ import java.io.IOException;
 
 import com.roboclub.robobuggy.nodes.localizers.HighTrustGPSLocalizer;
 import com.roboclub.robobuggy.nodes.localizers.KfLocalizer;
+import com.roboclub.robobuggy.nodes.planners.SweepNode;
 import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
 import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.simulation.SimulatedBuggy;
+import com.roboclub.robobuggy.simulation.SimulatedGPSNode;
 import com.roboclub.robobuggy.simulation.SimulatedRBSMNode;
 import com.roboclub.robobuggy.simulation.SimulationPlayer;
 
@@ -28,7 +30,9 @@ public class SimRobot extends AbstractRobot{
 	private SimRobot(){
 		super();
 		
-//		nodeList.add(new HighTrustGPSLocalizer());
+		nodeList.add(new SweepNode(NodeChannel.PATH_PLANNER));
+		nodeList.add(new HighTrustGPSLocalizer());
+		nodeList.add(new SimulatedGPSNode());
 		nodeList.add(new SimulatedRBSMNode());
 		
 		SimulatedBuggy simBuggy = SimulatedBuggy.GetInstance();
