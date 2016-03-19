@@ -29,9 +29,18 @@ function read() {
     localCameraSocket.onmessage = function(event) { cs.handlePacket(event); };
     localCameraSocket.onopen = function() { localCameraSocket.send("I see camera pls"); };
 
+
+    distanceGauge = new JustGage({
+        id: "gauge-distance",
+        value: 0,
+        min: 0,
+        max: 1500,
+        title: "Distance"
+    });
+
     velocityGauge = new JustGage({
         id: "gauge-velocity",
-        value: 67,
+        value: 69,
         min: 0,
         max: 100,
         title: "Velocity"
@@ -39,7 +48,7 @@ function read() {
 
     accelerationGauge = new JustGage({
         id: "gauge-acceleration",
-        value: 50,
+        value: 77,
         min: 0,
         max: 100,
         title: "Acceleration"
@@ -59,6 +68,7 @@ function updateIMU(msg) {
 
 function updateEncoder(msg) {
     console.log(msg);
+    distanceGauge.refresh(msg.distance, null);
     velocityGauge.refresh(msg.velocity, null);
     accelerationGauge.refresh(msg.accel, null);
     // document.getElementById("dist").innerHTML = msg.distance.toString();

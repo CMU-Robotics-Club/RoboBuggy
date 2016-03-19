@@ -51,6 +51,7 @@ public class CameraNode extends PeriodicNode{
 		for (Webcam webcam : webcams) {
 			if (webcam.getName().contains("Logitech")) {
 				this.webcam = webcam;
+				this.webcam.setViewSize(WebcamResolution.QVGA.getSize());
 				this.webcam.open();
 				break;
 			}
@@ -61,8 +62,8 @@ public class CameraNode extends PeriodicNode{
 			this.webcam = Webcam.getDefault();
 			// your camera have to support HD720p to run this code
 			Webcam webcam = Webcam.getDefault();
-			webcam.setCustomViewSizes(new Dimension[] {WebcamResolution.HD720.getSize()});
-			webcam.setViewSize(WebcamResolution.HD720.getSize());
+			webcam.setCustomViewSizes(new Dimension[] {WebcamResolution.QVGA.getSize(), WebcamResolution.HD720.getSize()});
+			webcam.setViewSize(WebcamResolution.QVGA.getSize());
 			webcam.open();
 		}
 		

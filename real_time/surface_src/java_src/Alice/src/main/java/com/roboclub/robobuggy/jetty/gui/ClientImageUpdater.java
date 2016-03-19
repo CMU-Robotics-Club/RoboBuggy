@@ -50,6 +50,10 @@ public class ClientImageUpdater extends ClientUpdater {
 						clients = WSHandler.getSGM().getGroup("camera");
 						update = updates.take();
 						
+						if (clients.isEmpty()) {
+							continue;
+						}
+						
 						// At the moment, we're passing any and all image messages. In the future, I need
 						// to be able to sort by the channel -> make a separate update queue for each channel
 						// TODO: Handle multiple camera feeds
@@ -58,7 +62,7 @@ public class ClientImageUpdater extends ClientUpdater {
 							BufferedImage image = ((ImageMessage) update).getImage();
 							
 							baos.reset();
-							ImageIO.write(image,  "png",  baos); // need more jpeg
+							ImageIO.write(image,  "jpg",  baos); // need more jpeg
 							baos.flush();
 
 							imageBytes = baos.toByteArray();

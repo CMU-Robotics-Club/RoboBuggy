@@ -58,7 +58,7 @@ class CameraStream {
             var dataSize = parseInt(this.currentString.substring(10, 20));
 
             if ((this.currentString.length - headerSize) >= dataSize) {
-                this.cameraImage.src = ("data:image/png;base64," +
+                this.cameraImage.src = ("data:image/jpg;base64," +
                         this.currentString.substring(headerSize, headerSize + dataSize));
                 this.currentString = this.currentString.substring(headerSize + dataSize);
             }
