@@ -54,9 +54,11 @@ public class PathEditorTab extends RobobuggyGUIContainer {
 	private static final int WAYPOINT_EDITOR_PANEL_WIDTH = 200;
 	private static final int WAYPOINT_EDITOR_PANEL_HEIGHT = 100;
 	private static final int WAYPOINT_CONTROL_PANEL_BUTTON_HEIGHT = 50;
-	private static final int WAYPOINT_CONTROL_PANEL_BUTTON_COUNT = 3;
+	private static final int WAYPOINT_CONTROL_PANEL_BUTTON_COUNT = 5;
 	private static final int WAYPOINT_CONTROL_PANEL_HEIGHT = WAYPOINT_CONTROL_PANEL_BUTTON_COUNT
 															* WAYPOINT_CONTROL_PANEL_BUTTON_HEIGHT;
+
+	private static final Color WAYPOINT_COLOR = Color.GREEN;
 
 	private JMapViewerTree mapTree;
 
@@ -73,6 +75,8 @@ public class PathEditorTab extends RobobuggyGUIContainer {
 	private WaypointSaver waypointSaver;
 	private WaypointLoader waypointLoader;
 	private WaypointMover waypointMover;
+	private WaypointAdder waypointAdder;
+	private WaypointRemover waypointRemover;
 
 	private boolean editingWaypoint;
 
@@ -100,29 +104,35 @@ public class PathEditorTab extends RobobuggyGUIContainer {
 		waypointEditor.setBackground(Color.GRAY);
 
 		waypointSaver = new WaypointSaver();
-
 		waypointLoader = new WaypointLoader();
-
 		waypointMover = new WaypointMover();
+		waypointAdder = new WaypointAdder();
+		waypointRemover = new WaypointRemover();
 
 		this.add(waypointEditor);
 		this.add(waypointListContainer);
 		this.add(waypointSaver);
 		this.add(waypointLoader);
 		this.add(waypointMover);
+		this.add(waypointAdder);
+		this.add(waypointRemover);
+
 		this.repaint();
+
 		waypointListContainer.repaint();
 		waypointList.repaint();
 		waypointEditor.repaint();
 		waypointSaver.repaint();
 		waypointLoader.repaint();
 		waypointMover.repaint();
+		waypointAdder.repaint();
+		waypointRemover.repaint();
 
 
 		editingWaypoint = false;
 
-		addPointsToMapTree(Color.BLUE, new LocTuple(mapViewerLat, mapViewerLon));
-		addPointsToMapTree(Color.BLUE, new LocTuple(mapViewerLat + 0.001, mapViewerLon));
+		addPointsToMapTree(new LocTuple(mapViewerLat, mapViewerLon));
+		addPointsToMapTree(new LocTuple(mapViewerLat + 0.001, mapViewerLon));
 	}
 
 
@@ -259,11 +269,10 @@ public class PathEditorTab extends RobobuggyGUIContainer {
 
 	/**
 	 * @param points points to add to the map
-	 * @param thisColor color of the point
 	 */
-	public void addPointsToMapTree(Color thisColor,LocTuple...points) {
+	public void addPointsToMapTree(LocTuple...points) {
 		for (LocTuple point : points) {
-			mapTree.getViewer().addMapMarker(new MapMarkerDot(thisColor, point.getLatitude(), point.getLongitude()));
+			mapTree.getViewer().addMapMarker(new MapMarkerDot(WAYPOINT_COLOR, point.getLatitude(), point.getLongitude()));
 			((DefaultListModel<String>) waypointList.getModel()).addElement(point.getLatitude() + ", " + point.getLongitude());
 			waypointListContainer.repaint();
 		}
@@ -304,6 +313,18 @@ public class PathEditorTab extends RobobuggyGUIContainer {
 		waypointMover.setBounds(
 				0,
 				getHeight() - WAYPOINT_CONTROL_PANEL_HEIGHT + (WaypointMover.INDEX * WAYPOINT_CONTROL_PANEL_BUTTON_HEIGHT),
+				WAYPOINT_EDITOR_PANEL_WIDTH,
+				WAYPOINT_CONTROL_PANEL_BUTTON_HEIGHT
+		);
+		waypointAdder.setBounds(
+				0,
+				getHeight() - WAYPOINT_CONTROL_PANEL_HEIGHT + (WaypointAdder.INDEX * WAYPOINT_CONTROL_PANEL_BUTTON_HEIGHT),
+				WAYPOINT_EDITOR_PANEL_WIDTH,
+				WAYPOINT_CONTROL_PANEL_BUTTON_HEIGHT
+		);
+		waypointRemover.setBounds(
+				0,
+				getHeight() - WAYPOINT_CONTROL_PANEL_HEIGHT + (WaypointRemover.INDEX * WAYPOINT_CONTROL_PANEL_BUTTON_HEIGHT),
 				WAYPOINT_EDITOR_PANEL_WIDTH,
 				WAYPOINT_CONTROL_PANEL_BUTTON_HEIGHT
 		);
@@ -512,7 +533,7 @@ public class PathEditorTab extends RobobuggyGUIContainer {
 				double lat = measurement.getLatitude();
 				double lon = measurement.getLongitude();
 				lon = measurement.getWest() ? -lon : lon;
-				addPointsToMapTree(Color.GREEN, new LocTuple(lat, lon));
+				addPointsToMapTree(new LocTuple(lat, lon));
 			}
 			mapTree.getViewer().repaint();
 			PathEditorTab.this.waypointList.repaint();
@@ -536,6 +557,57 @@ public class PathEditorTab extends RobobuggyGUIContainer {
 				public void actionPerformed(ActionEvent e) {
 					if (!waypointList.isSelectionEmpty()) {
 						editingWaypoint = true;
+					}
+				}
+			});
+		}
+
+	}
+
+	/**
+	 * adds in a single waypoint to the center of the screen
+	 */
+	private class WaypointAdder extends JButton {
+
+		private static final int INDEX = 3;
+
+		WaypointAdder() {
+			setSize(WAYPOINT_EDITOR_PANEL_WIDTH, WAYPOINT_CONTROL_PANEL_BUTTON_HEIGHT);
+			setText("Add waypoint");
+			addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					addPointsToMapTree(new LocTuple(
+							mapTree.getViewer().getPosition().getLat(),
+							mapTree.getViewer().getPosition().getLon())
+					);
+				}
+			});
+		}
+
+	}
+
+	/**
+	 * removes the selected waypoint if there is one
+	 */
+	private class WaypointRemover extends JButton {
+
+		private static final int INDEX = 4;
+
+		WaypointRemover() {
+			setSize(WAYPOINT_EDITOR_PANEL_WIDTH, WAYPOINT_CONTROL_PANEL_BUTTON_HEIGHT);
+			setText("Remove selected waypoint");
+			addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if (!waypointList.isSelectionEmpty()) {
+						int index = waypointList.getSelectedIndex();
+						mapTree.getViewer().removeMapMarker(mapTree.getViewer().getMapMarkerList().get(index));
+						((DefaultListModel<String>) waypointList.getModel()).remove(index);
+
+						mapTree.repaint();
+						waypointListContainer.repaint();
+						waypointList.repaint();
 					}
 				}
 			});
