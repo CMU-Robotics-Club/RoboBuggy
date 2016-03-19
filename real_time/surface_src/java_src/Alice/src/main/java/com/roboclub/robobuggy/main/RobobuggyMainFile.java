@@ -1,5 +1,6 @@
 package com.roboclub.robobuggy.main;
 
+import com.roboclub.robobuggy.jetty.gui.JettyServer;
 import com.roboclub.robobuggy.serial.RBSerialMessage;
 import com.roboclub.robobuggy.simulation.SensorPlayer;
 import com.roboclub.robobuggy.ui.Gui;
@@ -15,6 +16,12 @@ public class RobobuggyMainFile {
 	 */
     public static void main(String[] args) {
     	
+    	try {
+			new JettyServer();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     	
         try {
 			JNISetup.setupJNI(); //must run for jni to install
@@ -47,7 +54,6 @@ public class RobobuggyMainFile {
     	if (RobobuggyConfigFile.isDataPlayBack()) {
     		//Play back mode enabled
     		new SensorPlayer(RobobuggyConfigFile.getPlayBackSourceFile(), 1);
-
         }
         
         	//Play back disabled, create robot

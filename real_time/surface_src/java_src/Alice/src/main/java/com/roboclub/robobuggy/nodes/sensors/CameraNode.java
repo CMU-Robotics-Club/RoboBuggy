@@ -1,6 +1,7 @@
 package com.roboclub.robobuggy.nodes.sensors;
 
 import com.github.sarxos.webcam.Webcam;
+import com.github.sarxos.webcam.WebcamResolution;
 import com.google.gson.JsonObject;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
@@ -15,6 +16,7 @@ import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
 import org.jcodec.api.awt.SequenceEncoder;
 
+import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -44,23 +46,26 @@ public class CameraNode extends PeriodicNode{
 
 		//setup the webcam
 		List<Webcam> webcams = Webcam.getWebcams();
-		this.webcam = null;
 
 		//TODO figure out a better way to select
 		for (Webcam webcam : webcams) {
 			if (webcam.getName().contains("Logitech")) {
 				this.webcam = webcam;
+				this.webcam.open();
 				break;
 			}
 		}
 
 		if (this.webcam == null) {
 			new RobobuggyLogicNotification("Couldn't find Logitech webcam!", RobobuggyMessageLevel.EXCEPTION);
-			return;
+			this.webcam = Webcam.getDefault();
+			// your camera have to support HD720p to run this code
+			Webcam webcam = Webcam.getDefault();
+			webcam.setCustomViewSizes(new Dimension[] {WebcamResolution.HD720.getSize()});
+			webcam.setViewSize(WebcamResolution.HD720.getSize());
+			webcam.open();
 		}
-
-		webcam.open();
-
+		
 		//setup image publisher
 		imagePublisher = new Publisher(channel.getMsgPath());
 
