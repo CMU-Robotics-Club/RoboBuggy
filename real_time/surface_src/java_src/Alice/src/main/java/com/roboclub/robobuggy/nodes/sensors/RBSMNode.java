@@ -200,14 +200,17 @@ public  class  RBSMNode extends SerialNode {
 			encTicks = message.getDataWord() & 0xFFFF;
 			messagePubEnc.publish(estimateVelocity(message.getDataWord()));
 		}
+		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_ERROR")) {
+			new RobobuggyLogicNotification("RBSM_MID_ERROR:"+message.getDataWord(), RobobuggyMessageLevel.EXCEPTION);
+		}
+		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_ENC_RESET_CONFIRM")) {
+			new RobobuggyLogicNotification("Encoder Reset Confirmed by Zoe", RobobuggyMessageLevel.NOTE);
+		}
 		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_ENC_TIMESTAMP")){
 			messagePubEncTime.publish(new EncoderTimeMessage(message.getDataWord()));
-			//System.out.println(String.format("Encoder timestamp: %d", message.getDataWord()));
 		}
 		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_STEER_FEEDBACK")) {
-			// This is a delta-distance! Do a thing!
 			potValue = message.getDataWord();
-			//System.out.println(potValue);
 			messagePubPot.publish(new SteeringMeasurement(-(potValue + OFFSET) / ARD_TO_DEG));
 		}
 		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_STEER_ANGLE")) {
@@ -225,14 +228,13 @@ public  class  RBSMNode extends SerialNode {
 		}
 		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_BRAKE_STATE")){
 			messagePubBrakeState.publish(new BrakeStateMessage(message.getDataWord()));
-			//System.out.println(String.format("Brake state: %d", message.getDataWord()));
 		}
 		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_AUTON_STATE")){
 			messagePubAutonState.publish(new AutonStateMessage(message.getDataWord()));
-			//System.out.println(String.format("Auton state: %d", message.getDataWord()));
 		}
 		else {
-				new RobobuggyLogicNotification("Invalid RBSM message header: " + headerByte, RobobuggyMessageLevel.NOTE);
+				new RobobuggyLogicNotification("Invalid RBSM message header: " + headerByte+ 
+						" Message:"+message.getDataWord(), RobobuggyMessageLevel.NOTE);
 		}
 		
 		//Feed the watchdog
