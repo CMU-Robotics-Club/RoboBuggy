@@ -51,6 +51,7 @@ public class CameraNode extends PeriodicNode{
 		for (Webcam webcam : webcams) {
 			if (webcam.getName().contains("Logitech")) {
 				this.webcam = webcam;
+				this.webcam.open();
 				break;
 			}
 		}
