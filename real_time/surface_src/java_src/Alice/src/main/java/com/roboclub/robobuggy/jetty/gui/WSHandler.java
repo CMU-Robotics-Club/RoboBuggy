@@ -28,7 +28,7 @@ public class WSHandler {
     @OnWebSocketConnect
     public void onConnect(Session session) {
     	clientID = sgm.addSessionToGroup("unsorted", session);    	
-//        System.out.println("Connect: " + session.getRemoteAddress().getAddress() + " ID: " + clientID);
+        System.out.println("Connect: " + session.getRemoteAddress().getAddress() + " ID: " + clientID);
     }
 
     // Switch own socket grouping here

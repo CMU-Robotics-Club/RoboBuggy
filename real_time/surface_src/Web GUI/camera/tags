@@ -1,4 +1,0 @@
-!_TAG_FILE_SORTED	2	/0=unsorted, 1=sorted, 2=foldcase/
-cameraImage.onload	/home/mint/Documents/Roboclub/RoboBuggy/real_time/surface_src/Web GUI/camera/camera.js	/^        this.cameraImage.onload = function() {$/;"	f	language:JavaScript
-cameraSocket.onopen	/home/mint/Documents/Roboclub/RoboBuggy/real_time/surface_src/Web GUI/camera/camera.js	/^cameraSocket.onmessage = cs.handlePacket;$/;"	f	language:JavaScript
-packetString	/home/mint/Documents/Roboclub/RoboBuggy/real_time/surface_src/Web GUI/camera/camera.js	/^        var packetString = CameraStream.bytesToBase64(new Uint8Array(packet.data));$/;"	v	language:JavaScript

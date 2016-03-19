@@ -28,7 +28,7 @@ public class JettyServer {
 		ResourceHandler res = new ResourceHandler();
 		res.setDirectoriesListed(true);
 		res.setWelcomeFiles(new String[]{ "index.html"});
-		res.setResourceBase("../../Web GUI/root");
+		res.setResourceBase("../../Web GUI/updated");
 		
 		// Root handler for WebSockets
 		WebSocketHandler wsHandler = new WebSocketHandler() {

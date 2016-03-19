@@ -229,7 +229,7 @@ function drawLargeTickMarks(options) {
 		iTickRad = degToRad(iTick);
 
 		/* Calculate the X and Y of both ends of the
-		 * line I need to draw at angle represented at Tick.
+		 * line I need to draw at angle repr    <div id="SpeedometerGroup">esented at Tick.
 		 * The aim is to draw the a line starting on the 
 		 * coloured arc and continueing towards the outer edge
 		 * in the direction from the center of the gauge. 

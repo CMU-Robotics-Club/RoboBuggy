@@ -37,14 +37,14 @@ chart_yaw.addTimeSeries(series_yaw, {lineWidth:2.5,strokeStyle:'#00ffd5',fillSty
 chart_yaw.streamTo(canvas_yaw, 0);
 
 function read() {
-    var dataSocket = new WebSocket("ws://127.0.0.1:8080");
+    var dataSocket = new ReconnectingWebSocket("ws://127.0.0.1:8080");
     dataSocket.onmessage = onDataMessage;
     dataSocket.onopen = function() {
         dataSocket.send("Please add me to the data group!");    
     }
 
     var cs = new CameraStream("camera");
-    var cameraSocket = new WebSocket("ws://127.0.0.1:8080");
+    var cameraSocket = new ReconnectingWebSocket("ws://127.0.0.1:8080");
     cameraSocket.binaryType = "arraybuffer";
     cameraSocket.onmessage = function(event) {
         cs.handlePacket(event);

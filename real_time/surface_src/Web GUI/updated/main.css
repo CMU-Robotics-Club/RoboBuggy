@@ -1,0 +1,89 @@
+#CameraGroup {
+    width: 1200px;
+    height: 648px;
+    float: left;
+    padding: 10px;        
+}
+
+#ImuGroup {
+    width:648px;
+    height:648px;
+    float:left;
+    padding:10px;
+}
+
+#EncoderGroup {
+    width:1000px;
+    height:200px;
+    float:left;
+    padding:10px;
+}
+
+.CameraViewer {
+    height: 100%;
+    width: 100%;
+}
+
+.Gauge {
+    height: 100%;
+    width: 50%;
+    float: left;
+}
+
+.AngleViewer {
+    display: inline-block;
+    height: 50%;
+    width: 49%;
+    position: relative;
+    color: white;
+    overflow: hidden;
+}
+
+.AngleViewer .info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 5px 5px;
+}
+
+.AngleViewer .info > div {
+    width: 33%;
+    display: inline-block;
+}
+
+.AngleViewer .title {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 5px 5px;
+}
+
+.AngleViewer .label {
+    position: absolute;
+    text-size: 0.5em;
+}
+
+.GPSViewer {
+    height: 600px;
+    width: 600px;
+}
+
+
+.stations, .stations svg {
+    position: absolute;
+}
+
+.stations svg {
+    width: 60px;
+    height: 20px;
+    padding-right: 100px;
+    font: 10px sans-serif;
+}
+
+.stations circle {
+    fill: brown;
+    stroke: black;
+    stroke-width: 1.5px;
+}
