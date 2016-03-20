@@ -25,7 +25,6 @@ public class HighTrustGPSLocalizer implements Node{
     private double buggyFrameRotZ;
     private double roll = 0;
     private double pitch = 0;
-    private double yaw = 0;
 
 
     private Publisher posePub;
@@ -52,11 +51,11 @@ public class HighTrustGPSLocalizer implements Node{
                 double oldGPSY = buggyFrameGpsY;
                 buggyFrameGpsY = newGPSData.getLongitude();
                 buggyFrameGpsX = newGPSData.getLatitude();
-                double dy = buggyFrameGpsY - oldGPSY;
+               double dy = buggyFrameGpsY - oldGPSY;
                 double dx = buggyFrameGpsX - oldGPSX;
 
                 // take the arctangent in order to get the heading (in degrees)
-             //   buggyFrameRotZ = Math.toDegrees(Math.atan2(dy,dx));
+                buggyFrameRotZ = Math.toDegrees(Math.atan2(dy,dx));
 
                 publishUpdate();
             }
@@ -70,7 +69,6 @@ public class HighTrustGPSLocalizer implements Node{
 				//updates roll,pitch,yaw
 				roll = Math.PI*imuM.getRoll()/180;
 				pitch = Math.PI*imuM.getPitch()/180;
-				yaw = Math.PI*imuM.getYaw()/180;
 			}
 		});
         
@@ -80,16 +78,15 @@ public class HighTrustGPSLocalizer implements Node{
         	 				MagneticMeasurement magM = (MagneticMeasurement)m;
         	 			
         	 				// Tilt compensated magnetic field X
-        	 				  double mag_x = magM.getX() * Math.cos(pitch) + magM.getY() * Math.sin(roll) * Math.sin(pitch) + magM.getZ() * Math.cos(roll) * Math.sin(pitch);
+        	 				  double magX = magM.getX() * Math.cos(pitch) + magM.getY() * Math.sin(roll) * Math.sin(pitch)
+        	 						  + magM.getZ() * Math.cos(roll) * Math.sin(pitch);
         	 				  // Tilt compensated magnetic field Y
-        	 				  double mag_y = magM.getY() * Math.cos(roll) - magM.getZ() * Math.sin(roll);
+        	 				  double magY = magM.getY() * Math.cos(roll) - magM.getZ() * Math.sin(roll);
         	 				
-        	 				double currAngle = -180*Math.atan2(-mag_y, mag_x)/Math.PI;
-        	 				//TODO stop this from being a 5:29 am hack 
+        	 				double currAngle = -180*Math.atan2(-magY, magX)/Math.PI;
         	 				double offset = 0.0;
         	 				buggyFrameRotZ = currAngle - offset;
         	 				publishUpdate();
-        	 				System.out.println("yo");
         	 				//TODO add a calibration step 
         	 			}
         	 		});

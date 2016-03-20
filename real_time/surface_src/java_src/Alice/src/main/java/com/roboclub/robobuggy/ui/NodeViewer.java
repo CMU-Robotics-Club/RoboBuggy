@@ -9,9 +9,6 @@ import com.roboclub.robobuggy.main.RobobuggyMainFile;
 import com.roboclub.robobuggy.robots.AbstractRobot;
 import com.roboclub.robobuggy.ros.Node;
 
-import javax.swing.JButton;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This class creates a gui element for showing the status of every node that is currently running on buggy
@@ -33,7 +30,7 @@ public class NodeViewer extends RobobuggyGUIContainer{
 		nodeLocList = new ArrayList<>();
 		nodeLocList.add(-0.1);
 
-		AbstractRobot aRobot = RobobuggyMainFile.robot;
+		AbstractRobot aRobot = RobobuggyMainFile.getCurrentRobot();
 		List<Node> nodeList = aRobot.getNodes();
 
 		for (Node aNodeList : nodeList) {

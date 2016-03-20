@@ -1,6 +1,5 @@
 package com.roboclub.robobuggy.robots;
 
-import java.util.LinkedList;
 
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
@@ -13,8 +12,13 @@ import com.roboclub.robobuggy.nodes.sensors.LoggingNode;
 import com.roboclub.robobuggy.nodes.sensors.RBSMNode;
 import com.roboclub.robobuggy.ros.NodeChannel;
 
-public class TransistorAuton extends AbstractRobot{
-
+/**
+ * A robot class for having transistor drive itself 
+ * @author Trevor Decker
+ *
+ */
+public final class TransistorAuton extends AbstractRobot{
+	private static TransistorAuton instance;
 	private static final int ARDUINO_BOOTLOADER_TIMEOUT = 2000;
 	
 	/**
@@ -29,6 +33,9 @@ public class TransistorAuton extends AbstractRobot{
 		return instance;
 	}
 	
+	/**
+	 * Constructor for TransistorAuton robot class
+	 */
 	private TransistorAuton(){
 		super();
 	System.out.println("Starting Robot");

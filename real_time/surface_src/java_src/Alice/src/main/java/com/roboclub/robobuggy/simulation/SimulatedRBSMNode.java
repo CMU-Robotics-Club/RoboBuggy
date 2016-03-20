@@ -36,9 +36,12 @@ public class SimulatedRBSMNode extends PeriodicNode{
 	private boolean commandedBrakeEngaged = true;
 
 	
+	/**
+	 * The constructor for the simulatedRBSMNode
+	 */
 	 public SimulatedRBSMNode() {
 		super(new BuggyBaseNode(NodeChannel.ENCODER), 1000);
-		SimulatedBuggy simBuggy = SimulatedBuggy.GetInstance();
+		SimulatedBuggy simBuggy = SimulatedBuggy.getInstance();
 		// TODO Auto-generated constructor stub
 		messagePubEnc = new Publisher(NodeChannel.ENCODER.getMsgPath());
 		messagePubControllerSteering = new Publisher(NodeChannel.STEERING_COMMANDED.getMsgPath());
@@ -52,19 +55,22 @@ public class SimulatedRBSMNode extends PeriodicNode{
 				commandedAngle = ((DriveControlMessage)m).getAngleInt();
 			}
 		});
+		
 		new Subscriber(NodeChannel.BRAKE_CTRL.getMsgPath(),
 				new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				commandedBrakeEngaged = ((BrakeControlMessage)m).isBrakeEngaged();
+				simBuggy.setBrakesDown(commandedBrakeEngaged);
 			}
 		});
+	
 		
 	}
 
 	@Override
 	protected void  update() {
-		SimulatedBuggy simBuggy = SimulatedBuggy.GetInstance();
+		SimulatedBuggy simBuggy = SimulatedBuggy.getInstance();
 		if(lastPose == null){
 			lastPose = new So2Pose(simBuggy.getX(), simBuggy.getY(), simBuggy.getTh());
 		}
@@ -93,8 +99,9 @@ public class SimulatedRBSMNode extends PeriodicNode{
 			outputAngle = -1000;
 		}
 		
-		simBuggy.setTh(outputAngle/1000); //TODO set velocity so that the buggy will try and steer towards this angle instead of jumping directly to it 
-	}
+		//TODO set velocity so that the buggy will try and steer towards this angle instead of jumping directly to it 
+		simBuggy.setTh((double)outputAngle/1000.0); 
+		}
 
 	@Override
 	protected boolean startDecoratorNode() {

@@ -13,7 +13,7 @@ import com.roboclub.robobuggy.utilities.JNISetup;
 
 /** This class is the driver starting up the robobuggy program, if you want the buggy to drive itself you should run this node */
 public class RobobuggyMainFile {
-    static public AbstractRobot robot;
+	private static AbstractRobot robot;
     
     /**
 	 * Run Alice
@@ -67,6 +67,14 @@ public class RobobuggyMainFile {
         	robot.startNodes();
 			new RobobuggyLogicNotification("Robobuggy Logic Notfication started", RobobuggyMessageLevel.NOTE);
 
+    }
+    
+    /**
+     * Evaluates to a reference to the current Robot  
+     * @return the robot reference 
+     */
+    public static AbstractRobot getCurrentRobot(){
+    	return robot;
     }
     
     
