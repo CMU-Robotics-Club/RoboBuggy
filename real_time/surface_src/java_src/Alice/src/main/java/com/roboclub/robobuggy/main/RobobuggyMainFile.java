@@ -1,6 +1,10 @@
 package com.roboclub.robobuggy.main;
 
+
 import com.roboclub.robobuggy.jetty.gui.JettyServer;
+import com.roboclub.robobuggy.robots.AbstractRobot;
+import com.roboclub.robobuggy.robots.SimRobot;
+import com.roboclub.robobuggy.robots.TransistorDataCollection;
 import com.roboclub.robobuggy.serial.RBSerialMessage;
 import com.roboclub.robobuggy.simulation.SensorPlayer;
 import com.roboclub.robobuggy.ui.Gui;
@@ -9,6 +13,7 @@ import com.roboclub.robobuggy.utilities.JNISetup;
 
 /** This class is the driver starting up the robobuggy program, if you want the buggy to drive itself you should run this node */
 public class RobobuggyMainFile {
+	private static AbstractRobot robot;
     
     /**
 	 * Run Alice
@@ -39,21 +44,29 @@ public class RobobuggyMainFile {
 		}
         
     	RobobuggyConfigFile.loadConfigFile(); //TODO make sure that logic Notification is setup before this point
-
-        Robot.getInstance();
-        Gui.getInstance();
-
         
      	
     	if (RobobuggyConfigFile.isDataPlayBack()) {
-    		//Play back mode enabled
-    		new SensorPlayer(RobobuggyConfigFile.getPlayBackSourceFile(), 1);
+            robot = SimRobot.getInstance();
+        }else{
+        	robot = TransistorDataCollection.getInstance();
         }
+    	
+        Gui.getInstance();
+
         
         	//Play back disabled, create robot
-        	Robot.getInstance().startNodes();
+        	robot.startNodes();
 			new RobobuggyLogicNotification("Robobuggy Logic Notfication started", RobobuggyMessageLevel.NOTE);
 
+    }
+    
+    /**
+     * Evaluates to a reference to the current Robot  
+     * @return the robot reference 
+     */
+    public static AbstractRobot getCurrentRobot(){
+    	return robot;
     }
     
     
@@ -63,10 +76,10 @@ public class RobobuggyMainFile {
      * @return 
      */
     public static void resetSystem(){
-    	Robot.getInstance().shutDown();
+    	robot.shutDown();
  //   	Gui.close();
  //   	Gui.getInstance();
-    	Robot.getInstance();
+//    	robot.getInstance();
     	//TODO make this work for real 
     	
     }

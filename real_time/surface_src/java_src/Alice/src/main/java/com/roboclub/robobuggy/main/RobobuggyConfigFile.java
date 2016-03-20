@@ -44,11 +44,11 @@ public final class  RobobuggyConfigFile {
 	private static boolean visionSystemEnabled = true;
 
 	//sensor com ports
-	private static String comPortImu = "NOT_SET";
-
-	private static String comPortGps = "NOT_SET";
+	private static String comPortImu  = "NOT_SET";
+	private static String comPortGps  = "NOT_SET";
 	private static String comPortRBSM = "NOT_SET";
-	private static String portVision ="NOT_SET";
+	private static String portVision = "NOT_SET";
+
 
 	// iff false, connect to serial sensors 
 	private static final boolean DATA_PLAY_BACK = false;

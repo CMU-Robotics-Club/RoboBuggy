@@ -54,6 +54,14 @@ public class So2Pose {
 		
 	}
 	
+	/**
+	 * evaluates to the inverse of the so2 pose (the position change needed to get to zero) 
+	 * @return an So2Pose object that is the inverse of the current object
+	 */
+	public So2Pose inverse(){
+		return new So2Pose(-1*location.getX(), -1*location.getY(), -1*orientation);
+	}
+	
 	
 	/**
 	 * updates the values of the pose
