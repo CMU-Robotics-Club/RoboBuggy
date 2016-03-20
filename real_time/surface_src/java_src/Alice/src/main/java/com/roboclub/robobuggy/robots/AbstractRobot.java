@@ -8,9 +8,13 @@ import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.main.RosMaster;
 import com.roboclub.robobuggy.ros.Node;
 
+/**
+ * A class that encodes the minimum functions need to represent a robot which is much like a ros launch file in normal ros 
+ * @author Trevor Decker
+ *
+ */
 public abstract class AbstractRobot implements RosMaster {
 	protected List<Node> nodeList;
-	protected static AbstractRobot instance;
 
 	
 	/************************************* Set of all public functions ********************************/

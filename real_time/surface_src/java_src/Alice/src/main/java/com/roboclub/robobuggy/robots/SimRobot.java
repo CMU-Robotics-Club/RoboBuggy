@@ -13,8 +13,13 @@ import com.roboclub.robobuggy.simulation.SimulatedGPSNode;
 import com.roboclub.robobuggy.simulation.SimulatedRBSMNode;
 import com.roboclub.robobuggy.simulation.SimulationPlayer;
 
-public class SimRobot extends AbstractRobot{
-
+/**
+ * A robot file for a simulated robot that can be used for internal testing of nodes along simulated paths 
+ * @author Trevor Decker
+ *
+ */
+public final class SimRobot extends AbstractRobot{
+    private static SimRobot instance;
 	/**
 	 * Returns a reference to the one instance of the {@link Robot} object.
 	 * If no instance exists, a new one is created.
@@ -35,7 +40,7 @@ public class SimRobot extends AbstractRobot{
 		nodeList.add(new SimulatedGPSNode());
 		nodeList.add(new SimulatedRBSMNode());
 		
-		SimulatedBuggy simBuggy = SimulatedBuggy.GetInstance();
+		SimulatedBuggy simBuggy = SimulatedBuggy.getInstance();
 		simBuggy.setDx(1.0);
 
 	}

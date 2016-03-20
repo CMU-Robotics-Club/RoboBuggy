@@ -10,8 +10,13 @@ import com.roboclub.robobuggy.nodes.sensors.LoggingNode;
 import com.roboclub.robobuggy.nodes.sensors.RBSMNode;
 import com.roboclub.robobuggy.ros.NodeChannel;
 
-public class TransistorDataCollection extends AbstractRobot {
-
+/**
+ * A robot class for doing data collection only with the live robot, will not attempt to autonomously drive 
+ * @author Trevor Decker
+ *
+ */
+public final class TransistorDataCollection extends AbstractRobot {
+	private static TransistorDataCollection instance;
 	private static final int ARDUINO_BOOTLOADER_TIMEOUT = 2000;
 
 	/**

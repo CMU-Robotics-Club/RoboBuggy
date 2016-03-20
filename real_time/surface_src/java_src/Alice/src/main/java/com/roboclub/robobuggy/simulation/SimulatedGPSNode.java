@@ -10,9 +10,17 @@ import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 
+/**
+ * A class for simulating the way that the gps system works to allow for offline testing
+ * @author Trevor Decker
+ *
+ */
 public class SimulatedGPSNode extends PeriodicNode{
 	private Publisher gpsPub = new Publisher(NodeChannel.GPS.getMsgPath());
 	
+	/**
+	 * constructor for the simulated gps node
+	 */
 	public SimulatedGPSNode() {
 		super(new BuggyBaseNode(NodeChannel.GPS), 500);
 		
@@ -21,7 +29,7 @@ public class SimulatedGPSNode extends PeriodicNode{
 
 	@Override
 	protected void update() {
-		 SimulatedBuggy simBuggy = SimulatedBuggy.GetInstance();
+		 SimulatedBuggy simBuggy = SimulatedBuggy.getInstance();
 		double xVal = simBuggy.getX();
 		double yVal = simBuggy.getY();
 		gpsPub.publish(new GpsMeasurement(new Date(), new Date(), xVal, true, yVal, true, 0, 0, 0.0, 0.0));		

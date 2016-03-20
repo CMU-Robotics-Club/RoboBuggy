@@ -13,14 +13,13 @@ import com.roboclub.robobuggy.utilities.JNISetup;
 
 /** This class is the driver starting up the robobuggy program, if you want the buggy to drive itself you should run this node */
 public class RobobuggyMainFile {
-    static public AbstractRobot robot;
+	private static AbstractRobot robot;
     
     /**
 	 * Run Alice
 	 * @param args : None
 	 */
     public static void main(String[] args) {
-    	
     	try {
 			new JettyServer();
 		} catch (Exception e) {
@@ -45,13 +44,6 @@ public class RobobuggyMainFile {
 		}
         
     	RobobuggyConfigFile.loadConfigFile(); //TODO make sure that logic Notification is setup before this point
-
-   
-
-		//Initialize message headers
-		RBSerialMessage.initializeHeaders();
-
-
         
      	
     	if (RobobuggyConfigFile.isDataPlayBack()) {
@@ -67,6 +59,14 @@ public class RobobuggyMainFile {
         	robot.startNodes();
 			new RobobuggyLogicNotification("Robobuggy Logic Notfication started", RobobuggyMessageLevel.NOTE);
 
+    }
+    
+    /**
+     * Evaluates to a reference to the current Robot  
+     * @return the robot reference 
+     */
+    public static AbstractRobot getCurrentRobot(){
+    	return robot;
     }
     
     

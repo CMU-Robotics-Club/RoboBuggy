@@ -7,6 +7,11 @@ import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 
+/**
+ * A simulated version of the imu for off board testing and gaining a better understanding of how the system works
+ * @author Trevor Decker
+ *
+ */
 public class SimulatedImuNode extends PeriodicNode{
 	private Publisher imuPub = new Publisher(NodeChannel.IMU.getMsgPath());
 	private Publisher imuMagPub = new Publisher(NodeChannel.IMU_MAGNETIC.getMsgPath());
@@ -17,7 +22,7 @@ public class SimulatedImuNode extends PeriodicNode{
 
 	@Override
 	protected void update() {
-		SimulatedBuggy simBuggy = SimulatedBuggy.GetInstance();
+		SimulatedBuggy simBuggy = SimulatedBuggy.getInstance();
 		imuPub.publish(new ImuMeasurement(simBuggy.getTh(), 0.0, 0.0));
 		imuMagPub.publish(new MagneticMeasurement(0.0, 0.0, simBuggy.getTh()));
 		

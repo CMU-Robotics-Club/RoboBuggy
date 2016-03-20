@@ -4,7 +4,6 @@ import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.nodes.localizers.HighTrustGPSLocalizer;
-import com.roboclub.robobuggy.nodes.planners.SweepNode;
 import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
 import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
 import com.roboclub.robobuggy.nodes.sensors.CameraNode;
@@ -16,23 +15,33 @@ import com.roboclub.robobuggy.ros.NodeChannel;
 
 import java.io.IOException;
 
-public class TransistorAuton extends AbstractRobot{
 
+/**
+ * A robot class for having transistor drive itself
+ *
+ * @author Trevor Decker
+ */
+public final class TransistorAuton extends AbstractRobot {
+	private static TransistorAuton instance;
 	private static final int ARDUINO_BOOTLOADER_TIMEOUT = 2000;
 
 	/**
-	 * Returns a reference to the one instance of the {@link Robot} object.
+	 * Returns a reference to the one instance of the {@link} object.
 	 * If no instance exists, a new one is created.
-	 * @return a reference to the one instance of the {@link Robot} object
+	 *
+	 * @return a reference to the one instance of the {@link } object
 	 */
 	public static AbstractRobot getInstance() {
 		if (instance == null) {
-			instance =  new TransistorAuton();
+			instance = new TransistorAuton();
 		}
 		return instance;
 	}
 
-	private TransistorAuton(){
+	/**
+	 * Constructor for TransistorAuton robot class
+	 */
+	private TransistorAuton() {
 		super();
 		System.out.println("Starting Robot");
 		try {
@@ -41,7 +50,7 @@ public class TransistorAuton extends AbstractRobot{
 			new RobobuggyLogicNotification("Couldn't wait for bootloader, shutting down", RobobuggyMessageLevel.EXCEPTION);
 			shutDown();
 		}
-		new RobobuggyLogicNotification("Logic Exception Setup properly" ,  RobobuggyMessageLevel.NOTE);
+		new RobobuggyLogicNotification("Logic Exception Setup properly", RobobuggyMessageLevel.NOTE);
 		// Initialize Nodes
 
 		nodeList.add(new HighTrustGPSLocalizer());
