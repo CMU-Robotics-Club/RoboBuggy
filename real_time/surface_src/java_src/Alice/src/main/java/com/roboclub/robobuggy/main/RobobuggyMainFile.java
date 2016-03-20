@@ -41,11 +41,6 @@ public class RobobuggyMainFile {
         
     	RobobuggyConfigFile.loadConfigFile(); //TODO make sure that logic Notification is setup before this point
 
-   
-
-		//Initialize message headers
-		RBSerialMessage.initializeHeaders();
-
         Robot.getInstance();
         Gui.getInstance();
 
