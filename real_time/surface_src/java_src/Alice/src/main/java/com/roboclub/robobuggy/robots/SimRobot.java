@@ -37,15 +37,6 @@ public class SimRobot extends AbstractRobot{
 		
 		SimulatedBuggy simBuggy = SimulatedBuggy.GetInstance();
 		simBuggy.setDx(1.0);
-		
-		/*
-		try {
-			nodeList.add(new WayPointFollowerPlanner(NodeChannel.UNKNOWN_CHANNEL,
-						WayPointUtil.createWayPointsFromLog("logs/", "3_9_16/2016-03-09-22-56-53/sensors_2016-03-09-22-56-53.txt")));
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			*/	
+
 	}
 }
