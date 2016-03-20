@@ -29,6 +29,8 @@ public enum NodeChannel {
 	BRAKE_STATE("brake_state"),
 	AUTON_STATE("auton_state"),
 	ENCODER_RESET("encoder_reset"),
+	AUTON_BRAKE_STATE("auton_brake_state"),
+	TELEOP_BRAKE_STATE("teleop_brake_state"),
 	UNKNOWN_CHANNEL("unknown"),
 	;
 	

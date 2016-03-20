@@ -13,6 +13,8 @@ import com.roboclub.robobuggy.messages.EncoderTimeMessage;
 import com.roboclub.robobuggy.messages.FingerPrintMessage;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
+import com.roboclub.robobuggy.messages.TeleopBrakeStateMessage;
+import com.roboclub.robobuggy.messages.AutonBrakeStateMessage;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.NodeState;
 import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
@@ -75,6 +77,9 @@ public  class  RBSMNode extends SerialNode {
 	private Publisher messagePubAutonState;
 	private Publisher messagePubBrakeState;
 	
+	private Publisher messagePubAutonBrakeState;
+	private Publisher messagePubTeleopBrakeState;
+	
 	private Publisher statePubEnc;
 	private Publisher statePubPot;
 	
@@ -108,7 +113,8 @@ public  class  RBSMNode extends SerialNode {
 		messagePubAutonState = new Publisher(NodeChannel.AUTON_STATE.getMsgPath());
 		messagePubBrakeState = new Publisher(NodeChannel.BRAKE_STATE.getMsgPath());
 		
-		
+		messagePubAutonBrakeState = new Publisher(NodeChannel.AUTON_BRAKE_STATE.getMsgPath());
+		messagePubTeleopBrakeState = new Publisher(NodeChannel.TELEOP_BRAKE_STATE.getMsgPath());
 
 		//statePub forwards this node's estimate of the state
 		//(i.e. after filtering bad data)
@@ -232,10 +238,17 @@ public  class  RBSMNode extends SerialNode {
 		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_AUTON_STATE")){
 			messagePubAutonState.publish(new AutonStateMessage(message.getDataWord()));
 		}
+		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_TELEOP_BRAKE_COMMAND")){
+			messagePubTeleopBrakeState.publish(new TeleopBrakeStateMessage(message.getDataWord()));
+		}
+		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_AUTON_BRAKE_COMMAND")){
+			messagePubAutonBrakeState.publish(new AutonBrakeStateMessage(message.getDataWord()));			
+		}
 		else {
 				new RobobuggyLogicNotification("Invalid RBSM message header: " + headerNumber+ 
 						" Message:"+message.getDataWord(), RobobuggyMessageLevel.NOTE);
 		}
+		
 		
 		//Feed the watchdog
 		setNodeState(NodeState.ON);
