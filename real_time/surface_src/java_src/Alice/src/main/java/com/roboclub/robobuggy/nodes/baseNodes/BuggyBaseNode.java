@@ -23,6 +23,7 @@ public class BuggyBaseNode implements BuggyNode {
 	private Publisher statePub;
 	private NodeState state;
 	private Long lastUpdate;
+	private Timer timer;
 	
 	/**
 	 * Construct a new {@link BuggyBaseNode}
@@ -33,7 +34,7 @@ public class BuggyBaseNode implements BuggyNode {
 		state = NodeState.NOT_IN_USE;
 		lastUpdate = 0L;
 		TimerTask timerTask = new UpdateTask();
-        Timer timer = new Timer(true);
+        timer = new Timer(true);
         timer.scheduleAtFixedRate(timerTask, 0, WATCHDOG_PERIOD);
 	}
 	
@@ -52,6 +53,7 @@ public class BuggyBaseNode implements BuggyNode {
 	public boolean shutdown() {
 		//Set the state to not in use
 		state = NodeState.NOT_IN_USE;
+		timer.cancel(); //needs to stop the thread from continuing to operate 
 		//Return true as the base node can always be shut down
 		return true;
 	}

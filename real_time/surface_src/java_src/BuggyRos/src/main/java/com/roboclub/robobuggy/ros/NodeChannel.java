@@ -30,6 +30,7 @@ public enum NodeChannel {
 	DEVICE_ID("device_id", true),
 	BRAKE_STATE("brake_state", true),
 	AUTON_STATE("auton_state", true),
+	ENCODER_RESET("encoder_reset", true),
 	UNKNOWN_CHANNEL("unknown", false),
 	;
 	

@@ -1,9 +1,8 @@
 package com.roboclub.robobuggy.main;
 
 import com.roboclub.robobuggy.nodes.localizers.HighTrustGPSLocalizer;
+import com.roboclub.robobuggy.nodes.sensors.CameraNode;
 import com.roboclub.robobuggy.nodes.planners.SweepNode;
-import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
-import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
 import com.roboclub.robobuggy.nodes.sensors.GpsNode;
 import com.roboclub.robobuggy.nodes.sensors.ImuNode;
 import com.roboclub.robobuggy.nodes.sensors.LoggingNode;
@@ -11,9 +10,6 @@ import com.roboclub.robobuggy.nodes.sensors.RBSMNode;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.NodeChannel;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,17 +26,24 @@ public final class Robot implements RosMaster {
 	private static Robot instance;
 	private boolean autonomous;
 	private boolean collectingData;
-	private List<Node> nodeList;
+	private static List<Node> nodeList;
 	//TODO find out the actual time we need to put here
 	private static final int ARDUINO_BOOTLOADER_TIMEOUT = 2000;
 
 	/************************************* Set of all public functions ********************************/
 
 	/**{@inheritDoc}*/
+	//only one instance of a robot will ever exist, however shutdown cannot be static because the method is a part of the ROSMaster interface", 
 	@Override
-	public boolean shutDown() {
+	public synchronized boolean shutDown() {
 		new RobobuggyLogicNotification("Shutting down Robot", RobobuggyMessageLevel.WARNING);
-		return nodeList.stream().map(n -> n.shutdown()).reduce(true, (a,b) -> a&&b);
+		boolean result = nodeList.stream().map(n -> n.shutdown()).reduce(true, (a,b) -> a&&b);
+		invalidateInstance();
+		return result;
+	}
+	
+	private static synchronized void invalidateInstance(){
+		instance = null;
 	}
 	
 	/**
@@ -75,11 +78,11 @@ public final class Robot implements RosMaster {
 		
 		//this subset of nodes is only added when we are in online mode 
 		if(collectingData){
-			nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.COM_PORT_GPS));
-			nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.COM_PORT_IMU));
+			nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.getComPortGPS()));
+			nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.getComPortImu()));
 			nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION,
 					NodeChannel.getLoggingChannels()));
-			nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING, RobobuggyConfigFile.COM_PORT_RBSM,
+			nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING, RobobuggyConfigFile.getComPortRBSM(),
 					RobobuggyConfigFile.RBSM_COMMAND_PERIOD));
 		}
 		
@@ -97,7 +100,7 @@ public final class Robot implements RosMaster {
 
 */
 
-//		nodeList.add(new CameraNode(NodeChannel.PUSHBAR_CAMERA, 100));
+		nodeList.add(new CameraNode(NodeChannel.PUSHBAR_CAMERA, 100));
 //		nodeList.add(new GPSTrackPlannerNode(NodeChannel.BRAKE_CTRL,RobobuggyConfigFile.LOG_FILE_LOCATION));
 //		nodeList.add(new GPSLocalizer(NodeChannel.POSE));
 
@@ -134,9 +137,9 @@ public final class Robot implements RosMaster {
 	 * If no instance exists, a new one is created.
 	 * @return a reference to the one instance of the {@link Robot} object
 	 */
-	public static Robot getInstance() {
+	public static synchronized  Robot getInstance() {
 		if (instance == null) {
-			instance = new Robot(!RobobuggyConfigFile.DATA_PLAY_BACK);
+			instance = new Robot(!RobobuggyConfigFile.isDataPlayBack());
 		}
 		return instance;
 	}
