@@ -8,23 +8,42 @@ import java.util.Scanner;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.serial.RBSerialMessage;
 
+/**
+ * 
+ * @author Trevor Decker
+ * An object for reading the header configuration file so that low level and high level are synchronized on the RBSM communication protocol
+ */
 public class RBSMConfigReader {
-	private static JsonObject headers;
+	private  JsonObject headers;
 	private static RBSMConfigReader instance;
 	
-	public static RBSMConfigReader getInstance(){
+	/**
+	 * evaluates to a reference of the only RBSMConfigReader on the system
+	 * allows for any object to access header information  
+	 * @return RBSMConfigReader reference
+	 */
+	public static synchronized RBSMConfigReader getInstance(){
 		if(instance == null){
 			instance = new RBSMConfigReader();
 		}
 		return instance;
 	}
 	
-	public JsonObject getHeaders(){
+	/**
+	 * gets the headers json object  
+	 * @return the json object to lookup header values
+	 */
+	public  JsonObject getHeaders(){
 		return headers;
 	}
 	
+	/**
+	 * The constructor for the RBSMConfig reader, this file function is where the RBSM header file is read and its data is stored
+	 */
 	public RBSMConfigReader() {
 		headers = new JsonObject();
 		try {
@@ -40,7 +59,7 @@ public class RBSMConfigReader {
 				}
 			}
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			new RobobuggyLogicNotification("rbsm header File not read correctly: "+e.getMessage(), RobobuggyMessageLevel.EXCEPTION);
 		}
 	}
 	
@@ -49,7 +68,7 @@ public class RBSMConfigReader {
 	 * @param headerByte header byte
 	 * @return true iff the headerByte is valid
 	 */
-	public static boolean isValidHeader(byte headerByte)
+	public  boolean isValidHeader(byte headerByte)
 	{
 
 		//see if that's a value in the headers object
