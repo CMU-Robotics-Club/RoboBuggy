@@ -1,5 +1,9 @@
 package com.roboclub.robobuggy.main;
 
+import Jama.Matrix;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import gnu.io.CommPortIdentifier;
 
 import java.io.File;
@@ -10,12 +14,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-
-import Jama.Matrix;
 
 /**
  * Util - Matrix utilities and other utilities

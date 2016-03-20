@@ -1,5 +1,7 @@
 package com.roboclub.robobuggy.main;
 
+
+import com.roboclub.robobuggy.jetty.gui.JettyServer;
 import com.roboclub.robobuggy.robots.AbstractRobot;
 import com.roboclub.robobuggy.robots.SimRobot;
 import com.roboclub.robobuggy.robots.TransistorDataCollection;
@@ -8,37 +10,23 @@ import com.roboclub.robobuggy.simulation.SensorPlayer;
 import com.roboclub.robobuggy.ui.Gui;
 import com.roboclub.robobuggy.utilities.JNISetup;
 
-import gnu.io.CommPortIdentifier;
-
-import java.awt.Window;
-import java.io.File;
-import java.io.IOException;
-import java.lang.management.ManagementFactory;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-
-import jdk.nashorn.internal.runtime.regexp.joni.Config;
-
 
 /** This class is the driver starting up the robobuggy program, if you want the buggy to drive itself you should run this node */
 public class RobobuggyMainFile {
     static public AbstractRobot robot;
-	
-    /*
-    public static getRobot(){
-    	
-    }
-    */
     
-	
     /**
 	 * Run Alice
 	 * @param args : None
 	 */
     public static void main(String[] args) {
     	
+    	try {
+			new JettyServer();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     	
         try {
 			JNISetup.setupJNI(); //must run for jni to install
@@ -66,13 +54,10 @@ public class RobobuggyMainFile {
 
         
      	
-    	if (RobobuggyConfigFile.DATA_PLAY_BACK) {
-            robot = SimRobot.getInstance();//TransistorAuton;//SimRobot.getInstance();
-    		//Play back mode enabled
-    //		new SensorPlayer(RobobuggyConfigFile.getPlayBackSourceFile(),1);
+    	if (RobobuggyConfigFile.isDataPlayBack()) {
+            robot = SimRobot.getInstance();
         }else{
         	robot = TransistorDataCollection.getInstance();
-
         }
     	
         Gui.getInstance();
@@ -91,10 +76,10 @@ public class RobobuggyMainFile {
      * @return 
      */
     public static void resetSystem(){
-    	Robot.getInstance().shutDown();
+    	robot.shutDown();
  //   	Gui.close();
  //   	Gui.getInstance();
-    	Robot.getInstance();
+//    	robot.getInstance();
     	//TODO make this work for real 
     	
     }

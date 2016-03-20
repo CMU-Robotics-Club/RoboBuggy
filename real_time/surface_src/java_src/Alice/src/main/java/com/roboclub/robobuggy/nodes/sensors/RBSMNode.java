@@ -2,17 +2,17 @@ package com.roboclub.robobuggy.nodes.sensors;
 
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
+import com.roboclub.robobuggy.messages.AutonStateMessage;
 import com.roboclub.robobuggy.messages.BatteryLevelMessage;
 import com.roboclub.robobuggy.messages.BrakeControlMessage;
+import com.roboclub.robobuggy.messages.BrakeStateMessage;
+import com.roboclub.robobuggy.messages.DeviceIDMessage;
 import com.roboclub.robobuggy.messages.DriveControlMessage;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
-import com.roboclub.robobuggy.messages.FingerPrintMessage;
 import com.roboclub.robobuggy.messages.EncoderTimeMessage;
+import com.roboclub.robobuggy.messages.FingerPrintMessage;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
-import com.roboclub.robobuggy.messages.DeviceIDMessage;
-import com.roboclub.robobuggy.messages.AutonStateMessage;
-import com.roboclub.robobuggy.messages.BrakeStateMessage;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.NodeState;
 import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
@@ -43,7 +43,7 @@ import java.util.Date;
  * DESCRIPTION: node for talking to the the low level controller via rbsm
  */
 
-public class RBSMNode extends SerialNode {
+public  class  RBSMNode extends SerialNode {
 	
 	private static final int BAUD_RATE = 76800;
 	
@@ -60,7 +60,7 @@ public class RBSMNode extends SerialNode {
 	private int encTicks = 0;
 	private double potValue = -1.0;
 
-	
+
 	// last state
 	private double accDistLast = 0.0;
 	private double instVelocityLast = 0.0;
@@ -81,6 +81,7 @@ public class RBSMNode extends SerialNode {
 	private Publisher messagePubEncTime;
 	
 	private Publisher messagePubFp; //Fingerprint for low level hash
+	
 	
 	/**
 	 * Construct a new RBSMNode object
@@ -199,14 +200,17 @@ public class RBSMNode extends SerialNode {
 			encTicks = message.getDataWord() & 0xFFFF;
 			messagePubEnc.publish(estimateVelocity(message.getDataWord()));
 		}
+		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_ERROR")) {
+			new RobobuggyLogicNotification("RBSM_MID_ERROR:"+message.getDataWord(), RobobuggyMessageLevel.EXCEPTION);
+		}
+		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_ENC_RESET_CONFIRM")) {
+			new RobobuggyLogicNotification("Encoder Reset Confirmed by Zoe", RobobuggyMessageLevel.NOTE);
+		}
 		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_ENC_TIMESTAMP")){
 			messagePubEncTime.publish(new EncoderTimeMessage(message.getDataWord()));
-			//System.out.println(String.format("Encoder timestamp: %d", message.getDataWord()));
 		}
 		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_STEER_FEEDBACK")) {
-			// This is a delta-distance! Do a thing!
 			potValue = message.getDataWord();
-			//System.out.println(potValue);
 			messagePubPot.publish(new SteeringMeasurement(-(potValue + OFFSET) / ARD_TO_DEG));
 		}
 		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_STEER_ANGLE")) {
@@ -224,14 +228,13 @@ public class RBSMNode extends SerialNode {
 		}
 		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_BRAKE_STATE")){
 			messagePubBrakeState.publish(new BrakeStateMessage(message.getDataWord()));
-			//System.out.println(String.format("Brake state: %d", message.getDataWord()));
 		}
 		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_AUTON_STATE")){
 			messagePubAutonState.publish(new AutonStateMessage(message.getDataWord()));
-			//System.out.println(String.format("Auton state: %d", message.getDataWord()));
 		}
 		else {
-				new RobobuggyLogicNotification("Invalid RBSM message header: " + headerByte, RobobuggyMessageLevel.NOTE);
+				new RobobuggyLogicNotification("Invalid RBSM message header: " + headerByte+ 
+						" Message:"+message.getDataWord(), RobobuggyMessageLevel.NOTE);
 		}
 		
 		//Feed the watchdog
@@ -239,6 +242,7 @@ public class RBSMNode extends SerialNode {
 		
 		return 6;
 	}
+	
 
 	/**
 	 * Private class used to handle the periodic portions of the
@@ -300,6 +304,21 @@ public class RBSMNode extends SerialNode {
 					commandedBrakeEngaged = ((BrakeControlMessage)m).isBrakeEngaged();
 				}
 			});
+			new Subscriber(NodeChannel.ENCODER_RESET.getMsgPath(), new MessageListener() {
+				@Override
+				public void actionPerformed(String topicName, Message m) {
+					byte[] message = new byte[6];
+					message[0] = (byte)RBSerialMessage.getHeaderByte("RBSM_MID_ENC_RESET_REQUEST"); //Reset request header
+					message[1] = 0;
+					message[2] = 0;
+					message[3] = 0;
+					message[4] = 0;
+					message[5] = (byte)RBSerialMessage.getHeaderByte("FOOTER");
+					send(message);
+				}
+				
+			});
+			
 			return true;
 		}
 

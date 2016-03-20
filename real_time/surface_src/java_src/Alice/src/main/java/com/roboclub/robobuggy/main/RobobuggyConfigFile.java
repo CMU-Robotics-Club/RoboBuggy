@@ -1,16 +1,15 @@
 package com.roboclub.robobuggy.main;
 
+import com.google.gson.JsonObject;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-
-import com.google.gson.JsonObject;
 
 // add JSON parser for RobobuggyConfigFile
 
@@ -52,9 +51,7 @@ public final class  RobobuggyConfigFile {
 
 
 	// iff false, connect to serial sensors 
-	public static final boolean DATA_PLAY_BACK = true;
-
-	public static final String WAYPOINT_SOURCE_LOG_FILE ="2016-03-12-17-37-04/sensors_2016-03-12-17-37-04.txt";
+	private static final boolean DATA_PLAY_BACK = false;
 
 	private static String waypointSourceLogFile ="NOT_SET";
 	private static String playBackSourceFile = "NOT_SET";
@@ -87,20 +84,7 @@ public final class  RobobuggyConfigFile {
 			e.printStackTrace();
 		}
 	}
-	
-	/**
-	 * Helper function which removes the first and last elements from a string
-	 * @param input
-	 * @return quote free string
-	 */
-	private static String removeQuotes(String input){
-		//the string is too short
-		if(input.length() < 2){
-			return "";
-		}
-		return input.substring(1, input.length() -1);
-	}
-	
+
 	/**
 	 * Attempts to load values for configuration settings based on the configuration file
 	 * If the configuration file cannot be read then the old values will be used 
@@ -108,12 +92,12 @@ public final class  RobobuggyConfigFile {
 	public static void loadConfigFile(){
 		try {
 			JsonObject configJson = Util.readJSONFile(getConfigFile());
-			setComPortImu(removeQuotes(configJson.get("COM_PORT_IMU").toString()));
-			setComPortGps(removeQuotes(configJson.get("COM_PORT_GPS").toString()));
-			setComPortRBSM(removeQuotes(configJson.get("COM_PORT_RBSM").toString()));
-			setPortVision(removeQuotes(configJson.get("PORT_VISION").toString()));
-			setWayPointSourceLogFile(removeQuotes(configJson.get("WAYPOINT_SOURCE_LOG_FILE").toString()));
-			setPlayBackSourceFile(removeQuotes(configJson.get("PLAY_BACK_SOURCE_FILE").toString()));
+			setComPortImu(configJson.get("COM_PORT_IMU").getAsString());
+			setComPortGps(configJson.get("COM_PORT_GPS").getAsString());
+			setComPortRBSM(configJson.get("COM_PORT_RBSM").getAsString());
+			setPortVision(configJson.get("PORT_VISION").getAsString());
+			setWayPointSourceLogFile(configJson.get("WAYPOINT_SOURCE_LOG_FILE").getAsString());
+			setPlayBackSourceFile(configJson.get("PLAY_BACK_SOURCE_FILE").getAsString());
 
 			
 		} catch (UnsupportedEncodingException | FileNotFoundException e) {

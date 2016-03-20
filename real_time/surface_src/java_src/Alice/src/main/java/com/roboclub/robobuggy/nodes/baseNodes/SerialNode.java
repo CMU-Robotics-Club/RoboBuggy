@@ -117,12 +117,12 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 			e.printStackTrace();
 			return false;
 		}
-				
+
 		// Set port to be non-blocking....maybe.
 		sp.disableReceiveTimeout();
 		sp.disableReceiveThreshold();
 		// Set port to have a reasonable input buffer size?
-	
+
 		try {
 			serialInput = sp.getInputStream();
 			serialOutput = sp.getOutputStream();
@@ -130,7 +130,7 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 			System.out.println("broken");
 			return false;
 		}
-		
+
 		//Set the node to running
 		running = true;
 		// Begin the madness
