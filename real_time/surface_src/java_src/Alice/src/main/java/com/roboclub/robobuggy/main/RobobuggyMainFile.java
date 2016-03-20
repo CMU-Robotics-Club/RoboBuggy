@@ -15,7 +15,6 @@ public class RobobuggyMainFile {
 	 * @param args : None
 	 */
     public static void main(String[] args) {
-    	
     	try {
 			new JettyServer();
 		} catch (Exception e) {
@@ -40,6 +39,7 @@ public class RobobuggyMainFile {
 		}
         
     	RobobuggyConfigFile.loadConfigFile(); //TODO make sure that logic Notification is setup before this point
+    	RBSerialMessage.getHeaderByte("RBSM_MID_ERROR");
 
         Robot.getInstance();
         Gui.getInstance();

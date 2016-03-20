@@ -25,7 +25,7 @@ public class RBSerialMessage
 	 * @param headerName the name of the header as it appears in the text file
 	 * @return the byte for that header name
 	 */
-	public static  synchronized byte getHeaderByte(String headerName) {
+	public static synchronized byte getHeaderByte(String headerName) {
 		return RBSMConfigReader.getInstance().getHeaders().get(headerName).getAsByte();
 	}
 

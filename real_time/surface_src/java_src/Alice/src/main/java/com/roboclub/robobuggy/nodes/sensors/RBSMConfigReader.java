@@ -50,7 +50,7 @@ public class RBSMConfigReader {
 			Scanner fileIn = new Scanner(new File(RobobuggyConfigFile.RBSM_HEADER_FILE_LOCATION), "UTF-8");
 			while (fileIn.hasNextLine()) {
 				String line = fileIn.nextLine();
-				if (!line.equals("")) {
+				if (!line.equals("") && !line.contains("//")) {
 					String[] lineContents = line.split(", ");
 					String headerName = lineContents[0];
 					int headerNumber = Integer.parseInt(lineContents[1]);

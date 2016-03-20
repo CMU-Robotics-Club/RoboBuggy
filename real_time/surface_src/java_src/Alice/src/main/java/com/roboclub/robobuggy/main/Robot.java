@@ -78,8 +78,8 @@ public final class Robot implements RosMaster {
 		
 		//this subset of nodes is only added when we are in online mode 
 		if(collectingData){
-			nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.getComPortGPS()));
-			nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.getComPortImu()));
+//			nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.getComPortGPS()));
+//			nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.getComPortImu()));
 			nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION,
 					NodeChannel.getLoggingChannels()));
 			nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING, RobobuggyConfigFile.getComPortRBSM(),
@@ -100,7 +100,7 @@ public final class Robot implements RosMaster {
 
 */
 
-		nodeList.add(new CameraNode(NodeChannel.PUSHBAR_CAMERA, 100));
+//		nodeList.add(new CameraNode(NodeChannel.PUSHBAR_CAMERA, 100));
 //		nodeList.add(new GPSTrackPlannerNode(NodeChannel.BRAKE_CTRL,RobobuggyConfigFile.LOG_FILE_LOCATION));
 //		nodeList.add(new GPSLocalizer(NodeChannel.POSE));
 
