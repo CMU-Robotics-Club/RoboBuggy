@@ -101,7 +101,7 @@
 
 #define WDT_INT WDT_vect
 
-#define DEBUG
+// #define DEBUG
 
 #ifdef DEBUG
     #define dbg_printf(...) printf(__VA_ARGS__)
@@ -120,7 +120,6 @@ static bool g_is_autonomous;
 static unsigned long g_current_voltage;
 static unsigned long g_steering_feedback;
 static volatile unsigned long g_encoder_ticks;
-static volatile unsigned long g_encoder_time_last;
 static int smoothed_thr;
 static int smoothed_auton;
 static int steer_angle;
@@ -252,10 +251,10 @@ int main(void)
     DEBUG_DDR |= _BV(DEBUG_PINN);
 
     // setup encoder pin and interrupt
-    ENCODER_DDR &= ~_BV(ENCODER_PINN);
+    ENCODER_PORT |= _BV(ENCODER_PINN);
+    ENCODER_DDR &= ~_BV(ENCODER_PINN); 
     EIMSK |= _BV(INT2);
-    EICRA |= _BV(ISC20);
-    EICRA &= ~_BV(ISC21);
+    EICRA |= _BV(ISC20) | _BV(ISC21);
 
     // prepare uart0 (onboard usb) for rbsm
     uart0_init(UART_BAUD_SELECT(BAUD, F_CPU));
@@ -269,12 +268,16 @@ int main(void)
 
     // setup hardware
     sei(); // enable interrupts
-    // uart_init();
     system_clock_init();
     servo_init();
     adc_init();
     brake_init();
     LED_DANGER_DDR |= _BV(LED_DANGER_PINN);
+
+    // servo power control starts outputting low
+    // PBL0 = Arduino 49
+    PORTL &= ~_BV(0);
+    DDRL |= _BV(0);
 
     // setup rbsm
     g_rbsm.Init(&g_uart_rbsm, &g_uart_rbsm);
@@ -302,6 +305,12 @@ int main(void)
     // loop forever
     while(1) 
     {
+        // enable servo power after timeout
+        if(millis() > 200) 
+        {
+            PORTL |= _BV(0);
+        }
+
         rb_message_t new_command;
         int read_status;
 
@@ -329,7 +338,7 @@ int main(void)
                     case RBSM_MID_MEGA_BRAKE_COMMAND:
                         auto_brake_engaged = (bool)(long)new_command.data;
                         auton_brake_last = micros();
-                        printf("Got brake message for %d.\n", auto_brake_engaged);
+                        dbg_printf("Got brake message for %d.\n", auto_brake_engaged);
                         break;
                     default:
                         // report unknown message
@@ -433,7 +442,7 @@ int main(void)
                                          PWM_OFFSET_STORED_ANGLE,
                                          PWM_SCALE_STORED_ANGLE);
 
-	
+    
         if(g_is_autonomous)
         {
             if(auto_brake_engaged)
@@ -449,8 +458,8 @@ int main(void)
             steering_set(steer_angle);
             g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
         }
-		
-		// Set outputs
+        
+        // Set outputs
         if(g_brake_state_engaged == false && g_brake_needs_reset == false) 
         {
             brake_raise();
@@ -517,11 +526,6 @@ ISR(RX_AUTON_INT)
 ISR(ENCODER_INT) 
 {
     unsigned long time_now = micros();
-    // debounce encoder tick count
-    if(time_now - g_encoder_time_last > ENCODER_TIMEOUT_US) 
-    {
-        g_encoder_ticks++;
-    }
-    g_encoder_time_last = time_now;
+    g_encoder_ticks++;
 }
 
