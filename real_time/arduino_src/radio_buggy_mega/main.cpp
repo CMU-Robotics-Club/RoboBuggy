@@ -115,14 +115,10 @@
 
 
 // Global state
-static bool g_brake_state_engaged; // 0 = disengaged, !0 = engaged.
-static bool g_brake_needs_reset; // 0 = nominal, !0 = needs reset
 static bool g_is_autonomous;
 static unsigned long g_current_voltage;
 static unsigned long g_steering_feedback;
 static volatile unsigned long g_encoder_ticks;
-static int smoothed_thr;
-static int smoothed_auton;
 static int steer_angle;
 static int auto_steering_angle;
 static bool auto_brake_engaged;
@@ -246,6 +242,14 @@ void watchdog_init()
 
 int main(void) 
 {
+    // state variables
+    bool brake_needs_reset = true; // 0 = nominal, !0 = needs reset
+    bool brake_cmd_teleop_engaged = false;
+    bool brake_cmd_auton_engaged = false;
+    unsigned long time_start = micros();
+    unsigned long auton_brake_last = time_start;
+    unsigned long auton_steer_last = time_start;
+
     // turn the ledPin on
     // DEBUG_PORT |= _BV(DEBUG_PINN);
     DEBUG_PORT &= ~_BV(DEBUG_PINN);
@@ -289,21 +293,13 @@ int main(void)
     g_auton_rx.Init(&RX_AUTON_PIN, RX_AUTON_PINN, RX_AUTON_INTN);
 
     //Output information about code on arduino once to uart2 on startup.
-    dbg_printf("Hello world! This is debug information\r\n");
-    dbg_printf("Compilation date: %s\r\n", FP_COMPDATE);
-    dbg_printf("Compilation time: %s\r\n", FP_COMPTIME);
-    dbg_printf("Branch name: %s\r\n", FP_BRANCHNAME);
-    dbg_printf("Most recent commit: %s\r\n", FP_STRCOMMITHASH);
-    dbg_printf("Branch clean? %d\r\n", FP_CLEANSTATUS);
-    dbg_printf("\nEnd of compilation information\r\n");
-
-    unsigned long time_start = micros();
-    unsigned long auton_brake_last = time_start;
-    unsigned long auton_steer_last = time_start;
-
-    //false = brake dropped, true = brake engaged
-    bool teleop_brake_command = true;
-    bool auton_brake_command = true;
+    printf("Hello world! This is debug information\r\n");
+    printf("Compilation date: %s\r\n", FP_COMPDATE);
+    printf("Compilation time: %s\r\n", FP_COMPTIME);
+    printf("Branch name: %s\r\n", FP_BRANCHNAME);
+    printf("Most recent commit: %s\r\n", FP_STRCOMMITHASH);
+    printf("Branch clean? %d\r\n", FP_CLEANSTATUS);
+    printf("\nEnd of compilation information\r\n");
 
     watchdog_init();
 
@@ -316,6 +312,7 @@ int main(void)
             PORTL |= _BV(0);
         }
 
+        // Check for incomming serial messages
         rb_message_t new_command;
         int read_status;
 
@@ -362,44 +359,12 @@ int main(void)
             // drop responses with other faults
         }
 
-        // find the new steering angle, if available
+        // Check for RC commands
         steer_angle = g_steering_rx.GetAngleHundredths();
+        brake_cmd_teleop_engaged = g_brake_rx.GetAngle() > PWM_STATE_THRESHOLD;
+        g_is_autonomous = g_auton_rx.GetAngle() > PWM_STATE_THRESHOLD;
 
-        // find the new brake state, if available
-        smoothed_thr = g_brake_rx.GetAngle();
-
-        teleop_brake_command = smoothed_thr > PWM_STATE_THRESHOLD;
-
-        // TODO make this code...less...something
-        if(teleop_brake_command) 
-        {
-            // read as engaged
-            g_brake_state_engaged = true;
-            // brake has been reset
-            g_brake_needs_reset = false;
-        } 
-        else 
-        {
-            // read as disengaged
-            g_brake_state_engaged = false;
-        }
-
-        // find the new autonomous state, if available
-        smoothed_auton = g_auton_rx.GetAngle();
-
-        // TODO make this code...less...something
-        if(smoothed_auton > PWM_STATE_THRESHOLD) 
-        { 
-            // read as engaged
-            g_is_autonomous = true;
-        } 
-        else 
-        {
-            // read as disengaged
-            g_is_autonomous = false;
-        }
-
-        // detect dropped radio conections
+        // Detect dropped radio conections
         // note: interrupts must be disabled while checking system clock so that
         //       timestamps are not updated under our feet
         cli(); //disable interrupts
@@ -418,30 +383,36 @@ int main(void)
         unsigned long g_encoder_ticks_safe = g_encoder_ticks;
         sei(); //enable interrupts
 
-
+        // check for RC timout first
         if(delta1 > CONNECTION_TIMEOUT_US ||
            delta2 > CONNECTION_TIMEOUT_US ||
            delta3 > CONNECTION_TIMEOUT_US)
         {
             // we haven't heard from the RC receiver in too long
             dbg_printf("Timed out connection from RC!\n");
-            if(g_brake_needs_reset == false) 
+            if(brake_needs_reset == false) 
             {
                 g_rbsm.Send(RBSM_MID_ERROR, RBSM_EID_RC_LOST_SIGNAL);
             }
-            g_brake_needs_reset = true;
+            brake_needs_reset = true;
         }
-
-        if((g_is_autonomous) && 
-           (delta4 > CONNECTION_TIMEOUT_US ||
-           delta5 > CONNECTION_TIMEOUT_US))
+        // then check for timeout under autonomous
+        else if((g_is_autonomous == true) &&
+                (delta4 > CONNECTION_TIMEOUT_US ||
+                 delta5 > CONNECTION_TIMEOUT_US))
         {
             dbg_printf("Timed out connection from high level!\n");
-            if(g_brake_needs_reset == false) 
+            if(brake_needs_reset == false) 
             {
                 g_rbsm.Send(RBSM_MID_ERROR, RBSM_EID_AUTON_LOST_SIGNAL);
             }
-            g_brake_needs_reset = true;
+            brake_needs_reset = true;
+        }
+        // or reset the system if connection is back and driver engages brakes
+        else {
+            if(brake_cmd_teleop_engaged == true) {
+                brake_needs_reset = false;
+            }
         }
 
         // For the old buggy, the voltage divider is 10k ohm on the adc side and
@@ -460,13 +431,9 @@ int main(void)
                                          PWM_SCALE_STORED_ANGLE);
 
     
+        // Set outputs
         if(g_is_autonomous)
         {
-            if(auto_brake_engaged)
-            {
-                g_brake_state_engaged = true;                
-            }
-
             steering_set(auto_steering_angle);
             g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)(auto_steering_angle));
         }
@@ -476,17 +443,20 @@ int main(void)
             g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
         }
         
-        // Set outputs
-        if(g_brake_state_engaged == false && g_brake_needs_reset == false) 
+        if(brake_cmd_teleop_engaged == true ||
+           (g_is_autonomous == true && brake_cmd_auton_engaged == true) ||
+           brake_needs_reset == true)
         {
-            brake_raise();
+            brake_drop();
+            g_rbsm.Send(RBSM_MID_MEGA_BRAKE_STATE,(long unsigned)true);
         } 
         else 
         {
-            brake_drop();
+            brake_raise();
+            g_rbsm.Send(RBSM_MID_MEGA_BRAKE_STATE,(long unsigned)false);
         }
 
-        if(g_brake_needs_reset == true) 
+        if(brake_needs_reset == true) 
         {
             LED_DANGER_PORT |= _BV(LED_DANGER_PINN);
         } 
@@ -497,9 +467,8 @@ int main(void)
 
         // Send the rest of the telemetry messages
         g_rbsm.Send(RBSM_MID_DEVICE_ID, RBSM_DID_MEGA);
-        g_rbsm.Send(RBSM_MID_MEGA_BRAKE_STATE,(long unsigned)g_brake_state_engaged);
-        g_rbsm.Send(RBSM_MID_MEGA_TELEOP_BRAKE_COMMAND, (long unsigned)teleop_brake_command);
-        g_rbsm.Send(RBSM_MID_MEGA_AUTON_BRAKE_COMMAND, (long unsigned)auton_brake_command);
+        g_rbsm.Send(RBSM_MID_MEGA_TELEOP_BRAKE_COMMAND, (long unsigned)brake_cmd_teleop_engaged);
+        g_rbsm.Send(RBSM_MID_MEGA_AUTON_BRAKE_COMMAND, (long unsigned)brake_cmd_auton_engaged);
         g_rbsm.Send(RBSM_MID_MEGA_AUTON_STATE, (long unsigned)g_is_autonomous);
         g_rbsm.Send(RBSM_MID_MEGA_BATTERY_LEVEL, g_current_voltage);
         g_rbsm.Send(RBSM_MID_MEGA_STEER_FEEDBACK, (long int)g_steering_feedback);
