@@ -1,37 +1,40 @@
 package com.roboclub.robobuggy.ros;
 
+import java.util.ArrayList;
+
 public enum NodeChannel {
-	GPS("gps"),    								//The most recent gps coordinate 
-	IMU("imu"),									//The most recent imu measurement 
-	IMU_MAGNETIC("mag"),
-	RC("rc_angle"),								//?
-	STEERING("steering"),						//The current angle that low level is steering to 
-	PUSHBAR_CAMERA("push_bar_camera"),
-	BRAKE("brake"),
-	LOGIC_NOTIFICATION("logic_notification"),
-	DRIVE_CTRL("drive_ctrl"),
-	BRAKE_CTRL("commanded brake"),
-	VISION("vision"),
-	ENCODER("encoder"),
-	AUTO("auto"),
-	GUI_LOGGING_BUTTON("logging_button"),
-	STEERING_COMMANDED("commanded_steering"),   // the angle that we are commanding the front wheel turn to 
-	FP_HASH("fp_hash"),
-	POSE("pose"),
-	RESET("reset"),
-	STATE("state"),
-	SIMULATION("simulation"),
-	NODE_STATUS("node_status"),
-	PATH_PLANNER("path_planner"),
-	BATTERY("battery"),
-	ENCODERTIME("encoder_time"),
-	DEVICE_ID("device_id"),
-	BRAKE_STATE("brake_state"),
-	AUTON_STATE("auton_state"),
-	ENCODER_RESET("encoder_reset"),
-	AUTON_BRAKE_STATE("auton_brake_state"),
-	TELEOP_BRAKE_STATE("teleop_brake_state"),
-	UNKNOWN_CHANNEL("unknown"),
+
+	GPS("gps", true),    								//The most recent gps coordinate
+	IMU("imu", true),									//The most recent imu measurement
+	IMU_MAGNETIC("mag", true),
+	RC("rc_angle", true),								//?
+	STEERING("steering", true),						//The current angle that low level is steering to
+	PUSHBAR_CAMERA("push_bar_camera", true),
+	BRAKE("brake", true),
+	LOGIC_NOTIFICATION("logic_notification", true),
+	DRIVE_CTRL("drive_ctrl", true),
+	BRAKE_CTRL("commanded brake", true),
+	VISION("vision", true),
+	ENCODER("encoder", true),
+	AUTO("auto", true),
+	GUI_LOGGING_BUTTON("logging_button", true),
+	STEERING_COMMANDED("commanded_steering", true),   // the angle that we are commanding the front wheel turn to
+	FP_HASH("fp_hash", true),
+	POSE("pose", true),
+	RESET("reset", true),
+	STATE("state", true),
+	SIMULATION("simulation", true),
+	NODE_STATUS("node_status", false),
+	PATH_PLANNER("path_planner", true),
+	BATTERY("battery", true),
+	ENCODERTIME("encoder_time", true),
+	DEVICE_ID("device_id", true),
+	BRAKE_STATE("brake_state", true),
+	AUTON_STATE("auton_state", true),
+	ENCODER_RESET("encoder_reset", true),
+	AUTON_BRAKE_STATE("auton_brake_state", true),
+	TELEOP_BRAKE_STATE("teleop_brake_state", true),
+	UNKNOWN_CHANNEL("unknown", false),
 	;
 	
 	
@@ -42,12 +45,14 @@ public enum NodeChannel {
 	private String msgPath;
 	private String statePath;
 	private String name;
+	private boolean shouldLog;
 	
-	private NodeChannel(String name) {
+	private NodeChannel(String name, boolean shouldLog) {
 		this.rstPath = "sensors/" + name + "/reset";
 		this.msgPath = "sensors/" + name;
 		this.statePath = "sensor/" + name + "/state";
 		this.name = name;
+		this.shouldLog = shouldLog;
 	}
 	
 	public String getRstPath() {
@@ -76,24 +81,13 @@ public enum NodeChannel {
 	}
 
 	public static NodeChannel[] getLoggingChannels() {
-		return new NodeChannel[] {  GPS,
-									IMU,
-									PUSHBAR_CAMERA,
-									STEERING,
-									BRAKE,
-									LOGIC_NOTIFICATION,
-									DRIVE_CTRL,
-									BRAKE_CTRL,
-									VISION,
-									ENCODER,
-									AUTO,
-									GUI_LOGGING_BUTTON,
-									STEERING_COMMANDED,
-									FP_HASH,
-									POSE,
-									RESET,
-									STATE
-								};
+		ArrayList<NodeChannel> logChannels = new ArrayList<>();
+		for (NodeChannel channel : NodeChannel.values()) {
+			if (channel.shouldLog) {
+				logChannels.add(channel);
+			}
+		}
+		return logChannels.toArray(new NodeChannel[logChannels.size()]);
 	}
 
 }

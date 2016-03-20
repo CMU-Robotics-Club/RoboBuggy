@@ -101,7 +101,8 @@
 
 #define WDT_INT WDT_vect
 
-#define DEBUG
+//Uncomment the line below for testing. Otherwise leave commented out
+// #define DEBUG
 
 #ifdef DEBUG
     #define dbg_printf(...) printf(__VA_ARGS__)
