@@ -89,9 +89,6 @@
 #define BATTERY_ADC 0
 #define STEERING_POT_ADC 9
 
-#define LED_DANGER_DDR  DDRB
-#define LED_DANGER_PORT PORTB
-#define LED_DANGER_PINN PB6 // arduino 12
 #define BRAKE_OUT_DDR  DDRH
 #define BRAKE_OUT_PORT PORTH
 #define BRAKE_OUT_PINN PH5 // arduino 8
@@ -277,7 +274,6 @@ int main(void)
     servo_init();
     adc_init();
     brake_init();
-    LED_DANGER_DDR |= _BV(LED_DANGER_PINN);
 
     // servo power control starts outputting low
     // PBL0 = Arduino 49
@@ -454,15 +450,6 @@ int main(void)
         {
             brake_raise();
             g_rbsm.Send(RBSM_MID_MEGA_BRAKE_STATE,(long unsigned)false);
-        }
-
-        if(brake_needs_reset == true) 
-        {
-            LED_DANGER_PORT |= _BV(LED_DANGER_PINN);
-        } 
-        else 
-        {
-            LED_DANGER_PORT &= ~_BV(LED_DANGER_PINN);
         }
 
         // Send the rest of the telemetry messages
