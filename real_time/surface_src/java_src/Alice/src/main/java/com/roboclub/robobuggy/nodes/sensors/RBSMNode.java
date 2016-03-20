@@ -189,50 +189,52 @@ public  class  RBSMNode extends SerialNode {
 		}
 		
 		RBSerialMessage message = rbp.getMessage();
-		byte headerByte = message.getHeaderByte();
+		int headerNumber = message.getHeaderNumber();
 	
 		//TODO: The following statements should be reformatted because:
 		// 1: Calling getHeaderByte so many times is inefficient
 		// 2: Header values don't change so this can be made into a switch 
 		// 3: Header values are subject to change based on what's in rbsm_headers.txt
-		if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_ENC_TICKS_RESET")) {
+		if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_ENC_TICKS_RESET")) {
 			// This is a delta-distance! Do a thing!
 			encTicks = message.getDataWord() & 0xFFFF;
 			messagePubEnc.publish(estimateVelocity(message.getDataWord()));
 		}
-		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_ENC_TIMESTAMP")){
-			messagePubEncTime.publish(new EncoderTimeMessage(message.getDataWord()));
-			//System.out.println(String.format("Encoder timestamp: %d", message.getDataWord()));
+		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_ERROR")) {
+			new RobobuggyLogicNotification("RBSM_MID_ERROR:"+message.getDataWord(), RobobuggyMessageLevel.EXCEPTION);
 		}
-		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_STEER_FEEDBACK")) {
-			// This is a delta-distance! Do a thing!
+		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_ENC_RESET_CONFIRM")) {
+			new RobobuggyLogicNotification("Encoder Reset Confirmed by Zoe", RobobuggyMessageLevel.NOTE);
+		}
+		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_ENC_TIMESTAMP")){
+			messagePubEncTime.publish(new EncoderTimeMessage(message.getDataWord()));
+		}
+		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_STEER_FEEDBACK")) {
 			potValue = message.getDataWord();
-			//System.out.println(potValue);
 			messagePubPot.publish(new SteeringMeasurement(-(potValue + OFFSET) / ARD_TO_DEG));
 		}
-		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_STEER_ANGLE")) {
+		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_STEER_ANGLE")) {
 			messagePubControllerSteering.publish(new SteeringMeasurement(message.getDataWord()));
 		}
-		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_COMP_HASH")) {
+		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_COMP_HASH")) {
 			messagePubFp.publish(new FingerPrintMessage(message.getDataWord()));
 		}
-		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_BATTERY_LEVEL")){
+		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_BATTERY_LEVEL")){
 			//TODO: Display the battery level in the GUI
 			messagePubBat.publish(new BatteryLevelMessage(message.getDataWord()));
 		}
-		else if (headerByte == RBSerialMessage.getHeaderByte("DEVICE_ID")){
+		else if (headerNumber == RBSerialMessage.getHeaderByte("DEVICE_ID")){
 			messagePubDeviceID.publish(new DeviceIDMessage(message.getDataWord()));
 		}
-		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_BRAKE_STATE")){
+		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_BRAKE_STATE")){
 			messagePubBrakeState.publish(new BrakeStateMessage(message.getDataWord()));
-			//System.out.println(String.format("Brake state: %d", message.getDataWord()));
 		}
-		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_AUTON_STATE")){
+		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_AUTON_STATE")){
 			messagePubAutonState.publish(new AutonStateMessage(message.getDataWord()));
-			//System.out.println(String.format("Auton state: %d", message.getDataWord()));
 		}
 		else {
-				new RobobuggyLogicNotification("Invalid RBSM message header: " + headerByte, RobobuggyMessageLevel.NOTE);
+				new RobobuggyLogicNotification("Invalid RBSM message header: " + headerNumber+ 
+						" Message:"+message.getDataWord(), RobobuggyMessageLevel.NOTE);
 		}
 		
 		//Feed the watchdog

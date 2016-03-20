@@ -1,6 +1,7 @@
 package com.roboclub.robobuggy.main;
 
 import com.roboclub.robobuggy.nodes.localizers.HighTrustGPSLocalizer;
+import com.roboclub.robobuggy.nodes.sensors.CameraNode;
 import com.roboclub.robobuggy.nodes.planners.SweepNode;
 import com.roboclub.robobuggy.nodes.sensors.GpsNode;
 import com.roboclub.robobuggy.nodes.sensors.ImuNode;
@@ -99,7 +100,7 @@ public final class Robot implements RosMaster {
 
 */
 
-//		nodeList.add(new CameraNode(NodeChannel.PUSHBAR_CAMERA, 100));
+		nodeList.add(new CameraNode(NodeChannel.PUSHBAR_CAMERA, 100));
 //		nodeList.add(new GPSTrackPlannerNode(NodeChannel.BRAKE_CTRL,RobobuggyConfigFile.LOG_FILE_LOCATION));
 //		nodeList.add(new GPSLocalizer(NodeChannel.POSE));
 

@@ -17,7 +17,7 @@ public class RBSerialMessage
 	private static JsonObject headers;
 	private static RBSerialMessage instance; 
 	
-	private byte headerByte;
+	private int headerNumber;
 	private int dataBytes;
 
 	/**
@@ -43,9 +43,9 @@ public class RBSerialMessage
 				if (!line.equals("")) {
 					String[] lineContents = line.split(", ");
 					String headerName = lineContents[0];
-					byte headerByte = Byte.parseByte(lineContents[1]);
+					int headerNumber = Integer.parseInt(lineContents[1]);
 
-					headers.addProperty(headerName, headerByte);
+					headers.addProperty(headerName, headerNumber);
 				}
 			}
 		} catch (FileNotFoundException e) {
@@ -68,7 +68,7 @@ public class RBSerialMessage
 	 */
 	public RBSerialMessage(String headerName, int data)
 	{
-		headerByte = headers.get(headerName).getAsByte();
+		headerNumber = headers.get(headerName).getAsByte();
 		dataBytes = data;
 	}
 
@@ -79,17 +79,17 @@ public class RBSerialMessage
 	 * @param data the data
 	 */
 	public RBSerialMessage(byte header, int data) {
-		headerByte = header;
+		headerNumber = header;
 		dataBytes = data;
 	}
 
 	/**
-	 * Returns the header byte of the {@link RBSerialMessage}
-	 * @return the header byte of the {@link RBSerialMessage}
+	 * Returns the header int of the {@link RBSerialMessage}
+	 * @return the header int of the {@link RBSerialMessage}
 	 */
-	public byte getHeaderByte()
+	public int getHeaderNumber()
 	{
-		return headerByte;
+		return headerNumber;
 	}
 
 	/**
