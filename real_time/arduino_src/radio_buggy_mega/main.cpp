@@ -119,6 +119,7 @@ static volatile unsigned long g_encoder_ticks;
 static int steer_angle;
 static int auto_steering_angle;
 static bool auto_brake_engaged;
+static unsigned long g_errors;
 
 RBSerialMessages g_rbsm;
 rb_message_t g_new_rbsm;
@@ -317,6 +318,9 @@ int main(void)
         {
             if(read_status == 0) 
             {
+                // clear RBSM errors
+                g_errors &= ~_BV(RBSM_EID_RBSM_LOST_STREAM);
+                g_errors &= ~_BV(RBSM_EID_RBSM_INVALID_MID);
                 // dipatch complete message
                 switch(new_command.message_id)
                 {
@@ -340,19 +344,24 @@ int main(void)
                         break;
                     default:
                         // report unknown message
-                        g_rbsm.Send(RBSM_MID_ERROR, RBSM_EID_RBSM_INVALID_MID);
                         dbg_printf("Got message with invalid mid %d and data %d\n",
                              new_command.message_id,
                              new_command.data);
+                        g_errors |= _BV(RBSM_EID_RBSM_INVALID_MID);
                         break;
                 } //End switch(new_command.message_id)
-            } 
+            }
+            // report stream losses for tracking
             else if(read_status == RBSM_ERROR_INVALID_MESSAGE) 
             {
-                // report stream losses for tracking
-                g_rbsm.Send(RBSM_MID_ERROR, RBSM_EID_RBSM_LOST_STREAM);
+                dbg_printf("RBSM could not parse message.\n");
+                g_errors |= _BV(RBSM_EID_RBSM_LOST_STREAM);
             }
-            // drop responses with other faults
+            // should not be other faults
+            else {
+                dbg_printf("Unknown RBSM parse error.\n");
+                g_errors |= _BV(RBSM_EID_RBSM_LOST_STREAM);
+            }
         }
 
         // Check for RC commands
@@ -386,10 +395,7 @@ int main(void)
         {
             // we haven't heard from the RC receiver in too long
             dbg_printf("Timed out connection from RC!\n");
-            if(brake_needs_reset == false) 
-            {
-                g_rbsm.Send(RBSM_MID_ERROR, RBSM_EID_RC_LOST_SIGNAL);
-            }
+            g_errors |= _BV(RBSM_EID_RC_LOST_SIGNAL);
             brake_needs_reset = true;
         }
         // then check for timeout under autonomous
@@ -398,10 +404,7 @@ int main(void)
                  delta5 > CONNECTION_TIMEOUT_US))
         {
             dbg_printf("Timed out connection from high level!\n");
-            if(brake_needs_reset == false) 
-            {
-                g_rbsm.Send(RBSM_MID_ERROR, RBSM_EID_AUTON_LOST_SIGNAL);
-            }
+            g_errors |= _BV(RBSM_EID_AUTON_LOST_SIGNAL);
             brake_needs_reset = true;
         }
         // or reset the system if connection is back and driver engages brakes
@@ -409,6 +412,9 @@ int main(void)
             if(brake_cmd_teleop_engaged == true) {
                 brake_needs_reset = false;
             }
+
+            g_errors &= ~_BV(RBSM_EID_RC_LOST_SIGNAL);
+            g_errors &= ~_BV(RBSM_EID_AUTON_LOST_SIGNAL);
         }
 
         // For the old buggy, the voltage divider is 10k ohm on the adc side and
@@ -462,6 +468,7 @@ int main(void)
         g_rbsm.Send(RBSM_MID_ENC_TICKS_RESET, g_encoder_ticks_safe);
         g_rbsm.Send(RBSM_MID_ENC_TIMESTAMP, millis()); //TODO: Is this safe?
         g_rbsm.Send(RBSM_MID_COMP_HASH, (long unsigned)(FP_HEXCOMMITHASH));
+        g_rbsm.Send(RBSM_MID_ERROR, g_errors);
 
         //Feed the watchdog to indicate things aren't timing out
         wdt_reset();
