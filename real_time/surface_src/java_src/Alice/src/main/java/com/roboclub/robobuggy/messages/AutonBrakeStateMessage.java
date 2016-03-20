@@ -53,5 +53,22 @@ public class AutonBrakeStateMessage extends BaseMessage {
 		this.down = brakeValue;
 		this.timestamp = new Date(timestamp.getTime()).getTime();
 	}
+	
+	/**
+	 * getState
+	 * 
+	 * @return The commanded brake state according to low level
+	 */
+	public boolean getState(){
+		return this.down;
+	}
+	
+	/**
+	 * getTime
+	 * @return The time the message was received
+	 */
+	public long getTime(){
+		return this.timestamp;
+	}
 
 }
