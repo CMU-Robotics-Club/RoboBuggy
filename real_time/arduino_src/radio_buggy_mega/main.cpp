@@ -101,6 +101,7 @@
 
 #define WDT_INT WDT_vect
 
+//Uncomment the line below for testing. Otherwise leave commented out
 // #define DEBUG
 
 #ifdef DEBUG
@@ -300,6 +301,10 @@ int main(void)
     unsigned long auton_brake_last = time_start;
     unsigned long auton_steer_last = time_start;
 
+    //false = brake dropped, true = brake engaged
+    bool teleop_brake_command = true;
+    bool auton_brake_command = true;
+
     watchdog_init();
 
     // loop forever
@@ -335,7 +340,7 @@ int main(void)
                         auton_steer_last = micros();
                         dbg_printf("Got steering message for %d.\n", auto_steering_angle);
                         break;
-                    case RBSM_MID_MEGA_BRAKE_COMMAND:
+                    case RBSM_MID_MEGA_AUTON_BRAKE_COMMAND:
                         auto_brake_engaged = (bool)(long)new_command.data;
                         auton_brake_last = micros();
                         dbg_printf("Got brake message for %d.\n", auto_brake_engaged);
@@ -362,8 +367,11 @@ int main(void)
 
         // find the new brake state, if available
         smoothed_thr = g_brake_rx.GetAngle();
+
+        teleop_brake_command = smoothed_thr > PWM_STATE_THRESHOLD;
+
         // TODO make this code...less...something
-        if(smoothed_thr > PWM_STATE_THRESHOLD) 
+        if(teleop_brake_command) 
         {
             // read as engaged
             g_brake_state_engaged = true;
@@ -378,6 +386,7 @@ int main(void)
 
         // find the new autonomous state, if available
         smoothed_auton = g_auton_rx.GetAngle();
+
         // TODO make this code...less...something
         if(smoothed_auton > PWM_STATE_THRESHOLD) 
         { 
@@ -412,17 +421,25 @@ int main(void)
 
         if(delta1 > CONNECTION_TIMEOUT_US ||
            delta2 > CONNECTION_TIMEOUT_US ||
-           delta3 > CONNECTION_TIMEOUT_US ||
-           ((g_is_autonomous) && 
-           (delta4 > CONNECTION_TIMEOUT_US ||
-           delta5 > CONNECTION_TIMEOUT_US))
-           )
+           delta3 > CONNECTION_TIMEOUT_US)
         {
-            // we haven't heard from the RC receiver or high level in too long
-            dbg_printf("Timed out connection from RC or high level!\n");
+            // we haven't heard from the RC receiver in too long
+            dbg_printf("Timed out connection from RC!\n");
             if(g_brake_needs_reset == false) 
             {
                 g_rbsm.Send(RBSM_MID_ERROR, RBSM_EID_RC_LOST_SIGNAL);
+            }
+            g_brake_needs_reset = true;
+        }
+
+        if((g_is_autonomous) && 
+           (delta4 > CONNECTION_TIMEOUT_US ||
+           delta5 > CONNECTION_TIMEOUT_US))
+        {
+            dbg_printf("Timed out connection from high level!\n");
+            if(g_brake_needs_reset == false) 
+            {
+                g_rbsm.Send(RBSM_MID_ERROR, RBSM_EID_AUTON_LOST_SIGNAL);
             }
             g_brake_needs_reset = true;
         }
@@ -481,6 +498,8 @@ int main(void)
         // Send the rest of the telemetry messages
         g_rbsm.Send(RBSM_MID_DEVICE_ID, RBSM_DID_MEGA);
         g_rbsm.Send(RBSM_MID_MEGA_BRAKE_STATE,(long unsigned)g_brake_state_engaged);
+        g_rbsm.Send(RBSM_MID_MEGA_TELEOP_BRAKE_COMMAND, (long unsigned)teleop_brake_command);
+        g_rbsm.Send(RBSM_MID_MEGA_AUTON_BRAKE_COMMAND, (long unsigned)auton_brake_command);
         g_rbsm.Send(RBSM_MID_MEGA_AUTON_STATE, (long unsigned)g_is_autonomous);
         g_rbsm.Send(RBSM_MID_MEGA_BATTERY_LEVEL, g_current_voltage);
         g_rbsm.Send(RBSM_MID_MEGA_STEER_FEEDBACK, (long int)g_steering_feedback);

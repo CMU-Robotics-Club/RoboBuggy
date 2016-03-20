@@ -3,6 +3,7 @@ package com.roboclub.robobuggy.ros;
 import java.util.ArrayList;
 
 public enum NodeChannel {
+
 	GPS("gps", true),    								//The most recent gps coordinate
 	IMU("imu", true),									//The most recent imu measurement
 	IMU_MAGNETIC("mag", true),
@@ -31,6 +32,8 @@ public enum NodeChannel {
 	BRAKE_STATE("brake_state", true),
 	AUTON_STATE("auton_state", true),
 	ENCODER_RESET("encoder_reset", true),
+	AUTON_BRAKE_STATE("auton_brake_state", true),
+	TELEOP_BRAKE_STATE("teleop_brake_state", true),
 	UNKNOWN_CHANNEL("unknown", false),
 	;
 	
