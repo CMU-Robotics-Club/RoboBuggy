@@ -3,6 +3,7 @@ package com.roboclub.robobuggy.serial;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
+import com.roboclub.robobuggy.nodes.sensors.RBSMConfigReader;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,51 +15,18 @@ import java.util.Scanner;
  */
 public class RBSerialMessage
 {
-	private static JsonObject headers;
-	private static RBSerialMessage instance; 
+
 	
 	private int headerNumber;
 	private int dataBytes;
 
-	/**
-	 * reads the headers text file and puts it into the headers object
-	 * @return whether initialization succeeded or not
-	 */
-	public static synchronized boolean initializeHeaders() {
-
-		if (headers == null){
-			headers = new JsonObject();
-			instance = new RBSerialMessage();
-		}
-		return true;
-
-	}
-	
-	private RBSerialMessage() {
-
-		try {
-			Scanner fileIn = new Scanner(new File(RobobuggyConfigFile.RBSM_HEADER_FILE_LOCATION), "UTF-8");
-			while (fileIn.hasNextLine()) {
-				String line = fileIn.nextLine();
-				if (!line.equals("")) {
-					String[] lineContents = line.split(", ");
-					String headerName = lineContents[0];
-					int headerNumber = Integer.parseInt(lineContents[1]);
-
-					headers.addProperty(headerName, headerNumber);
-				}
-			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-	}
 
 	/**
 	 * @param headerName the name of the header as it appears in the text file
 	 * @return the byte for that header name
 	 */
 	public static  synchronized byte getHeaderByte(String headerName) {
-		return headers.get(headerName).getAsByte();
+		return RBSMConfigReader.getInstance().getHeaders().get(headerName).getAsByte();
 	}
 
 	/**
@@ -68,7 +36,7 @@ public class RBSerialMessage
 	 */
 	public RBSerialMessage(String headerName, int data)
 	{
-		headerNumber = headers.get(headerName).getAsByte();
+		headerNumber = RBSMConfigReader.getInstance().getHeaders().get(headerName).getAsByte();
 		dataBytes = data;
 	}
 
@@ -101,21 +69,5 @@ public class RBSerialMessage
 		return dataBytes;
 	}
 
-	/**
-	 * Determines if the headerByte is a valid RBSM header
-	 * @param headerByte header byte
-	 * @return true iff the headerByte is valid
-	 */
-	public static boolean isValidHeader(byte headerByte)
-	{
 
-		//see if that's a value in the headers object
-		for (Map.Entry<String, JsonElement> object : headers.entrySet()) {
-			if (object.getValue().getAsByte() == headerByte) {
-				return true;
-			}
-		}
-
-		return false;
-	}
 }
