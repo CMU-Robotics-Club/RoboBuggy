@@ -60,7 +60,7 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 			try {
 				portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
 	        if ( portIdentifier.isCurrentlyOwned() ) {
-	        	System.err.println("Error: Port currently in use");
+	        	new RobobuggyLogicNotification("Error: Port Currently in use:"+portIdentifier.getName(), RobobuggyMessageLevel.EXCEPTION);
 	        } else { 
 	            CommPort commPort = portIdentifier.open(portName, TIMEOUT);
 	            if ( commPort instanceof SerialPort ) {
@@ -108,13 +108,10 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 			sp.setSerialPortParams(baudRate,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
 		} catch (UnsupportedCommOperationException e) {
 			// TODO Auto-generated catch block
-			System.out.println("Unsupported communication operation over serial port.");
-			e.printStackTrace();
+			new RobobuggyLogicNotification("Unsupported communication operation over serial port."+e.getMessage(), RobobuggyMessageLevel.EXCEPTION);
 			return false;
 		} catch (NullPointerException e) {
-			System.out.println("Null Pointer Exception, unable to initialize the serial port. "
-					+ "Printing stack trace below: \n");
-			e.printStackTrace();
+			new RobobuggyLogicNotification("Null Pointer Exception, unable to initialize the serial port. "+e.getMessage(), RobobuggyMessageLevel.EXCEPTION);
 			return false;
 		}
 
@@ -127,7 +124,7 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 			serialInput = sp.getInputStream();
 			serialOutput = sp.getOutputStream();
 		} catch (IOException e) {
-			System.out.println("broken");
+			new RobobuggyLogicNotification("serial broken", RobobuggyMessageLevel.EXCEPTION);
 			return false;
 		}
 
@@ -202,8 +199,6 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 
 				try {
 					numBytes += serialInput.read(buf, start + numBytes, buf.length - numBytes); 
-					//System.out.printf(new String(buf));
-					//System.out.printf("%d\n", bytes);
 
 					while(true) 
 					{
@@ -226,7 +221,7 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 					try {
 						Thread.sleep(asleepTime);
 					} catch (InterruptedException e) {
-						System.out.println("sleep...interrupted?");
+						new RobobuggyLogicNotification("sleep .... interrupted?", RobobuggyMessageLevel.EXCEPTION);
 					}
 				} catch (IOException e) {
 					// TODO handle this error reasonably.

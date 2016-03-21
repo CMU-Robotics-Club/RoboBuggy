@@ -33,7 +33,6 @@ public final class TransistorDataCollection extends AbstractRobot {
 
 	private TransistorDataCollection(){
 		super();
-		System.out.println("Starting Robot");
 		try {
 			Thread.sleep(ARDUINO_BOOTLOADER_TIMEOUT);
 		} catch (InterruptedException e) {

@@ -87,7 +87,6 @@ public class HighTrustGPSLocalizer implements Node{
 //        	 				double offset = 0.0;
 //        	 				buggyFrameRotZ = currAngle - offset;
 //        	 				publishUpdate();
-//        	 				System.out.println("yo");
 //        	 				//TODO add a calibration step
 //        	 			}
 //        	 		});

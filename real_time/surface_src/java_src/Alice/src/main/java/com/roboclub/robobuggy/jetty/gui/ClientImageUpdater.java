@@ -6,9 +6,13 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import java.util.concurrent.ConcurrentHashMap;
+
 import javax.imageio.ImageIO;
 
 import org.eclipse.jetty.websocket.api.Session;
+
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.messages.ImageMessage;
 import com.roboclub.robobuggy.ros.Message;
 
@@ -95,7 +99,7 @@ public class ClientImageUpdater extends ClientUpdater {
 								session.getRemote().sendBytes(ByteBuffer.wrap(payload));
 							}
 						} else {
-							System.out.println("Null clients");
+							new RobobuggyLogicNotification("NULL clients", RobobuggyMessageLevel.EXCEPTION);
 						}
 					
 					} catch (Exception e) {

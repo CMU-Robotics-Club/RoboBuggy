@@ -54,7 +54,6 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 			return 17433504; //A dummy value that we can never get
 		}
 		bestGuess  = closestIndex;
-		System.out.println("Closest Point: "+closestIndex);
 
 		double delta = 10/100000.0;
 		//pick the first point that is at least delta away

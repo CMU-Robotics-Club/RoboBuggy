@@ -189,8 +189,7 @@ public  class  RBSMNode extends SerialNode {
 			case 6: 
 				break;
 			default: 
-				System.out.println("HOW DID NOT A SIX GET HERE");
-				//TODO add error
+				new RobobuggyLogicNotification("Peel did not evaluate to 0,1, or 6 in RBSMNode", RobobuggyMessageLevel.EXCEPTION);
 				break;
 		}
 		
