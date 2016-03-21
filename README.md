@@ -6,8 +6,7 @@ A project of the [Robotics Club at Carnegie Mellon University](https://roboticsc
 [<img src="https://travis-ci.org/CMU-Robotics-Club/RoboBuggy.svg?branch=master">](https://travis-ci.org/CMU-Robotics-Club/RoboBuggy/builds) [![Codacy Badge](https://api.codacy.com/project/badge/grade/4026f13cbb954454a4a9abe37fd49587)](https://www.codacy.com/app/Mr-Trevor-Decker/RoboBuggy)
 
 
-> Buggy (also called Sweepstakes) is a race held annually since 1920 at Carnegie Mellon. Teams of 5 athletes (the pushers) push an un-motorized vehicle (a buggy) containing a driver around a 0.84 mile course in a relay format where the vehicle serves as the baton. Roughly half of the course is uphill, during which the pushers run and shove the buggy uphill. During the other - downhill - half, drivers are on their own to navigate tight turns at speeds of up to 35mph.
-
+Buggy (also called Sweepstakes) is a race held annually since 1920 at Carnegie Mellon. Teams of 5 athletes (the pushers) push an un-motorized vehicle (a buggy) containing a driver around a 0.84 mile course in a relay format where the vehicle serves as the baton. Roughly half of the course is uphill, during which the pushers run and shove the buggy uphill. During the other - downhill - half, drivers are on their own to navigate tight turns at speeds of up to 35mph.
 
 Borrowed from the [CMU Buggy Alumni Association](http://cmubuggy.org/reference/What_is_buggy%3F). Visit them to find out more.
 
