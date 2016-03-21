@@ -21,8 +21,8 @@ script:
     - echo $BUGGY_ROOT
     # for running the build and tests of the high level code
     - (cd real_time/surface_src/java_src/Alice && $GRADLE_BIN/gradle build)
-    - sh real_time/surface_src/java_src/Alice/travisStyleCheck.sh
-    - sh real_time/surface_src/arduino_src/travisStyleCheck.sh
+    - bash real_time/surface_src/java_src/Alice/travisStyleCheck.sh
+    - bash real_time/arduino_src/travisStyleCheck.sh
 
 
 notifications:
