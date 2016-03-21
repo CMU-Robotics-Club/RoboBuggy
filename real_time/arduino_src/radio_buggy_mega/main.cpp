@@ -276,9 +276,9 @@ int main(void)
     brake_init();
 
     // servo power control starts outputting low
-    // PBL0 = Arduino 49
-    PORTL &= ~_BV(0);
-    DDRL |= _BV(0);
+    // PBH4 = Arduino 7
+    PORTH &= ~_BV(4);
+    DDRH |= _BV(4);
 
     // setup rbsm
     g_rbsm.Init(&g_uart_rbsm, &g_uart_rbsm);
@@ -305,7 +305,7 @@ int main(void)
         // enable servo power after timeout
         if(millis() > 200) 
         {
-            PORTL |= _BV(0);
+            PORTH |= _BV(4);
         }
 
         // Check for incomming serial messages
