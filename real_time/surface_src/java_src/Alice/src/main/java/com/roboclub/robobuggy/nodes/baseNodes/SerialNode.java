@@ -111,7 +111,8 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 			new RobobuggyLogicNotification("Unsupported communication operation over serial port."+e.getMessage(), RobobuggyMessageLevel.EXCEPTION);
 			return false;
 		} catch (NullPointerException e) {
-			new RobobuggyLogicNotification("Null Pointer Exception, unable to initialize the serial port. "+e.getMessage(), RobobuggyMessageLevel.EXCEPTION);
+			new RobobuggyLogicNotification("Null Pointer Exception, unable to initialize the serial port. "+
+		e.getMessage(), RobobuggyMessageLevel.EXCEPTION);
 			return false;
 		}
 

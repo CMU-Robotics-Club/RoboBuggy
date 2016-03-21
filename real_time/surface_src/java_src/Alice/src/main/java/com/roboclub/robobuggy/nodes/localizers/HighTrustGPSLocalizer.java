@@ -94,7 +94,7 @@ public class HighTrustGPSLocalizer implements Node{
 
     private void publishUpdate(){
         posePub.publish(new GPSPoseMessage(new Date(), buggyFrameGpsX, buggyFrameGpsY, buggyFrameRotZ));
-    }
+    }	
 
     @Override
     public boolean startNode() {
