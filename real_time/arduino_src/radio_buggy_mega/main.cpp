@@ -118,7 +118,6 @@ static unsigned long g_steering_feedback;
 static volatile unsigned long g_encoder_ticks;
 static int steer_angle;
 static int auto_steering_angle;
-static bool auto_brake_engaged;
 static unsigned long g_errors;
 
 RBSerialMessages g_rbsm;
@@ -338,9 +337,9 @@ int main(void)
                         dbg_printf("Got steering message for %d.\n", auto_steering_angle);
                         break;
                     case RBSM_MID_MEGA_AUTON_BRAKE_COMMAND:
-                        auto_brake_engaged = (bool)(long)new_command.data;
+                        brake_cmd_auton_engaged = (bool)(long)new_command.data;
                         auton_brake_last = micros();
-                        dbg_printf("Got brake message for %d.\n", auto_brake_engaged);
+                        dbg_printf("Got brake message for %d.\n", brake_cmd_auton_engaged);
                         break;
                     default:
                         // report unknown message
