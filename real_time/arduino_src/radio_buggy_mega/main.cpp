@@ -388,25 +388,35 @@ int main(void)
         unsigned long g_encoder_ticks_safe = g_encoder_ticks;
         sei(); //enable interrupts
 
-        // check for RC timout first
-        if(delta1 > CONNECTION_TIMEOUT_US ||
-           delta2 > CONNECTION_TIMEOUT_US ||
-           delta3 > CONNECTION_TIMEOUT_US)
-        {
-            // we haven't heard from the RC receiver in too long
-            dbg_printf("Timed out connection from RC!\n");
-            g_errors |= _BV(RBSM_EID_RC_LOST_SIGNAL);
-            brake_needs_reset = true;
+        bool rc_timeout = delta1 > CONNECTION_TIMEOUT_US ||
+                          delta2 > CONNECTION_TIMEOUT_US ||
+                          delta3 > CONNECTION_TIMEOUT_US;
+        bool auton_timeout = (g_is_autonomous == true) &&
+                             (delta4 > CONNECTION_TIMEOUT_US ||
+                              delta5 > CONNECTION_TIMEOUT_US);
+        if(rc_timeout || auton_timeout) {
+            // check for RC timout first
+            if(rc_timeout) {
+                // we haven't heard from the RC receiver in too long
+                dbg_printf("Timed out connection from RC!\n");
+                g_errors |= _BV(RBSM_EID_RC_LOST_SIGNAL);
+                brake_needs_reset = true;
+            }
+            else {
+                g_errors &= ~_BV(RBSM_EID_RC_LOST_SIGNAL);
+            }
+
+            // then check for timeout under autonomous
+            if(auton_timeout) {
+                dbg_printf("Timed out connection from high level!\n");
+                g_errors |= _BV(RBSM_EID_AUTON_LOST_SIGNAL);
+                brake_needs_reset = true;
+            }
+            else {
+                g_errors &= ~_BV(RBSM_EID_AUTON_LOST_SIGNAL);
+            }
         }
-        // then check for timeout under autonomous
-        else if((g_is_autonomous == true) &&
-                (delta4 > CONNECTION_TIMEOUT_US ||
-                 delta5 > CONNECTION_TIMEOUT_US))
-        {
-            dbg_printf("Timed out connection from high level!\n");
-            g_errors |= _BV(RBSM_EID_AUTON_LOST_SIGNAL);
-            brake_needs_reset = true;
-        }
+
         // or reset the system if connection is back and driver engages brakes
         else {
             if(brake_cmd_teleop_engaged == true) {
