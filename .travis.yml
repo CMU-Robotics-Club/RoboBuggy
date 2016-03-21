@@ -21,12 +21,9 @@ script:
     - echo $BUGGY_ROOT
     # for running the build and tests of the high level code
     - (cd real_time/surface_src/java_src/Alice && $GRADLE_BIN/gradle build)
-    # for viewing the find bugs error file
-    - cat real_time/surface_src/java_src/Alice/build/reports/findbugs/main.xml
-    # for counting the number of lines of java code that we have in alice
-    - find real_time/surface_src/java_src/Alice/ -name '*.java' | xargs wc -l
-    # for ensuring that the only println( is in logic error aka the console is not cluttered with debug info
-    - (NUM=$(grep -r 'System.out.println(' real_time/surface_src/java_src/Alice/* | wc -l) && if [ $NUM = 1 ] the true else echo "Detected System.out.println() in Alice" && false fi
+    - sh real_time/surface_src/java_src/Alice/travisStyleCheck.sh
+    - sh real_time/surface_src/arduino_src/travisStyleCheck.sh
+
 
 notifications:
   slack: robobuggy:bnKltZMACloBdOGvYOINInyE
