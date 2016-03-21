@@ -26,14 +26,7 @@ script:
     # for counting the number of lines of java code that we have in alice
     - find real_time/surface_src/java_src/Alice/ -name '*.java' | xargs wc -l
     # for ensuring that the only println( is in logic error aka the console is not cluttered with debug info
-    - NUM=$(grep -r 'System.out.println(' real_time/surface_src/java_src/Alice/* | wc -l)
-      if [ $NUM = 46 ]
-      then
-	true
-     else
-	echo "Detected System.out.println() in Alice"
-        false
-     fi
+    - (NUM=$(grep -r 'System.out.println(' real_time/surface_src/java_src/Alice/* | wc -l) && if [ $NUM = 46 ] the true else echo "Detected System.out.println() in Alice" && false fi
 
 notifications:
   slack: robobuggy:bnKltZMACloBdOGvYOINInyE
