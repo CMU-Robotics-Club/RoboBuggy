@@ -88,6 +88,24 @@ public class GpsMeasurement extends BaseMessage {
 	}
 	
 	/**
+	 * A constructor for a gps measurement that is as basic as possible
+	 * @param latitude latitude measurement
+	 * @param longitude longitude measurement
+	 */
+	public GpsMeasurement(double latitude,double longitude){
+		this.timestamp = new Date().getTime();
+		this.gpsTimestamp = new Date();
+		this.latitude = latitude;
+		this.north = true;
+		this.longitude = longitude;
+		this.west = true;
+		this.qualityValue = 0;
+		this.numSatellites = -1;
+		this.horizontalDilutionOfPrecision = 0.0;
+		this.antennaAltitude = 0.0;
+	}
+	
+	/**
 	 * Returns the latitude of the {@link GpsMeasurement}
 	 * @return the latitude of the {@link GpsMeasurement}
 	 */

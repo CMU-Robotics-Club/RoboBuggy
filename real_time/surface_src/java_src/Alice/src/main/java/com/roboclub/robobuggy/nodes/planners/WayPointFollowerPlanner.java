@@ -19,8 +19,8 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 	 * @param channel for buggybasenode
 	 * @param wayPoints the list of waypoints to follow
 	 */
-	public WayPointFollowerPlanner(NodeChannel channel,ArrayList wayPoints) {
-		super(channel);
+	public WayPointFollowerPlanner(ArrayList wayPoints) {
+		super(NodeChannel.PATH_PLANNER);
 		this.wayPoints = wayPoints;
 		pose = new GPSPoseMessage(new Date(0), 0, 0, 0);// temp measurment
 	}

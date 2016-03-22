@@ -49,11 +49,12 @@ public class HighTrustGPSLocalizer implements Node{
                 double oldGPSY = buggyFrameGpsY;
                 buggyFrameGpsY = newGPSData.getLongitude();
                 buggyFrameGpsX = newGPSData.getLatitude();
-               double dy = buggyFrameGpsY - oldGPSY;
+                double dy = buggyFrameGpsY - oldGPSY;
                 double dx = buggyFrameGpsX - oldGPSX;
 
                 // take the arctangent in order to get the heading (in degrees)
                 buggyFrameRotZ = Math.toDegrees(Math.atan2(dy,dx));
+            	System.out.println("loc: x:"+buggyFrameGpsX+"y:"+buggyFrameGpsY+"th:"+buggyFrameRotZ);
 
                 publishUpdate();
             }

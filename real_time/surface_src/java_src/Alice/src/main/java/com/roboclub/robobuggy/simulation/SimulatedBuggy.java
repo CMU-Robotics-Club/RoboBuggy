@@ -36,6 +36,7 @@ public final class SimulatedBuggy {
 	private double  x = 0.0;
 	private double  y = 0.0;
 	private double  th = 0.0;
+	private double wheelTh = 0.0;//the orintation in buggy coordinates of the front wheel 
 	private double dx = 0.0;
 	private double dy = 0.0;
 	private double dth = 0.0;
@@ -45,7 +46,7 @@ public final class SimulatedBuggy {
 	 * 
 	 * @return a reference to the simulated buggy
 	 */
-	public static SimulatedBuggy getInstance(){
+	public static synchronized SimulatedBuggy getInstance(){
 		if(instance == null){
 			instance = new SimulatedBuggy();
 		}
@@ -67,22 +68,33 @@ public final class SimulatedBuggy {
 		
 		java.util.Timer t = new java.util.Timer();
 		t.schedule(new TimerTask() {
+			//TODO add delays and error 
 
 		            @Override
-		            public void run() {
+		            public void  run() {
 		            	//figure out timing 
 		            	long now = new Date().getTime();
 		            	long dtMili = now - lastUpdateTime;
 		            	lastUpdateTime = now;
 		            	double dt = dtMili/1000.0;
-		            
+		            	double heading = wheelTh + th;
 		            	//now update the internal state
-		            	x = x +dx*Math.cos(th)*dt + dy*Math.sin(th)*dt;
-		            	y = y +dx*-Math.sin(th)*dt+dy*Math.cos(th)*dt;
-		            	th = th +dth*dt;
+		            	x = x +dx*Math.cos(heading)*dt + dy*Math.sin(heading)*dt;
+		            	y = y +dx*-Math.sin(heading)*dt+dy*Math.cos(heading)*dt;
+		            	th = heading;
+		            	System.out.println("real: x:"+x+"y:"+y+"th:"+th);
 		            	
 		            }
 		        }, 1000, 100);
+	}
+	
+	public double getWheelTh(){
+		return wheelTh;
+		
+	}
+	
+	public void setWheelTh(double newWheelTh){
+		wheelTh = newWheelTh;
 	}
 
 	/**
