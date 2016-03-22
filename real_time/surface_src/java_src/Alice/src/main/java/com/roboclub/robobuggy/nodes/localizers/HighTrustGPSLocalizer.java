@@ -47,14 +47,13 @@ public class HighTrustGPSLocalizer implements Node{
                 // Get the delta latitude and longitude, use that to figure out how far we've travelled
                 double oldGPSX = buggyFrameGpsX;
                 double oldGPSY = buggyFrameGpsY;
-                buggyFrameGpsY = newGPSData.getLongitude();
-                buggyFrameGpsX = newGPSData.getLatitude();
+                buggyFrameGpsY = newGPSData.getLatitude();
+                buggyFrameGpsX = newGPSData.getLongitude();
                 double dy = buggyFrameGpsY - oldGPSY;
                 double dx = buggyFrameGpsX - oldGPSX;
 
                 // take the arctangent in order to get the heading (in degrees)
                 buggyFrameRotZ = Math.toDegrees(Math.atan2(dy,dx));
-            	System.out.println("loc: x:"+buggyFrameGpsX+"y:"+buggyFrameGpsY+"th:"+buggyFrameRotZ);
 
                 publishUpdate();
             }
@@ -88,15 +87,14 @@ public class HighTrustGPSLocalizer implements Node{
 //        	 				double offset = 0.0;
 //        	 				buggyFrameRotZ = currAngle - offset;
 //        	 				publishUpdate();
-//        	 				System.out.println("yo");
 //        	 				//TODO add a calibration step
 //        	 			}
 //        	 		});
     }
 
     private void publishUpdate(){
-        posePub.publish(new GPSPoseMessage(new Date(), buggyFrameGpsX, buggyFrameGpsY, buggyFrameRotZ));
-    }
+        posePub.publish(new GPSPoseMessage(new Date(), buggyFrameGpsY, buggyFrameGpsX, buggyFrameRotZ));
+    }	
 
     @Override
     public boolean startNode() {

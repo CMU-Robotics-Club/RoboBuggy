@@ -30,7 +30,7 @@ public class PoseViewer extends RobobuggyGUIContainer{
 	 * makes a new poseviewer
 	 */
 	//constructor
-	public PoseViewer(){
+	public PoseViewer(NodeChannel poseChanel){
 
 		zoomIn = new JButton("+");
 		zoomIn.setBounds(0, 0, 50, 50);
@@ -63,13 +63,13 @@ public class PoseViewer extends RobobuggyGUIContainer{
 		double [][] worldFrameArray = {{1,0,0,0},{0,1,0,0},{0,0,1,0},{0,0,0,1}};
 
 	
-		new Subscriber(NodeChannel.POSE.getMsgPath(), new MessageListener() {
+		new Subscriber(poseChanel.getMsgPath(), new MessageListener() {
 			
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				GPSPoseMessage poseM = (GPSPoseMessage)m;
-				double x = poseM.getLatitude();
-				double y = poseM.getLongitude();
+				double y = poseM.getLatitude();
+				double x = poseM.getLongitude();
 				double th = Math.PI*poseM.getHeading()/180;
 				double [][] anArray = {{Math.cos(th),-Math.sin(th),0,x},{Math.sin(th),Math.cos(th),0,y},{0,0,1,0},{0,0,0,1}};
 				Matrix aPose = new Matrix(anArray);
@@ -125,6 +125,7 @@ public class PoseViewer extends RobobuggyGUIContainer{
 		Vec2d zProjection = projectToView(zPoint);
 
 		//TODO expand to 3d
+		//TODO make scalable in terms of the frame
 		
 	    g.setColor(Color.RED);
 	    g.drawLine((int)originProjection.x, (int)originProjection.y, (int)xProjection.x, (int)xProjection.y);

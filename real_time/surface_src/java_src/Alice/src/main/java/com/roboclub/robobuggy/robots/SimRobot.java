@@ -36,18 +36,18 @@ public final class SimRobot extends AbstractRobot{
 	
 	private SimRobot(){
 		super();
-		
+	
 		nodeList.add(new HighTrustGPSLocalizer());
 		nodeList.add(new SimulatedGPSNode());
 		nodeList.add(new SimulatedRBSMNode());
 		ArrayList<GpsMeasurement> wayPoints = new ArrayList<GpsMeasurement>();
 		for(int i = 0;i<100;i++){
-			wayPoints.add(new GpsMeasurement(i/10,0.0));
+			wayPoints.add(new GpsMeasurement(i,0));
 		}
 		nodeList.add(new WayPointFollowerPlanner(wayPoints));
-		
 		SimulatedBuggy simBuggy = SimulatedBuggy.getInstance();
-		simBuggy.setDy(0.01);
+		simBuggy.setDx(0.1);
+		//simBuggy.setDth(1.0);
 
 	}
 }

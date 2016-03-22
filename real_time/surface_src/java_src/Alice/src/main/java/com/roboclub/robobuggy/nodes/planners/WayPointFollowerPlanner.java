@@ -13,7 +13,6 @@ import java.util.Date;
 public class WayPointFollowerPlanner extends PathPlannerNode{
 	private ArrayList<GpsMeasurement> wayPoints;
 	private GPSPoseMessage pose; //TODO change this to a reasonable type
-	private int bestGuess = 0; //what point we think we are around
 
 	/**
 	 * @param channel for buggybasenode
@@ -37,7 +36,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 		double min = Double.MAX_VALUE; //note that the brakes will definitely deploy at this
 
 		int closestIndex = -1;
-		for(int i = Math.max(bestGuess-50,0);i<Math.min(wayPoints.size(),bestGuess+50);i++){
+		for(int i = 0;i<wayPoints.size();i++){
 			double d = getDistance(pose,wayPoints.get(i));
 			if(d < min){
 				min = d;
@@ -53,10 +52,8 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 		if(closestIndex == -1){
 			return 17433504; //A dummy value that we can never get
 		}
-		bestGuess  = closestIndex;
-		System.out.println("Closest Point: "+closestIndex);
 
-		double delta = 10/100000.0;
+		double delta = 10; //10/100000.0;
 		//pick the first point that is at least delta away
 		//pick the point to follow
 		int targetIndex = closestIndex;
@@ -75,8 +72,8 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 		GpsMeasurement targetPoint = wayPoints.get(targetIndex);
 
 		//find a path from our current location to that point
-		double dx = targetPoint.getLatitude() - pose.getLatitude();
-		double dy = targetPoint.getLongitude() - pose.getLongitude();
+		double dx = targetPoint.getLongitude() - pose.getLongitude();
+		double dy = targetPoint.getLatitude() - pose.getLatitude();
 		double desiredHeading = 180*Math.atan2(dy, dx)/Math.PI;
 
 
@@ -103,8 +100,8 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 	}
 
 	private double getDistance(GPSPoseMessage a, GpsMeasurement b){
-		double dx = a.getLatitude() - b.getLatitude();
-		double dy = a.getLongitude() - b.getLongitude();
+		double dx = a.getLongitude() - b.getLongitude();
+		double dy = a.getLatitude() - b.getLatitude();
 		return Math.sqrt(dx*dx + dy*dy);
 	}
 

@@ -71,12 +71,11 @@ public class OdomLocalizer  extends PeriodicNode{
 				SteeringMeasurement steerMeasur =  (SteeringMeasurement)m;
 				//TODO add locks
 				currentAngle = (steerMeasur.getAngle())*Math.PI/180;
-				System.out.println("angle:"+ currentAngle);
 			}
 		});
 	}
 
-
+	
 	@Override
 	protected void update() {
 			

@@ -67,7 +67,6 @@ public class RobobuggyLogicNotification {
 			case NOTE:
 				return false;
 			default:
-				System.out.println("Unknown MessageLevel. Printing");
 				return true;
 			}
 		case WARNING:
@@ -79,7 +78,6 @@ public class RobobuggyLogicNotification {
 			case NOTE:
 				return false;
 			default:
-				System.out.println("Unknown MessageLevel. Printing");
 				return true;
 			}
 		case NOTE:
@@ -91,11 +89,9 @@ public class RobobuggyLogicNotification {
 				case NOTE:
 					return true;		
 				default:
-					System.out.println("Unknown MessageLevel. Printing");
 					return true;
 				}
         default:
-            System.out.println("Unknown MessageLevel. Printing");
             return true;
         }
 	}

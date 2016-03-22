@@ -43,7 +43,6 @@ public final class TransistorAuton extends AbstractRobot {
 	 */
 	private TransistorAuton() {
 		super();
-		System.out.println("Starting Robot");
 		try {
 			Thread.sleep(ARDUINO_BOOTLOADER_TIMEOUT);
 		} catch (InterruptedException e) {

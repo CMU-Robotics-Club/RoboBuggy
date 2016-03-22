@@ -15,14 +15,17 @@ import com.roboclub.robobuggy.ros.Publisher;
 public class SimulatedImuNode extends PeriodicNode{
 	private Publisher imuPub = new Publisher(NodeChannel.IMU.getMsgPath());
 	private Publisher imuMagPub = new Publisher(NodeChannel.IMU_MAGNETIC.getMsgPath());
+	static SimulatedBuggy simBuggy = SimulatedBuggy.getInstance();
+
 	protected SimulatedImuNode(BuggyNode base, int period) {
 		super(base, period);
+		simBuggy = SimulatedBuggy.getInstance();
 		// TODO Auto-generated constructor stub
+		resume();
 	}
 
 	@Override
 	protected void update() {
-		SimulatedBuggy simBuggy = SimulatedBuggy.getInstance();
 		imuPub.publish(new ImuMeasurement(simBuggy.getTh(), 0.0, 0.0));
 		imuMagPub.publish(new MagneticMeasurement(0.0, 0.0, simBuggy.getTh()));
 		

@@ -4,6 +4,12 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.TimerTask;
 
+import boofcv.alg.segmentation.ms.MergeSmallRegions.Node;
+
+import com.roboclub.robobuggy.messages.GPSPoseMessage;
+import com.roboclub.robobuggy.ros.NodeChannel;
+import com.roboclub.robobuggy.ros.Publisher;
+
 import sun.security.jca.GetInstance;
 
 /**
@@ -13,11 +19,12 @@ import sun.security.jca.GetInstance;
  * 
  * The controller class for tracking how the buggy actually hidden state allowing for simulated 
  * sensors to receive information  
- *
+ * y is latitude, x is longitude
  */
 public final class SimulatedBuggy {
 	private static SimulatedBuggy instance;
 	private boolean brakesDown = false;
+	private Publisher simPosePub = new Publisher(NodeChannel.SIM_POSE.getMsgPath());
 	
 	/**
 	 * @return the brakesDown
@@ -60,10 +67,10 @@ public final class SimulatedBuggy {
 		//set init values
 		x = 0.0;
 		y = 0.0;
-		th = 0.0;
+		th = 0.0; //in degrees
 		dx = 0.0;
 		dy = 0.0;
-		dth = 0.0;
+		dth = 0.0; // in degrees
 		lastUpdateTime = new Date().getTime();
 		
 		java.util.Timer t = new java.util.Timer();
@@ -76,13 +83,17 @@ public final class SimulatedBuggy {
 		            	long now = new Date().getTime();
 		            	long dtMili = now - lastUpdateTime;
 		            	lastUpdateTime = now;
-		            	double dt = dtMili/1000.0;
-		            	double heading = wheelTh + th;
+		            	double dt = dtMili/100.0;
+		            	double heading = wheelTh + th + dth;
+		            	double headingRad = Math.toRadians(heading);
 		            	//now update the internal state
-		            	x = x +dx*Math.cos(heading)*dt + dy*Math.sin(heading)*dt;
-		            	y = y +dx*-Math.sin(heading)*dt+dy*Math.cos(heading)*dt;
+		            	x = x +dx*Math.cos(headingRad)*dt -dy*Math.sin(headingRad)*dt;
+		            	y = y +dx*Math.sin(headingRad)*dt+dy*Math.cos(headingRad)*dt;
 		            	th = heading;
-		            	System.out.println("real: x:"+x+"y:"+y+"th:"+th);
+		            	//TODO make pose message periodic 
+		            	simPosePub.publish(new GPSPoseMessage(new Date(), y, x, th));
+		        		System.out.println("x:"+x+"y:"+y+"th"+th);
+
 		            	
 		            }
 		        }, 1000, 100);
