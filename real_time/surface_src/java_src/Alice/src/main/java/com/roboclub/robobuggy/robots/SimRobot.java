@@ -46,7 +46,8 @@ public final class SimRobot extends AbstractRobot{
 		}
 		nodeList.add(new WayPointFollowerPlanner(wayPoints));
 		SimulatedBuggy simBuggy = SimulatedBuggy.getInstance();
-		simBuggy.setDx(0.1);
+		simBuggy.setDx(.1);
+		//simBuggy.setDth(1);
 		//simBuggy.setDth(1.0);
 
 	}

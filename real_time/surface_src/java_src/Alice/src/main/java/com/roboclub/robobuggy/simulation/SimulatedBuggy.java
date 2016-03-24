@@ -92,7 +92,6 @@ public final class SimulatedBuggy {
 		            	th = heading;
 		            	//TODO make pose message periodic 
 		            	simPosePub.publish(new GPSPoseMessage(new Date(), y, x, th));
-		        		System.out.println("x:"+x+"y:"+y+"th"+th);
 
 		            	
 		            }
