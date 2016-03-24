@@ -44,7 +44,7 @@ public class RobobuggyMainFile {
 		}
         
     	RobobuggyConfigFile.loadConfigFile(); //TODO make sure that logic Notification is setup before this point
-        robot= SimRobot.getInstance();
+        robot= TransistorDataCollection.getInstance();
      	/*
     	if (RobobuggyConfigFile.isDataPlayBack()) {
             robot = SimRobot.getInstance();

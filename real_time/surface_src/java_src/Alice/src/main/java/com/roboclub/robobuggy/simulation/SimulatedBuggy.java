@@ -98,11 +98,19 @@ public final class SimulatedBuggy {
 		        }, 1000, 100);
 	}
 	
+	/**
+	 * Getter for the wheel angle 
+	 * @return the current wheel value
+	 */
 	public double getWheelTh(){
 		return wheelTh;
 		
 	}
 	
+	/**
+	 * updates the orientation of the front wheel 
+	 * @param newWheelTh the orientation of the front wheel
+	 */
 	public void setWheelTh(double newWheelTh){
 		wheelTh = newWheelTh;
 	}

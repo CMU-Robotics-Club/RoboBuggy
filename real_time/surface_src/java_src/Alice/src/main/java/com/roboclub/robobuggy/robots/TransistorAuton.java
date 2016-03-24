@@ -62,7 +62,7 @@ public final class TransistorAuton extends AbstractRobot {
 		nodeList.add(new CameraNode(NodeChannel.PUSHBAR_CAMERA, 100));
 
 		try {
-			nodeList.add(new WayPointFollowerPlanner(WayPointUtil.createWayPointsFromLog("logs/", "spring1data/2016-02-20-06-50-45/sensors_2016-02-20-06-50-45.txt")));
+			nodeList.add(new WayPointFollowerPlanner(WayPointUtil.createWayPointsFromLog("logs/", RobobuggyConfigFile.getWaypointSourceLogFile())));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

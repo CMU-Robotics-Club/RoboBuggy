@@ -15,7 +15,6 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 	private GPSPoseMessage pose; //TODO change this to a reasonable type
 
 	/**
-	 * @param channel for buggybasenode
 	 * @param wayPoints the list of waypoints to follow
 	 */
 	public WayPointFollowerPlanner(ArrayList wayPoints) {
@@ -99,6 +98,12 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 		return true;
 	}
 
+	/**
+	 * evaluates to the distance between two gps points based on an L2 metric
+	 * @param a the first gps point
+	 * @param b the second gps point
+	 * @return the distince 
+	 */
 	private double getDistance(GPSPoseMessage a, GpsMeasurement b){
 		double dx = a.getLongitude() - b.getLongitude();
 		double dy = a.getLatitude() - b.getLatitude();

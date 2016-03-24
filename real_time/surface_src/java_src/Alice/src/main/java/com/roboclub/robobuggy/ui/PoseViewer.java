@@ -28,8 +28,9 @@ public class PoseViewer extends RobobuggyGUIContainer{
 
 	/**
 	 * makes a new poseviewer
+	 *  
+	 * @param poseChanel the chanel to publish on 
 	 */
-	//constructor
 	public PoseViewer(NodeChannel poseChanel){
 
 		zoomIn = new JButton("+");
