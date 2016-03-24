@@ -87,6 +87,17 @@
 #define ENCODER_INTN 2
 #define ENCODER_TIMEOUT_US 500 // 50mph w/ 6" wheel = 280 ticks/sec; 4000us/tick
 
+#define ENCODER_STEERING_DDR_A  DDRD
+#define ENCODER_STEERING_PORT_A PORTD
+#define ENCODER_STEERING_PIN_A  PIND
+#define ENCODER_STEERING_PINN_A PD2
+#define ENCODER_STEERING_INT_A  INT2_vect
+#define ENCODER_STEERING_DDR_B  DDRD
+#define ENCODER_STEERING_PORT_B PORTD
+#define ENCODER_STEERING_PIN_B  PIND
+#define ENCODER_STEERING_PINN_B PD3
+#define ENCODER_STEERING_INT_B  INT3_vect
+
 #define BATTERY_ADC 0
 #define STEERING_POT_ADC 9
 
@@ -133,6 +144,7 @@ ServoReceiver g_steering_rx;
 ServoReceiver g_brake_rx;
 ServoReceiver g_auton_rx;
 Encoder g_encoder_distance;
+Encoder g_encoder_steering;
 
 UARTFILE g_uart_rbsm;
 UARTFILE g_uart_debug;
@@ -262,7 +274,10 @@ int main(void)
     EICRA |= _BV(ISC30);
     EICRA &= ~_BV(ISC31);
     // g_encoder_distance.Init(&ENCODER_PIN, ENCODER_PINN);
-    g_encoder_distance.InitQuad(&ENCODER_PIN, ENCODER_PINN, &PIND, PD3);
+    g_encoder_steering.InitQuad(&ENCODER_STEERING_PIN_A,
+                                ENCODER_STEERING_PINN_A,
+                                &ENCODER_STEERING_PIN_B,
+                                ENCODER_STEERING_PINN_B);
 
     // prepare uart0 (onboard usb) for rbsm
     uart0_init(UART_BAUD_SELECT(BAUD, F_CPU));
@@ -544,11 +559,11 @@ ISR(RX_AUTON_INT)
 
 ISR(ENCODER_INT) 
 {
-    g_encoder_distance.OnInterruptQuad();
+    g_encoder_steering.OnInterruptQuad();
     // g_encoder_distance.OnInterrupt();
 }
 
 ISR(INT3_vect) {
-    g_encoder_distance.OnInterruptQuad();
+    g_encoder_steering.OnInterruptQuad();
 }
 
