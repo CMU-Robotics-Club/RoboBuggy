@@ -36,7 +36,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 
 		int closestIndex = -1;
 		for(int i = 0;i<wayPoints.size();i++){
-			double d = GPSPoseMessage.getDistance(currentLocation,wayPoints.get(i).toGpsPoseMessage(0));
+			double d = GPSPoseMessage.getDistance(currentLocation, wayPoints.get(i).toGpsPoseMessage(0));
 			if(d < min){
 				min = d;
 				closestIndex = i;
@@ -71,9 +71,9 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 		GpsMeasurement targetPoint = wayPoints.get(targetIndex);
 
 		//find a path from our current location to that point
-		double dx = targetPoint.getLongitude() - pose.getLongitude();
-		double dy = targetPoint.getLatitude() - pose.getLatitude();
-		double desiredHeading = 180*Math.atan2(dy, dx)/Math.PI;
+		double dLon = targetPoint.getLongitude() - pose.getLongitude();
+		double dLat = targetPoint.getLatitude() - pose.getLatitude();
+		double desiredHeading = 180*Math.atan2(dLat, dLon)/Math.PI;
 
 
 		//find the angle we need to reach that point

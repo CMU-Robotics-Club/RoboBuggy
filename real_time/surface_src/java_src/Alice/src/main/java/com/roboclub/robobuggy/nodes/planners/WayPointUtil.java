@@ -151,7 +151,5 @@ public class WayPointUtil {
 	            return messages;
 	}
 	
-	
 
-		 
 }

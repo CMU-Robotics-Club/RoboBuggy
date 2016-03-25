@@ -60,7 +60,7 @@ public class GPSPoseMessage extends BaseMessage {
 	 * evaluates to the distance between two gps points based on an L2 metric
 	 * @param a the first gps point
 	 * @param b the second gps point
-	 * @return the distince 
+	 * @return the distance
 	 */
 	public static double getDistance(GPSPoseMessage a, GPSPoseMessage b){
 		double dx = a.getLongitude() - b.getLongitude();
