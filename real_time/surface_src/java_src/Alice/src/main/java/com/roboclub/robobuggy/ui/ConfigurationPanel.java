@@ -158,7 +158,6 @@ public class ConfigurationPanel extends RobobuggyGUIContainer{
 					RobobuggyConfigFile.setImuEnabled(true);
 
 				}
-				System.out.println(RobobuggyConfigFile.getComPortImu());
 				//TODO bring back up the system
 				
 			}

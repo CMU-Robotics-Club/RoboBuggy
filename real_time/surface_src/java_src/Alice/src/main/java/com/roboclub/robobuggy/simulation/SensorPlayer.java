@@ -159,7 +159,6 @@ public class SensorPlayer extends Thread {
                             transmitMessage = translator.fromJson(sensorDataJson, BrakeMessage.class);
                             break;
                         case MagneticMeasurement.VERSION_ID:
-                        	System.out.println("mag");
                             transmitMessage = translator.fromJson(sensorDataJson, MagneticMeasurement.class);
                             break;
                         case DriveControlMessage.VERSION_ID:
