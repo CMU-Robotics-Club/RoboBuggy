@@ -27,10 +27,6 @@ public class TestWayPointFollowerPlanner {
 
 	@Test
 	public void test() {
-		ArrayList<GpsMeasurement> wayPoints = new ArrayList<GpsMeasurement>();
-		wayPoints.add(new GpsMeasurement(0, 0));
-		wayPoints.add(new GpsMeasurement(0, 1));
-		wayPoints.add(new GpsMeasurement(1, 0));
 		GPSPoseMessage zeroPose = new GPSPoseMessage(new Date(), 0.0, 0.0, 0.0);
 		GPSPoseMessage onePose = new GPSPoseMessage(new Date(), 0, 1, 0);
 		GPSPoseMessage aPose = new GPSPoseMessage(new Date(), 1.5, 1, 0);
@@ -38,23 +34,23 @@ public class TestWayPointFollowerPlanner {
 
 
 
-		if(WayPointUtil.getDistance(zeroPose, zeroPose) != 0){
+		if(GPSPoseMessage.getDistance(zeroPose, zeroPose) != 0){
 			fail("distance function does not respect idenity");
 		}
 		
-		if(WayPointUtil.getDistance(zeroPose, onePose) != 1){
+		if(GPSPoseMessage.getDistance(zeroPose, onePose) != 1){
 			fail("distance function does not handle some input correctly ");
 		}
 		
-		if(Math.abs(WayPointUtil.getDistance(aPose, zeroPose) -  1.802) > .001){
+		if(Math.abs(GPSPoseMessage.getDistance(aPose, zeroPose) -  1.802) > .001){
 			fail("distance function does not handle some input correctly ");
 		}
 		
-		if(WayPointUtil.getDistance(onePose, aPose) != 1.5){
+		if(GPSPoseMessage.getDistance(onePose, aPose) != 1.5){
 			fail("distance function does not handle some input correctly ");
 		}
 		
-		if(WayPointUtil.getDistance(onePose, negPose) != 2.0){
+		if(GPSPoseMessage.getDistance(onePose, negPose) != 2.0){
 			fail("distance function does not handle some input correctly ");
 		}
 		

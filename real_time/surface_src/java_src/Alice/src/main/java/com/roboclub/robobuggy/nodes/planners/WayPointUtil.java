@@ -151,17 +151,7 @@ public class WayPointUtil {
 	            return messages;
 	}
 	
-	/**
-	 * evaluates to the distance between two gps points based on an L2 metric
-	 * @param a the first gps point
-	 * @param b the second gps point
-	 * @return the distince 
-	 */
-	public static double getDistance(GPSPoseMessage a, GPSPoseMessage b){
-		double dx = a.getLongitude() - b.getLongitude();
-		double dy = a.getLatitude() - b.getLatitude();
-		return Math.sqrt(dx*dx + dy*dy);
-	}
+	
 
 		 
 }
