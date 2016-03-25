@@ -151,7 +151,6 @@ public class SensorPlayer extends Thread {
                     String versionID = sensorDataJson.get("VERSION_ID").getAsString();
 
                     Message transmitMessage = null;
-
                     switch (versionID) {
                         case BrakeControlMessage.VERSION_ID:
                             transmitMessage = translator.fromJson(sensorDataJson, BrakeControlMessage.class);

@@ -1,5 +1,7 @@
 package com.roboclub.robobuggy.ui;
 
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
@@ -8,6 +10,7 @@ import com.roboclub.robobuggy.ros.Subscriber;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -40,7 +43,7 @@ public class LocPanel extends JPanel {
 		try {
 			map = ImageIO.read(new File("images/lat_long_course_map.png"));
 		} catch(Exception e) {
-			System.out.println("Unable to open map!");
+			new RobobuggyLogicNotification("Unable to read map image!", RobobuggyMessageLevel.WARNING);
 		}
 		setup = false;
 		

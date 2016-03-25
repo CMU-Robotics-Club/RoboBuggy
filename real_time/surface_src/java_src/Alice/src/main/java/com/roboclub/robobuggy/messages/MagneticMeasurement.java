@@ -54,7 +54,7 @@ public class MagneticMeasurement extends BaseMessage {
 	 * Returns the z value of the {@link MagMeasurement}
 	 * @return the z value of the {@link MagMeasurement}
 	 */
-	public double getz() {
+	public double getZ() {
 		return z;
 	}
 

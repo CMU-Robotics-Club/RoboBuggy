@@ -2,6 +2,10 @@ package com.roboclub.robobuggy.ui;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -26,7 +30,7 @@ public class Map extends JPanel {
 		try {
 			map = ImageIO.read(new File("images/lat_long_course_map.png"));
 		} catch(Exception e) {
-			System.out.println("Unable to open map!");
+			new RobobuggyLogicNotification("Unable to read map image!", RobobuggyMessageLevel.WARNING);
 		}
 		imgNorthWest = new LocTuple(40.443946388131266, -79.95532877484377);
 		imgSouthEast = new LocTuple(40.436597411027364, -79.93596322545625);
@@ -60,7 +64,6 @@ public class Map extends JPanel {
 			LocTuple mTuple = locs.get(i);
 			drawTuple(g2d, mTuple);
 		}
-		System.out.println("painting:"+locs.size());
 		g2d.dispose();
 	}
 	
@@ -79,7 +82,6 @@ public class Map extends JPanel {
 		double px = (londiff * getWidth()) / dx;
 		double py = (latdiff * getHeight()) / dy;
 		
-		System.out.println("painting at: "+px+","+py);
 		int cDiameter = 5;
 		g2d.setColor(Color.RED);
 		g2d.fillOval((int)px, (int)py, cDiameter, cDiameter);

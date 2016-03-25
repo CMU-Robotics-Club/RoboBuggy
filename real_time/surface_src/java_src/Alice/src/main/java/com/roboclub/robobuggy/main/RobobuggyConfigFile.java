@@ -20,7 +20,7 @@ public final class  RobobuggyConfigFile {
 
     //Library info
     public static final String ALICE_LIBRARY_VERSION = "1.0.0";
-	public static final String RBSM_HEADER_FILE_LOCATION = "../../../arduino_src/lib_avr/rbserialmessages/rbsm_headers.txt";
+	public static final String RBSM_HEADER_FILE_LOCATION = "../../../rbsm_config.txt";
 
 	// for what messages should be printed to the console
 	public static final RobobuggyMessageLevel REPORTING_LEVEL = RobobuggyMessageLevel.NOTE;
@@ -44,14 +44,14 @@ public final class  RobobuggyConfigFile {
 	private static boolean visionSystemEnabled = true;
 
 	//sensor com ports
-	private static String comPortImu = "NOT_SET";
-
-	private static String comPortGps = "NOT_SET";
+	private static String comPortImu  = "NOT_SET";
+	private static String comPortGps  = "NOT_SET";
 	private static String comPortRBSM = "NOT_SET";
-	private static String portVision ="NOT_SET";
+	private static String portVision = "NOT_SET";
+
 
 	// iff false, connect to serial sensors 
-	private static final boolean DATA_PLAY_BACK = true;
+	private static final boolean DATA_PLAY_BACK = false;
 
 	private static String waypointSourceLogFile ="NOT_SET";
 	private static String playBackSourceFile = "NOT_SET";

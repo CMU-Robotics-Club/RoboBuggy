@@ -193,6 +193,6 @@ public class WayPointUtil {
 		fileReader.close();
 	            return messages;
 	}
+	
 
-		 
 }
