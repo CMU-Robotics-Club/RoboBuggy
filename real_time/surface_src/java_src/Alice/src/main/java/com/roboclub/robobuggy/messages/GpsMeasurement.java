@@ -136,5 +136,14 @@ public class GpsMeasurement extends BaseMessage {
 	public boolean getNorth() {
 		return north;
 	}
+	
+	/**
+	 * evaluates to a GPSPoseMessage with teh same values encoded in this GPSMeasurement 
+	 * @param heading
+	 * @return
+	 */
+	public GPSPoseMessage toGpsPoseMessage(double heading){
+		return new GPSPoseMessage(gpsTimestamp, latitude, longitude, heading);
+	}
 
 }

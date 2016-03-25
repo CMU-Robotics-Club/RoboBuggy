@@ -31,12 +31,12 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 
 	//find the closest way point
 	//TODO turn into a binary search
-	private int getClosestIndex(){
+	private static int  getClosestIndex(ArrayList<GpsMeasurement> wayPoints, GPSPoseMessage currentLocation){
 		double min = Double.MAX_VALUE; //note that the brakes will definitely deploy at this
 
 		int closestIndex = -1;
 		for(int i = 0;i<wayPoints.size();i++){
-			double d = getDistance(pose,wayPoints.get(i));
+			double d = WayPointUtil.getDistance(currentLocation,wayPoints.get(i).toGpsPoseMessage(0));
 			if(d < min){
 				min = d;
 				closestIndex = i;
@@ -47,7 +47,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 
 	@Override
 	public double getCommandedSteeringAngle() {
-		int closestIndex = getClosestIndex();
+		int closestIndex = getClosestIndex(wayPoints,pose);
 		if(closestIndex == -1){
 			return 17433504; //A dummy value that we can never get
 		}
@@ -56,7 +56,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 		//pick the first point that is at least delta away
 		//pick the point to follow
 		int targetIndex = closestIndex;
-		while(getDistance(pose,wayPoints.get(targetIndex)) < delta){
+		while(WayPointUtil.getDistance(pose,wayPoints.get(targetIndex).toGpsPoseMessage(0)) < delta){
 			targetIndex = targetIndex+1;
 		}
 
@@ -85,29 +85,19 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 	@Override
 	protected boolean getDeployBrakeValue() {
 
-		int closestIndex = getClosestIndex();
+		int closestIndex = getClosestIndex(wayPoints,pose);
 		if(closestIndex == -1){
 			return true;
 		}
 
 		// if closest point is too far away throw breaks
-		if(getDistance(pose,wayPoints.get(closestIndex)) < 1.0){
+		if(WayPointUtil.getDistance(pose,wayPoints.get(closestIndex).toGpsPoseMessage(0)) < 1.0){
 			//if we are within 1 meter of any point then do not throw breaks
 			return false;
 		}
 		return true;
 	}
 
-	/**
-	 * evaluates to the distance between two gps points based on an L2 metric
-	 * @param a the first gps point
-	 * @param b the second gps point
-	 * @return the distince 
-	 */
-	private double getDistance(GPSPoseMessage a, GpsMeasurement b){
-		double dx = a.getLongitude() - b.getLongitude();
-		double dy = a.getLatitude() - b.getLatitude();
-		return Math.sqrt(dx*dx + dy*dy);
-	}
+
 
 }
