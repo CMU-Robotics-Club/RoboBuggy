@@ -23,20 +23,19 @@ public class TestImuMeasurement {
 		double pitch = 4.567;
 		double yaw = 8.9;
 		ImuMeasurement aMeasurement = new  ImuMeasurement(yaw,pitch,roll);
-		if(aMeasurement.getPitch() != pitch ){
+		if(Math.abs(aMeasurement.getPitch() - pitch) > .0001 ){
 			fail("pitch does not equal pitch");
 		}
 		
-		if(aMeasurement.getRoll() != roll ){
+		if(Math.abs(aMeasurement.getRoll() - roll) >.0001 ){
 			fail("roll does not equal roll");
 		}		
 		
-		if(aMeasurement.getYaw() != yaw ){
+		if(Math.abs(aMeasurement.getYaw() - yaw) >.0001 ){
 			fail("yaw does not equal yaw");
 		}
 	
 		
-		fail("Not yet implemented");
 	}
 
 }
