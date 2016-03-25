@@ -11,6 +11,7 @@
 #include <avr/sleep.h>
 #include <avr/interrupt.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <avr/wdt.h>
 
 #include "../lib_avr/encoder/encoder.h"
@@ -111,6 +112,15 @@
 #define BRAKE_INDICATOR_PORT PORTE
 #define BRAKE_INDICATOR_PINN PE3 // arduino 5
 
+#define STEERING_LOOP_TIME_US 10000L
+#define STEERING_KP_NUMERATOR -15L
+#define STEERING_KP_DEMONENATOR 100L
+#define STEERING_KD_NUMERATOR 0L
+#define STEERING_KD_DENOMENATOR 100L
+
+#define MOTOR_ENCODER_TICKS_PER_REV 4096
+#define DEGREE_HUNDREDTHS_PER_REV 36000
+
 #define WDT_INT WDT_vect
 
 //Uncomment the line below for testing. Otherwise leave commented out
@@ -187,19 +197,49 @@ uint8_t adc_read_blocking(uint8_t channel)
     return ADCH;
 }
 
+long steer_set_error_prev = 0;
 
 void steering_set(int angle) 
 {
-    angle = clamp(angle, 
-                  STEERING_LIMIT_RIGHT,
-                  STEERING_LIMIT_LEFT);
+    //For the DC motor
+    long feed_forward = -10;
+    long actual = map_signal(g_encoder_steering.GetTicks(),
+                             0,
+                             MOTOR_ENCODER_TICKS_PER_REV,
+                             0,
+                             DEGREE_HUNDREDTHS_PER_REV);
 
-    int servo_value_us = map_signal(angle,
-                                    PWM_OFFSET_STORED_ANGLE,
-                                    PWM_SCALE_STORED_ANGLE,
-                                    PWM_OFFSET_STEERING_OUT,
-                                    PWM_SCALE_STEERING_OUT);
-    servo_set_us(servo_value_us);
+    long error = angle - actual;
+    long output_us = 0;
+    if(labs(error) > 10) { //0.2 degree deadband
+        long output_p = STEERING_KP_NUMERATOR * error / STEERING_KP_DEMONENATOR;
+        
+        long output_ff = (error > 0) ? feed_forward : -feed_forward;
+        
+        long d =  (error - steer_set_error_prev); //not dividing by time
+        long output_d = STEERING_KD_NUMERATOR * d / STEERING_KD_DENOMENATOR;
+        output_us = output_p + output_ff + output_d;
+    }
+
+    output_us = clamp(output_us, 500, -500);
+
+    steer_set_error_prev = error;
+
+    dbg_printf("actual: %ld, ticks: %ld\r\n", actual, g_encoder_steering.GetTicks());
+    dbg_printf("output_us: %ld\r\n", output_us);
+    servo_set_us(output_us + 1500);
+
+    //Meant for a servo
+    // angle = clamp(angle, 
+    //               STEERING_LIMIT_RIGHT,
+    //               STEERING_LIMIT_LEFT);
+
+    // int servo_value_us = map_signal(angle,
+    //                                 PWM_OFFSET_STORED_ANGLE,
+    //                                 PWM_SCALE_STORED_ANGLE,
+    //                                 PWM_OFFSET_STEERING_OUT,
+    //                                 PWM_SCALE_STEERING_OUT);
+    // servo_set_us(servo_value_us);
 }
 
 
@@ -319,6 +359,7 @@ int main(void)
     dbg_printf("Branch clean? %d\r\n", FP_CLEANSTATUS);
     dbg_printf("\nEnd of compilation information\r\n");
 
+    // prepare to for timeouts
     unsigned long time_start = micros();
     unsigned long auton_brake_last = time_start;
     unsigned long auton_steer_last = time_start;
@@ -332,6 +373,10 @@ int main(void)
     // loop forever
     while(1) 
     {
+        // prepare to time the main loop
+        unsigned long time_next_loop = micros() + STEERING_LOOP_TIME_US;
+        DEBUG_PORT &= ~_BV(DEBUG_PINN);
+
         // enable servo power after timeout
         if(millis() > 200) 
         {
@@ -474,7 +519,7 @@ int main(void)
                                          PWM_OFFSET_STORED_ANGLE,
                                          PWM_SCALE_STORED_ANGLE);
 
-    
+        g_is_autonomous = true;
         if(g_is_autonomous)
         {
             if(auto_brake_engaged)
@@ -518,9 +563,18 @@ int main(void)
         g_rbsm.Send(RBSM_MID_MEGA_AUTON_STATE, (long unsigned)g_is_autonomous);
         g_rbsm.Send(RBSM_MID_MEGA_BATTERY_LEVEL, g_current_voltage);
         g_rbsm.Send(RBSM_MID_MEGA_STEER_FEEDBACK, (long int)g_steering_feedback);
-        g_rbsm.Send(RBSM_MID_ENC_TICKS_RESET, g_encoder_distance.GetTicks());
+        g_rbsm.Send(RBSM_MID_ENC_TICKS_RESET, g_encoder_steering.GetTicks());
         g_rbsm.Send(RBSM_MID_ENC_TIMESTAMP, millis());
         g_rbsm.Send(RBSM_MID_COMP_HASH, (long unsigned)(FP_HEXCOMMITHASH));
+
+        DEBUG_PORT |= _BV(DEBUG_PINN);
+        // wait for the next regular loop time in a tight loop
+        // note: this is before the watchdog reset so it can catch us if
+        // something goes wrong
+        if(time_next_loop < micros()) {
+            // TODO: throw loop timing error
+        }
+        while(time_next_loop > micros()) {}
 
         //Feed the watchdog to indicate things aren't timing out
         wdt_reset();
