@@ -44,7 +44,7 @@ public class PathEditor {
 					Gui.getInstance().fixPaint();
 				}
 
-				WayPointFollowerPlanner planer = new WayPointFollowerPlanner(NodeChannel.UNKNOWN_CHANNEL,wayPoints);
+				WayPointFollowerPlanner planer = new WayPointFollowerPlanner(wayPoints);
 
 				
 				for(int i = 0;i<wayPoints.size();i++){

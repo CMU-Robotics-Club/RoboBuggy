@@ -64,8 +64,7 @@ public class SimulatedRBSMNode extends PeriodicNode{
 				simBuggy.setBrakesDown(commandedBrakeEngaged);
 			}
 		});
-	
-		
+		resume();//needed to start the node
 	}
 
 	@Override
@@ -74,7 +73,7 @@ public class SimulatedRBSMNode extends PeriodicNode{
 		if(lastPose == null){
 			lastPose = new So2Pose(simBuggy.getX(), simBuggy.getY(), simBuggy.getTh());
 		}
-		//get an updated representation of the buggy current pose
+		//get an updated representation of the buggy current pose	
 		So2Pose newPose = new So2Pose(simBuggy.getX(),simBuggy.getY(), simBuggy.getTh());
 		//find the difference between the last observed pose and this pose
 		So2Pose dPose = newPose.mult(lastPose.inverse());
@@ -86,6 +85,7 @@ public class SimulatedRBSMNode extends PeriodicNode{
 		double dy = dPose.getY();
 		double d = Math.sqrt(dx*dx + dy*dy);
 		encoderDistance = encoderDistance + d;
+		
 		messagePubEnc.publish(new EncoderMeasurement(encoderDistance, 0.0)); //TODO calculate the actual velocity 
 		double potAngle = Math.atan2(dy, dx);
 		messagePubControllerSteering.publish(new SteeringMeasurement(potAngle));
@@ -99,8 +99,9 @@ public class SimulatedRBSMNode extends PeriodicNode{
 			outputAngle = -1000;
 		}
 		
+		
 		//TODO set velocity so that the buggy will try and steer towards this angle instead of jumping directly to it 
-		simBuggy.setTh((double)outputAngle/1000.0); 
+		simBuggy.setWheelTh((double)outputAngle/1000.0); 
 		}
 
 	@Override
