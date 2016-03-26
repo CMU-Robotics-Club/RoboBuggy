@@ -38,14 +38,6 @@ class RBSerialMessage:
         # unpack the packet
         message_unpacked = struct.unpack_from(self.RBSM_PACKET_FORMAT, message_buffer)
 
-        if(message_unpacked[0] == 1 and message_unpacked[1] > 200):
-            increment = 10
-            i = -1000
-            while(True):
-                self.send(20, i);
-                time.sleep(0.01)
-
-
 
         # confirm properly formed packet
         if(message_unpacked[2] == self.RBSM_FOOTER):

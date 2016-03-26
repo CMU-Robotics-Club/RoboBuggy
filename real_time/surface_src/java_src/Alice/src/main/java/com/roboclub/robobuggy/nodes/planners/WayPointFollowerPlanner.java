@@ -17,7 +17,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 	/**
 	 * @param wayPoints the list of waypoints to follow
 	 */
-	public WayPointFollowerPlanner(ArrayList wayPoints) {
+	public WayPointFollowerPlanner(ArrayList<GpsMeasurement> wayPoints) {
 		super(NodeChannel.PATH_PLANNER);
 		this.wayPoints = wayPoints;
 		pose = new GPSPoseMessage(new Date(0), 0, 0, 0);// temp measurment
@@ -73,10 +73,20 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 		double dLat = targetPoint.getLatitude() - pose.getLatitude();
 		double desiredHeading = 180*Math.atan2(dLat, -dLon)/Math.PI;
 
+		// basically we want all of our angles to be in the [0, 2pi) range, so that we don't
+		// accidentally overflow, and get one of our angles to be +170 and the other is -170
+		if (desiredHeading < 0) {
+			desiredHeading += 360;
+		}
+
+		double poseHeading = pose.getHeading();
+		if (poseHeading < 0) {
+			poseHeading += 360;
+		}
 
 		//find the angle we need to reach that point
 		//return pose.getHeading() - desiredHeading;
-		return desiredHeading - pose.getHeading();
+		return desiredHeading - poseHeading;
 
 	}
 

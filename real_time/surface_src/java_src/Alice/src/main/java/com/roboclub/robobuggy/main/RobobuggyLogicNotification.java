@@ -30,24 +30,24 @@ public class RobobuggyLogicNotification {
 	
 	/**
 	 * Constructs a new {@link RobobuggyLogicNotification}
-	 * @param exception description of the exception that occurred
+	 * @param message description of the message that occurred
 	 * @param level {@link RobobuggyMessageLevel} of the
 	 *  {@link RobobuggyLogicNotification}
 	 */
-	public RobobuggyLogicNotification(String exception, RobobuggyMessageLevel level){
+	public RobobuggyLogicNotification(String message, RobobuggyMessageLevel level){
 		if(shouldMessageBeDisplayed(level)){
 			//displays the error message to the java console 
-			System.out.println(exception);
+			System.out.println(message);
 		}
 
 		if(errorPub ==null){
 			setupLogicException();
 			}
 		//the message is always published 
-		errorPub.publish(new RobobuggyLogicNotificationMeasurement(exception, level));
+		errorPub.publish(new RobobuggyLogicNotificationMeasurement(message, level));
 
 		/*TODO: do something logical this segment was causing an infinite loop where the robot was being shut down and then restarted
-		//only halt the program if it is an exception 
+		//only halt the program if it is an message
 		if(level == RobobuggyMessageLevel.EXCEPTION){
 		//	Robot.getInstance().shutDown();  
 		}

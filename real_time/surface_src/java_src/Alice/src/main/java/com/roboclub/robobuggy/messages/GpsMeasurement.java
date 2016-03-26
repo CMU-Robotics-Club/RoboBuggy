@@ -96,9 +96,9 @@ public class GpsMeasurement extends BaseMessage {
 		this.timestamp = new Date().getTime();
 		this.gpsTimestamp = new Date();
 		this.latitude = latitude;
-		this.north = true;
+		this.north = latitude > 0;
 		this.longitude = longitude;
-		this.west = true;
+		this.west = longitude < 0;
 		this.qualityValue = 0;
 		this.numSatellites = -1;
 		this.horizontalDilutionOfPrecision = 0.0;
@@ -138,9 +138,9 @@ public class GpsMeasurement extends BaseMessage {
 	}
 	
 	/**
-	 * evaluates to a GPSPoseMessage with teh same values encoded in this GPSMeasurement 
-	 * @param heading
-	 * @return
+	 * evaluates to a GPSPoseMessage with the same values encoded in this GPSMeasurement 
+	 * @param heading the heading you want for the gps measurement
+	 * @return the gps pose message encoding of this message
 	 */
 	public GPSPoseMessage toGpsPoseMessage(double heading){
 		return new GPSPoseMessage(gpsTimestamp, latitude, longitude, heading);

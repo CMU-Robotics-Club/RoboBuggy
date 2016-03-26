@@ -34,11 +34,11 @@ public class TestWayPointFollowerPlanner {
 
 
 
-		if(GPSPoseMessage.getDistance(zeroPose, zeroPose) != 0){
+		if(Math.abs(GPSPoseMessage.getDistance(zeroPose, zeroPose) - 0) > .001){
 			fail("distance function does not respect idenity");
 		}
 		
-		if(GPSPoseMessage.getDistance(zeroPose, onePose) != 1){
+		if(Math.abs(GPSPoseMessage.getDistance(zeroPose, onePose) - 1.0) > .001){
 			fail("distance function does not handle some input correctly ");
 		}
 		
@@ -46,11 +46,11 @@ public class TestWayPointFollowerPlanner {
 			fail("distance function does not handle some input correctly ");
 		}
 		
-		if(GPSPoseMessage.getDistance(onePose, aPose) != 1.5){
+		if(Math.abs(GPSPoseMessage.getDistance(onePose, aPose) - 1.5) > .001){
 			fail("distance function does not handle some input correctly ");
 		}
 		
-		if(GPSPoseMessage.getDistance(onePose, negPose) != 2.0){
+		if(Math.abs(GPSPoseMessage.getDistance(onePose, negPose) - 2.0) > .001){
 			fail("distance function does not handle some input correctly ");
 		}
 		
