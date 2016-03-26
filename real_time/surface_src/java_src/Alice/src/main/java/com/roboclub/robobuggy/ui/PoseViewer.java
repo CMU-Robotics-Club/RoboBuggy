@@ -9,8 +9,11 @@ import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 import com.sun.javafx.geom.Vec2d;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JButton;
+import javax.swing.JSlider;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;

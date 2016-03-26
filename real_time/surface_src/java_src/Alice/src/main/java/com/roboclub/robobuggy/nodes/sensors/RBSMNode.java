@@ -2,12 +2,29 @@ package com.roboclub.robobuggy.nodes.sensors;
 
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
-import com.roboclub.robobuggy.messages.*;
+import com.roboclub.robobuggy.messages.AutonBrakeStateMessage;
+import com.roboclub.robobuggy.messages.AutonStateMessage;
+import com.roboclub.robobuggy.messages.BatteryLevelMessage;
+import com.roboclub.robobuggy.messages.BrakeControlMessage;
+import com.roboclub.robobuggy.messages.BrakeStateMessage;
+import com.roboclub.robobuggy.messages.DeviceIDMessage;
+import com.roboclub.robobuggy.messages.DriveControlMessage;
+import com.roboclub.robobuggy.messages.EncoderMeasurement;
+import com.roboclub.robobuggy.messages.EncoderTimeMessage;
+import com.roboclub.robobuggy.messages.FingerPrintMessage;
+import com.roboclub.robobuggy.messages.StateMessage;
+import com.roboclub.robobuggy.messages.SteeringMeasurement;
+import com.roboclub.robobuggy.messages.TeleopBrakeStateMessage;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.NodeState;
 import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
 import com.roboclub.robobuggy.nodes.baseNodes.SerialNode;
-import com.roboclub.robobuggy.ros.*;
+import com.roboclub.robobuggy.ros.Message;
+import com.roboclub.robobuggy.ros.MessageListener;
+import com.roboclub.robobuggy.ros.Node;
+import com.roboclub.robobuggy.ros.NodeChannel;
+import com.roboclub.robobuggy.ros.Publisher;
+import com.roboclub.robobuggy.ros.Subscriber;
 import com.roboclub.robobuggy.serial.RBPair;
 import com.roboclub.robobuggy.serial.RBSerial;
 import com.roboclub.robobuggy.serial.RBSerialMessage;
@@ -291,7 +308,6 @@ public  class  RBSMNode extends SerialNode {
 				@Override
 				public void actionPerformed(String topicName, Message m) {
 					commandedAngle = -((DriveControlMessage)m).getAngleInt();
-//					System.out.println("commanded angle = " + commandedAngle);
 				}
 			});
 			new Subscriber(NodeChannel.BRAKE_CTRL.getMsgPath(),
