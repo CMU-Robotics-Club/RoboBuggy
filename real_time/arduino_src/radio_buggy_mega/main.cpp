@@ -119,8 +119,8 @@
 #define STEERING_KD_NUMERATOR 0L
 #define STEERING_KD_DENOMENATOR 100L
 #define STEERING_MAX_SPEED 2000L //20 degress per second
-#define STEERING_KV_NUMERATOR -15L
-#define STEERING_KV_DENOMENATOR 100L
+#define STEERING_KV_NUMERATOR -10L
+#define STEERING_KV_DENOMENATOR 1000L
 #define STEERING_PWM_CENTER 1500L //The PWM value that gives no movement.
 
 #define MOTOR_ENCODER_TICKS_PER_REV 4096
@@ -202,6 +202,10 @@ uint8_t adc_read_blocking(uint8_t channel)
     return ADCH;
 }
 
+int sign(long n) {
+	return (error < 0) ? 1 : -1;
+}
+
 
 long steer_set_prev_ticks = 0;
 /*
@@ -213,7 +217,7 @@ void steer_set_velocity(long target_velocity) {
 	
 	long current_ticks = g_encoder_steering.GetTicks();
 	long change_in_ticks = current_ticks - steer_set_prev_ticks;
-	dbg_printf("change in ticks: %ld\n", change_in_ticks);
+	//dbg_printf("change in ticks: %ld\n", change_in_ticks);
 	
 	long change_in_angle = map_signal(change_in_ticks,
 									  0,
@@ -223,9 +227,21 @@ void steer_set_velocity(long target_velocity) {
 	
 	//angle * us/s * us = angle per second
 	long actual_velocity = change_in_angle * (MICROSECONDS_PER_SECOND / STEERING_LOOP_TIME_US);
+	
 	long error = target_velocity - actual_velocity;
 	
-	long output_us = error * STEERING_KV_NUMERATOR / STEERING_KV_DENOMENATOR;
+	long output_us = 0;
+	if(abs(error) > 100){ //1 degree per second deadband
+		long output_ff = 15;
+		output_ff = (error < 0) ? output_ff : -output_ff;
+		output_us = error * STEERING_KV_NUMERATOR / STEERING_KV_DENOMENATOR + output_ff;
+	}
+	
+	if(sign(target_velocity) == sign(actual_velocity)) {
+		output_us = clamp(output_us, 20, -20);
+	}
+	
+	dbg_printf("target: %ld, change in angle: %ld, ouput: %ld\n", target_velocity, change_in_angle, output_us);
 	
 	//Send command to the motor
 	servo_set_us(output_us + STEERING_PWM_CENTER);
@@ -239,7 +255,7 @@ long steer_set_error_prev = 0; //This is used to find the d term for position.
 void steering_set(int angle) //TODO: should angle be an int or a long?
 {
 	//TODO: delete short circuiting code for testing velocity measure
-	steer_set_velocity(output_vel);
+	steer_set_velocity(angle);
 	return;
 	
 	angle = clamp(angle, STEERING_LIMIT_RIGHT, STEERING_LIMIT_LEFT);
