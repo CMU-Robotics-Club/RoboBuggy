@@ -7,12 +7,9 @@ import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ui.Gui;
 import com.roboclub.robobuggy.ui.LocTuple;
-import com.roboclub.robobuggy.utilities.JNISetup;
 
 import java.awt.Color;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -32,7 +29,6 @@ public class PathEditor {
 		final double latErrorFinal = 2/111131.745;
 		final double lonErrorFinal = 2/78846.81;	
 		
-			System.out.println("Starting Path Editor");
 			try {
 				ArrayList<GpsMeasurement> wayPoints =
 						WayPointUtil.createWayPointsFromLog("logs/", RobobuggyConfigFile.getWaypointSourceLogFile());
@@ -48,7 +44,7 @@ public class PathEditor {
 					Gui.getInstance().fixPaint();
 				}
 
-				WayPointFollowerPlanner planer = new WayPointFollowerPlanner(NodeChannel.UNKNOWN_CHANNEL,wayPoints);
+				WayPointFollowerPlanner planer = new WayPointFollowerPlanner(wayPoints);
 
 				
 				for(int i = 0;i<wayPoints.size();i++){

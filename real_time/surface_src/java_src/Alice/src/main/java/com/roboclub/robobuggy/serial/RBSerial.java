@@ -1,5 +1,7 @@
 package com.roboclub.robobuggy.serial;
 
+import com.roboclub.robobuggy.nodes.sensors.RBSMConfigReader;
+
 /**
  * Class to represent a robobuggy serial connection
  */
@@ -25,7 +27,7 @@ public final class RBSerial {
 		
 		// Peel an ID, or fail
 		byte header = buf[start];
-		if(!RBSerialMessage.isValidHeader(header)) {
+		if(!RBSMConfigReader.getInstance().isValidHeader(header)) {
 			return new RBPair(1, null);
 		}
 		if(buf[(start+5) % buf.length] != 0x0A){
@@ -49,35 +51,4 @@ public final class RBSerial {
 		val += (int)buf[(start + 4) % buf.length] &0xff;
 		return val;
 	}
-	
-	
-	/*private void something() {
-		byte inputBuffer[] = new byte[5];
-		int value = parseInt(inputBuffer[1], inputBuffer[2],
-				inputBuffer[3], inputBuffer[4]);
-		try {
-			switch (inputBuffer[0]) {
-			case ENC_TIME:
-				encTime = value;
-				break;
-			case ENC_RESET:
-				encReset = value;
-				break;
-			case ENC_TICK:
-				encTicks = value;
-				estimateVelocity();
-				break;
-			case ERROR:
-				// TODO handle errors
-				break;
-			}
-		} catch (Exception e) {
-			System.out.println("Encoder Exception on port: " + this.getName());
-			if (this.currState != SensorState.FAULT) {
-				this.currState = SensorState.FAULT;
-				statePub.publish(new StateMessage(this.currState));
-			}
-			return;
-		}
-	}*/
 }

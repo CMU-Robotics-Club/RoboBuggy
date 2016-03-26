@@ -101,7 +101,8 @@
 
 #define WDT_INT WDT_vect
 
-#define DEBUG
+//Uncomment the line below for testing. Otherwise leave commented out
+// #define DEBUG
 
 #ifdef DEBUG
     #define dbg_printf(...) printf(__VA_ARGS__)
@@ -120,7 +121,6 @@ static bool g_is_autonomous;
 static unsigned long g_current_voltage;
 static unsigned long g_steering_feedback;
 static volatile unsigned long g_encoder_ticks;
-static volatile unsigned long g_encoder_time_last;
 static int smoothed_thr;
 static int smoothed_auton;
 static int steer_angle;
@@ -252,10 +252,10 @@ int main(void)
     DEBUG_DDR |= _BV(DEBUG_PINN);
 
     // setup encoder pin and interrupt
-    ENCODER_DDR &= ~_BV(ENCODER_PINN);
+    ENCODER_PORT |= _BV(ENCODER_PINN);
+    ENCODER_DDR &= ~_BV(ENCODER_PINN); 
     EIMSK |= _BV(INT2);
-    EICRA |= _BV(ISC20);
-    EICRA &= ~_BV(ISC21);
+    EICRA |= _BV(ISC20) | _BV(ISC21);
 
     // prepare uart0 (onboard usb) for rbsm
     uart0_init(UART_BAUD_SELECT(BAUD, F_CPU));
@@ -269,12 +269,16 @@ int main(void)
 
     // setup hardware
     sei(); // enable interrupts
-    // uart_init();
     system_clock_init();
     servo_init();
     adc_init();
     brake_init();
     LED_DANGER_DDR |= _BV(LED_DANGER_PINN);
+
+    // servo power control starts outputting low
+    // PBL0 = Arduino 49
+    PORTL &= ~_BV(0);
+    DDRL |= _BV(0);
 
     // setup rbsm
     g_rbsm.Init(&g_uart_rbsm, &g_uart_rbsm);
@@ -297,11 +301,21 @@ int main(void)
     unsigned long auton_brake_last = time_start;
     unsigned long auton_steer_last = time_start;
 
+    //false = brake dropped, true = brake engaged
+    bool teleop_brake_command = true;
+    bool auton_brake_command = true;
+
     watchdog_init();
 
     // loop forever
     while(1) 
     {
+        // enable servo power after timeout
+        if(millis() > 200) 
+        {
+            PORTL |= _BV(0);
+        }
+
         rb_message_t new_command;
         int read_status;
 
@@ -311,17 +325,25 @@ int main(void)
             if(read_status == 0) 
             {
                 // dipatch complete message
-                switch(new_command.message_id) 
+                switch(new_command.message_id)
                 {
+                    case RBSM_MID_ENC_RESET_REQUEST:
+                        cli();
+                        g_encoder_ticks = 0;
+                        sei();
+                        //Let high level know that the request went through
+                        g_rbsm.Send(RBSM_MID_ENC_RESET_CONFIRM, 1);
+                        dbg_printf("Encoder reset request received!\n");
+                        break;
                     case RBSM_MID_MEGA_STEER_COMMAND:
                         auto_steering_angle = (int)(long)new_command.data;
                         auton_steer_last = micros();
                         dbg_printf("Got steering message for %d.\n", auto_steering_angle);
                         break;
-                    case RBSM_MID_MEGA_BRAKE_COMMAND:
+                    case RBSM_MID_MEGA_AUTON_BRAKE_COMMAND:
                         auto_brake_engaged = (bool)(long)new_command.data;
                         auton_brake_last = micros();
-                        printf("Got brake message for %d.\n", auto_brake_engaged);
+                        dbg_printf("Got brake message for %d.\n", auto_brake_engaged);
                         break;
                     default:
                         // report unknown message
@@ -345,8 +367,11 @@ int main(void)
 
         // find the new brake state, if available
         smoothed_thr = g_brake_rx.GetAngle();
+
+        teleop_brake_command = smoothed_thr > PWM_STATE_THRESHOLD;
+
         // TODO make this code...less...something
-        if(smoothed_thr > PWM_STATE_THRESHOLD) 
+        if(teleop_brake_command) 
         {
             // read as engaged
             g_brake_state_engaged = true;
@@ -361,6 +386,7 @@ int main(void)
 
         // find the new autonomous state, if available
         smoothed_auton = g_auton_rx.GetAngle();
+
         // TODO make this code...less...something
         if(smoothed_auton > PWM_STATE_THRESHOLD) 
         { 
@@ -395,17 +421,25 @@ int main(void)
 
         if(delta1 > CONNECTION_TIMEOUT_US ||
            delta2 > CONNECTION_TIMEOUT_US ||
-           delta3 > CONNECTION_TIMEOUT_US ||
-           ((g_is_autonomous) && 
-           (delta4 > CONNECTION_TIMEOUT_US ||
-           delta5 > CONNECTION_TIMEOUT_US))
-           )
+           delta3 > CONNECTION_TIMEOUT_US)
         {
-            // we haven't heard from the RC receiver or high level in too long
-            dbg_printf("Timed out connection from RC or high level!\n");
+            // we haven't heard from the RC receiver in too long
+            dbg_printf("Timed out connection from RC!\n");
             if(g_brake_needs_reset == false) 
             {
                 g_rbsm.Send(RBSM_MID_ERROR, RBSM_EID_RC_LOST_SIGNAL);
+            }
+            g_brake_needs_reset = true;
+        }
+
+        if((g_is_autonomous) && 
+           (delta4 > CONNECTION_TIMEOUT_US ||
+           delta5 > CONNECTION_TIMEOUT_US))
+        {
+            dbg_printf("Timed out connection from high level!\n");
+            if(g_brake_needs_reset == false) 
+            {
+                g_rbsm.Send(RBSM_MID_ERROR, RBSM_EID_AUTON_LOST_SIGNAL);
             }
             g_brake_needs_reset = true;
         }
@@ -425,7 +459,7 @@ int main(void)
                                          PWM_OFFSET_STORED_ANGLE,
                                          PWM_SCALE_STORED_ANGLE);
 
-	
+    
         if(g_is_autonomous)
         {
             if(auto_brake_engaged)
@@ -441,8 +475,8 @@ int main(void)
             steering_set(steer_angle);
             g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
         }
-		
-		// Set outputs
+        
+        // Set outputs
         if(g_brake_state_engaged == false && g_brake_needs_reset == false) 
         {
             brake_raise();
@@ -464,6 +498,8 @@ int main(void)
         // Send the rest of the telemetry messages
         g_rbsm.Send(RBSM_MID_DEVICE_ID, RBSM_DID_MEGA);
         g_rbsm.Send(RBSM_MID_MEGA_BRAKE_STATE,(long unsigned)g_brake_state_engaged);
+        g_rbsm.Send(RBSM_MID_MEGA_TELEOP_BRAKE_COMMAND, (long unsigned)teleop_brake_command);
+        g_rbsm.Send(RBSM_MID_MEGA_AUTON_BRAKE_COMMAND, (long unsigned)auton_brake_command);
         g_rbsm.Send(RBSM_MID_MEGA_AUTON_STATE, (long unsigned)g_is_autonomous);
         g_rbsm.Send(RBSM_MID_MEGA_BATTERY_LEVEL, g_current_voltage);
         g_rbsm.Send(RBSM_MID_MEGA_STEER_FEEDBACK, (long int)g_steering_feedback);
@@ -509,11 +545,6 @@ ISR(RX_AUTON_INT)
 ISR(ENCODER_INT) 
 {
     unsigned long time_now = micros();
-    // debounce encoder tick count
-    if(time_now - g_encoder_time_last > ENCODER_TIMEOUT_US) 
-    {
-        g_encoder_ticks++;
-    }
-    g_encoder_time_last = time_now;
+    g_encoder_ticks++;
 }
 

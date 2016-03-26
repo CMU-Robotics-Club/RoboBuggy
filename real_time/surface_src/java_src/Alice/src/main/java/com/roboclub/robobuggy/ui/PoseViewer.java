@@ -1,11 +1,6 @@
 package com.roboclub.robobuggy.ui;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-
+import Jama.Matrix;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
@@ -13,10 +8,13 @@ import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 import com.sun.javafx.geom.Vec2d;
 
-import Jama.Matrix;
-
 import javax.swing.JButton;
 import javax.swing.JSlider;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 /**
  * pose viewer - has a world frame and a buggy relative to it
@@ -30,9 +28,10 @@ public class PoseViewer extends RobobuggyGUIContainer{
 
 	/**
 	 * makes a new poseviewer
+	 *  
+	 * @param poseChanel the chanel to publish on 
 	 */
-	//constructor
-	public PoseViewer(){
+	public PoseViewer(NodeChannel poseChanel){
 
 		zoomIn = new JButton("+");
 		zoomIn.setBounds(0, 0, 50, 50);
@@ -65,13 +64,13 @@ public class PoseViewer extends RobobuggyGUIContainer{
 		double [][] worldFrameArray = {{1,0,0,0},{0,1,0,0},{0,0,1,0},{0,0,0,1}};
 
 	
-		new Subscriber(NodeChannel.POSE.getMsgPath(), new MessageListener() {
+		new Subscriber(poseChanel.getMsgPath(), new MessageListener() {
 			
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				GPSPoseMessage poseM = (GPSPoseMessage)m;
-				double x = poseM.getLatitude();
-				double y = poseM.getLongitude();
+				double y = poseM.getLatitude();
+				double x = poseM.getLongitude();
 				double th = Math.PI*poseM.getHeading()/180;
 				double [][] anArray = {{Math.cos(th),-Math.sin(th),0,x},{Math.sin(th),Math.cos(th),0,y},{0,0,1,0},{0,0,0,1}};
 				Matrix aPose = new Matrix(anArray);
@@ -127,6 +126,7 @@ public class PoseViewer extends RobobuggyGUIContainer{
 		Vec2d zProjection = projectToView(zPoint);
 
 		//TODO expand to 3d
+		//TODO make scalable in terms of the frame
 		
 	    g.setColor(Color.RED);
 	    g.drawLine((int)originProjection.x, (int)originProjection.y, (int)xProjection.x, (int)xProjection.y);

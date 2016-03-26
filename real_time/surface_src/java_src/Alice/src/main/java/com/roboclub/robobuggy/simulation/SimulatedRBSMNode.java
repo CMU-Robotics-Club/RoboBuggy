@@ -36,11 +36,13 @@ public class SimulatedRBSMNode extends PeriodicNode{
 	private boolean commandedBrakeEngaged = true;
 
 	
+	/**
+	 * The constructor for the simulatedRBSMNode
+	 */
 	 public SimulatedRBSMNode() {
-		super(new BuggyBaseNode(NodeChannel.ENCODER), 100);
-		SimulatedBuggy simBuggy = SimulatedBuggy.GetInstance();
+		super(new BuggyBaseNode(NodeChannel.ENCODER), 1000);
+		SimulatedBuggy simBuggy = SimulatedBuggy.getInstance();
 		// TODO Auto-generated constructor stub
-		lastPose = new So2Pose(simBuggy.getX(), simBuggy.getY(), simBuggy.getTh());
 		messagePubEnc = new Publisher(NodeChannel.ENCODER.getMsgPath());
 		messagePubControllerSteering = new Publisher(NodeChannel.STEERING_COMMANDED.getMsgPath());
 		
@@ -53,44 +55,54 @@ public class SimulatedRBSMNode extends PeriodicNode{
 				commandedAngle = ((DriveControlMessage)m).getAngleInt();
 			}
 		});
+		
 		new Subscriber(NodeChannel.BRAKE_CTRL.getMsgPath(),
 				new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				commandedBrakeEngaged = ((BrakeControlMessage)m).isBrakeEngaged();
+				simBuggy.setBrakesDown(commandedBrakeEngaged);
 			}
 		});
-		
+		resume();//needed to start the node
 	}
 
 	@Override
 	protected void  update() {
-		//get an updated representation of the buggy current pose
-		SimulatedBuggy simBuggy = SimulatedBuggy.GetInstance();
+		SimulatedBuggy simBuggy = SimulatedBuggy.getInstance();
+		if(lastPose == null){
+			lastPose = new So2Pose(simBuggy.getX(), simBuggy.getY(), simBuggy.getTh());
+		}
+		//get an updated representation of the buggy current pose	
 		So2Pose newPose = new So2Pose(simBuggy.getX(),simBuggy.getY(), simBuggy.getTh());
 		//find the difference between the last observed pose and this pose
 		So2Pose dPose = newPose.mult(lastPose.inverse());
 		lastPose = newPose;
+
 		//use that information to fill out messages to be published 
 		//the distance between the two is the amount which the encoder would be incremented
 		double dx = dPose.getX();
 		double dy = dPose.getY();
 		double d = Math.sqrt(dx*dx + dy*dy);
 		encoderDistance = encoderDistance + d;
+		
 		messagePubEnc.publish(new EncoderMeasurement(encoderDistance, 0.0)); //TODO calculate the actual velocity 
 		double potAngle = Math.atan2(dy, dx);
 		messagePubControllerSteering.publish(new SteeringMeasurement(potAngle));
-		
+
+		int outputAngle = commandedAngle;
 		//update the commanded angle 
-		if(commandedAngle > 1000) {
-			commandedAngle = 1000;
+		if(outputAngle > 1000) {
+			outputAngle = 1000;
 		}
-		else if (commandedAngle < -1000) {
-			commandedAngle = -1000;
+		else if (outputAngle < -1000) {
+			outputAngle = -1000;
 		}
 		
-		simBuggy.setTh(commandedAngle/1000); //TODO set velocity so that the buggy will try and steer towards this angle instead of jumping directly to it 
-	}
+		
+		//TODO set velocity so that the buggy will try and steer towards this angle instead of jumping directly to it 
+		simBuggy.setWheelTh((double)outputAngle/1000.0); 
+		}
 
 	@Override
 	protected boolean startDecoratorNode() {

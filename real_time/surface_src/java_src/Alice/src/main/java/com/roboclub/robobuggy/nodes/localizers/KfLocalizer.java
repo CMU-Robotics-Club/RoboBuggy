@@ -1,15 +1,14 @@
 package com.roboclub.robobuggy.nodes.localizers;
 
-import java.util.Date;
-
 import Jama.Matrix;
-
 import com.roboclub.robobuggy.main.Util;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyNode;
 import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
+
+import java.util.Date;
 
 /**
  * localizes using a kalman filter
@@ -61,7 +60,6 @@ public class KfLocalizer extends PeriodicNode{
 		
 //			Date now = new Date();
 //			Date dt = new Date(now.getTime() - mostRecentUpdateTime.getTime());
-		System.out.println("predict step - TODO");
 			//estimate state
 //			state =  mModel.applyMotionModel(state,dt);
 			//estimate covariance

@@ -33,9 +33,7 @@ import com.roboclub.robobuggy.ros.Subscriber;
 import com.roboclub.robobuggy.ui.Gui;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
 /**
@@ -161,7 +159,6 @@ public class SensorPlayer extends Thread {
                             transmitMessage = translator.fromJson(sensorDataJson, BrakeMessage.class);
                             break;
                         case MagneticMeasurement.VERSION_ID:
-                        	System.out.println("mag");
                             transmitMessage = translator.fromJson(sensorDataJson, MagneticMeasurement.class);
                             break;
                         case DriveControlMessage.VERSION_ID:

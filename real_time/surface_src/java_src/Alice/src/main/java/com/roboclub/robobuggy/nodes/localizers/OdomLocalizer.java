@@ -1,7 +1,5 @@
 package com.roboclub.robobuggy.nodes.localizers;
 
-import java.util.Date;
-
 import com.roboclub.robobuggy.map.So2Pose;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
@@ -13,6 +11,8 @@ import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
+
+import java.util.Date;
 
 
 /**
@@ -71,12 +71,11 @@ public class OdomLocalizer  extends PeriodicNode{
 				SteeringMeasurement steerMeasur =  (SteeringMeasurement)m;
 				//TODO add locks
 				currentAngle = (steerMeasur.getAngle())*Math.PI/180;
-				System.out.println("angle:"+ currentAngle);
 			}
 		});
 	}
 
-
+	
 	@Override
 	protected void update() {
 			

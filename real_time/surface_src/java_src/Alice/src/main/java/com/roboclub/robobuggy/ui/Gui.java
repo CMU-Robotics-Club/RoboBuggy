@@ -71,6 +71,7 @@ public final class Gui extends JFrame {
 		tabs.addTab(new ImuPanel(),"IMU");
 		tabs.addTab(new  AutonomousPanel(),"Autonomous");
 		tabs.addTab(new ConfigurationPanel(),"Configuration");
+		tabs.addTab(new SimulationPanel(),"Simulation");
 		mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
 		mainWindow.repaint();		
 		windowList.add(mainWindow);

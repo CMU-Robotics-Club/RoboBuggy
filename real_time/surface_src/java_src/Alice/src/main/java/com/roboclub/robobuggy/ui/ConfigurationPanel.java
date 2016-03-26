@@ -1,22 +1,19 @@
 package com.roboclub.robobuggy.ui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.List;
-
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMainFile;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.main.Util;
+
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.List;
 
 /**
  * This is a controlling class for setting the system settings using an easy to user user interface 
@@ -100,7 +97,7 @@ public class ConfigurationPanel extends RobobuggyGUIContainer{
 				//only update the file if a file was selected properly 
 				if(returnVal == fc.APPROVE_OPTION){
 					File selectedFile = fc.getSelectedFile();
-					RobobuggyConfigFile.setWayPointSourceLogFile(selectedFile.getAbsolutePath());
+					RobobuggyConfigFile.setWayPointSourceLogFile(selectedFile.getPath());
 					currentWayPointLable.setText(RobobuggyConfigFile.getWaypointSourceLogFile());
 					//TODO update stuff in the back end
 				}else{
@@ -161,7 +158,6 @@ public class ConfigurationPanel extends RobobuggyGUIContainer{
 					RobobuggyConfigFile.setImuEnabled(true);
 
 				}
-				System.out.println(RobobuggyConfigFile.getComPortImu());
 				//TODO bring back up the system
 				
 			}

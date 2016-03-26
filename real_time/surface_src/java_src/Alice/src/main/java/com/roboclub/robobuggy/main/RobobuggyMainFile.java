@@ -1,45 +1,25 @@
 package com.roboclub.robobuggy.main;
 
+
+import com.roboclub.robobuggy.jetty.gui.JettyServer;
 import com.roboclub.robobuggy.robots.AbstractRobot;
 import com.roboclub.robobuggy.robots.SimRobot;
 import com.roboclub.robobuggy.robots.TransistorDataCollection;
-import com.roboclub.robobuggy.serial.RBSerialMessage;
-import com.roboclub.robobuggy.simulation.SensorPlayer;
 import com.roboclub.robobuggy.ui.Gui;
 import com.roboclub.robobuggy.utilities.JNISetup;
-
-import gnu.io.CommPortIdentifier;
-
-import java.awt.Window;
-import java.io.File;
-import java.io.IOException;
-import java.lang.management.ManagementFactory;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-
-import jdk.nashorn.internal.runtime.regexp.joni.Config;
 
 
 /** This class is the driver starting up the robobuggy program, if you want the buggy to drive itself you should run this node */
 public class RobobuggyMainFile {
-    static public AbstractRobot robot;
-	
-    /*
-    public static getRobot(){
-    	
-    }
-    */
+	private static AbstractRobot robot;
     
-	
     /**
 	 * Run Alice
 	 * @param args : None
 	 */
     public static void main(String[] args) {
-    	
-    	
+		new RobobuggyLogicNotification("Robobuggy Alice program started", RobobuggyMessageLevel.NOTE);
+
         try {
 			JNISetup.setupJNI(); //must run for jni to install
 			//note that errors are just printed to the console since the gui and logging system  has not been created yet
@@ -58,30 +38,36 @@ public class RobobuggyMainFile {
         
     	RobobuggyConfigFile.loadConfigFile(); //TODO make sure that logic Notification is setup before this point
 
-   
-
-		//Initialize message headers
-		RBSerialMessage.initializeHeaders();
-
-
-        
-     	
-    	if (RobobuggyConfigFile.DATA_PLAY_BACK) {
-            robot = SimRobot.getInstance();//TransistorAuton;//SimRobot.getInstance();
-    		//Play back mode enabled
-    //		new SensorPlayer(RobobuggyConfigFile.getPlayBackSourceFile(),1);
+		new RobobuggyLogicNotification("Initializing Robot", RobobuggyMessageLevel.NOTE);
+    	if (RobobuggyConfigFile.isDataPlayBack()) {
+            robot = SimRobot.getInstance();
         }else{
         	robot = TransistorDataCollection.getInstance();
-
         }
-    	
+
+		new RobobuggyLogicNotification("Initializing GUI", RobobuggyMessageLevel.NOTE);
         Gui.getInstance();
 
-        
-        	//Play back disabled, create robot
-        	robot.startNodes();
-			new RobobuggyLogicNotification("Robobuggy Logic Notfication started", RobobuggyMessageLevel.NOTE);
 
+		new RobobuggyLogicNotification("Starting Robot", RobobuggyMessageLevel.NOTE);
+		robot.startNodes();
+
+		try {
+			new JettyServer();
+			new RobobuggyLogicNotification("Initializing web server", RobobuggyMessageLevel.NOTE);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+    }
+    
+    /**
+     * Evaluates to a reference to the current Robot  
+     * @return the robot reference 
+     */
+    public static AbstractRobot getCurrentRobot(){
+    	return robot;
     }
     
     
@@ -91,10 +77,10 @@ public class RobobuggyMainFile {
      * @return 
      */
     public static void resetSystem(){
-    	Robot.getInstance().shutDown();
+    	robot.shutDown();
  //   	Gui.close();
  //   	Gui.getInstance();
-    	Robot.getInstance();
+//    	robot.getInstance();
     	//TODO make this work for real 
     	
     }

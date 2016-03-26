@@ -22,7 +22,7 @@
 #include <avr/io.h>
 #include <stdio.h>
 #include "../lib_avr/uart/uart_extra.h"
-#include "rbsmheaders.h"
+#include "rbsm_config.h"
 
 // Implementation Constants
 #define RBSM_BUFFER_OUT_LENGTH 11 // minimum to support double message
@@ -45,19 +45,10 @@
 #define RBSM_MID_ERROR 254
 #define RBSM_MID_DEVICE_ID 255
 
+
 // Device Types
 #define RBSM_DID_MEGA 0
 #define RBSM_DID_DRIVE_ENCODER 1
-
-// Error Message Codes
-#define RBSM_EID_OK 0
-#define RBSM_EID_RBSM_LOST_STREAM 1
-#define RBSM_EID_RBSM_INVALID_MID 2
-#define RBSM_EID_RC_LOST_SIGNAL 20
-
-// Library Error Codes
-#define RBSM_ERROR_INSUFFICIENT_DATA -1
-#define RBSM_ERROR_INVALID_MESSAGE -2
 
 
 struct rb_message_t

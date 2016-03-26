@@ -19,23 +19,11 @@ script:
     - echo $PATH
     - echo $HOME
     - echo $BUGGY_ROOT
+    # for running the build and tests of the high level code
     - (cd real_time/surface_src/java_src/Alice && $GRADLE_BIN/gradle build)
+    - bash real_time/surface_src/java_src/Alice/travisStyleCheck.sh
+    - bash real_time/arduino_src/travisStyleCheck.sh
+
 
 notifications:
   slack: robobuggy:bnKltZMACloBdOGvYOINInyE
-
-env:
-  global:
-   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
-   #   via the "travis encrypt" command using the project repo's public key
-   - secure: "ZkHnJ8JTj3QYYPbkoQA7/hbNpWmyj4/sv6ti8FFoz2Zmyrb+IRENXBopmgUUDKpagmdkCN44iEtVA5deVRTmuCbsF3YPJ2lGzeaP2tVvr3EjlB+xWsWIgMJVowXZcwrfWoKWOLOhjC+aW9Yl11q3bVyAMUm5w5HwqnacDZZwNPM="
-
-addons:
-  coverity_scan:
-    project:
-      name: "CMU-Robotics-Club/RoboBuggy"
-      description: "Build submitted via Travis CI"
-    notification_email: tdecker@andrew.cmu.edu
-    build_command_prepend: ""
-    build_command:   "cd real_time/surface_src/java_src/Alice && $GRADLE_BIN/gradle build"
-    branch_pattern: coverity_scan
