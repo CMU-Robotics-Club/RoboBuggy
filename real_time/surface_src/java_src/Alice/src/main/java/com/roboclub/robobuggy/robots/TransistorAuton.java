@@ -4,13 +4,16 @@ import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.nodes.localizers.HighTrustGPSLocalizer;
-import com.roboclub.robobuggy.nodes.planners.SweepNode;
+import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
+import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
 import com.roboclub.robobuggy.nodes.sensors.CameraNode;
 import com.roboclub.robobuggy.nodes.sensors.GpsNode;
 import com.roboclub.robobuggy.nodes.sensors.ImuNode;
 import com.roboclub.robobuggy.nodes.sensors.LoggingNode;
 import com.roboclub.robobuggy.nodes.sensors.RBSMNode;
 import com.roboclub.robobuggy.ros.NodeChannel;
+
+import java.io.IOException;
 
 
 /**
@@ -58,15 +61,12 @@ public final class TransistorAuton extends AbstractRobot {
 				RobobuggyConfigFile.RBSM_COMMAND_PERIOD));
 		nodeList.add(new CameraNode(NodeChannel.PUSHBAR_CAMERA, 100));
 
-//		try {
-//			nodeList.add(new WayPointFollowerPlanner(WayPointUtil.createWayPointsFromWaypointList("logs/waypoints/waypoints.txt")));
-//		}   catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-
-		nodeList.add(new SweepNode(NodeChannel.DRIVE_CTRL));
-
+		try {
+			nodeList.add(new WayPointFollowerPlanner(WayPointUtil.createWayPointsFromWaypointList("logs/waypoints/waypoints.txt")));
+		}   catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 }
