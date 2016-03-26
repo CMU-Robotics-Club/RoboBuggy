@@ -21,8 +21,8 @@ public class WSHandler {
 	private static ConcurrentHashMap<String, CommandCallback> cm = new ConcurrentHashMap<String, CommandCallback>();
 	private int clientID = 0;
 	
-	private final String GROUP_STRING = "group:";
-	private final String COMMAND_STRING = "command:";
+	private static final String GROUP_STRING = "group:";
+	private static final String COMMAND_STRING = "command:";
 	
 	/**
 	 * Returns Session Group Manager
@@ -74,7 +74,7 @@ public class WSHandler {
      * @param message the message we received
      */
     @OnWebSocketMessage
-    public synchronized void onMessage(String message) {
+    public void onMessage(String message) {
     	if (message.toLowerCase().contains(GROUP_STRING)) {
     		// resort the client if necessary / possible
 	    	Session session = sgm.removeSession(clientID);

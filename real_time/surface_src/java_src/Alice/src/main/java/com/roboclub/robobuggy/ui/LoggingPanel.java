@@ -38,6 +38,10 @@ public class LoggingPanel extends RobobuggyGUIContainer{
 	private JTextField playbackSpeed;
 	private Publisher encoderResetPub;
 	
+	/**
+	 * returns start button, useful for starting remotely.
+	 * @return start button.
+	 */
 	public JButton getPlayBtn() {
 		return playBtn;
 	}
