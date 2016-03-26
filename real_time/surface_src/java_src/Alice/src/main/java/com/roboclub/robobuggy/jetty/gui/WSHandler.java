@@ -1,5 +1,7 @@
 package com.roboclub.robobuggy.jetty.gui;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
@@ -16,7 +18,11 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 public class WSHandler {
 	
 	private static SessionGroupManager sgm = new SessionGroupManager();
+	private static ConcurrentHashMap<String, CommandCallback> cm = new ConcurrentHashMap<String, CommandCallback>();
 	private int clientID = 0;
+	
+	private final String GROUP_STRING = "group:";
+	private final String COMMAND_STRING = "command:";
 	
 	/**
 	 * Returns Session Group Manager
@@ -24,6 +30,14 @@ public class WSHandler {
 	 */
 	public static SessionGroupManager getSGM() {
 		return sgm;
+	}
+	
+	/**
+	 * Get the command grouping
+	 * @return cm
+	 */
+	public static ConcurrentHashMap<String, CommandCallback> getCM() {
+		return cm;
 	}
 	
 	/**
@@ -60,16 +74,27 @@ public class WSHandler {
      * @param message the message we received
      */
     @OnWebSocketMessage
-    public void onMessage(String message) {
-    	Session session = sgm.removeSession(clientID);
-    	
-    	for (String groupName : sgm.getClients().keySet()) {
-    		if (message.toLowerCase().contains(groupName)) {
-    			clientID = sgm.addSessionToGroup(groupName,  session);
-    			return;
+    public synchronized void onMessage(String message) {
+    	if (message.toLowerCase().contains(GROUP_STRING)) {
+    		// resort the client if necessary / possible
+	    	Session session = sgm.removeSession(clientID);
+	    	for (String groupName : sgm.getClients().keySet()) {
+	    		if (message.toLowerCase().contains(groupName)) {
+	    			clientID = sgm.addSessionToGroup(groupName, session);
+	    			return;
+	    		}
+	    	}
+	    	
+	    	clientID = sgm.addSessionToGroup("unsorted", session);
+    	} else if (message.toLowerCase().contains(COMMAND_STRING)) {
+    		// handle commands with whatever command handlers we have so far
+    		for (String command : cm.keySet()) {
+    			if (message.contains(command)) {
+    				cm.get(command).callback(message, clientID);
+    				return;
+    			}
     		}
+    		// treat the message as a command
     	}
-    	
-    	clientID = sgm.addSessionToGroup("unsorted", session);
     }
 }

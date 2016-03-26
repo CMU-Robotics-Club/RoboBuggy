@@ -37,6 +37,10 @@ public class LoggingPanel extends RobobuggyGUIContainer{
 	private JLabel filenameLabel;
 	private JTextField playbackSpeed;
 	private Publisher encoderResetPub;
+	
+	public JButton getPlayBtn() {
+		return playBtn;
+	}
 
 	/**
 	 * Construct a new {@link LoggingPanel} object

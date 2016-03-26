@@ -13,6 +13,8 @@ import org.eclipse.jetty.servlets.gzip.GzipHandler;
 import org.eclipse.jetty.websocket.server.WebSocketHandler;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 
+import com.roboclub.robobuggy.ui.Gui;
+
 /**
  * Webserver class running inside the buggy. Only instantiate one.
  * @author Vasu Agrawal
@@ -35,6 +37,12 @@ public class JettyServer {
 		updaters = new ArrayList<ClientUpdater>();
 		updaters.add(new ClientDataUpdater());
 		updaters.add(new ClientImageUpdater());
+		WSHandler.getCM().put("herp", new CommandCallback() {
+			public void callback(String message, int clientID) {
+				System.out.println("Starting logging!");
+				Gui.getInstance().getMainGuiWindow().getCtrlPanel().getLoggingPanel().getPlayBtn().doClick();
+			}
+		});
 
 		// Root handler for HTML
 		ResourceHandler res = new ResourceHandler();
