@@ -53,7 +53,8 @@ public class HighTrustGPSLocalizer implements Node{
                 double dLon = buggyFrameGpsLon - oldGPSX;
 
                 // take the arctangent in order to get the heading (in degrees)
-                buggyFrameRotZ = Math.toDegrees(Math.atan2(dLat,dLon));
+                buggyFrameRotZ = Math.toDegrees(Math.atan2(dLat, -dLon));
+
 
                 publishUpdate();
             }
