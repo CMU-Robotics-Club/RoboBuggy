@@ -71,6 +71,7 @@ public class CameraNode extends PeriodicNode{
 		imagePublisher = new Publisher(channel.getMsgPath());
 
 		setupLoggingTrigger();
+		resume();
 	}
 
 	private void setupLoggingTrigger() {
