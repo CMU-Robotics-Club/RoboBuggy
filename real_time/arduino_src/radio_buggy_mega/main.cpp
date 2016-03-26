@@ -48,7 +48,7 @@
     #define PWM_SCALE_STORED_ANGLE 1000 // in hundredths of a degree for precision
     #define POT_OFFSET_STEERING_IN 121
     #define POT_SCALE_STEERING_IN -10
-    #define STEERING_LIMIT_LEFT -1000
+    #define STEERING_LIMIT_LEFT -1000   //steering_set assumes that left is less than right.
     #define STEERING_LIMIT_RIGHT 1000
 #elif BUGGY == nixie
     #define PWM_OFFSET_STEERING_OUT 1789
@@ -113,10 +113,15 @@
 #define BRAKE_INDICATOR_PINN PE3 // arduino 5
 
 #define STEERING_LOOP_TIME_US 10000L
+#define MICROSECONDS_PER_SECOND 1000000L
 #define STEERING_KP_NUMERATOR -15L
 #define STEERING_KP_DEMONENATOR 100L
 #define STEERING_KD_NUMERATOR 0L
 #define STEERING_KD_DENOMENATOR 100L
+#define STEERING_MAX_SPEED 2000L //20 degress per second
+#define STEERING_KV_NUMERATOR -15L
+#define STEERING_KV_DENOMENATOR 100L
+#define STEERING_PWM_CENTER 1500L //The PWM value that gives no movement.
 
 #define MOTOR_ENCODER_TICKS_PER_REV 4096
 #define DEGREE_HUNDREDTHS_PER_REV 36000
@@ -197,10 +202,48 @@ uint8_t adc_read_blocking(uint8_t channel)
     return ADCH;
 }
 
-long steer_set_error_prev = 0;
 
-void steering_set(int angle) 
+long steer_set_prev_ticks = 0;
+/*
+ Sets the velocity of the steering motor to target_velocity.
+ target_velocity is in hundredths of a degree per second.
+ */
+void steer_set_velocity(long target_velocity) {
+	target_velocity = clamp(target_velocity, STEERING_MAX_SPEED, -(STEERING_MAX_SPEED));
+	
+	long current_ticks = g_encoder_steering.GetTicks();
+	long change_in_ticks = current_ticks - steer_set_prev_ticks;
+	dbg_printf("change in ticks: %ld\n", change_in_ticks);
+	
+	long change_in_angle = map_signal(change_in_ticks,
+									  0,
+									  MOTOR_ENCODER_TICKS_PER_REV,
+									  0,
+									  DEGREE_HUNDREDTHS_PER_REV);
+	
+	//angle * us/s * us = angle per second
+	long actual_velocity = change_in_angle * (MICROSECONDS_PER_SECOND / STEERING_LOOP_TIME_US);
+	long error = target_velocity - actual_velocity;
+	
+	long output_us = error * STEERING_KV_NUMERATOR / STEERING_KV_DENOMENATOR;
+	
+	//Send command to the motor
+	servo_set_us(output_us + STEERING_PWM_CENTER);
+	
+	steer_set_prev_ticks = current_ticks;
+}
+
+
+long steer_set_error_prev = 0; //This is used to find the d term for position.
+
+void steering_set(int angle) //TODO: should angle be an int or a long?
 {
+	//TODO: delete short circuiting code for testing velocity measure
+	steer_set_velocity(output_vel);
+	return;
+	
+	angle = clamp(angle, STEERING_LIMIT_RIGHT, STEERING_LIMIT_LEFT);
+	
     //For the DC motor
     long feed_forward = -10;
     long actual = map_signal(g_encoder_steering.GetTicks(),
@@ -208,9 +251,9 @@ void steering_set(int angle)
                              MOTOR_ENCODER_TICKS_PER_REV,
                              0,
                              DEGREE_HUNDREDTHS_PER_REV);
-
+	
     long error = angle - actual;
-    long output_us = 0;
+    long output_vel = 0;
     if(labs(error) > 10) { //0.2 degree deadband
         long output_p = STEERING_KP_NUMERATOR * error / STEERING_KP_DEMONENATOR;
         
@@ -218,16 +261,14 @@ void steering_set(int angle)
         
         long d =  (error - steer_set_error_prev); //not dividing by time
         long output_d = STEERING_KD_NUMERATOR * d / STEERING_KD_DENOMENATOR;
-        output_us = output_p + output_ff + output_d;
+        output_vel = output_p + output_ff + output_d;
     }
-
-    output_us = clamp(output_us, 500, -500);
 
     steer_set_error_prev = error;
 
     dbg_printf("actual: %ld, ticks: %ld\r\n", actual, g_encoder_steering.GetTicks());
-    dbg_printf("output_us: %ld\r\n", output_us);
-    servo_set_us(output_us + 1500);
+    dbg_printf("output_vel: %ld\r\n", output_vel);
+    steer_set_velocity(output_vel);
 
     //Meant for a servo
     // angle = clamp(angle, 
@@ -413,7 +454,7 @@ int main(void)
                     default:
                         // report unknown message
                         g_rbsm.Send(RBSM_MID_ERROR, RBSM_EID_RBSM_INVALID_MID);
-                        dbg_printf("Got message with invalid mid %d and data %d\n",
+                        dbg_printf("Got message with invalid mid %d and data %lu\n",
                              new_command.message_id,
                              new_command.data);
                         break;
