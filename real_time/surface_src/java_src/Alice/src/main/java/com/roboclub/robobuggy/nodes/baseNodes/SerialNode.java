@@ -2,12 +2,7 @@ package com.roboclub.robobuggy.nodes.baseNodes;
 
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
-import gnu.io.CommPort;
-import gnu.io.CommPortIdentifier;
-import gnu.io.NoSuchPortException;
-import gnu.io.PortInUseException;
-import gnu.io.SerialPort;
-import gnu.io.UnsupportedCommOperationException;
+import gnu.io.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -82,6 +77,8 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 	 * @return true iff the bytes are transmitted successfully
 	 */
 	public boolean send(byte[] bytes) {
+
+
 		if(serialOutput == null) {
 			return false;
 		}

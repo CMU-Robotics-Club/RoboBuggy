@@ -2,12 +2,7 @@ package com.roboclub.robobuggy.nodes.localizers;
 
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
-import com.roboclub.robobuggy.ros.Message;
-import com.roboclub.robobuggy.ros.MessageListener;
-import com.roboclub.robobuggy.ros.Node;
-import com.roboclub.robobuggy.ros.NodeChannel;
-import com.roboclub.robobuggy.ros.Publisher;
-import com.roboclub.robobuggy.ros.Subscriber;
+import com.roboclub.robobuggy.ros.*;
 
 import java.util.Date;
 
@@ -18,8 +13,8 @@ import java.util.Date;
  *
  */
 public class HighTrustGPSLocalizer implements Node{
-    private double buggyFrameGpsX;
-    private double buggyFrameGpsY;
+    private double buggyFrameGpsLon;
+    private double buggyFrameGpsLat;
     private double buggyFrameRotZ;
     //private double roll = 0;
     //private double pitch = 0;
@@ -32,8 +27,8 @@ public class HighTrustGPSLocalizer implements Node{
      */
     public HighTrustGPSLocalizer(){
         //init values
-        buggyFrameGpsX = 0.0;
-        buggyFrameGpsY = 0.0;
+        buggyFrameGpsLon = 0.0;
+        buggyFrameGpsLat = 0.0;
         posePub = new Publisher(NodeChannel.POSE.getMsgPath());
 
 
@@ -45,15 +40,16 @@ public class HighTrustGPSLocalizer implements Node{
                 GpsMeasurement newGPSData = (GpsMeasurement)m;
 
                 // Get the delta latitude and longitude, use that to figure out how far we've travelled
-                double oldGPSX = buggyFrameGpsX;
-                double oldGPSY = buggyFrameGpsY;
-                buggyFrameGpsY = newGPSData.getLatitude();
-                buggyFrameGpsX = newGPSData.getLongitude();
-                double dy = buggyFrameGpsY - oldGPSY;
-                double dx = buggyFrameGpsX - oldGPSX;
+                double oldGPSX = buggyFrameGpsLon;
+                double oldGPSY = buggyFrameGpsLat;
+                buggyFrameGpsLat = newGPSData.getLatitude();
+                buggyFrameGpsLon = newGPSData.getLongitude();
+                double dLat = buggyFrameGpsLat - oldGPSY;
+                double dLon = buggyFrameGpsLon - oldGPSX;
 
                 // take the arctangent in order to get the heading (in degrees)
-                buggyFrameRotZ = Math.toDegrees(Math.atan2(dy,dx));
+                buggyFrameRotZ = Math.toDegrees(Math.atan2(dLat, -dLon));
+
 
                 publishUpdate();
             }
@@ -93,7 +89,7 @@ public class HighTrustGPSLocalizer implements Node{
     }
 
     private void publishUpdate(){
-        posePub.publish(new GPSPoseMessage(new Date(), buggyFrameGpsY, buggyFrameGpsX, buggyFrameRotZ));
+        posePub.publish(new GPSPoseMessage(new Date(), buggyFrameGpsLat, buggyFrameGpsLon, buggyFrameRotZ));
     }	
 
     @Override
@@ -104,8 +100,8 @@ public class HighTrustGPSLocalizer implements Node{
     @Override
     public boolean shutdown() {
         posePub = null;
-        buggyFrameGpsX = 0.0;
-        buggyFrameGpsY = 0.0;
+        buggyFrameGpsLon = 0.0;
+        buggyFrameGpsLat = 0.0;
         return true;
     }
 

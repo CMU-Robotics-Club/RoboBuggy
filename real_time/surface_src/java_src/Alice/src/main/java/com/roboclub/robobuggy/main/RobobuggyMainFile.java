@@ -1,12 +1,9 @@
 package com.roboclub.robobuggy.main;
 
 
-import com.roboclub.robobuggy.jetty.gui.JettyServer;
 import com.roboclub.robobuggy.robots.AbstractRobot;
 import com.roboclub.robobuggy.robots.SimRobot;
-import com.roboclub.robobuggy.robots.TransistorDataCollection;
-import com.roboclub.robobuggy.serial.RBSerialMessage;
-import com.roboclub.robobuggy.simulation.SensorPlayer;
+import com.roboclub.robobuggy.robots.TransistorAuton;
 import com.roboclub.robobuggy.ui.Gui;
 import com.roboclub.robobuggy.utilities.JNISetup;
 
@@ -20,45 +17,38 @@ public class RobobuggyMainFile {
 	 * @param args : None
 	 */
     public static void main(String[] args) {
-    	try {
-			new JettyServer();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	
+		new RobobuggyLogicNotification("Robobuggy Alice program started", RobobuggyMessageLevel.NOTE);
+
         try {
 			JNISetup.setupJNI(); //must run for jni to install
 			//note that errors are just printed to the console since the gui and logging system  has not been created yet
-		} catch (NoSuchFieldException e1) {
-			e1.printStackTrace();
-		} catch (SecurityException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IllegalArgumentException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IllegalAccessException e1) {
-			// TODO Auto-generated catch block
+		} catch (NoSuchFieldException | SecurityException | IllegalAccessException | IllegalArgumentException e1) {
 			e1.printStackTrace();
 		}
-        
-    	RobobuggyConfigFile.loadConfigFile(); //TODO make sure that logic Notification is setup before this point
-        robot= TransistorDataCollection.getInstance();
-     	/*
+
+		RobobuggyConfigFile.loadConfigFile(); //TODO make sure that logic Notification is setup before this point
+
+		new RobobuggyLogicNotification("Initializing Robot", RobobuggyMessageLevel.NOTE);
     	if (RobobuggyConfigFile.isDataPlayBack()) {
             robot = SimRobot.getInstance();
         }else{
-        	robot = TransistorDataCollection.getInstance();
+        	robot = TransistorAuton.getInstance();
         }
-        */
-    	
+
+		new RobobuggyLogicNotification("Initializing GUI", RobobuggyMessageLevel.NOTE);
         Gui.getInstance();
 
-        
-        	//Play back disabled, create robot
-        	robot.startNodes();
-			new RobobuggyLogicNotification("Robobuggy Logic Notfication started", RobobuggyMessageLevel.NOTE);
+
+		new RobobuggyLogicNotification("Starting Robot", RobobuggyMessageLevel.NOTE);
+		robot.startNodes();
+
+//		try {
+//			new JettyServer();
+//			new RobobuggyLogicNotification("Initializing web server", RobobuggyMessageLevel.NOTE);
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 
     }
     
