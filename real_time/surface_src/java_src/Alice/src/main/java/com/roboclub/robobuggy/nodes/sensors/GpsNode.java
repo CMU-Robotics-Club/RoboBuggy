@@ -43,7 +43,6 @@ public final class GpsNode extends SerialNode {
 	public GpsNode(NodeChannel sensor, String portName) {
 		super(new BuggyBaseNode(sensor), "GPS", portName, BAUD_RATE);
 		
-		System.out.println("starting gps");
 		msgPub = new Publisher(sensor.getMsgPath());
 		statePub = new Publisher(sensor.getStatePath());
 		statePub.publish(new StateMessage(NodeState.DISCONNECTED));
@@ -130,14 +129,14 @@ public final class GpsNode extends SerialNode {
 		// Check the prefix.
 		String[] ar = str.split(",");
 		if(!ar[0].equals("$GPGGA")) {
-			System.out.println("We saw this, but then didn't see this. hmm.");
-			throw new RuntimeException();
+			new RobobuggyLogicNotification("saw a string other then $GPGGA that parsed properly:", RobobuggyMessageLevel.EXCEPTION);
+			setNodeState(NodeState.ERROR);
+			return 1; //that we dont publish this message
 		}
 		
 		// Check for valid reading
 		int quality = Integer.parseInt(ar[6]);
 		if(quality == 0) {
-			//System.out.println("No lock...");
 			// TODO publish not-lock to someone
 			setNodeState(NodeState.ERROR);
 			return 1;
@@ -154,8 +153,9 @@ public final class GpsNode extends SerialNode {
 				north = false;
 				break;
 			default:
-				System.out.println("uhoh, you can't go not north or south!");
-				throw new RuntimeException();
+				new RobobuggyLogicNotification("got a direction other then North or South in GPS node", RobobuggyMessageLevel.EXCEPTION);
+				setNodeState(NodeState.ERROR);
+				return 1; //that we dont publish this message
 		}
 		double longitude = convertMinSecToFloatLongitude(ar[4]);
 		boolean west;
@@ -167,8 +167,9 @@ public final class GpsNode extends SerialNode {
 				west = false;
 				break;
 			default:
-				System.out.println("uhoh, you can't go not east or west!");
-				throw new RuntimeException();
+				new RobobuggyLogicNotification("got a direction other then West or East in GPS node", RobobuggyMessageLevel.EXCEPTION);
+				setNodeState(NodeState.ERROR);
+				return 1; //that we dont publish this message
 		}
 		
 		

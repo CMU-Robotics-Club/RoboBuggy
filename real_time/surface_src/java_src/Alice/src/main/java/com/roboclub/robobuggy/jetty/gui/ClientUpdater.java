@@ -2,6 +2,8 @@ package com.roboclub.robobuggy.jetty.gui;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
@@ -31,7 +33,7 @@ public abstract class ClientUpdater {
                     try {
                     	updates.put(m);
                     } catch (Exception e) {
-                    	System.out.println("Unable to add to queue");
+						new RobobuggyLogicNotification("unable to add to queue", RobobuggyMessageLevel.EXCEPTION);
                     }
                 }
             });

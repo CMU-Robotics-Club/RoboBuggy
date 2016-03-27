@@ -2,9 +2,13 @@ package com.roboclub.robobuggy.jetty.gui;
 
 import java.lang.reflect.Modifier;
 import java.util.concurrent.ConcurrentHashMap;
+
 import org.eclipse.jetty.websocket.api.Session;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.ros.Message;
 
 /**
@@ -53,7 +57,7 @@ public class ClientDataUpdater extends ClientUpdater {
 								session.getRemote().sendString(messageTranslator.toJson(update));
 							}
 						} else {
-							System.out.println("Null clients");
+							new RobobuggyLogicNotification("NULL clients", RobobuggyMessageLevel.EXCEPTION);
 						}
 					
 					} catch (Exception e) {

@@ -21,6 +21,7 @@ public enum NodeChannel {
 	STEERING_COMMANDED("commanded_steering", true),   // the angle that we are commanding the front wheel turn to
 	FP_HASH("fp_hash", true),
 	POSE("pose", true),
+	SIM_POSE("sim_pose",true),  //reperesents the hiddenn simulated ground truth 
 	RESET("reset", true),
 	STATE("state", true),
 	SIMULATION("simulation", true),

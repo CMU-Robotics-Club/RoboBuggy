@@ -77,21 +77,17 @@ public class GuiUtil {
 		double heightInRows = stopRow - startRow;
 		double frameWidth = pane.getSize().getWidth();
 		double frameHeight = pane.getSize().getHeight();
-		System.out.println("frameWidth:"+frameWidth+"frameHeight:"+frameHeight);
 		
 		
-		//System.out.println("frameWidth:"+frameWidth+"frameHeight"+frameHeight);
 		double widthPerColumn = frameWidth/cols;
 		double heightPerRow = frameHeight/rows;
 		double width = widthInCols*widthPerColumn;
 		double height = heightInRows*heightPerRow;
 		double startX = widthPerColumn*startCol;
 		double startY = heightPerRow*startRow;
-		//System.out.println("startX:"+startX+"startY"+startY+"width"+width+"height"+height);
-		
+			
 		comp.setBounds((int)startX, (int)startY, (int)width, (int)height);
 		pane.add(comp);
-	//	System.out.println(pane.getComponentCount());
 	}
 	
 	
