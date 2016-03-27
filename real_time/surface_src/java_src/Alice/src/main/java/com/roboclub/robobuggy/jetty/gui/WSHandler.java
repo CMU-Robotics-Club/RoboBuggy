@@ -34,7 +34,6 @@ public class WSHandler {
     @OnWebSocketClose
     public void onClose(int statusCode, String reason) {
     	sgm.removeSession(clientID);
-//        System.out.println("Close: statusCode=" + statusCode + ", reason=" + reason + " ID: " + clientID);
     }
 
     /**
@@ -44,7 +43,6 @@ public class WSHandler {
     @OnWebSocketError
     public void onError(Throwable t) {
     	sgm.removeSession(clientID);
-//        System.out.println("Error: " + t.getMessage());
     }
 
     /**
@@ -54,7 +52,6 @@ public class WSHandler {
     @OnWebSocketConnect
     public void onConnect(Session session) {
     	clientID = sgm.addSessionToGroup("unsorted", session);    	
-//        System.out.println("Connect: " + session.getRemoteAddress().getAddress() + " ID: " + clientID);
     }
 
     /**

@@ -97,7 +97,7 @@ public class ConfigurationPanel extends RobobuggyGUIContainer{
 				//only update the file if a file was selected properly 
 				if(returnVal == fc.APPROVE_OPTION){
 					File selectedFile = fc.getSelectedFile();
-					RobobuggyConfigFile.setWayPointSourceLogFile(selectedFile.getAbsolutePath());
+					RobobuggyConfigFile.setWayPointSourceLogFile(selectedFile.getPath());
 					currentWayPointLable.setText(RobobuggyConfigFile.getWaypointSourceLogFile());
 					//TODO update stuff in the back end
 				}else{
@@ -158,7 +158,6 @@ public class ConfigurationPanel extends RobobuggyGUIContainer{
 					RobobuggyConfigFile.setImuEnabled(true);
 
 				}
-				System.out.println(RobobuggyConfigFile.getComPortImu());
 				//TODO bring back up the system
 				
 			}

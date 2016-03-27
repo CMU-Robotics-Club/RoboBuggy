@@ -60,7 +60,6 @@ public class KfLocalizer extends PeriodicNode{
 		
 //			Date now = new Date();
 //			Date dt = new Date(now.getTime() - mostRecentUpdateTime.getTime());
-		System.out.println("predict step - TODO");
 			//estimate state
 //			state =  mModel.applyMotionModel(state,dt);
 			//estimate covariance

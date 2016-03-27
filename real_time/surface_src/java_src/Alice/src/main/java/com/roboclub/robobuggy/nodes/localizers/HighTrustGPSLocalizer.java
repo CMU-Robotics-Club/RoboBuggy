@@ -18,8 +18,8 @@ import java.util.Date;
  *
  */
 public class HighTrustGPSLocalizer implements Node{
-    private double buggyFrameGpsX;
-    private double buggyFrameGpsY;
+    private double buggyFrameGpsLon;
+    private double buggyFrameGpsLat;
     private double buggyFrameRotZ;
     //private double roll = 0;
     //private double pitch = 0;
@@ -32,8 +32,8 @@ public class HighTrustGPSLocalizer implements Node{
      */
     public HighTrustGPSLocalizer(){
         //init values
-        buggyFrameGpsX = 0.0;
-        buggyFrameGpsY = 0.0;
+        buggyFrameGpsLon = 0.0;
+        buggyFrameGpsLat = 0.0;
         posePub = new Publisher(NodeChannel.POSE.getMsgPath());
 
 
@@ -45,15 +45,15 @@ public class HighTrustGPSLocalizer implements Node{
                 GpsMeasurement newGPSData = (GpsMeasurement)m;
 
                 // Get the delta latitude and longitude, use that to figure out how far we've travelled
-                double oldGPSX = buggyFrameGpsX;
-                double oldGPSY = buggyFrameGpsY;
-                buggyFrameGpsY = newGPSData.getLongitude();
-                buggyFrameGpsX = newGPSData.getLatitude();
-               double dy = buggyFrameGpsY - oldGPSY;
-                double dx = buggyFrameGpsX - oldGPSX;
+                double oldGPSX = buggyFrameGpsLon;
+                double oldGPSY = buggyFrameGpsLat;
+                buggyFrameGpsLat = newGPSData.getLatitude();
+                buggyFrameGpsLon = newGPSData.getLongitude();
+                double dLat = buggyFrameGpsLat - oldGPSY;
+                double dLon = buggyFrameGpsLon - oldGPSX;
 
                 // take the arctangent in order to get the heading (in degrees)
-                buggyFrameRotZ = Math.toDegrees(Math.atan2(dy,dx));
+                buggyFrameRotZ = Math.toDegrees(Math.atan2(dLat,dLon));
 
                 publishUpdate();
             }
@@ -87,15 +87,14 @@ public class HighTrustGPSLocalizer implements Node{
 //        	 				double offset = 0.0;
 //        	 				buggyFrameRotZ = currAngle - offset;
 //        	 				publishUpdate();
-//        	 				System.out.println("yo");
 //        	 				//TODO add a calibration step
 //        	 			}
 //        	 		});
     }
 
     private void publishUpdate(){
-        posePub.publish(new GPSPoseMessage(new Date(), buggyFrameGpsX, buggyFrameGpsY, buggyFrameRotZ));
-    }
+        posePub.publish(new GPSPoseMessage(new Date(), buggyFrameGpsLat, buggyFrameGpsLon, buggyFrameRotZ));
+    }	
 
     @Override
     public boolean startNode() {
@@ -105,8 +104,8 @@ public class HighTrustGPSLocalizer implements Node{
     @Override
     public boolean shutdown() {
         posePub = null;
-        buggyFrameGpsX = 0.0;
-        buggyFrameGpsY = 0.0;
+        buggyFrameGpsLon = 0.0;
+        buggyFrameGpsLat = 0.0;
         return true;
     }
 

@@ -29,7 +29,6 @@ public class PathEditor {
 		final double latErrorFinal = 2/111131.745;
 		final double lonErrorFinal = 2/78846.81;	
 		
-			System.out.println("Starting Path Editor");
 			try {
 				ArrayList<GpsMeasurement> wayPoints =
 						WayPointUtil.createWayPointsFromLog("logs/", RobobuggyConfigFile.getWaypointSourceLogFile());
@@ -45,7 +44,7 @@ public class PathEditor {
 					Gui.getInstance().fixPaint();
 				}
 
-				WayPointFollowerPlanner planer = new WayPointFollowerPlanner(NodeChannel.UNKNOWN_CHANNEL,wayPoints);
+				WayPointFollowerPlanner planer = new WayPointFollowerPlanner(wayPoints);
 
 				
 				for(int i = 0;i<wayPoints.size();i++){

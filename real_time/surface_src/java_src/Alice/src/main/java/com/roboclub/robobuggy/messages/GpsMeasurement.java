@@ -88,6 +88,24 @@ public class GpsMeasurement extends BaseMessage {
 	}
 	
 	/**
+	 * A constructor for a gps measurement that is as basic as possible
+	 * @param latitude latitude measurement
+	 * @param longitude longitude measurement
+	 */
+	public GpsMeasurement(double latitude,double longitude){
+		this.timestamp = new Date().getTime();
+		this.gpsTimestamp = new Date();
+		this.latitude = latitude;
+		this.north = latitude > 0;
+		this.longitude = longitude;
+		this.west = longitude < 0;
+		this.qualityValue = 0;
+		this.numSatellites = -1;
+		this.horizontalDilutionOfPrecision = 0.0;
+		this.antennaAltitude = 0.0;
+	}
+	
+	/**
 	 * Returns the latitude of the {@link GpsMeasurement}
 	 * @return the latitude of the {@link GpsMeasurement}
 	 */
@@ -117,6 +135,15 @@ public class GpsMeasurement extends BaseMessage {
 	 */
 	public boolean getNorth() {
 		return north;
+	}
+	
+	/**
+	 * evaluates to a GPSPoseMessage with the same values encoded in this GPSMeasurement 
+	 * @param heading the heading you want for the gps measurement
+	 * @return the gps pose message encoding of this message
+	 */
+	public GPSPoseMessage toGpsPoseMessage(double heading){
+		return new GPSPoseMessage(gpsTimestamp, latitude, longitude, heading);
 	}
 
 }
