@@ -268,18 +268,6 @@ void steering_set(int angle) //TODO: should angle be an int or a long?
 
     dbg_printf("actual: %ld, error: %ld, output_vel: %ld\n", actual, error, output_vel);
     steer_set_velocity(output_vel);
-
-    //Meant for a servo
-    // angle = clamp(angle, 
-    //               STEERING_LIMIT_RIGHT,
-    //               STEERING_LIMIT_LEFT);
-
-    // int servo_value_us = map_signal(angle,
-    //                                 PWM_OFFSET_STORED_ANGLE,
-    //                                 PWM_SCALE_STORED_ANGLE,
-    //                                 PWM_OFFSET_STEERING_OUT,
-    //                                 PWM_SCALE_STEERING_OUT);
-    // servo_set_us(servo_value_us);
 }
 
 

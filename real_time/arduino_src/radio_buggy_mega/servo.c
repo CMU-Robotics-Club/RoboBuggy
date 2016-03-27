@@ -11,8 +11,7 @@ void servo_init(void) {
   TCCR1B |= (_BV(WGM13) | _BV(WGM12) | _BV(CS11));
   TCCR1B &= ~(_BV(CS10) | _BV(CS12));
   TCNT1 = 0;
-  OCR1A = SERVO_MID_US;
-  OCR1B = SERVO_MID_US;
+  servo_set_us(SERVO_MID_US);
   ICR1 = microsecondsToClockCycles(SERVO_REFRESH_US) / SERVO_TIMER_PRESCALER;
 
   // enable servo output
