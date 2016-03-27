@@ -88,16 +88,15 @@
 #define ENCODER_INTN 2
 #define ENCODER_TIMEOUT_US 500 // 50mph w/ 6" wheel = 280 ticks/sec; 4000us/tick
 
-#define ENCODER_STEERING_DDR_A  DDRD
-#define ENCODER_STEERING_PORT_A PORTD
-#define ENCODER_STEERING_PIN_A  PIND
-#define ENCODER_STEERING_PINN_A PD2
-#define ENCODER_STEERING_INT_A  INT2_vect
-#define ENCODER_STEERING_DDR_B  DDRD
-#define ENCODER_STEERING_PORT_B PORTD
-#define ENCODER_STEERING_PIN_B  PIND
-#define ENCODER_STEERING_PINN_B PD3
-#define ENCODER_STEERING_INT_B  INT3_vect
+#define ENCODER_STEERING_A_DDR  DDRB
+#define ENCODER_STEERING_A_PORT PORTB
+#define ENCODER_STEERING_A_PIN  PINB
+#define ENCODER_STEERING_A_PINN PB4
+#define ENCODER_STEERING_B_DDR  DDRB
+#define ENCODER_STEERING_B_PORT PORTB
+#define ENCODER_STEERING_B_PIN  PINB
+#define ENCODER_STEERING_B_PINN PB6
+#define ENCODER_STEERING_PCINT  PCINT0_vect
 
 #define BATTERY_ADC 0
 #define STEERING_POT_ADC 9
@@ -116,7 +115,7 @@
 #define STEERING_KD_NUMERATOR 0L
 #define STEERING_KD_DENOMENATOR 100L
 #define STEERING_MAX_SPEED 32000L //400 degress per second - 50% cpu usage from encoder interrupts
-#define STEERING_KV_NUMERATOR -2L
+#define STEERING_KV_NUMERATOR 2L
 #define STEERING_KV_DENOMENATOR 1000L
 #define STEERING_PWM_CENTER_US 1500L //The PWM value that gives no movement.
 
@@ -333,20 +332,25 @@ int main(void)
     DEBUG_PORT &= ~_BV(DEBUG_PINN);
     DEBUG_DDR |= _BV(DEBUG_PINN);
 
-    // setup encoder pin and interrupt
-    // ENCODER_PORT |= _BV(ENCODER_PINN);
-    // ENCODER_DDR &= ~_BV(ENCODER_PINN); 
+    // setup encoder pin with pullups and interrupt
+    ENCODER_PORT |= _BV(ENCODER_PINN);
+    ENCODER_DDR &= ~_BV(ENCODER_PINN);
+    g_encoder_distance.Init(&ENCODER_PIN, ENCODER_PINN);
     EIMSK |= _BV(INT2);
     EICRA |= _BV(ISC20);
     EICRA &= ~_BV(ISC21);
-    EIMSK |= _BV(INT3);
-    EICRA |= _BV(ISC30);
-    EICRA &= ~_BV(ISC31);
-    // g_encoder_distance.Init(&ENCODER_PIN, ENCODER_PINN);
-    g_encoder_steering.InitQuad(&ENCODER_STEERING_PIN_A,
-                                ENCODER_STEERING_PINN_A,
-                                &ENCODER_STEERING_PIN_B,
-                                ENCODER_STEERING_PINN_B);
+
+    // setup steering encoder on pcint 0 with pullups off
+    ENCODER_STEERING_A_PORT &= ~_BV(ENCODER_STEERING_A_PINN);
+    ENCODER_STEERING_A_DDR &= ~_BV(ENCODER_STEERING_A_PINN);
+    ENCODER_STEERING_B_PORT &= ~_BV(ENCODER_STEERING_B_PINN);
+    ENCODER_STEERING_B_DDR &= ~_BV(ENCODER_STEERING_B_PINN);
+    g_encoder_steering.InitQuad(&ENCODER_STEERING_A_PIN,
+                                ENCODER_STEERING_A_PINN,
+                                &ENCODER_STEERING_B_PIN,
+                                ENCODER_STEERING_B_PINN);
+    PCMSK0 |= _BV(PCINT4) | _BV(PCINT6);
+    PCICR |= _BV(PCIE0);
 
     // prepare uart0 (onboard usb) for rbsm
     uart0_init(UART_BAUD_SELECT(BAUD, F_CPU));
@@ -613,11 +617,10 @@ ISR(RX_AUTON_INT)
 
 ISR(ENCODER_INT) 
 {
-    g_encoder_steering.OnInterruptQuad();
-    // g_encoder_distance.OnInterrupt();
+    g_encoder_distance.OnInterrupt();
 }
 
-ISR(INT3_vect) {
+ISR(ENCODER_STEERING_PCINT) {
     g_encoder_steering.OnInterruptQuad();
 }
 
