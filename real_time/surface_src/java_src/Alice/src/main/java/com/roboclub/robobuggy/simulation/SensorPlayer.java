@@ -17,6 +17,7 @@ import com.roboclub.robobuggy.messages.FingerPrintMessage;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
+import com.roboclub.robobuggy.messages.ImageMessage;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.messages.MagneticMeasurement;
 import com.roboclub.robobuggy.messages.RemoteWheelAngleRequest;
@@ -46,6 +47,7 @@ public class SensorPlayer extends Thread {
     private double playbackSpeed;
     private boolean isPaused = false;
 
+    private Publisher imagePub;
     private Publisher imuPub;
     private Publisher magPub;
     private Publisher gpsPub;
@@ -65,7 +67,7 @@ public class SensorPlayer extends Thread {
      * @param playbackSpeed the initial playback speed
      */
     public SensorPlayer(String filePath, int playbackSpeed) {
-
+    	imagePub = new Publisher(NodeChannel.PUSHBAR_CAMERA.getMsgPath());
         imuPub = new Publisher(NodeChannel.IMU.getMsgPath());
         magPub = new Publisher(NodeChannel.IMU_MAGNETIC.getMsgPath());
         gpsPub = new Publisher(NodeChannel.GPS.getMsgPath());
@@ -152,6 +154,10 @@ public class SensorPlayer extends Thread {
 
                     Message transmitMessage = null;
                     switch (versionID) {
+                    	case ImageMessage.VERSION_ID:
+                    		System.out.println("Trying to display stuff! TESTING!");
+                            transmitMessage = translator.fromJson(sensorDataJson, ImageMessage.class);
+                    		break;
                         case BrakeControlMessage.VERSION_ID:
                             transmitMessage = translator.fromJson(sensorDataJson, BrakeControlMessage.class);
                             break;
@@ -234,6 +240,9 @@ public class SensorPlayer extends Thread {
 
 
                     switch (versionID) {
+                    	case ImageMessage.VERSION_ID:
+                    		imagePub.publish(transmitMessage);
+                    		break;
                         case BrakeMessage.VERSION_ID:
                             brakePub.publish(transmitMessage);
                             break;

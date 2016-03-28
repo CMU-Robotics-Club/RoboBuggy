@@ -43,7 +43,7 @@ public class RobobuggyMainFile {
 
 		new RobobuggyLogicNotification("Initializing Robot", RobobuggyMessageLevel.NOTE);
     	if (RobobuggyConfigFile.isDataPlayBack()) {
-            robot = TransistorDataCollection.getInstance();
+            robot = SimRobot.getInstance();
         }else{
         	robot = TransistorDataCollection.getInstance();
         }
