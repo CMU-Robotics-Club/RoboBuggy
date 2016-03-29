@@ -13,7 +13,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.Subscriber;
-import com.sun.glass.ui.Robot;
 
 /**
  * @author Matt Sebek
@@ -36,8 +35,8 @@ public class MessageServer {
 	private ReadWriteLock outbox_lock = new ReentrantReadWriteLock(true);
 
 	// Contains all messages that threads want sent.
-	// TODO: confirm threadsafety.
 	private LinkedBlockingQueue<Map.Entry<String, Message>> inbox = new LinkedBlockingQueue<Map.Entry<String, Message>>();
+	
 	// Picks up post, and delivers it.
 	private class MailmanThread implements Runnable {
 
@@ -53,7 +52,6 @@ public class MessageServer {
 					System.out.println("I don't think you can get here...");
 					continue;
 				}
-
 				String topicName = request.getKey();
 				Message m = request.getValue();
 
@@ -64,6 +62,7 @@ public class MessageServer {
 
 				if (subs != null) {
 					for (Subscriber s : subs) {
+						// Note that this will block on s's inbox lock.
 						s.putMessage(m);
 					}
 				}
@@ -73,6 +72,14 @@ public class MessageServer {
 
 	}
 
+	// Puts message in mailbox. Will be handled later.
+	// Note that this will block on inbox's lock.
+	public synchronized void sendMessage(String s, Message m) {
+		if(!inbox.offer(new AbstractMap.SimpleEntry<String, Message>(s, m))) {
+			System.out.println("dropping message?");
+		}
+	}
+	
 	private MessageServer() {
 		(new Thread(new MailmanThread(), "MessageServer-loop")).start();
 	}
@@ -101,11 +108,5 @@ public class MessageServer {
 			listeners.add(ml);
 		}
 		outbox_lock.writeLock().unlock();
-	}
-
-	// Puts message in mailbox. Will be handled later.
-	public synchronized void sendMessage(String s, Message m) {
-		inbox.add(new AbstractMap.SimpleEntry<String, Message>(s, m));
-
 	}
 }
