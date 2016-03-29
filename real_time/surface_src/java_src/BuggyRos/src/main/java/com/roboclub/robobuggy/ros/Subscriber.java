@@ -10,9 +10,10 @@ import com.roboclub.robobuggy.ros.internal.MessageServer;
  *
  * @version 0.5
  *
- * CHANGELOG: NONE
+ *          CHANGELOG: NONE
  *
- * DESCRIPTION: TODO
+ *          DESCRIPTION: Note that we add elements to the head of the queue, and
+ *          take elements from the tail of the queue.
  */
 
 public class Subscriber {
@@ -22,7 +23,6 @@ public class Subscriber {
 	private String topicName;
 
 	private Deque<Message> local_inbox = new ArrayDeque<Message>();
-	// private Lock local_inbox_lock = new ReentrantLock();
 
 	private Thread worker;
 
@@ -51,25 +51,39 @@ public class Subscriber {
 		@Override
 		public void run() {
 			Message m;
-			while(true) {
+			while (true) {
+				// Grab the lock and check 2 cases:
+				// 1. if there is a message in the queue, process this message
+				// immediately.
+				// 2. if not, drop the lock and wait for someone to notify us
+				// that work has been added to the queue.
+				// if we are woken spuriously, go back to sleep.
 				synchronized (local_inbox) {
-					while (true) { try {
-							local_inbox.wait();
-							break;
-						} catch (InterruptedException ie) {
-							System.out.println("much awoken for no reason, such wow"); 
-							//TODO fix trevor's sense of humor so he appreciates this
+					m = local_inbox.pollLast();
+					if (m == null) {
+						while (true) {
+							try {
+								local_inbox.wait();
+								break;
+							} catch (InterruptedException ie) {
+								System.out.println("much awoken for no reason, such wow");
+								// TODO fix trevor's sense of humor so he
+								// appreciates this
+							}
 						}
+						// If we were not woken spuriously, then there must be
+						// an item in the queue.
+						m = local_inbox.pollLast();
 					}
-					// If we were not woken spuriously, then there must be an item in the queue. 
-					m = local_inbox.poll();
-				}	
-                assert(m != null);
-                // N. B. Do not hold local_inbox lock over user callback.
-                // 		 If the callback acquires a lock, we may acquire locks out of order,
-                // 		 This can lead to us having A and needing B, and them having B and needing A. 
-                callback.actionPerformed(topicName, m);
-            }
+				}
+				assert (m != null);
+				// N. B. Do not hold local_inbox lock over user callback.
+				// If the callback acquires a lock, we may acquire locks out of
+				// order,
+				// This can lead to us having A and needing B, and them having B
+				// and needing A.
+				callback.actionPerformed(topicName, m);
+			}
 		}
 	}
 }
