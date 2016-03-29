@@ -87,8 +87,8 @@ public final class SimulatedBuggy {
 		            	double heading = wheelTh + th + dth;
 		            	double headingRad = Math.toRadians(heading);
 		            	//now update the internal state
-		            	x = x +dx*Math.cos(headingRad)*dt -dy*Math.sin(headingRad)*dt;
-		            	y = y +dx*Math.sin(headingRad)*dt+dy*Math.cos(headingRad)*dt;
+		            	x = x +dx*Math.cos(headingRad)*dt -dy*Math.sin(headingRad)*dt+Math.random()/10;
+		            	y = y +dx*Math.sin(headingRad)*dt+dy*Math.cos(headingRad)*dt+Math.random()/10;
 		            	th = heading;
 		            	//TODO make pose message periodic 
 		            	simPosePub.publish(new GPSPoseMessage(new Date(), y, x, th));

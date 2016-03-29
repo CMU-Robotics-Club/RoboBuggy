@@ -1,6 +1,7 @@
 package com.roboclub.robobuggy.nodes.baseNodes;
 
 import com.roboclub.robobuggy.ros.Node;
+import com.roboclub.robobuggy.ros.Publisher;
 
 /**
  * Abstract class that serves as the decorator specification in the decorator
@@ -17,7 +18,7 @@ public abstract class BuggyDecoratorNode implements BuggyNode {
 	 * Creates a new decorator for the given {@link Node}
 	 * @param node {@link Node} to decorate
 	 */
-	public BuggyDecoratorNode(BuggyNode node) {
+	public BuggyDecoratorNode(BuggyNode node,String name) {
 		this.node = node;
 	}
 	

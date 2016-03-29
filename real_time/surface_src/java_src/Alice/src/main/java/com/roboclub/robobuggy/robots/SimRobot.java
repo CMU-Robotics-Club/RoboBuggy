@@ -42,7 +42,7 @@ public final class SimRobot extends AbstractRobot{
 		nodeList.add(new SimulatedRBSMNode());
 		ArrayList<GpsMeasurement> wayPoints = new ArrayList<GpsMeasurement>();
 		for(int i = 0;i<100;i++){
-			wayPoints.add(new GpsMeasurement(i,0));
+			wayPoints.add(new GpsMeasurement(0,i));
 		}
 		nodeList.add(new WayPointFollowerPlanner(wayPoints));
 		SimulatedBuggy simBuggy = SimulatedBuggy.getInstance();

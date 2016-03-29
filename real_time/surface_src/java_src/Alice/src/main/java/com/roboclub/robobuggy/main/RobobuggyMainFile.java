@@ -4,6 +4,7 @@ package com.roboclub.robobuggy.main;
 import com.roboclub.robobuggy.jetty.gui.JettyServer;
 import com.roboclub.robobuggy.robots.AbstractRobot;
 import com.roboclub.robobuggy.robots.SimRobot;
+import com.roboclub.robobuggy.robots.TransistorAuton;
 import com.roboclub.robobuggy.robots.TransistorDataCollection;
 import com.roboclub.robobuggy.serial.RBSerialMessage;
 import com.roboclub.robobuggy.simulation.SensorPlayer;
@@ -44,7 +45,7 @@ public class RobobuggyMainFile {
 		}
         
     	RobobuggyConfigFile.loadConfigFile(); //TODO make sure that logic Notification is setup before this point
-        robot= TransistorDataCollection.getInstance();
+        robot= TransistorAuton.getInstance();
      	/*
     	if (RobobuggyConfigFile.isDataPlayBack()) {
             robot = SimRobot.getInstance();
