@@ -5,6 +5,7 @@ import com.roboclub.robobuggy.nodes.localizers.HighTrustGPSLocalizer;
 import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
 import com.roboclub.robobuggy.simulation.SimulatedBuggy;
 import com.roboclub.robobuggy.simulation.SimulatedGPSNode;
+import com.roboclub.robobuggy.simulation.SimulatedImuNode;
 import com.roboclub.robobuggy.simulation.SimulatedRBSMNode;
 
 import java.util.ArrayList;
@@ -32,8 +33,9 @@ public final class SimRobot extends AbstractRobot{
 		super();
 	
 		nodeList.add(new HighTrustGPSLocalizer());
+//		nodeList.add(new SimulatedImuNode());
 		nodeList.add(new SimulatedGPSNode());
-		nodeList.add(new SimulatedRBSMNode());
+//		nodeList.add(new SimulatedRBSMNode());
 		ArrayList<GpsMeasurement> wayPoints = new ArrayList<GpsMeasurement>();
 		for(int i = 0;i<100;i++){
 			wayPoints.add(new GpsMeasurement(i,0));
@@ -41,8 +43,10 @@ public final class SimRobot extends AbstractRobot{
 		nodeList.add(new WayPointFollowerPlanner(wayPoints));
 		SimulatedBuggy simBuggy = SimulatedBuggy.getInstance();
 		simBuggy.setDx(.1);
-//		simBuggy.setDth(1);
-//		simBuggy.setDth(1.0);
+
+		//simBuggy.setDth(1);
+		simBuggy.setDth(1.0);
+
 
 	}
 }

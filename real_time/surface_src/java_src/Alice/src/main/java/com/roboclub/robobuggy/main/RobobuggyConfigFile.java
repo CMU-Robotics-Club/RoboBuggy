@@ -34,7 +34,6 @@ public final class  RobobuggyConfigFile {
 	public static final String LOG_FILE_NAME = "sensors";
 
 	//Autonomous controls
-	public static final boolean AUTONOMOUS_DEFAULT = false;
 	public static final int RBSM_COMMAND_PERIOD = 50;
 
 	// sensor default settings (true for on false for off
@@ -51,7 +50,7 @@ public final class  RobobuggyConfigFile {
 
 
 	// iff false, connect to serial sensors 
-	private static final boolean DATA_PLAY_BACK = false;
+	private static final boolean DATA_PLAY_BACK = true;
 
 	private static String waypointSourceLogFile ="NOT_SET";
 	private static String playBackSourceFile = "NOT_SET";

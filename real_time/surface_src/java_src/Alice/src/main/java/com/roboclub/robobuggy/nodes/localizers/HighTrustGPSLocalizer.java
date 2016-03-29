@@ -9,6 +9,7 @@ import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -21,6 +22,7 @@ public class HighTrustGPSLocalizer implements Node{
     private double buggyFrameGpsLon;
     private double buggyFrameGpsLat;
     private double buggyFrameRotZ;
+    private Date mostRecentUpdate;
     //private double roll = 0;
     //private double pitch = 0;
 
@@ -35,28 +37,37 @@ public class HighTrustGPSLocalizer implements Node{
         buggyFrameGpsLon = 0.0;
         buggyFrameGpsLat = 0.0;
         posePub = new Publisher(NodeChannel.POSE.getMsgPath());
-
+        mostRecentUpdate = new Date();
 
 
         //Initialize subscriber to GPS measurements
         new Subscriber(NodeChannel.GPS.getMsgPath(), new MessageListener() {
             @Override
             public void actionPerformed(String topicName, Message m) {
-                GpsMeasurement newGPSData = (GpsMeasurement)m;
-
+            	GpsMeasurement newGPSData = (GpsMeasurement)m;
+            	synchronized (this) {
+            	long dt = newGPSData.getTimestamp().getTime() - mostRecentUpdate.getTime();
+            	System.out.println(dt);
+            	if(dt > 0.0){
                 // Get the delta latitude and longitude, use that to figure out how far we've travelled
+
                 double oldGPSX = buggyFrameGpsLon;
                 double oldGPSY = buggyFrameGpsLat;
-                buggyFrameGpsLat = newGPSData.getLatitude();
-                buggyFrameGpsLon = newGPSData.getLongitude();
+                	buggyFrameGpsLat = newGPSData.getLatitude();
+                	buggyFrameGpsLon = newGPSData.getLongitude();	
                 double dLat = buggyFrameGpsLat - oldGPSY;
                 double dLon = buggyFrameGpsLon - oldGPSX;
+                
+                double oldRotZ = buggyFrameRotZ;
 
                 // take the arctangent in order to get the heading (in degrees)
                 buggyFrameRotZ = Math.toDegrees(Math.atan2(dLat, -dLon));
 
 
                 publishUpdate();
+            	mostRecentUpdate = newGPSData.getTimestamp();
+            	}
+                }
             }
         });
         
