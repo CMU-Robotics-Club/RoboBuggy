@@ -37,9 +37,19 @@ public abstract class ClientUpdater {
                     }
                 }
             });
-        }	
+        }
+        
+        new Subscriber("sensor/gps/state", new MessageListener() {
+        	@Override
+        	public void actionPerformed(String topicName, Message m) {
+        		try {
+        			updates.put(m);
+        		} catch (Exception e) {
+        			new RobobuggyLogicNotification("Unable to add sensor to queue.", RobobuggyMessageLevel.EXCEPTION);
+        		}
+        	}
+        });
 	}
-	
 	/**
 	 * Simple constructor, only subscribes to all channels.
 	 */
