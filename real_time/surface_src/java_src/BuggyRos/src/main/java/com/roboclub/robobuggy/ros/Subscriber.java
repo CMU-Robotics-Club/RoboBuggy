@@ -46,30 +46,30 @@ public class Subscriber {
 		}
 	}
 
-	// note that if we ever have more than 1 thread, we will have to worry
-	// about the callback more.
 	class WorkerThread implements Runnable {
 
 		@Override
 		public void run() {
 			Message m;
-			synchronized (local_inbox) {
-				while (true) {
-					while (local_inbox.peek() == null) {
-						try {
+			while(true) {
+				synchronized (local_inbox) {
+					while (true) { try {
 							local_inbox.wait();
+							break;
 						} catch (InterruptedException ie) {
-							System.out
-									.println("much awoken for no reason, such wow"); //TODO better message, bad humor, need creativity, #Trevor_not_ammused  
+							System.out.println("much awoken for no reason, such wow"); 
+							//TODO fix trevor's sense of humor so he appreciates this
 						}
 					}
-
+					// If we were not woken spuriously, then there must be an item in the queue. 
 					m = local_inbox.poll();
-					if (m != null) {
-						callback.actionPerformed(topicName, m);
-					}
-				}
-			}
+				}	
+                assert(m != null);
+                // N. B. Do not hold local_inbox lock over user callback.
+                // 		 If the callback acquires a lock, we may acquire locks out of order,
+                // 		 This can lead to us having A and needing B, and them having B and needing A. 
+                callback.actionPerformed(topicName, m);
+            }
 		}
 	}
 }

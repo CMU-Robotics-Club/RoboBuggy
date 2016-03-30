@@ -1,16 +1,11 @@
 package com.roboclub.robobuggy.simulation;
 
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.TimerTask;
-
-import boofcv.alg.segmentation.ms.MergeSmallRegions.Node;
-
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 
-import sun.security.jca.GetInstance;
+import java.util.Date;
+import java.util.TimerTask;
 
 /**
  * 

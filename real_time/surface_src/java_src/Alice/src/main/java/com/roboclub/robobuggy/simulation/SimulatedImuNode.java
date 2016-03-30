@@ -18,7 +18,7 @@ public class SimulatedImuNode extends PeriodicNode{
 	private static SimulatedBuggy simBuggy = SimulatedBuggy.getInstance();
 
 	protected SimulatedImuNode(BuggyNode base, int period) {
-		super(base, period);
+		super(base, period,"simulated_imu_node");
 		simBuggy = SimulatedBuggy.getInstance();
 		// TODO Auto-generated constructor stub
 		resume();

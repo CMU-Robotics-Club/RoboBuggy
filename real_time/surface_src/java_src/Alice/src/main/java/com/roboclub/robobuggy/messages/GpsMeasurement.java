@@ -96,9 +96,9 @@ public class GpsMeasurement extends BaseMessage {
 		this.timestamp = new Date().getTime();
 		this.gpsTimestamp = new Date();
 		this.latitude = latitude;
-		this.north = true;
+		this.north = latitude > 0;
 		this.longitude = longitude;
-		this.west = true;
+		this.west = longitude < 0;
 		this.qualityValue = 0;
 		this.numSatellites = -1;
 		this.horizontalDilutionOfPrecision = 0.0;
