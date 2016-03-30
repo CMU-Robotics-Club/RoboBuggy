@@ -25,9 +25,8 @@ public final class Gui extends JFrame {
 
 
 	//The windowList is a list of all of the windows that are a part of the gui
-    HashMap<Integer, RobobuggyJFrame> windowMap;
+    private HashMap<Integer, RobobuggyJFrame> windowMap;
 	private int currentWindowId;
-	private MainGuiWindow mainGuiWindow;
 
 	private static Gui instance;
 	
@@ -79,20 +78,23 @@ public final class Gui extends JFrame {
 		return currentWindowId;		
 	}
 	
-	public synchronized void getWindow(int windowRefrence){
-		windowMap.get(windowRefrence);
+	/**
+	 * gets a reference to a particular frame of the window 
+	 * @param windowRefrence the reference to receive
+	 * @return the requested frames reference 
+	 */
+	public synchronized RobobuggyJFrame getWindow(int windowRefrence){
+		return windowMap.get(windowRefrence);
 	}
 	
+	/**
+	 * removes a reference to a particular frame of the window 
+	 * @param windowRefrence the reference to remove
+	 * @return 
+	 */
 	public synchronized void deleteWindow(int windowRefrence){
 		windowMap.remove(windowRefrence);
 		
-	}
-
-	/**
-	 * @return the main gui window
-	 */
-	public MainGuiWindow getMainGuiWindow() {
-		return mainGuiWindow;
 	}
 	
 	/**

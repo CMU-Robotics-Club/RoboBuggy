@@ -42,6 +42,9 @@ public final class  RobobuggyConfigFile {
 	private static boolean gpsEnabled = true;
 	private static boolean encoderEnabled = true;
 	private static boolean visionSystemEnabled = true;
+	
+	//system settings 
+	private static double playBackSpeed = 1.0;
 
 	//sensor com ports
 	private static String comPortImu  = "NOT_SET";
@@ -289,5 +292,18 @@ public final class  RobobuggyConfigFile {
 		RobobuggyConfigFile.visionSystemEnabled = visionSystemEnabled;
 	}
 	
+	/**
+	 * @return the playBackSpeed
+	 */
+	public static double getPlayBackSpeed() {
+		return playBackSpeed;
+	}
+
+	/**
+	 * @param playBackSpeed the playBackSpeed to set
+	 */
+	public static void setPlayBackSpeed(double playBackSpeed) {
+		RobobuggyConfigFile.playBackSpeed = playBackSpeed;
+	}
 	
 }
