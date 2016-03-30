@@ -12,7 +12,7 @@ true
 
 # for viewing the find bugs error file
  cat real_time/surface_src/java_src/Alice/build/reports/findbugs/main.xml
- cat real_time/surface_src/java_src/Alice/build/reports/tests/index.xml
+ cat real_time/surface_src/java_src/Alice/build/reports/tests/index.html
 # for counting the number of lines of java code that we have in alice
 find real_time/surface_src/java_src/Alice/ -name '*.java' | xargs wc -l
 # for ensuring that the only println( is in logic error aka the console is not cluttered with debug info
