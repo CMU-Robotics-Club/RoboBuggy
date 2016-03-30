@@ -90,7 +90,7 @@ public final class SimulatedBuggy {
 
 		            	
 		            }
-		        }, 1000, 100);
+		        }, 1000, 50);
 	}
 	
 	/**

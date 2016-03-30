@@ -36,7 +36,8 @@ public class SimulatedRBSMNode extends PeriodicNode{
 	 * The constructor for the simulatedRBSMNode
 	 */
 	 public SimulatedRBSMNode() {
-		super(new BuggyBaseNode(NodeChannel.ENCODER), 1000,"simulated_rbsm_node");
+		super(new BuggyBaseNode(NodeChannel.ENCODER), 100,"simulated_rbsm_node");
+
 		SimulatedBuggy simBuggy = SimulatedBuggy.getInstance();
 		// TODO Auto-generated constructor stub
 		messagePubEnc = new Publisher(NodeChannel.ENCODER.getMsgPath());

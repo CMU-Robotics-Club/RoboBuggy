@@ -20,7 +20,8 @@ public class SimulatedGPSNode extends PeriodicNode{
 	 * constructor for the simulated gps node
 	 */
 	public SimulatedGPSNode() {
-		super(new BuggyBaseNode(NodeChannel.GPS), 500,"simulated_GPS");
+		super(new BuggyBaseNode(NodeChannel.GPS), 100,"simulated_GPS");
+
 		resume();
 		// TODO Auto-generated constructor stub
 	}
@@ -28,10 +29,12 @@ public class SimulatedGPSNode extends PeriodicNode{
 	@Override
 	protected void update() {
 		 SimulatedBuggy simBuggy = SimulatedBuggy.getInstance();
+		 synchronized (this) {
 		double xVal = simBuggy.getX();
 		double yVal = simBuggy.getY();
 		gpsPub.publish(new GpsMeasurement(new Date(), new Date(), yVal, true, xVal, true, 0, 0, 0.0, 0.0));		
-	}
+		 }
+		 }
 
 	@Override
 	protected boolean startDecoratorNode() {
