@@ -9,6 +9,17 @@ import com.roboclub.robobuggy.nodes.sensors.ImuNode;
 import com.roboclub.robobuggy.nodes.sensors.LoggingNode;
 import com.roboclub.robobuggy.nodes.sensors.RBSMNode;
 import com.roboclub.robobuggy.ros.NodeChannel;
+import com.roboclub.robobuggy.ui.AutonomousPanel;
+import com.roboclub.robobuggy.ui.ConfigurationPanel;
+import com.roboclub.robobuggy.ui.Gui;
+import com.roboclub.robobuggy.ui.ImuPanel;
+import com.roboclub.robobuggy.ui.ImuVisualWindow;
+import com.roboclub.robobuggy.ui.MainGuiWindow;
+import com.roboclub.robobuggy.ui.PoseGraphsPanel;
+import com.roboclub.robobuggy.ui.RobobuggyGUITabs;
+import com.roboclub.robobuggy.ui.RobobuggyJFrame;
+import com.roboclub.robobuggy.ui.SimulationPanel;
+import com.roboclub.robobuggy.ui.VelocityWindow;
 
 /**
  * A robot class for doing data collection only with the live robot, will not attempt to autonomously drive 
@@ -49,6 +60,17 @@ public final class TransistorDataCollection extends AbstractRobot {
 				RobobuggyConfigFile.RBSM_COMMAND_PERIOD));
 		nodeList.add(new CameraNode(NodeChannel.PUSHBAR_CAMERA, 100));
 
+		//setup the gui 
+		RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow",1.0,1.0);	
+		Gui.getInstance().addWindow(mainWindow);
+		RobobuggyGUITabs tabs = new RobobuggyGUITabs();
+		mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
+		tabs.addTab(new MainGuiWindow(), "Home");
+		tabs.addTab(new ImuVisualWindow(), "IMU");
+		tabs.addTab(new VelocityWindow(), "Velocity");
+		tabs.addTab(new PoseGraphsPanel(),"poses");
+		tabs.addTab(new ImuPanel(),"IMU");
+		tabs.addTab(new ConfigurationPanel(),"Configuration");
 	}
 }
 

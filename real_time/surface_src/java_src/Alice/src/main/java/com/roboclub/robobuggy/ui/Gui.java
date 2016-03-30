@@ -4,8 +4,10 @@ import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 
 import javax.swing.JFrame;
+
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * {@link JFrame} used to represent the robobuggy gui
@@ -23,7 +25,8 @@ public final class Gui extends JFrame {
 
 
 	//The windowList is a list of all of the windows that are a part of the gui
-	private ArrayList<RobobuggyJFrame> windowList = new ArrayList<RobobuggyJFrame>();
+    HashMap<Integer, RobobuggyJFrame> windowMap;
+	private int currentWindowId;
 	private MainGuiWindow mainGuiWindow;
 
 	private static Gui instance;
@@ -39,9 +42,7 @@ public final class Gui extends JFrame {
 	 * Repaints all objects in the {@link Gui}
 	 */
 	public void fixPaint(){
-		for(int i = 0;i<windowList.size();i++){
-			windowList.get(i).repaint(); 
-		}
+		windowMap.forEach((key,window) -> window.repaint());
 	}
 	
 	/**
@@ -61,23 +62,31 @@ public final class Gui extends JFrame {
 	 */
 	private Gui() {
 		new RobobuggyLogicNotification("StartingGUI", RobobuggyMessageLevel.NOTE);
-		RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow",1.0,1.0);	
-		mainGuiWindow = new MainGuiWindow();
-		RobobuggyGUITabs tabs = new RobobuggyGUITabs();
-		tabs.addTab(mainGuiWindow, "Home");
-		tabs.addTab(new ImuVisualWindow(), "IMU");
-		tabs.addTab(new VelocityWindow(), "Velocity");
-		tabs.addTab(new PoseGraphsPanel(),"poses");
-		tabs.addTab(new ImuPanel(),"IMU");
-		tabs.addTab(new  AutonomousPanel(),"Autonomous");
-		tabs.addTab(new ConfigurationPanel(),"Configuration");
-		tabs.addTab(new SimulationPanel(),"Simulation");
-		mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
-		mainWindow.repaint();		
-		windowList.add(mainWindow);
-		mainWindow.repaint();
+		windowMap= new HashMap<Integer, RobobuggyJFrame>();
+		currentWindowId = -1;
+
 	}
 	
+	
+	/**
+	 * Adds a new window to the 
+	 * @param newWindow the window you want added
+	 * @return a unique reference number to the window for access later 
+	 */
+	public synchronized int  addWindow(RobobuggyJFrame newWindow){
+		currentWindowId++;
+		windowMap.put(currentWindowId, newWindow);
+		return currentWindowId;		
+	}
+	
+	public synchronized void getWindow(int windowRefrence){
+		windowMap.get(windowRefrence);
+	}
+	
+	public synchronized void deleteWindow(int windowRefrence){
+		windowMap.remove(windowRefrence);
+		
+	}
 
 	/**
 	 * @return the main gui window
