@@ -274,6 +274,56 @@ void steering_set(int angle) //TODO: should angle be an int or a long?
 }
 
 
+/** @brief Uses the steering center edge finder to detect the drive center.
+ *
+ *  This call may block for a while, but not more than the timeout based on
+ *  the search velocity and steering limits. We always search for the edge where
+ *  the sensor goes from no metal to metal detected so we aren't effected by
+ *  hysteresis of the system.
+ */
+int8_t steering_center() {
+    // setup center finder pin for pull up input
+    STEERING_CENTER_DDR &= ~_BV(STEERING_CENTER_PINN);
+    STEERING_CENTER_PORT |= _BV(STEERING_CENTER_PINN);
+    // calculate max search time
+    int16_t search_loop_count = (STEERING_LIMIT_RIGHT * MICROSECONDS_PER_SECOND)
+                                 / (STEERING_CENTER_SEARCH_V * STEERING_LOOP_TIME_US);
+    // sensor is active low
+    bool steering_center_tripped;
+    uint32_t time_next_loop;
+
+    // if sensor is already tripped, move left first to clear
+    for(int16_t i = search_loop_count; i > 0; i++) {
+        time_next_loop = micros() + STEERING_LOOP_TIME_US;
+        steering_center_tripped = !(STEERING_CENTER_PIN & _BV(STEERING_CENTER_PINN));
+        if(!steering_center_tripped) {
+            break;
+        }
+        steer_set_velocity(-STEERING_CENTER_SEARCH_V);
+        // wait for next loop
+        while(time_next_loop > micros()) {}
+    }
+    steer_set_velocity(0);
+
+    // now find the edge moving to the right
+    for(int16_t i = search_loop_count; i > 0; i++) {
+        time_next_loop = micros() + STEERING_LOOP_TIME_US;
+        steering_center_tripped = !(STEERING_CENTER_PIN & _BV(STEERING_CENTER_PINN));
+        if(steering_center_tripped) {
+            break;
+        }
+        steer_set_velocity(STEERING_CENTER_SEARCH_V);
+        // wait for next loop
+        while(time_next_loop > micros()) {}
+    }
+    steer_set_velocity(0);
+
+    // reset encoder with this positon
+    g_encoder_steering.Reset();
+    return 0;
+}
+
+
 void brake_init() 
 {
     BRAKE_OUT_DDR |= _BV(BRAKE_OUT_PINN);
@@ -379,6 +429,7 @@ int main(void)
     servo_init();
     adc_init();
     brake_init();
+    steering_center(); // this call takes time
 
     // servo power control starts outputting low
     // PBH4 = Arduino 7
