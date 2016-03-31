@@ -48,8 +48,8 @@
     #define PWM_SCALE_STORED_ANGLE 1000 // in hundredths of a degree for precision
     #define POT_OFFSET_STEERING_IN 121
     #define POT_SCALE_STEERING_IN -10
-    #define STEERING_LIMIT_LEFT -9000   //steering_set assumes that left is less than right.
-    #define STEERING_LIMIT_RIGHT 9000
+    #define STEERING_LIMIT_LEFT -1500   //steering_set assumes that left is less than right.
+    #define STEERING_LIMIT_RIGHT 1500
 #elif BUGGY == nixie
     #define PWM_OFFSET_STEERING_OUT 1789
     #define PWM_SCALE_STEERING_OUT -150
@@ -108,19 +108,25 @@
 #define BRAKE_INDICATOR_PORT PORTE
 #define BRAKE_INDICATOR_PINN PE3 // arduino 5
 
+
+
 #define STEERING_LOOP_TIME_US 10000L
 #define MICROSECONDS_PER_SECOND 1000000L
-#define STEERING_KP_NUMERATOR 11L
+#define STEERING_KP_NUMERATOR 13L
 #define STEERING_KP_DEMONENATOR 1L
 #define STEERING_KD_NUMERATOR 0L
 #define STEERING_KD_DENOMENATOR 100L
-#define STEERING_MAX_SPEED 32000L //400 degress per second - 50% cpu usage from encoder interrupts
-#define STEERING_KV_NUMERATOR 2L
+#define STEERING_MAX_SPEED 32000L //limited by 16-bit signed? 400 degress per second - 50% cpu usage from encoder interrupts
+#define STEERING_KV_NUMERATOR 3L
 #define STEERING_KV_DENOMENATOR 1000L
 #define STEERING_PWM_CENTER_US 1500L //The PWM value that gives no movement.
-
 #define MOTOR_ENCODER_TICKS_PER_REV 36864 // 4096 * 9 = 12-bit * 1:9 gearbox
 #define DEGREE_HUNDREDTHS_PER_REV 36000
+#define STEERING_CENTER_DDR  DDRH
+#define STEERING_CENTER_PORT PORTH
+#define STEERING_CENTER_PIN  PINH
+#define STEERING_CENTER_PINN PH3
+#define STEERING_CENTER_SEARCH_V 5000 // hundredths of deg/s
 
 #define WDT_INT WDT_vect
 
@@ -197,9 +203,10 @@ uint8_t adc_read_blocking(uint8_t channel)
 
 long steer_set_prev_ticks = 0;
 long steer_set_prev_velocity = 0;
-/*
- Sets the velocity of the steering motor to target_velocity.
- target_velocity is in hundredths of a degree per second.
+/** @brief sets the velocity of the steering motor to target_velocity
+ *
+ *  @param target_velocity is in hundredths of a degree per second. values > 0
+ *      drive to the right
  */
 void steer_set_velocity(long target_velocity) {
 	target_velocity = clamp(target_velocity, STEERING_MAX_SPEED, -(STEERING_MAX_SPEED));
@@ -230,6 +237,10 @@ void steer_set_velocity(long target_velocity) {
 
 long steer_set_error_prev = 0; //This is used to find the d term for position.
 
+/** @brief sets the steering angle using PID feedback
+ *
+ *  @param angle set point in hundredths of a degree
+ */
 void steering_set(int angle) //TODO: should angle be an int or a long?
 {
 	//TODO: delete short circuiting code for testing velocity measure
@@ -533,7 +544,6 @@ int main(void)
                                          PWM_OFFSET_STORED_ANGLE,
                                          PWM_SCALE_STORED_ANGLE);
 
-        g_is_autonomous = true;
         // Set outputs
         if(g_is_autonomous)
         {
@@ -559,14 +569,20 @@ int main(void)
             g_rbsm.Send(RBSM_MID_MEGA_BRAKE_STATE,(long unsigned)false);
         }
 
+        long steering_feedback_angle = map_signal(g_encoder_steering.GetTicks(),
+                             0,
+                             MOTOR_ENCODER_TICKS_PER_REV,
+                             0,
+                             DEGREE_HUNDREDTHS_PER_REV);
+
         // Send the rest of the telemetry messages
         g_rbsm.Send(RBSM_MID_DEVICE_ID, RBSM_DID_MEGA);
         g_rbsm.Send(RBSM_MID_MEGA_TELEOP_BRAKE_COMMAND, (long unsigned)brake_cmd_teleop_engaged);
         g_rbsm.Send(RBSM_MID_MEGA_AUTON_BRAKE_COMMAND, (long unsigned)brake_cmd_auton_engaged);
         g_rbsm.Send(RBSM_MID_MEGA_AUTON_STATE, (long unsigned)g_is_autonomous);
         g_rbsm.Send(RBSM_MID_MEGA_BATTERY_LEVEL, g_current_voltage);
-        g_rbsm.Send(RBSM_MID_MEGA_STEER_FEEDBACK, (long int)g_steering_feedback);
-        g_rbsm.Send(RBSM_MID_ENC_TICKS_RESET, g_encoder_steering.GetTicks());
+        g_rbsm.Send(RBSM_MID_MEGA_STEER_FEEDBACK, steering_feedback_angle);
+        g_rbsm.Send(RBSM_MID_ENC_TICKS_RESET, g_encoder_distance.GetTicks());
         g_rbsm.Send(RBSM_MID_ENC_TIMESTAMP, millis());
         g_rbsm.Send(RBSM_MID_COMP_HASH, (long unsigned)(FP_HEXCOMMITHASH));
         g_rbsm.Send(RBSM_MID_ERROR, g_errors);

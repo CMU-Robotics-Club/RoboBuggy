@@ -32,7 +32,7 @@ void ServoReceiver::Init(volatile uint8_t *pin_reg,
     k_offset_steering_out = 1789;
     k_scale_steering_out = -150;
     k_offset_stored_angle = 0;
-    k_scale_stored_angle = 1000; // in hundredths of a degree for precision
+    k_scale_stored_angle = 1500; // in hundredths of a degree for precision
 
 
     up_switch_time_ = 0; // us
