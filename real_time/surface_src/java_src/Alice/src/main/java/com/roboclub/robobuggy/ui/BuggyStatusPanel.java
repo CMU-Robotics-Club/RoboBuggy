@@ -17,6 +17,9 @@ public class BuggyStatusPanel extends RobobuggyGUIContainer {
     private boolean brakesDown;
     private int batteryLevel;
 
+    /**
+     * initializes a new Buggy status panel
+     */
     public BuggyStatusPanel() {
 
         setupDataLoaders();

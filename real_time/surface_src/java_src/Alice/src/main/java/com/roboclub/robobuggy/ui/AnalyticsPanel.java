@@ -10,7 +10,7 @@ public class AnalyticsPanel extends RobobuggyGUIContainer {
 
 	private DataPanel dataPanel;
 //	private GraphPanel graphPanel;
-	BuggyStatusPanel graphPanel;
+	private BuggyStatusPanel graphPanel;
 	
 	/**
 	 * Construct a new {@link AnalyticsPanel}
