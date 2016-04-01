@@ -1,7 +1,8 @@
 package com.roboclub.robobuggy.nodes.localizers;
 
 import com.roboclub.robobuggy.ui.LocTuple;
-import com.sun.tools.javac.util.Pair;
+
+import java.util.Map;
 
 /**
  * Created by vivaanbahl on 3/31/16.
@@ -22,7 +23,7 @@ public class LocalizerUtil {
      * @param point2 point 2
      * @return a pair whose 1st is the distance in meters, and whose 2nd is the heading in radians
      */
-    public static Pair<Double, Double> convertLatLngDeltaToMeters(LocTuple point1, LocTuple point2) {
+    public static Map.Entry<Double, Double> convertLatLngDeltaToMeters(LocTuple point1, LocTuple point2) {
 
         double deltaLon = point2.getLongitude() - point1.getLongitude();
         double deltaLat = point2.getLatitude() - point1.getLatitude();
@@ -33,14 +34,30 @@ public class LocalizerUtil {
         double deltaMeters = Math.sqrt(deltaMetersX * deltaMetersX + deltaMetersY * deltaMetersY);
         double heading = Math.atan2(deltaLat, deltaLon);
 
-        return new Pair<>(deltaMeters, heading);
+        return new Map.Entry<Double, Double>() {
+            @Override
+            public Double getKey() {
+                return deltaMeters;
+            }
+
+            @Override
+            public Double getValue() {
+                return heading;
+            }
+
+            @Override
+            public Double setValue(Double value) {
+                return null;
+            }
+
+        };
     }
 
     /**
      * Converts a delta distance into a delta of GPS coordinates
      *
      * @param meters the distance travelled in meters
-     * @param heading the heading travelled
+     * @param heading the heading travelled <b>(IN DEGREES)</b>
      * @return a {@link LocTuple} whose lat and lon are the DELTAS to add to a position estimate
      */
     public static LocTuple convertMetersToLatLng(double meters, double heading) {
