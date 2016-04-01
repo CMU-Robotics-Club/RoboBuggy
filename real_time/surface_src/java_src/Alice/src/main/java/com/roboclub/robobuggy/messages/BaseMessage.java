@@ -15,12 +15,21 @@ import java.util.Date;
 public abstract class BaseMessage implements Message {
 	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
 	protected long timestamp;
+	private long sequenceNumber = -1;
 
 	/**
 	 * sets the date of the message to the current time
 	 */
 	public BaseMessage() {
 		timestamp = new Date().getTime();
+	}
+	
+	public long getSequenceNumber() {
+		return sequenceNumber;
+	}
+
+	public void setSequenceNumber(long sequenceNumber) {
+		this.sequenceNumber = sequenceNumber;
 	}
 
 	/**
