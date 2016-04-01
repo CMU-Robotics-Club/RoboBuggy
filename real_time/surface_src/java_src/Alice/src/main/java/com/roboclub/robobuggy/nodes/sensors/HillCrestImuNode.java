@@ -20,7 +20,6 @@ import com.roboclub.robobuggy.ros.Publisher;
  */
 public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListenerInterface, com.roboclub.robobuggy.ros.Node{
 	private Device thisDevice;
-	private DeviceStatistics deviceStats;
 	private Publisher pub = new Publisher(NodeChannel.HILL_CREST_IMU.getMsgPath());
 	
 	/**
@@ -59,7 +58,6 @@ public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListen
 		thisDevice = arg0;
 		thisDevice.open(this);
 		
-	deviceStats = thisDevice.getStatistics();
 	FreespaceMsgOutDataModeControlV2Request msg = new FreespaceMsgOutDataModeControlV2Request();
 	msg.setPacketSelect(8);  //
 	msg.setModeAndStatus(0);
