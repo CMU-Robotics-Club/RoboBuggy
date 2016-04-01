@@ -43,9 +43,11 @@ public class BuggyStatusPanel extends RobobuggyGUIContainer {
 
         int brakeX = 50;
         int brakeY = 0;
+        String status = "up";
 
         if (brakesDown) {
             brakeY = getHeight() - getHeight()/3;
+            status = "down";
         }
 
         Graphics2D g = (Graphics2D)f;
@@ -58,6 +60,7 @@ public class BuggyStatusPanel extends RobobuggyGUIContainer {
         g.fillRect(brakeX + getHeight()/3 + 10, 0, getHeight()/3, getHeight());
         g.setColor(Color.BLACK);
         g.drawString("batt = " + batteryLevel, brakeX + getHeight()/3 + 10, getHeight()/2);
+        g.drawString("status = " + status, brakeX, getHeight()/2);
 
     }
 }
