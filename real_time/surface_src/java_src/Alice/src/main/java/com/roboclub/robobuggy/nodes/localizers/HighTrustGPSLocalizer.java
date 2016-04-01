@@ -54,14 +54,14 @@ public class HighTrustGPSLocalizer implements Node{
             	if(dt > 0.0){
                 // Get the delta latitude and longitude, use that to figure out how far we've travelled
 
-                double oldGPSX = buggyFrameGpsLon;
-                double oldGPSY = buggyFrameGpsLat;
+ //               double oldGPSX = buggyFrameGpsLon;
+ //               double oldGPSY = buggyFrameGpsLat;
               //  buggyFrameGpsLat = newGPSData.getLatitude();
                // buggyFrameGpsLon = newGPSData.getLongitude();	
-                double dLat = buggyFrameGpsLat - oldGPSY;
-                double dLon = buggyFrameGpsLon - oldGPSX;
+ //               double dLat = buggyFrameGpsLat - oldGPSY;
+ //               double dLon = buggyFrameGpsLon - oldGPSX;
                 
-                double oldRotZ = buggyFrameRotZ;
+ //               double oldRotZ = buggyFrameRotZ;
 
                 publishUpdate();
             	mostRecentUpdate = newGPSData.getTimestamp();
@@ -76,7 +76,7 @@ public class HighTrustGPSLocalizer implements Node{
         	 				MagneticMeasurement magM = (MagneticMeasurement)m;
         	 				double currAngle = magM.getRotationZ();
         	 				double offset = 0.0;
-//        	 				buggyFrameRotZ = currAngle - offset;
+        	 				buggyFrameRotZ = currAngle - offset;
         	 				publishUpdate();
         	 				//TODO add a calibration step
         	 			}

@@ -1,5 +1,7 @@
 package com.roboclub.robobuggy.map;
 
+import com.roboclub.robobuggy.main.Util;
+
 import Jama.Matrix;
 
 /**
@@ -10,7 +12,7 @@ import Jama.Matrix;
  */
 public class So2Pose {
 	private Point location;
-	private double orientation;
+	private double orientation; //in radians
 
 	/**
 	 * 
@@ -19,23 +21,23 @@ public class So2Pose {
 	 */
 	public So2Pose(Point newLocation,double newOrientation){
 		this.location = newLocation;
-		this.orientation = newOrientation;
+		this.orientation = Util.normilizeAngleRad(newOrientation);
 	}
 	
 	/**
 	 * 
-	 * @param x x coord of the point
-	 * @param y y coord of the point
+	 * @param x x cord of the point
+	 * @param y y cord of the point
 	 * @param newOrientation the new orientation
 	 */
 	public So2Pose(double x,double y,double newOrientation){
 		location = new Point(x, y);
-		orientation = newOrientation;
+		orientation = Util.normilizeAngleRad(newOrientation);
 	}
 	
 	/**
 	 * 
-	 * @param postPose the pose that is being applied to the right of the expresion
+	 * @param postPose the pose that is being applied to the right of the expression
 	 * @return the new So2Pose TODO
 	 */
 	public So2Pose mult(So2Pose postPose){
@@ -44,13 +46,12 @@ public class So2Pose {
 				         {0,0,1}};
 		double[][] bM = {{Math.cos(postPose.orientation), -Math.sin(postPose.orientation), postPose.getX()},
 		         		{Math.sin(postPose.orientation), Math.cos(postPose.orientation),postPose.getY()},
-		         		{0,0,1}};
+		         		{0,0,1}};		
 		Matrix a = new Matrix(aM);
 		Matrix b = new Matrix(bM);
 		Matrix c = a.times(b);
-
-		
-		return new So2Pose(c.get(0, 2), c.get(1,2), Math.atan2(c.get(1, 0), c.get(0, 0)));
+		double th = Util.normilizeAngleRad(Math.atan2(c.get(1, 0), c.get(0, 0)));
+		return new So2Pose(c.get(0, 2), c.get(1,2), th);
 		
 	}
 	
@@ -59,13 +60,15 @@ public class So2Pose {
 	 * @return an So2Pose object that is the inverse of the current object
 	 */
 	public So2Pose inverse(){
-		double[][] m = {{Math.cos(orientation),-Math.sin(orientation),getX()},
+		double[][] mArray = {{Math.cos(orientation),-Math.sin(orientation),getX()},
 						{Math.sin(orientation),Math.cos(orientation),getY()},
 						{0,0,1}};
-		Matrix M = new Matrix(m);
-		Matrix M_inv = M.inverse();
-		double th = Math.atan2(M_inv.get(1, 0),M_inv.get(0, 0));
-		return new So2Pose(M_inv.get(0, 2),M_inv.get(1,2),th);
+		Matrix mMatrix = new Matrix(mArray);
+		Matrix mMatrixInv = mMatrix.inverse();
+	//	System.out.println("y:"+mMatrixInv.get(1, 0)+"x:"+mMatrixInv.get(0, 0));
+		double th = Util.normilizeAngleRad(Math.atan2(mMatrixInv.get(1, 0),mMatrixInv.get(0, 0)));
+	//	System.out.println(th);
+		return new So2Pose(mMatrixInv.get(0, 2),mMatrixInv.get(1,2),th);
 	}
 	
 	
@@ -75,7 +78,7 @@ public class So2Pose {
 	 * @param newOrientation the new orientation
 	 */
 	public void updatePoint(Point newPoint, double newOrientation){
-		this.orientation = newOrientation;
+		this.orientation = Util.normilizeAngleRad(newOrientation);
 		this.location = newPoint;
 
 	}
@@ -116,9 +119,19 @@ public class So2Pose {
 	 * Evaluates to the identity object for So2Pose (no position, or orientation change) 
 	 * @return the Identity So2Pose
 	 */
-	public static So2Pose Identity(){
+	public static So2Pose identity(){
 		return new So2Pose(0.0, 0.0,0.0);
 	}
+
+	/**
+	 * hashcode function needed for storeing the object
+	 */
+	@Override
+	public int hashCode()
+	{
+		return (int)(getOrientation()*getX()*1000);
+	}
+
 	
 	/**
 	 * equals function for So2Pose that can be used to check if two psoes are the same 
@@ -149,7 +162,8 @@ public class So2Pose {
 
 	
 	/**
-	 * evaluates to a string encoding infromation about this class
+	 * evaluates to a string encoding information about this class
+	 * @return a string encoding what this objects information 
 	 */
 	public String toString(){
 		return "{So2Pose | x: "+getX()+", y: "+getY()+", orintation:"+getOrientation()+"}";

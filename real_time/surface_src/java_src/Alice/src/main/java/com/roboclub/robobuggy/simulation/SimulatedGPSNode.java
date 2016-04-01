@@ -18,6 +18,7 @@ public class SimulatedGPSNode extends PeriodicNode{
 	
 	/**
 	 * constructor for the simulated gps node
+	 * @param period the number of milliseconds between gps update messages  
 	 */
 	public SimulatedGPSNode(int period) {
 		super(new BuggyBaseNode(NodeChannel.GPS), period,"simulated_GPS");

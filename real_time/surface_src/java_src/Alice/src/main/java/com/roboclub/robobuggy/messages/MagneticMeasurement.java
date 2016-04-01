@@ -20,12 +20,12 @@ public class MagneticMeasurement extends BaseMessage {
 	private double rotationX;
 	private double rotationY;
 	private double rotationZ;
-
+	
 	/**
 	 * Constructs a new {@link MagMeasurement} at time now
-	 * @param rotationX rotationx value
-	 * @param rotationy rotationy value
-	 * @param rotationz rotationz value
+	 * @param rotationX rotationX value
+	 * @param rotationY rotationY value
+	 * @param rotationZ rotationZ value
 	 */
 	public MagneticMeasurement(double rotationX, double rotationY, double rotationZ) {
 		this.timestamp = new Date().getTime();

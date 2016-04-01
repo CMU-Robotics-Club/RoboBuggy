@@ -16,8 +16,12 @@ import com.roboclub.robobuggy.ros.Publisher;
 public class SimulatedImuNode extends PeriodicNode{
 	private Publisher imuPub = new Publisher(NodeChannel.IMU.getMsgPath());
 	private Publisher imuMagPub = new Publisher(NodeChannel.IMU_MAGNETIC.getMsgPath());
-	private static SimulatedBuggy simBuggy = SimulatedBuggy.getInstance();
+	private SimulatedBuggy simBuggy = SimulatedBuggy.getInstance();
 
+	/**
+	 * Constructor for the simulated imu node
+	 * @param period how many milliseconds between new simulated imu messages
+	 */
 	public SimulatedImuNode(int period) {
 		super(new BuggyBaseNode(NodeChannel.IMU), period,"simulated_imu_node");
 		simBuggy = SimulatedBuggy.getInstance();

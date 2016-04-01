@@ -13,13 +13,19 @@ import com.roboclub.robobuggy.messages.HillCrestIMUMessage;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 
-import boofcv.alg.segmentation.ms.MergeSmallRegions.Node;
-
+/**
+ * Driver for the Hillcrest Imu's
+ * @author Trevor Decker
+ *
+ */
 public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListenerInterface, com.roboclub.robobuggy.ros.Node{
-	private Device device_;
+	private Device thisDevice;
 	private DeviceStatistics deviceStats;
 	private Publisher pub = new Publisher(NodeChannel.HILL_CREST_IMU.getMsgPath());
 	
+	/**
+	 * Constructor for the hillcrest imu
+	 */
 	public HillCrestImuNode() {
 		super();
 		Discovery discover = Discovery.getInstance();
@@ -51,16 +57,17 @@ public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListen
 	@Override
 	public void freespaceDeviceInserted(Device arg0) {
 		// TODO Auto-generated method stub
-		device_ = arg0;
-		device_.open(this);
+		thisDevice = arg0;
+		thisDevice.open(this);
 		
-	deviceStats = device_.getStatistics();
+	deviceStats = thisDevice.getStatistics();
 	System.out.println("found device");
 	System.out.println(deviceStats.toString());
 	FreespaceMsgOutDataModeControlV2Request msg = new FreespaceMsgOutDataModeControlV2Request();
 	msg.setPacketSelect(8);  //
 	msg.setModeAndStatus(0);
 	msg.setFormatSelect(0);
+	//we really don't know what the format is so we are just going to log everythign for now 
 	msg.setFf0(true);
 	msg.setFf1(true);
 	msg.setFf2(true);
@@ -70,14 +77,14 @@ public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListen
 	msg.setFf6(true);
 	msg.setFf7(true);
 
-	device_.sendMessageAsync(msg);
+	thisDevice.sendMessageAsync(msg);
 	System.out.println("setup read");
 	}
 
 	@Override
 	public void freespaceDeviceRemoved(Device arg0) {
 		// TODO Auto-generated method stub
-		device_ = null;
+		thisDevice = null;
 
 	}
 

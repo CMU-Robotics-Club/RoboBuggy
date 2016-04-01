@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.roboclub.robobuggy.main.Util;
 import com.roboclub.robobuggy.map.So2Pose;
 
 
@@ -58,19 +59,20 @@ public class TestSo2Pose {
 		So2Pose B = A.inverse();
 
 		So2Pose C = B.mult(A);
-		if(!C.equals(So2Pose.Identity())){
+		if(!C.equals(So2Pose.identity())){
 			fail("matrix inverse time original is not identity");
 		}
 		
 		
 		So2Pose D = A.mult(B);
-		if(!D.equals(So2Pose.Identity())){
+		if(!D.equals(So2Pose.identity())){
 			fail("matrix inverse time original is not identity");
 		}
 	}
 	
 	@Test
 	public void test_2(){
+		
 		// test basic compounding of matrices
 		So2Pose A = new So2Pose(0.0,1.0,0.0);
 		So2Pose B = new So2Pose(0.0,2.0,0.0);
@@ -87,18 +89,19 @@ public class TestSo2Pose {
 		
 		//tests more complex matrix compounding 
 		So2Pose E = new So2Pose(1.2,2.4,3.2);
-		So2Pose F = new So2Pose(3.4,5.6,18);
+		
+		So2Pose F = new So2Pose(3.4,5.6,0);
 		
 		//in one order
 		So2Pose G = E.mult(F);
+		
 		//in the other direction 
-		So2Pose H = G.mult(F.inverse());  //should be the same as E
-
-		/*
-		if(E.getX() != H.getX() || E.getY() != H.getY() || E.getOrientation() != H.getOrientation()){
+		So2Pose Finv = F.inverse();
+		
+		So2Pose H = G.mult(Finv);  //should be the same as E
+		if(!E.equals(H)){
 			fail("matrix multiply is not implemented correctly for some matrices ");
 		}
-		*/
 	
 		
 	}
