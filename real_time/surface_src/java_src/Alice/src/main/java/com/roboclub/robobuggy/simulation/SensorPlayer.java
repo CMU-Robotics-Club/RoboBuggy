@@ -33,9 +33,21 @@ import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
 import com.roboclub.robobuggy.ui.Gui;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+
+//Failed plan 1
+import org.bytedeco.javacpp.opencv_core.IplImage;
+import org.bytedeco.javacv.FFmpegFrameGrabber;
+import org.bytedeco.javacv.FrameConverter;
+import org.bytedeco.javacv.FrameGrabber.Exception;
+import org.bytedeco.javacv.Java2DFrameConverter;
+//Failed plan 2
+import org.jcodec.api.awt.FrameGrab;
+import org.jcodec.api.JCodecException;
 
 /**
  * Class used for playing back old log files. It does this by reading BuggyROS
@@ -56,7 +68,13 @@ public class SensorPlayer extends Thread {
     private Publisher steeringPub;
     private Publisher loggingButtonPub;
     private Publisher logicNotificationPub;
-
+    
+    private FFmpegFrameGrabber fg;
+    private int currentFrame; //Will store the frame of the most recent image we've pulled
+    private BufferedImage currentImage; //The most recent image we've pulled
+    private File videoFile = new File("/Users/davidneiman/RoboBuggy/real_time/surface_src/java_src/Alice/logs/2016-02-20-06-50-45/webcam.mp4");
+	
+    
     // ---- Log File Defaults ----
     private static final String TERMINATING_VERSION_ID = "STOP";
 
@@ -76,8 +94,30 @@ public class SensorPlayer extends Thread {
         steeringPub = new Publisher(NodeChannel.STEERING_COMMANDED.getMsgPath());
         loggingButtonPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
         logicNotificationPub = new Publisher(NodeChannel.LOGIC_NOTIFICATION.getMsgPath());
-
-
+        
+        fg = new FFmpegFrameGrabber(videoFile);
+        currentFrame = -1;
+        currentImage = null;
+        try {
+			fg.start();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+        //Test code
+        /*Java2DFrameConverter fc = new Java2DFrameConverter();
+        try {
+			currentImage = fc.convert(fg.grab());
+			currentFrame++;
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}*/
+        /*ImageMessage temp = new ImageMessage(currentImage, currentFrame);
+        imagePub.publish(temp);*/
+        //End test
+        
         new RobobuggyLogicNotification("initializing the SensorPlayer", RobobuggyMessageLevel.NOTE);
         path = filePath;
         File f = new File(path);
@@ -153,10 +193,29 @@ public class SensorPlayer extends Thread {
                     String versionID = sensorDataJson.get("VERSION_ID").getAsString();
 
                     Message transmitMessage = null;
+                    System.out.println("Getting a message");
                     switch (versionID) {
                     	case ImageMessage.VERSION_ID:
                     		System.out.println("Trying to display stuff! TESTING!");
                             transmitMessage = translator.fromJson(sensorDataJson, ImageMessage.class);
+                            int framenum = ((ImageMessage)transmitMessage).getFrameNumber();
+                            System.out.println(framenum);
+							try {
+								Java2DFrameConverter fc = new Java2DFrameConverter();
+								while(currentFrame < framenum){
+									currentImage = fc.convert(fg.grabImage());
+									currentFrame++;
+								}
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+
+							ImageMessage temp = new ImageMessage(currentImage, framenum);
+							//Directly publish the image message here since publishing later causes issues
+                    		imagePub.publish(temp);
+                    		transmitMessage = null;
+                            System.out.println("Image message sent");
                     		break;
                         case BrakeControlMessage.VERSION_ID:
                             transmitMessage = translator.fromJson(sensorDataJson, BrakeControlMessage.class);

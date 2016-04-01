@@ -4,6 +4,7 @@ package com.roboclub.robobuggy.main;
 
 import com.roboclub.robobuggy.jetty.gui.JettyServer;
 import com.roboclub.robobuggy.robots.AbstractRobot;
+import com.roboclub.robobuggy.robots.PlayBackRobot;
 import com.roboclub.robobuggy.robots.SimRobot;
 import com.roboclub.robobuggy.robots.TransistorDataCollection;
 
@@ -43,7 +44,7 @@ public class RobobuggyMainFile {
 
 		new RobobuggyLogicNotification("Initializing Robot", RobobuggyMessageLevel.NOTE);
     	if (RobobuggyConfigFile.isDataPlayBack()) {
-            robot = SimRobot.getInstance();
+            robot = PlayBackRobot.getInstance();
         }else{
         	robot = TransistorDataCollection.getInstance();
         }
