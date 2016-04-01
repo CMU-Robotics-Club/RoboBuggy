@@ -1,14 +1,6 @@
 package com.roboclub.robobuggy.serial;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.nodes.sensors.RBSMConfigReader;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Map;
-import java.util.Scanner;
 
 /**
  * Class representing a robobuggy serial message

@@ -55,6 +55,7 @@ dependencies {
 
     compile files('library/RXTXcomm.jar')
     compile files('library/JMapViewer.jar')
+    compile files('library/jfreespace.jar')
 
 
 }

@@ -1,15 +1,14 @@
 package com.roboclub.robobuggy.jetty.gui;
 
-import java.lang.reflect.Modifier;
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.eclipse.jetty.websocket.api.Session;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.ros.Message;
+import org.eclipse.jetty.websocket.api.Session;
+
+import java.lang.reflect.Modifier;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Sends "data" updates to all connected clients.

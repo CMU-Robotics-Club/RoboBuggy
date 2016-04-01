@@ -1,7 +1,9 @@
 package com.roboclub.robobuggy.nodes.localizers;
 
+import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
+import com.roboclub.robobuggy.messages.MagneticMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.Node;
@@ -21,6 +23,8 @@ public class HighTrustGPSLocalizer implements Node{
     private double buggyFrameGpsLon;
     private double buggyFrameGpsLat;
     private double buggyFrameRotZ;
+    private Date mostRecentUpdate;
+    private double lastEncoderReading;
     //private double roll = 0;
     //private double pitch = 0;
 
@@ -34,8 +38,9 @@ public class HighTrustGPSLocalizer implements Node{
         //init values
         buggyFrameGpsLon = 0.0;
         buggyFrameGpsLat = 0.0;
+        lastEncoderReading = 0.0;
         posePub = new Publisher(NodeChannel.POSE.getMsgPath());
-
+        mostRecentUpdate = new Date();
 
 
         //Initialize subscriber to GPS measurements
@@ -43,58 +48,61 @@ public class HighTrustGPSLocalizer implements Node{
             @Override
             public void actionPerformed(String topicName, Message m) {
                 GpsMeasurement newGPSData = (GpsMeasurement)m;
+                synchronized (this) {
+                    long dt = newGPSData.getTimestamp().getTime() - mostRecentUpdate.getTime();
+                    if(dt > 0.0){
 
-                // Get the delta latitude and longitude, use that to figure out how far we've travelled
-                double oldGPSX = buggyFrameGpsLon;
-                double oldGPSY = buggyFrameGpsLat;
-                buggyFrameGpsLat = newGPSData.getLatitude();
-                buggyFrameGpsLon = newGPSData.getLongitude();
-                double dLat = buggyFrameGpsLat - oldGPSY;
-                double dLon = buggyFrameGpsLon - oldGPSX;
 
-                // take the arctangent in order to get the heading (in degrees)
-                buggyFrameRotZ = Math.toDegrees(Math.atan2(dLat,dLon));
+                        // Get the delta latitude and longitude, use that to figure out how far we've travelled
 
-                publishUpdate();
+                        //               double oldGPSX = buggyFrameGpsLon;
+                        //               double oldGPSY = buggyFrameGpsLat;
+                        buggyFrameGpsLat = newGPSData.getLatitude();
+                        buggyFrameGpsLon = newGPSData.getLongitude();
+                        //               double dLat = buggyFrameGpsLat - oldGPSY;
+                        //               double dLon = buggyFrameGpsLon - oldGPSX;
+
+                        //               double oldRotZ = buggyFrameRotZ;
+
+                        publishUpdate();
+                        mostRecentUpdate = newGPSData.getTimestamp();
+                    }
+                }
             }
         });
-        
-//        new Subscriber(NodeChannel.IMU.getMsgPath(), new MessageListener() {
-//
-//			@Override
-//			public void actionPerformed(String topicName, Message m) {
-//				ImuMeasurement imuM = (ImuMeasurement)m;
-//				//updates roll,pitch,yaw
-//				roll = Math.PI*imuM.getRoll()/180;
-//				pitch = Math.PI*imuM.getPitch()/180;
-//				yaw = Math.PI*imuM.getYaw()/180;
-//			}
-//		});
-//
-//        new Subscriber(NodeChannel.IMU_MAGNETIC.getMsgPath(),new MessageListener() {
-//        	 			@Override
-//        	 			public void actionPerformed(String topicName, Message m) {
-//        	 				MagneticMeasurement magM = (MagneticMeasurement)m;
-//
-//        	 				// Tilt compensated magnetic field X
-//        	 				  double mag_x = magM.getX() * Math.cos(pitch) + magM.getY() * Math.sin(roll)
-// * Math.sin(pitch) + magM.getZ() * Math.cos(roll) * Math.sin(pitch);
-//        	 				  // Tilt compensated magnetic field Y
-//        	 				  double mag_y = magM.getY() * Math.cos(roll) - magM.getZ() * Math.sin(roll);
-//
-//        	 				double currAngle = -180*Math.atan2(-mag_y, mag_x)/Math.PI;
-//        	 				//TODO stop this from being a 5:29 am hack
-//        	 				double offset = 0.0;
-//        	 				buggyFrameRotZ = currAngle - offset;
-//        	 				publishUpdate();
-//        	 				//TODO add a calibration step
-//        	 			}
-//        	 		});
+
+        new Subscriber(NodeChannel.IMU_MAGNETIC.getMsgPath(),new MessageListener() {
+            @Override
+            public void actionPerformed(String topicName, Message m) {
+                MagneticMeasurement magM = (MagneticMeasurement)m;
+                double currAngle = magM.getRotationZ();
+                double offset = 0.0;
+                buggyFrameRotZ = currAngle - offset;
+                publishUpdate();
+                //TODO add a calibration step
+            }
+        });
+
+        new Subscriber(NodeChannel.ENCODER.getMsgPath(),new MessageListener() {
+            @Override
+            public void actionPerformed(String topicName, Message m) {
+                EncoderMeasurement magM = (EncoderMeasurement)m;
+                double dEncoder = magM.getDistance() - lastEncoderReading;
+                lastEncoderReading = magM.getDistance();
+
+                // TODO this should depend on the front wheel rather than the buggy frame
+                buggyFrameGpsLon = buggyFrameGpsLon + dEncoder*Math.cos(buggyFrameRotZ) + dEncoder*Math.sin(buggyFrameRotZ);
+                buggyFrameGpsLat = -buggyFrameGpsLat + dEncoder*Math.sin(buggyFrameRotZ) + dEncoder*Math.cos(buggyFrameRotZ);
+                publishUpdate();
+                //TODO add a calibration step
+            }
+        });
+
     }
 
     private void publishUpdate(){
         posePub.publish(new GPSPoseMessage(new Date(), buggyFrameGpsLat, buggyFrameGpsLon, buggyFrameRotZ));
-    }	
+    }
 
     @Override
     public boolean startNode() {

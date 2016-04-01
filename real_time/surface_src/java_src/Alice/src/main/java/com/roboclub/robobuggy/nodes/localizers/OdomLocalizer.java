@@ -37,7 +37,7 @@ public class OdomLocalizer  extends PeriodicNode{
 	 * initializes a new odomlocalizer
 	 */
 	public OdomLocalizer() {
-		super(new  BuggyBaseNode(NodeChannel.POSE), 100);
+		super(new  BuggyBaseNode(NodeChannel.POSE), 100, "odomLocalizer");
 		
 		
 		//Initialize subscriber to encoder measurements
