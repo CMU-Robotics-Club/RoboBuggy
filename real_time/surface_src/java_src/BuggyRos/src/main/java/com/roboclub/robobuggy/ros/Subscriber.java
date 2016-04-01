@@ -21,22 +21,37 @@ public class Subscriber {
 	private MessageServer ms;
 	private MessageListener callback;
 	private String topicName;
-
+	private int maxLocalInboxLength;
+	private long messagesReceived = 0;
+	private long messagesDropped = 0;
+	
 	private Deque<Message> local_inbox = new ArrayDeque<Message>();
 
 	private Thread worker;
 
 	// Note that callbacks will run in a different thread
-	public Subscriber(String topic, MessageListener messageListener) {
+	public Subscriber(String topic, MessageListener messageListener, int maxMessagesToKeep) {
 		this.ms = MessageServer.getMaster();
 		this.callback = messageListener;
 		this.topicName = topic;
+		this.maxLocalInboxLength = maxMessagesToKeep;
 
 		// Register this thread as a subscriber to "topic" on the master queue
 		ms.addListener(topic, this);
 
 		worker = new Thread(new WorkerThread(), "Subscriber-Internal=" + topic);
 		worker.start();
+	}
+
+	// Note that callbacks will run in a different thread
+	public Subscriber(String topic, MessageListener messageListener) {
+		this(topic, messageListener, Integer.MAX_VALUE);
+	}
+	
+	public int getMessageQueueLength() {
+		synchronized (local_inbox) {
+			return local_inbox.size();
+		}
 	}
 
 	public void putMessage(Message m) {
@@ -59,29 +74,33 @@ public class Subscriber {
 				// that work has been added to the queue.
 				// if we are woken spuriously, go back to sleep.
 				synchronized (local_inbox) {
-					m = local_inbox.pollLast();
-					if (m == null) {
-						while (true) {
-							try {
-								local_inbox.wait();
-								break;
-							} catch (InterruptedException ie) {
-								System.out.println("much awoken for no reason, such wow");
-								// TODO fix trevor's sense of humor so he
-								// appreciates this
-							}
+					while (local_inbox.size() == 0) {
+						try {
+							local_inbox.wait();
+						} catch (InterruptedException ie) {
+							System.out.println("much awoken for no reason, such wow");
+							// TODO fix trevor's sense of humor so he
+							// appreciates this
 						}
-						// If we were not woken spuriously, then there must be
-						// an item in the queue.
-						m = local_inbox.pollLast();
 					}
+					// Note that we compare with size()-1; if maxLocalInboxLength is 1, we
+					// want to leave one message in the inbox to poll outside of the loop.
+					while((local_inbox.size()-1) > maxLocalInboxLength) {
+						// Remove items from local_inbox until the length is equal to max.
+						local_inbox.pollLast();
+						messagesDropped++;
+					}
+					m = local_inbox.pollLast();
 				}
-				assert (m != null);
+				if (m == null) {
+					System.out.println("If length is zero, we cannot be null... Very bad.");
+				}
 				// N. B. Do not hold local_inbox lock over user callback.
 				// If the callback acquires a lock, we may acquire locks out of
 				// order,
 				// This can lead to us having A and needing B, and them having B
 				// and needing A.
+				messagesReceived++;
 				callback.actionPerformed(topicName, m);
 			}
 		}
