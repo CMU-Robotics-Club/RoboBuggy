@@ -43,4 +43,11 @@ public class BrakeMessage extends BaseMessage {
 		this.timestamp = new Date(timestamp.getTime()).getTime();
 	}
 
+	public boolean isDown() {
+		return down;
+	}
+
+	public void setDown(boolean down) {
+		this.down = down;
+	}
 }

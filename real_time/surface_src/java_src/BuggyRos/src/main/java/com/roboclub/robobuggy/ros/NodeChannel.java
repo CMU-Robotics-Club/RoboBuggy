@@ -10,7 +10,6 @@ public enum NodeChannel {
 	RC("rc_angle", true),								//?
 	STEERING("steering", true),						//The current angle that low level is steering to
 	PUSHBAR_CAMERA("push_bar_camera", true),
-	BRAKE("brake", true),
 	LOGIC_NOTIFICATION("logic_notification", true),
 	DRIVE_CTRL("drive_ctrl", true),
 	BRAKE_CTRL("commanded brake", true),

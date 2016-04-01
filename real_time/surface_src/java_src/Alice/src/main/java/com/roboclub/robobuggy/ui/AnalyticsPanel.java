@@ -9,7 +9,8 @@ public class AnalyticsPanel extends RobobuggyGUIContainer {
 	private static final long serialVersionUID = 7017667286491619492L;
 
 	private DataPanel dataPanel;
-	private GraphPanel graphPanel;
+//	private GraphPanel graphPanel;
+	BuggyStatusPanel graphPanel;
 	
 	/**
 	 * Construct a new {@link AnalyticsPanel}
@@ -17,7 +18,7 @@ public class AnalyticsPanel extends RobobuggyGUIContainer {
 	public AnalyticsPanel() {
 		name = "analytics";
 		dataPanel = new DataPanel();
-		graphPanel = new GraphPanel();
+		graphPanel = new BuggyStatusPanel();
 		this.addComponent(dataPanel, 0, 0, 1, .6);
 		this.addComponent(graphPanel, 0, .6, 1, .4);
 

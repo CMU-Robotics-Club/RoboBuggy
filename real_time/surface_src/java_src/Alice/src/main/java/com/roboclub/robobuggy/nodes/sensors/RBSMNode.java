@@ -2,6 +2,7 @@ package com.roboclub.robobuggy.nodes.sensors;
 
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
+import com.roboclub.robobuggy.messages.AutonBrakeStateMessage;
 import com.roboclub.robobuggy.messages.AutonStateMessage;
 import com.roboclub.robobuggy.messages.BatteryLevelMessage;
 import com.roboclub.robobuggy.messages.BrakeControlMessage;
@@ -14,7 +15,6 @@ import com.roboclub.robobuggy.messages.FingerPrintMessage;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.messages.TeleopBrakeStateMessage;
-import com.roboclub.robobuggy.messages.AutonBrakeStateMessage;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.NodeState;
 import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
@@ -232,7 +232,13 @@ public  class  RBSMNode extends SerialNode {
 			messagePubDeviceID.publish(new DeviceIDMessage(message.getDataWord()));
 		}
 		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_BRAKE_STATE")){
-			messagePubBrakeState.publish(new BrakeStateMessage(message.getDataWord()));
+			boolean brakesDown = false;
+
+			if (message.getDataWord() == 1) {
+				brakesDown = true;
+			}
+
+			messagePubBrakeState.publish(new BrakeStateMessage(brakesDown));
 		}
 		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_AUTON_STATE")){
 			messagePubAutonState.publish(new AutonStateMessage(message.getDataWord()));
