@@ -37,8 +37,8 @@ public class WayPointUtil {
 	 * @return arraylist of waypoints
 	 * @throws FileNotFoundException if we couldn't find the log file
 	 */
-	public static ArrayList<Message> createWayPointsFromWaypointList(String filename) throws FileNotFoundException {
-		ArrayList<Message> waypoints = new ArrayList<>();
+	public static ArrayList<GpsMeasurement> createWayPointsFromWaypointList(String filename) throws FileNotFoundException {
+		ArrayList<GpsMeasurement> waypoints = new ArrayList<>();
 
 		File waypointFile = new File(filename);
 		Gson translator = new GsonBuilder().serializeSpecialFloatingPointValues().create();

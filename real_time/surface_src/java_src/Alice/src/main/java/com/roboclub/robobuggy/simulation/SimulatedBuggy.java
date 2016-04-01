@@ -1,16 +1,11 @@
 package com.roboclub.robobuggy.simulation;
 
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.TimerTask;
-
-import boofcv.alg.segmentation.ms.MergeSmallRegions.Node;
-
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 
-import sun.security.jca.GetInstance;
+import java.util.Date;
+import java.util.TimerTask;
 
 /**
  * 
@@ -87,15 +82,15 @@ public final class SimulatedBuggy {
 		            	double heading = wheelTh + th + dth;
 		            	double headingRad = Math.toRadians(heading);
 		            	//now update the internal state
-		            	x = x +dx*Math.cos(headingRad)*dt -dy*Math.sin(headingRad)*dt;
-		            	y = y +dx*Math.sin(headingRad)*dt+dy*Math.cos(headingRad)*dt;
+		            	x = x +dx*Math.cos(headingRad)*dt -dy*Math.sin(headingRad)*dt+Math.random()/10;
+		            	y = y +dx*Math.sin(headingRad)*dt+dy*Math.cos(headingRad)*dt+Math.random()/10;
 		            	th = heading;
 		            	//TODO make pose message periodic 
 		            	simPosePub.publish(new GPSPoseMessage(new Date(), y, x, th));
 
 		            	
 		            }
-		        }, 1000, 100);
+		        }, 1000, 50);
 	}
 	
 	/**

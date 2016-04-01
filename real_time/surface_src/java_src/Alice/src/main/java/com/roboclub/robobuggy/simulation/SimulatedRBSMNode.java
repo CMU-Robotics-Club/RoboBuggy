@@ -6,11 +6,7 @@ import com.roboclub.robobuggy.messages.DriveControlMessage;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
-import com.roboclub.robobuggy.nodes.baseNodes.BuggyDecoratorNode;
-import com.roboclub.robobuggy.nodes.baseNodes.BuggyNode;
 import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
-import com.roboclub.robobuggy.nodes.sensors.RBSMBrakeMessage;
-import com.roboclub.robobuggy.nodes.sensors.RBSMSteeringMessage;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
@@ -40,7 +36,8 @@ public class SimulatedRBSMNode extends PeriodicNode{
 	 * The constructor for the simulatedRBSMNode
 	 */
 	 public SimulatedRBSMNode() {
-		super(new BuggyBaseNode(NodeChannel.ENCODER), 1000);
+		super(new BuggyBaseNode(NodeChannel.ENCODER), 100,"simulated_rbsm_node");
+
 		SimulatedBuggy simBuggy = SimulatedBuggy.getInstance();
 		// TODO Auto-generated constructor stub
 		messagePubEnc = new Publisher(NodeChannel.ENCODER.getMsgPath());

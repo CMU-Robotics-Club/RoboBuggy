@@ -47,7 +47,7 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 	 */
 	public SerialNode(BuggyNode base, String threadName, String portName,
 			int baudRate) {
-		super(base);
+		super(base,portName);
 		this.setName(threadName);
 		this.threadName = threadName;
 		this.sp = connect(portName, baudRate);
@@ -82,6 +82,8 @@ public abstract class SerialNode extends BuggyDecoratorNode {
 	 * @return true iff the bytes are transmitted successfully
 	 */
 	public boolean send(byte[] bytes) {
+
+
 		if(serialOutput == null) {
 			return false;
 		}

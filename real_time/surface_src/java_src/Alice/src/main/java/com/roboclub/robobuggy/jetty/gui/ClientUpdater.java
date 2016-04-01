@@ -1,13 +1,13 @@
 package com.roboclub.robobuggy.jetty.gui;
 
-import java.util.concurrent.LinkedBlockingQueue;
-
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
+
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Base class for all client updaters. Each updater will connect to a group and publish messages

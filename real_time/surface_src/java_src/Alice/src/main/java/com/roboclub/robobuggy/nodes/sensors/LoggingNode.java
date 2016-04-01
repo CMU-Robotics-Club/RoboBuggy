@@ -75,7 +75,7 @@ public class LoggingNode extends BuggyDecoratorNode {
      * @param filters sensors to log. To log all sensors, just use NodeChannel.values()
      */
     public LoggingNode(NodeChannel channel, String outputDirPath, NodeChannel...filters) {
-        super(new BuggyBaseNode(channel));
+        super(new BuggyBaseNode(channel),"logging_node");
 
         this.filters = filters;
         messageQueue = new LinkedBlockingQueue<>();

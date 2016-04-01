@@ -7,6 +7,7 @@ public enum NodeChannel {
 	GPS("gps", true),    								//The most recent gps coordinate
 	IMU("imu", true),									//The most recent imu measurement
 	IMU_MAGNETIC("mag", true),
+	HILL_CREST_IMU("hill_crest_imu",true),
 	RC("rc_angle", true),								//?
 	STEERING("steering", true),						//The current angle that low level is steering to
 	PUSHBAR_CAMERA("push_bar_camera", true),
