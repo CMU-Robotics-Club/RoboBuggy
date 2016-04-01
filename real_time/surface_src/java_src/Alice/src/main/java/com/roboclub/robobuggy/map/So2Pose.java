@@ -106,4 +106,12 @@ public class So2Pose {
 		return orientation;
 	}
 
+	
+	/**
+	 * evaluates to a string encoding infromation about this class
+	 */
+	public String toString(){
+		return "{So2Pose | x: "+getX()+", y: "+getY()+", orintation:"+getOrientation()+"}";
+		
+	}
 }

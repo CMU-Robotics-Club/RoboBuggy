@@ -1,6 +1,8 @@
 package com.roboclub.robobuggy.ui;
 
 import Jama.Matrix;
+
+import com.roboclub.robobuggy.messages.DriveControlMessage;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
@@ -10,7 +12,9 @@ import com.sun.javafx.geom.Vec2d;
 
 import javax.swing.JButton;
 import javax.swing.JSlider;
+
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,6 +29,7 @@ public class PoseViewer extends RobobuggyGUIContainer{
 	private ArrayList<Matrix> poses;
 	private JButton zoomIn, zoomOut;
 	private JSlider zoomMag;
+	private int commtheta;
 
 	/**
 	 * makes a new poseviewer
@@ -81,6 +86,13 @@ public class PoseViewer extends RobobuggyGUIContainer{
 				repaint();
 				// TODO Auto-generated method stub
 				
+			}
+		});
+
+		new Subscriber(NodeChannel.DRIVE_CTRL.getMsgPath(), new MessageListener() {
+			@Override
+			public void actionPerformed(String topicName, Message m) {
+				commtheta = ((DriveControlMessage) m).getAngleInt();
 			}
 		});
 		
@@ -152,7 +164,13 @@ public class PoseViewer extends RobobuggyGUIContainer{
 	    g.setColor(Color.BLACK);
 	    for(int i = 0;i< poses.size();i++){
 	    	Matrix thisPose = poses.get(i);
-		    g.drawString("pose:"+i+"\t x:"+thisPose.get(0, 3)+"\t y:"+thisPose.get(1, 3) +"\t th:"+get2dth(thisPose), 50, 25+10*i);
+ 	    	g.setFont(new Font("Arial", Font.BOLD, 30));
+//		    g.drawString("pose:"+i+"\r\n x:"+thisPose.get(0, 3)+"\r\n y:"+thisPose.get(1, 3) +"\r\n th:"+get2dth(thisPose), 50, 25+10*i);
+	    	g.drawString("pose = " + i, 150, 25+10*i);
+	    	g.drawString("x = " + thisPose.get(0, 3),  150, 55 + 10*i);
+	    	g.drawString("y = " + thisPose.get(1, 3), 150, 85 + 10 * i);
+	    	g.drawString("th = " + get2dth(thisPose), 150, 115 + 10 * i);
+		    
 
 	    }
 	    

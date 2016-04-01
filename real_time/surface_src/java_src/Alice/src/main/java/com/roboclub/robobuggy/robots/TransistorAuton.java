@@ -1,9 +1,15 @@
 package com.roboclub.robobuggy.robots;
 
+import java.io.IOException;
+
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.nodes.localizers.HighTrustGPSLocalizer;
+import com.roboclub.robobuggy.nodes.planners.SweepNode;
+import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
+import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
+import com.roboclub.robobuggy.nodes.sensors.*;
 import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
 import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
 import com.roboclub.robobuggy.nodes.sensors.CameraNode;
@@ -65,16 +71,17 @@ public final class TransistorAuton extends AbstractRobot {
 
 		nodeList.add(new HighTrustGPSLocalizer());
 		nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.getComPortGPS()));
-		nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.getComPortImu()));
+//		nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.getComPortImu()));
 		nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION,
 				NodeChannel.getLoggingChannels()));
 		nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING, RobobuggyConfigFile.getComPortRBSM(),
 				RobobuggyConfigFile.RBSM_COMMAND_PERIOD));
 		nodeList.add(new CameraNode(NodeChannel.PUSHBAR_CAMERA, 100));
+		nodeList.add(new HillCrestImuNode());
 
 		try {
-			nodeList.add(new WayPointFollowerPlanner(WayPointUtil.createWayPointsFromLog("logs/", RobobuggyConfigFile.getWaypointSourceLogFile())));
-		} catch (IOException e) {
+			nodeList.add(new WayPointFollowerPlanner(WayPointUtil.createWayPointsFromWaypointList("logs/waypoints/waypoints.txt")));
+	}   catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -92,6 +99,7 @@ public final class TransistorAuton extends AbstractRobot {
 		tabs.addTab(new  AutonomousPanel(),"Autonomous");
 		tabs.addTab(new ConfigurationPanel(),"Configuration");
 		
+
 
 	}
 }

@@ -1,11 +1,10 @@
 package com.roboclub.robobuggy.ui;
 
-import javax.imageio.ImageIO;
-import javax.swing.JPanel;
-
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 
+import javax.imageio.ImageIO;
+import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
