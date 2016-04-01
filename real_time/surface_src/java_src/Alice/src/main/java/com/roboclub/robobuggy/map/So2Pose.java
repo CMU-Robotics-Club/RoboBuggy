@@ -59,7 +59,13 @@ public class So2Pose {
 	 * @return an So2Pose object that is the inverse of the current object
 	 */
 	public So2Pose inverse(){
-		return new So2Pose(-1*location.getX(), -1*location.getY(), -1*orientation);
+		double[][] m = {{Math.cos(orientation),-Math.sin(orientation),getX()},
+						{Math.sin(orientation),Math.cos(orientation),getY()},
+						{0,0,1}};
+		Matrix M = new Matrix(m);
+		Matrix M_inv = M.inverse();
+		double th = Math.atan2(M_inv.get(1, 0),M_inv.get(0, 0));
+		return new So2Pose(M_inv.get(0, 2),M_inv.get(1,2),th);
 	}
 	
 	
@@ -104,6 +110,41 @@ public class So2Pose {
 	 */
 	public double getOrientation(){
 		return orientation;
+	}
+	
+	/**
+	 * Evaluates to the identity object for So2Pose (no position, or orientation change) 
+	 * @return the Identity So2Pose
+	 */
+	public static So2Pose Identity(){
+		return new So2Pose(0.0, 0.0,0.0);
+	}
+	
+	/**
+	 * equals function for So2Pose that can be used to check if two psoes are the same 
+	 * @return equality 
+	 */
+	@Override
+	public boolean equals(Object o){
+		if(!(o instanceof So2Pose)){
+			return false;
+		}
+		
+		So2Pose otherPose = (So2Pose)o;
+		if(Math.abs(otherPose.getX() - getX()) > .0001){
+			return false;
+		}
+		
+		if(Math.abs(otherPose.getY() - getY()) > .0001){
+			return false;
+		}
+		
+		if(Math.abs(otherPose.getOrientation() - getOrientation()) > .0001){
+			return false;
+		}
+		
+		//all values were equal so the two poses represent the same pose aka they are equal 
+		return true;
 	}
 
 	

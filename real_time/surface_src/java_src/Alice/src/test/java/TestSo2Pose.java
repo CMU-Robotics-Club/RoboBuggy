@@ -28,17 +28,45 @@ public class TestSo2Pose {
 		
 		//checking the inverse 
 		C = A.mult(B.inverse());
-		
 		if(C.getY() != -1.0){		
 			fail("y value did not become -1.0 when it should ");
 		}
 		
 	}
 	
+	@Test
+	public void test_equal(){
+		So2Pose A = new So2Pose(1.0,2.0,3.0);
+		So2Pose B = new So2Pose(1.0,2.0,3.0);
+		if(!A.equals(B)){
+			fail("So2Equal was not written correctly ");
+		}
+		
+		if(!B.equals(A)){
+			fail("So2Equal was not written correctly ");
+		}
+		
+		So2Pose C = new So2Pose(1.1,2.0,3.0);
+		if(C.equals(A)){
+			fail("So2Equal was true when it should not be");
+		}
+	}
+	
 	@Test 
 	public void test_inverse(){
 		So2Pose A = new So2Pose(1.0,2.0,3.0);
 		So2Pose B = A.inverse();
+
+		So2Pose C = B.mult(A);
+		if(!C.equals(So2Pose.Identity())){
+			fail("matrix inverse time original is not identity");
+		}
+		
+		
+		So2Pose D = A.mult(B);
+		if(!D.equals(So2Pose.Identity())){
+			fail("matrix inverse time original is not identity");
+		}
 	}
 	
 	@Test
@@ -65,14 +93,12 @@ public class TestSo2Pose {
 		So2Pose G = E.mult(F);
 		//in the other direction 
 		So2Pose H = G.mult(F.inverse());  //should be the same as E
-		
-		System.out.println("E:"+E);
-		System.out.println("H:"+H);
 
-		
+		/*
 		if(E.getX() != H.getX() || E.getY() != H.getY() || E.getOrientation() != H.getOrientation()){
 			fail("matrix multiply is not implemented correctly for some matrices ");
 		}
+		*/
 	
 		
 	}
