@@ -11,7 +11,6 @@ import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
 
-import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -48,58 +47,62 @@ public class HighTrustGPSLocalizer implements Node{
         new Subscriber(NodeChannel.GPS.getMsgPath(), new MessageListener() {
             @Override
             public void actionPerformed(String topicName, Message m) {
-            	GpsMeasurement newGPSData = (GpsMeasurement)m;
-            	synchronized (this) {
-            	long dt = newGPSData.getTimestamp().getTime() - mostRecentUpdate.getTime();
-            	if(dt > 0.0){
-                // Get the delta latitude and longitude, use that to figure out how far we've travelled
+                GpsMeasurement newGPSData = (GpsMeasurement)m;
+                synchronized (this) {
+                    long dt = newGPSData.getTimestamp().getTime() - mostRecentUpdate.getTime();
+                    if(dt > 0.0){
 
- //               double oldGPSX = buggyFrameGpsLon;
- //               double oldGPSY = buggyFrameGpsLat;
-              //  buggyFrameGpsLat = newGPSData.getLatitude();
-               // buggyFrameGpsLon = newGPSData.getLongitude();	
- //               double dLat = buggyFrameGpsLat - oldGPSY;
- //               double dLon = buggyFrameGpsLon - oldGPSX;
-                
- //               double oldRotZ = buggyFrameRotZ;
 
-                publishUpdate();
-            	mostRecentUpdate = newGPSData.getTimestamp();
-            	}
+                        // Get the delta latitude and longitude, use that to figure out how far we've travelled
+
+                        //               double oldGPSX = buggyFrameGpsLon;
+                        //               double oldGPSY = buggyFrameGpsLat;
+                        buggyFrameGpsLat = newGPSData.getLatitude();
+                        buggyFrameGpsLon = newGPSData.getLongitude();
+                        //               double dLat = buggyFrameGpsLat - oldGPSY;
+                        //               double dLon = buggyFrameGpsLon - oldGPSX;
+
+                        //               double oldRotZ = buggyFrameRotZ;
+
+                        publishUpdate();
+                        mostRecentUpdate = newGPSData.getTimestamp();
+                    }
                 }
             }
         });
-        
+
         new Subscriber(NodeChannel.IMU_MAGNETIC.getMsgPath(),new MessageListener() {
-        	 			@Override
-        	 			public void actionPerformed(String topicName, Message m) {
-        	 				MagneticMeasurement magM = (MagneticMeasurement)m;
-        	 				double currAngle = magM.getRotationZ();
-        	 				double offset = 0.0;
-        	 				buggyFrameRotZ = currAngle - offset;
-        	 				publishUpdate();
-        	 				//TODO add a calibration step
-        	 			}
-        	 		});
-        
+            @Override
+            public void actionPerformed(String topicName, Message m) {
+                MagneticMeasurement magM = (MagneticMeasurement)m;
+                double currAngle = magM.getRotationZ();
+                double offset = 0.0;
+                buggyFrameRotZ = currAngle - offset;
+                publishUpdate();
+                //TODO add a calibration step
+            }
+        });
+
         new Subscriber(NodeChannel.ENCODER.getMsgPath(),new MessageListener() {
- 			@Override
- 			public void actionPerformed(String topicName, Message m) {
- 				EncoderMeasurement magM = (EncoderMeasurement)m;
- 				double dEncoder = magM.getDistance() - lastEncoderReading;
- 				lastEncoderReading = magM.getDistance();
- 				buggyFrameGpsLon = buggyFrameGpsLon + dEncoder*Math.cos(buggyFrameRotZ) + dEncoder*Math.sin(buggyFrameRotZ);
- 				buggyFrameGpsLat = -buggyFrameGpsLat + dEncoder*Math.sin(buggyFrameRotZ) + dEncoder*Math.cos(buggyFrameRotZ);
- 				publishUpdate();
- 				//TODO add a calibration step
- 			}
- 		});    
-        
+            @Override
+            public void actionPerformed(String topicName, Message m) {
+                EncoderMeasurement magM = (EncoderMeasurement)m;
+                double dEncoder = magM.getDistance() - lastEncoderReading;
+                lastEncoderReading = magM.getDistance();
+
+                // TODO this should depend on the front wheel rather than the buggy frame
+                buggyFrameGpsLon = buggyFrameGpsLon + dEncoder*Math.cos(buggyFrameRotZ) + dEncoder*Math.sin(buggyFrameRotZ);
+                buggyFrameGpsLat = -buggyFrameGpsLat + dEncoder*Math.sin(buggyFrameRotZ) + dEncoder*Math.cos(buggyFrameRotZ);
+                publishUpdate();
+                //TODO add a calibration step
+            }
+        });
+
     }
 
     private void publishUpdate(){
         posePub.publish(new GPSPoseMessage(new Date(), buggyFrameGpsLat, buggyFrameGpsLon, buggyFrameRotZ));
-    }	
+    }
 
     @Override
     public boolean startNode() {

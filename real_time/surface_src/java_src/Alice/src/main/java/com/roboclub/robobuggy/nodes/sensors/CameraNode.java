@@ -41,7 +41,7 @@ public class CameraNode extends PeriodicNode{
 	 * @param period  How often new images should be pulled
 	 */
 	public CameraNode(NodeChannel channel, int period) {
-		super(new BuggyBaseNode(channel),period,"Camera_Node");
+		super(new BuggyBaseNode(channel),period, "Camera_Node");
 
 
 		//setup the webcam

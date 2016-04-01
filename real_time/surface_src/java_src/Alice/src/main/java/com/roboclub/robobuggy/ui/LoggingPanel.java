@@ -4,24 +4,20 @@ import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.messages.EncoderResetMessage;
-import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 
-import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimerTask;
@@ -94,11 +90,11 @@ public class LoggingPanel extends RobobuggyGUIContainer{
 		//uses pulling to make sure that the play back speed is up to date
 		java.util.Timer t = new java.util.Timer();
 		t.schedule(new TimerTask() {
-		            @Override
-		            public void  run() {
-		            updatePlaybackSpeed();		            	
-		            }
-		        }, 0, 100);
+			@Override
+			public void  run() {
+				updatePlaybackSpeed();
+			}
+		}, 0, 100);
 	}
 
 

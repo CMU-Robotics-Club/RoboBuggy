@@ -32,7 +32,7 @@ public abstract class PathPlannerNode extends BuggyDecoratorNode {
 	 *  information about the node
 	 */
 	public PathPlannerNode(NodeChannel channel) {
-		super(new BuggyBaseNode(channel),"pathPlannerNode");
+		super(new BuggyBaseNode(channel), "pathPlannerNode");
 		steeringCommandPub = new Publisher(NodeChannel.DRIVE_CTRL.getMsgPath());
 		brakingCommandPub = new Publisher(NodeChannel.BRAKE_CTRL.getMsgPath());
 	}

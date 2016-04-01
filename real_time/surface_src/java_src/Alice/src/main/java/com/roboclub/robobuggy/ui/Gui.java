@@ -4,9 +4,7 @@ import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 
 import javax.swing.JFrame;
-
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -61,7 +59,7 @@ public final class Gui extends JFrame {
 	 */
 	private Gui() {
 		new RobobuggyLogicNotification("StartingGUI", RobobuggyMessageLevel.NOTE);
-		windowMap= new HashMap<Integer, RobobuggyJFrame>();
+		windowMap= new HashMap<>();
 		currentWindowId = -1;
 
 	}
@@ -72,7 +70,7 @@ public final class Gui extends JFrame {
 	 * @param newWindow the window you want added
 	 * @return a unique reference number to the window for access later 
 	 */
-	public synchronized int  addWindow(RobobuggyJFrame newWindow){
+	public synchronized int addWindow(RobobuggyJFrame newWindow){
 		currentWindowId++;
 		windowMap.put(currentWindowId, newWindow);
 		return currentWindowId;		
@@ -80,27 +78,27 @@ public final class Gui extends JFrame {
 	
 	/**
 	 * gets a reference to a particular frame of the window 
-	 * @param windowRefrence the reference to receive
+	 * @param windowReference the reference to receive
 	 * @return the requested frames reference 
 	 */
-	public synchronized RobobuggyJFrame getWindow(int windowRefrence){
-		return windowMap.get(windowRefrence);
+	public synchronized RobobuggyJFrame getWindow(int windowReference){
+		return windowMap.get(windowReference);
 	}
 	
 	/**
 	 * removes a reference to a particular frame of the window 
-	 * @param windowRefrence the reference to remove
+	 * @param windowReference the reference to remove
 	 * @return 
 	 */
-	public synchronized void deleteWindow(int windowRefrence){
-		windowMap.remove(windowRefrence);
+	public synchronized void deleteWindow(int windowReference){
+		windowMap.remove(windowReference);
 		
 	}
 	
 	/**
 	 * Closes the {@link Gui}
 	 */
-	public static synchronized  void close() {
+	public static synchronized void close() {
 		new RobobuggyLogicNotification("trying to close gui", RobobuggyMessageLevel.NOTE);
 		instance.dispatchEvent(new WindowEvent(instance, WindowEvent.WINDOW_CLOSING));
 		new RobobuggyLogicNotification("gui has been closed", RobobuggyMessageLevel.NOTE);

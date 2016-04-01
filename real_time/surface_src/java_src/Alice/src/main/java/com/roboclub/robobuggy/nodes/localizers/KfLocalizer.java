@@ -23,7 +23,7 @@ public class KfLocalizer extends PeriodicNode{
 //	private Matrix matrixDF;
 	
 	protected KfLocalizer(BuggyNode base, int period) {
-		super(base, period,"KF");
+		super(base, period, "KF");
 		posePub = new Publisher(NodeChannel.POSE.getMsgPath());
 //		startTime = new Date();
 		double[][] startCovariance = {{1,0,0},{0,1,0},{0,0,1}};

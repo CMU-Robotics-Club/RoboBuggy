@@ -32,7 +32,7 @@ public final class GPSLocalizer extends BuggyDecoratorNode {
 	 *  information about the node
 	 */
 	public GPSLocalizer(NodeChannel channel) {
-		super(new BuggyBaseNode(channel),"GPSLocalzer");
+		super(new BuggyBaseNode(channel), "GPSLocalizer");
 		lastReading= null;
 		posePub = new Publisher(NodeChannel.POSE.getMsgPath());
 	}

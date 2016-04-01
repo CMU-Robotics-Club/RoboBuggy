@@ -1,8 +1,7 @@
 package com.roboclub.robobuggy.map;
 
-import com.roboclub.robobuggy.main.Util;
-
 import Jama.Matrix;
+import com.roboclub.robobuggy.main.Util;
 
 /**
  * 
@@ -21,7 +20,7 @@ public class So2Pose {
 	 */
 	public So2Pose(Point newLocation,double newOrientation){
 		this.location = newLocation;
-		this.orientation = Util.normilizeAngleRad(newOrientation);
+		this.orientation = Util.normalizeAngleRad(newOrientation);
 	}
 	
 	/**
@@ -32,7 +31,7 @@ public class So2Pose {
 	 */
 	public So2Pose(double x,double y,double newOrientation){
 		location = new Point(x, y);
-		orientation = Util.normilizeAngleRad(newOrientation);
+		orientation = Util.normalizeAngleRad(newOrientation);
 	}
 	
 	/**
@@ -50,7 +49,7 @@ public class So2Pose {
 		Matrix a = new Matrix(aM);
 		Matrix b = new Matrix(bM);
 		Matrix c = a.times(b);
-		double th = Util.normilizeAngleRad(Math.atan2(c.get(1, 0), c.get(0, 0)));
+		double th = Util.normalizeAngleRad(Math.atan2(c.get(1, 0), c.get(0, 0)));
 		return new So2Pose(c.get(0, 2), c.get(1,2), th);
 		
 	}
@@ -65,7 +64,7 @@ public class So2Pose {
 						{0,0,1}};
 		Matrix mMatrix = new Matrix(mArray);
 		Matrix mMatrixInv = mMatrix.inverse();
-		double th = Util.normilizeAngleRad(Math.atan2(mMatrixInv.get(1, 0),mMatrixInv.get(0, 0)));
+		double th = Util.normalizeAngleRad(Math.atan2(mMatrixInv.get(1, 0),mMatrixInv.get(0, 0)));
 		return new So2Pose(mMatrixInv.get(0, 2),mMatrixInv.get(1,2),th);
 	}
 	
@@ -76,7 +75,7 @@ public class So2Pose {
 	 * @param newOrientation the new orientation
 	 */
 	public void updatePoint(Point newPoint, double newOrientation){
-		this.orientation = Util.normilizeAngleRad(newOrientation);
+		this.orientation = Util.normalizeAngleRad(newOrientation);
 		this.location = newPoint;
 
 	}
@@ -122,7 +121,7 @@ public class So2Pose {
 	}
 
 	/**
-	 * hashcode function needed for storeing the object
+	 * hashcode function needed for storing the object
 	 */
 	@Override
 	public int hashCode()
@@ -132,7 +131,7 @@ public class So2Pose {
 
 	
 	/**
-	 * equals function for So2Pose that can be used to check if two psoes are the same 
+	 * equals function for So2Pose that can be used to check if two poses are the same
 	 * @return equality 
 	 */
 	@Override
@@ -140,12 +139,13 @@ public class So2Pose {
 		if(!(o instanceof So2Pose)){
 			return false;
 		}
-		
+
+
 		So2Pose otherPose = (So2Pose)o;
 		if(Math.abs(otherPose.getX() - getX()) > .0001){
 			return false;
 		}
-		
+
 		if(Math.abs(otherPose.getY() - getY()) > .0001){
 			return false;
 		}

@@ -275,7 +275,7 @@ public  class  RBSMNode extends SerialNode {
 		 * @param channel of the RSBM node
 		 */
 		RBSMPeriodicNode(NodeChannel channel, int period) {
-			super(new BuggyBaseNode(channel), period,"RBSM_Node");
+			super(new BuggyBaseNode(channel), period,"RBSM_Periodic_Node");
 			resume();
 		}
 
