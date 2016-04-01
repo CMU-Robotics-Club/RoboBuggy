@@ -65,9 +65,7 @@ public class So2Pose {
 						{0,0,1}};
 		Matrix mMatrix = new Matrix(mArray);
 		Matrix mMatrixInv = mMatrix.inverse();
-	//	System.out.println("y:"+mMatrixInv.get(1, 0)+"x:"+mMatrixInv.get(0, 0));
 		double th = Util.normilizeAngleRad(Math.atan2(mMatrixInv.get(1, 0),mMatrixInv.get(0, 0)));
-	//	System.out.println(th);
 		return new So2Pose(mMatrixInv.get(0, 2),mMatrixInv.get(1,2),th);
 	}
 	

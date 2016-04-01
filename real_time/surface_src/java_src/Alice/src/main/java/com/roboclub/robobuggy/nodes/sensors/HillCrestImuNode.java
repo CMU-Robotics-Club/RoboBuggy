@@ -37,7 +37,6 @@ public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListen
 	@Override
 	public void handleRead(Device arg0, HidInMsg arg1, int arg2, long arg3) {
 		// TODO Auto-generated method stub
-		System.out.println(arg1.toDetailedString());
 		pub.publish(new HillCrestIMUMessage(arg1.toDetailedString()));
 		
 	}
@@ -61,8 +60,6 @@ public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListen
 		thisDevice.open(this);
 		
 	deviceStats = thisDevice.getStatistics();
-	System.out.println("found device");
-	System.out.println(deviceStats.toString());
 	FreespaceMsgOutDataModeControlV2Request msg = new FreespaceMsgOutDataModeControlV2Request();
 	msg.setPacketSelect(8);  //
 	msg.setModeAndStatus(0);
@@ -78,7 +75,6 @@ public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListen
 	msg.setFf7(true);
 
 	thisDevice.sendMessageAsync(msg);
-	System.out.println("setup read");
 	}
 
 	@Override
