@@ -36,7 +36,8 @@ public class SimulatedRBSMNode extends PeriodicNode{
 	 * The constructor for the simulatedRBSMNode
 	 */
 	 public SimulatedRBSMNode() {
-		super(new BuggyBaseNode(NodeChannel.ENCODER), 1000);
+		super(new BuggyBaseNode(NodeChannel.ENCODER), 100,"simulated_rbsm_node");
+
 		SimulatedBuggy simBuggy = SimulatedBuggy.getInstance();
 		// TODO Auto-generated constructor stub
 		messagePubEnc = new Publisher(NodeChannel.ENCODER.getMsgPath());
@@ -72,15 +73,18 @@ public class SimulatedRBSMNode extends PeriodicNode{
 		//get an updated representation of the buggy current pose	
 		So2Pose newPose = new So2Pose(simBuggy.getX(),simBuggy.getY(), simBuggy.getTh());
 		//find the difference between the last observed pose and this pose
-		So2Pose dPose = newPose.mult(lastPose.inverse());
-		lastPose = newPose;
-
+	//	So2Pose dPose = newPose.mult(lastPose.inverse()); TODO look into why this does not work 
+		
 		//use that information to fill out messages to be published 
 		//the distance between the two is the amount which the encoder would be incremented
-		double dx = dPose.getX();
-		double dy = dPose.getY();
+		double dx = newPose.getX() - lastPose.getX();//dPose.getX();
+		double dy = newPose.getY() - lastPose.getY();//dPose.getY();
 		double d = Math.sqrt(dx*dx + dy*dy);
 		encoderDistance = encoderDistance + d;
+		
+		lastPose = newPose;
+
+
 		
 		messagePubEnc.publish(new EncoderMeasurement(encoderDistance, 0.0)); //TODO calculate the actual velocity 
 		double potAngle = Math.atan2(dy, dx);

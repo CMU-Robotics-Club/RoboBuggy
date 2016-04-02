@@ -4,6 +4,8 @@ import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
 import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
+import com.roboclub.robobuggy.ros.NodeChannel;
+import com.roboclub.robobuggy.ui.AnalyticsPanel;
 import com.roboclub.robobuggy.ui.Gui;
 import com.roboclub.robobuggy.ui.LocTuple;
 
@@ -37,7 +39,7 @@ public class PathEditor {
 
 				//displaying points to the user
 				for(int i = 0;i<wayPoints.size();i++){
-					Gui.getInstance().getMainGuiWindow().getAnalyPane().getDataPanel().getGpsPanel().
+					AnalyticsPanel.getInstance().getDataPanel().getGpsPanel().
 							addPointsToMapTree(Color.BLUE,new LocTuple(wayPoints.get(i).getLatitude(),
 									-wayPoints.get(i).getLongitude()));
 					Gui.getInstance().fixPaint();
@@ -55,9 +57,9 @@ public class PathEditor {
 							double angle = Math.PI*planer.getCommandedSteeringAngle()/180;
 		
 							//TODO make this cleaner, so much cleaner 
-							Gui.getInstance().getMainGuiWindow().getAnalyPane().getDataPanel().getGpsPanel().
+							AnalyticsPanel.getInstance().getDataPanel().getGpsPanel().
 							addPointsToMapTree(Color.RED,new LocTuple(lat,-lon));
-							Gui.getInstance().getMainGuiWindow().getAnalyPane().getDataPanel().getGpsPanel().
+							AnalyticsPanel.getInstance().getDataPanel().getGpsPanel().
 							addLineToMap(new LocTuple(lat,	-lon), angle, Color.RED);
 
 						}

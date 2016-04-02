@@ -281,7 +281,8 @@ public  class  RBSMNode extends SerialNode {
 		 * @param channel of the RSBM node
 		 */
 		RBSMPeriodicNode(NodeChannel channel, int period) {
-			super(new BuggyBaseNode(channel), period);
+			super(new BuggyBaseNode(channel), period,"RBSM_Periodic_Node");
+			resume();
 		}
 
 		/**
@@ -312,7 +313,7 @@ public  class  RBSMNode extends SerialNode {
 					new MessageListener() {
 				@Override
 				public void actionPerformed(String topicName, Message m) {
-					commandedAngle = ((DriveControlMessage)m).getAngleInt();
+					commandedAngle = -((DriveControlMessage)m).getAngleInt();
 				}
 			});
 			new Subscriber(NodeChannel.BRAKE_CTRL.getMsgPath(),
@@ -326,12 +327,12 @@ public  class  RBSMNode extends SerialNode {
 				@Override
 				public void actionPerformed(String topicName, Message m) {
 					byte[] message = new byte[6];
-					message[0] = (byte)RBSerialMessage.getHeaderByte("RBSM_MID_ENC_RESET_REQUEST"); //Reset request header
+					message[0] = RBSerialMessage.getHeaderByte("RBSM_MID_ENC_RESET_REQUEST"); //Reset request header
 					message[1] = 0;
 					message[2] = 0;
 					message[3] = 0;
 					message[4] = 0;
-					message[5] = (byte)RBSerialMessage.getHeaderByte("FOOTER");
+					message[5] = RBSerialMessage.getHeaderByte("FOOTER");
 					send(message);
 				}
 				

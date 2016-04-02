@@ -5,9 +5,20 @@ import com.roboclub.robobuggy.nodes.localizers.HighTrustGPSLocalizer;
 import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
 import com.roboclub.robobuggy.simulation.SimulatedBuggy;
 import com.roboclub.robobuggy.simulation.SimulatedGPSNode;
+import com.roboclub.robobuggy.simulation.SimulatedImuNode;
 import com.roboclub.robobuggy.simulation.SimulatedRBSMNode;
+import com.roboclub.robobuggy.ui.AutonomousPanel;
+import com.roboclub.robobuggy.ui.Gui;
+import com.roboclub.robobuggy.ui.ImuPanel;
+import com.roboclub.robobuggy.ui.MainGuiWindow;
+import com.roboclub.robobuggy.ui.PoseGraphsPanel;
+import com.roboclub.robobuggy.ui.RobobuggyGUITabs;
+import com.roboclub.robobuggy.ui.RobobuggyJFrame;
+import com.roboclub.robobuggy.ui.SimulationPanel;
+import com.roboclub.robobuggy.ui.VelocityWindow;
 
 import java.util.ArrayList;
+
 
 /**
  * A robot file for a simulated robot that can be used for internal testing of nodes along simulated paths 
@@ -32,17 +43,33 @@ public final class SimRobot extends AbstractRobot{
 		super();
 	
 		nodeList.add(new HighTrustGPSLocalizer());
-		nodeList.add(new SimulatedGPSNode());
+		nodeList.add(new SimulatedImuNode(100));
+		nodeList.add(new SimulatedGPSNode(500));
 		nodeList.add(new SimulatedRBSMNode());
 		ArrayList<GpsMeasurement> wayPoints = new ArrayList<GpsMeasurement>();
 		for(int i = 0;i<100;i++){
-			wayPoints.add(new GpsMeasurement(i,0));
+			wayPoints.add(new GpsMeasurement(0,-i));
 		}
 		nodeList.add(new WayPointFollowerPlanner(wayPoints));
 		SimulatedBuggy simBuggy = SimulatedBuggy.getInstance();
 		simBuggy.setDx(.1);
+
 		//simBuggy.setDth(1);
-		//simBuggy.setDth(1.0);
+	//	simBuggy.setDth(0.10);
+		
+		
+		//setup the gui 
+		RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow",1.0,1.0);	
+		Gui.getInstance().addWindow(mainWindow);
+		RobobuggyGUITabs tabs = new RobobuggyGUITabs();
+		mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
+		tabs.addTab(new MainGuiWindow(), "Home");
+		tabs.addTab(new VelocityWindow(), "Velocity");
+		tabs.addTab(new PoseGraphsPanel(),"poses");
+		tabs.addTab(new ImuPanel(),"IMU");
+		tabs.addTab(new  AutonomousPanel(),"Autonomous");
+		tabs.addTab(new SimulationPanel(),"Simulation");
+
 
 	}
 }
