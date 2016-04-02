@@ -68,15 +68,7 @@ public class LoggingNode extends BuggyDecoratorNode {
         STOPPED_LOGGING,
     }
 
-    private class TraceableMessage {
-        private Message message;
-        private String topic;
 
-        public TraceableMessage(Message m, String topic) {
-            this.message = m;
-            this.topic = topic;
-        }
-    }
 
     /**
      * Create a new {@link LoggingNode} decorator
@@ -309,8 +301,7 @@ public class LoggingNode extends BuggyDecoratorNode {
                 String topic;
                 try {
                     TraceableMessage traceableMessage = messageQueue.take();
-                    toSort = traceableMessage.message;
-                    topic = traceableMessage.topic;
+                    toSort = traceableMessage.getMessage();
 
                     String msgAsJsonString = messageTranslator.toJson(traceableMessage);
 
@@ -340,10 +331,10 @@ public class LoggingNode extends BuggyDecoratorNode {
                         steeringHits++;
                     } else if(toSort instanceof ImageMessage){
                         imageHits++;
-                    } else {
+                    }// else {
                         //a new kind of message!
 //                        new RobobuggyLogicNotification("New message came in that we aren't tracking", RobobuggyMessageLevel.WARNING);
-                    }
+//                    }
                     fileWriteStream.println("        " + msgAsJsonString + ",");
 
                 } catch (InterruptedException e) {
