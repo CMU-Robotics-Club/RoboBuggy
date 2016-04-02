@@ -18,12 +18,13 @@ import com.roboclub.robobuggy.ros.Subscriber;
 public abstract class ClientUpdater {
 	
 	// Shouldn't actually need to be threadsafe, I don't think it gets accessed anywhere else
-	protected LinkedBlockingQueue<Message> updates = new LinkedBlockingQueue<Message>();
+	protected LinkedBlockingQueue<Message> dataUpdates = new LinkedBlockingQueue<Message>();
+	protected LinkedBlockingQueue<Message> stateUpdates = new LinkedBlockingQueue<Message>();
 	
 	/**
 	 * Method to subscribe to all channels.
 	 */
-	private void subscribeToAll() {
+	protected void subscribeToAllData() {
 		// Once we're subscribed to all the things, we shouldn't need to do more other than push.
         for (NodeChannel filter : NodeChannel.getLoggingChannels()) {
             new Subscriber(filter.getMsgPath(), new MessageListener() {
@@ -31,29 +32,37 @@ public abstract class ClientUpdater {
                 public void actionPerformed(String topicName, Message m) {
                 	
                     try {
-                    	updates.put(m);
+                    	dataUpdates.put(m);
                     } catch (Exception e) {
 						new RobobuggyLogicNotification("unable to add to queue", RobobuggyMessageLevel.EXCEPTION);
                     }
                 }
             });
         }
-        
-        new Subscriber("sensor/gps/state", new MessageListener() {
-        	@Override
-        	public void actionPerformed(String topicName, Message m) {
-        		try {
-        			updates.put(m);
-        		} catch (Exception e) {
-        			new RobobuggyLogicNotification("Unable to add sensor to queue.", RobobuggyMessageLevel.EXCEPTION);
-        		}
-        	}
-        });
+	}	
+	
+	/**
+	 * Subscribe to only state messages, storing the channel.
+	 */
+	protected void subscribeToAllState() {
+		// Once we're subscribed to all the things, we shouldn't need to do more other than push.
+        for (NodeChannel filter : NodeChannel.getLoggingChannels()) {            
+            new Subscriber(filter.getStatePath(), new MessageListener() {
+            	@Override
+            	public void actionPerformed(String topicName, Message m) {
+            		try {
+            			stateUpdates.put(m);
+            		} catch (Exception e) {
+            			new RobobuggyLogicNotification("Unable to subscribe to status for " + filter.getStatePath(), RobobuggyMessageLevel.EXCEPTION);
+            		}
+            	}
+            });
+        }
 	}
+	
 	/**
 	 * Simple constructor, only subscribes to all channels.
 	 */
 	public ClientUpdater() {
-		subscribeToAll();
 	}
 }

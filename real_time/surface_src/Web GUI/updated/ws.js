@@ -6,32 +6,28 @@ function read() {
     imu3 = new AngleViewer('imu-canvas3', 0, 0, 1, 'Side View');
     imu4 = new AngleViewer('imu-canvas4', 1, -1, 1, 'Bottom Front View');
 
-    var dataSocket = new ReconnectingWebSocket("ws://buggy:8080");
+    var dataSocket = new ReconnectingWebSocket("ws://" + location.host);
     dataSocket.onmessage = onDataMessage;
     dataSocket.onopen = function() {
         dataSocket.send("Group: data");
     }
 
     document.getElementById("start-button").onclick = function() {
-        localDataSocket.send("Command: herp");
+        dataSocket.send("Command: herp");
     }
 
-    var localDataSocket = new ReconnectingWebSocket("ws://127.0.0.1:8080");
-    localDataSocket.onmessage = onDataMessage;
-    localDataSocket.onopen = function() {
-        localDataSocket.send("Group: data");
+    states = new Array();
+    var stateSocket = new ReconnectingWebSocket("ws://" + location.host);
+    stateSocket.onmessage = onStateMessage;
+    stateSocket.onopen = function() {
+        stateSocket.send("Group: state");
     }
 
     cs = new CameraStream("camera");
-    var cameraSocket = new ReconnectingWebSocket("ws://buggy:8080", null,
-        {binaryType: 'arraybuffer'});
+    var cameraSocket = new ReconnectingWebSocket("ws://" + location.host, null,
+            {binaryType: 'arraybuffer'});
     cameraSocket.onmessage = function(event) { cs.handlePacket(event); };
     cameraSocket.onopen = function() { cameraSocket.send("Group: camera"); };
-
-    var localCameraSocket = new ReconnectingWebSocket("ws://127.0.0.1:8080", null,
-        {binaryType: 'arraybuffer'});
-    localCameraSocket.onmessage = function(event) { cs.handlePacket(event); };
-    localCameraSocket.onopen = function() { localCameraSocket.send("Group: camera"); };
 
     distanceGauge = new JustGage({
         id: "gauge-distance",
@@ -114,5 +110,49 @@ function onDataMessage(event) {
         updateLogging(msg);
     } else {
         console.log(msg);
+    }
+}
+
+function onStateMessage(event) {
+    var msg;
+    try {
+        msg = JSON.parse(event.data);
+    } catch (err) {
+        return;
+    }
+
+    var topic = msg.topicName.match(/\/[A-Za-z0-9\/]*\/(?=state)/i);
+    if (topic) {// found a match
+        // every time we get a new topic update, we'll update the set with that
+        // key to have the new state. Something else will handle repaints.
+        showStatuses();
+    } else {
+        return;
+    }
+}
+
+function showStatuses() {
+    var canvas = document.getElementById("statuses");
+    var ctx = canvas.getContext("2d");
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.font = "20px Georgia";
+    ctx.textAlign = "center";
+    // count the number of properties
+    
+    var prop = 0;
+    for (a in states) { prop = prop + 1; }
+
+    if (prop > 0) {
+        var rectSize = canvas.height / prop;
+        var index = 0;
+        for (var i in states) {
+            ctx.fillStyle = (states[i] === "WATCHDOG_DEAD") ? "red" : "green";
+            ctx.fillRect(0, index * rectSize, canvas.width, (index + 1) * rectSize);
+            ctx.fillStyle = "black";
+            ctx.fillText(i, canvas.width / 2, (index + .3) * rectSize);
+            ctx.fillText(states[i], canvas.width / 2, (index + .6) * rectSize);
+            index = index + 1;
+        }
     }
 }

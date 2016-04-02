@@ -37,6 +37,9 @@ public class JettyServer {
 		updaters = new ArrayList<ClientUpdater>();
 		updaters.add(new ClientDataUpdater());
 		updaters.add(new ClientImageUpdater());
+		updaters.add(new ClientStateUpdater());
+		
+		// start button remotely
 		WSHandler.getCM().put("herp", new CommandCallback() {
 			public void callback(String message, int clientID) {
 				System.out.println("Starting logging!");

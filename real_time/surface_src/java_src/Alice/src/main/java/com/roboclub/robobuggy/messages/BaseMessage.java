@@ -14,6 +14,7 @@ import java.util.Date;
  */
 public abstract class BaseMessage implements Message {
 	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
+	private String topicName;
 	protected long timestamp;
 
 	/**
@@ -56,5 +57,13 @@ public abstract class BaseMessage implements Message {
 	 */
 	public Date getTimestamp() {
 		return new Date(timestamp);
+	}
+	
+	public void setTopicName(String topicName) {
+		this.topicName = topicName;
+	}
+	
+	public String getTopicName() {
+		return this.topicName;
 	}
 }

@@ -26,7 +26,7 @@ public class ClientDataUpdater extends ClientUpdater {
 	 * Connect to the "data" subscriber group.
 	 */
 	public ClientDataUpdater() {
-		super(); // subscribe to all the things
+		subscribeToAllData();
 		WSHandler.getSGM().newGroup("data"); // listen for data
 		
 		try {
@@ -49,7 +49,7 @@ public class ClientDataUpdater extends ClientUpdater {
 				while (true) {
 					try {
 						clients = WSHandler.getSGM().getGroup("data");
-						update = updates.take();
+						update = dataUpdates.take();
 
 						if (clients != null) {
 							for (int key: clients.keySet()) {
