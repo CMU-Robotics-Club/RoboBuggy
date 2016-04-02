@@ -17,45 +17,45 @@ public class MagneticMeasurement extends BaseMessage {
 	public static final String VERSION_ID = "magV0.0";
 
 
-	private double x;
-	private double y;
-	private double z;
-
+	private double rotationX;
+	private double rotationY;
+	private double rotationZ;
+	
 	/**
 	 * Constructs a new {@link MagMeasurement} at time now
-	 * @param x x value
-	 * @param y y value
-	 * @param z z value
+	 * @param rotationX rotationX value
+	 * @param rotationY rotationY value
+	 * @param rotationZ rotationZ value
 	 */
-	public MagneticMeasurement(double x, double y, double z) {
+	public MagneticMeasurement(double rotationX, double rotationY, double rotationZ) {
 		this.timestamp = new Date().getTime();
-		this.x = x;
-		this.y = y;
-		this.z = z;
+		this.rotationX = rotationX;
+		this.rotationY = rotationY;
+		this.rotationZ = rotationZ;
 	}
 	
 	/**
-	 * Returns the x value of the {@link MagMeasurement}
-	 * @return the x value of the {@link MagMeasurement}
+	 * Returns the rotationX value of the {@link MagMeasurement}
+	 * @return the rotationX value of the {@link MagMeasurement}
 	 */
-	public double getX() {
-		return x;
+	public double getRotationX() {
+		return rotationX;
 	}
 	
 	/**
-	 * Returns the y value of the {@link MagMeasurement}
-	 * @return the y value of the {@link MagMeasurement}
+	 * Returns the rotationY value of the {@link MagMeasurement}
+	 * @return the rotationY value of the {@link MagMeasurement}
 	 */
-	public double getY() {
-		return y;
+	public double getRotationY() {
+		return rotationY;
 	}
 	
 	/**
-	 * Returns the z value of the {@link MagMeasurement}
-	 * @return the z value of the {@link MagMeasurement}
+	 * Returns the rotationZ value of the {@link MagMeasurement}
+	 * @return the rotationZ value of the {@link MagMeasurement}
 	 */
-	public double getZ() {
-		return z;
+	public double getRotationZ() {
+		return rotationZ;
 	}
 
 }

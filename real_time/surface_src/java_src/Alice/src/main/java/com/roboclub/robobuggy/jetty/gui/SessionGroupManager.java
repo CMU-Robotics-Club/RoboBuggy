@@ -1,8 +1,8 @@
 package com.roboclub.robobuggy.jetty.gui;
 
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.eclipse.jetty.websocket.api.Session;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Singleton class which manages the client / server group system.

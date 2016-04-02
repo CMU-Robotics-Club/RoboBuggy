@@ -13,14 +13,12 @@ import java.util.Date;
 public class WayPointFollowerPlanner extends PathPlannerNode{
 	private ArrayList<GpsMeasurement> wayPoints;
 	private GPSPoseMessage pose; //TODO change this to a reasonable type
-	private int bestGuess = 0; //what point we think we are around
 
 	/**
-	 * @param channel for buggybasenode
 	 * @param wayPoints the list of waypoints to follow
 	 */
-	public WayPointFollowerPlanner(NodeChannel channel,ArrayList wayPoints) {
-		super(channel);
+	public WayPointFollowerPlanner(ArrayList<GpsMeasurement> wayPoints) {
+		super(NodeChannel.PATH_PLANNER);
 		this.wayPoints = wayPoints;
 		pose = new GPSPoseMessage(new Date(0), 0, 0, 0);// temp measurment
 	}
@@ -33,12 +31,12 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 
 	//find the closest way point
 	//TODO turn into a binary search
-	private int getClosestIndex(){
+	private static int  getClosestIndex(ArrayList<GpsMeasurement> wayPoints, GPSPoseMessage currentLocation){
 		double min = Double.MAX_VALUE; //note that the brakes will definitely deploy at this
 
 		int closestIndex = -1;
-		for(int i = Math.max(bestGuess-50,0);i<Math.min(wayPoints.size(),bestGuess+50);i++){
-			double d = getDistance(pose,wayPoints.get(i));
+		for(int i = 0;i<wayPoints.size();i++){
+			double d = GPSPoseMessage.getDistance(currentLocation, wayPoints.get(i).toGpsPoseMessage(0));
 			if(d < min){
 				min = d;
 				closestIndex = i;
@@ -49,21 +47,18 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 
 	@Override
 	public double getCommandedSteeringAngle() {
-		int closestIndex = getClosestIndex();
+		int closestIndex = getClosestIndex(wayPoints,pose);
 		if(closestIndex == -1){
 			return 17433504; //A dummy value that we can never get
 		}
-		bestGuess  = closestIndex;
 
-		double delta = 10/100000.0;
+		double delta = 10/100000.0; //10/100000.0;
 		//pick the first point that is at least delta away
 		//pick the point to follow
-		int targetIndex = closestIndex;
-		while(getDistance(pose,wayPoints.get(targetIndex)) < delta){
-			targetIndex = targetIndex+1;
-		}
-
-
+		int targetIndex = closestIndex + 2;
+//		while(GPSPoseMessage.getDistance(pose,wayPoints.get(targetIndex).toGpsPoseMessage(0)) < delta && targetIndex < wayPoints.size()){
+//			targetIndex = targetIndex+1;
+//		}
 
 		//if we are out of points then just go straight
 		if(targetIndex >= wayPoints.size())
@@ -74,37 +69,39 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 		GpsMeasurement targetPoint = wayPoints.get(targetIndex);
 
 		//find a path from our current location to that point
-		double dx = targetPoint.getLatitude() - pose.getLatitude();
-		double dy = targetPoint.getLongitude() - pose.getLongitude();
-		double desiredHeading = 180*Math.atan2(dy, dx)/Math.PI;
+		double dLon = targetPoint.getLongitude() - pose.getLongitude();
+		double dLat = targetPoint.getLatitude() - pose.getLatitude();
+		double desiredHeading = 180*Math.atan2(dLat, dLon)/Math.PI;
 
+		// basically we want all of our angles to be in the [0, 2pi) range, so that we don't
+		// accidentally overflow, and get one of our angles to be +170 and the other is -170
+		if (desiredHeading < 0) {
+			desiredHeading += 360;
+		}
+
+		double poseHeading = pose.getHeading();
+		if (poseHeading < 0) {
+			poseHeading += 360;
+		}
 
 		//find the angle we need to reach that point
 		//return pose.getHeading() - desiredHeading;
-		return  desiredHeading - pose.getHeading();
+		return desiredHeading - poseHeading;
 
 	}
 
 	@Override
 	protected boolean getDeployBrakeValue() {
 
-		int closestIndex = getClosestIndex();
+		int closestIndex = getClosestIndex(wayPoints,pose);
 		if(closestIndex == -1){
 			return true;
 		}
 
 		// if closest point is too far away throw breaks
-		if(getDistance(pose,wayPoints.get(closestIndex)) < 1.0){
-			//if we are within 1 meter of any point then do not throw breaks
-			return false;
-		}
-		return true;
+		return GPSPoseMessage.getDistance(pose, wayPoints.get(closestIndex).toGpsPoseMessage(0)) >= 1.0;
 	}
 
-	private double getDistance(GPSPoseMessage a, GpsMeasurement b){
-		double dx = a.getLatitude() - b.getLatitude();
-		double dy = a.getLongitude() - b.getLongitude();
-		return Math.sqrt(dx*dx + dy*dy);
-	}
+
 
 }

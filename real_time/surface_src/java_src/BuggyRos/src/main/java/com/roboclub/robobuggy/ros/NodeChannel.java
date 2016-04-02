@@ -7,10 +7,10 @@ public enum NodeChannel {
 	GPS("gps", true),    								//The most recent gps coordinate
 	IMU("imu", true),									//The most recent imu measurement
 	IMU_MAGNETIC("mag", true),
+	HILL_CREST_IMU("hill_crest_imu",true),
 	RC("rc_angle", true),								//?
 	STEERING("steering", true),						//The current angle that low level is steering to
 	PUSHBAR_CAMERA("push_bar_camera", true),
-	BRAKE("brake", true),
 	LOGIC_NOTIFICATION("logic_notification", true),
 	DRIVE_CTRL("drive_ctrl", true),
 	BRAKE_CTRL("commanded brake", true),
@@ -21,6 +21,7 @@ public enum NodeChannel {
 	STEERING_COMMANDED("commanded_steering", true),   // the angle that we are commanding the front wheel turn to
 	FP_HASH("fp_hash", true),
 	POSE("pose", true),
+	SIM_POSE("sim_pose",true),  //reperesents the hiddenn simulated ground truth 
 	RESET("reset", true),
 	STATE("state", true),
 	SIMULATION("simulation", true),

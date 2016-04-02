@@ -1,7 +1,5 @@
 package com.roboclub.robobuggy.jetty.gui;
 
-import java.util.ArrayList;
-
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandler;
@@ -14,6 +12,7 @@ import org.eclipse.jetty.websocket.server.WebSocketHandler;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 
 import com.roboclub.robobuggy.ui.Gui;
+import java.util.ArrayList;
 
 /**
  * Webserver class running inside the buggy. Only instantiate one.
@@ -39,13 +38,13 @@ public class JettyServer {
 		updaters.add(new ClientImageUpdater());
 		updaters.add(new ClientStateUpdater());
 		
-		// start button remotely
-		WSHandler.getCM().put("herp", new CommandCallback() {
-			public void callback(String message, int clientID) {
-				System.out.println("Starting logging!");
-				Gui.getInstance().getMainGuiWindow().getCtrlPanel().getLoggingPanel().getPlayBtn().doClick();
-			}
-		});
+//		// start button remotely
+//		WSHandler.getCM().put("herp", new CommandCallback() {
+//			public void callback(String message, int clientID) {
+//				System.out.println("Starting logging!");
+//				Gui.getInstance().getWindow(0).getCtrlPanel().getLoggingPanel().getPlayBtn().doClick();
+//			}
+//		});
 
 		// Root handler for HTML
 		ResourceHandler res = new ResourceHandler();

@@ -13,7 +13,7 @@ public class MainGuiWindow extends RobobuggyGUIContainer{
 	 * constructor for the main gui window, sets up what is shown on the window
 	 */
 	public MainGuiWindow(){
-		analyPane = new AnalyticsPanel();
+		analyPane = AnalyticsPanel.getInstance();
 		ctrlPanel = new ControlPanel();
 		//addComponent syntax is (newComponent,percentageLeft,percentageTop,percentageWidth,percentageHeight)
 		addComponent(ctrlPanel, 0.0, 0.0, .3, 1.0);

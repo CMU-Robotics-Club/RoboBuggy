@@ -220,14 +220,6 @@ public class DataPanel extends RobobuggyGUIContainer {
 		});
 		
 		
-		//Subscriber for GPS data - agirish
-		new Subscriber(NodeChannel.GPS.getMsgPath(), new MessageListener() {
-			public void actionPerformed(String topicName, Message m) {
-				aX.setText(Double.toString(((GpsMeasurement)m).getLatitude())); //adding a value 
-			    Gui.getInstance().fixPaint();
-			}
-		});
-		
 		errorNum = new JLabel();
 		label = new JLabel("   Errors: ");
 		panel.add(label);

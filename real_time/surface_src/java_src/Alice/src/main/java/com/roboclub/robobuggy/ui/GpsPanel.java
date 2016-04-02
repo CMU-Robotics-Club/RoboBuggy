@@ -2,11 +2,13 @@ package com.roboclub.robobuggy.ui;
 
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
+import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
+
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.JMapViewerTree;
 import org.openstreetmap.gui.jmapviewer.MapMarkerDot;
@@ -21,6 +23,7 @@ import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -52,6 +55,8 @@ public class GpsPanel extends JPanel {
 	
 	private double mapDragX = -1;
 	private double mapDragY = -1;
+	
+	private GPSPoseMessage lastpose;
 
 	@SuppressWarnings("unused") //this subscriber is used to generate callbacks
 	private Subscriber gpsSub;
@@ -86,6 +91,17 @@ public class GpsPanel extends JPanel {
 				updateArrow();
 				GpsPanel.this.repaint();  // refresh screen
 
+			}
+		});
+		
+		new Subscriber(NodeChannel.POSE.getMsgPath(), new MessageListener() {
+			
+			@Override
+			public void actionPerformed(String topicName, Message m) {
+				// TODO Auto-generated method stub
+				
+				GPSPoseMessage curpose = (GPSPoseMessage) m;
+				addLineToMap(new LocTuple(curpose.getLatitude(), curpose.getLongitude()), curpose.getHeading(), Color.CYAN);
 			}
 		});
 
@@ -179,8 +195,9 @@ public class GpsPanel extends JPanel {
 	 * @param lineColor the color of the line
 	 */
 	public void addLineToMap(LocTuple originPoint, double angle, Color lineColor) {
-		angle = -angle;
-		double scalingFactor = 0.00005;
+		mapTree.getViewer().getMapPolygonList().clear();
+		
+		double scalingFactor = 0.05;
 		double dx = Math.cos(angle) * scalingFactor;
 		double dy = Math.sin(angle) * scalingFactor;
 

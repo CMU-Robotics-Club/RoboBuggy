@@ -2,6 +2,7 @@ package com.roboclub.robobuggy.simulation;
 
 import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.messages.MagneticMeasurement;
+import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyNode;
 import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
 import com.roboclub.robobuggy.ros.NodeChannel;
@@ -15,14 +16,21 @@ import com.roboclub.robobuggy.ros.Publisher;
 public class SimulatedImuNode extends PeriodicNode{
 	private Publisher imuPub = new Publisher(NodeChannel.IMU.getMsgPath());
 	private Publisher imuMagPub = new Publisher(NodeChannel.IMU_MAGNETIC.getMsgPath());
-	protected SimulatedImuNode(BuggyNode base, int period) {
-		super(base, period);
+	private SimulatedBuggy simBuggy = SimulatedBuggy.getInstance();
+
+	/**
+	 * Constructor for the simulated imu node
+	 * @param period how many milliseconds between new simulated imu messages
+	 */
+	public SimulatedImuNode(int period) {
+		super(new BuggyBaseNode(NodeChannel.IMU), period,"simulated_imu_node");
+		simBuggy = SimulatedBuggy.getInstance();
 		// TODO Auto-generated constructor stub
+		resume();
 	}
 
 	@Override
 	protected void update() {
-		SimulatedBuggy simBuggy = SimulatedBuggy.getInstance();
 		imuPub.publish(new ImuMeasurement(simBuggy.getTh(), 0.0, 0.0));
 		imuMagPub.publish(new MagneticMeasurement(0.0, 0.0, simBuggy.getTh()));
 		

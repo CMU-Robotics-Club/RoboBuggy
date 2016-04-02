@@ -41,8 +41,7 @@ public class CameraNode extends PeriodicNode{
 	 * @param period  How often new images should be pulled
 	 */
 	public CameraNode(NodeChannel channel, int period) {
-		super(new BuggyBaseNode(channel),period);
-
+		super(new BuggyBaseNode(channel),period, "Camera_Node");
 
 		//setup the webcam
 		List<Webcam> webcams = Webcam.getWebcams();
@@ -71,6 +70,7 @@ public class CameraNode extends PeriodicNode{
 		imagePublisher = new Publisher(channel.getMsgPath());
 
 		setupLoggingTrigger();
+		resume();
 	}
 
 	private void setupLoggingTrigger() {
