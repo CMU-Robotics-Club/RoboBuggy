@@ -103,7 +103,12 @@ public class SensorPlayer extends Thread {
         this.playbackSpeed = playbackSpeed;
     }
     
-    //Overloaded constructor for video playback
+    /**
+     * Overloaded constructor for use for video playback
+     * @param filePath Log file to be read in
+     * @param playbackSpeed Speed of playback
+     * @param videoPath Video file to be read in
+     */
     public SensorPlayer(String filePath, int playbackSpeed, String videoPath) {
     	imagePub = new Publisher(NodeChannel.PUSHBAR_CAMERA.getMsgPath());
         imuPub = new Publisher(NodeChannel.IMU.getMsgPath());
