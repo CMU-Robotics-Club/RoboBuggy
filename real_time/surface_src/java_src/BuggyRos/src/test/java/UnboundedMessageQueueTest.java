@@ -4,7 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class SimpleTest {
+public class UnboundedMessageQueueTest {
 
 	@Before
 	public void setUp() throws Exception {
@@ -16,8 +16,8 @@ public class SimpleTest {
 
 	@Test
 	public void onePubOneSub() {
-		int numIterations = 1000000;
-		NumberSink sink = new NumberSink("to", numIterations);
+		int numIterations = 100;
+		UnboundedQueueNumberSink sink = new UnboundedQueueNumberSink("to", numIterations);
 	
 		// Publish as fast as we can!
 		NumberSource source = new NumberSource("to", 0, numIterations);
@@ -27,12 +27,15 @@ public class SimpleTest {
 		if(count != numIterations) {
 			fail("Counts did not match");
 		}
+		
+		source.shutdown();
+		sink.shutdown();
 	}
 
 	@Test
 	public void onePubOneSubWithMiddleNode() {
-		int numIterations = 1000000;
-		NumberSink sink = new NumberSink("to", numIterations);
+		int numIterations = 100;
+		UnboundedQueueNumberSink sink = new UnboundedQueueNumberSink("to", numIterations);
 		MessagePasser ms = new MessagePasser("from", "to");
 	
 		// Publish as fast as we can!
@@ -43,12 +46,16 @@ public class SimpleTest {
 		if(count != numIterations) {
 			fail("Counts did not match");
 		}
+	
+		sink.shutdown();
+		ms.shutdown();
+		source.shutdown();
 	}
 
 	@Test
 	public void onePubOneSubWithTwoMiddleNode() {
-		int numIterations = 1000000;
-		NumberSink sink = new NumberSink("to", numIterations);
+		int numIterations = 100;
+		UnboundedQueueNumberSink sink = new UnboundedQueueNumberSink("to", numIterations);
 		MessagePasser ms1 = new MessagePasser("from", "middle");
 		MessagePasser ms2 = new MessagePasser("middle", "to");
 	
@@ -60,5 +67,10 @@ public class SimpleTest {
 		if(count != numIterations) {
 			fail("Counts did not match");
 		}
+		
+		sink.shutdown();
+		ms1.shutdown();
+		ms2.shutdown();
+		source.shutdown();
 	}
 }

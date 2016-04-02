@@ -6,13 +6,17 @@ import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Subscriber;
 
-public class NumberSink implements Node {
+public class BoundedQueueNumberSink implements Node {
 
-	Subscriber s;
-	Semaphore sem = new Semaphore(1);
-	AtomicInteger count = new AtomicInteger(1);
+	private Subscriber s;
+	private Semaphore sem = new Semaphore(1);
+	private AtomicInteger count = new AtomicInteger(1);
 
-	public NumberSink(String topicName, int numMessages) {
+	public BoundedQueueNumberSink(String topicName, int numMessages) {
+		this(topicName, numMessages, Integer.MAX_VALUE);
+	}
+	
+	public BoundedQueueNumberSink(String topicName, int numMessages, int maxMessageQueueLength) {
 		try {
 			sem.acquire();
 		} catch (InterruptedException e) {
@@ -31,7 +35,7 @@ public class NumberSink implements Node {
 					return;
 				}
 			}
-		});
+		}, maxMessageQueueLength);
 	}
 
 	@Override
