@@ -3,6 +3,7 @@ package com.roboclub.robobuggy.simulation;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
+import com.roboclub.robobuggy.nodes.localizers.LocalizerUtil;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 
@@ -31,8 +32,10 @@ public class SimulatedGPSNode extends PeriodicNode{
 	protected void update() {
 		 SimulatedBuggy simBuggy = SimulatedBuggy.getInstance();
 		 synchronized (this) {
-		double xVal = simBuggy.getX();
-		double yVal = simBuggy.getY();
+			 //TODO convert to lat lon 
+			 
+		double xVal = LocalizerUtil.convertMetersToLon(simBuggy.getX());
+		double yVal = LocalizerUtil.convertMetersToLat(simBuggy.getY());
 		gpsPub.publish(new GpsMeasurement(new Date(), new Date(), yVal, true, xVal, true, 0, 0, 0.0, 0.0));		
 		 }
 		 }

@@ -71,7 +71,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 		//find a path from our current location to that point
 		double dLon = targetPoint.getLongitude() - pose.getLongitude();
 		double dLat = targetPoint.getLatitude() - pose.getLatitude();
-		double desiredHeading = 180*Math.atan2(dLat, -dLon)/Math.PI;
+		double desiredHeading = 180*Math.atan2(dLat, dLon)/Math.PI;
 
 		// basically we want all of our angles to be in the [0, 2pi) range, so that we don't
 		// accidentally overflow, and get one of our angles to be +170 and the other is -170

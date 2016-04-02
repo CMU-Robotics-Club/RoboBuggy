@@ -10,7 +10,7 @@ import com.roboclub.robobuggy.ui.RobobuggyJFrame;
 /**
  * 
  * Test fails on travis but passes localy so we are commenting it out for now TODO fix this after raceday 
- * 
+ */
 public class TestGui {
 
 	@Before
@@ -23,6 +23,11 @@ public class TestGui {
 
 	@Test
 	public void test() {
+		if(!System.getProperty("os.name").equals("Mac OS X")){
+			System.out.println("skipping this test because you are not running mac OS X ");
+			//this test fails on travis so we only want to run it locally
+		}else{
+
 		if(Gui.getInstance().getWindow(-1) != null){
 			fail("returned a window when passed an invalid id");
 		};
@@ -109,8 +114,8 @@ public class TestGui {
 		if(!window3.getTitle().equals("title3")){
 			fail("window name does not agree");
 		}
+		}
 		
 	}
 
 }
-*/
