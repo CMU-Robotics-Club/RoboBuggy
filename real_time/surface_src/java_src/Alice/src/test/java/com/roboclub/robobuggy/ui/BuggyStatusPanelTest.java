@@ -4,21 +4,12 @@ import com.roboclub.robobuggy.messages.BatteryLevelMessage;
 import com.roboclub.robobuggy.messages.BrakeStateMessage;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
  * commenting this out until gui tests work on travis
  */
 public class BuggyStatusPanelTest {
-
-    /**
-     * open the gui before running the test
-     */
-    @Before
-    public void setup() {
-        Gui.getInstance();
-    }
 
     /**
      * Toggles the brakes at 1 hz
@@ -31,6 +22,7 @@ public class BuggyStatusPanelTest {
             //this test fails on travis so we only want to run it locally
             return;
         }
+        Gui.getInstance();
         Publisher p = new Publisher(NodeChannel.BRAKE_STATE.getMsgPath());
         for (int i = 0; i < 10; i++) {
             Thread.sleep(1000);
@@ -51,6 +43,7 @@ public class BuggyStatusPanelTest {
             //this test fails on travis so we only want to run it locally
             return;
         }
+        Gui.getInstance();
         Publisher p2 = new Publisher(NodeChannel.BATTERY.getMsgPath());
         Thread.sleep(1000);
         for (int i = 0; i < 10; i++) {
