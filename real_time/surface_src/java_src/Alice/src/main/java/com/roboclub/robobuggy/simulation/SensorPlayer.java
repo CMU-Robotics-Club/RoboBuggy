@@ -207,7 +207,6 @@ public class SensorPlayer extends Thread {
                     String versionID = sensorDataJson.get("VERSION_ID").getAsString();
 
                     Message transmitMessage = null;
-                    System.out.println("Getting a message");
                     switch (versionID) {
                     	case ImageMessage.VERSION_ID:
                     		transmitMessage = translator.fromJson(sensorDataJson, ImageMessage.class);
@@ -296,7 +295,6 @@ public class SensorPlayer extends Thread {
                     if (timeMessage == null) {
                         continue;
                     }
-                    System.out.println("New timestamp was: " + timeMessage.getTimestamp());
                     if (prevSensorTime == -1) {
                         prevSensorTime = timeMessage.getTimestamp().getTime();
                     }
