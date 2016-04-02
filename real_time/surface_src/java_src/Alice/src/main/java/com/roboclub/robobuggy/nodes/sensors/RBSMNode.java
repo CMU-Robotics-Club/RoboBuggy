@@ -232,7 +232,13 @@ public  class  RBSMNode extends SerialNode {
 			messagePubDeviceID.publish(new DeviceIDMessage(message.getDataWord()));
 		}
 		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_BRAKE_STATE")){
-			messagePubBrakeState.publish(new BrakeStateMessage(message.getDataWord()));
+			boolean brakesDown = false;
+
+			if (message.getDataWord() == 1) {
+				brakesDown = true;
+			}
+
+			messagePubBrakeState.publish(new BrakeStateMessage(brakesDown));
 		}
 		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_AUTON_STATE")){
 			messagePubAutonState.publish(new AutonStateMessage(message.getDataWord()));

@@ -350,7 +350,7 @@ public class LoggingNode extends BuggyDecoratorNode {
             dataBreakdown.addProperty(NodeChannel.GPS.getName(), gpsHits);
             dataBreakdown.addProperty(NodeChannel.IMU.getName(), imuHits);
             dataBreakdown.addProperty(NodeChannel.ENCODER.getName(), encoderHits);
-            dataBreakdown.addProperty(NodeChannel.BRAKE.getName(), brakeHits);
+            dataBreakdown.addProperty(NodeChannel.BRAKE_STATE.getName(), brakeHits);
             dataBreakdown.addProperty(NodeChannel.STEERING.getName(), steeringHits);
             dataBreakdown.addProperty(NodeChannel.FP_HASH.getName(), fingerprintHits);
             dataBreakdown.addProperty(NodeChannel.LOGIC_NOTIFICATION.getName(), logicNotificationHits);

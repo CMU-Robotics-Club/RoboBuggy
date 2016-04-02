@@ -1,8 +1,5 @@
 package com.roboclub.robobuggy.ui;
 
-import sun.security.jca.GetInstance;
-import sun.security.jca.GetInstance.Instance;
-
 /**
  * {@link RobobuggyGUIContainer} used to display a {@link DataPanel} and a
  *  {@link GraphPanel}
@@ -12,30 +9,28 @@ public final class AnalyticsPanel extends RobobuggyGUIContainer {
 	private static final long serialVersionUID = 7017667286491619492L;
 
 	private DataPanel dataPanel;
-	private GraphPanel graphPanel;
-	private static AnalyticsPanel instance  = null;
-	
+	private static AnalyticsPanel instance;
+
 	/**
-	 * 
-	 * @return a reference to the analytics panel 
+	 * @return a reference to the analytics panel
 	 */
 	public static synchronized AnalyticsPanel getInstance(){
 		if(instance == null){
 			instance = new AnalyticsPanel();
 		}
 		return instance;
-		
+
 	}
-	
+
 	/**
 	 * Construct a new {@link AnalyticsPanel}
 	 */
 	private AnalyticsPanel() {
 		name = "analytics";
 		dataPanel = new DataPanel();
-		graphPanel = new GraphPanel();
+		BuggyStatusPanel buggyStatusPanel = new BuggyStatusPanel();
 		this.addComponent(dataPanel, 0, 0, 1, .6);
-		this.addComponent(graphPanel, 0, .6, 1, .4);
+		this.addComponent(buggyStatusPanel, 0, .6, 1, .4);
 
 	}
 	

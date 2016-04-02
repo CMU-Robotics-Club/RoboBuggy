@@ -1,7 +1,5 @@
 package com.roboclub.robobuggy.robots;
 
-import java.util.ArrayList;
-
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.nodes.localizers.HighTrustGPSLocalizer;
 import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
@@ -18,6 +16,8 @@ import com.roboclub.robobuggy.ui.RobobuggyGUITabs;
 import com.roboclub.robobuggy.ui.RobobuggyJFrame;
 import com.roboclub.robobuggy.ui.SimulationPanel;
 import com.roboclub.robobuggy.ui.VelocityWindow;
+
+import java.util.ArrayList;
 
 
 /**
