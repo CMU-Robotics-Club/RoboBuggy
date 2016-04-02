@@ -1,20 +1,18 @@
 package com.roboclub.robobuggy.jetty.gui;
 
-import java.util.Base64;
-import java.util.Base64.Encoder;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.nio.ByteBuffer;
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.imageio.ImageIO;
-
-import org.eclipse.jetty.websocket.api.Session;
-
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.messages.ImageMessage;
 import com.roboclub.robobuggy.ros.Message;
+import org.eclipse.jetty.websocket.api.Session;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.nio.ByteBuffer;
+import java.util.Base64;
+import java.util.Base64.Encoder;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Updates connected clients with ImageMessages.

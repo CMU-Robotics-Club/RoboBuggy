@@ -1,19 +1,13 @@
 package com.roboclub.robobuggy.robots;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.nodes.localizers.HighTrustGPSLocalizer;
-import com.roboclub.robobuggy.nodes.localizers.KfLocalizer;
-import com.roboclub.robobuggy.nodes.planners.SweepNode;
 import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
-import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
-import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.simulation.SimulatedBuggy;
 import com.roboclub.robobuggy.simulation.SimulatedGPSNode;
 import com.roboclub.robobuggy.simulation.SimulatedRBSMNode;
-import com.roboclub.robobuggy.simulation.SimulationPlayer;
+
+import java.util.ArrayList;
 
 /**
  * A robot file for a simulated robot that can be used for internal testing of nodes along simulated paths 

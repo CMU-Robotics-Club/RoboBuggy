@@ -1,22 +1,17 @@
-import static org.junit.Assert.*;
-
-import org.junit.After;
-import org.junit.Before;
+import com.roboclub.robobuggy.messages.BatteryLevelMessage;
 import org.junit.Test;
 
-import com.roboclub.robobuggy.messages.BatteryLevelMessage;
+import static org.junit.Assert.fail;
 
 
+/**
+ * makes sure that we can create a battery level message correctly
+ */
 public class TestBatteryLevel {
 
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	@After
-	public void tearDown() throws Exception {
-	}
-
+	/**
+	 * tries to create a new battery level message
+	 */
 	@Test
 	public void test() {
 		BatteryLevelMessage battery = new BatteryLevelMessage(10);
