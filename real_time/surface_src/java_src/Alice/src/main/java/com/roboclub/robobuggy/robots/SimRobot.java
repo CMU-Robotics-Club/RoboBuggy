@@ -2,9 +2,9 @@ package com.roboclub.robobuggy.robots;
 
 import java.util.ArrayList;
 
-
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.nodes.localizers.HighTrustGPSLocalizer;
+import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
 import com.roboclub.robobuggy.simulation.SimulatedBuggy;
 import com.roboclub.robobuggy.simulation.SimulatedGPSNode;
 import com.roboclub.robobuggy.simulation.SimulatedImuNode;
@@ -48,14 +48,14 @@ public final class SimRobot extends AbstractRobot{
 		nodeList.add(new SimulatedRBSMNode());
 		ArrayList<GpsMeasurement> wayPoints = new ArrayList<GpsMeasurement>();
 		for(int i = 0;i<100;i++){
-			wayPoints.add(new GpsMeasurement(0,i));
+			wayPoints.add(new GpsMeasurement(0,-i));
 		}
-	//	nodeList.add(new WayPointFollowerPlanner(wayPoints));
+		nodeList.add(new WayPointFollowerPlanner(wayPoints));
 		SimulatedBuggy simBuggy = SimulatedBuggy.getInstance();
-		simBuggy.setDx(1);
+		simBuggy.setDx(.1);
 
 		//simBuggy.setDth(1);
-		simBuggy.setDth(1.0);
+	//	simBuggy.setDth(0.10);
 		
 		
 		//setup the gui 

@@ -10,6 +10,7 @@ import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
+import com.roboclub.robobuggy.ui.LocTuple;
 
 import java.util.Date;
 
@@ -20,14 +21,15 @@ import java.util.Date;
  *
  */
 public class HighTrustGPSLocalizer implements Node{
-    private double buggyFrameGpsLon;
-    private double buggyFrameGpsLat;
+    private double buggyFrameGpsX;
+    private double buggyFrameGpsY;
     private double buggyFrameRotZ;
     private Date mostRecentUpdate;
     private double lastEncoderReading;
     //private double roll = 0;
     //private double pitch = 0;
 
+    private static final double FEET_TO_METERS = 0.3048;
 
     private Publisher posePub;
 
@@ -36,8 +38,9 @@ public class HighTrustGPSLocalizer implements Node{
      */
     public HighTrustGPSLocalizer(){
         //init values
-        buggyFrameGpsLon = 0.0;
-        buggyFrameGpsLat = 0.0;
+    	buggyFrameGpsX = 0.0;
+    	buggyFrameGpsY = 0.0;
+        buggyFrameRotZ = 0.0;
         lastEncoderReading = 0.0;
         posePub = new Publisher(NodeChannel.POSE.getMsgPath());
         mostRecentUpdate = new Date();
@@ -51,18 +54,19 @@ public class HighTrustGPSLocalizer implements Node{
                 synchronized (this) {
                     long dt = newGPSData.getTimestamp().getTime() - mostRecentUpdate.getTime();
                     if(dt > 0.0){
+                          // Get the delta latitude and longitude, use that to figure out how far we've travelled
 
+   //             double oldGPSX = buggyFrameGpsX;
+   //             double oldGPSY = buggyFrameGpsY;
+                	buggyFrameGpsY = newGPSData.getLatitude();
+                	buggyFrameGpsX = newGPSData.getLongitude();
+   //             double dLat = buggyFrameGpsY - oldGPSY;
+   //             double dLon = buggyFrameGpsX - oldGPSX;
+                
+    //            double oldRotZ = buggyFrameRotZ;
 
-                        // Get the delta latitude and longitude, use that to figure out how far we've travelled
-
-                        //               double oldGPSX = buggyFrameGpsLon;
-                        //               double oldGPSY = buggyFrameGpsLat;
-                        buggyFrameGpsLat = newGPSData.getLatitude();
-                        buggyFrameGpsLon = newGPSData.getLongitude();
-                        //               double dLat = buggyFrameGpsLat - oldGPSY;
-                        //               double dLon = buggyFrameGpsLon - oldGPSX;
-
-                        //               double oldRotZ = buggyFrameRotZ;
+                // take the arctangent in order to get the heading (in degrees)
+ //               buggyFrameRotZ = Math.toDegrees(Math.atan2(dLat, -dLon));
 
                         publishUpdate();
                         mostRecentUpdate = newGPSData.getTimestamp();
@@ -83,26 +87,36 @@ public class HighTrustGPSLocalizer implements Node{
             }
         });
 
-        new Subscriber(NodeChannel.ENCODER.getMsgPath(),new MessageListener() {
+
+        // TODO note that we will probably run into precision errors since the changes are so small
+        // would be good to batch up the encoder updates until we get a margin that we know can be represented proeprly
+        new Subscriber(NodeChannel.ENCODER.getMsgPath(), new MessageListener() {
             @Override
             public void actionPerformed(String topicName, Message m) {
-                EncoderMeasurement magM = (EncoderMeasurement)m;
-                double dEncoder = magM.getDistance() - lastEncoderReading;
-                lastEncoderReading = magM.getDistance();
 
-                // TODO this should depend on the front wheel rather than the buggy frame
-                buggyFrameGpsLon = buggyFrameGpsLon + dEncoder*Math.cos(buggyFrameRotZ) + dEncoder*Math.sin(buggyFrameRotZ);
-                buggyFrameGpsLat = -buggyFrameGpsLat + dEncoder*Math.sin(buggyFrameRotZ) + dEncoder*Math.cos(buggyFrameRotZ);
+                EncoderMeasurement measurement = (EncoderMeasurement) m;
+
+                // convert the feet from the last message into a delta degree, and update our position
+                double currentEncoderMeasurement = measurement.getDistance();
+                double deltaDistance = currentEncoderMeasurement - lastEncoderReading;
+                double deltaMeters = deltaDistance * FEET_TO_METERS;
+
+                LocTuple deltaPos = LocalizerUtil.convertMetersToLatLng(deltaMeters, buggyFrameRotZ);
+                buggyFrameGpsY += deltaPos.getLatitude();
+                buggyFrameGpsX += deltaPos.getLongitude();
+
+
+                lastEncoderReading = currentEncoderMeasurement;
+
                 publishUpdate();
-                //TODO add a calibration step
             }
         });
 
     }
 
     private void publishUpdate(){
-        posePub.publish(new GPSPoseMessage(new Date(), buggyFrameGpsLat, buggyFrameGpsLon, buggyFrameRotZ));
-    }
+        posePub.publish(new GPSPoseMessage(new Date(), buggyFrameGpsY, buggyFrameGpsX, buggyFrameRotZ));
+    }	
 
     @Override
     public boolean startNode() {
@@ -112,8 +126,8 @@ public class HighTrustGPSLocalizer implements Node{
     @Override
     public boolean shutdown() {
         posePub = null;
-        buggyFrameGpsLon = 0.0;
-        buggyFrameGpsLat = 0.0;
+        buggyFrameGpsX = 0.0;
+        buggyFrameGpsY = 0.0;
         return true;
     }
 

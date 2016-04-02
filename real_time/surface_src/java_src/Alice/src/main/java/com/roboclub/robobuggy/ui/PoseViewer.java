@@ -4,6 +4,7 @@ import Jama.Matrix;
 
 import com.roboclub.robobuggy.messages.DriveControlMessage;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
+import com.roboclub.robobuggy.nodes.localizers.LocalizerUtil;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
@@ -30,14 +31,16 @@ public class PoseViewer extends RobobuggyGUIContainer{
 	private JButton zoomIn, zoomOut;
 	private JSlider zoomMag;
 	private int commtheta;
+	private boolean showLatLon; 
 
 	/**
 	 * makes a new poseviewer
 	 *  
 	 * @param poseChanel the chanel to publish on 
+	 * @param latlon if true coordinates are shown as latlon, othewise in meters
 	 */
-	public PoseViewer(NodeChannel poseChanel){
-
+	public PoseViewer(NodeChannel poseChanel,boolean latlon){
+		showLatLon = latlon;
 		zoomIn = new JButton("+");
 		zoomIn.setBounds(0, 0, 50, 50);
 		zoomIn.setVisible(true);
@@ -74,8 +77,14 @@ public class PoseViewer extends RobobuggyGUIContainer{
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				GPSPoseMessage poseM = (GPSPoseMessage)m;
+
 				double y = poseM.getLatitude();
 				double x = poseM.getLongitude();
+				if(showLatLon){
+					y = LocalizerUtil.convertLatToMeters(y);
+					x = LocalizerUtil.convertLonToMeters(x);
+				}
+
 				double th = Math.PI*poseM.getHeading()/180;
 				double [][] anArray = {{Math.cos(th),-Math.sin(th),0,x},{Math.sin(th),Math.cos(th),0,y},{0,0,1,0},{0,0,0,1}};
 				Matrix aPose = new Matrix(anArray);
