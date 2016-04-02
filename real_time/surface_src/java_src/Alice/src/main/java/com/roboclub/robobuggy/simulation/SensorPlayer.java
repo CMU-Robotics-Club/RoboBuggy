@@ -36,18 +36,12 @@ import com.roboclub.robobuggy.ui.Gui;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
-//Failed plan 1
-import org.bytedeco.javacpp.opencv_core.IplImage;
+//Image reading
 import org.bytedeco.javacv.FFmpegFrameGrabber;
-import org.bytedeco.javacv.FrameConverter;
 import org.bytedeco.javacv.FrameGrabber.Exception;
 import org.bytedeco.javacv.Java2DFrameConverter;
-//Failed plan 2
-import org.jcodec.api.awt.FrameGrab;
-import org.jcodec.api.JCodecException;
 
 /**
  * Class used for playing back old log files. It does this by reading BuggyROS
@@ -72,7 +66,9 @@ public class SensorPlayer extends Thread {
     private FFmpegFrameGrabber fg;
     private int currentFrame; //Will store the frame of the most recent image we've pulled
     private BufferedImage currentImage; //The most recent image we've pulled
-    private File videoFile = new File("/Users/davidneiman/RoboBuggy/real_time/surface_src/java_src/Alice/logs/2016-02-20-06-50-45/webcam.mp4");
+    
+    //This should probably get passed in as an argument and be defined somewhere else. Also, it fails findBugs
+    private File videoFile = null;// = new File("/Users/davidneiman/RoboBuggy/real_time/surface_src/java_src/Alice/logs/2016-02-20-06-50-45/webcam.mp4");
 	
     
     // ---- Log File Defaults ----
@@ -95,6 +91,32 @@ public class SensorPlayer extends Thread {
         loggingButtonPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
         logicNotificationPub = new Publisher(NodeChannel.LOGIC_NOTIFICATION.getMsgPath());
         
+        new RobobuggyLogicNotification("initializing the SensorPlayer", RobobuggyMessageLevel.NOTE);
+        path = filePath;
+        File f = new File(path);
+        if(!f.exists()) {
+            new RobobuggyLogicNotification("File doesn't exist!", RobobuggyMessageLevel.EXCEPTION);
+        }
+
+        setupPlaybackTrigger();
+
+        this.playbackSpeed = playbackSpeed;
+    }
+    
+    //Overloaded constructor for video playback
+    public SensorPlayer(String filePath, int playbackSpeed, String videoPath) {
+    	imagePub = new Publisher(NodeChannel.PUSHBAR_CAMERA.getMsgPath());
+        imuPub = new Publisher(NodeChannel.IMU.getMsgPath());
+        magPub = new Publisher(NodeChannel.IMU_MAGNETIC.getMsgPath());
+        gpsPub = new Publisher(NodeChannel.GPS.getMsgPath());
+        encoderPub = new Publisher(NodeChannel.ENCODER.getMsgPath());
+        brakePub = new Publisher(NodeChannel.BRAKE.getMsgPath());
+        steeringPub = new Publisher(NodeChannel.STEERING_COMMANDED.getMsgPath());
+        loggingButtonPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
+        logicNotificationPub = new Publisher(NodeChannel.LOGIC_NOTIFICATION.getMsgPath());
+        
+        videoFile = new File(videoPath);
+        //Start the frame grabber
         fg = new FFmpegFrameGrabber(videoFile);
         currentFrame = -1;
         currentImage = null;
@@ -104,19 +126,6 @@ public class SensorPlayer extends Thread {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        
-        //Test code
-        /*Java2DFrameConverter fc = new Java2DFrameConverter();
-        try {
-			currentImage = fc.convert(fg.grab());
-			currentFrame++;
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}*/
-        /*ImageMessage temp = new ImageMessage(currentImage, currentFrame);
-        imagePub.publish(temp);*/
-        //End test
         
         new RobobuggyLogicNotification("initializing the SensorPlayer", RobobuggyMessageLevel.NOTE);
         path = filePath;
@@ -196,26 +205,24 @@ public class SensorPlayer extends Thread {
                     System.out.println("Getting a message");
                     switch (versionID) {
                     	case ImageMessage.VERSION_ID:
-                    		System.out.println("Trying to display stuff! TESTING!");
-                            transmitMessage = translator.fromJson(sensorDataJson, ImageMessage.class);
+                    		transmitMessage = translator.fromJson(sensorDataJson, ImageMessage.class);
                             int framenum = ((ImageMessage)transmitMessage).getFrameNumber();
-                            System.out.println(framenum);
-							try {
-								Java2DFrameConverter fc = new Java2DFrameConverter();
-								while(currentFrame < framenum){
-									currentImage = fc.convert(fg.grabImage());
-									currentFrame++;
-								}
-							} catch (Exception e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-
-							ImageMessage temp = new ImageMessage(currentImage, framenum);
-							//Directly publish the image message here since publishing later causes issues
-                    		imagePub.publish(temp);
-                    		transmitMessage = null;
-                            System.out.println("Image message sent");
+                            if(videoFile != null && fg != null){
+    							try {
+    								Java2DFrameConverter fc = new Java2DFrameConverter();
+    								while(currentFrame < framenum){
+    									currentImage = fc.convert(fg.grabImage());
+    									currentFrame++;
+    								}
+    							} catch (Exception e) {
+    								// TODO Auto-generated catch block
+    								e.printStackTrace();
+    							}
+    							
+    							ImageMessage temp = (ImageMessage)transmitMessage;
+    							temp.setImage(currentImage);
+    							transmitMessage = temp;
+                            }
                     		break;
                         case BrakeControlMessage.VERSION_ID:
                             transmitMessage = translator.fromJson(sensorDataJson, BrakeControlMessage.class);
@@ -284,7 +291,7 @@ public class SensorPlayer extends Thread {
                     if (timeMessage == null) {
                         continue;
                     }
-
+                    System.out.println("New timestamp was: " + timeMessage.getTimestamp());
                     if (prevSensorTime == -1) {
                         prevSensorTime = timeMessage.getTimestamp().getTime();
                     }
@@ -292,6 +299,11 @@ public class SensorPlayer extends Thread {
                         long currentSensorTime = timeMessage.getTimestamp().getTime();
                         long timeDiff = currentSensorTime - prevSensorTime;
                         if (timeDiff > 10) {
+                        	//The problem with image reading was that the new messages I'm making are from April
+                        	//while the old ones are from February
+                        	//so the thread decides to sleep for two months
+                        	//My solution was to throw a setImage method into ImageMessage
+                        	//which means I don't need a new timestamp
                             Thread.sleep((long) (timeDiff / playbackSpeed));
                         }
                         prevSensorTime = currentSensorTime;

@@ -36,9 +36,17 @@ import java.util.Scanner;
  *
  */
 public class WayPointUtil {
-	
+	/**
+	 * Changes a point. This should be obsolete by now
+	 * @param filename File to be changed
+	 * @param npoint Number of point to be changed
+	 * @param latitude Latitude of new point
+	 * @param north Whether that's north
+	 * @param longitude Longitude of new point
+	 * @param west Whether that's west
+	 * @throws IOException We read from a file...
+	 */
 	public static void changeWaypoint(String filename, int npoint, double latitude, boolean north, double longitude, boolean west) throws IOException{
-		//Create a new waypoint and put it on the end of the file
 		
 		GpsMeasurement newpoint = new GpsMeasurement(Date.from(Instant.now()), Date.from(Instant.now()),
 				latitude, north, longitude, west, -1, -1, -1, -1);
@@ -53,7 +61,8 @@ public class WayPointUtil {
 		ArrayList<String> al = new ArrayList<String>();
 		
 		//Read the file; store the lines; insert the new reading at the end of the sensor part
-		BufferedReader input = new BufferedReader(new FileReader(filename));
+		//BufferedReader input = new BufferedReader(new FileReader(filename));
+		BufferedReader input = new BufferedReader(new InputStreamReader(new FileInputStream(filename), "UTF-8"));
 		int x = 0;
 		while(input.ready()){
 			String instring = input.readLine();
@@ -66,7 +75,7 @@ public class WayPointUtil {
 			x++;
 		}
 		input.close();
-		BufferedWriter output = new BufferedWriter(new FileWriter(filename));
+		BufferedWriter output = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename), "UTF-8"));
 		//output.write("Modified file\n");
 		while(al.size()>0){
 			output.write(al.remove(0) + "\n");

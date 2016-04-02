@@ -90,7 +90,7 @@ public final class Gui extends JFrame {
 	}
 	
 	/**
-	 * Closes the {@link Gui}
+	 * Resets the Gui (closes all tabs, then reopens them)
 	 */
 	
 	public static synchronized void reset(){
@@ -107,6 +107,9 @@ public final class Gui extends JFrame {
 		rmw.repaint();
 	}
 	
+	/**
+	 * Closes the Gui
+	 */
 	public static synchronized  void close() {
 		new RobobuggyLogicNotification("trying to close gui", RobobuggyMessageLevel.NOTE);
 		instance.dispatchEvent(new WindowEvent(instance, WindowEvent.WINDOW_CLOSING));
