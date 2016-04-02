@@ -74,7 +74,7 @@ public class HighTrustGPSLocalizer implements Node{
                 }
             }
         });
-
+/*
         new Subscriber(NodeChannel.IMU_MAGNETIC.getMsgPath(),new MessageListener() {
             @Override
             public void actionPerformed(String topicName, Message m) {
@@ -86,8 +86,9 @@ public class HighTrustGPSLocalizer implements Node{
                 //TODO add a calibration step
             }
         });
+*/
 
-
+        /*
         // TODO note that we will probably run into precision errors since the changes are so small
         // would be good to batch up the encoder updates until we get a margin that we know can be represented proeprly
         new Subscriber(NodeChannel.ENCODER.getMsgPath(), new MessageListener() {
@@ -111,7 +112,7 @@ public class HighTrustGPSLocalizer implements Node{
                 publishUpdate();
             }
         });
-
+*/
     }
 
     private void publishUpdate(){

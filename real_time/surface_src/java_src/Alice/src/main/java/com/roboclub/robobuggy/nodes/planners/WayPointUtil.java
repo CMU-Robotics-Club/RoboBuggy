@@ -51,6 +51,14 @@ public class WayPointUtil {
 			}
 			waypoints.add(translator.fromJson(nextline, GpsMeasurement.class));
 		}
+		
+		//makes sure that lon is negative (this is a hack) and should be remvoed 
+		for(int i = 0;i<waypoints.size();i++){
+			GpsMeasurement oldMeasurement = waypoints.get(i);
+			double newLon = -1*Math.abs(waypoints.get(i).getLongitude());
+			GpsMeasurement thisMeasurement = new GpsMeasurement(oldMeasurement.getTimestamp(), oldMeasurement.getTimestamp(), oldMeasurement.getLatitude(), oldMeasurement.getNorth(),newLon, oldMeasurement.getWest(), 0, -1, -1, -1);
+			waypoints.set(i, thisMeasurement);
+		}
 
 		fileReader.close();
 

@@ -2,7 +2,9 @@ package com.roboclub.robobuggy.robots;
 
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.nodes.localizers.HighTrustGPSLocalizer;
+import com.roboclub.robobuggy.nodes.localizers.LocalizerUtil;
 import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
+import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
 import com.roboclub.robobuggy.simulation.SimulatedBuggy;
 import com.roboclub.robobuggy.simulation.SimulatedGPSNode;
 import com.roboclub.robobuggy.simulation.SimulatedImuNode;
@@ -11,12 +13,14 @@ import com.roboclub.robobuggy.ui.AutonomousPanel;
 import com.roboclub.robobuggy.ui.Gui;
 import com.roboclub.robobuggy.ui.ImuPanel;
 import com.roboclub.robobuggy.ui.MainGuiWindow;
+import com.roboclub.robobuggy.ui.PathPanel;
 import com.roboclub.robobuggy.ui.PoseGraphsPanel;
 import com.roboclub.robobuggy.ui.RobobuggyGUITabs;
 import com.roboclub.robobuggy.ui.RobobuggyJFrame;
 import com.roboclub.robobuggy.ui.SimulationPanel;
 import com.roboclub.robobuggy.ui.VelocityWindow;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 
@@ -46,12 +50,22 @@ public final class SimRobot extends AbstractRobot{
 		nodeList.add(new SimulatedImuNode(100));
 		nodeList.add(new SimulatedGPSNode(500));
 		nodeList.add(new SimulatedRBSMNode());
-		ArrayList<GpsMeasurement> wayPoints = new ArrayList<GpsMeasurement>();
+	/*	ArrayList<GpsMeasurement> wayPoints = new ArrayList<GpsMeasurement>();
 		for(int i = 0;i<100;i++){
 			wayPoints.add(new GpsMeasurement(0,-i));
 		}
-		nodeList.add(new WayPointFollowerPlanner(wayPoints));
+		*/
+		try {
+			ArrayList<GpsMeasurement> wayPoints = WayPointUtil.createWayPointsFromWaypointList("/Users/trevordecker/Desktop/myWork/robobuggy2/RoboBuggy/real_time/surface_src/java_src/Alice/logs/waypoints.txt");
+			nodeList.add(new WayPointFollowerPlanner(wayPoints));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		SimulatedBuggy simBuggy = SimulatedBuggy.getInstance();
+		simBuggy.setY(LocalizerUtil.convertLatToMeters(40.4404511));
+		simBuggy.setX(LocalizerUtil.convertLonToMeters(-79.9443657));
 		simBuggy.setDx(.1);
 
 		//simBuggy.setDth(1);
@@ -69,6 +83,7 @@ public final class SimRobot extends AbstractRobot{
 		tabs.addTab(new ImuPanel(),"IMU");
 		tabs.addTab(new  AutonomousPanel(),"Autonomous");
 		tabs.addTab(new SimulationPanel(),"Simulation");
+		tabs.addTab(new PathPanel(),"Path Panel");
 
 
 	}
