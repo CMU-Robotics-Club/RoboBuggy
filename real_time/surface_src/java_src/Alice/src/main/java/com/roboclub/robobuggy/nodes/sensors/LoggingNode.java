@@ -50,7 +50,7 @@ public class LoggingNode extends BuggyDecoratorNode {
     private File outputFile;
     private File outputDirectory;
     private NodeChannel[] filters;
-    private LinkedBlockingQueue<Message> messageQueue;
+    private LinkedBlockingQueue<TraceableMessage> messageQueue;
     private LogWriterThread loggingThread;
     private boolean keepLogging;
 
@@ -66,6 +66,16 @@ public class LoggingNode extends BuggyDecoratorNode {
         INITIALIZED,
         STARTED_LOGGING,
         STOPPED_LOGGING,
+    }
+
+    private class TraceableMessage {
+        private Message message;
+        private String topic;
+
+        public TraceableMessage(Message m, String topic) {
+            this.message = m;
+            this.topic = topic;
+        }
     }
 
     /**
@@ -152,7 +162,7 @@ public class LoggingNode extends BuggyDecoratorNode {
             new Subscriber(filter.getMsgPath(), new MessageListener() {
                 @Override
                 public void actionPerformed(String topicName, Message m) {
-                    messageQueue.add(m);
+                    messageQueue.add(new TraceableMessage(m, topicName));
                 }
             });
         }
@@ -192,8 +202,8 @@ public class LoggingNode extends BuggyDecoratorNode {
 
         // each log file is called {filename}_{date}.txt
         outputFile = new File(outputDirectory.getPath() + "/" +
-                                RobobuggyConfigFile.LOG_FILE_NAME + "_" +
-                                formatDateIntoFile(logCreationDate) + ".txt")
+                RobobuggyConfigFile.LOG_FILE_NAME + "_" +
+                formatDateIntoFile(logCreationDate) + ".txt")
         ;
         try {
             if(!outputFile.createNewFile()) {
@@ -279,10 +289,10 @@ public class LoggingNode extends BuggyDecoratorNode {
             try {
                 fileWriteStream = new PrintStream(outputFile, "UTF-8");
                 messageTranslator = new GsonBuilder()
-                                        .excludeFieldsWithModifiers(Modifier.TRANSIENT)
-                                        .serializeSpecialFloatingPointValues()
-                                        .create()
-                                        ;
+                        .excludeFieldsWithModifiers(Modifier.TRANSIENT)
+                        .serializeSpecialFloatingPointValues()
+                        .create()
+                ;
             } catch (FileNotFoundException | UnsupportedEncodingException e) {
                 new RobobuggyLogicNotification("Error setting up the output file. Aborting logging!", RobobuggyMessageLevel.EXCEPTION);
                 return;
@@ -296,11 +306,13 @@ public class LoggingNode extends BuggyDecoratorNode {
 
                 //block until we have a message from the queue
                 Message toSort;
+                String topic;
                 try {
-                    toSort = messageQueue.take();
-                    String msgAsJsonString;
-                    
-                    msgAsJsonString = messageTranslator.toJson(toSort);
+                    TraceableMessage traceableMessage = messageQueue.take();
+                    toSort = traceableMessage.message;
+                    topic = traceableMessage.topic;
+
+                    String msgAsJsonString = messageTranslator.toJson(traceableMessage);
 
                     // and if you look on your right you'll see the almost-unnecessary
                     // giganti-frickin-ic telemetry block
@@ -330,7 +342,7 @@ public class LoggingNode extends BuggyDecoratorNode {
                         imageHits++;
                     } else {
                         //a new kind of message!
-                        new RobobuggyLogicNotification("New message came in that we aren't tracking", RobobuggyMessageLevel.WARNING);
+//                        new RobobuggyLogicNotification("New message came in that we aren't tracking", RobobuggyMessageLevel.WARNING);
                     }
                     fileWriteStream.println("        " + msgAsJsonString + ",");
 
