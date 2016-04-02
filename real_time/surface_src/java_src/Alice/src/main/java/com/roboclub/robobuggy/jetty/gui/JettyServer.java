@@ -41,7 +41,6 @@ public class JettyServer {
 //		// start button remotely
 //		WSHandler.getCM().put("herp", new CommandCallback() {
 //			public void callback(String message, int clientID) {
-//				System.out.println("Starting logging!");
 //				Gui.getInstance().getWindow(0).getCtrlPanel().getLoggingPanel().getPlayBtn().doClick();
 //			}
 //		});
