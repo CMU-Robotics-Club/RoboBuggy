@@ -125,6 +125,7 @@ function onStateMessage(event) {
     if (topic) {// found a match
         // every time we get a new topic update, we'll update the set with that
         // key to have the new state. Something else will handle repaints.
+        states[topic[0]] = msg.state;
         showStatuses();
     } else {
         return;
