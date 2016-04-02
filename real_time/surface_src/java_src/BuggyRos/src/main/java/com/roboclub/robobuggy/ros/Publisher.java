@@ -32,5 +32,9 @@ public class Publisher {
 		sequenceNumber++;
 		mserver.sendMessage(topic_name, m);
 	}
+	
+	public void close() {
+		mserver = null;
+	}
 
 }

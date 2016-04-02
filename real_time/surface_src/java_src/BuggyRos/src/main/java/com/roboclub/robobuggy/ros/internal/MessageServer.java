@@ -75,9 +75,28 @@ public class MessageServer {
 	// Puts message in mailbox. Will be handled later.
 	// Note that this will block on inbox's lock.
 	public synchronized void sendMessage(String s, Message m) {
-		if(!inbox.offer(new AbstractMap.SimpleEntry<String, Message>(s, m))) {
-			System.out.println("dropping message?");
+		AbstractMap.SimpleEntry<String, Message> am = new AbstractMap.SimpleEntry<String, Message>(s, m);
+		if(!inbox.offer(am)) {
+			System.out.println("Offer failed; dropping message?");
 		}
+	}
+
+	/*
+	 * The StatisticsThread 
+	 */
+	private class StatisticsThread implements Runnable {
+
+		public StatisticsThread(int pollingPeriodInMs) {
+			
+		}
+		
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		
 	}
 	
 	private MessageServer() {
@@ -85,8 +104,6 @@ public class MessageServer {
 	}
 
 	public static MessageServer getMaster() {
-		// TODO: this is broken for multithreading. consider the right way to do
-		// this.
 		singleton_lock.lock();
 		if (_master == null) {
 			_master = new MessageServer();
@@ -109,4 +126,16 @@ public class MessageServer {
 		}
 		outbox_lock.writeLock().unlock();
 	}
+	
+	public void removeListener(String s, Subscriber ml) {
+		outbox_lock.writeLock().lock();
+		List<Subscriber> listeners = outbox_mapping.get(s);
+		listeners.remove(ml);
+		if(listeners.size() == 0) {
+			outbox_mapping.remove(s, listeners);
+		}
+		outbox_lock.writeLock().unlock();
+		
+	}
+	
 }

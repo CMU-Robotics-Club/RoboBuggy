@@ -27,6 +27,7 @@ public class Subscriber {
 	
 	private Deque<Message> local_inbox = new ArrayDeque<Message>();
 
+	private volatile boolean shouldShutdown = false;
 	private Thread worker;
 
 	// Note that callbacks will run in a different thread
@@ -78,10 +79,15 @@ public class Subscriber {
 						try {
 							local_inbox.wait();
 						} catch (InterruptedException ie) {
-							System.out.println("much awoken for no reason, such wow");
-							// TODO fix trevor's sense of humor so he
-							// appreciates this
+							if(!shouldShutdown) {
+								System.out.println("Interrupted but not shutting down? Impossible.");
+								continue;
+							}
+							break;
 						}
+					}
+					if(shouldShutdown) {
+						return;
 					}
 					// Note that we compare with size()-1; if maxLocalInboxLength is 1, we
 					// want to leave one message in the inbox to poll outside of the loop.
@@ -103,6 +109,22 @@ public class Subscriber {
 				messagesReceived++;
 				callback.actionPerformed(topicName, m);
 			}
+		}
+	}
+	
+	// Stop receiving callbacks from Master. 
+	// Used for cleaning up this node after a test completes; subscribers will not be cleaned up
+	// automatically because MessageServer holds a reference to the Subscriber.
+	public void close() {
+		ms.removeListener(this.topicName, this);
+		this.ms = null;
+		this.shouldShutdown = true;
+		worker.interrupt();
+		try {
+			worker.join();
+		} catch (InterruptedException e) {
+			
+			e.printStackTrace();
 		}
 	}
 }

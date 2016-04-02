@@ -16,6 +16,9 @@ public class MessagePasser implements Node {
 		s = new Subscriber(from, new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
+				if(m == null) {
+					System.out.println("Message null....");
+				}
 				p.publish(m);
 			}
 		});
@@ -23,6 +26,8 @@ public class MessagePasser implements Node {
 	
 	@Override
 	public boolean shutdown() {
+		p.close();
+		s.close();
 		return true;
 	}
 

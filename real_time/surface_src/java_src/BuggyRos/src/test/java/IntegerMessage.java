@@ -4,8 +4,8 @@ import com.roboclub.robobuggy.ros.Message;
 
 public class IntegerMessage implements Message {
 
-	int val;
-	long sequenceNumber = -1;
+	public int val;
+	private long sequenceNumber = -1;
 	
 	public IntegerMessage(int i) {
 		this.val = i;
