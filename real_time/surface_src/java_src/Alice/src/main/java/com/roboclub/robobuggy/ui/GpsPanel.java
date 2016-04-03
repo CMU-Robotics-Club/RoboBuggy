@@ -68,7 +68,7 @@ public class GpsPanel extends JPanel {
 				// TODO Auto-generated method stub
 				
 				GPSPoseMessage curpose = (GPSPoseMessage) m;
-				map.addLineToMap(new LocTuple(curpose.getLatitude(), curpose.getLongitude()), curpose.getHeading(), Color.CYAN);
+				map.addLineToMap(new LocTuple(curpose.getLatitude(), curpose.getLongitude()), curpose.getHeading(), Color.CYAN, true);
 			}
 		});
 

@@ -194,14 +194,17 @@ public class Map extends JPanel {
 	}
 
 	/**
-	 * @param originPoint the origin point of the ray
-	 * @param angle the heading of the ray
-	 * @param lineColor the color of the line
-	 */
-	public void addLineToMap(LocTuple originPoint, double angle, Color lineColor) {
-		mapTree.getViewer().getMapPolygonList().clear();
+     * @param originPoint the origin point of the ray
+     * @param angle the heading of the ray
+     * @param lineColor the color of the line
+     * @param clearPrevLine update the line or add a new one
+     */
+	public void addLineToMap(LocTuple originPoint, double angle, Color lineColor, boolean clearPrevLine) {
+        if (clearPrevLine) {
+            mapTree.getViewer().getMapPolygonList().clear();
+        }
 
-		double scalingFactor = 0.05;
+		double scalingFactor = 0.0005;
 		double dx = Math.cos(angle) * scalingFactor;
 		double dy = Math.sin(angle) * scalingFactor;
 
