@@ -20,6 +20,7 @@ import com.roboclub.robobuggy.ui.Gui;
 import com.roboclub.robobuggy.ui.ImuPanel;
 import com.roboclub.robobuggy.ui.ImuVisualWindow;
 import com.roboclub.robobuggy.ui.MainGuiWindow;
+import com.roboclub.robobuggy.ui.PathPanel;
 import com.roboclub.robobuggy.ui.PoseGraphsPanel;
 import com.roboclub.robobuggy.ui.RobobuggyGUITabs;
 import com.roboclub.robobuggy.ui.RobobuggyJFrame;
@@ -70,11 +71,11 @@ public final class TransistorAuton extends AbstractRobot {
 				NodeChannel.getLoggingChannels()));
 		nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING, RobobuggyConfigFile.getComPortRBSM(),
 				RobobuggyConfigFile.RBSM_COMMAND_PERIOD));
-		nodeList.add(new CameraNode(NodeChannel.PUSHBAR_CAMERA, 100));
+//		nodeList.add(new CameraNode(NodeChannel.PUSHBAR_CAMERA, 100));
 		nodeList.add(new HillCrestImuNode());
 
 		try {
-			nodeList.add(new WayPointFollowerPlanner(WayPointUtil.createWayPointsFromWaypointList("logs/waypoints/waypoints.txt")));
+			nodeList.add(new WayPointFollowerPlanner(WayPointUtil.createWayPointsFromWaypointList("logs/waypoints/waypoints_triangle.txt")));
 	}   catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -91,6 +92,7 @@ public final class TransistorAuton extends AbstractRobot {
 		tabs.addTab(new PoseGraphsPanel(),"poses");
 		tabs.addTab(new ImuPanel(),"IMU");
 		tabs.addTab(new  AutonomousPanel(),"Autonomous");
+		tabs.add(new PathPanel(), "frbfy");
 		tabs.addTab(new ConfigurationPanel(),"Configuration");
 		
 
