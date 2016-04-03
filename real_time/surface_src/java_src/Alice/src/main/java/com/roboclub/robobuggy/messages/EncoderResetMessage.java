@@ -17,7 +17,7 @@ public class EncoderResetMessage extends BaseMessage {
 	public static final String VERSION_ID = "EncoderResetV0.1";
 
 	/**
-	 * Construct a new {@link MegaTimeMessage} at time now
+	 * Construct a new {@link EncoderResetMessage} at time now
 	 */
 	public EncoderResetMessage() {
 		this.timestamp = new Date().getTime();
