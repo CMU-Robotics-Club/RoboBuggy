@@ -70,7 +70,9 @@ public class PathEditor {
 
 							m.addPointsToMapTree(Color.RED,new LocTuple(lat, lon));
 							m.addLineToMap(new LocTuple(lat, lon), angle, Color.RED, false);
-							m.addLineToMap(new LocTuple(wayPoints.get(i).getLatitude(), wayPoints.get(i).getLongitude()), currentHeading, Color.YELLOW, false);
+							m.addLineToMap(new LocTuple(wayPoints.get(i).getLatitude(), 
+														wayPoints.get(i).getLongitude()), 
+														currentHeading, Color.YELLOW, false);
 							m.repaint();
 
 						}
