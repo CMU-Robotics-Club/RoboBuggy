@@ -1,5 +1,6 @@
 package com.roboclub.robobuggy.messages;
 
+import com.roboclub.robobuggy.nodes.localizers.LocalizerUtil;
 import com.roboclub.robobuggy.ros.Message;
 
 import java.util.Date;
@@ -63,8 +64,8 @@ public class GPSPoseMessage extends BaseMessage {
 	 * @return the distance
 	 */
 	public static double getDistance(GPSPoseMessage a, GPSPoseMessage b){
-		double dx = a.getLongitude() - b.getLongitude();
-		double dy = a.getLatitude() - b.getLatitude();
+		double dx = LocalizerUtil.convertLonToMeters(a.getLongitude() - b.getLongitude());
+		double dy = LocalizerUtil.convertLatToMeters(a.getLatitude() - b.getLatitude());
 		return Math.sqrt(dx*dx + dy*dy);
 	}
 

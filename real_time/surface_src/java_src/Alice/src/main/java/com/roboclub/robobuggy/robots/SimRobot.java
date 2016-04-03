@@ -69,7 +69,7 @@ public final class SimRobot extends AbstractRobot{
 		simBuggy.setY(LocalizerUtil.convertLatToMeters(40.441705));
 		simBuggy.setX(LocalizerUtil.convertLonToMeters(-79.941585));
 		simBuggy.setTh(-100);
-		simBuggy.setDx(1);
+		simBuggy.setDx(.1);
 
 
 		//simBuggy.setDth(1);
@@ -82,7 +82,7 @@ public final class SimRobot extends AbstractRobot{
 		RobobuggyGUITabs tabs = new RobobuggyGUITabs();
 		mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
 		tabs.addTab(new MainGuiWindow(), "Home");
-		tabs.addTab(new VelocityWindow(), "Velocity");
+//		tabs.addTab(new VelocityWindow(), "Velocity");
 		tabs.addTab(new PoseGraphsPanel(),"poses");
 		tabs.addTab(new ImuPanel(),"IMU");
 		tabs.addTab(new AutonomousPanel(),"Autonomous");

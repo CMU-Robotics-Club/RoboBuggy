@@ -75,17 +75,14 @@ public class HighTrustGPSLocalizer implements Node{
                 }
             }
         });
-        
-        new Subscriber(NodeChannel.IMU_MAGNETIC.getMsgPath(),new MessageListener() {
-            @Override
-            public void actionPerformed(String topicName, Message m) {
-                MagneticMeasurement magM = (MagneticMeasurement)m;
-                double currAngle = magM.getRotationZ();
-                double offset = 0.0;
-                buggyFrameRotZ = currAngle - offset;
-                publishUpdate();
-                //TODO add a calibration step
-            }
+
+        new Subscriber(NodeChannel.IMU_MAGNETIC.getMsgPath(), (topicName, m) -> {
+            MagneticMeasurement magM = (MagneticMeasurement)m;
+            double currAngle = magM.getRotationZ();
+            double offset = 0.0;
+            buggyFrameRotZ = currAngle - offset;
+            publishUpdate();
+            //TODO add a calibration step
         });
 
 

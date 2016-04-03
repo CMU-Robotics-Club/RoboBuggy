@@ -34,6 +34,7 @@ public class BuggyStatusPanel extends RobobuggyGUIContainer {
         new Subscriber(NodeChannel.BATTERY.getMsgPath(), (topicName, m) -> {
             batteryLevel = ((BatteryLevelMessage) m).getBatteryLevel();
         });
+        
     }
 
 
