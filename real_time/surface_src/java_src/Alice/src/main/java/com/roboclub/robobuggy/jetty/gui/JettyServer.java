@@ -49,7 +49,7 @@ public class JettyServer {
 		ResourceHandler res = new ResourceHandler();
 		res.setDirectoriesListed(true);
 		res.setWelcomeFiles(new String[]{ "index.html"});
-		res.setResourceBase("../../Web GUI/updated");
+		res.setResourceBase("../../Web GUI/bootstrapped");
 		
 		// Root handler for WebSockets
 		WebSocketHandler wsHandler = new WebSocketHandler() {
