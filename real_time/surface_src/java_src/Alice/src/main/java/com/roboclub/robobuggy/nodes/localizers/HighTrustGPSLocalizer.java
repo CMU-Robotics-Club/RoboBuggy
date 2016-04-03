@@ -1,13 +1,16 @@
 package com.roboclub.robobuggy.nodes.localizers;
 
+import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
+import com.roboclub.robobuggy.messages.MagneticMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
+import com.roboclub.robobuggy.ui.LocTuple;
 
 import java.util.Date;
 
@@ -22,11 +25,11 @@ public class HighTrustGPSLocalizer implements Node{
     private double buggyFrameGpsY;
     private double buggyFrameRotZ;
     private Date mostRecentUpdate;
+    private double lastEncoderReading;
 //    private double lastEncoderReading;
     //private double roll = 0;
     //private double pitch = 0;
 
-    private static final double FEET_TO_METERS = 0.3048;
 
     private Publisher posePub;
 
@@ -38,6 +41,7 @@ public class HighTrustGPSLocalizer implements Node{
     	buggyFrameGpsX = 0.0;
     	buggyFrameGpsY = 0.0;
         buggyFrameRotZ = 0.0;
+        lastEncoderReading = 0.0;
 //        lastEncoderReading = 0.0;
         posePub = new Publisher(NodeChannel.POSE.getMsgPath());
         mostRecentUpdate = new Date();
@@ -71,7 +75,7 @@ public class HighTrustGPSLocalizer implements Node{
                 }
             }
         });
-/*
+        
         new Subscriber(NodeChannel.IMU_MAGNETIC.getMsgPath(),new MessageListener() {
             @Override
             public void actionPerformed(String topicName, Message m) {
@@ -83,9 +87,9 @@ public class HighTrustGPSLocalizer implements Node{
                 //TODO add a calibration step
             }
         });
-*/
 
-        /*
+
+        
         // TODO note that we will probably run into precision errors since the changes are so small
         // would be good to batch up the encoder updates until we get a margin that we know can be represented proeprly
         new Subscriber(NodeChannel.ENCODER.getMsgPath(), new MessageListener() {
@@ -97,7 +101,7 @@ public class HighTrustGPSLocalizer implements Node{
                 // convert the feet from the last message into a delta degree, and update our position
                 double currentEncoderMeasurement = measurement.getDistance();
                 double deltaDistance = currentEncoderMeasurement - lastEncoderReading;
-                double deltaMeters = deltaDistance * FEET_TO_METERS;
+                double deltaMeters = deltaDistance;
 
                 LocTuple deltaPos = LocalizerUtil.convertMetersToLatLng(deltaMeters, buggyFrameRotZ);
                 buggyFrameGpsY += deltaPos.getLatitude();
@@ -109,7 +113,7 @@ public class HighTrustGPSLocalizer implements Node{
                 publishUpdate();
             }
         });
-*/
+
     }
 
     private void publishUpdate(){

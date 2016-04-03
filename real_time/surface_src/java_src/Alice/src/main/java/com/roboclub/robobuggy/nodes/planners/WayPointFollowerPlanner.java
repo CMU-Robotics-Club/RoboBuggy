@@ -1,7 +1,9 @@
 package com.roboclub.robobuggy.nodes.planners;
 
+import com.roboclub.robobuggy.main.Util;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
+import com.roboclub.robobuggy.nodes.localizers.LocalizerUtil;
 import com.roboclub.robobuggy.ros.NodeChannel;
 
 import java.util.ArrayList;
@@ -71,7 +73,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 		//find a path from our current location to that point
 		double dLon = targetPoint.getLongitude() - pose.getLongitude();
 		double dLat = targetPoint.getLatitude() - pose.getLatitude();
-		double desiredHeading = 180*Math.atan2(dLat, dLon)/Math.PI;
+		double desiredHeading = Math.toDegrees(Math.atan2(LocalizerUtil.convertLatToMeters(dLat), LocalizerUtil.convertLonToMeters(dLon)));
 
 		// basically we want all of our angles to be in the [0, 2pi) range, so that we don't
 		// accidentally overflow, and get one of our angles to be +170 and the other is -170
