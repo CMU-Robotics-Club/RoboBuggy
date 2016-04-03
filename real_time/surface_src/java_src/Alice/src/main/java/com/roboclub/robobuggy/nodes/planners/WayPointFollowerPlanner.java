@@ -1,8 +1,10 @@
 package com.roboclub.robobuggy.nodes.planners;
 
+import com.roboclub.robobuggy.main.Util;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.ros.NodeChannel;
+import com.roboclub.robobuggy.ui.AnalyticsPanel;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -68,25 +70,22 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 
 		GpsMeasurement targetPoint = wayPoints.get(targetIndex);
 
+		AnalyticsPanel.getInstance().getDataPanel().getGpsPanel().destinationPoint.setLat(targetPoint.getLatitude());
+		AnalyticsPanel.getInstance().getDataPanel().getGpsPanel().destinationPoint.setLon(targetPoint.getLongitude());
+
 		//find a path from our current location to that point
 		double dLon = targetPoint.getLongitude() - pose.getLongitude();
 		double dLat = targetPoint.getLatitude() - pose.getLatitude();
 		double desiredHeading = 180*Math.atan2(dLat, dLon)/Math.PI;
 
 		// basically we want all of our angles to be in the [0, 2pi) range, so that we don't
-		// accidentally overflow, and get one of our angles to be +170 and the other is -170
-		if (desiredHeading < 0) {
-			desiredHeading += 360;
-		}
-
-		double poseHeading = pose.getHeading();
-		if (poseHeading < 0) {
-			poseHeading += 360;
-		}
+		// have weird wraparound
+		desiredHeading = Util.normalizeAngleDeg(desiredHeading);
+		double poseHeading = Util.normalizeAngleDeg(pose.getHeading());
 
 		//find the angle we need to reach that point
 		//return pose.getHeading() - desiredHeading;
-		return desiredHeading - poseHeading;
+		return Util.normalizeAngleDeg(desiredHeading - poseHeading);
 
 	}
 

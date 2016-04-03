@@ -7,6 +7,7 @@ import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 import org.openstreetmap.gui.jmapviewer.Coordinate;
+import org.openstreetmap.gui.jmapviewer.MapMarkerDot;
 import org.openstreetmap.gui.jmapviewer.MapPolygonImpl;
 
 import javax.swing.JPanel;
@@ -25,6 +26,7 @@ public class GpsPanel extends JPanel {
 	private MapPolygonImpl directionLine;
 	
 	private Map map;
+	public MapMarkerDot destinationPoint;
 
 	private GPSPoseMessage lastpose;
 
@@ -38,6 +40,9 @@ public class GpsPanel extends JPanel {
 
 		map = new Map();
 		map.setBounds(0, 0, getWidth(), getHeight());
+		destinationPoint = new MapMarkerDot(0.0, 0.0);
+
+		map.mapTree.getViewer().addMapMarker(destinationPoint);
 
 		directionLine = new MapPolygonImpl(
 				new Coordinate(0, 0),
@@ -68,7 +73,7 @@ public class GpsPanel extends JPanel {
 				// TODO Auto-generated method stub
 				
 				GPSPoseMessage curpose = (GPSPoseMessage) m;
-				map.addLineToMap(new LocTuple(curpose.getLatitude(), curpose.getLongitude()), curpose.getHeading(), Color.CYAN, true);
+				map.addLineToMap(new LocTuple(curpose.getLatitude(), curpose.getLongitude()), Math.toRadians(curpose.getHeading()), Color.CYAN, true);
 			}
 		});
 

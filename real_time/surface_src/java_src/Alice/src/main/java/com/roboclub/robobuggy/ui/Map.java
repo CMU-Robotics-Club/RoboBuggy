@@ -32,7 +32,7 @@ import java.util.List;
  */
 public class Map extends JPanel {
 
-    private JMapViewerTree mapTree;
+    public JMapViewerTree mapTree;
 
     private double mapViewerLat = 40.440138;
     private double mapViewerLon = -79.945306;
@@ -195,7 +195,7 @@ public class Map extends JPanel {
 
 	/**
      * @param originPoint the origin point of the ray
-     * @param angle the heading of the ray
+     * @param angle the heading of the ray in radians
      * @param lineColor the color of the line
      * @param clearPrevLine update the line or add a new one
      */
