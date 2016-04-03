@@ -1,16 +1,13 @@
 package com.roboclub.robobuggy.nodes.localizers;
 
-import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
-import com.roboclub.robobuggy.messages.MagneticMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
-import com.roboclub.robobuggy.ui.LocTuple;
 
 import java.util.Date;
 
@@ -25,7 +22,7 @@ public class HighTrustGPSLocalizer implements Node{
     private double buggyFrameGpsY;
     private double buggyFrameRotZ;
     private Date mostRecentUpdate;
-    private double lastEncoderReading;
+//    private double lastEncoderReading;
     //private double roll = 0;
     //private double pitch = 0;
 
@@ -41,7 +38,7 @@ public class HighTrustGPSLocalizer implements Node{
     	buggyFrameGpsX = 0.0;
     	buggyFrameGpsY = 0.0;
         buggyFrameRotZ = 0.0;
-        lastEncoderReading = 0.0;
+//        lastEncoderReading = 0.0;
         posePub = new Publisher(NodeChannel.POSE.getMsgPath());
         mostRecentUpdate = new Date();
 
