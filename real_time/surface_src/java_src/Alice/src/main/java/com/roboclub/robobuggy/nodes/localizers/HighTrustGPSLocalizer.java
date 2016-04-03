@@ -2,6 +2,7 @@ package com.roboclub.robobuggy.nodes.localizers;
 
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
+import com.roboclub.robobuggy.messages.IMUAngularPositionMessage;
 import com.roboclub.robobuggy.messages.MagneticMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
@@ -72,6 +73,17 @@ public class HighTrustGPSLocalizer implements Node{
                 }
             }
         });
+        
+        new Subscriber(NodeChannel.IMU_ANG_POS.getMsgPath(), ((topicName, m) -> {
+            IMUAngularPositionMessage mes = ((IMUAngularPositionMessage) m);
+            double y = mes.getRot()[0][1];
+            double x = mes.getRot()[0][0];
+            
+            buggyFrameRotZ = -Math.atan2(y, x);
+            
+            publishUpdate();
+        }));
+        /*
         new Subscriber(NodeChannel.IMU_MAGNETIC.getMsgPath(), (topicName, m) -> {
             MagneticMeasurement magM = (MagneticMeasurement)m;
             double currAngle = magM.getRotationZ();
@@ -80,6 +92,7 @@ public class HighTrustGPSLocalizer implements Node{
             publishUpdate();
             //TODO add a calibration step
         });
+        */
 
         /*
         // TODO note that we will probably run into precision errors since the changes are so small
