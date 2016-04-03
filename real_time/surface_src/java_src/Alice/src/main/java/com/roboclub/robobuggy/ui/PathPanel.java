@@ -33,6 +33,7 @@ public class PathPanel extends JPanel {
 			for(int i = 0;i<waypoints.size();i++){
 				GpsMeasurement thisPoint = waypoints.get(i);
 				map.addPointsToMapTree(Color.BLACK, new LocTuple(thisPoint.getLatitude(), thisPoint.getLongitude()));
+				map.repaint();
 			}
 
 		} catch (IOException e) {
