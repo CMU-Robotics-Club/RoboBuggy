@@ -117,7 +117,11 @@ public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListen
 				{2*x*y+2*z*w,        1-2*x*x-2*z*z,           2*y*z-2*x*w},
 				{2*x*z-2*y*w,        2*y*z+2*x*w,            1-2*x*x-2*y*y}
 			};
-
+			
+/*			double rotZ = Math.atan2(rot[0][1], rot[0][0]);
+			System.out.println("rotZ:"+Math.toDegrees(rotZ));*/
+			
+			
 			angPosPub.publish(new IMUAngularPositionMessage(rot));
 			offset += 8;
 		}

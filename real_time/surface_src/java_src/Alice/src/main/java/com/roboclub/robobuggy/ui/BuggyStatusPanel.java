@@ -3,6 +3,7 @@ package com.roboclub.robobuggy.ui;
 import com.roboclub.robobuggy.messages.BatteryLevelMessage;
 import com.roboclub.robobuggy.messages.BrakeStateMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
+import com.roboclub.robobuggy.messages.IMUAngularPositionMessage;
 import com.roboclub.robobuggy.messages.MagneticMeasurement;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
@@ -61,10 +62,14 @@ public class BuggyStatusPanel extends RobobuggyGUIContainer {
         });
 
 
-      /*  new Subscriber(NodeChannel.IMU_MAGNETIC.getMsgPath(), ((topicName, m) -> {
-            imuAngle = -Math.toRadians(((MagneticMeasurement) m).getRotationZ());
+        new Subscriber(NodeChannel.IMU_ANG_POS.getMsgPath(), ((topicName, m) -> {
+            IMUAngularPositionMessage mes = ((IMUAngularPositionMessage) m);
+            double y = mes.getRot()[0][1];
+            double x = mes.getRot()[0][0];
+            
+            imuAngle = -Math.atan2(y, x);
         }));
-*/
+        
         new Subscriber(NodeChannel.GPS.getMsgPath(), ((topicName, m) -> {
             if (prevGPS == null) {
                 prevGPS = ((GpsMeasurement) m);
