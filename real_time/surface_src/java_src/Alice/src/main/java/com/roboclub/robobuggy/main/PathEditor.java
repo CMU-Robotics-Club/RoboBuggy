@@ -68,10 +68,6 @@ public class PathEditor {
 							planer.updatePositionEstimate(new GPSPoseMessage(new Date(), lat, lon, currentHeading));
 							double angle = Math.PI*planer.getCommandedSteeringAngle()/180;
 
-							double dlat = wayPoints.get(i).getLatitude() - wayPoints.get(i - 1).getLatitude();
-							double dlon = wayPoints.get(i).getLongitude() - wayPoints.get(i - 1).getLongitude();
-							currentHeading = Math.toDegrees(Math.atan2(dlat, dlon));
-
 							m.addPointsToMapTree(Color.RED,new LocTuple(lat, lon));
 							m.addLineToMap(new LocTuple(lat, lon), angle, Color.RED, false);
 							m.addLineToMap(new LocTuple(wayPoints.get(i).getLatitude(), wayPoints.get(i).getLongitude()), currentHeading, Color.YELLOW, false);

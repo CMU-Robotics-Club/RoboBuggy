@@ -208,7 +208,7 @@ public class Map extends JPanel {
 		double dx = Math.cos(angle) * scalingFactor;
 		double dy = Math.sin(angle) * scalingFactor;
 
-		LocTuple endpoint = new LocTuple(originPoint.getLatitude() + dx, originPoint.getLongitude() + dy);
+		LocTuple endpoint = new LocTuple(originPoint.getLatitude() + dy, originPoint.getLongitude() + dx);
 		addLineToMap(originPoint, endpoint, lineColor);
 	}
 
