@@ -32,7 +32,7 @@ import java.util.List;
  */
 public class Map extends JPanel {
 
-    public JMapViewerTree mapTree;
+    private JMapViewerTree mapTree;
 
     private double mapViewerLat = 40.440138;
     private double mapViewerLon = -79.945306;
@@ -47,18 +47,18 @@ public class Map extends JPanel {
     public Map() {
         initMapTree();
         addCacheToTree();
-        this.add(mapTree);
+        this.add(getMapTree());
     }
 
 
     private void initMapTree() {
-        mapTree = new JMapViewerTree("Buggy");
-        mapTree.getViewer().setTileSource(new BingAerialTileSource());
-        mapTree.setSize(getWidth(), getHeight());
-        mapTree.getViewer().setSize(getWidth(), getHeight());
-        mapTree.getViewer().setTileLoader(new OsmTileLoader(mapTree.getViewer()));
-        mapTree.getViewer().setDisplayPosition(new Coordinate(mapViewerLat, mapViewerLon), 17);
-        mapTree.getViewer().addMouseListener(new MouseListener() {
+        setMapTree(new JMapViewerTree("Buggy"));
+        getMapTree().getViewer().setTileSource(new BingAerialTileSource());
+        getMapTree().setSize(getWidth(), getHeight());
+        getMapTree().getViewer().setSize(getWidth(), getHeight());
+        getMapTree().getViewer().setTileLoader(new OsmTileLoader(getMapTree().getViewer()));
+        getMapTree().getViewer().setDisplayPosition(new Coordinate(mapViewerLat, mapViewerLon), 17);
+        getMapTree().getViewer().addMouseListener(new MouseListener() {
 
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -91,7 +91,7 @@ public class Map extends JPanel {
 
             }
         });
-        mapTree.getViewer().addMouseMotionListener(new MouseMotionListener() {
+        getMapTree().getViewer().addMouseMotionListener(new MouseMotionListener() {
             @Override
             public void mouseMoved(MouseEvent e) {
                 // TODO Auto-generated method stub
@@ -102,11 +102,11 @@ public class Map extends JPanel {
             public void mouseDragged(MouseEvent e) {
                 // TODO Auto-generated method stub
 
-                int zoomLevel = mapTree.getViewer().getZoom();
+                int zoomLevel = getMapTree().getViewer().getZoom();
 
                 mapViewerLat -= ((mapDragY - e.getY()) * 0.001) / (zoomLevel * 1000);
                 mapViewerLon -= ((e.getX() - mapDragX) * 0.001) / (zoomLevel * 1000);
-                mapTree.getViewer().setDisplayPosition(new Coordinate(mapViewerLat, mapViewerLon), zoomLevel);
+                getMapTree().getViewer().setDisplayPosition(new Coordinate(mapViewerLat, mapViewerLon), zoomLevel);
             }
         });
     }
@@ -137,13 +137,13 @@ public class Map extends JPanel {
                 int yCoord = Integer.parseInt(tileCoords[1]);
                 int zoomLevel = Integer.parseInt(tileCoords[2]);
 
-                Tile cacheInsert = new Tile(mapTree.getViewer().getTileController().getTileSource(),
+                Tile cacheInsert = new Tile(getMapTree().getViewer().getTileController().getTileSource(),
                         xCoord, yCoord, zoomLevel, tileImageSource);
                 cacheInsert.setLoaded(true);
                 courseCache.addTile(cacheInsert);
             }
 
-            mapTree.getViewer().getTileController().setTileCache(courseCache);
+            getMapTree().getViewer().getTileController().setTileCache(courseCache);
         }
         catch (IOException e) {
             new RobobuggyLogicNotification("Something is wrong with the map cache: " + e.getMessage(), RobobuggyMessageLevel.EXCEPTION);
@@ -154,8 +154,8 @@ public class Map extends JPanel {
      * updates the current arrow displaying on the GUI - shows orientation based on GPS
      */
     public void updateArrow() {
-		List<MapPolygon> polygons = mapTree.getViewer().getMapPolygonList();
-			List<MapMarker> markers = mapTree.getViewer().getMapMarkerList();
+		List<MapPolygon> polygons = getMapTree().getViewer().getMapPolygonList();
+			List<MapMarker> markers = getMapTree().getViewer().getMapMarkerList();
 			if (markers.size() >= 2) {
 				MapMarker backMarker = markers.get(markers.size() - 2);
 				MapMarker frontMarker = markers.get(markers.size() - 1);
@@ -174,7 +174,7 @@ public class Map extends JPanel {
 	 */
 	public void addPointsToMapTree(Color thisColor, LocTuple...points) {
 		for (LocTuple point : points) {
-			mapTree.getViewer().addMapMarker(new MapMarkerDot(thisColor, point.getLatitude(), point.getLongitude()));
+			getMapTree().getViewer().addMapMarker(new MapMarkerDot(thisColor, point.getLatitude(), point.getLongitude()));
 		}
 	}
 
@@ -190,7 +190,7 @@ public class Map extends JPanel {
 				new Coordinate(point2.getLatitude(), point2.getLongitude())
 		);
 		polygon.setColor(lineColor);
-		mapTree.getViewer().addMapPolygon(polygon);
+		getMapTree().getViewer().addMapPolygon(polygon);
 	}
 
 	/**
@@ -201,7 +201,7 @@ public class Map extends JPanel {
      */
 	public void addLineToMap(LocTuple originPoint, double angle, Color lineColor, boolean clearPrevLine) {
         if (clearPrevLine) {
-            mapTree.getViewer().getMapPolygonList().clear();
+            getMapTree().getViewer().getMapPolygonList().clear();
         }
 
 		double scalingFactor = 0.0005;
@@ -215,9 +215,25 @@ public class Map extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
 
-        mapTree.setBounds(0, 0, getWidth(), getHeight());
-        mapTree.getViewer().setSize(getWidth(), getHeight());
+        getMapTree().setBounds(0, 0, getWidth(), getHeight());
+        getMapTree().getViewer().setSize(getWidth(), getHeight());
 
     }
+
+
+	/**
+	 * @return the mapTree
+	 */
+	public JMapViewerTree getMapTree() {
+		return mapTree;
+	}
+
+
+	/**
+	 * @param mapTree the mapTree to set
+	 */
+	public void setMapTree(JMapViewerTree mapTree) {
+		this.mapTree = mapTree;
+	}
 
 }

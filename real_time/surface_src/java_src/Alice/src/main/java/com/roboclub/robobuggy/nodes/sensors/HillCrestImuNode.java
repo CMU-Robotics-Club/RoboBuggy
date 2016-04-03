@@ -25,7 +25,6 @@ import com.roboclub.robobuggy.messages.IMUAngularPositionMessage;
  */
 public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListenerInterface, com.roboclub.robobuggy.ros.Node{
 	private Device thisDevice;
-	private Publisher pub = new Publisher(NodeChannel.HILL_CREST_IMU.getMsgPath());
 	private Publisher linearAccPub = new Publisher(NodeChannel.IMU_LINEAR_ACC.getMsgPath());
 	private Publisher linearAccNoGravPub = new Publisher(NodeChannel.IMU_LINEAR_NO_GRAV.getMsgPath());
 	private Publisher angVelPub = new Publisher(NodeChannel.IMU_ANG_VEL.getMsgPath());
@@ -41,7 +40,6 @@ public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListen
 		Discovery discover = Discovery.getInstance();
 		discover.addListener(this);
 		
-		System.out.println("hillcrest enabled");
 		
 		// TODO Auto-generated constructor stub
 	}
@@ -68,7 +66,6 @@ public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListen
 			double xAccel = convertQNToDouble((byte)data[offset+0],(byte)data[offset+1],10);
 			double yAccel = convertQNToDouble((byte)data[offset+2],(byte)data[offset+3],10);
 			double zAccel = convertQNToDouble((byte)data[offset+4],(byte)data[offset+5],10);
-			//System.out.println("xAccel:"+xAccel+"\tyAccel:"+yAccel+"\tzAccel:"+zAccel);
 			offset +=6;
 			linearAccPub.publish(new IMULinearAccelerationMessage(xAccel, yAccel, zAccel));
 		}
@@ -78,7 +75,6 @@ public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListen
 			double yAccel = convertQNToDouble((byte)data[offset+2],(byte)data[offset+3],10);
 			double zAccel = convertQNToDouble((byte)data[offset+4],(byte)data[offset+5],10);
 			offset += 6;
-//			System.out.println("xAccel:"+xAccel+"\tyAccel:"+yAccel+"\tzAccel:"+zAccel);
 			linearAccNoGravPub.publish(new IMULinearAccelerationMessage(xAccel, yAccel, zAccel));
 		}
 		//ff3 is Angular velocity
@@ -118,8 +114,6 @@ public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListen
 				{2*x*z-2*y*w,        2*y*z+2*x*w,            1-2*x*x-2*y*y}
 			};
 			
-/*			double rotZ = Math.atan2(rot[0][1], rot[0][0]);
-			System.out.println("rotZ:"+Math.toDegrees(rotZ));*/
 			
 			
 			angPosPub.publish(new IMUAngularPositionMessage(rot));
@@ -200,17 +194,11 @@ public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListen
 	public double convertQNToDouble(byte lsb, byte msb,int qn) {
 		// converting Qn fixed point
 		
-		//boolean sign = ((int)msb>>7) == 1;
-		int msbAsInt = ((int)msb) & 0xFF;//0x7F;
+		int msbAsInt = ((int)msb) & 0xFF;
 		int lsbAsInt = ((int)lsb & 0xFF);
 		
 		int squashedTogether = ((msbAsInt << 8) | lsbAsInt);
-		Integer sT = new Integer(squashedTogether);
-/*
-		if(sign){
-			sT = -sT;
-		}
-		*/
+		Integer sT = Integer.valueOf(squashedTogether);
 		
 		if(sT >= 1<<15){
 			sT = sT - (1<<17-1);

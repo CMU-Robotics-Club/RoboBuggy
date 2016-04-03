@@ -26,7 +26,23 @@ public class GpsPanel extends JPanel {
 	private MapPolygonImpl directionLine;
 	
 	private Map map;
-	public MapMarkerDot destinationPoint;
+	private MapMarkerDot destinationPoint;
+
+	/**
+	 * @return the destinationPoint
+	 */
+	public synchronized MapMarkerDot getDestinationPoint() {
+		return destinationPoint;
+	}
+
+
+	/**
+	 * @param destinationPoint the destinationPoint to set
+	 */
+	public synchronized void setDestinationPoint(MapMarkerDot destinationPoint) {
+		this.destinationPoint = destinationPoint;
+	}
+
 
 	private GPSPoseMessage lastpose;
 
@@ -42,7 +58,7 @@ public class GpsPanel extends JPanel {
 		map.setBounds(0, 0, getWidth(), getHeight());
 		destinationPoint = new MapMarkerDot(0.0, 0.0);
 
-		map.mapTree.getViewer().addMapMarker(destinationPoint);
+		map.getMapTree().getViewer().addMapMarker(destinationPoint);
 
 		directionLine = new MapPolygonImpl(
 				new Coordinate(0, 0),
@@ -74,7 +90,8 @@ public class GpsPanel extends JPanel {
 				
 				GPSPoseMessage curpose = (GPSPoseMessage) m;
 				map.addPointsToMapTree(Color.RED, new LocTuple(curpose.getLatitude(), curpose.getLongitude()));
-				map.addLineToMap(new LocTuple(curpose.getLatitude(), curpose.getLongitude()), Math.toRadians(curpose.getHeading()), Color.CYAN, true);
+				map.addLineToMap(new LocTuple(curpose.getLatitude(), curpose.getLongitude()),
+									Math.toRadians(curpose.getHeading()), Color.CYAN, true);
 			}
 		});
 

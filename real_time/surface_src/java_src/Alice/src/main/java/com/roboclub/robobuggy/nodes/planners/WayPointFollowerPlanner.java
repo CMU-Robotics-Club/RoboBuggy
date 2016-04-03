@@ -10,6 +10,10 @@ import com.roboclub.robobuggy.ui.AnalyticsPanel;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.openstreetmap.gui.jmapviewer.MapMarkerCircle;
+import org.openstreetmap.gui.jmapviewer.MapMarkerDot;
+import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
+
 /**
  * Plans a path based on a set of waypoints
  */
@@ -71,8 +75,8 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 
 		GpsMeasurement targetPoint = wayPoints.get(targetIndex);
 
-		AnalyticsPanel.getInstance().getDataPanel().getGpsPanel().destinationPoint.setLat(targetPoint.getLatitude());
-		AnalyticsPanel.getInstance().getDataPanel().getGpsPanel().destinationPoint.setLon(targetPoint.getLongitude());
+		MapMarkerDot destPoint = new MapMarkerDot(targetPoint.getLatitude(), targetPoint.getLongitude());
+		AnalyticsPanel.getInstance().getDataPanel().getGpsPanel().setDestinationPoint(destPoint);
 
 		//find a path from our current location to that point
 		double dLon = targetPoint.getLongitude() - pose.getLongitude();
