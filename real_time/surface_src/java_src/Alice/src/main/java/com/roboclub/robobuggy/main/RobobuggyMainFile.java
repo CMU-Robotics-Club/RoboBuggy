@@ -30,7 +30,7 @@ public class RobobuggyMainFile {
 		RobobuggyConfigFile.loadConfigFile(); //TODO make sure that logic Notification is setup before this point
 
 		new RobobuggyLogicNotification("Initializing Robot", RobobuggyMessageLevel.NOTE);
-        robot = TransistorDataCollection.getInstance();//SimRobot.getInstance();
+        robot = SimRobot.getInstance();//SimRobot.getInstance();
 
 
 		new RobobuggyLogicNotification("Initializing GUI", RobobuggyMessageLevel.NOTE);
