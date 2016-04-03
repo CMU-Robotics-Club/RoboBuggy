@@ -9,7 +9,7 @@ import com.roboclub.robobuggy.messages.BrakeStateMessage;
 import com.roboclub.robobuggy.messages.DeviceIDMessage;
 import com.roboclub.robobuggy.messages.DriveControlMessage;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
-import com.roboclub.robobuggy.messages.EncoderTimeMessage;
+import com.roboclub.robobuggy.messages.MegaTimeMessage;
 import com.roboclub.robobuggy.messages.FingerPrintMessage;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
@@ -107,7 +107,7 @@ public  class  RBSMNode extends SerialNode {
 		
 		messagePubBat = new Publisher(NodeChannel.BATTERY.getMsgPath());
 		
-		messagePubEncTime = new Publisher(NodeChannel.ENCODERTIME.getMsgPath());
+		messagePubEncTime = new Publisher(NodeChannel.MEGATIME.getMsgPath());
 		
 		messagePubDeviceID = new Publisher(NodeChannel.DEVICE_ID.getMsgPath());
 		messagePubAutonState = new Publisher(NodeChannel.AUTON_STATE.getMsgPath());
@@ -211,8 +211,8 @@ public  class  RBSMNode extends SerialNode {
 		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_ENC_RESET_CONFIRM")) {
 			new RobobuggyLogicNotification("Encoder Reset Confirmed by Zoe", RobobuggyMessageLevel.NOTE);
 		}
-		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_ENC_TIMESTAMP")){
-			messagePubEncTime.publish(new EncoderTimeMessage(message.getDataWord()));
+		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_TIMESTAMP")){
+			messagePubEncTime.publish(new MegaTimeMessage(message.getDataWord()));
 		}
 		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_STEER_FEEDBACK")) {
 			potValue = message.getDataWord();

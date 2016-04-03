@@ -21,14 +21,14 @@ public enum NodeChannel {
 	STEERING_COMMANDED("commanded_steering", true),   // the angle that we are commanding the front wheel turn to
 	FP_HASH("fp_hash", true),
 	POSE("pose", true),
-	SIM_POSE("sim_pose",true),  //reperesents the hiddenn simulated ground truth 
+	SIM_POSE("sim_pose",true),  //represents the hidden simulated ground truth 
 	RESET("reset", true),
 	STATE("state", true),
 	SIMULATION("simulation", true),
 	NODE_STATUS("node_status", false),
 	PATH_PLANNER("path_planner", true),
 	BATTERY("battery", true),
-	ENCODERTIME("encoder_time", true),
+	MEGATIME("mega_time", true),
 	DEVICE_ID("device_id", true),
 	BRAKE_STATE("brake_state", true),
 	AUTON_STATE("auton_state", true),
