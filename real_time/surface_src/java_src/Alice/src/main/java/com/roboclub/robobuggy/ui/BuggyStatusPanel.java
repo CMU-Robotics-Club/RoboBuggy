@@ -2,6 +2,7 @@ package com.roboclub.robobuggy.ui;
 
 import com.roboclub.robobuggy.messages.BatteryLevelMessage;
 import com.roboclub.robobuggy.messages.BrakeStateMessage;
+import com.roboclub.robobuggy.messages.FingerPrintMessage;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 
@@ -16,6 +17,7 @@ public class BuggyStatusPanel extends RobobuggyGUIContainer {
 
     private boolean brakesDown;
     private int batteryLevel;
+    private String fphash;
 
     /**
      * initializes a new Buggy status panel
@@ -34,6 +36,10 @@ public class BuggyStatusPanel extends RobobuggyGUIContainer {
         new Subscriber(NodeChannel.BATTERY.getMsgPath(), (topicName, m) -> {
             batteryLevel = ((BatteryLevelMessage) m).getBatteryLevel();
         });
+
+        new Subscriber(NodeChannel.FP_HASH.getMsgPath(), ((topicName, m) -> {
+            fphash = String.valueOf(((FingerPrintMessage) m).getFpHash());
+        }));
     }
 
 
@@ -61,6 +67,7 @@ public class BuggyStatusPanel extends RobobuggyGUIContainer {
         g.setColor(Color.BLACK);
         g.drawString("batt = " + batteryLevel, brakeX + getHeight()/3 + 10, getHeight()/2);
         g.drawString("status = " + status, brakeX, getHeight()/2);
+        g.drawString("fphash = " + fphash, brakeX + getHeight()/3 + 10, getHeight()/2 + 10);
 
     }
 }
