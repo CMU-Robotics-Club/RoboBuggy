@@ -1,15 +1,14 @@
 package com.roboclub.robobuggy.ui;
 
+import com.roboclub.robobuggy.main.RobobuggyConfigFile;
+import com.roboclub.robobuggy.messages.GpsMeasurement;
+import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
+
+import javax.swing.JPanel;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.io.IOException;
 import java.util.ArrayList;
-
-import javax.swing.JPanel;
-
-import com.roboclub.robobuggy.main.RobobuggyConfigFile;
-import com.roboclub.robobuggy.map.ImageMap;
-import com.roboclub.robobuggy.messages.GpsMeasurement;
-import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
 
 /**
  * A gui element that shows the waypoints for the path that we are currently trying drive 
@@ -17,16 +16,23 @@ import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
  *
  */
 public class PathPanel extends JPanel {
-	ImageMap imMap ;
-	public PathPanel(){
-		imMap = new ImageMap();
-		
+
+	private Map map;
+
+	/**
+	 * makes a new PathPanel
+	 */
+	public PathPanel() {
+
+		map = new Map();
+		map.setBounds(0, 0, getWidth(), getHeight());
+		add(map);
+
 		try {
-			ArrayList<GpsMeasurement> waypoints = WayPointUtil.createWayPointsFromWaypointList("logs/waypoints.txt");
+			ArrayList<GpsMeasurement> waypoints = WayPointUtil.createWayPointsFromWaypointList(RobobuggyConfigFile.getWaypointSourceLogFile());
 			for(int i = 0;i<waypoints.size();i++){
 				GpsMeasurement thisPoint = waypoints.get(i);
-				imMap.addPoint(new LocTuple(thisPoint.getLatitude(), thisPoint.getLongitude()));
-				System.out.println("point added:"+thisPoint.getLatitude()+","+thisPoint.getLongitude()+" \n");
+				map.addPointsToMapTree(Color.BLACK, new LocTuple(thisPoint.getLatitude(), thisPoint.getLongitude()));
 			}
 
 		} catch (IOException e) {
@@ -39,7 +45,7 @@ public class PathPanel extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		imMap.draw(g, getWidth(), getHeight());
+		map.setBounds(0, 0, getWidth(), getHeight());
 	}
 
 }

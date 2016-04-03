@@ -1,5 +1,6 @@
 package com.roboclub.robobuggy.robots;
 
+import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.nodes.localizers.HighTrustGPSLocalizer;
 import com.roboclub.robobuggy.nodes.localizers.LocalizerUtil;
@@ -10,6 +11,7 @@ import com.roboclub.robobuggy.simulation.SimulatedGPSNode;
 import com.roboclub.robobuggy.simulation.SimulatedImuNode;
 import com.roboclub.robobuggy.simulation.SimulatedRBSMNode;
 import com.roboclub.robobuggy.ui.AutonomousPanel;
+import com.roboclub.robobuggy.ui.ConfigurationPanel;
 import com.roboclub.robobuggy.ui.Gui;
 import com.roboclub.robobuggy.ui.ImuPanel;
 import com.roboclub.robobuggy.ui.MainGuiWindow;
@@ -56,7 +58,7 @@ public final class SimRobot extends AbstractRobot{
 		}
 		*/
 		try {
-			ArrayList<GpsMeasurement> wayPoints = WayPointUtil.createWayPointsFromWaypointList("/Users/trevordecker/Desktop/myWork/robobuggy2/RoboBuggy/real_time/surface_src/java_src/Alice/logs/waypoints.txt");
+			ArrayList<GpsMeasurement> wayPoints = WayPointUtil.createWayPointsFromWaypointList(RobobuggyConfigFile.getWaypointSourceLogFile());
 			nodeList.add(new WayPointFollowerPlanner(wayPoints));
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -81,9 +83,10 @@ public final class SimRobot extends AbstractRobot{
 		tabs.addTab(new VelocityWindow(), "Velocity");
 		tabs.addTab(new PoseGraphsPanel(),"poses");
 		tabs.addTab(new ImuPanel(),"IMU");
-		tabs.addTab(new  AutonomousPanel(),"Autonomous");
+		tabs.addTab(new AutonomousPanel(),"Autonomous");
 		tabs.addTab(new SimulationPanel(),"Simulation");
 		tabs.addTab(new PathPanel(),"Path Panel");
+		tabs.addTab(new ConfigurationPanel(), "Configuration");
 
 
 	}
