@@ -76,15 +76,6 @@ public class HighTrustGPSLocalizer implements Node{
             }
         });
 
-        new Subscriber(NodeChannel.IMU_MAGNETIC.getMsgPath(), (topicName, m) -> {
-            MagneticMeasurement magM = (MagneticMeasurement)m;
-            double currAngle = magM.getRotationZ();
-            double offset = 0.0;
-            buggyFrameRotZ = currAngle - offset;
-            publishUpdate();
-            //TODO add a calibration step
-        });
-
 
         
         // TODO note that we will probably run into precision errors since the changes are so small

@@ -1,6 +1,7 @@
 package com.roboclub.robobuggy.nodes.sensors;
 
 import com.hcrest.jfreespace.Device;
+
 import com.hcrest.jfreespace.DeviceListenerInterface;
 import com.hcrest.jfreespace.Discovery;
 import com.hcrest.jfreespace.DiscoveryListenerInterface;
@@ -10,15 +11,27 @@ import com.hcrest.jfreespace.outreport.FreespaceMsgOutDataModeControlV2Request;
 import com.hcrest.jfreespace.outreport.HidOutMsg;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
+import com.roboclub.robobuggy.messages.IMULinearAccelerationMessage;
+import com.roboclub.robobuggy.messages.IMUAngularVelocityMessage;
+import com.roboclub.robobuggy.messages.MagneticMeasurement;
+import com.roboclub.robobuggy.messages.IMUTemperatureMessage;
+import com.roboclub.robobuggy.messages.IMUAngularPositionMessage;
 
 /**
- * Driver for the Hillcrest Imu's
+ * Driver for the Hillcrest IMUs
  * @author Trevor Decker
+ * @author Sean Buckley
  *
  */
 public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListenerInterface, com.roboclub.robobuggy.ros.Node{
 	private Device thisDevice;
 	private Publisher pub = new Publisher(NodeChannel.HILL_CREST_IMU.getMsgPath());
+	private Publisher linearAccPub = new Publisher(NodeChannel.IMU_LINEAR_ACC.getMsgPath());
+	private Publisher linearAccNoGravPub = new Publisher(NodeChannel.IMU_LINEAR_NO_GRAV.getMsgPath());
+	private Publisher angVelPub = new Publisher(NodeChannel.IMU_ANG_VEL.getMsgPath());
+	private Publisher magPub = new Publisher(NodeChannel.IMU_MAGNETIC.getMsgPath());
+	private Publisher tempPub = new Publisher(NodeChannel.IMU_TEMP.getMsgPath());
+	private Publisher angPosPub = new Publisher(NodeChannel.IMU_ANG_POS.getMsgPath());
 	
 	/**
 	 * Constructor for the hillcrest imu
@@ -57,6 +70,7 @@ public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListen
 			double zAccel = convertQNToDouble((byte)data[offset+4],(byte)data[offset+5],10);
 			//System.out.println("xAccel:"+xAccel+"\tyAccel:"+yAccel+"\tzAccel:"+zAccel);
 			offset +=6;
+			linearAccPub.publish(new IMULinearAccelerationMessage(xAccel, yAccel, zAccel));
 		}
 		//ff2 is linear Acceleration no gravity
 		if(m.getFf2()){
@@ -65,13 +79,15 @@ public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListen
 			double zAccel = convertQNToDouble((byte)data[offset+4],(byte)data[offset+5],10);
 			offset += 6;
 //			System.out.println("xAccel:"+xAccel+"\tyAccel:"+yAccel+"\tzAccel:"+zAccel);
+			linearAccNoGravPub.publish(new IMULinearAccelerationMessage(xAccel, yAccel, zAccel));
 		}
 		//ff3 is Angular velocity
 		if(m.getFf3()){
-			double xAngularAccel =convertQNToDouble((byte)data[offset+0],(byte)data[offset+1],10);
-			double yAngularAccel = convertQNToDouble((byte)data[offset+2],(byte)data[offset+3],10);
-			double zAngularAccel = convertQNToDouble((byte)data[offset+4],(byte)data[offset+5],10);
+			double xAngularVel =convertQNToDouble((byte)data[offset+0],(byte)data[offset+1],10);
+			double yAngularVel = convertQNToDouble((byte)data[offset+2],(byte)data[offset+3],10);
+			double zAngularVel = convertQNToDouble((byte)data[offset+4],(byte)data[offset+5],10);
 			offset +=6;
+			angVelPub.publish(new IMUAngularVelocityMessage(xAngularVel, yAngularVel, zAngularVel));
 		}
 		//ff4 is magnetometer
 		if(m.getFf4()){
@@ -79,13 +95,13 @@ public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListen
 			double yMag =convertQNToDouble((byte)data[offset+2],(byte)data[offset+3],12);
 			double zMag =convertQNToDouble((byte)data[offset+4],(byte)data[offset+5],12);
 			offset += 6;
+			magPub.publish(new MagneticMeasurement(xMag, yMag, zMag));
 		}
 		//ff5 is temperature
 		if(m.getFf5()){
 			double temperature = convertQNToDouble((byte)data[offset+0],(byte)data[offset+1],7);
-			System.out.println("temp:"+temperature);
-
 			offset += 2;
+			tempPub.publish(new IMUTemperatureMessage(temperature));
 		}
 		//ff6 is angular position
 		if(m.getFf6()){
@@ -102,7 +118,7 @@ public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListen
 				{2*x*z-2*y*w,        2*y*z+2*x*w,            1-2*x*x-2*y*y}
 			};
 
-			
+			angPosPub.publish(new IMUAngularPositionMessage(rot));
 			offset += 8;
 		}
 	}
@@ -170,6 +186,13 @@ public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListen
 		return "hillcrestImu";
 	}
 	
+	/**
+	 * Func: Converts from fixed point to floating point
+	 * @param lsb least significant byte
+	 * @param msb most significant byte
+	 * @param qn number of fraction bits
+	 * @return Converted floating point val
+	 */
 	public double convertQNToDouble(byte lsb, byte msb,int qn) {
 		// converting Qn fixed point
 		
