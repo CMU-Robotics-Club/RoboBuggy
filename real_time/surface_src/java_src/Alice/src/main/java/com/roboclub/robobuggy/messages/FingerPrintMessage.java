@@ -30,6 +30,9 @@ public class FingerPrintMessage extends BaseMessage {
 		this.timestamp = new Date(tStamp.getTime()).getTime();
 	}
 
+	/**
+	 * @return the fingerprint hash
+	 */
 	public int getFpHash() {
 		return fpHash;
 	}

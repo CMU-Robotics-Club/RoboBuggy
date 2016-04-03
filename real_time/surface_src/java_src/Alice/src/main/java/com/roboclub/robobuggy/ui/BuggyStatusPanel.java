@@ -7,6 +7,7 @@ import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
@@ -17,7 +18,7 @@ public class BuggyStatusPanel extends RobobuggyGUIContainer {
 
     private boolean brakesDown;
     private int batteryLevel;
-    private String fphash;
+    private String fphash = "(not loaded yet)";
 
     /**
      * initializes a new Buggy status panel
@@ -38,7 +39,7 @@ public class BuggyStatusPanel extends RobobuggyGUIContainer {
         });
 
         new Subscriber(NodeChannel.FP_HASH.getMsgPath(), ((topicName, m) -> {
-            fphash = String.valueOf(((FingerPrintMessage) m).getFpHash());
+            fphash = String.format("%x", ((FingerPrintMessage) m).getFpHash());
         }));
     }
 
@@ -50,6 +51,8 @@ public class BuggyStatusPanel extends RobobuggyGUIContainer {
         int brakeX = 50;
         int brakeY = 0;
         String status = "up";
+
+        int battLevelBoxLeft = brakeX + getHeight()/2;
 
         if (brakesDown) {
             brakeY = getHeight() - getHeight()/3;
@@ -65,9 +68,10 @@ public class BuggyStatusPanel extends RobobuggyGUIContainer {
         g.setColor(Color.GREEN);
         g.fillRect(brakeX + getHeight()/3 + 10, 0, getHeight()/3, getHeight());
         g.setColor(Color.BLACK);
-        g.drawString("batt = " + batteryLevel, brakeX + getHeight()/3 + 10, getHeight()/2);
-        g.drawString("status = " + status, brakeX, getHeight()/2);
-        g.drawString("fphash = " + fphash, brakeX + getHeight()/3 + 10, getHeight()/2 + 10);
+        g.setFont(new Font("Arial", Font.BOLD, 30));
+        g.drawString("batt = " + batteryLevel, battLevelBoxLeft, getHeight()/2);
+        g.drawString("status = " + status, 0, getHeight()/2);
+        g.drawString("fphash = " + fphash, battLevelBoxLeft, 30);
 
     }
 }
