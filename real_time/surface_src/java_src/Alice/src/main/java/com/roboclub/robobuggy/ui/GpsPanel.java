@@ -40,7 +40,9 @@ public class GpsPanel extends JPanel {
 	 * @param destinationPoint the destinationPoint to set
 	 */
 	public synchronized void setDestinationPoint(MapMarkerDot destinationPoint) {
-		this.destinationPoint = destinationPoint;
+		this.destinationPoint.setLat(destinationPoint.getLat());
+		this.destinationPoint.setLon(destinationPoint.getLon());
+
 	}
 
 

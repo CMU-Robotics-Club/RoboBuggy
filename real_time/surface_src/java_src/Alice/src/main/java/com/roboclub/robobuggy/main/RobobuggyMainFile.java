@@ -32,7 +32,7 @@ public class RobobuggyMainFile {
 
 		new RobobuggyLogicNotification("Initializing Robot", RobobuggyMessageLevel.NOTE);
 
-        robot = TransistorAuton.getInstance();
+        robot = SimRobot.getInstance();
 
 
 		new RobobuggyLogicNotification("Initializing GUI", RobobuggyMessageLevel.NOTE);

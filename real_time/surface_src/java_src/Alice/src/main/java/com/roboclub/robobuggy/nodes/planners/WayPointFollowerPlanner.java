@@ -62,7 +62,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 		double delta = 10/100000.0; //10/100000.0;
 		//pick the first point that is at least delta away
 		//pick the point to follow
-		int targetIndex = closestIndex + 5; 
+		int targetIndex = closestIndex + 2; 
 //		while(GPSPoseMessage.getDistance(pose,wayPoints.get(targetIndex).toGpsPoseMessage(0)) < delta && targetIndex < wayPoints.size()){
 //			targetIndex = targetIndex+1;
 //		}

@@ -2,6 +2,12 @@ package com.roboclub.robobuggy.ui;
 
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
+import com.roboclub.robobuggy.messages.GPSPoseMessage;
+import com.roboclub.robobuggy.ros.Message;
+import com.roboclub.robobuggy.ros.MessageListener;
+import com.roboclub.robobuggy.ros.NodeChannel;
+import com.roboclub.robobuggy.ros.Subscriber;
+
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.JMapViewerTree;
 import org.openstreetmap.gui.jmapviewer.MapMarkerDot;
@@ -16,6 +22,7 @@ import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
@@ -37,6 +44,7 @@ public class Map extends JPanel {
     private double mapViewerLat = 40.440138;
     private double mapViewerLon = -79.945306;
     private String mapCacheFolderDiskPath = "images/cachedCourseMap";
+    private int zoomLevel = 17;
 
     private double mapDragX = -1;
     private double mapDragY = -1;
@@ -48,6 +56,17 @@ public class Map extends JPanel {
         initMapTree();
         addCacheToTree();
         this.add(getMapTree());
+        
+        //adds track buggy  
+        new Subscriber(NodeChannel.POSE.getMsgPath(), new MessageListener() {
+			//TODO make this optional 
+			@Override
+			public void actionPerformed(String topicName, Message m) {
+				GPSPoseMessage gpsM = (GPSPoseMessage)m;
+		        getMapTree().getViewer().setDisplayPosition(new Coordinate(gpsM.getLatitude(),
+		        		gpsM.getLongitude()),zoomLevel);				
+			}
+		});
     }
 
 
@@ -57,7 +76,7 @@ public class Map extends JPanel {
         getMapTree().setSize(getWidth(), getHeight());
         getMapTree().getViewer().setSize(getWidth(), getHeight());
         getMapTree().getViewer().setTileLoader(new OsmTileLoader(getMapTree().getViewer()));
-        getMapTree().getViewer().setDisplayPosition(new Coordinate(mapViewerLat, mapViewerLon), 17);
+        getMapTree().getViewer().setDisplayPosition(new Coordinate(mapViewerLat, mapViewerLon), zoomLevel);
         getMapTree().getViewer().addMouseListener(new MouseListener() {
 
             @Override
@@ -102,7 +121,7 @@ public class Map extends JPanel {
             public void mouseDragged(MouseEvent e) {
                 // TODO Auto-generated method stub
 
-                int zoomLevel = getMapTree().getViewer().getZoom();
+                zoomLevel = getMapTree().getViewer().getZoom();
 
                 mapViewerLat -= ((mapDragY - e.getY()) * 0.001) / (zoomLevel * 1000);
                 mapViewerLon -= ((e.getX() - mapDragX) * 0.001) / (zoomLevel * 1000);
@@ -135,7 +154,7 @@ public class Map extends JPanel {
                 String[] tileCoords = imageName.substring(0, imageName.indexOf(".")).split("_");
                 int xCoord = Integer.parseInt(tileCoords[0]);
                 int yCoord = Integer.parseInt(tileCoords[1]);
-                int zoomLevel = Integer.parseInt(tileCoords[2]);
+                zoomLevel = Integer.parseInt(tileCoords[2]);
 
                 Tile cacheInsert = new Tile(getMapTree().getViewer().getTileController().getTileSource(),
                         xCoord, yCoord, zoomLevel, tileImageSource);
