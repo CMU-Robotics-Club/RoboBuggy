@@ -11,4 +11,7 @@ package com.roboclub.robobuggy.ros;
  */
 
 public interface Message {
+	
+	public void setTopicName(String name);
+	public String getTopicName();
 }

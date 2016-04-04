@@ -27,7 +27,7 @@ public class ClientImageUpdater extends ClientUpdater {
 	 * Subscribe to "camera" group and initialize the things.
 	 */
 	public ClientImageUpdater() {
-		super(); // subscribe to all the things
+		subscribeToAllData();
 		WSHandler.getSGM().newGroup("camera");
 
 		updater = new Thread() {
@@ -50,7 +50,7 @@ public class ClientImageUpdater extends ClientUpdater {
 						// Since the clients list may have changed from the last time we grabbed it, we'll
 						// constantly
 						clients = WSHandler.getSGM().getGroup("camera");
-						update = updates.take();
+						update = dataUpdates.take();
 						
 //						if (clients.isEmpty()) {
 //							continue;

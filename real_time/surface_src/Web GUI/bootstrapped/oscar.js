@@ -250,6 +250,6 @@ class GPSViewer {
   }
 }
 
-// var gps = new GPSViewer('gps-canvas');
+var gps = new GPSViewer('gps-canvas');
 
 var deg2rad = function (d) { return d * Math.PI / 180; }

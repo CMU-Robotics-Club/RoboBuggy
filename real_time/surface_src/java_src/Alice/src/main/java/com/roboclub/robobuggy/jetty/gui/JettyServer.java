@@ -11,6 +11,7 @@ import org.eclipse.jetty.servlets.gzip.GzipHandler;
 import org.eclipse.jetty.websocket.server.WebSocketHandler;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 
+import com.roboclub.robobuggy.ui.Gui;
 import java.util.ArrayList;
 
 /**
@@ -35,12 +36,20 @@ public class JettyServer {
 		updaters = new ArrayList<ClientUpdater>();
 		updaters.add(new ClientDataUpdater());
 		updaters.add(new ClientImageUpdater());
+		updaters.add(new ClientStateUpdater());
+		
+//		// start button remotely
+//		WSHandler.getCM().put("herp", new CommandCallback() {
+//			public void callback(String message, int clientID) {
+//				Gui.getInstance().getWindow(0).getCtrlPanel().getLoggingPanel().getPlayBtn().doClick();
+//			}
+//		});
 
 		// Root handler for HTML
 		ResourceHandler res = new ResourceHandler();
 		res.setDirectoriesListed(true);
 		res.setWelcomeFiles(new String[]{ "index.html"});
-		res.setResourceBase("../../Web GUI/updated");
+		res.setResourceBase("../../Web GUI/bootstrapped");
 		
 		// Root handler for WebSockets
 		WebSocketHandler wsHandler = new WebSocketHandler() {

@@ -53,7 +53,7 @@ public final class Gui extends JFrame {
 		}
 		return instance;
 	}
-
+	
 	/**
 	 * Construct a new {@link Gui} object
 	 */

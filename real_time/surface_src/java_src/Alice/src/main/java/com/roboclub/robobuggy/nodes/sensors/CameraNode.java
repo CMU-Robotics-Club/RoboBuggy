@@ -43,7 +43,6 @@ public class CameraNode extends PeriodicNode{
 	public CameraNode(NodeChannel channel, int period) {
 		super(new BuggyBaseNode(channel),period, "Camera_Node");
 
-
 		//setup the webcam
 		List<Webcam> webcams = Webcam.getWebcams();
 

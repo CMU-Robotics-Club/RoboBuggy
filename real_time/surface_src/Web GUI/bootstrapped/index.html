@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="Robobuggy Web Interface">
+    <meta name="author" content="Vasu Agrawal">
+    <link rel="icon" href="fearlessLeader.ico">
+
+    <title>Alice Web Gui</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="custom.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Robobuggy</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="#statuses">Status</a></li>
+            <li><a href="#output">Logs</a></li>
+            <li><a href="#gps-canvas">Map</a></li>
+            <li><a href="#imu-canvas1">IMU</a></li>
+            <li><a href="#camera">Camera</a></li>
+            <li><a href="#gauge-distance">Encoder</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+
+
+
+
+
+
+
+    <div class="container-fluid">
+      <!-- First Row -->
+      <div class="row">
+        <div class="col-md-3">
+          <div class="row">
+            <div class="col-md-12">
+              <button type="button" id="start-button" class="btn btn-primary quarterHeight">Start!</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12"><canvas class="threeQuartersHeight" id="statuses">Statuses</canvas></div></div>
+          
+        </div>
+        <div class="col-md-3">
+          <textarea id="output" class="fill"></textarea>
+        </div>
+        <div class="col-md-6">
+          <div id="gps-canvas" class="fill"></div>
+          
+        </div>
+      </div>
+
+      <!-- Second Row -->
+      <div class="row top20">
+        <div class="col-md-4">
+          <div class="row">
+            <div class="col-xs-6 col-md-6">
+              <div id="imu-canvas1" class="AngleViewer"></div>
+            </div>
+
+            <div class="col-xs-6 col-md-6">
+              <div id="imu-canvas2" class="AngleViewer"></div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-xs-6 col-md-6">
+              <div id="imu-canvas3" class="AngleViewer"></div>
+            </div>
+
+            <div class="col-xs-6 col-md-6">
+              <div id="imu-canvas4" class="AngleViewer"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-8">
+          <canvas class="fill" id="camera">Camera Viewer</canvas>
+        </div>
+      </div>
+
+      <!-- Third Row -->
+      <div class="row top20">
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-xs-6 col-md-4">      <div id="gauge-distance" class="Gauge"></div></div>
+            <div class="col-xs-6 col-md-4">        <div id="gauge-velocity" class="Gauge"></div></div>
+            <div class="col-xs-6 col-md-4">        <div id="gauge-acceleration" class="Gauge"></div></div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+    </div> <!-- /container -->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src=" jquery-2.2.2.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="js/bootstrap.min.js"></script>
+    
+    <script src="reconnecting-websocket.js"></script>
+    <script src="camera.js"></script>
+
+    <script src="math.min.js"></script>
+    <script src="three.min.js"></script>
+    <script src="maps.js"></script>
+    <script src="d3.v3.min.js"></script>
+    <script src="oscar.js"></script>
+
+    <script src="raphael-2.1.4.min.js"></script>
+    <script src="justgage.js"></script>
+
+    <script src="ws.js"></script>
+
+  </body>
+</html>

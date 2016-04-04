@@ -10,4 +10,16 @@ public class IntegerMessage implements Message {
 		this.val = i;
 	}
 
+	@Override
+	public void setTopicName(String name) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getTopicName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 }
