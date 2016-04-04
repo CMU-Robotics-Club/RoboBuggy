@@ -50,7 +50,7 @@ public class LoggingNode extends BuggyDecoratorNode {
     private File outputFile;
     private File outputDirectory;
     private NodeChannel[] filters;
-    private LinkedBlockingQueue<TraceableMessage> messageQueue;
+    private LinkedBlockingQueue<Message> messageQueue;
     private LogWriterThread loggingThread;
     private boolean keepLogging;
 
@@ -154,7 +154,7 @@ public class LoggingNode extends BuggyDecoratorNode {
             new Subscriber(filter.getMsgPath(), new MessageListener() {
                 @Override
                 public void actionPerformed(String topicName, Message m) {
-                    messageQueue.add(new TraceableMessage(m, topicName));
+                    messageQueue.add(m);
                 }
             });
         }
@@ -298,12 +298,10 @@ public class LoggingNode extends BuggyDecoratorNode {
 
                 //block until we have a message from the queue
                 Message toSort;
-                String topic;
                 try {
-                    TraceableMessage traceableMessage = messageQueue.take();
-                    toSort = traceableMessage.getMessage();
+                    toSort = messageQueue.take();
 
-                    String msgAsJsonString = messageTranslator.toJson(traceableMessage);
+                    String msgAsJsonString = messageTranslator.toJson(toSort);
 
                     // and if you look on your right you'll see the almost-unnecessary
                     // giganti-frickin-ic telemetry block
