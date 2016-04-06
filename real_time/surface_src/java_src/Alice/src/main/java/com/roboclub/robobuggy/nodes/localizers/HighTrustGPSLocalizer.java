@@ -47,7 +47,7 @@ public class HighTrustGPSLocalizer implements Node{
 
 
         //Initialize subscriber to GPS measurements
-        new Subscriber(NodeChannel.GPS.getMsgPath(), new MessageListener() {
+        new Subscriber("htGpsLoc", NodeChannel.GPS.getMsgPath(), new MessageListener() {
             @Override
             public void actionPerformed(String topicName, Message m) {
                 GpsMeasurement newGPSData = (GpsMeasurement)m;
@@ -75,7 +75,7 @@ public class HighTrustGPSLocalizer implements Node{
             }
         });
 
-        new Subscriber(NodeChannel.IMU_MAGNETIC.getMsgPath(),new MessageListener() {
+        new Subscriber("htGpsLoc", NodeChannel.IMU_MAGNETIC.getMsgPath(),new MessageListener() {
             @Override
             public void actionPerformed(String topicName, Message m) {
                 MagneticMeasurement magM = (MagneticMeasurement)m;
@@ -90,7 +90,7 @@ public class HighTrustGPSLocalizer implements Node{
 
         // TODO note that we will probably run into precision errors since the changes are so small
         // would be good to batch up the encoder updates until we get a margin that we know can be represented proeprly
-        new Subscriber(NodeChannel.ENCODER.getMsgPath(), new MessageListener() {
+        new Subscriber("htGpsLoc", NodeChannel.ENCODER.getMsgPath(), new MessageListener() {
             @Override
             public void actionPerformed(String topicName, Message m) {
 

@@ -117,7 +117,7 @@ public class DataPanel extends RobobuggyGUIContainer {
 		panel.add(longitude);
 		
 		// Subscriber for Imu updates
-		new Subscriber(NodeChannel.IMU.getMsgPath(), new MessageListener() {
+		new Subscriber("uiDataPan", NodeChannel.IMU.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				
@@ -139,7 +139,7 @@ public class DataPanel extends RobobuggyGUIContainer {
 			}
 		});
 		
-		new Subscriber(NodeChannel.GPS.getMsgPath(), new MessageListener() {
+		new Subscriber("uiDataPan", NodeChannel.GPS.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				double lat = ((GpsMeasurement)m).getLatitude();
@@ -162,7 +162,7 @@ public class DataPanel extends RobobuggyGUIContainer {
 		panel.add(distance);
 		
 		// Subscriber for encoder updates
-		new Subscriber(NodeChannel.ENCODER.getMsgPath(), new MessageListener() {
+		new Subscriber("uiDataPan", NodeChannel.ENCODER.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				EncoderMeasurement msg = (EncoderMeasurement)m;
@@ -184,7 +184,7 @@ public class DataPanel extends RobobuggyGUIContainer {
 		panel.add(steeringAng);
 		
 		// Subscriber for drive control updates
-		new Subscriber(NodeChannel.STEERING.getMsgPath(), new MessageListener() {
+		new Subscriber("uiDataPan", NodeChannel.STEERING.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				steeringAng.setText(Double.toString(((SteeringMeasurement)m).getAngle()));
@@ -198,7 +198,7 @@ public class DataPanel extends RobobuggyGUIContainer {
 		panel.add(commandAng);
 		
 		// Subscriber for drive control updates
-		new Subscriber(NodeChannel.STEERING_COMMANDED.getMsgPath(), new MessageListener() {
+		new Subscriber("uiDataPan", NodeChannel.STEERING_COMMANDED.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				steeringAng.setText(Double.toString(((SteeringMeasurement)m).getAngle()));
@@ -210,7 +210,7 @@ public class DataPanel extends RobobuggyGUIContainer {
 		label = new JLabel(" Bracking: ");
 		panel.add(label);
 		panel.add(bracking);
-		new Subscriber(NodeChannel.BRAKE_CTRL.getMsgPath(), new MessageListener() {
+		new Subscriber("uiDataPan", NodeChannel.BRAKE_CTRL.getMsgPath(), new MessageListener() {
 			
 			@Override
 			public void actionPerformed(String topicName, Message m) {
