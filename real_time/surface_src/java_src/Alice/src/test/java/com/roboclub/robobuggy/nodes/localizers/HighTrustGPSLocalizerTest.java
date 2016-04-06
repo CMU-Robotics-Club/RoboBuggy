@@ -33,8 +33,8 @@ public class HighTrustGPSLocalizerTest {
 
     @After
     public void tearDown() throws Exception {
-        gpsPub = null;
-        encoderPub = null;
+        gpsPub.close();
+        encoderPub.close();
     }
 
     @Test
@@ -44,7 +44,7 @@ public class HighTrustGPSLocalizerTest {
         final double[] lat2 = {0.0};
         final double[] lon2 = {0.0};
 
-        new Subscriber(NodeChannel.POSE.getMsgPath(), new MessageListener() {
+        new Subscriber("highTrustGpsLocalizerTest", NodeChannel.POSE.getMsgPath(), new MessageListener() {
             @Override
             public void actionPerformed(String topicName, Message m) {
                 GPSPoseMessage pm = (GPSPoseMessage) m;
