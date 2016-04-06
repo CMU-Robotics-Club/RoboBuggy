@@ -20,26 +20,35 @@ public class BoundedQueueNumberSink implements Node {
 		try {
 			sem.acquire();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		s = new Subscriber(topicName, new MessageListener() {
+		s = new Subscriber("boundedSink", topicName, maxMessageQueueLength, new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				IntegerMessage im = (IntegerMessage) m;
 				int val = count.getAndIncrement();
-				//System.out.println("message " + val + ":" + im.val);
-				if ((val+1) == numMessages) {
+				
+				if ((val + s.getNumberMessagesDropped())!= im.val) {
+					System.out.println("For an bounded queue, the sum of dropped"
+							+ " messages and our counter must equal the published messages.");
+				}
+				
+				if ((val+s.getNumberMessagesDropped()+1) == numMessages) {
 					sem.release();
 					System.out.println("NumSink exiting...");
 					return;
 				}
 			}
-		}, maxMessageQueueLength);
+		});
+	}
+	
+	public long getNumberMessagesDropped() {
+		return s.getNumberMessagesDropped();
 	}
 
 	@Override
 	public boolean shutdown() {
+		s.close();
 		return true;
 	}
 
@@ -64,7 +73,7 @@ public class BoundedQueueNumberSink implements Node {
 		} catch (InterruptedException e) {
 			assert (false);
 		}
-		return count.get();
+		return count.get() + (int)getNumberMessagesDropped();
 	}
 
 }

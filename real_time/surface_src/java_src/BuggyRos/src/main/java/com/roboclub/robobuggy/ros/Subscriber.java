@@ -31,7 +31,7 @@ public class Subscriber {
 	private Thread worker;
 
 	// Note that callbacks will run in a different thread
-	public Subscriber(String topic, MessageListener messageListener, int maxMessagesToKeep) {
+	public Subscriber(String ownerName, String topic, int maxMessagesToKeep, MessageListener messageListener) {
 		this.ms = MessageServer.getMaster();
 		this.callback = messageListener;
 		this.topicName = topic;
@@ -40,21 +40,15 @@ public class Subscriber {
 		// Register this thread as a subscriber to "topic" on the master queue
 		ms.addListener(topic, this);
 
-		worker = new Thread(new WorkerThread(), "Subscriber-Internal=" + topic);
+		worker = new Thread(new WorkerThread(), "Subscriber=" + ownerName + ":" + topic);
 		worker.start();
 	}
 
 	// Note that callbacks will run in a different thread
-	public Subscriber(String topic, MessageListener messageListener) {
-		this(topic, messageListener, Integer.MAX_VALUE);
+	public Subscriber(String ownerName, String topic, MessageListener messageListener) {
+		this(ownerName, topic, Integer.MAX_VALUE, messageListener);
 	}
 	
-	public int getMessageQueueLength() {
-		synchronized (local_inbox) {
-			return local_inbox.size();
-		}
-	}
-
 	public void putMessage(Message m) {
 		synchronized (local_inbox) {
 			local_inbox.push(m);
@@ -127,4 +121,22 @@ public class Subscriber {
 			e.printStackTrace();
 		}
 	}
+
+	// Note that these methods allow the subscriber callback to call back 
+	//  into the class while the callback is running. Since no locks are held 
+	//  over the callback, it is safe to acquire a lock here.
+	public int getMessageQueueLength() {
+		synchronized (local_inbox) {
+			return local_inbox.size();
+		}
+	}
+
+	// TODO: do we need to hold this lock if we instead make this variable
+	// volatile? Will it work on the same core? on different cores? 
+	public long getNumberMessagesDropped() {
+		synchronized (local_inbox) {
+			return messagesDropped;
+		}
+	}
+
 }

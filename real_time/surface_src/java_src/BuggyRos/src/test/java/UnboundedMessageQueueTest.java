@@ -36,7 +36,7 @@ public class UnboundedMessageQueueTest {
 	public void onePubOneSubWithMiddleNode() {
 		int numIterations = 100;
 		UnboundedQueueNumberSink sink = new UnboundedQueueNumberSink("to", numIterations);
-		MessagePasser ms = new MessagePasser("from", "to");
+		MessagePasser ms = new MessagePasser("middle", "from", "to");
 	
 		// Publish as fast as we can!
 		NumberSource source = new NumberSource("from", 0, numIterations);
@@ -56,8 +56,8 @@ public class UnboundedMessageQueueTest {
 	public void onePubOneSubWithTwoMiddleNode() {
 		int numIterations = 100;
 		UnboundedQueueNumberSink sink = new UnboundedQueueNumberSink("to", numIterations);
-		MessagePasser ms1 = new MessagePasser("from", "middle");
-		MessagePasser ms2 = new MessagePasser("middle", "to");
+		MessagePasser ms1 = new MessagePasser("firstPasser", "from", "middle");
+		MessagePasser ms2 = new MessagePasser("secondPasser", "middle", "to");
 	
 		// Publish as fast as we can!
 		NumberSource source = new NumberSource("from", 0, numIterations);

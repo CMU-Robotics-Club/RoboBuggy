@@ -16,18 +16,17 @@ public class UnboundedQueueNumberSink implements Node {
 		try {
 			sem.acquire();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		s = new Subscriber(topicName, new MessageListener() {
+		s = new Subscriber("unboundedSink", topicName, new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				IntegerMessage im = (IntegerMessage) m;
 				int val = count.getAndIncrement();
 
 				if (val != im.val) {
-					System.out.println("For an unbounded queue, we do not drop"
-							+ " messages, so message value should equal our counter.");
+					System.out.println("For an unbounded queue, the sum of dropped"
+							+ " messages and our counter must equal the published messages.");
 				}
 
 				if ((val + 1) == numMessages) {

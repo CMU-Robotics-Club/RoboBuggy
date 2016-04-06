@@ -18,11 +18,12 @@ import com.roboclub.robobuggy.ros.Subscriber;
  * @author Matt Sebek
  * @author Trevor Decker
  *
- * @version 0.5
- * 
  * CHANGELOG: NONE
  * 
- * DESCRIPTION: TODO
+ * DESCRIPTION: This class is the singleton that backs all publishers/subscribers.
+ *    MessageServer is a global message queue that all publishers publish to. 
+ *    The MailmanThread pulls messages from this global message queue, and puts
+ *    the individual messages into the queues that each Subscriber maintains.
  */
 
 // This class is the backbone of the publisher/subscriber infrastructure.
@@ -36,6 +37,8 @@ public class MessageServer {
 
 	// Contains all messages that threads want sent.
 	private LinkedBlockingQueue<Map.Entry<String, Message>> inbox = new LinkedBlockingQueue<Map.Entry<String, Message>>();
+
+	private int messagesProcessed = 0;
 	
 	// Picks up post, and delivers it.
 	private class MailmanThread implements Runnable {
@@ -43,7 +46,6 @@ public class MessageServer {
 		@Override
 		public void run() {
 			while (true) {
-
 				Map.Entry<String, Message> request;
 
 				try {
@@ -81,19 +83,23 @@ public class MessageServer {
 		}
 	}
 
+
+	
 	/*
 	 * The StatisticsThread 
 	 */
 	private class StatisticsThread implements Runnable {
-
+		// Interesting things: how many messages are in the queue, 
+		//					   how many messages processed since last time.
+		
 		public StatisticsThread(int pollingPeriodInMs) {
 			
 		}
 		
 		@Override
 		public void run() {
-			// TODO Auto-generated method stub
-			
+		
+		
 		}
 		
 		
