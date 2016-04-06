@@ -162,6 +162,7 @@ public final class GpsNode extends SerialNode {
 		switch (ar[5]) {
 			case "W":
 				west = true;
+				longitude = -1*longitude;
 				break;
 			case "E":
 				west = false;
