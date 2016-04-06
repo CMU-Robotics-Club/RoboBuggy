@@ -32,7 +32,7 @@ public class RobobuggyMainFile {
 
 		new RobobuggyLogicNotification("Initializing Robot", RobobuggyMessageLevel.NOTE);
 
-        robot = SimRobot.getInstance();
+        robot = TransistorAuton.getInstance();
 
 
 		new RobobuggyLogicNotification("Initializing GUI", RobobuggyMessageLevel.NOTE);
@@ -43,7 +43,7 @@ public class RobobuggyMainFile {
 		robot.startNodes();
 
 		try {
-			new JettyServer();
+		//	new JettyServer();
 			new RobobuggyLogicNotification("Initializing web server", RobobuggyMessageLevel.NOTE);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

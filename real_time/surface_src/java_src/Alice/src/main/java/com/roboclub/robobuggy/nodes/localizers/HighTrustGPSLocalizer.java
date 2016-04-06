@@ -1,5 +1,6 @@
 package com.roboclub.robobuggy.nodes.localizers;
 
+import com.roboclub.robobuggy.main.Util;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
@@ -58,17 +59,17 @@ public class HighTrustGPSLocalizer implements Node{
                     if(dt > 0.0){
                           // Get the delta latitude and longitude, use that to figure out how far we've travelled
 
- //               double oldGPSX = buggyFrameGpsX;
- //                double oldGPSY = buggyFrameGpsY;
+               double oldGPSX = buggyFrameGpsX;
+                 double oldGPSY = buggyFrameGpsY;
                 	buggyFrameGpsY = newGPSData.getLatitude();
                 	buggyFrameGpsX = newGPSData.getLongitude();
- //               double dLat = buggyFrameGpsY - oldGPSY;
- //               double dLon = buggyFrameGpsX - oldGPSX;
+    //            double dLat = buggyFrameGpsY - oldGPSY;
+    //            double dLon = buggyFrameGpsX - oldGPSX;
                 
     //            double oldRotZ = buggyFrameRotZ;
 
                 // take the arctangent in order to get the heading (in degrees)
-  //             buggyFrameRotZ = Math.toDegrees(Math.atan2(dLat, dLon));
+         //     buggyFrameRotZ = Math.toDegrees(Math.atan2(dLat, dLon));
 
                         publishUpdate();
                         mostRecentUpdate = newGPSData.getTimestamp();
@@ -83,9 +84,9 @@ public class HighTrustGPSLocalizer implements Node{
             double y = mes.getRot()[0][1];
             double x = mes.getRot()[0][0];
             
-            buggyFrameRotZ = Math.toDegrees(Math.atan2(y, x));
+          buggyFrameRotZ = Util.normalizeAngleDeg(-Math.toDegrees(Math.atan2(y, x))+90);
             
-            publishUpdate();
+           publishUpdate();
         }));
         /*
         new Subscriber(NodeChannel.IMU_MAGNETIC.getMsgPath(), (topicName, m) -> {

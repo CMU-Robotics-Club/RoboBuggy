@@ -1,10 +1,12 @@
 package com.roboclub.robobuggy.robots;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
+import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.nodes.localizers.HighTrustGPSLocalizer;
 import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
 import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
@@ -71,12 +73,13 @@ public final class TransistorAuton extends AbstractRobot {
 				NodeChannel.getLoggingChannels()));
 		nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING, RobobuggyConfigFile.getComPortRBSM(),
 				RobobuggyConfigFile.RBSM_COMMAND_PERIOD));
-//		nodeList.add(new CameraNode(NodeChannel.PUSHBAR_CAMERA, 100));
+		nodeList.add(new CameraNode(NodeChannel.PUSHBAR_CAMERA, 100));
 		nodeList.add(new HillCrestImuNode());
 
 		try {
-			nodeList.add(new WayPointFollowerPlanner(WayPointUtil.createWayPointsFromWaypointList("logs/waypoints/waypoints_triangle.txt")));
-	}   catch (IOException e) {
+			ArrayList<GpsMeasurement> wayPoints = WayPointUtil.createWayPointsFromWaypointList(RobobuggyConfigFile.getWaypointSourceLogFile());
+			nodeList.add(new WayPointFollowerPlanner(wayPoints));
+		}   catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -87,10 +90,10 @@ public final class TransistorAuton extends AbstractRobot {
 		RobobuggyGUITabs tabs = new RobobuggyGUITabs();
 		mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
 		tabs.addTab(new MainGuiWindow(), "Home");
-		tabs.addTab(new ImuVisualWindow(), "IMU");
-		tabs.addTab(new VelocityWindow(), "Velocity");
+	//	tabs.addTab(new ImuVisualWindow(), "IMU");
+	//	tabs.addTab(new VelocityWindow(), "Velocity");
 		tabs.addTab(new PoseGraphsPanel(),"poses");
-		tabs.addTab(new ImuPanel(),"IMU");
+	//	tabs.addTab(new ImuPanel(),"IMU");
 		tabs.addTab(new  AutonomousPanel(),"Autonomous");
 		tabs.add(new PathPanel(), "frbfy");
 		tabs.addTab(new ConfigurationPanel(),"Configuration");
