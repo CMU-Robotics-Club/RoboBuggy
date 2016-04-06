@@ -11,11 +11,27 @@ public class MessagePasser implements Node {
 	Publisher p;
 	Subscriber s;
 
-	public MessagePasser(String from, String to) {
+	public MessagePasser(String ownerName, String from, String to) {
 		p = new Publisher(to);
-		s = new Subscriber(from, new MessageListener() {
+		s = new Subscriber(ownerName, from, new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
+				if(m == null) {
+					System.out.println("Message null....");
+				}
+				p.publish(m);
+			}
+		});
+	}
+
+	public MessagePasser(String ownerName, String from, String to, int messageQueueLength) {
+		p = new Publisher(to);
+		s = new Subscriber(ownerName, from, new MessageListener() {
+			@Override
+			public void actionPerformed(String topicName, Message m) {
+				if(m == null) {
+					System.out.println("Message null....");
+				}
 				p.publish(m);
 			}
 		});
@@ -23,6 +39,8 @@ public class MessagePasser implements Node {
 	
 	@Override
 	public boolean shutdown() {
+		p.close();
+		s.close();
 		return true;
 	}
 

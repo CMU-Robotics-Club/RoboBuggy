@@ -1,6 +1,5 @@
 package com.roboclub.robobuggy.ui;
 
-
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
@@ -14,8 +13,6 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import java.util.ArrayList;
-
-
 
 /**
  * a graph
@@ -57,7 +54,7 @@ public class RoboBuggyGraph extends RobobuggyGUIContainer{
 
 		
 
-		new Subscriber(topic, new MessageListener() {
+		new Subscriber("uiBuggy", topic, new MessageListener() {
 		
 			@Override
 			public void actionPerformed(String topicName, Message m) {

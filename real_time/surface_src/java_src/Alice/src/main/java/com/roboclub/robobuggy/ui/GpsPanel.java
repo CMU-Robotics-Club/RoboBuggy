@@ -76,10 +76,9 @@ public class GpsPanel extends JPanel {
 		addCacheToTree();
 		
 		this.add(mapTree);
-		gpsSub = new Subscriber(NodeChannel.GPS.getMsgPath(), new MessageListener() {
+		gpsSub = new Subscriber("uiGpsPanel", NodeChannel.GPS.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
-
 				double latitude = ((GpsMeasurement)m).getLatitude();
 				double longitude = ((GpsMeasurement) m).getLongitude();
 
@@ -94,12 +93,10 @@ public class GpsPanel extends JPanel {
 			}
 		});
 		
-		new Subscriber(NodeChannel.POSE.getMsgPath(), new MessageListener() {
+		new Subscriber("uiGpsPanel", NodeChannel.POSE.getMsgPath(), new MessageListener() {
 			
 			@Override
 			public void actionPerformed(String topicName, Message m) {
-				// TODO Auto-generated method stub
-				
 				GPSPoseMessage curpose = (GPSPoseMessage) m;
 				addLineToMap(new LocTuple(curpose.getLatitude(), curpose.getLongitude()), curpose.getHeading(), Color.CYAN);
 			}

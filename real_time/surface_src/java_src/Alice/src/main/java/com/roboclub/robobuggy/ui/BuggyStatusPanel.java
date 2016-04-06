@@ -27,11 +27,11 @@ public class BuggyStatusPanel extends RobobuggyGUIContainer {
     }
 
     private void setupDataLoaders() {
-        new Subscriber(NodeChannel.BRAKE_STATE.getMsgPath(), (topicName, m) -> {
+        new Subscriber("uiStatus", NodeChannel.BRAKE_STATE.getMsgPath(), (topicName, m) -> {
             brakesDown = ((BrakeStateMessage) m).isDown();
         });
 
-        new Subscriber(NodeChannel.BATTERY.getMsgPath(), (topicName, m) -> {
+        new Subscriber("uiStatus", NodeChannel.BATTERY.getMsgPath(), (topicName, m) -> {
             batteryLevel = ((BatteryLevelMessage) m).getBatteryLevel();
         });
     }

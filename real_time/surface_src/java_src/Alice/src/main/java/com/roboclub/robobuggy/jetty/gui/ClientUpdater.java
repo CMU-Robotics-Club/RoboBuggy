@@ -26,7 +26,7 @@ public abstract class ClientUpdater {
 	private void subscribeToAll() {
 		// Once we're subscribed to all the things, we shouldn't need to do more other than push.
         for (NodeChannel filter : NodeChannel.getLoggingChannels()) {
-            new Subscriber(filter.getMsgPath(), new MessageListener() {
+            new Subscriber("jetty", filter.getMsgPath(), new MessageListener() {
                 @Override
                 public void actionPerformed(String topicName, Message m) {
                 	

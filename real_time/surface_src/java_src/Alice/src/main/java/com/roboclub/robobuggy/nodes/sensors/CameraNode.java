@@ -76,7 +76,7 @@ public class CameraNode extends PeriodicNode{
 
 	private void setupLoggingTrigger() {
 
-		new Subscriber(NodeChannel.NODE_STATUS.getMsgPath(), new MessageListener() {
+		new Subscriber("cam", NodeChannel.NODE_STATUS.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				try {
