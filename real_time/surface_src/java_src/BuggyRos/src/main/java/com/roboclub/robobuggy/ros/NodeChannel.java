@@ -35,6 +35,11 @@ public enum NodeChannel {
 	ENCODER_RESET("encoder_reset", true),
 	AUTON_BRAKE_STATE("auton_brake_state", true),
 	TELEOP_BRAKE_STATE("teleop_brake_state", true),
+	IMU_LINEAR_ACC("imu_linear_acc", true),
+	IMU_LINEAR_NO_GRAV("imu_linear_no_grav", true),
+	IMU_ANG_VEL("imu_ang_vel", true),
+	IMU_TEMP("imu_temp", true),
+	IMU_ANG_POS("imu_ang_pos", true),
 	UNKNOWN_CHANNEL("unknown", false),
 	;
 	

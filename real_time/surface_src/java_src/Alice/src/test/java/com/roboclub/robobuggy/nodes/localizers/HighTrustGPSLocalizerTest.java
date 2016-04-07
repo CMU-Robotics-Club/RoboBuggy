@@ -18,27 +18,37 @@ import org.junit.Test;
  */
 public class HighTrustGPSLocalizerTest {
 
-    private static final double latPittsburgh = 40.440310;
-    private static final double lonPittsburgh = -79.9471537;
-    private static final double calcedDistOneDegMeters = 84721.0;
+    private static final double LAT_PITTSBURGH = 40.440310;
+    private static final double LON_PITTSBURGH = -79.9471537;
+    private static final double CALCED_DIST_ONE_DEG_METERS = 84721.0;
 
     private Publisher gpsPub;
     private Publisher encoderPub;
 
+    /**
+     * sets up the publishers
+     */
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         gpsPub = new Publisher(NodeChannel.GPS.getMsgPath());
         encoderPub = new Publisher(NodeChannel.ENCODER.getMsgPath());
     }
 
+    /**
+     * invalidates the publishers
+     */
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         gpsPub = null;
         encoderPub = null;
     }
 
+    /**
+     * tests whether the pose estimator can translate meters into latlng stuffs
+     * @throws InterruptedException if timers somehow failed
+     */
     @Test
-    public void test_distanceBetweenOneDegLat() throws InterruptedException {
+    public void testDistanceBetweenOneDegLat() throws InterruptedException {
         final double[] lat1 = { 0.0 };
         final double[] lon1 = {0.0};
         final double[] lat2 = {0.0};
@@ -64,14 +74,9 @@ public class HighTrustGPSLocalizerTest {
             }
         });
 
-        gpsPub.publish(new GpsMeasurement(latPittsburgh, lonPittsburgh));
+        gpsPub.publish(new GpsMeasurement(LAT_PITTSBURGH, LON_PITTSBURGH));
         Thread.sleep(500);
-        encoderPub.publish(new EncoderMeasurement(calcedDistOneDegMeters, 0.0));
-
-    }
-
-    public boolean isWithinTolerance(double val1, double val2, double tolerance) {
-        return Math.abs(val1 - val2) < tolerance;
+        encoderPub.publish(new EncoderMeasurement(CALCED_DIST_ONE_DEG_METERS, 0.0));
 
     }
 

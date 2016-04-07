@@ -2,89 +2,255 @@ package com.roboclub.robobuggy.ui;
 
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
+import com.roboclub.robobuggy.messages.GPSPoseMessage;
+import com.roboclub.robobuggy.ros.Message;
+import com.roboclub.robobuggy.ros.MessageListener;
+import com.roboclub.robobuggy.ros.NodeChannel;
+import com.roboclub.robobuggy.ros.Subscriber;
+import org.openstreetmap.gui.jmapviewer.Coordinate;
+import org.openstreetmap.gui.jmapviewer.JMapViewerTree;
+import org.openstreetmap.gui.jmapviewer.MapMarkerDot;
+import org.openstreetmap.gui.jmapviewer.MapPolygonImpl;
+import org.openstreetmap.gui.jmapviewer.MemoryTileCache;
+import org.openstreetmap.gui.jmapviewer.OsmTileLoader;
+import org.openstreetmap.gui.jmapviewer.Tile;
+import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
+import org.openstreetmap.gui.jmapviewer.interfaces.MapPolygon;
+import org.openstreetmap.gui.jmapviewer.interfaces.TileCache;
+import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.ArrayList;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * the map, it plots points where we are based on gps
  */
 public class Map extends JPanel {
-	private BufferedImage map;
-	private ArrayList<LocTuple> locs;
-	private LocTuple imgNorthWest;
-	private LocTuple imgSouthEast;
 
+    private JMapViewerTree mapTree;
+
+    private double mapViewerLat = 40.440138;
+    private double mapViewerLon = -79.945306;
+    private int zoomLevel = 17;
+
+    private double mapDragX = -1;
+    private double mapDragY = -1;
+
+    /**
+     * initializes a new Map with cache loaded
+     */
+    public Map() {
+        initMapTree();
+        addCacheToTree();
+        this.add(getMapTree());
+        
+        //adds track buggy  
+        new Subscriber(NodeChannel.POSE.getMsgPath(), new MessageListener() {
+			//TODO make this optional 
+			@Override
+			public void actionPerformed(String topicName, Message m) {
+				GPSPoseMessage gpsM = (GPSPoseMessage)m;
+		        getMapTree().getViewer().setDisplayPosition(new Coordinate(gpsM.getLatitude(),
+		        		gpsM.getLongitude()),zoomLevel);				
+			}
+		});
+    }
+
+
+    private void initMapTree() {
+        setMapTree(new JMapViewerTree("Buggy"));
+        getMapTree().getViewer().setTileSource(new BingAerialTileSource());
+        getMapTree().setSize(getWidth(), getHeight());
+        getMapTree().getViewer().setSize(getWidth(), getHeight());
+        getMapTree().getViewer().setTileLoader(new OsmTileLoader(getMapTree().getViewer()));
+        getMapTree().getViewer().setDisplayPosition(new Coordinate(mapViewerLat, mapViewerLon), zoomLevel);
+        getMapTree().getViewer().addMouseListener(new MouseListener() {
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                // TODO Auto-generated method stub
+                mapDragX = e.getX();
+                mapDragY = e.getY();
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+        getMapTree().getViewer().addMouseMotionListener(new MouseMotionListener() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                // TODO Auto-generated method stub
+
+                zoomLevel = getMapTree().getViewer().getZoom();
+
+                mapViewerLat -= ((mapDragY - e.getY()) * 0.001) / (zoomLevel * 1000);
+                mapViewerLon -= ((e.getX() - mapDragX) * 0.001) / (zoomLevel * 1000);
+                getMapTree().getViewer().setDisplayPosition(new Coordinate(mapViewerLat, mapViewerLon), zoomLevel);
+            }
+        });
+    }
+
+    private void addCacheToTree() {
+        try {
+            TileCache courseCache = new MemoryTileCache();
+            String mapCacheFolderDiskPath = "images/cachedCourseMap";
+            File mapCacheDir = new File(mapCacheFolderDiskPath);
+            if(!mapCacheDir.isDirectory() || !mapCacheDir.exists()) {
+                throw new IOException("cache dir isn't properly structured or doesn't exist");
+            }
+
+            FilenameFilter filter = (dir, name) -> {
+                // TODO Auto-generated method stub
+                if(name.contains("png")) {
+                    return true;
+                }
+                return false;
+            };
+            String[] cachedImages = mapCacheDir.list(filter);
+            if (cachedImages == null) {
+                return;
+            }
+            for(String imageName : cachedImages) {
+                BufferedImage tileImageSource = ImageIO.read(new File(mapCacheDir.getAbsolutePath() + "/" + imageName));
+                String[] tileCoords = imageName.substring(0, imageName.indexOf(".")).split("_");
+                int xCoord = Integer.parseInt(tileCoords[0]);
+                int yCoord = Integer.parseInt(tileCoords[1]);
+                zoomLevel = Integer.parseInt(tileCoords[2]);
+
+                Tile cacheInsert = new Tile(getMapTree().getViewer().getTileController().getTileSource(),
+                        xCoord, yCoord, zoomLevel, tileImageSource);
+                cacheInsert.setLoaded(true);
+                courseCache.addTile(cacheInsert);
+            }
+
+            getMapTree().getViewer().getTileController().setTileCache(courseCache);
+        }
+        catch (IOException e) {
+            new RobobuggyLogicNotification("Something is wrong with the map cache: " + e.getMessage(), RobobuggyMessageLevel.EXCEPTION);
+        }
+    }
+
+    /**
+     * updates the current arrow displaying on the GUI - shows orientation based on GPS
+     */
+    public void updateArrow() {
+		List<MapPolygon> polygons = getMapTree().getViewer().getMapPolygonList();
+			List<MapMarker> markers = getMapTree().getViewer().getMapMarkerList();
+			if (markers.size() >= 2) {
+				MapMarker backMarker = markers.get(markers.size() - 2);
+				MapMarker frontMarker = markers.get(markers.size() - 1);
+
+				double endpointLat = 50 * (frontMarker.getLat() - backMarker.getLat()) + frontMarker.getLat();
+				double endpointLon = 50 * (frontMarker.getLon() - backMarker.getLon()) + frontMarker.getLon();
+
+				polygons.clear();
+				addLineToMap(new LocTuple(frontMarker.getLat(), frontMarker.getLon()), new LocTuple(endpointLat, endpointLon), Color.RED);
+			}
+	}
 
 	/**
-	 * makes the new map
+	 * @param points points to add to the map
+	 * @param thisColor color of the point
 	 */
-	public Map(){
-		try {
-			map = ImageIO.read(new File("images/lat_long_course_map.png"));
-		} catch(Exception e) {
-			new RobobuggyLogicNotification("Unable to read map image!", RobobuggyMessageLevel.WARNING);
+	public void addPointsToMapTree(Color thisColor, LocTuple...points) {
+		for (LocTuple point : points) {
+			getMapTree().getViewer().addMapMarker(new MapMarkerDot(thisColor, point.getLatitude(), point.getLongitude()));
 		}
-		imgNorthWest = new LocTuple(40.443946388131266, -79.95532877484377);
-		imgSouthEast = new LocTuple(40.436597411027364, -79.93596322545625);
-		locs = new ArrayList<LocTuple>();
+	}
+
+	/**
+	 * @param point1 1st endpoint of line to add
+	 * @param point2 2nd endpoint of line to add
+	 * @param lineColor color of the line
+	 */
+	public void addLineToMap(LocTuple point1, LocTuple point2, Color lineColor) {
+		MapPolygonImpl polygon = new MapPolygonImpl(
+				new Coordinate(point1.getLatitude(), point1.getLongitude()),
+				new Coordinate(point1.getLatitude(), point1.getLongitude()),
+				new Coordinate(point2.getLatitude(), point2.getLongitude())
+		);
+		polygon.setColor(lineColor);
+		getMapTree().getViewer().addMapPolygon(polygon);
+	}
+
+	/**
+     * @param originPoint the origin point of the ray
+     * @param angle the heading of the ray in radians
+     * @param lineColor the color of the line
+     * @param clearPrevLine update the line or add a new one
+     */
+	public void addLineToMap(LocTuple originPoint, double angle, Color lineColor, boolean clearPrevLine) {
+        if (clearPrevLine) {
+            getMapTree().getViewer().getMapPolygonList().clear();
+        }
+
+		double scalingFactor = 0.0005;
+		double dx = Math.cos(angle) * scalingFactor;
+		double dy = Math.sin(angle) * scalingFactor;
+
+		LocTuple endpoint = new LocTuple(originPoint.getLatitude() + dy, originPoint.getLongitude() + dx);
+		addLineToMap(originPoint, endpoint, lineColor);
+	}
+
+    @Override
+    public void paintComponent(Graphics g) {
+
+        getMapTree().setBounds(0, 0, getWidth(), getHeight());
+        getMapTree().getViewer().setSize(getWidth(), getHeight());
+
+    }
+
+
+	/**
+	 * @return the mapTree
+	 */
+	public JMapViewerTree getMapTree() {
+		return mapTree;
 	}
 
 
 	/**
-	 * @param newPoint the point to add to the map
+	 * @param mapTree the mapTree to set
 	 */
-	public void addPoint(LocTuple newPoint){
-		locs.add(newPoint);
-		this.repaint();
+	public void setMapTree(JMapViewerTree mapTree) {
+		this.mapTree = mapTree;
 	}
 
-	/**
-	 * @param newPoint point to add
-	 * @param orientation the orientation to put the arrow at
-	 */
-	public void addArrow(LocTuple newPoint,double orientation){
-		//TODO
-	}
-
-	@Override
-	public void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		Graphics2D g2d = (Graphics2D) g.create();
-		g.drawImage(map, 0, 0, getWidth(), getHeight(), Color.black, null);
-
-		for (int i = 0; i < locs.size(); i++) {
-			LocTuple mTuple = locs.get(i);
-			drawTuple(g2d, mTuple);
-		}
-		g2d.dispose();
-	}
-	
-	private void drawTuple(Graphics2D g2d, LocTuple mTuple){
-//		double dx = imgSouthWest.getLatitude() - imgNorthEast.getLatitude();
-//		double dy = imgSouthWest.getLongitude() - imgNorthEast.getLongitude();
-//		double x = (mTuple.getLatitude() - imgNorthEast.getLatitude()) / dx * frameWidth;
-//		double y = (mTuple.getLongitude() - imgSouthWest.getLongitude()) / dy * frameHeight;
-		
-		double dx = Math.abs(imgSouthEast.getLongitude() - imgNorthWest.getLongitude());
-		double dy = Math.abs(imgSouthEast.getLatitude() - imgNorthWest.getLatitude());
-		
-		double latdiff = Math.abs(mTuple.getLatitude() - imgNorthWest.getLatitude());
-		double londiff = Math.abs(mTuple.getLongitude() - imgNorthWest.getLongitude());
-		
-		double px = (londiff * getWidth()) / dx;
-		double py = (latdiff * getHeight()) / dy;
-		
-		int cDiameter = 5;
-		g2d.setColor(Color.RED);
-		g2d.fillOval((int)px, (int)py, cDiameter, cDiameter);
-	}
-	
-	
 }

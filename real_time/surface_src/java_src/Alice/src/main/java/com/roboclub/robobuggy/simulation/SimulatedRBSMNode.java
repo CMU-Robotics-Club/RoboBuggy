@@ -59,6 +59,9 @@ public class SimulatedRBSMNode extends PeriodicNode{
 			public void actionPerformed(String topicName, Message m) {
 				commandedBrakeEngaged = ((BrakeControlMessage)m).isBrakeEngaged();
 				simBuggy.setBrakesDown(commandedBrakeEngaged);
+				
+				
+				
 			}
 		});
 		resume();//needed to start the node
