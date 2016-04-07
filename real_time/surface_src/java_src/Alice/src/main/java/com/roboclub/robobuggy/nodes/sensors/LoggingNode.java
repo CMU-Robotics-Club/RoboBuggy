@@ -152,7 +152,9 @@ public class LoggingNode extends BuggyDecoratorNode {
             new Subscriber(filter.getMsgPath(), new MessageListener() {
                 @Override
                 public void actionPerformed(String topicName, Message m) {
-                    messageQueue.add(m);
+                    if (keepLogging) {
+                        messageQueue.add(m);
+                    }
                 }
             });
         }
