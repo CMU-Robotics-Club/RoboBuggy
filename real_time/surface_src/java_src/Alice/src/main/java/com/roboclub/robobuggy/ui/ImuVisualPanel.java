@@ -51,7 +51,7 @@ public class ImuVisualPanel extends JPanel {
 		setup = false;
 		
 		
-		imuSub = new Subscriber(NodeChannel.IMU.getMsgPath(), new MessageListener() {
+		imuSub = new Subscriber("uiImu", NodeChannel.IMU.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				

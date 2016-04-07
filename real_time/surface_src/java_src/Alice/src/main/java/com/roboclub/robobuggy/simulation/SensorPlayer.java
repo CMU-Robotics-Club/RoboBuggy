@@ -93,7 +93,7 @@ public class SensorPlayer extends Thread {
      * Sets up the playback trigger - hitting the start button will go through 1 iteration of a log file
      */
     public void setupPlaybackTrigger() {
-        new Subscriber(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath(), new MessageListener() {
+        new Subscriber("playback", NodeChannel.GUI_LOGGING_BUTTON.getMsgPath(), new MessageListener() {
             @Override
             public synchronized void actionPerformed(String topicName, Message m) {
                 GuiLoggingButtonMessage message = (GuiLoggingButtonMessage)m;

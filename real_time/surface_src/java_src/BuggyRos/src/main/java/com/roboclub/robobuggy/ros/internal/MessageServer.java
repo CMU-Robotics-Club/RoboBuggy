@@ -18,11 +18,12 @@ import com.roboclub.robobuggy.ros.Subscriber;
  * @author Matt Sebek
  * @author Trevor Decker
  *
- * @version 0.5
- * 
  * CHANGELOG: NONE
  * 
- * DESCRIPTION: TODO
+ * DESCRIPTION: This class is the singleton that backs all publishers/subscribers.
+ *    MessageServer is a global message queue that all publishers publish to. 
+ *    The MailmanThread pulls messages from this global message queue, and puts
+ *    the individual messages into the queues that each Subscriber maintains.
  */
 
 // This class is the backbone of the publisher/subscriber infrastructure.
@@ -36,6 +37,8 @@ public class MessageServer {
 
 	// Contains all messages that threads want sent.
 	private LinkedBlockingQueue<Map.Entry<String, Message>> inbox = new LinkedBlockingQueue<Map.Entry<String, Message>>();
+
+	private int messagesProcessed = 0;
 	
 	// Picks up post, and delivers it.
 	private class MailmanThread implements Runnable {
@@ -43,7 +46,6 @@ public class MessageServer {
 		@Override
 		public void run() {
 			while (true) {
-
 				Map.Entry<String, Message> request;
 
 				try {
@@ -75,9 +77,32 @@ public class MessageServer {
 	// Puts message in mailbox. Will be handled later.
 	// Note that this will block on inbox's lock.
 	public synchronized void sendMessage(String s, Message m) {
-		if(!inbox.offer(new AbstractMap.SimpleEntry<String, Message>(s, m))) {
-			System.out.println("dropping message?");
+		AbstractMap.SimpleEntry<String, Message> am = new AbstractMap.SimpleEntry<String, Message>(s, m);
+		if(!inbox.offer(am)) {
+			System.out.println("Offer failed; dropping message?");
 		}
+	}
+
+
+	
+	/*
+	 * The StatisticsThread 
+	 */
+	private class StatisticsThread implements Runnable {
+		// Interesting things: how many messages are in the queue, 
+		//					   how many messages processed since last time.
+		
+		public StatisticsThread(int pollingPeriodInMs) {
+			
+		}
+		
+		@Override
+		public void run() {
+		
+		
+		}
+		
+		
 	}
 	
 	private MessageServer() {
@@ -85,8 +110,6 @@ public class MessageServer {
 	}
 
 	public static MessageServer getMaster() {
-		// TODO: this is broken for multithreading. consider the right way to do
-		// this.
 		singleton_lock.lock();
 		if (_master == null) {
 			_master = new MessageServer();
@@ -109,4 +132,16 @@ public class MessageServer {
 		}
 		outbox_lock.writeLock().unlock();
 	}
+	
+	public void removeListener(String s, Subscriber ml) {
+		outbox_lock.writeLock().lock();
+		List<Subscriber> listeners = outbox_mapping.get(s);
+		listeners.remove(ml);
+		if(listeners.size() == 0) {
+			outbox_mapping.remove(s, listeners);
+		}
+		outbox_lock.writeLock().unlock();
+		
+	}
+	
 }
