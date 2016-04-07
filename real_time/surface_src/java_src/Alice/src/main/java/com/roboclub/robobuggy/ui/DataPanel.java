@@ -201,7 +201,7 @@ public class DataPanel extends RobobuggyGUIContainer {
 		new Subscriber(NodeChannel.STEERING_COMMANDED.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
-				steeringAng.setText(Double.toString(((SteeringMeasurement)m).getAngle()));
+				commandAng.setText(Double.toString(((SteeringMeasurement)m).getAngle()));
 			    Gui.getInstance().fixPaint();
 			}
 		});
