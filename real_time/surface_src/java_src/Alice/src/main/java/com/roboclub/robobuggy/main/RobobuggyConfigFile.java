@@ -55,7 +55,6 @@ public final class  RobobuggyConfigFile {
 
 	private static String waypointSourceLogFile ="NOT_SET";
 	private static String playBackSourceFile = "NOT_SET";
-	private static String videoFile = "NOT_SET";
 	
 	//is where values from this file are saved so that they can be updated between runs
 	private static String configFile ="config.config";
@@ -99,7 +98,6 @@ public final class  RobobuggyConfigFile {
 			setPortVision(configJson.get("PORT_VISION").getAsString());
 			setWayPointSourceLogFile(configJson.get("WAYPOINT_SOURCE_LOG_FILE").getAsString());
 			setPlayBackSourceFile(configJson.get("PLAY_BACK_SOURCE_FILE").getAsString());
-			setVideoFile(configJson.get("VIDEO_FILE").getAsString());
 
 			
 		} catch (UnsupportedEncodingException | FileNotFoundException e) {
@@ -195,21 +193,6 @@ public final class  RobobuggyConfigFile {
 		RobobuggyConfigFile.playBackSourceFile = playBackSourceFile;
 	}
 	
-	/**
-	 * evaluates to the current value of videoFile
-	 * @return the current value of videoFile
-	 */
-	public static String getVideoFile(){
-		return videoFile;
-	}
-	
-	/**
-	 * sets a new value to videoFile
-	 * @param newFile new file path
-	 */
-	public static void setVideoFile(String newFile){
-		RobobuggyConfigFile.videoFile = newFile;
-	}
 
 	/**
 	 * evaluates to the currentValue of comPortGps

@@ -74,11 +74,11 @@ public class SensorPlayer extends Thread {
     // ---- Log File Defaults ----
     private static final String TERMINATING_VERSION_ID = "STOP";
 
-
+    
     /**
-     * Construct a new {@link SensorPlayer} object
-     * @param filePath {@link String} of the name and location of the log file
-     * @param playbackSpeed the initial playback speed
+     * Overloaded constructor for use for video playback
+     * @param filePath Log file to be read in
+     * @param playbackSpeed Speed of playback
      */
     public SensorPlayer(String filePath, int playbackSpeed) {
     	imagePub = new Publisher(NodeChannel.PUSHBAR_CAMERA.getMsgPath());
@@ -97,47 +97,22 @@ public class SensorPlayer extends Thread {
         if(!f.exists()) {
             new RobobuggyLogicNotification("File doesn't exist!", RobobuggyMessageLevel.EXCEPTION);
         }
-
-        setupPlaybackTrigger();
-
-        this.playbackSpeed = playbackSpeed;
-    }
-    
-    /**
-     * Overloaded constructor for use for video playback
-     * @param filePath Log file to be read in
-     * @param playbackSpeed Speed of playback
-     * @param videoPath Video file to be read in
-     */
-    public SensorPlayer(String filePath, int playbackSpeed, String videoPath) {
-    	imagePub = new Publisher(NodeChannel.PUSHBAR_CAMERA.getMsgPath());
-        imuPub = new Publisher(NodeChannel.IMU.getMsgPath());
-        magPub = new Publisher(NodeChannel.IMU_MAGNETIC.getMsgPath());
-        gpsPub = new Publisher(NodeChannel.GPS.getMsgPath());
-        encoderPub = new Publisher(NodeChannel.ENCODER.getMsgPath());
-        brakePub = new Publisher(NodeChannel.BRAKE.getMsgPath());
-        steeringPub = new Publisher(NodeChannel.STEERING_COMMANDED.getMsgPath());
-        loggingButtonPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
-        logicNotificationPub = new Publisher(NodeChannel.LOGIC_NOTIFICATION.getMsgPath());
         
-        videoFile = new File(videoPath);
-        //Start the frame grabber
-        fg = new FFmpegFrameGrabber(videoFile);
-        currentFrame = -1;
-        currentImage = null;
-        try {
-			fg.start();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        
-        new RobobuggyLogicNotification("initializing the SensorPlayer", RobobuggyMessageLevel.NOTE);
-        path = filePath;
-        File f = new File(path);
-        if(!f.exists()) {
-            new RobobuggyLogicNotification("File doesn't exist!", RobobuggyMessageLevel.EXCEPTION);
+        videoFile = new File(f.getParent()+"/webcam.mp4");
+        if(videoFile.exists()){
+        	//Start the frame grabber
+        	fg = new FFmpegFrameGrabber(videoFile);
+        	currentFrame = -1;
+        	currentImage = null;
+        	try {
+        		fg.start();
+        	} catch (Exception e) {
+        		// TODO Auto-generated catch block
+        		e.printStackTrace();
+        	}
         }
+        
+
 
         setupPlaybackTrigger();
 
