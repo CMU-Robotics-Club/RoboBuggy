@@ -329,10 +329,8 @@ public class LoggingNode extends BuggyDecoratorNode {
                         steeringHits++;
                     } else if(toSort instanceof ImageMessage){
                         imageHits++;
-                    }// else {
-                        //a new kind of message!
-//                        new RobobuggyLogicNotification("New message came in that we aren't tracking", RobobuggyMessageLevel.WARNING);
-//                    }
+                    }
+                    
                     fileWriteStream.println("        " + msgAsJsonString + ",");
 
                 } catch (InterruptedException e) {
