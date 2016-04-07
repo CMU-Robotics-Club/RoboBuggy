@@ -52,16 +52,16 @@ public class BuggyStatusPanel extends RobobuggyGUIContainer {
     }
 
     private void setupDataLoaders() {
-        new Subscriber(NodeChannel.BRAKE_STATE.getMsgPath(), (topicName, m) -> {
+        new Subscriber("uiStatus", NodeChannel.BRAKE_STATE.getMsgPath(), (topicName, m) -> {
             brakesDown = ((BrakeStateMessage) m).isDown();
         });
 
-        new Subscriber(NodeChannel.BATTERY.getMsgPath(), (topicName, m) -> {
+        new Subscriber("uiStatus", NodeChannel.BATTERY.getMsgPath(), (topicName, m) -> {
             batteryLevel = ((BatteryLevelMessage) m).getBatteryLevel();
         });
 
 
-        new Subscriber(NodeChannel.IMU_ANG_POS.getMsgPath(), ((topicName, m) -> {
+        new Subscriber("buggyStatusPanel",NodeChannel.IMU_ANG_POS.getMsgPath(), ((topicName, m) -> {
             IMUAngularPositionMessage mes = ((IMUAngularPositionMessage) m);
             double y = mes.getRot()[0][1];
             double x = mes.getRot()[0][0];
@@ -69,7 +69,7 @@ public class BuggyStatusPanel extends RobobuggyGUIContainer {
             imuAngle = -Math.atan2(y, x);
         }));
         
-        new Subscriber(NodeChannel.GPS.getMsgPath(), ((topicName, m) -> {
+        new Subscriber("buggyStatusPanel",NodeChannel.GPS.getMsgPath(), ((topicName, m) -> {
             if (prevGPS == null) {
                 prevGPS = ((GpsMeasurement) m);
             }

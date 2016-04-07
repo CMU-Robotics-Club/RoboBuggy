@@ -6,26 +6,30 @@ import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.Node;
 import com.roboclub.robobuggy.ros.Subscriber;
 
-public class NumberSink implements Node {
+public class UnboundedQueueNumberSink implements Node {
 
-	Subscriber s;
-	Semaphore sem = new Semaphore(1);
-	AtomicInteger count = new AtomicInteger(1);
+	private Subscriber s;
+	private Semaphore sem = new Semaphore(1);
+	private AtomicInteger count = new AtomicInteger(1);
 
-	public NumberSink(String topicName, int numMessages) {
+	public UnboundedQueueNumberSink(String topicName, int numMessages) {
 		try {
 			sem.acquire();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		s = new Subscriber(topicName, new MessageListener() {
+		s = new Subscriber("unboundedSink", topicName, new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				IntegerMessage im = (IntegerMessage) m;
 				int val = count.getAndIncrement();
-				//System.out.println("message " + val + ":" + im.val);
-				if ((val+1) == numMessages) {
+
+				if (val != im.val) {
+					System.out.println("For an unbounded queue, the sum of dropped"
+							+ " messages and our counter must equal the published messages.");
+				}
+
+				if ((val + 1) == numMessages) {
 					sem.release();
 					System.out.println("NumSink exiting...");
 					return;
@@ -36,6 +40,7 @@ public class NumberSink implements Node {
 
 	@Override
 	public boolean shutdown() {
+		s.close();
 		return true;
 	}
 

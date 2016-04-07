@@ -70,7 +70,7 @@ public class PoseViewer extends RobobuggyGUIContainer{
 		double [][] worldFrameArray = {{1,0,0,0},{0,1,0,0},{0,0,1,0},{0,0,0,1}};
 
 	
-		new Subscriber(poseChanel.getMsgPath(), new MessageListener() {
+		new Subscriber("uiPoseViewer", poseChanel.getMsgPath(), new MessageListener() {
 			
 			@Override
 			public void actionPerformed(String topicName, Message m) {
@@ -96,7 +96,7 @@ public class PoseViewer extends RobobuggyGUIContainer{
 			}
 		});
 
-		new Subscriber(NodeChannel.DRIVE_CTRL.getMsgPath(), new MessageListener() {
+		new Subscriber("uiDriveAngle", NodeChannel.DRIVE_CTRL.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				commtheta = ((DriveControlMessage) m).getAngleInt();

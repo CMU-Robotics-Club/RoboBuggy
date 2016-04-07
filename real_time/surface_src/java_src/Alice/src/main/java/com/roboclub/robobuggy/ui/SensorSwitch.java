@@ -58,7 +58,7 @@ public class SensorSwitch extends JPanel {
 		
 		publisher = new Publisher(sensor.getRstPath());
 		// Subscriber for sensor state changes
-		new Subscriber(sensor.getStatePath(), new UpdateListener());
+		new Subscriber("uiSenSwitch", sensor.getStatePath(), new UpdateListener());
 		
 		// Default to displaying sensors as not in use
 		updateButton(NodeState.NOT_IN_USE);
