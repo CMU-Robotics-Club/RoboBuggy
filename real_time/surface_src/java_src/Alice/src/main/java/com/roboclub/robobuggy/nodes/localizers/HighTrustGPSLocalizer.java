@@ -5,7 +5,6 @@ import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.IMUAngularPositionMessage;
-import com.roboclub.robobuggy.messages.MagneticMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.Node;
@@ -59,8 +58,8 @@ public class HighTrustGPSLocalizer implements Node{
                     if(dt > 0.0){
                           // Get the delta latitude and longitude, use that to figure out how far we've travelled
 
-               double oldGPSX = buggyFrameGpsX;
-                 double oldGPSY = buggyFrameGpsY;
+//               double oldGPSX = buggyFrameGpsX;
+//                 double oldGPSY = buggyFrameGpsY;
                 	buggyFrameGpsY = newGPSData.getLatitude();
                 	buggyFrameGpsX = newGPSData.getLongitude();
     //            double dLat = buggyFrameGpsY - oldGPSY;
