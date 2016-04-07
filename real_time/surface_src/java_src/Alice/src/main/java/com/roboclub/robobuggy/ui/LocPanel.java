@@ -46,7 +46,7 @@ public class LocPanel extends JPanel {
 		}
 		setup = false;
 		
-		gpsSub = new Subscriber(NodeChannel.GPS.getMsgPath(), new MessageListener() {
+		gpsSub = new Subscriber("uiLoc", NodeChannel.GPS.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				double latitude = ((GpsMeasurement)m).getLatitude();

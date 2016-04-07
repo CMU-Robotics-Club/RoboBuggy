@@ -27,9 +27,6 @@ public class HighTrustGPSLocalizer implements Node{
     private double buggyFrameRotZ;
     private Date mostRecentUpdate;
     private double lastEncoderReading;
-//    private double lastEncoderReading;
-    //private double roll = 0;
-    //private double pitch = 0;
 
 
     private Publisher posePub;
@@ -43,13 +40,12 @@ public class HighTrustGPSLocalizer implements Node{
     	buggyFrameGpsY = 0.0;
         buggyFrameRotZ = 0.0;
         lastEncoderReading = 0.0;
-//        lastEncoderReading = 0.0;
         posePub = new Publisher(NodeChannel.POSE.getMsgPath());
         mostRecentUpdate = new Date();
 
 
         //Initialize subscriber to GPS measurements
-        new Subscriber(NodeChannel.GPS.getMsgPath(), new MessageListener() {
+        new Subscriber("htGpsLoc", NodeChannel.GPS.getMsgPath(), new MessageListener() {
             @Override
             public void actionPerformed(String topicName, Message m) {
                 GpsMeasurement newGPSData = (GpsMeasurement)m;
@@ -78,7 +74,7 @@ public class HighTrustGPSLocalizer implements Node{
         });
 
         
-        new Subscriber(NodeChannel.IMU_ANG_POS.getMsgPath(), ((topicName, m) -> {
+        new Subscriber("HighTrustGpsLoc",NodeChannel.IMU_ANG_POS.getMsgPath(), ((topicName, m) -> {
             IMUAngularPositionMessage mes = ((IMUAngularPositionMessage) m);
             double y = mes.getRot()[0][1];
             double x = mes.getRot()[0][0];
@@ -87,22 +83,11 @@ public class HighTrustGPSLocalizer implements Node{
             
            publishUpdate();
         }));
-        /*
-        new Subscriber(NodeChannel.IMU_MAGNETIC.getMsgPath(), (topicName, m) -> {
-            MagneticMeasurement magM = (MagneticMeasurement)m;
-            double currAngle = magM.getRotationZ();
-            double offset = 0.0;
-            buggyFrameRotZ = currAngle - offset;
-            publishUpdate();
-            //TODO add a calibration step
-        });
-        */
-
 
         
         // TODO note that we will probably run into precision errors since the changes are so small
         // would be good to batch up the encoder updates until we get a margin that we know can be represented proeprly
-        new Subscriber(NodeChannel.ENCODER.getMsgPath(), new MessageListener() {
+        new Subscriber("htGpsLoc", NodeChannel.ENCODER.getMsgPath(), new MessageListener() {
             @Override
             public void actionPerformed(String topicName, Message m) {
 
