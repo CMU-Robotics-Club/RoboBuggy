@@ -2,9 +2,7 @@ package com.roboclub.robobuggy.simulation;
 
 import com.roboclub.robobuggy.messages.IMUAngularPositionMessage;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
-import com.roboclub.robobuggy.messages.MagneticMeasurement;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
-import com.roboclub.robobuggy.nodes.baseNodes.BuggyNode;
 import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;

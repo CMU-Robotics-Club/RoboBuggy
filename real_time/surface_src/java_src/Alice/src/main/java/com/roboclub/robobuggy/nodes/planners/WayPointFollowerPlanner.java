@@ -6,13 +6,10 @@ import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.nodes.localizers.LocalizerUtil;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ui.AnalyticsPanel;
+import org.openstreetmap.gui.jmapviewer.MapMarkerDot;
 
 import java.util.ArrayList;
 import java.util.Date;
-
-import org.openstreetmap.gui.jmapviewer.MapMarkerCircle;
-import org.openstreetmap.gui.jmapviewer.MapMarkerDot;
-import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
 
 /**
  * Plans a path based on a set of waypoints

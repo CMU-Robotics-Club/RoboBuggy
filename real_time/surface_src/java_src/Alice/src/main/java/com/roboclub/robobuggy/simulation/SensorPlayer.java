@@ -31,8 +31,6 @@ import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
-import com.roboclub.robobuggy.ui.Gui;
-import com.roboclub.robobuggy.ui.MainGuiWindow;
 
 import java.io.File;
 import java.io.FileNotFoundException;

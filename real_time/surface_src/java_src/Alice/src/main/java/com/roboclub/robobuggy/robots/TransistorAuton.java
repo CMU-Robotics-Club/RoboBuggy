@@ -1,8 +1,5 @@
 package com.roboclub.robobuggy.robots;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
@@ -19,14 +16,14 @@ import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ui.AutonomousPanel;
 import com.roboclub.robobuggy.ui.ConfigurationPanel;
 import com.roboclub.robobuggy.ui.Gui;
-import com.roboclub.robobuggy.ui.ImuPanel;
-import com.roboclub.robobuggy.ui.ImuVisualWindow;
 import com.roboclub.robobuggy.ui.MainGuiWindow;
 import com.roboclub.robobuggy.ui.PathPanel;
 import com.roboclub.robobuggy.ui.PoseGraphsPanel;
 import com.roboclub.robobuggy.ui.RobobuggyGUITabs;
 import com.roboclub.robobuggy.ui.RobobuggyJFrame;
-import com.roboclub.robobuggy.ui.VelocityWindow;
+
+import java.io.IOException;
+import java.util.ArrayList;
 
 
 
@@ -68,7 +65,6 @@ public final class TransistorAuton extends AbstractRobot {
 
 		nodeList.add(new HighTrustGPSLocalizer());
 		nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.getComPortGPS()));
-//		nodeList.add(new ImuNode(NodeChannel.IMU, RobobuggyConfigFile.getComPortImu()));
 		nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION,
 				NodeChannel.getLoggingChannels()));
 		nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING, RobobuggyConfigFile.getComPortRBSM(),
@@ -90,12 +86,9 @@ public final class TransistorAuton extends AbstractRobot {
 		RobobuggyGUITabs tabs = new RobobuggyGUITabs();
 		mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
 		tabs.addTab(new MainGuiWindow(), "Home");
-	//	tabs.addTab(new ImuVisualWindow(), "IMU");
-	//	tabs.addTab(new VelocityWindow(), "Velocity");
 		tabs.addTab(new PoseGraphsPanel(),"poses");
-	//	tabs.addTab(new ImuPanel(),"IMU");
 		tabs.addTab(new  AutonomousPanel(),"Autonomous");
-		tabs.add(new PathPanel(), "frbfy");
+		tabs.add(new PathPanel(), "Path Visualizer");
 		tabs.addTab(new ConfigurationPanel(),"Configuration");
 		
 

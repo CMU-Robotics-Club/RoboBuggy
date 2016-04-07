@@ -20,7 +20,6 @@ import com.roboclub.robobuggy.ui.PoseGraphsPanel;
 import com.roboclub.robobuggy.ui.RobobuggyGUITabs;
 import com.roboclub.robobuggy.ui.RobobuggyJFrame;
 import com.roboclub.robobuggy.ui.SimulationPanel;
-import com.roboclub.robobuggy.ui.VelocityWindow;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -88,7 +87,6 @@ public final class SimRobot extends AbstractRobot{
 		RobobuggyGUITabs tabs = new RobobuggyGUITabs();
 		mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
 		tabs.addTab(new MainGuiWindow(), "Home");
-//		tabs.addTab(new VelocityWindow(), "Velocity");
 		tabs.addTab(new PoseGraphsPanel(),"poses");
 		tabs.addTab(new ImuPanel(),"IMU");
 		tabs.addTab(new AutonomousPanel(),"Autonomous");

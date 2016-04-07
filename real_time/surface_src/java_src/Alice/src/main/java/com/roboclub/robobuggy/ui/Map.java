@@ -7,7 +7,6 @@ import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
-
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.JMapViewerTree;
 import org.openstreetmap.gui.jmapviewer.MapMarkerDot;
@@ -22,7 +21,6 @@ import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
@@ -43,7 +41,6 @@ public class Map extends JPanel {
 
     private double mapViewerLat = 40.440138;
     private double mapViewerLon = -79.945306;
-    private String mapCacheFolderDiskPath = "images/cachedCourseMap";
     private int zoomLevel = 17;
 
     private double mapDragX = -1;
@@ -133,6 +130,7 @@ public class Map extends JPanel {
     private void addCacheToTree() {
         try {
             TileCache courseCache = new MemoryTileCache();
+            String mapCacheFolderDiskPath = "images/cachedCourseMap";
             File mapCacheDir = new File(mapCacheFolderDiskPath);
             if(!mapCacheDir.isDirectory() || !mapCacheDir.exists()) {
                 throw new IOException("cache dir isn't properly structured or doesn't exist");

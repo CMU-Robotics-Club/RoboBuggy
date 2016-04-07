@@ -5,8 +5,7 @@ import org.junit.Test;
 import static org.junit.Assert.fail;
 
 /**
- *
- * Test fails on travis but passes localy so we are commenting it out for now TODO fix this after raceday
+ * tests the gui - won't run on travis
  */
 public class TestGui {
 

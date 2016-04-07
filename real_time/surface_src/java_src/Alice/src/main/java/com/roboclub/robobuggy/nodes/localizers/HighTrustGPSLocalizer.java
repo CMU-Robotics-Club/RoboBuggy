@@ -111,9 +111,8 @@ public class HighTrustGPSLocalizer implements Node{
                 // convert the feet from the last message into a delta degree, and update our position
                 double currentEncoderMeasurement = measurement.getDistance();
                 double deltaDistance = currentEncoderMeasurement - lastEncoderReading;
-                double deltaMeters = deltaDistance;
 
-                LocTuple deltaPos = LocalizerUtil.convertMetersToLatLng(deltaMeters, buggyFrameRotZ);
+                LocTuple deltaPos = LocalizerUtil.convertMetersToLatLng(deltaDistance, buggyFrameRotZ);
                 buggyFrameGpsY += deltaPos.getLatitude();
                 buggyFrameGpsX += deltaPos.getLongitude();
 

@@ -3,9 +3,7 @@ package com.roboclub.robobuggy.main;
 
 import com.roboclub.robobuggy.jetty.gui.JettyServer;
 import com.roboclub.robobuggy.robots.AbstractRobot;
-import com.roboclub.robobuggy.robots.SimRobot;
 import com.roboclub.robobuggy.robots.TransistorAuton;
-import com.roboclub.robobuggy.robots.TransistorDataCollection;
 import com.roboclub.robobuggy.ui.Gui;
 import com.roboclub.robobuggy.utilities.JNISetup;
 
@@ -43,7 +41,7 @@ public class RobobuggyMainFile {
 		robot.startNodes();
 
 		try {
-		//	new JettyServer();
+			new JettyServer();
 			new RobobuggyLogicNotification("Initializing web server", RobobuggyMessageLevel.NOTE);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
