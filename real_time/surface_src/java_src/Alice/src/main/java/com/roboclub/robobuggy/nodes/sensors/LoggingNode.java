@@ -75,7 +75,7 @@ public class LoggingNode extends BuggyDecoratorNode {
      * @param filters sensors to log. To log all sensors, just use NodeChannel.values()
      */
     public LoggingNode(NodeChannel channel, String outputDirPath, NodeChannel...filters) {
-        super(new BuggyBaseNode(channel));
+        super(new BuggyBaseNode(channel), "logging_node");
 
         this.filters = filters;
         messageQueue = new LinkedBlockingQueue<>();
@@ -350,7 +350,7 @@ public class LoggingNode extends BuggyDecoratorNode {
             dataBreakdown.addProperty(NodeChannel.GPS.getName(), gpsHits);
             dataBreakdown.addProperty(NodeChannel.IMU.getName(), imuHits);
             dataBreakdown.addProperty(NodeChannel.ENCODER.getName(), encoderHits);
-            dataBreakdown.addProperty(NodeChannel.BRAKE.getName(), brakeHits);
+            dataBreakdown.addProperty(NodeChannel.BRAKE_STATE.getName(), brakeHits);
             dataBreakdown.addProperty(NodeChannel.STEERING.getName(), steeringHits);
             dataBreakdown.addProperty(NodeChannel.FP_HASH.getName(), fingerprintHits);
             dataBreakdown.addProperty(NodeChannel.LOGIC_NOTIFICATION.getName(), logicNotificationHits);

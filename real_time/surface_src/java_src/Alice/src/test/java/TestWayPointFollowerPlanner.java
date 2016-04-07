@@ -1,30 +1,20 @@
-import static org.junit.Assert.fail;
-
-import java.util.ArrayList;
-import java.util.Date;
-
-import org.junit.After;
-import org.junit.Before;
+import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import org.junit.Test;
 
-import com.roboclub.robobuggy.messages.BatteryLevelMessage;
-import com.roboclub.robobuggy.messages.GPSPoseMessage;
-import com.roboclub.robobuggy.messages.GpsMeasurement;
-import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
-import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
+import java.util.Date;
+
+import static org.junit.Assert.fail;
 
 
+/**
+ *
+ */
 public class TestWayPointFollowerPlanner {
 
-	
-	@Before
-	public void setUp() throws Exception {
-	}
 
-	@After
-	public void tearDown() throws Exception {
-	}
-
+	/**
+	 * Tests the waypoint follower by giving it different poses
+	 */
 	@Test
 	public void test() {
 		GPSPoseMessage zeroPose = new GPSPoseMessage(new Date(), 0.0, 0.0, 0.0);
