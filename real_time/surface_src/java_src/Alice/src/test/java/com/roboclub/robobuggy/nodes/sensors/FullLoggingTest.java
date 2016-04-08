@@ -6,7 +6,6 @@ import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
 import com.roboclub.robobuggy.messages.ImageMessage;
 import com.roboclub.robobuggy.messages.MagneticMeasurement;
-import com.roboclub.robobuggy.messages.NodeStatusMessage;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
@@ -21,6 +20,7 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -37,21 +37,12 @@ public class FullLoggingTest {
     private Publisher brakePub;
     private Publisher videoPub;
 
-    private Subscriber gpsSub;
-    private Subscriber imuSub;
-    private Subscriber encoderSub;
-    private Subscriber steeringSub;
-    private Subscriber brakeSub;
-    private Subscriber videoSub;
-    private Subscriber stateSub;
-
     private ArrayList<Message> masterList;
     private ArrayList<Message> simList;
 
     private boolean isPlaybackOccuring;
-    private boolean playbackRunning;
 
-    private static final int LOG_FILE_LENGTH = 10;
+    private static final int LOG_FILE_LENGTH = 100;
     private static final int TIME_DELAY = 100;
     private static final boolean USE_DELAYS = true;
 
@@ -74,21 +65,12 @@ public class FullLoggingTest {
             }
         };
 
-        gpsSub = new Subscriber(NodeChannel.GPS.getMsgPath(), addToSimList);
-        imuSub = new Subscriber(NodeChannel.IMU_MAGNETIC.getMsgPath(), addToSimList);
-        encoderSub = new Subscriber(NodeChannel.ENCODER.getMsgPath(), addToSimList);
-        steeringSub = new Subscriber(NodeChannel.STEERING.getMsgPath(), addToSimList);
-        brakeSub = new Subscriber(NodeChannel.BRAKE_STATE.getMsgPath(), addToSimList);
-        videoSub = new Subscriber(NodeChannel.PUSHBAR_CAMERA.getMsgPath(), addToSimList);
-
-        stateSub = new Subscriber(NodeChannel.NODE_STATUS.getMsgPath(), ((topicName, m) -> {
-            NodeStatusMessage nsm = ((NodeStatusMessage) m);
-            if (nsm.getNode().equals(SensorPlayer.class)) {
-                if (nsm.getMessage().equals(SensorPlayer.SensorPlaybackStatus.ENDED_PLAYBACK)) {
-                    playbackRunning = false;
-                }
-            }
-        }));
+        new Subscriber(NodeChannel.GPS.getMsgPath(), addToSimList);
+        new Subscriber(NodeChannel.IMU_MAGNETIC.getMsgPath(), addToSimList);
+        new Subscriber(NodeChannel.ENCODER.getMsgPath(), addToSimList);
+        new Subscriber(NodeChannel.STEERING.getMsgPath(), addToSimList);
+        new Subscriber(NodeChannel.BRAKE_STATE.getMsgPath(), addToSimList);
+        new Subscriber(NodeChannel.PUSHBAR_CAMERA.getMsgPath(), addToSimList);
 
     }
 
@@ -98,7 +80,6 @@ public class FullLoggingTest {
     @Before
     public void setup() {
         isPlaybackOccuring = false;
-        playbackRunning = true;
         masterList = new ArrayList<>();
         simList = new ArrayList<>();
     }
@@ -121,7 +102,7 @@ public class FullLoggingTest {
         Thread.sleep(100);
 
         for (int i = 0; i < LOG_FILE_LENGTH; i++) {
-            int randNum = ((int) (Math.random() * 6));
+            int randNum = new Random().nextInt(6);
             Message randMessage = null;
 
             switch (randNum) {
@@ -142,12 +123,12 @@ public class FullLoggingTest {
                     steeringPub.publish(randMessage);
                     break;
                 case 4:
-                    randMessage = new BrakeStateMessage(((int) (Math.random() * 2)));
+                    randMessage = new BrakeStateMessage(new Random().nextInt(2));
                     brakePub.publish(randMessage);
                     break;
                 case 5:
                     randMessage = new ImageMessage(
-                            ImageIO.read(new File("images/testImages/logImage" + ((int) (Math.random() * 6)) + ".png")), i
+                            ImageIO.read(new File("images/testImages/logImage" + new Random().nextInt(6) + ".png")), i
                     );
                     videoPub.publish(randMessage);
                     break;
@@ -163,16 +144,13 @@ public class FullLoggingTest {
 
         loggingPub.publish(new GuiLoggingButtonMessage(GuiLoggingButtonMessage.LoggingMessage.STOP));
 
-        File logFile = ln.outputFile;
+        File logFile = ln.getOutputFile();
         // finished building the master list
 
         SensorPlayer player = new SensorPlayer(logFile.getPath(), 1);
         isPlaybackOccuring = true;
-        player.run();
-
-        while (playbackRunning) {
-            Thread.sleep(100);
-        }
+        player.start();
+        player.join();
 
         // playback is finished, time to compare the lists
         assertEquals("What went into the log file didn't all come out!", masterList.size(), simList.size());

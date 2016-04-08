@@ -47,7 +47,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class LoggingNode extends BuggyDecoratorNode {
 
     private Publisher loggingButtonPub;
-    File outputFile;
+
+    private File outputFile;
     private File outputDirectory;
     private NodeChannel[] filters;
     private LinkedBlockingQueue<Message> messageQueue;
@@ -91,7 +92,12 @@ public class LoggingNode extends BuggyDecoratorNode {
 
     }
 
-
+    /**
+     * @return the current output file
+     */
+    File getOutputFile() {
+        return outputFile;
+    }
 
     /**
      * Starts the logging process
