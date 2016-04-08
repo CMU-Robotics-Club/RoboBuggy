@@ -71,6 +71,7 @@ SRC += servo.c
 SRC += ../lib_avr/rbserialmessages/rbserialmessages.cpp
 SRC += ../lib_avr/servoreceiver/servoreceiver.cpp
 SRC += ../lib_avr/uart/uart.c
+SRC += ../lib_avr/encoder/encoder.cpp
 #ff.o sd.o diskio.o rtc.o
 
 # List Assembler source files here.
@@ -242,7 +243,7 @@ AVRDUDE_FLAGS += $(AVRDUDE_ERASE_COUNTER)
 AVRDUDE_A_PORT = /dev/replace_me_with/AVRDUDE_A_PORT
 AVRDUDE_A_FLAGS = -v -c wiring -p $(MCU) -P $(AVRDUDE_A_PORT) -b 115200 -D
 
-PYTHON = python
+PYTHON = python2.7
 
 
 #---------------- Debugging Options ----------------
