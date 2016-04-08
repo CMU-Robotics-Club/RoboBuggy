@@ -31,7 +31,8 @@ public class SimulatedImuNode extends PeriodicNode{
 	@Override
 	protected void update() {
 		imuPub.publish(new ImuMeasurement(simBuggy.getTh(), 0.0, 0.0));
-		double th = Math.toRadians(simBuggy.getTh());
+		double th = -Math.toRadians(simBuggy.getTh());
+		th = th+ Math.PI/2; //to fit the way the imu is mounted on the buggy 
 		double[][] rotMat = {{Math.cos(th),Math.sin(th), 0},
 				             {-Math.sin(th),Math.cos(th	),0},
 				             {0,0,1}};
