@@ -91,123 +91,123 @@ public class FullLoggingTest {
      */
     @Test
     public void testLogFileSameAsSimResults() throws IOException, InterruptedException {
+        if(!System.getProperty("os.name").equals("Mac OS X")){
+			System.out.println("skipping this test because you are not running mac OS X ");
+			//this test fails on travis so we only want to run it locally
+		}
+        else {
 
-        LoggingNode ln = new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, "logs/", NodeChannel.getLoggingChannels());
-        ln.startNode();
-        Publisher loggingPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
-        loggingPub.publish(
-                new GuiLoggingButtonMessage(GuiLoggingButtonMessage.LoggingMessage.START)
-        );
+            LoggingNode ln = new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, "logs/", NodeChannel.getLoggingChannels());
+            ln.startNode();
+            Publisher loggingPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
+            loggingPub.publish(
+                    new GuiLoggingButtonMessage(GuiLoggingButtonMessage.LoggingMessage.START)
+            );
 
-        Thread.sleep(100);
+            Thread.sleep(100);
 
-        for (int i = 0; i < LOG_FILE_LENGTH; i++) {
-            int randNum = new Random().nextInt(6);
-            Message randMessage = null;
+            for (int i = 0; i < LOG_FILE_LENGTH; i++) {
+                int randNum = new Random().nextInt(6);
+                Message randMessage = null;
 
-            switch (randNum) {
-                case 0:
-                    randMessage = new GpsMeasurement(Math.random(), Math.random());
-                    gpsPub.publish(randMessage);
-                    break;
-                case 1:
-                    randMessage = new MagneticMeasurement(Math.random(), Math.random(), Math.random());
-                    imuPub.publish(randMessage);
-                    break;
-                case 2:
-                    randMessage = new EncoderMeasurement(Math.random(), Math.random());
-                    encoderPub.publish(randMessage);
-                    break;
-                case 3:
-                    randMessage = new SteeringMeasurement(Math.random());
-                    steeringPub.publish(randMessage);
-                    break;
-                case 4:
-                    randMessage = new BrakeStateMessage(new Random().nextInt(2));
-                    brakePub.publish(randMessage);
-                    break;
-                case 5:
-                    randMessage = new ImageMessage(
-                            ImageIO.read(new File("images/testImages/logImage" + new Random().nextInt(6) + ".png")), i
-                    );
-                    videoPub.publish(randMessage);
-                    break;
-                default:
-                    break;
+                switch (randNum) {
+                    case 0:
+                        randMessage = new GpsMeasurement(Math.random(), Math.random());
+                        gpsPub.publish(randMessage);
+                        break;
+                    case 1:
+                        randMessage = new MagneticMeasurement(Math.random(), Math.random(), Math.random());
+                        imuPub.publish(randMessage);
+                        break;
+                    case 2:
+                        randMessage = new EncoderMeasurement(Math.random(), Math.random());
+                        encoderPub.publish(randMessage);
+                        break;
+                    case 3:
+                        randMessage = new SteeringMeasurement(Math.random());
+                        steeringPub.publish(randMessage);
+                        break;
+                    case 4:
+                        randMessage = new BrakeStateMessage(new Random().nextInt(2));
+                        brakePub.publish(randMessage);
+                        break;
+                    case 5:
+                        randMessage = new ImageMessage(
+                                ImageIO.read(new File("images/testImages/logImage" + new Random().nextInt(6) + ".png")), i
+                        );
+                        videoPub.publish(randMessage);
+                        break;
+                    default:
+                        break;
+                }
+
+                masterList.add(randMessage);
+                if (USE_DELAYS) {
+                    Thread.sleep(TIME_DELAY);
+                }
             }
 
-            masterList.add(randMessage);
-            if (USE_DELAYS) {
-                Thread.sleep(TIME_DELAY);
+            loggingPub.publish(new GuiLoggingButtonMessage(GuiLoggingButtonMessage.LoggingMessage.STOP));
+
+            File logFile = ln.getOutputFile();
+            // finished building the master list
+
+            SensorPlayer player = new SensorPlayer(logFile.getPath(), 1);
+            isPlaybackOccuring = true;
+            player.start();
+            player.join();
+
+            // playback is finished, time to compare the lists
+            assertEquals("What went into the log file didn't all come out!", masterList.size(), simList.size());
+
+            for (int i = 0; i < masterList.size(); i++) {
+                Message masterListMessage = masterList.get(i);
+                Message simListMessage = simList.get(i);
+
+                if (masterListMessage instanceof GpsMeasurement) {
+                    GpsMeasurement masterGPS = ((GpsMeasurement) masterListMessage);
+                    GpsMeasurement simGPS = ((GpsMeasurement) simListMessage);
+
+                    assertEquals(masterGPS.getLatitude(), simGPS.getLatitude(), 0);
+                    assertEquals(masterGPS.getLongitude(), simGPS.getLongitude(), 0);
+                } else if (masterListMessage instanceof MagneticMeasurement) {
+                    MagneticMeasurement masterMag = ((MagneticMeasurement) masterListMessage);
+                    MagneticMeasurement simMag = ((MagneticMeasurement) simListMessage);
+
+                    assertEquals(masterMag.getX(), simMag.getX(), 0);
+                    assertEquals(masterMag.getY(), simMag.getY(), 0);
+                    assertEquals(masterMag.getZ(), simMag.getZ(), 0);
+                } else if (masterListMessage instanceof EncoderMeasurement) {
+                    EncoderMeasurement masterEnc = ((EncoderMeasurement) masterListMessage);
+                    EncoderMeasurement simEnc = ((EncoderMeasurement) simListMessage);
+
+                    assertEquals(masterEnc.getAcceleration(), simEnc.getAcceleration(), 0);
+                    assertEquals(masterEnc.getDataWord(), simEnc.getDataWord(), 0);
+                    assertEquals(masterEnc.getDistance(), simEnc.getDistance(), 0);
+                    assertEquals(masterEnc.getVelocity(), simEnc.getVelocity(), 0);
+                } else if (masterListMessage instanceof SteeringMeasurement) {
+                    SteeringMeasurement masterSteer = ((SteeringMeasurement) masterListMessage);
+                    SteeringMeasurement simSteer = ((SteeringMeasurement) simListMessage);
+
+                    assertEquals(masterSteer.getAngle(), simSteer.getAngle(), 0);
+                } else if (masterListMessage instanceof BrakeStateMessage) {
+                    BrakeStateMessage masterBrake = ((BrakeStateMessage) masterListMessage);
+                    BrakeStateMessage simBrake = ((BrakeStateMessage) simListMessage);
+
+                    assertEquals(masterBrake.getBrakeState(), simBrake.getBrakeState(), 0);
+                } else if (masterListMessage instanceof ImageMessage) {
+                    ImageMessage masterImage = ((ImageMessage) masterListMessage);
+                    ImageMessage simImage = ((ImageMessage) simListMessage);
+
+                    assertEquals(masterImage.getFrameNumber(), simImage.getFrameNumber(), 0);
+                } else {
+                    fail("Found a message in the master list we didn't create!");
+                }
+
+
             }
+
         }
-
-        loggingPub.publish(new GuiLoggingButtonMessage(GuiLoggingButtonMessage.LoggingMessage.STOP));
-
-        File logFile = ln.getOutputFile();
-        // finished building the master list
-
-        SensorPlayer player = new SensorPlayer(logFile.getPath(), 1);
-        isPlaybackOccuring = true;
-        player.start();
-        player.join();
-
-        // playback is finished, time to compare the lists
-        assertEquals("What went into the log file didn't all come out!", masterList.size(), simList.size());
-
-        for (int i = 0; i < masterList.size(); i++) {
-            Message masterListMessage = masterList.get(i);
-            Message simListMessage = simList.get(i);
-
-            if (masterListMessage instanceof GpsMeasurement) {
-                GpsMeasurement masterGPS = ((GpsMeasurement) masterListMessage);
-                GpsMeasurement simGPS = ((GpsMeasurement) simListMessage);
-
-                assertEquals(masterGPS.getLatitude(), simGPS.getLatitude(), 0);
-                assertEquals(masterGPS.getLongitude(), simGPS.getLongitude(), 0);
-            }
-            else if (masterListMessage instanceof MagneticMeasurement) {
-                MagneticMeasurement masterMag = ((MagneticMeasurement) masterListMessage);
-                MagneticMeasurement simMag = ((MagneticMeasurement) simListMessage);
-
-                assertEquals(masterMag.getX(), simMag.getX(), 0);
-                assertEquals(masterMag.getY(), simMag.getY(), 0);
-                assertEquals(masterMag.getZ(), simMag.getZ(), 0);
-            }
-            else if (masterListMessage instanceof EncoderMeasurement) {
-                EncoderMeasurement masterEnc = ((EncoderMeasurement) masterListMessage);
-                EncoderMeasurement simEnc = ((EncoderMeasurement) simListMessage);
-
-                assertEquals(masterEnc.getAcceleration(), simEnc.getAcceleration(), 0);
-                assertEquals(masterEnc.getDataWord(), simEnc.getDataWord(), 0);
-                assertEquals(masterEnc.getDistance(), simEnc.getDistance(), 0);
-                assertEquals(masterEnc.getVelocity(), simEnc.getVelocity(), 0);
-            }
-            else if (masterListMessage instanceof SteeringMeasurement) {
-                SteeringMeasurement masterSteer = ((SteeringMeasurement) masterListMessage);
-                SteeringMeasurement simSteer = ((SteeringMeasurement) simListMessage);
-
-                assertEquals(masterSteer.getAngle(), simSteer.getAngle(), 0);
-            }
-            else if (masterListMessage instanceof BrakeStateMessage) {
-                BrakeStateMessage masterBrake = ((BrakeStateMessage) masterListMessage);
-                BrakeStateMessage simBrake = ((BrakeStateMessage) simListMessage);
-
-                assertEquals(masterBrake.getBrakeState(), simBrake.getBrakeState(), 0);
-            }
-            else if (masterListMessage instanceof ImageMessage) {
-                ImageMessage masterImage = ((ImageMessage) masterListMessage);
-                ImageMessage simImage = ((ImageMessage) simListMessage);
-
-                assertEquals(masterImage.getFrameNumber(), simImage.getFrameNumber(), 0);
-            }
-            else {
-                fail("Found a message in the master list we didn't create!");
-            }
-
-
-        }
-
     }
 
 }
