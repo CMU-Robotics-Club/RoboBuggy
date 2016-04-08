@@ -86,9 +86,7 @@ public class LoggingNode extends BuggyDecoratorNode {
 
         setupSubscriberList();
 
-        if (!RobobuggyConfigFile.isDataPlayBack()) {
-            setupLoggingTrigger();
-        }
+        setupLoggingTrigger();
 
         statusPub.publish(new NodeStatusMessage(LoggingNode.class, LoggingNodeStatus.INITIALIZED, null));
 
