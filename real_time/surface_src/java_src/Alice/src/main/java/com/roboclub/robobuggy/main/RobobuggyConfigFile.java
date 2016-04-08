@@ -44,8 +44,6 @@ public final class  RobobuggyConfigFile {
 	private static String comPortRBSM = "NOT_SET";
 	private static String portVision = "NOT_SET";
 
-
-
 	private static String waypointSourceLogFile ="NOT_SET";
 	private static String playBackSourceFile = "NOT_SET";
 	

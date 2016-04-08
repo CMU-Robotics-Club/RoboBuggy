@@ -7,7 +7,6 @@ import com.roboclub.robobuggy.robots.RaceDayRobot;
 import com.roboclub.robobuggy.ui.Gui;
 import com.roboclub.robobuggy.utilities.JNISetup;
 
-
 /** This class is the driver starting up the robobuggy program, if you want the buggy to drive itself you should run this node */
 public class RobobuggyMainFile {
 	private static AbstractRobot robot;
@@ -30,9 +29,7 @@ public class RobobuggyMainFile {
 		RobobuggyConfigFile.loadConfigFile(); //TODO make sure that logic Notification is setup before this point
 
 		new RobobuggyLogicNotification("Initializing Robot", RobobuggyMessageLevel.NOTE);
-
         robot = RaceDayRobot.getInstance();
-
 
 		new RobobuggyLogicNotification("Initializing GUI", RobobuggyMessageLevel.NOTE);
         Gui.getInstance();
