@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
-import com.roboclub.robobuggy.messages.BrakeMessage;
+import com.roboclub.robobuggy.messages.BrakeStateMessage;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.FingerPrintMessage;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
@@ -47,7 +47,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class LoggingNode extends BuggyDecoratorNode {
 
     private Publisher loggingButtonPub;
-    private File outputFile;
+    File outputFile;
     private File outputDirectory;
     private NodeChannel[] filters;
     private LinkedBlockingQueue<Message> messageQueue;
@@ -85,10 +85,7 @@ public class LoggingNode extends BuggyDecoratorNode {
         statusPub = new Publisher(NodeChannel.NODE_STATUS.getMsgPath());
 
         setupSubscriberList();
-
-        if (!RobobuggyConfigFile.isDataPlayBack()) {
-            setupLoggingTrigger();
-        }
+        setupLoggingTrigger();
 
         statusPub.publish(new NodeStatusMessage(LoggingNode.class, LoggingNodeStatus.INITIALIZED, null));
 
@@ -304,7 +301,7 @@ public class LoggingNode extends BuggyDecoratorNode {
 
                     // and if you look on your right you'll see the almost-unnecessary
                     // giganti-frickin-ic telemetry block
-                    if (toSort instanceof BrakeMessage) {
+                    if (toSort instanceof BrakeStateMessage) {
                         brakeHits++;
                     } else if (toSort instanceof EncoderMeasurement) {
                         encoderHits++;

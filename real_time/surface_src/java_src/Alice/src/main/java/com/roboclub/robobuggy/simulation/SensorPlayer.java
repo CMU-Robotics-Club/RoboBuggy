@@ -10,7 +10,7 @@ import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.main.Util;
 import com.roboclub.robobuggy.messages.BaseMessage;
 import com.roboclub.robobuggy.messages.BrakeControlMessage;
-import com.roboclub.robobuggy.messages.BrakeMessage;
+import com.roboclub.robobuggy.messages.BrakeStateMessage;
 import com.roboclub.robobuggy.messages.DriveControlMessage;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.FingerPrintMessage;
@@ -20,18 +20,23 @@ import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
 import com.roboclub.robobuggy.messages.ImageMessage;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.messages.MagneticMeasurement;
+import com.roboclub.robobuggy.messages.NodeStatusMessage;
 import com.roboclub.robobuggy.messages.RemoteWheelAngleRequest;
 import com.roboclub.robobuggy.messages.ResetMessage;
 import com.roboclub.robobuggy.messages.RobobuggyLogicNotificationMeasurement;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.messages.WheelAngleCommandMeasurement;
+import com.roboclub.robobuggy.nodes.sensors.INodeStatus;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
 import com.roboclub.robobuggy.ui.Gui;
+import org.bytedeco.javacv.FFmpegFrameGrabber;
+import org.bytedeco.javacv.FrameGrabber.Exception;
+import org.bytedeco.javacv.Java2DFrameConverter;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -39,9 +44,6 @@ import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 
 //Image reading
-import org.bytedeco.javacv.FFmpegFrameGrabber;
-import org.bytedeco.javacv.FrameGrabber.Exception;
-import org.bytedeco.javacv.Java2DFrameConverter;
 
 /**
  * Class used for playing back old log files. It does this by reading BuggyROS
@@ -62,23 +64,32 @@ public class SensorPlayer extends Thread {
     private Publisher steeringPub;
     private Publisher loggingButtonPub;
     private Publisher logicNotificationPub;
-    
+    private Publisher statusPub;
+
     private FFmpegFrameGrabber fg;
     private int currentFrame; //Will store the frame of the most recent image we've pulled
     private BufferedImage currentImage; //The most recent image we've pulled
-    
-    //This should probably get passed in as an argument and be defined somewhere else. Also, it fails findBugs
-    private File videoFile = null;// = new File("/Users/davidneiman/RoboBuggy/real_time/surface_src/java_src/Alice/logs/2016-02-20-06-50-45/webcam.mp4");
-	
-    
+    private File videoFile = null;
+
+
     // ---- Log File Defaults ----
     private static final String TERMINATING_VERSION_ID = "STOP";
 
-    
+
     /**
-     * Overloaded constructor for use for video playback
-     * @param filePath Log file to be read in
-     * @param playbackSpeed Speed of playback
+     * publishes the status of the sensorPlayer
+     */
+    public enum SensorPlaybackStatus implements INodeStatus {
+        INITIALIZED,
+        STARTED_PLAYBACK,
+        PAUSED_PLAYBACK,
+        ENDED_PLAYBACK,
+    }
+
+    /**
+     * Construct a new {@link SensorPlayer} object
+     * @param filePath {@link String} of the name and location of the log file
+     * @param playbackSpeed the initial playback speed
      */
     public SensorPlayer(String filePath, int playbackSpeed) {
     	imagePub = new Publisher(NodeChannel.PUSHBAR_CAMERA.getMsgPath());
@@ -86,37 +97,48 @@ public class SensorPlayer extends Thread {
         magPub = new Publisher(NodeChannel.IMU_MAGNETIC.getMsgPath());
         gpsPub = new Publisher(NodeChannel.GPS.getMsgPath());
         encoderPub = new Publisher(NodeChannel.ENCODER.getMsgPath());
-        brakePub = new Publisher(NodeChannel.BRAKE.getMsgPath());
-        steeringPub = new Publisher(NodeChannel.STEERING_COMMANDED.getMsgPath());
+        brakePub = new Publisher(NodeChannel.BRAKE_STATE.getMsgPath());
+        steeringPub = new Publisher(NodeChannel.STEERING.getMsgPath());
         loggingButtonPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
         logicNotificationPub = new Publisher(NodeChannel.LOGIC_NOTIFICATION.getMsgPath());
-        
+        statusPub = new Publisher(NodeChannel.NODE_STATUS.getMsgPath());
+
         new RobobuggyLogicNotification("initializing the SensorPlayer", RobobuggyMessageLevel.NOTE);
         path = filePath;
         File f = new File(path);
         if(!f.exists()) {
             new RobobuggyLogicNotification("File doesn't exist!", RobobuggyMessageLevel.EXCEPTION);
         }
-        
-        videoFile = new File(f.getParent()+"/webcam.mp4");
-        if(videoFile.exists()){
-        	//Start the frame grabber
-        	fg = new FFmpegFrameGrabber(videoFile);
-        	currentFrame = -1;
-        	currentImage = null;
-        	try {
-        		fg.start();
-        	} catch (Exception e) {
-        		// TODO Auto-generated catch block
-        		e.printStackTrace();
-        	}
-        }
-        
-
 
         setupPlaybackTrigger();
 
         this.playbackSpeed = playbackSpeed;
+
+        statusPub.publish(new NodeStatusMessage(SensorPlayer.class, SensorPlaybackStatus.INITIALIZED, null));
+    }
+    
+    /**
+     * Overloaded constructor for use for video playback
+     * @param filePath Log file to be read in
+     * @param playbackSpeed Speed of playback
+     * @param videoPath Video file to be read in
+     */
+    public SensorPlayer(String filePath, int playbackSpeed, String videoPath) {
+
+        this(filePath, playbackSpeed);
+
+        videoFile = new File(videoPath);
+        //Start the frame grabber
+        fg = new FFmpegFrameGrabber(videoFile);
+        currentFrame = -1;
+        currentImage = null;
+        try {
+			fg.start();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
     }
 
 
@@ -134,16 +156,19 @@ public class SensorPlayer extends Thread {
                     if (SensorPlayer.this.isPaused) {
                         SensorPlayer.this.isPaused = false;
                         new RobobuggyLogicNotification("Resumed playback", RobobuggyMessageLevel.NOTE);
+                        statusPub.publish(new NodeStatusMessage(SensorPlayer.class, SensorPlaybackStatus.STARTED_PLAYBACK, null));
                     }
                     else {
                         SensorPlayer.this.start();
                         new RobobuggyLogicNotification("Started playback", RobobuggyMessageLevel.NOTE);
+                        statusPub.publish(new NodeStatusMessage(SensorPlayer.class, SensorPlaybackStatus.STARTED_PLAYBACK, null));
                     }
                 }
                 else if (message.getLoggingMessage().equals(GuiLoggingButtonMessage.LoggingMessage.STOP)) {
                     if (!SensorPlayer.this.isPaused) {
                         SensorPlayer.this.isPaused = true;
                         new RobobuggyLogicNotification("Paused playback", RobobuggyMessageLevel.NOTE);
+                        statusPub.publish(new NodeStatusMessage(SensorPlayer.class, SensorPlaybackStatus.PAUSED_PLAYBACK, null));
                     }
                     else {
                         new RobobuggyLogicNotification("Quit playback, please restart GUI to reset", RobobuggyMessageLevel.NOTE);
@@ -206,8 +231,8 @@ public class SensorPlayer extends Thread {
                         case BrakeControlMessage.VERSION_ID:
                             transmitMessage = translator.fromJson(sensorDataJson, BrakeControlMessage.class);
                             break;
-                        case BrakeMessage.VERSION_ID:
-                            transmitMessage = translator.fromJson(sensorDataJson, BrakeMessage.class);
+                        case BrakeStateMessage.VERSION_ID:
+                            transmitMessage = translator.fromJson(sensorDataJson, BrakeStateMessage.class);
                             break;
                         case MagneticMeasurement.VERSION_ID:
                             transmitMessage = translator.fromJson(sensorDataJson, MagneticMeasurement.class);
@@ -253,6 +278,7 @@ public class SensorPlayer extends Thread {
                             break;
                         case TERMINATING_VERSION_ID:
                             new RobobuggyLogicNotification("Stopping playback, hit a STOP", RobobuggyMessageLevel.NOTE);
+                            statusPub.publish(new NodeStatusMessage(SensorPlayer.class, SensorPlaybackStatus.ENDED_PLAYBACK, null));
                             return;
                         default:
                             waitForTimeDiff = false;
@@ -263,7 +289,7 @@ public class SensorPlayer extends Thread {
                         continue;
                     }
 
-                    getNewPlaybackSpeed();
+//                    getNewPlaybackSpeed();
 
                     BaseMessage timeMessage = (BaseMessage) transmitMessage;
 
@@ -277,11 +303,6 @@ public class SensorPlayer extends Thread {
                         long currentSensorTime = timeMessage.getTimestamp().getTime();
                         long timeDiff = currentSensorTime - prevSensorTime;
                         if (timeDiff > 10) {
-                        	//The problem with image reading was that the new messages I'm making are from April
-                        	//while the old ones are from February
-                        	//so the thread decides to sleep for two months
-                        	//My solution was to throw a setImage method into ImageMessage
-                        	//which means I don't need a new timestamp
                             Thread.sleep((long) (timeDiff / playbackSpeed));
                         }
                         prevSensorTime = currentSensorTime;
@@ -292,7 +313,7 @@ public class SensorPlayer extends Thread {
                     	case ImageMessage.VERSION_ID:
                     		imagePub.publish(transmitMessage);
                     		break;
-                        case BrakeMessage.VERSION_ID:
+                        case BrakeStateMessage.VERSION_ID:
                             brakePub.publish(transmitMessage);
                             break;
                         case EncoderMeasurement.VERSION_ID:

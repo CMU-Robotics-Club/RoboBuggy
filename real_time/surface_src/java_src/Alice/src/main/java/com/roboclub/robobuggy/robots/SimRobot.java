@@ -38,7 +38,6 @@ public final class SimRobot extends AbstractRobot{
 	
 	private SimRobot(){
 		super();
-		new SensorPlayer(RobobuggyConfigFile.getPlayBackSourceFile(), 1);
 		nodeList.add(new HighTrustGPSLocalizer());
 		nodeList.add(new SimulatedGPSNode());
 		nodeList.add(new SimulatedRBSMNode());

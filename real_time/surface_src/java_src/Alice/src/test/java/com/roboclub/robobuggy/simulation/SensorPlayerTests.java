@@ -3,7 +3,7 @@ package com.roboclub.robobuggy.simulation;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
-import com.roboclub.robobuggy.messages.BrakeMessage;
+import com.roboclub.robobuggy.messages.BrakeStateMessage;
 import com.roboclub.robobuggy.messages.RobobuggyLogicNotificationMeasurement;
 
 /**
@@ -36,7 +36,7 @@ public class SensorPlayerTests {
         JsonElement logFileJson = gson.fromJson(logFile, JsonElement.class);
         System.out.println(logFileJson.getAsString());
 
-        System.out.printf(String.valueOf((BrakeMessage) gson.fromJson(logLine, BrakeMessage.class)));
+        System.out.printf(String.valueOf((BrakeStateMessage) gson.fromJson(logLine, BrakeStateMessage.class)));
 
         System.out.println(m.toString());
 
