@@ -1,9 +1,8 @@
 package com.roboclub.robobuggy.main;
 
 
-import com.roboclub.robobuggy.jetty.gui.JettyServer;
 import com.roboclub.robobuggy.robots.AbstractRobot;
-import com.roboclub.robobuggy.robots.TransistorDataCollection;
+import com.roboclub.robobuggy.robots.TransistorPlayback;
 import com.roboclub.robobuggy.ui.Gui;
 import com.roboclub.robobuggy.utilities.JNISetup;
 
@@ -29,7 +28,7 @@ public class RobobuggyMainFile {
 		RobobuggyConfigFile.loadConfigFile(); //TODO make sure that logic Notification is setup before this point
 
 		new RobobuggyLogicNotification("Initializing Robot", RobobuggyMessageLevel.NOTE);
-        robot = TransistorDataCollection.getInstance();
+        robot = TransistorPlayback.getInstance();
 
 
 		new RobobuggyLogicNotification("Initializing GUI", RobobuggyMessageLevel.NOTE);
@@ -39,13 +38,13 @@ public class RobobuggyMainFile {
 		new RobobuggyLogicNotification("Starting Robot", RobobuggyMessageLevel.NOTE);
 		robot.startNodes();
 
-		try {
-			new JettyServer();
-			new RobobuggyLogicNotification("Initializing web server", RobobuggyMessageLevel.NOTE);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			new JettyServer();
+//			new RobobuggyLogicNotification("Initializing web server", RobobuggyMessageLevel.NOTE);
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 
     }
     

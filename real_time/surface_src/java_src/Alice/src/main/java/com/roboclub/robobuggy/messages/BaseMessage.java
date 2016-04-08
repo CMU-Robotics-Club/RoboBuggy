@@ -15,6 +15,7 @@ import java.util.Date;
 public abstract class BaseMessage implements Message {
 	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
 	protected long timestamp;
+	protected String topicName;
 	private long sequenceNumber = -1;
 
 	/**
@@ -22,6 +23,7 @@ public abstract class BaseMessage implements Message {
 	 */
 	public BaseMessage() {
 		timestamp = new Date().getTime();
+		topicName = "Base";
 	}
 
 	/**
@@ -77,5 +79,21 @@ public abstract class BaseMessage implements Message {
 	 */
 	public Date getTimestamp() {
 		return new Date(timestamp);
+	}
+
+	/**
+	 * @return the topic name
+	 */
+	@Override
+	public String getTopicName() {
+		return topicName;
+	}
+
+	/**
+	 * @param topicName topic name
+	 */
+	@Override
+	public void setTopicName(String topicName) {
+		this.topicName = topicName;
 	}
 }
