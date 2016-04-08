@@ -6,6 +6,8 @@ import com.roboclub.robobuggy.nodes.localizers.HighTrustGPSLocalizer;
 import com.roboclub.robobuggy.nodes.localizers.LocalizerUtil;
 import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
 import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
+import com.roboclub.robobuggy.nodes.sensors.LoggingNode;
+import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.simulation.SimulatedBuggy;
 import com.roboclub.robobuggy.simulation.SimulatedGPSNode;
 import com.roboclub.robobuggy.simulation.SimulatedImuNode;
@@ -57,7 +59,8 @@ public final class SimRobot extends AbstractRobot{
 		}
 		*/
 		try {
-			ArrayList<GpsMeasurement> wayPoints = WayPointUtil.createWayPointsFromWaypointList(RobobuggyConfigFile.getWaypointSourceLogFile());
+			ArrayList<GpsMeasurement> wayPoints =
+					WayPointUtil.createWayPointsFromWaypointList(RobobuggyConfigFile.getWaypointSourceLogFile());
 			nodeList.add(new WayPointFollowerPlanner(wayPoints));
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -77,6 +80,8 @@ public final class SimRobot extends AbstractRobot{
 		simBuggy.setDx(.5);
 
 
+		nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION,
+				NodeChannel.getLoggingChannels()));
 		//simBuggy.setDth(1);
 	//	simBuggy.setDth(0.10);
 		

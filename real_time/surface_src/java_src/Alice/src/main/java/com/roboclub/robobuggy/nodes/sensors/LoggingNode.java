@@ -68,6 +68,8 @@ public class LoggingNode extends BuggyDecoratorNode {
         STOPPED_LOGGING,
     }
 
+
+
     /**
      * Create a new {@link LoggingNode} decorator
      * @param channel the {@link NodeChannel} of the {@link LoggingNode}
@@ -192,8 +194,8 @@ public class LoggingNode extends BuggyDecoratorNode {
 
         // each log file is called {filename}_{date}.txt
         outputFile = new File(outputDirectory.getPath() + "/" +
-                                RobobuggyConfigFile.LOG_FILE_NAME + "_" +
-                                formatDateIntoFile(logCreationDate) + ".txt")
+                RobobuggyConfigFile.LOG_FILE_NAME + "_" +
+                formatDateIntoFile(logCreationDate) + ".txt")
         ;
         try {
             if(!outputFile.createNewFile()) {
@@ -279,10 +281,10 @@ public class LoggingNode extends BuggyDecoratorNode {
             try {
                 fileWriteStream = new PrintStream(outputFile, "UTF-8");
                 messageTranslator = new GsonBuilder()
-                                        .excludeFieldsWithModifiers(Modifier.TRANSIENT)
-                                        .serializeSpecialFloatingPointValues()
-                                        .create()
-                                        ;
+                        .excludeFieldsWithModifiers(Modifier.TRANSIENT)
+                        .serializeSpecialFloatingPointValues()
+                        .create()
+                ;
             } catch (FileNotFoundException | UnsupportedEncodingException e) {
                 new RobobuggyLogicNotification("Error setting up the output file. Aborting logging!", RobobuggyMessageLevel.EXCEPTION);
                 return;
@@ -298,9 +300,8 @@ public class LoggingNode extends BuggyDecoratorNode {
                 Message toSort;
                 try {
                     toSort = messageQueue.take();
-                    String msgAsJsonString;
-                    
-                    msgAsJsonString = messageTranslator.toJson(toSort);
+
+                    String msgAsJsonString = messageTranslator.toJson(toSort);
 
                     // and if you look on your right you'll see the almost-unnecessary
                     // giganti-frickin-ic telemetry block
@@ -328,10 +329,8 @@ public class LoggingNode extends BuggyDecoratorNode {
                         steeringHits++;
                     } else if(toSort instanceof ImageMessage){
                         imageHits++;
-                    } else {
-                        //a new kind of message!
-                        new RobobuggyLogicNotification("New message came in that we aren't tracking", RobobuggyMessageLevel.WARNING);
                     }
+                    
                     fileWriteStream.println("        " + msgAsJsonString + ",");
 
                 } catch (InterruptedException e) {
