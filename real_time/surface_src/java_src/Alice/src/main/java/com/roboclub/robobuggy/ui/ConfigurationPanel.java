@@ -151,13 +151,7 @@ public class ConfigurationPanel extends RobobuggyGUIContainer{
 				//TODO bring down the system 
 				int index = imuPortSelector.getSelectedIndex(); //TODO lots of port logic 
 				RobobuggyConfigFile.setComPortImu(portOptions[index]);
-				if(index == 0){
-					//then we decided to select no port so we should not use this sensor 
-					RobobuggyConfigFile.setImuEnabled(false);
-				}else{
-					RobobuggyConfigFile.setImuEnabled(true);
 
-				}
 				//TODO bring back up the system
 				
 			}
@@ -175,13 +169,6 @@ public class ConfigurationPanel extends RobobuggyGUIContainer{
 				//TODO bring down the system 
 				int index = gpsPortSelector.getSelectedIndex(); //TODO lots of port logic 
 				RobobuggyConfigFile.setComPortGps(portOptions[index]);
-				if(index == 0){
-					//then we decided to select no port so we should not use this sensor 
-					RobobuggyConfigFile.setGpsEnabled(false);
-				}else{
-					RobobuggyConfigFile.setGpsEnabled(true);
-				}
-				
 				//TODO bring back up the system				
 			}
 		});
@@ -198,12 +185,6 @@ public class ConfigurationPanel extends RobobuggyGUIContainer{
 				//TODO bring down the system 
 				int index = rbsmPortSelector.getSelectedIndex(); //TODO lots of port logic 
 				RobobuggyConfigFile.setComPortRBSM(portOptions[index]);
-				if(index == 0){
-					//then we decided to select no port so we should not use this sensor 
-					RobobuggyConfigFile.setEncoderEnabled(false);
-				}else{
-					RobobuggyConfigFile.setEncoderEnabled(true);
-				}
 				
 				//TODO bring back up the system						
 			}
@@ -223,12 +204,6 @@ public class ConfigurationPanel extends RobobuggyGUIContainer{
 				//TODO bring down the system 
 				int index = visionSystemPortSelector.getSelectedIndex(); //TODO lots of port logic 
 				RobobuggyConfigFile.setPortVision(portOptions[index]);
-				if(index == 0){
-					//then we decided to select no port so we should not use this sensor 
-					RobobuggyConfigFile.setVisionSystemEnabled(false);
-				}else{
-					RobobuggyConfigFile.setVisionSystemEnabled(true);
-				}
 				
 				//TODO bring back up the system				
 			}

@@ -27,20 +27,13 @@ public final class  RobobuggyConfigFile {
 	// for what messages should be printed to the console
 	public static final int GRAPH_LENGTH = 100;
 
-	// default logging state, should the buggy start logging as soon as this
+	// default logging state, should the buggy start logging as soon as start is pressed
 	// program is started
-	public static final boolean LOGGING = true;
 	public static final String LOG_FILE_LOCATION = "logs";
 	public static final String LOG_FILE_NAME = "sensors";
 
 	//Autonomous controls
 	public static final int RBSM_COMMAND_PERIOD = 50;
-
-	// sensor default settings (true for on false for off
-	private static boolean imuEnabled = true;
-	private static boolean gpsEnabled = true;
-	private static boolean encoderEnabled = true;
-	private static boolean visionSystemEnabled = true;
 	
 	//system settings 
 	private static double playBackSpeed = 1.0;
@@ -50,10 +43,6 @@ public final class  RobobuggyConfigFile {
 	private static String comPortGps  = "NOT_SET";
 	private static String comPortRBSM = "NOT_SET";
 	private static String portVision = "NOT_SET";
-
-
-	// iff false, connect to serial sensors 
-	private static final boolean DATA_PLAY_BACK = false;
 
 	private static String waypointSourceLogFile ="NOT_SET";
 	private static String playBackSourceFile = "NOT_SET";
@@ -105,30 +94,6 @@ public final class  RobobuggyConfigFile {
 		} catch (UnsupportedEncodingException | FileNotFoundException e) {
 			new RobobuggyLogicNotification("could not load Part of configFile"+e.toString(), RobobuggyMessageLevel.WARNING);
 		}
-	}
-
-	/**
-	 * evaluates to the current value of imuEnabled
-	 * @return current value of imuEnabled
-	 */
-	public static boolean isImuEnabled() {
-		return imuEnabled;
-	}
-
-	/**
-	 * sets imuEnabled to a new value
-	 * @param imuEnabled boolean newValue
-	 */
-	public static void setImuEnabled(boolean imuEnabled) {
-		RobobuggyConfigFile.imuEnabled = imuEnabled;
-	}
-
-	/**
-	 * evaluates to the current value of dataPlayBack
-	 * @return current value of dataPlayBack
-	 */
-	public static boolean isDataPlayBack() {
-		return DATA_PLAY_BACK;
 	}
 
 	/**
@@ -212,22 +177,6 @@ public final class  RobobuggyConfigFile {
 	}
 
 	/**
-	 * evaluates to the current value of gpsEnabled
-	 * @return current value of gpsEnabled
-	 */
-	public static boolean isGpsEnabled() {
-		return gpsEnabled;
-	}
-
-	/**
-	 * sets a new value to gpsEnabled
-	 * @param gpsEnabled boolean new Value
-	 */
-	public static void setGpsEnabled(boolean gpsEnabled) {
-		RobobuggyConfigFile.gpsEnabled = gpsEnabled;
-	}
-
-	/**
 	 * evaluates to the current value of comPortRBSM
 	 * @return  current value of comPortRBSM
 	 */
@@ -241,22 +190,6 @@ public final class  RobobuggyConfigFile {
 	 */
 	public static void setComPortRBSM(String comPortRBSM) {
 		RobobuggyConfigFile.comPortRBSM = comPortRBSM;
-	}
-
-	/**
-	 * evaluates to the current value of encoderEnabled
-	 * @return current value of encoderEnabled
-	 */
-	public static boolean isEncoderEnabled() {
-		return encoderEnabled;
-	}
-
-	/**
-	 * sets a new value to encoderEnabled
-	 * @param encoderEnabled boolean new value
-	 */
-	public static void setEncoderEnabled(boolean encoderEnabled) {
-		RobobuggyConfigFile.encoderEnabled = encoderEnabled;
 	}
 
 	/**
@@ -275,21 +208,6 @@ public final class  RobobuggyConfigFile {
 		RobobuggyConfigFile.portVision = portVision;
 	}
 
-	/**
-	 * evaluates to the current value of visionSystemEnabled
-	 * @return current value of visionSystemEnabled
-	 */
-	public static boolean isVisionSystemEnabled() {
-		return visionSystemEnabled;
-	}
-
-	/**
-	 * sets a new value for visionSystemEnabled
-	 * @param visionSystemEnabled boolean new value
-	 */
-	public static void setVisionSystemEnabled(boolean visionSystemEnabled) {
-		RobobuggyConfigFile.visionSystemEnabled = visionSystemEnabled;
-	}
 	
 	/**
 	 * @return the playBackSpeed

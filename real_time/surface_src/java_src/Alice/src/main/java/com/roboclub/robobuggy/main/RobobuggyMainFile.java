@@ -3,10 +3,9 @@ package com.roboclub.robobuggy.main;
 
 import com.roboclub.robobuggy.jetty.gui.JettyServer;
 import com.roboclub.robobuggy.robots.AbstractRobot;
-import com.roboclub.robobuggy.robots.TransistorDataCollection;
+import com.roboclub.robobuggy.robots.RaceDayRobot;
 import com.roboclub.robobuggy.ui.Gui;
 import com.roboclub.robobuggy.utilities.JNISetup;
-
 
 /** This class is the driver starting up the robobuggy program, if you want the buggy to drive itself you should run this node */
 public class RobobuggyMainFile {
@@ -17,6 +16,7 @@ public class RobobuggyMainFile {
 	 * @param args : None
 	 */
     public static void main(String[] args) {
+
 		new RobobuggyLogicNotification("Robobuggy Alice program started", RobobuggyMessageLevel.NOTE);
 
         try {
@@ -29,8 +29,7 @@ public class RobobuggyMainFile {
 		RobobuggyConfigFile.loadConfigFile(); //TODO make sure that logic Notification is setup before this point
 
 		new RobobuggyLogicNotification("Initializing Robot", RobobuggyMessageLevel.NOTE);
-        robot = TransistorDataCollection.getInstance();
-
+        robot = RaceDayRobot.getInstance();
 
 		new RobobuggyLogicNotification("Initializing GUI", RobobuggyMessageLevel.NOTE);
         Gui.getInstance();

@@ -3,9 +3,14 @@ apply plugin: 'eclipse'
 apply plugin: 'checkstyle'
 apply plugin: 'cobertura'
 apply plugin: 'findbugs'
+apply plugin: 'application'
+
+mainClassName = 'com.roboclub.robobuggy.main.RobobuggyMainFile'
 
 
 test.testLogging { exceptionFormat "full"; events "failed", "passed", "skipped" }
+
+
 
 configurations.all {
     resolutionStrategy {
@@ -77,3 +82,4 @@ buildscript{
   }
 }
 cobertura.coverageFormats = ['html', 'xml']
+
