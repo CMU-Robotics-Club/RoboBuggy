@@ -91,11 +91,11 @@ public class FullLoggingTest {
      */
     @Test
     public void testLogFileSameAsSimResults() throws IOException, InterruptedException {
-        if(!System.getProperty("os.name").equals("Mac OS X")){
-			System.out.println("skipping this test because you are not running mac OS X ");
-			//this test fails on travis so we only want to run it locally
-		}
-        else {
+//        if(!System.getProperty("os.name").equals("Mac OS X")){
+//			System.out.println("skipping this test because you are not running mac OS X ");
+//			//this test fails on travis so we only want to run it locally
+//		}
+//        else {
 
             LoggingNode ln = new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, "logs/", NodeChannel.getLoggingChannels());
             ln.startNode();
@@ -105,6 +105,7 @@ public class FullLoggingTest {
             );
 
             Thread.sleep(100);
+            File logFile = ln.getOutputFile();
 
             for (int i = 0; i < LOG_FILE_LENGTH; i++) {
                 int randNum = new Random().nextInt(6);
@@ -149,7 +150,6 @@ public class FullLoggingTest {
 
             loggingPub.publish(new GuiLoggingButtonMessage(GuiLoggingButtonMessage.LoggingMessage.STOP));
 
-            File logFile = ln.getOutputFile();
             // finished building the master list
 
             SensorPlayer player = new SensorPlayer(logFile.getPath(), 1);
@@ -205,7 +205,7 @@ public class FullLoggingTest {
                 }
 
 
-            }
+//            }
 
         }
     }
