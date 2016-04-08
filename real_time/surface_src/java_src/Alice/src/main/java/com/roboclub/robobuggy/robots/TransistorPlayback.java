@@ -52,7 +52,7 @@ public final class TransistorPlayback extends AbstractRobot {
 		// Initialize Nodes
 		nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION,
 				NodeChannel.getLoggingChannels()));
-		SensorPlayer playback = new SensorPlayer(RobobuggyConfigFile.getPlayBackSourceFile(), 1);
+		new SensorPlayer(RobobuggyConfigFile.getPlayBackSourceFile(), 1);
 
 
 		//setup the gui

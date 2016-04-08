@@ -17,6 +17,16 @@ public class IntegerMessage implements Message {
 	}
 
 	@Override
+	public void setTopicName(String name) {
+
+	}
+
+	@Override
+	public String getTopicName() {
+		return null;
+	}
+
+	@Override
 	public void setSequenceNumber(long sequenceNumber) {
 		this.sequenceNumber = sequenceNumber;
 	}
