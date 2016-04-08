@@ -4,7 +4,6 @@ apply plugin: 'checkstyle'
 apply plugin: 'cobertura'
 apply plugin: 'findbugs'
 
-//mainClassName = "com.roboclub.robobuggy.main.mainFile.java"
 
 test.testLogging { exceptionFormat "full"; events "failed", "passed", "skipped" }
 
@@ -55,6 +54,7 @@ dependencies {
 
     compile files('library/RXTXcomm.jar')
     compile files('library/JMapViewer.jar')
+    compile files('library/jfreespace.jar')
 
 
 }

@@ -20,7 +20,7 @@ public final class  RobobuggyConfigFile {
 
     //Library info
     public static final String ALICE_LIBRARY_VERSION = "1.0.0";
-	public static final String RBSM_HEADER_FILE_LOCATION = "../../../arduino_src/lib_avr/rbserialmessages/rbsm_headers.txt";
+	public static final String RBSM_HEADER_FILE_LOCATION = "../../../rbsm_config.txt";
 
 	// for what messages should be printed to the console
 	public static final RobobuggyMessageLevel REPORTING_LEVEL = RobobuggyMessageLevel.NOTE;
@@ -34,7 +34,6 @@ public final class  RobobuggyConfigFile {
 	public static final String LOG_FILE_NAME = "sensors";
 
 	//Autonomous controls
-	public static final boolean AUTONOMOUS_DEFAULT = false;
 	public static final int RBSM_COMMAND_PERIOD = 50;
 
 	// sensor default settings (true for on false for off
@@ -42,15 +41,19 @@ public final class  RobobuggyConfigFile {
 	private static boolean gpsEnabled = true;
 	private static boolean encoderEnabled = true;
 	private static boolean visionSystemEnabled = true;
+	
+	//system settings 
+	private static double playBackSpeed = 1.0;
 
 	//sensor com ports
 	private static String comPortImu = "NOT_SET";
 	private static String comPortGps = "NOT_SET";
 	private static String comPortRBSM = "NOT_SET";
-	private static String portVision ="NOT_SET";
+	private static String portVision = "NOT_SET";
+
 
 	// iff false, connect to serial sensors 
-	private static final boolean DATA_PLAY_BACK = true;
+	private static final boolean DATA_PLAY_BACK = false;
 
 	private static String waypointSourceLogFile ="NOT_SET";
 	private static String playBackSourceFile = "NOT_SET";
@@ -288,5 +291,18 @@ public final class  RobobuggyConfigFile {
 		RobobuggyConfigFile.visionSystemEnabled = visionSystemEnabled;
 	}
 	
+	/**
+	 * @return the playBackSpeed
+	 */
+	public static double getPlayBackSpeed() {
+		return playBackSpeed;
+	}
+
+	/**
+	 * @param playBackSpeed the playBackSpeed to set
+	 */
+	public static void setPlayBackSpeed(double playBackSpeed) {
+		RobobuggyConfigFile.playBackSpeed = playBackSpeed;
+	}
 	
 }

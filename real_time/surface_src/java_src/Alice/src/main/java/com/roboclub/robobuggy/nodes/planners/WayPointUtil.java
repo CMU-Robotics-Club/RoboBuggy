@@ -49,7 +49,7 @@ public class WayPointUtil {
 			}
 			waypoints.add(((GpsMeasurement) translator.fromJson(nextline, GpsMeasurement.class)));
 		}
-
+		
 		fileReader.close();
 
 		return waypoints;
@@ -148,6 +148,6 @@ public class WayPointUtil {
 		fileReader.close();
 		return messages;
 	}
+	
 
-		 
 }

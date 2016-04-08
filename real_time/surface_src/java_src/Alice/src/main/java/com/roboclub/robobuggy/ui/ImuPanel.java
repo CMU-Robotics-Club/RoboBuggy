@@ -18,7 +18,7 @@ public class ImuPanel extends RobobuggyGUIContainer{
 			@Override
 			public double getY(Message m) {
 				MagneticMeasurement imuM = (MagneticMeasurement)m;
-				return imuM.getX();
+				return imuM.getmagX();
 			}
 			
 			@Override
@@ -33,7 +33,7 @@ public class ImuPanel extends RobobuggyGUIContainer{
 			@Override
 			public double getY(Message m) {
 				MagneticMeasurement imuM = (MagneticMeasurement)m;
-				return imuM.getY();
+				return imuM.getmagY();
 			}
 			
 			@Override
@@ -48,7 +48,7 @@ public class ImuPanel extends RobobuggyGUIContainer{
 			@Override
 			public double getY(Message m) {
 				MagneticMeasurement imuM = (MagneticMeasurement)m;
-				return imuM.getz();
+				return imuM.getmagZ();
 			}
 			
 			@Override

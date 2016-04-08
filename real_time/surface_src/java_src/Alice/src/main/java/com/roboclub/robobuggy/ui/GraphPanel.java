@@ -34,7 +34,7 @@ public class GraphPanel extends RobobuggyGUIContainer {
 		this.addComponent(new ImageViewer(NodeChannel.PUSHBAR_CAMERA.getMsgPath()), .75, 0, .25, 1.0);
 		
 		// Subscriber for drive control updates
-		new Subscriber(NodeChannel.STEERING.getMsgPath(), new MessageListener() {
+		new Subscriber("uiDriveControlUpdates", NodeChannel.STEERING.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				steeringGraph.updateGraph(((SteeringMeasurement)m).getAngle());
@@ -43,7 +43,7 @@ public class GraphPanel extends RobobuggyGUIContainer {
 		});
 		
 		// Subscriber for Imu updates
-		new Subscriber(NodeChannel.IMU.getMsgPath(), new MessageListener() {
+		new Subscriber("uiImuUpdates", NodeChannel.IMU.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 			    Gui.getInstance().fixPaint();

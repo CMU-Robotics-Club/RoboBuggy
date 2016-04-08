@@ -1,5 +1,7 @@
 package com.roboclub.robobuggy.ui;
 
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
@@ -44,12 +46,12 @@ public class ImuVisualPanel extends JPanel {
 		try {
 			background = ImageIO.read(new File("images/background.png"));
 		} catch(Exception e) {
-			System.out.println("Unable to open background!");
+			new RobobuggyLogicNotification("Unable to read background image!", RobobuggyMessageLevel.WARNING);
 		}
 		setup = false;
 		
 		
-		imuSub = new Subscriber(NodeChannel.IMU.getMsgPath(), new MessageListener() {
+		imuSub = new Subscriber("uiImu", NodeChannel.IMU.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				

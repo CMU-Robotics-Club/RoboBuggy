@@ -23,7 +23,7 @@ public class KfLocalizer extends PeriodicNode{
 //	private Matrix matrixDF;
 	
 	protected KfLocalizer(BuggyNode base, int period) {
-		super(base, period);
+		super(base, period, "KF");
 		posePub = new Publisher(NodeChannel.POSE.getMsgPath());
 //		startTime = new Date();
 		double[][] startCovariance = {{1,0,0},{0,1,0},{0,0,1}};
@@ -60,7 +60,6 @@ public class KfLocalizer extends PeriodicNode{
 		
 //			Date now = new Date();
 //			Date dt = new Date(now.getTime() - mostRecentUpdateTime.getTime());
-		System.out.println("predict step - TODO");
 			//estimate state
 //			state =  mModel.applyMotionModel(state,dt);
 			//estimate covariance

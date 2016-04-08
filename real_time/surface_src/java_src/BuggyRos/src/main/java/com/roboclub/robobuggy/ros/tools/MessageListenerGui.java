@@ -45,7 +45,7 @@ public class MessageListenerGui extends JPanel implements ActionListener {
 		@Override
 		protected Object doInBackground() throws Exception {
 			System.out.println("do in background fired!");
-			Subscriber s = new Subscriber("/sensor/encoder",
+			Subscriber s = new Subscriber("messageListenerGui", "/sensor/encoder",
 					new MessageListener() {
 						@Override
 						public void actionPerformed(String topicName, Message m) {

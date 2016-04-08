@@ -55,12 +55,13 @@ public class SweepNode extends PathPlannerNode {
                 	} catch (InterruptedException e) {
                 		e.printStackTrace();
                 	}	
-                	
+
                 	steeringPublisher.publish(new DriveControlMessage(new Date(), currentCommandedSteeringAngle));
                     brakePublisher.publish(new BrakeControlMessage(new Date(), false));
 
                 }            }});  
             t1.start();
+
  
     }
 

@@ -1,5 +1,8 @@
 package com.roboclub.robobuggy.ui;
 
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
+
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
@@ -35,7 +38,7 @@ public class RobobuggyJFrame extends JFrame {
 		try {
 			this.setIconImage(ImageIO.read(new File("images/rc_logo.png")));
 		} catch (Exception e) {
-			System.out.println("Unable to read icon image!");
+			new RobobuggyLogicNotification("Unable to read icon image!", RobobuggyMessageLevel.WARNING);
 		}
 		
 		//gets the screen size

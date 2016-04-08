@@ -20,7 +20,7 @@ public class SimulationPlayer extends PeriodicNode{
 	 * instantiates a simulationplayer
 	 */
 	public SimulationPlayer() {
-		super(new BuggyBaseNode(NodeChannel.SIMULATION), 1000);  //TODO figure out why this can't run faster
+		super(new BuggyBaseNode(NodeChannel.SIMULATION), 1000,"simulation_player");  //TODO figure out why this can't run faster
 	//	posePub = new Publisher(NodeChannel.POSE.getMsgPath());
 		 Publisher posePub;
 		 Publisher encoderPub = new  Publisher(NodeChannel.ENCODER.getMsgPath());

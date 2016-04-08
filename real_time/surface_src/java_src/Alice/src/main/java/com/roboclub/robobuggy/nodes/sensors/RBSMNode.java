@@ -2,6 +2,7 @@ package com.roboclub.robobuggy.nodes.sensors;
 
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
+import com.roboclub.robobuggy.messages.AutonBrakeStateMessage;
 import com.roboclub.robobuggy.messages.AutonStateMessage;
 import com.roboclub.robobuggy.messages.BatteryLevelMessage;
 import com.roboclub.robobuggy.messages.BrakeControlMessage;
@@ -13,6 +14,7 @@ import com.roboclub.robobuggy.messages.EncoderTimeMessage;
 import com.roboclub.robobuggy.messages.FingerPrintMessage;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
+import com.roboclub.robobuggy.messages.TeleopBrakeStateMessage;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.NodeState;
 import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
@@ -55,6 +57,7 @@ public  class  RBSMNode extends SerialNode {
 	private static final double ARD_TO_DEG = 1;
 	/** Steering Angle offset?? */
 	private static final double OFFSET = 0;
+    private static final double FEET_TO_METERS = 0.3048;
 
 	// accumulated
 	private int encTicks = 0;
@@ -74,6 +77,9 @@ public  class  RBSMNode extends SerialNode {
 	private Publisher messagePubDeviceID;
 	private Publisher messagePubAutonState;
 	private Publisher messagePubBrakeState;
+	
+	private Publisher messagePubAutonBrakeState;
+	private Publisher messagePubTeleopBrakeState;
 	
 	private Publisher statePubEnc;
 	private Publisher statePubPot;
@@ -108,7 +114,8 @@ public  class  RBSMNode extends SerialNode {
 		messagePubAutonState = new Publisher(NodeChannel.AUTON_STATE.getMsgPath());
 		messagePubBrakeState = new Publisher(NodeChannel.BRAKE_STATE.getMsgPath());
 		
-		
+		messagePubAutonBrakeState = new Publisher(NodeChannel.AUTON_BRAKE_STATE.getMsgPath());
+		messagePubTeleopBrakeState = new Publisher(NodeChannel.TELEOP_BRAKE_STATE.getMsgPath());
 
 		//statePub forwards this node's estimate of the state
 		//(i.e. after filtering bad data)
@@ -136,7 +143,7 @@ public  class  RBSMNode extends SerialNode {
 		instVelocityLast = instVelocity;
 		timeLast = currTime;
 		
-		return new EncoderMeasurement(currTime, dataWord, accDist, instVelocity, instAccel);
+		return new EncoderMeasurement(currTime, dataWord, accDist * FEET_TO_METERS, instVelocity, instAccel);
 	}
 	
 	/**{@inheritDoc}*/
@@ -183,59 +190,71 @@ public  class  RBSMNode extends SerialNode {
 			case 6: 
 				break;
 			default: 
-				System.out.println("HOW DID NOT A SIX GET HERE");
-				//TODO add error
+				new RobobuggyLogicNotification("Peel did not evaluate to 0,1, or 6 in RBSMNode", RobobuggyMessageLevel.EXCEPTION);
 				break;
 		}
 		
 		RBSerialMessage message = rbp.getMessage();
-		byte headerByte = message.getHeaderByte();
+		int headerNumber = message.getHeaderNumber();
 	
 		//TODO: The following statements should be reformatted because:
 		// 1: Calling getHeaderByte so many times is inefficient
 		// 2: Header values don't change so this can be made into a switch 
 		// 3: Header values are subject to change based on what's in rbsm_headers.txt
-		if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_ENC_TICKS_RESET")) {
+		if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_ENC_TICKS_RESET")) {
 			// This is a delta-distance! Do a thing!
 			encTicks = message.getDataWord() & 0xFFFF;
 			messagePubEnc.publish(estimateVelocity(message.getDataWord()));
 		}
-		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_ERROR")) {
+		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_ERROR")) {
 			new RobobuggyLogicNotification("RBSM_MID_ERROR:"+message.getDataWord(), RobobuggyMessageLevel.EXCEPTION);
 		}
-		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_ENC_RESET_CONFIRM")) {
+		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_ENC_RESET_CONFIRM")) {
 			new RobobuggyLogicNotification("Encoder Reset Confirmed by Zoe", RobobuggyMessageLevel.NOTE);
 		}
-		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_ENC_TIMESTAMP")){
+		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_ENC_TIMESTAMP")){
 			messagePubEncTime.publish(new EncoderTimeMessage(message.getDataWord()));
 		}
-		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_STEER_FEEDBACK")) {
+		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_STEER_FEEDBACK")) {
 			potValue = message.getDataWord();
 			messagePubPot.publish(new SteeringMeasurement(-(potValue + OFFSET) / ARD_TO_DEG));
 		}
-		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_STEER_ANGLE")) {
+		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_STEER_ANGLE")) {
 			messagePubControllerSteering.publish(new SteeringMeasurement(message.getDataWord()));
 		}
-		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_COMP_HASH")) {
+		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_COMP_HASH")) {
 			messagePubFp.publish(new FingerPrintMessage(message.getDataWord()));
 		}
-		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_BATTERY_LEVEL")){
+		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_BATTERY_LEVEL")){
 			//TODO: Display the battery level in the GUI
 			messagePubBat.publish(new BatteryLevelMessage(message.getDataWord()));
 		}
-		else if (headerByte == RBSerialMessage.getHeaderByte("DEVICE_ID")){
+		else if (headerNumber == RBSerialMessage.getHeaderByte("DEVICE_ID")){
 			messagePubDeviceID.publish(new DeviceIDMessage(message.getDataWord()));
 		}
-		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_BRAKE_STATE")){
-			messagePubBrakeState.publish(new BrakeStateMessage(message.getDataWord()));
+		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_BRAKE_STATE")){
+			boolean brakesDown = false;
+
+			if (message.getDataWord() == 1) {
+				brakesDown = true;
+			}
+
+			messagePubBrakeState.publish(new BrakeStateMessage(brakesDown));
 		}
-		else if (headerByte == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_AUTON_STATE")){
+		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_AUTON_STATE")){
 			messagePubAutonState.publish(new AutonStateMessage(message.getDataWord()));
 		}
+		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_TELEOP_BRAKE_COMMAND")){
+			messagePubTeleopBrakeState.publish(new TeleopBrakeStateMessage(message.getDataWord()));
+		}
+		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_AUTON_BRAKE_COMMAND")){
+			messagePubAutonBrakeState.publish(new AutonBrakeStateMessage(message.getDataWord()));			
+		}
 		else {
-				new RobobuggyLogicNotification("Invalid RBSM message header: " + headerByte+ 
+				new RobobuggyLogicNotification("Invalid RBSM message header: " + headerNumber+ 
 						" Message:"+message.getDataWord(), RobobuggyMessageLevel.NOTE);
 		}
+		
 		
 		//Feed the watchdog
 		setNodeState(NodeState.ON);
@@ -263,7 +282,8 @@ public  class  RBSMNode extends SerialNode {
 		 * @param channel of the RSBM node
 		 */
 		RBSMPeriodicNode(NodeChannel channel, int period) {
-			super(new BuggyBaseNode(channel), period);
+			super(new BuggyBaseNode(channel), period,"RBSM_Periodic_Node");
+			resume();
 		}
 
 		/**
@@ -272,14 +292,15 @@ public  class  RBSMNode extends SerialNode {
 		 */
 		@Override
 		protected void update() {
-			if(commandedAngle > 1000) {
-				commandedAngle = 1000;
+			int outputAngle = commandedAngle;//allows for commandedAngle to be read only in this function
+			if(outputAngle > 1000) {
+				outputAngle = 1000;
 			}
-			else if (commandedAngle < -1000) {
-				commandedAngle = -1000;
+			else if (outputAngle < -1000) {
+				outputAngle = -1000;
 			}
 			
-			RBSMSteeringMessage msgSteer = new RBSMSteeringMessage(commandedAngle);
+			RBSMSteeringMessage msgSteer = new RBSMSteeringMessage(outputAngle);
 			send(msgSteer.getMessageBytes());
 			RBSMBrakeMessage msgBrake = new RBSMBrakeMessage(commandedBrakeEngaged);
 			send(msgBrake.getMessageBytes());
@@ -289,30 +310,30 @@ public  class  RBSMNode extends SerialNode {
 		@Override
 		protected boolean startDecoratorNode() {
 			//Initialize subscribers to commanded angle and brakes state
-			new Subscriber(NodeChannel.DRIVE_CTRL.getMsgPath(),
+			new Subscriber("rbsm", NodeChannel.DRIVE_CTRL.getMsgPath(),
 					new MessageListener() {
 				@Override
 				public void actionPerformed(String topicName, Message m) {
-					commandedAngle = ((DriveControlMessage)m).getAngleInt();
+					commandedAngle = -((DriveControlMessage)m).getAngleInt();
 				}
 			});
-			new Subscriber(NodeChannel.BRAKE_CTRL.getMsgPath(),
+			new Subscriber("rbsm", NodeChannel.BRAKE_CTRL.getMsgPath(),
 					new MessageListener() {
 				@Override
 				public void actionPerformed(String topicName, Message m) {
 					commandedBrakeEngaged = ((BrakeControlMessage)m).isBrakeEngaged();
 				}
 			});
-			new Subscriber(NodeChannel.ENCODER_RESET.getMsgPath(), new MessageListener() {
+			new Subscriber("rbsm", NodeChannel.ENCODER_RESET.getMsgPath(), new MessageListener() {
 				@Override
 				public void actionPerformed(String topicName, Message m) {
 					byte[] message = new byte[6];
-					message[0] = (byte)RBSerialMessage.getHeaderByte("RBSM_MID_ENC_RESET_REQUEST"); //Reset request header
+					message[0] = RBSerialMessage.getHeaderByte("RBSM_MID_ENC_RESET_REQUEST"); //Reset request header
 					message[1] = 0;
 					message[2] = 0;
 					message[3] = 0;
 					message[4] = 0;
-					message[5] = (byte)RBSerialMessage.getHeaderByte("FOOTER");
+					message[5] = RBSerialMessage.getHeaderByte("FOOTER");
 					send(message);
 				}
 				

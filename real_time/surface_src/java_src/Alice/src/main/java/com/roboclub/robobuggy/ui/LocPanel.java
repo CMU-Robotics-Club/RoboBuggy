@@ -1,5 +1,7 @@
 package com.roboclub.robobuggy.ui;
 
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
@@ -40,11 +42,11 @@ public class LocPanel extends JPanel {
 		try {
 			map = ImageIO.read(new File("images/lat_long_course_map.png"));
 		} catch(Exception e) {
-			System.out.println("Unable to open map!");
+			new RobobuggyLogicNotification("Unable to read map image!", RobobuggyMessageLevel.WARNING);
 		}
 		setup = false;
 		
-		gpsSub = new Subscriber(NodeChannel.GPS.getMsgPath(), new MessageListener() {
+		gpsSub = new Subscriber("uiLoc", NodeChannel.GPS.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				double latitude = ((GpsMeasurement)m).getLatitude();

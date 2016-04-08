@@ -32,7 +32,7 @@ public abstract class PathPlannerNode extends BuggyDecoratorNode {
 	 *  information about the node
 	 */
 	public PathPlannerNode(NodeChannel channel) {
-		super(new BuggyBaseNode(channel));
+		super(new BuggyBaseNode(channel), "pathPlannerNode");
 		steeringCommandPub = new Publisher(NodeChannel.DRIVE_CTRL.getMsgPath());
 		brakingCommandPub = new Publisher(NodeChannel.BRAKE_CTRL.getMsgPath());
 	}
@@ -41,7 +41,7 @@ public abstract class PathPlannerNode extends BuggyDecoratorNode {
 	@Override
 	protected final boolean startDecoratorNode() {
 		//Initialize subscribers to pose estimations
-		new Subscriber(NodeChannel.POSE.getMsgPath(), new MessageListener() {
+		new Subscriber("pathPlanner", NodeChannel.POSE.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				updatePositionEstimate((GPSPoseMessage)m);
