@@ -64,10 +64,47 @@ public final class Util {
 	public static JsonObject readJSONFile(String path) throws UnsupportedEncodingException, FileNotFoundException{
 	       Gson translator = new GsonBuilder().create();
 		   InputStreamReader fileReader = new InputStreamReader(new FileInputStream(new File(path)), "UTF-8");
-        JsonObject jsonRefrence = translator.fromJson(fileReader, JsonObject.class);
-		return jsonRefrence;
+		return translator.fromJson(fileReader, JsonObject.class);
 
     }
+	
+	/**
+	 * Normalizes an an input angle in degrees to be between -180 and 180
+	 * @param degrees input angle in degrees
+	 * @return normalized angle in degrees 
+	 */
+	public static double normalizeAngleDeg(double degrees){
+		//java mod keeps the sign of the dividend so lets make everything positive
+		while(degrees < 0.0 ){
+			degrees = degrees+360;
+		}
+		degrees = degrees % 360.0;
+		if(degrees > 180.0 ){
+			degrees = degrees - 360.0;
+		}
+		return degrees;
+		
+	}
+	
+	/**
+	 * Normalizes an an input angle in degrees to be between -pi and pi
+	 * @param radians input angle in radians
+	 * @return normalized angle in radians 
+	 */
+	public static double normalizeAngleRad(double radians){
+		//java mod keeps the sign of the dividend so lets make everything positive
+		while(radians < 0.0 ){
+			radians = radians+2*Math.PI;
+		}
+
+		radians = radians % (2*Math.PI);
+
+		if(radians > Math.PI ){
+			radians = radians - 2.0*Math.PI;
+		}
+		return radians;
+		
+	}
 	
 	
 	

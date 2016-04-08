@@ -22,8 +22,8 @@ public abstract class PeriodicNode extends BuggyDecoratorNode {
      * @param period of the periodically executed portion of the node
      * Note the timer needs to be started by running resume
      */
-    protected PeriodicNode(BuggyNode base, int period){
-    	super(base);
+    protected PeriodicNode(BuggyNode base, int period,String name){
+    	super(base, name);
         runPeriod = period;
         timerTask = new UpdateTask();
         pause();

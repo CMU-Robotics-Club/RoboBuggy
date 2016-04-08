@@ -1,12 +1,12 @@
 package com.roboclub.robobuggy.robots;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.main.RosMaster;
 import com.roboclub.robobuggy.ros.Node;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * A class that encodes the minimum functions need to represent a robot which is much like a ros launch file in normal ros 

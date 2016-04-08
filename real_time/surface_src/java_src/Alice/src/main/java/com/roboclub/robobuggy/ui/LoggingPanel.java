@@ -1,5 +1,6 @@
 package com.roboclub.robobuggy.ui;
 
+import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.messages.EncoderResetMessage;
@@ -19,6 +20,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimerTask;
 
 /**
  * {@link RobobuggyGUIContainer} used for logging information
@@ -84,7 +86,15 @@ public class LoggingPanel extends RobobuggyGUIContainer{
 		this.addComponent(filenameLabel, 0, .5, 0.5, .25);
 		this.addComponent(playbackSpeed, .5, .5, 0.5, .25);
 		this.addComponent(timeLbl, 0, .75, 1, .25);
-
+		
+		//uses pulling to make sure that the play back speed is up to date
+		java.util.Timer t = new java.util.Timer();
+		t.schedule(new TimerTask() {
+			@Override
+			public void  run() {
+				updatePlaybackSpeed();
+			}
+		}, 0, 100);
 	}
 
 
@@ -100,17 +110,17 @@ public class LoggingPanel extends RobobuggyGUIContainer{
 	 * safe returns the speed
 	 * @return the speed, or 1 if the text in the field can't be serialized
 	 */
-	public double getPlaybackSpeed() {
+	private void updatePlaybackSpeed() {
 		String speedStr = playbackSpeed.getText();
 		if (speedStr.equals("")) {
-			return 1;
+			new RobobuggyLogicNotification("input playback was ", RobobuggyMessageLevel.EXCEPTION);
 		}
 
 		try {
-			return Double.valueOf(speedStr);
+			RobobuggyConfigFile.setPlayBackSpeed(Double.valueOf(speedStr));
 		}
 		catch (NumberFormatException e) {
-			return 1;
+			new RobobuggyLogicNotification("input playback could not be parsed ", RobobuggyMessageLevel.EXCEPTION);
 		}
 	}
 	

@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
-import com.roboclub.robobuggy.messages.BrakeMessage;
+import com.roboclub.robobuggy.messages.BrakeStateMessage;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.FingerPrintMessage;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
@@ -47,6 +47,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class LoggingNode extends BuggyDecoratorNode {
 
     private Publisher loggingButtonPub;
+
     private File outputFile;
     private File outputDirectory;
     private NodeChannel[] filters;
@@ -68,6 +69,8 @@ public class LoggingNode extends BuggyDecoratorNode {
         STOPPED_LOGGING,
     }
 
+
+
     /**
      * Create a new {@link LoggingNode} decorator
      * @param channel the {@link NodeChannel} of the {@link LoggingNode}
@@ -75,7 +78,7 @@ public class LoggingNode extends BuggyDecoratorNode {
      * @param filters sensors to log. To log all sensors, just use NodeChannel.values()
      */
     public LoggingNode(NodeChannel channel, String outputDirPath, NodeChannel...filters) {
-        super(new BuggyBaseNode(channel));
+        super(new BuggyBaseNode(channel), "logging_node");
 
         this.filters = filters;
         messageQueue = new LinkedBlockingQueue<>();
@@ -85,22 +88,24 @@ public class LoggingNode extends BuggyDecoratorNode {
         statusPub = new Publisher(NodeChannel.NODE_STATUS.getMsgPath());
 
         setupSubscriberList();
-
-        if (!RobobuggyConfigFile.isDataPlayBack()) {
-            setupLoggingTrigger();
-        }
+        setupLoggingTrigger();
 
         statusPub.publish(new NodeStatusMessage(LoggingNode.class, LoggingNodeStatus.INITIALIZED, null));
 
     }
 
-
+    /**
+     * @return the current output file
+     */
+    File getOutputFile() {
+        return outputFile;
+    }
 
     /**
      * Starts the logging process
      */
     private void setupLoggingTrigger() {
-        new Subscriber(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath(), new MessageListener() {
+        new Subscriber("log", NodeChannel.GUI_LOGGING_BUTTON.getMsgPath(), new MessageListener() {
             @Override
             public void actionPerformed(String topicName, Message m) {
 
@@ -149,7 +154,7 @@ public class LoggingNode extends BuggyDecoratorNode {
      */
     private void setupSubscriberList() {
         for (NodeChannel filter : filters) {
-            new Subscriber(filter.getMsgPath(), new MessageListener() {
+            new Subscriber("log", filter.getMsgPath(), new MessageListener() {
                 @Override
                 public void actionPerformed(String topicName, Message m) {
                     messageQueue.add(m);
@@ -175,7 +180,7 @@ public class LoggingNode extends BuggyDecoratorNode {
      * @return the status of the operation - true if it succeeded, false if it didn't
      */
     private boolean createNewLogFile() {
-        if (!outputDirectory.exists() || !outputDirectory.isDirectory()) {
+        if ((!outputDirectory.mkdirs() && !outputDirectory.exists()) || !outputDirectory.isDirectory()) {
             new RobobuggyLogicNotification("Output directory path isn't a folder!", RobobuggyMessageLevel.EXCEPTION);
             return false;
         }
@@ -192,8 +197,8 @@ public class LoggingNode extends BuggyDecoratorNode {
 
         // each log file is called {filename}_{date}.txt
         outputFile = new File(outputDirectory.getPath() + "/" +
-                                RobobuggyConfigFile.LOG_FILE_NAME + "_" +
-                                formatDateIntoFile(logCreationDate) + ".txt")
+                RobobuggyConfigFile.LOG_FILE_NAME + "_" +
+                formatDateIntoFile(logCreationDate) + ".txt")
         ;
         try {
             if(!outputFile.createNewFile()) {
@@ -215,7 +220,7 @@ public class LoggingNode extends BuggyDecoratorNode {
     protected boolean startDecoratorNode() {
         loggingButtonPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
 
-        new Subscriber(Gui.GuiPubSubTopics.GUI_LOG_BUTTON_UPDATED.toString(), new MessageListener() {
+        new Subscriber("log", Gui.GuiPubSubTopics.GUI_LOG_BUTTON_UPDATED.toString(), new MessageListener() {
             @Override
             public void actionPerformed(String topicName, Message m) {
                 loggingButtonPub.publish(m);
@@ -279,10 +284,10 @@ public class LoggingNode extends BuggyDecoratorNode {
             try {
                 fileWriteStream = new PrintStream(outputFile, "UTF-8");
                 messageTranslator = new GsonBuilder()
-                                        .excludeFieldsWithModifiers(Modifier.TRANSIENT)
-                                        .serializeSpecialFloatingPointValues()
-                                        .create()
-                                        ;
+                        .excludeFieldsWithModifiers(Modifier.TRANSIENT)
+                        .serializeSpecialFloatingPointValues()
+                        .create()
+                ;
             } catch (FileNotFoundException | UnsupportedEncodingException e) {
                 new RobobuggyLogicNotification("Error setting up the output file. Aborting logging!", RobobuggyMessageLevel.EXCEPTION);
                 return;
@@ -298,13 +303,12 @@ public class LoggingNode extends BuggyDecoratorNode {
                 Message toSort;
                 try {
                     toSort = messageQueue.take();
-                    String msgAsJsonString;
-                    
-                    msgAsJsonString = messageTranslator.toJson(toSort);
+
+                    String msgAsJsonString = messageTranslator.toJson(toSort);
 
                     // and if you look on your right you'll see the almost-unnecessary
                     // giganti-frickin-ic telemetry block
-                    if (toSort instanceof BrakeMessage) {
+                    if (toSort instanceof BrakeStateMessage) {
                         brakeHits++;
                     } else if (toSort instanceof EncoderMeasurement) {
                         encoderHits++;
@@ -328,10 +332,8 @@ public class LoggingNode extends BuggyDecoratorNode {
                         steeringHits++;
                     } else if(toSort instanceof ImageMessage){
                         imageHits++;
-                    } else {
-                        //a new kind of message!
-                        new RobobuggyLogicNotification("New message came in that we aren't tracking", RobobuggyMessageLevel.WARNING);
                     }
+                    
                     fileWriteStream.println("        " + msgAsJsonString + ",");
 
                 } catch (InterruptedException e) {
@@ -350,7 +352,7 @@ public class LoggingNode extends BuggyDecoratorNode {
             dataBreakdown.addProperty(NodeChannel.GPS.getName(), gpsHits);
             dataBreakdown.addProperty(NodeChannel.IMU.getName(), imuHits);
             dataBreakdown.addProperty(NodeChannel.ENCODER.getName(), encoderHits);
-            dataBreakdown.addProperty(NodeChannel.BRAKE.getName(), brakeHits);
+            dataBreakdown.addProperty(NodeChannel.BRAKE_STATE.getName(), brakeHits);
             dataBreakdown.addProperty(NodeChannel.STEERING.getName(), steeringHits);
             dataBreakdown.addProperty(NodeChannel.FP_HASH.getName(), fingerprintHits);
             dataBreakdown.addProperty(NodeChannel.LOGIC_NOTIFICATION.getName(), logicNotificationHits);

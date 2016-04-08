@@ -29,7 +29,7 @@ public class OdomLocalizer  extends PeriodicNode{
 
 	private double currentEncoderVal = 0;
 	private double previousEncoderVal = 0;
-	private double currentAngle = 0;
+	private volatile double currentAngle = 0;
 	private double previousAngle = 0;
 
 
@@ -37,15 +37,15 @@ public class OdomLocalizer  extends PeriodicNode{
 	 * initializes a new odomlocalizer
 	 */
 	public OdomLocalizer() {
-		super(new  BuggyBaseNode(NodeChannel.POSE), 100);
+		super(new  BuggyBaseNode(NodeChannel.POSE), 100, "odomLocalizer");
 		
-		
-		//Initialize subscriber to encoder measurements
-		new Subscriber(NodeChannel.ENCODER.getMsgPath(), new MessageListener() {
+		// Initialize subscriber to encoder measurements
+		// Since the Encoder sub only consumes currentAngle, by making it volatile we allow
+		//  the callbacks to run on different threads/procs and updates will still happen atomically.
+		new Subscriber("OdomLoc", NodeChannel.ENCODER.getMsgPath(), new MessageListener() {
 		@Override
 		public void actionPerformed(String topicName, Message m) {
 			EncoderMeasurement encM = (EncoderMeasurement)m;
-			//TODO add locks 
 			double dist = encM.getDistance();
 				previousEncoderVal = currentEncoderVal;
 				currentEncoderVal = dist;
@@ -59,17 +59,15 @@ public class OdomLocalizer  extends PeriodicNode{
 			posePub.publish(new GPSPoseMessage(new Date(), pose.getX(), pose.getY(), pose.getOrientation()));
 			previousAngle = currentAngle;
 			
-						
 			}
 		});
-			
+		
 		//Initialize subscriber for what steering angle low level is currently at
-		new Subscriber(NodeChannel.STEERING.getMsgPath(), new MessageListener() {
+		new Subscriber("OdomLoc", NodeChannel.STEERING.getMsgPath(), new MessageListener() {
 			
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				SteeringMeasurement steerMeasur =  (SteeringMeasurement)m;
-				//TODO add locks
 				currentAngle = (steerMeasur.getAngle())*Math.PI/180;
 			}
 		});

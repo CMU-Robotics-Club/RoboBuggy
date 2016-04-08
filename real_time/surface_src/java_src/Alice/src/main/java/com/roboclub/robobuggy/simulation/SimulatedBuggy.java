@@ -1,16 +1,12 @@
 package com.roboclub.robobuggy.simulation;
 
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.TimerTask;
-
-import boofcv.alg.segmentation.ms.MergeSmallRegions.Node;
-
+import com.roboclub.robobuggy.main.Util;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 
-import sun.security.jca.GetInstance;
+import java.util.Date;
+import java.util.TimerTask;
 
 /**
  * 
@@ -84,18 +80,18 @@ public final class SimulatedBuggy {
 		            	long dtMili = now - lastUpdateTime;
 		            	lastUpdateTime = now;
 		            	double dt = dtMili/100.0;
-		            	double heading = wheelTh + th + dth;
+		            	double heading = Util.normalizeAngleDeg(wheelTh + th + dth);
 		            	double headingRad = Math.toRadians(heading);
 		            	//now update the internal state
-		            	x = x +dx*Math.cos(headingRad)*dt -dy*Math.sin(headingRad)*dt;
-		            	y = y +dx*Math.sin(headingRad)*dt+dy*Math.cos(headingRad)*dt;
+		            	x = x +dx*Math.cos(headingRad)*dt -dy*Math.sin(headingRad)*dt+0;//(2*Math.random()-1)/10;
+		            	y = y +dx*Math.sin(headingRad)*dt+dy*Math.cos(headingRad)*dt+0;//(2*Math.random()-1)/10;
 		            	th = heading;
 		            	//TODO make pose message periodic 
 		            	simPosePub.publish(new GPSPoseMessage(new Date(), y, x, th));
 
 		            	
 		            }
-		        }, 1000, 100);
+		        }, 1000, 50);
 	}
 	
 	/**
@@ -144,14 +140,14 @@ public final class SimulatedBuggy {
 	}
 
 	/**
-	 * @return the th
+	 * @return the current th value in degrees
 	 */
 	public double getTh() {
 		return th;
 	}
 
 	/**
-	 * @param th the th to set
+	 * @param th the th to set in degrees
 	 */
 	public void setTh(double th) {
 		this.th = th;
@@ -186,14 +182,14 @@ public final class SimulatedBuggy {
 	}
 
 	/**
-	 * @return the dth
+	 * @return the dth in degrees
 	 */
 	public double getDth() {
 		return dth;
 	}
 
 	/**
-	 * @param dth the dth to set
+	 * @param dth the dth to set in degrees
 	 */
 	public void setDth(double dth) {
 		this.dth = dth;

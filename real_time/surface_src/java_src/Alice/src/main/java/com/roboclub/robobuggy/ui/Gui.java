@@ -5,31 +5,29 @@ import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 
 import javax.swing.JFrame;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * {@link JFrame} used to represent the robobuggy gui
  * @author Trevor Decker
- * @author Kevin Brennan 
+ * @author Kevin Brennan
  *
  * @version 0.5
- * 
+ *
  * CHANGELOG: NONE
- * 
- * DESCRIPTION: This class is the top level controller for the graphical user interface displayed to the user 
+ *
+ * DESCRIPTION: This class is the top level controller for the graphical user interface displayed to the user
  */
 public final class Gui extends JFrame {
 	private static final long serialVersionUID = 670947948979376738L;
 
 
 	//The windowList is a list of all of the windows that are a part of the gui
-	private ArrayList<RobobuggyJFrame> windowList = new ArrayList<RobobuggyJFrame>();
-	private MainGuiWindow mainGuiWindow;
+	private HashMap<Integer, RobobuggyJFrame> windowMap;
+	private int currentWindowId;
 
 	private static Gui instance;
-	private static RobobuggyJFrame rmw;
-	private static RobobuggyGUITabs tabs;
-	
+
 	/**
 	 * Enum of {@link Gui} publisher and subscriber topics
 	 */
@@ -41,13 +39,11 @@ public final class Gui extends JFrame {
 	 * Repaints all objects in the {@link Gui}
 	 */
 	public void fixPaint(){
-		for(int i = 0;i<windowList.size();i++){
-			windowList.get(i).repaint(); 
-		}
+		windowMap.forEach((key,window) -> window.repaint());
 	}
-	
+
 	/**
-	 * Returns a reference to the one instance of the {@link Gui}. 
+	 * Returns a reference to the one instance of the {@link Gui}.
 	 * If none exists, one will be constructed.
 	 * @return a reference to the one instance of the {@link Gui}
 	 */
@@ -63,54 +59,46 @@ public final class Gui extends JFrame {
 	 */
 	private Gui() {
 		new RobobuggyLogicNotification("StartingGUI", RobobuggyMessageLevel.NOTE);
-		/*RobobuggyJFrame mainWindow*/rmw = new RobobuggyJFrame("MainWindow",1.0,1.0);
-		RobobuggyJFrame mainWindow = rmw;
-		mainGuiWindow = new MainGuiWindow();
-		/*RobobuggyGUITabs */tabs = new RobobuggyGUITabs();
-		tabs.addTab(mainGuiWindow, "Home");
-		tabs.addTab(new ImuVisualWindow(), "IMU");
-		tabs.addTab(new VelocityWindow(), "Velocity");
-		tabs.addTab(new PoseGraphsPanel(),"poses");
-		tabs.addTab(new ImuPanel(),"IMU");
-		tabs.addTab(new  AutonomousPanel(),"Autonomous");
-		tabs.addTab(new ConfigurationPanel(),"Configuration");
-		tabs.addTab(new SimulationPanel(),"Simulation");
-		mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
-		mainWindow.repaint();		
-		windowList.add(mainWindow);
-		mainWindow.repaint();
+		windowMap= new HashMap<>();
+		currentWindowId = -1;
+
 	}
-	
+
 
 	/**
-	 * @return the main gui window
+	 * Adds a new window to the
+	 * @param newWindow the window you want added
+	 * @return a unique reference number to the window for access later
 	 */
-	public MainGuiWindow getMainGuiWindow() {
-		return mainGuiWindow;
+	public synchronized int addWindow(RobobuggyJFrame newWindow){
+		currentWindowId++;
+		windowMap.put(currentWindowId, newWindow);
+		return currentWindowId;
 	}
-	
+
 	/**
-	 * Resets the Gui (closes all tabs, then reopens them)
+	 * gets a reference to a particular frame of the window
+	 * @param windowReference the reference to receive
+	 * @return the requested frames reference
 	 */
-	
-	public static synchronized void reset(){
-		rmw.removeComponent(tabs);
-		tabs = new RobobuggyGUITabs();
-		tabs.addTab(new MainGuiWindow(), "Home");
-		tabs.addTab(new ImuVisualWindow(), "IMU");
-		tabs.addTab(new VelocityWindow(), "Velocity");
-		tabs.addTab(new PoseGraphsPanel(),"poses");
-		tabs.addTab(new ImuPanel(),"IMU");
-		tabs.addTab(new  AutonomousPanel(),"Autonomous");
-		tabs.addTab(new ConfigurationPanel(),"Configuration");
-		rmw.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
-		rmw.repaint();
+	public synchronized RobobuggyJFrame getWindow(int windowReference){
+		return windowMap.get(windowReference);
 	}
-	
+
 	/**
-	 * Closes the Gui
+	 * removes a reference to a particular frame of the window
+	 * @param windowReference the reference to remove
+	 * @return
 	 */
-	public static synchronized  void close() {
+	public synchronized void deleteWindow(int windowReference){
+		windowMap.remove(windowReference);
+
+	}
+
+	/**
+	 * Closes the {@link Gui}
+	 */
+	public static synchronized void close() {
 		new RobobuggyLogicNotification("trying to close gui", RobobuggyMessageLevel.NOTE);
 		instance.dispatchEvent(new WindowEvent(instance, WindowEvent.WINDOW_CLOSING));
 		new RobobuggyLogicNotification("gui has been closed", RobobuggyMessageLevel.NOTE);

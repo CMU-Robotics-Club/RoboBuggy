@@ -1,22 +1,17 @@
-import static org.junit.Assert.*;
-
-import org.junit.After;
-import org.junit.Before;
+import com.roboclub.robobuggy.messages.ImuMeasurement;
 import org.junit.Test;
 
-import com.roboclub.robobuggy.messages.ImuMeasurement;
+import static org.junit.Assert.fail;
 
 
+/**
+ * tests the imu's measurement mathematics
+ */
 public class TestImuMeasurement {
 
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	@After
-	public void tearDown() throws Exception {
-	}
-
+	/**
+	 * tests the imu's math
+	 */
 	@Test
 	public void test() {
 		double roll = 0.123;

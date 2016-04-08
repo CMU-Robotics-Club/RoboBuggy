@@ -5,7 +5,7 @@ import com.roboclub.robobuggy.simulation.SensorPlayer;
 
 /**
  * Runs playback
- * @author trevordecker
+ * @author Trevor Decker
  *
  */
 public final class PlayBackRobot extends AbstractRobot{
@@ -25,6 +25,6 @@ public final class PlayBackRobot extends AbstractRobot{
 	
 	private PlayBackRobot(){
 		super();
-		new SensorPlayer(RobobuggyConfigFile.getPlayBackSourceFile(), 1, RobobuggyConfigFile.getVideoFile());
+		new SensorPlayer(RobobuggyConfigFile.getPlayBackSourceFile(), 1);
 	}
-}
+}	

@@ -34,7 +34,6 @@ public final class  RobobuggyConfigFile {
 	public static final String LOG_FILE_NAME = "sensors";
 
 	//Autonomous controls
-	public static final boolean AUTONOMOUS_DEFAULT = false;
 	public static final int RBSM_COMMAND_PERIOD = 50;
 
 	// sensor default settings (true for on false for off
@@ -42,6 +41,9 @@ public final class  RobobuggyConfigFile {
 	private static boolean gpsEnabled = true;
 	private static boolean encoderEnabled = true;
 	private static boolean visionSystemEnabled = true;
+	
+	//system settings 
+	private static double playBackSpeed = 1.0;
 
 	//sensor com ports
 	private static String comPortImu  = "NOT_SET";
@@ -55,7 +57,6 @@ public final class  RobobuggyConfigFile {
 
 	private static String waypointSourceLogFile ="NOT_SET";
 	private static String playBackSourceFile = "NOT_SET";
-	private static String videoFile = "NOT_SET";
 	
 	//is where values from this file are saved so that they can be updated between runs
 	private static String configFile ="config.config";
@@ -99,7 +100,6 @@ public final class  RobobuggyConfigFile {
 			setPortVision(configJson.get("PORT_VISION").getAsString());
 			setWayPointSourceLogFile(configJson.get("WAYPOINT_SOURCE_LOG_FILE").getAsString());
 			setPlayBackSourceFile(configJson.get("PLAY_BACK_SOURCE_FILE").getAsString());
-			setVideoFile(configJson.get("VIDEO_FILE").getAsString());
 
 			
 		} catch (UnsupportedEncodingException | FileNotFoundException e) {
@@ -195,21 +195,6 @@ public final class  RobobuggyConfigFile {
 		RobobuggyConfigFile.playBackSourceFile = playBackSourceFile;
 	}
 	
-	/**
-	 * evaluates to the current value of videoFile
-	 * @return the current value of videoFile
-	 */
-	public static String getVideoFile(){
-		return videoFile;
-	}
-	
-	/**
-	 * sets a new value to videoFile
-	 * @param newFile new file path
-	 */
-	public static void setVideoFile(String newFile){
-		RobobuggyConfigFile.videoFile = newFile;
-	}
 
 	/**
 	 * evaluates to the currentValue of comPortGps
@@ -307,5 +292,18 @@ public final class  RobobuggyConfigFile {
 		RobobuggyConfigFile.visionSystemEnabled = visionSystemEnabled;
 	}
 	
+	/**
+	 * @return the playBackSpeed
+	 */
+	public static double getPlayBackSpeed() {
+		return playBackSpeed;
+	}
+
+	/**
+	 * @param playBackSpeed the playBackSpeed to set
+	 */
+	public static void setPlayBackSpeed(double playBackSpeed) {
+		RobobuggyConfigFile.playBackSpeed = playBackSpeed;
+	}
 	
 }

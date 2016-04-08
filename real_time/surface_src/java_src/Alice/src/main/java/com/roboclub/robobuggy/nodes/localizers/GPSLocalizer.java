@@ -32,8 +32,8 @@ public final class GPSLocalizer extends BuggyDecoratorNode {
 	 *  information about the node
 	 */
 	public GPSLocalizer(NodeChannel channel) {
-		super(new BuggyBaseNode(channel));
-		lastReading= null;
+		super(new BuggyBaseNode(channel), "GPSLocalizer");
+		lastReading = null;
 		posePub = new Publisher(NodeChannel.POSE.getMsgPath());
 	}
 
@@ -41,7 +41,7 @@ public final class GPSLocalizer extends BuggyDecoratorNode {
 	@Override
 	protected boolean startDecoratorNode() {
 		//Initialize subscriber to GPS measurements
-		new Subscriber(NodeChannel.GPS.getMsgPath(), new MessageListener() {
+		new Subscriber("gpsLoc", NodeChannel.GPS.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				GpsMeasurement gpsM = (GpsMeasurement)m;

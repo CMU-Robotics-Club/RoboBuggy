@@ -43,4 +43,17 @@ public class BrakeMessage extends BaseMessage {
 		this.timestamp = new Date(timestamp.getTime()).getTime();
 	}
 
+	/**
+	 * @return whether the brakes are down
+	 */
+	public boolean isDown() {
+		return down;
+	}
+
+	/**
+	 * @param down the state to set the brakes to
+	 */
+	public void setDown(boolean down) {
+		this.down = down;
+	}
 }
