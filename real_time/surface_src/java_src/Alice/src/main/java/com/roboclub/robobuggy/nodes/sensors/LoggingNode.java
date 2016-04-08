@@ -178,7 +178,7 @@ public class LoggingNode extends BuggyDecoratorNode {
      * @return the status of the operation - true if it succeeded, false if it didn't
      */
     private boolean createNewLogFile() {
-        if (!outputDirectory.exists() || !outputDirectory.isDirectory()) {
+        if (!outputDirectory.mkdirs() || !outputDirectory.exists() || !outputDirectory.isDirectory()) {
             new RobobuggyLogicNotification("Output directory path isn't a folder!", RobobuggyMessageLevel.EXCEPTION);
             return false;
         }
