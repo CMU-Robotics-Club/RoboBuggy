@@ -52,7 +52,7 @@ public class BuggyStatusPanel extends RobobuggyGUIContainer {
         int brakeY = 0;
         String status = "up";
 
-        int battLevelBoxLeft = brakeX + getHeight()/2;
+        int battLevelBoxLeft = brakeX + getHeight();
 
         if (brakesDown) {
             brakeY = getHeight() - getHeight()/3;
@@ -66,7 +66,7 @@ public class BuggyStatusPanel extends RobobuggyGUIContainer {
 
 
         g.setColor(Color.GREEN);
-        g.fillRect(brakeX + getHeight()/3 + 10, 0, getHeight()/3, getHeight());
+        g.fillRect(battLevelBoxLeft, 0, getHeight()/3, getHeight());
         g.setColor(Color.BLACK);
         g.setFont(new Font("Arial", Font.BOLD, 30));
         g.drawString("batt = " + batteryLevel, battLevelBoxLeft, getHeight()/2);
