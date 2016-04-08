@@ -93,17 +93,14 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 
 	@Override
 	protected boolean getDeployBrakeValue() {
-		return false;
-/*
 		int closestIndex = getClosestIndex(wayPoints,pose);
 		if(closestIndex == -1){
 			return true;
 		}
 
 		// if closest point is too far away throw breaks
-		boolean shouldBrake =  GPSPoseMessage.getDistance(pose, wayPoints.get(closestIndex).toGpsPoseMessage(0)) >= 0.0001;
+		boolean shouldBrake =  GPSPoseMessage.getDistance(pose, wayPoints.get(closestIndex).toGpsPoseMessage(0)) >= 5.0;
 		return shouldBrake;
-		*/
 	}
 
 

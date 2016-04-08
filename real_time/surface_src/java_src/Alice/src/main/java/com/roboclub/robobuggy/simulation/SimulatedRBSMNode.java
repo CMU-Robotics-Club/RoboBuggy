@@ -28,6 +28,7 @@ public class SimulatedRBSMNode extends PeriodicNode{
 	private double encoderDistance = 0;
 	private Publisher messagePubEnc;
 	private Publisher messagePubControllerSteering;
+	private Publisher messagePubBrakeState;
 	private int commandedAngle = 0;
 	private boolean commandedBrakeEngaged = true;
 
@@ -42,6 +43,8 @@ public class SimulatedRBSMNode extends PeriodicNode{
 		// TODO Auto-generated constructor stub
 		messagePubEnc = new Publisher(NodeChannel.ENCODER.getMsgPath());
 		messagePubControllerSteering = new Publisher(NodeChannel.STEERING_COMMANDED.getMsgPath());
+		messagePubBrakeState = new Publisher(NodeChannel.BRAKE_STATE.getMsgPath());
+
 		
 		//changes the angle that we are attempting to drive at based on the commanded angle messages we are getting 
 		//Initialize subscribers to commanded angle and brakes state
@@ -59,9 +62,9 @@ public class SimulatedRBSMNode extends PeriodicNode{
 			public void actionPerformed(String topicName, Message m) {
 				commandedBrakeEngaged = ((BrakeControlMessage)m).isBrakeEngaged();
 				simBuggy.setBrakesDown(commandedBrakeEngaged);
-				
-				
-				
+				//echo the brake message 
+				messagePubBrakeState.publish(m);
+				System.out.println("brakes sent");
 			}
 		});
 		resume();//needed to start the node
