@@ -1,4 +1,6 @@
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
+import com.roboclub.robobuggy.nodes.localizers.LocalizerUtil;
+
 import org.junit.Test;
 
 import java.util.Date;
@@ -28,22 +30,23 @@ public class TestWayPointFollowerPlanner {
 			fail("distance function does not respect idenity");
 		}
 		
-		if(Math.abs(GPSPoseMessage.getDistance(zeroPose, onePose) - 1.0) > .001){
+		if(Math.abs(GPSPoseMessage.getDistance(zeroPose, onePose) - LocalizerUtil.convertLonToMeters(1.0)) > .001){
 			fail("distance function does not handle some input correctly ");
 		}
 		
-		if(Math.abs(GPSPoseMessage.getDistance(aPose, zeroPose) -  1.802) > .001){
+		if(Math.abs(GPSPoseMessage.getDistance(onePose, aPose) - LocalizerUtil.convertLatToMeters(1.5)) > .001){
 			fail("distance function does not handle some input correctly ");
 		}
 		
-		if(Math.abs(GPSPoseMessage.getDistance(onePose, aPose) - 1.5) > .001){
+		if(Math.abs(GPSPoseMessage.getDistance(onePose, negPose) - LocalizerUtil.convertLonToMeters(2.0)) > .001){
 			fail("distance function does not handle some input correctly ");
 		}
 		
-		if(Math.abs(GPSPoseMessage.getDistance(onePose, negPose) - 2.0) > .001){
+		double dx = LocalizerUtil.convertLonToMeters(1.0);
+		double dy = LocalizerUtil.convertLatToMeters(1.5);
+		if(Math.abs(GPSPoseMessage.getDistance(aPose, zeroPose) -  Math.sqrt(dx*dx+dy*dy)) > .001){
 			fail("distance function does not handle some input correctly ");
 		}
-		
 		
 		
 		}

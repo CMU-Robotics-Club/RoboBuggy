@@ -1,5 +1,6 @@
 package com.roboclub.robobuggy.simulation;
 
+import com.roboclub.robobuggy.main.Util;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
@@ -79,7 +80,7 @@ public final class SimulatedBuggy {
 		            	long dtMili = now - lastUpdateTime;
 		            	lastUpdateTime = now;
 		            	double dt = dtMili/100.0;
-		            	double heading = wheelTh + th + dth;
+		            	double heading = Util.normalizeAngleDeg(wheelTh + th + dth);
 		            	double headingRad = Math.toRadians(heading);
 		            	//now update the internal state
 		            	x = x +dx*Math.cos(headingRad)*dt -dy*Math.sin(headingRad)*dt+0;//(2*Math.random()-1)/10;

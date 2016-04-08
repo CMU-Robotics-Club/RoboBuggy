@@ -1,7 +1,6 @@
 package com.roboclub.robobuggy.ui;
 
 import Jama.Matrix;
-
 import com.roboclub.robobuggy.messages.DriveControlMessage;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.nodes.localizers.LocalizerUtil;
@@ -13,7 +12,6 @@ import com.sun.javafx.geom.Vec2d;
 
 import javax.swing.JButton;
 import javax.swing.JSlider;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;

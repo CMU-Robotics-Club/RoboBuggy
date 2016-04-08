@@ -57,6 +57,7 @@ public  class  RBSMNode extends SerialNode {
 	private static final double ARD_TO_DEG = 1;
 	/** Steering Angle offset?? */
 	private static final double OFFSET = 0;
+    private static final double FEET_TO_METERS = 0.3048;
 
 	// accumulated
 	private int encTicks = 0;
@@ -142,7 +143,7 @@ public  class  RBSMNode extends SerialNode {
 		instVelocityLast = instVelocity;
 		timeLast = currTime;
 		
-		return new EncoderMeasurement(currTime, dataWord, accDist, instVelocity, instAccel);
+		return new EncoderMeasurement(currTime, dataWord, accDist * FEET_TO_METERS, instVelocity, instAccel);
 	}
 	
 	/**{@inheritDoc}*/

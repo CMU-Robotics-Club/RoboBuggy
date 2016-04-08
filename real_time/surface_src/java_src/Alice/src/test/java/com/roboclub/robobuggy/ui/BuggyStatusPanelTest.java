@@ -13,7 +13,8 @@ public class BuggyStatusPanelTest {
 
     /**
      * Toggles the brakes at 1 hz
-     * @throws InterruptedException
+     * @throws InterruptedException if ur stupid (lol jk) its just there for teh lolz
+     * (and the fact that we put sleeps in)
      */
     @Test
     public void testGuiBrakesToggle() throws InterruptedException {
@@ -34,7 +35,8 @@ public class BuggyStatusPanelTest {
 
     /**
      * Increases the battery at 1 hz by 1000
-     * @throws InterruptedException
+     * @throws InterruptedException if ur stupid (lol jk) its just there for teh lolz
+     * (and the fact that we put sleeps in)
      */
     @Test
     public void testGuiBatteryLevelIncrease() throws InterruptedException {

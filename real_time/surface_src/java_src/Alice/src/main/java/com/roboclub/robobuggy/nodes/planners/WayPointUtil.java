@@ -51,7 +51,7 @@ public class WayPointUtil {
 			}
 			waypoints.add(translator.fromJson(nextline, GpsMeasurement.class));
 		}
-
+		
 		fileReader.close();
 
 		return waypoints;
