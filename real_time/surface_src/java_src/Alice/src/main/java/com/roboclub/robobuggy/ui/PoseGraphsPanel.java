@@ -1,7 +1,6 @@
 package com.roboclub.robobuggy.ui;
 
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
-import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.NodeChannel;
@@ -15,7 +14,7 @@ public class PoseGraphsPanel extends RobobuggyGUIContainer{
 	 * makes the pose graphs panels
 	 */
 	public PoseGraphsPanel(){
-		this.addComponent(new PoseViewer(NodeChannel.POSE), 0.0, 0.0, .5, 1.0);
+		this.addComponent(new PoseViewer(NodeChannel.POSE,true), 0.0, 0.0, .5, 1.0);
 		this.addComponent(new RoboBuggyGraph("Encoder", NodeChannel.ENCODER.getMsgPath(), new RoboBuggyGraph.GetGraphValues() {
 			
 			@Override

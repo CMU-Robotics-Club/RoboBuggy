@@ -14,8 +14,8 @@ public class SimulationPanel extends RobobuggyGUIContainer{
 	 * the constructor for the simulation panel 
 	 */
 	public SimulationPanel() {
-		addComponent(new PoseViewer(NodeChannel.SIM_POSE), 0.0, 0.0, 0.5, 1.0);
-		addComponent(new PoseViewer(NodeChannel.POSE), 0.5, 0.0, 0.5, 1.0);
+		addComponent(new PoseViewer(NodeChannel.SIM_POSE,false), 0.0, 0.0, 0.5, 1.0);
+		addComponent(new PoseViewer(NodeChannel.POSE,true), 0.5, 0.0, 0.5, 1.0);
 
 	
 	}

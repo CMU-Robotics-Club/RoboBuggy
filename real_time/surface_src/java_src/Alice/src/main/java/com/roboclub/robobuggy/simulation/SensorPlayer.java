@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.main.Util;
@@ -33,9 +34,7 @@ import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
-import com.roboclub.robobuggy.ui.Gui;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
-import org.bytedeco.javacv.FrameGrabber.Exception;
 import org.bytedeco.javacv.Java2DFrameConverter;
 
 import java.awt.image.BufferedImage;
@@ -146,7 +145,7 @@ public class SensorPlayer extends Thread {
      * Sets up the playback trigger - hitting the start button will go through 1 iteration of a log file
      */
     public void setupPlaybackTrigger() {
-        new Subscriber(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath(), new MessageListener() {
+        new Subscriber("playback", NodeChannel.GUI_LOGGING_BUTTON.getMsgPath(), new MessageListener() {
             @Override
             public synchronized void actionPerformed(String topicName, Message m) {
                 GuiLoggingButtonMessage message = (GuiLoggingButtonMessage)m;
@@ -358,6 +357,6 @@ public class SensorPlayer extends Thread {
      * gets the new playback speed from the GUI and puts it into playbackSpeed
      */
     public void getNewPlaybackSpeed() {
-        playbackSpeed = Gui.getInstance().getMainGuiWindow().getCtrlPanel().getLoggingPanel().getPlaybackSpeed();
+    	playbackSpeed = RobobuggyConfigFile.getPlayBackSpeed();
     }
 }

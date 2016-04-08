@@ -1,13 +1,13 @@
 package com.roboclub.robobuggy.jetty.gui;
 
-import java.util.concurrent.LinkedBlockingQueue;
-
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
+
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Base class for all client updaters. Each updater will connect to a group and publish messages
@@ -26,7 +26,7 @@ public abstract class ClientUpdater {
 	private void subscribeToAll() {
 		// Once we're subscribed to all the things, we shouldn't need to do more other than push.
         for (NodeChannel filter : NodeChannel.getLoggingChannels()) {
-            new Subscriber(filter.getMsgPath(), new MessageListener() {
+            new Subscriber("jetty", filter.getMsgPath(), new MessageListener() {
                 @Override
                 public void actionPerformed(String topicName, Message m) {
                 	

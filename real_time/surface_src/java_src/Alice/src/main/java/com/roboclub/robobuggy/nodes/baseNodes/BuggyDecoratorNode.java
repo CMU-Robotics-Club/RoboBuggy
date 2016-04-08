@@ -16,9 +16,11 @@ public abstract class BuggyDecoratorNode implements BuggyNode {
 	/**
 	 * Creates a new decorator for the given {@link Node}
 	 * @param node {@link Node} to decorate
+	 * @param name the name we want for this node to store so that it can be referenced later
 	 */
-	public BuggyDecoratorNode(BuggyNode node) {
+	public BuggyDecoratorNode(BuggyNode node, String name) {
 		this.node = node;
+		this.name = name;
 	}
 	
 	/**
