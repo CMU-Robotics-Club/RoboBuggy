@@ -2,6 +2,7 @@ package com.roboclub.robobuggy.ui;
 
 import com.roboclub.robobuggy.messages.BatteryLevelMessage;
 import com.roboclub.robobuggy.messages.BrakeStateMessage;
+import com.roboclub.robobuggy.messages.FingerPrintMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.IMUAngularPositionMessage;
 import com.roboclub.robobuggy.ros.NodeChannel;
@@ -9,6 +10,7 @@ import com.roboclub.robobuggy.ros.Subscriber;
 
 import javax.imageio.ImageIO;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -24,6 +26,7 @@ public class BuggyStatusPanel extends RobobuggyGUIContainer {
 
     private boolean brakesDown;
     private int batteryLevel;
+    private String fphash = "(not loaded yet)";
 
     private BufferedImage imuArrow;
     private BufferedImage gpsArrow;
@@ -52,16 +55,19 @@ public class BuggyStatusPanel extends RobobuggyGUIContainer {
     }
 
     private void setupDataLoaders() {
-        new Subscriber(NodeChannel.BRAKE_STATE.getMsgPath(), (topicName, m) -> {
+        new Subscriber("uiStatus", NodeChannel.BRAKE_STATE.getMsgPath(), (topicName, m) -> {
             brakesDown = ((BrakeStateMessage) m).isDown();
         });
 
-        new Subscriber(NodeChannel.BATTERY.getMsgPath(), (topicName, m) -> {
+        new Subscriber("uiStatus", NodeChannel.BATTERY.getMsgPath(), (topicName, m) -> {
             batteryLevel = ((BatteryLevelMessage) m).getBatteryLevel();
         });
 
+        new Subscriber("uiStatus", NodeChannel.FP_HASH.getMsgPath(), (topicName, m) -> {
+            fphash = String.format("%x", ((FingerPrintMessage) m).getFpHash());
+        });
 
-        new Subscriber(NodeChannel.IMU_ANG_POS.getMsgPath(), ((topicName, m) -> {
+        new Subscriber("buggyStatusPanel",NodeChannel.IMU_ANG_POS.getMsgPath(), ((topicName, m) -> {
             IMUAngularPositionMessage mes = ((IMUAngularPositionMessage) m);
             double y = mes.getRot()[0][1];
             double x = mes.getRot()[0][0];
@@ -69,7 +75,7 @@ public class BuggyStatusPanel extends RobobuggyGUIContainer {
             imuAngle = -Math.atan2(y, x);
         }));
         
-        new Subscriber(NodeChannel.GPS.getMsgPath(), ((topicName, m) -> {
+        new Subscriber("buggyStatusPanel",NodeChannel.GPS.getMsgPath(), ((topicName, m) -> {
             if (prevGPS == null) {
                 prevGPS = ((GpsMeasurement) m);
             }
@@ -110,6 +116,8 @@ public class BuggyStatusPanel extends RobobuggyGUIContainer {
         int brakeY = 0;
         String status = "up";
 
+        int battLevelBoxLeft = brakeX + getHeight();
+
         if (brakesDown) {
             brakeY = getHeight() - getHeight()/3;
             status = "down";
@@ -122,10 +130,12 @@ public class BuggyStatusPanel extends RobobuggyGUIContainer {
 
 
         g.setColor(Color.GREEN);
-        g.fillRect(brakeX + getHeight()/3 + 10, 0, getHeight()/3, getHeight());
+        g.fillRect(battLevelBoxLeft, 0, getHeight()/3, getHeight());
         g.setColor(Color.BLACK);
-        g.drawString("batt = " + batteryLevel, brakeX + getHeight()/3 + 10, getHeight()/2);
-        g.drawString("status = " + status, brakeX, getHeight()/2);
+        g.setFont(new Font("Arial", Font.BOLD, 30));
+        g.drawString("batt = " + batteryLevel, battLevelBoxLeft, getHeight()/2);
+        g.drawString("status = " + status, 0, getHeight()/2);
+        g.drawString("fphash = " + fphash, battLevelBoxLeft, 30);
 
         // shamelessly ripped from stackoverflow
         g.drawImage(imuArrow, new AffineTransform(Math.cos(imuAngle), Math.sin(imuAngle), -Math.sin(imuAngle), Math.cos(imuAngle), 500, 200), null);

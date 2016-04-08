@@ -29,7 +29,7 @@ public class ImageViewer extends RobobuggyGUIContainer{
 	 * @param topicToSub the topic that images will be published on 
 	 */
 	public ImageViewer(String topicToSub){
-		imageSub = new Subscriber(topicToSub, new MessageListener() {
+		imageSub = new Subscriber("", topicToSub, new MessageListener() {
 			
 			@Override
 			/**

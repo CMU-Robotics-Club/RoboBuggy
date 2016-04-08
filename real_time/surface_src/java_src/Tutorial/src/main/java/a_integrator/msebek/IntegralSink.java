@@ -7,7 +7,7 @@ import com.roboclub.robobuggy.ros.Subscriber;
 
 public class IntegralSink implements Node {
 
-	Subscriber s = new Subscriber("integratedValues", new MessageListener() {
+	Subscriber s = new Subscriber("integralSink", "integratedValues", new MessageListener() {
 		@Override
 		public void actionPerformed(String topicName, Message m) {
 			// Cast m to the correct message type. If this cast fails, an exception is thrown.

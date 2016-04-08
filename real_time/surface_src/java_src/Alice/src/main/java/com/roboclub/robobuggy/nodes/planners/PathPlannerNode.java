@@ -41,7 +41,7 @@ public abstract class PathPlannerNode extends BuggyDecoratorNode {
 	@Override
 	protected final boolean startDecoratorNode() {
 		//Initialize subscribers to pose estimations
-		new Subscriber(NodeChannel.POSE.getMsgPath(), new MessageListener() {
+		new Subscriber("pathPlanner", NodeChannel.POSE.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				updatePositionEstimate((GPSPoseMessage)m);

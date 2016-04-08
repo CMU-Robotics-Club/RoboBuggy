@@ -3,7 +3,7 @@ package com.roboclub.robobuggy.main;
 
 import com.roboclub.robobuggy.jetty.gui.JettyServer;
 import com.roboclub.robobuggy.robots.AbstractRobot;
-import com.roboclub.robobuggy.robots.TransistorAuton;
+import com.roboclub.robobuggy.robots.TransistorDataCollection;
 import com.roboclub.robobuggy.ui.Gui;
 import com.roboclub.robobuggy.utilities.JNISetup;
 
@@ -29,8 +29,7 @@ public class RobobuggyMainFile {
 		RobobuggyConfigFile.loadConfigFile(); //TODO make sure that logic Notification is setup before this point
 
 		new RobobuggyLogicNotification("Initializing Robot", RobobuggyMessageLevel.NOTE);
-
-        robot = TransistorAuton.getInstance();
+        robot = TransistorDataCollection.getInstance();
 
 
 		new RobobuggyLogicNotification("Initializing GUI", RobobuggyMessageLevel.NOTE);

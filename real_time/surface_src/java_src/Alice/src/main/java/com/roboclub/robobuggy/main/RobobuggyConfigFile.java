@@ -53,7 +53,7 @@ public final class  RobobuggyConfigFile {
 
 
 	// iff false, connect to serial sensors 
-	private static final boolean DATA_PLAY_BACK = true;
+	private static final boolean DATA_PLAY_BACK = false;
 
 	private static String waypointSourceLogFile ="NOT_SET";
 	private static String playBackSourceFile = "NOT_SET";

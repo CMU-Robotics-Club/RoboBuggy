@@ -11,4 +11,10 @@ package com.roboclub.robobuggy.ros;
  */
 
 public interface Message {
+
+	public long getSequenceNumber();
+
+	// Do not call this function! Only BuggyRos calls this function!
+	public void setSequenceNumber(long sequenceNumber);
+	
 }

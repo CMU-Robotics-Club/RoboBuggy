@@ -55,7 +55,7 @@ public class Map extends JPanel {
         this.add(getMapTree());
         
         //adds track buggy  
-        new Subscriber(NodeChannel.POSE.getMsgPath(), new MessageListener() {
+        new Subscriber("Map",NodeChannel.POSE.getMsgPath(), new MessageListener() {
 			//TODO make this optional 
 			@Override
 			public void actionPerformed(String topicName, Message m) {
