@@ -15,12 +15,33 @@ import java.util.Date;
 public abstract class BaseMessage implements Message {
 	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
 	protected long timestamp;
+	private long sequenceNumber = -1;
 
 	/**
 	 * sets the date of the message to the current time
 	 */
 	public BaseMessage() {
 		timestamp = new Date().getTime();
+	}
+
+	/**
+	 * Publishers number their messages, increasing one each time.
+	 * If a message is dropped, then the subscriber will know if they keep
+	 * track of the current sequence number.
+	 * @return sequence number of the current message
+	 */
+	public long getSequenceNumber() {
+		return sequenceNumber;
+	}
+
+	/**
+	 * Sets the sequence number of this message. 
+	 * This should only be called by Publisher; it will
+	 * be overwritten if anyone else writes to it.
+	 * @param sequenceNumber sequence number of the current message. Ignored if not called from publisher.java
+	 */
+	public void setSequenceNumber(long sequenceNumber) {
+		this.sequenceNumber = sequenceNumber;
 	}
 
 	/**

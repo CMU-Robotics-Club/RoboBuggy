@@ -1,7 +1,6 @@
 package com.roboclub.robobuggy.ui;
 
 import Jama.Matrix;
-
 import com.roboclub.robobuggy.messages.DriveControlMessage;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.nodes.localizers.LocalizerUtil;
@@ -13,7 +12,6 @@ import com.sun.javafx.geom.Vec2d;
 
 import javax.swing.JButton;
 import javax.swing.JSlider;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -72,7 +70,7 @@ public class PoseViewer extends RobobuggyGUIContainer{
 		double [][] worldFrameArray = {{1,0,0,0},{0,1,0,0},{0,0,1,0},{0,0,0,1}};
 
 	
-		new Subscriber(poseChanel.getMsgPath(), new MessageListener() {
+		new Subscriber("uiPoseViewer", poseChanel.getMsgPath(), new MessageListener() {
 			
 			@Override
 			public void actionPerformed(String topicName, Message m) {
@@ -98,7 +96,7 @@ public class PoseViewer extends RobobuggyGUIContainer{
 			}
 		});
 
-		new Subscriber(NodeChannel.DRIVE_CTRL.getMsgPath(), new MessageListener() {
+		new Subscriber("uiDriveAngle", NodeChannel.DRIVE_CTRL.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				commtheta = ((DriveControlMessage) m).getAngleInt();

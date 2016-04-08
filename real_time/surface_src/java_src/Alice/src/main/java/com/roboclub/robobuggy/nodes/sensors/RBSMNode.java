@@ -57,6 +57,7 @@ public  class  RBSMNode extends SerialNode {
 	private static final double ARD_TO_DEG = 1;
 	/** Steering Angle offset?? */
 	private static final double OFFSET = 0;
+    private static final double FEET_TO_METERS = 0.3048;
 
 	// accumulated
 	private int encTicks = 0;
@@ -142,7 +143,7 @@ public  class  RBSMNode extends SerialNode {
 		instVelocityLast = instVelocity;
 		timeLast = currTime;
 		
-		return new EncoderMeasurement(currTime, dataWord, accDist, instVelocity, instAccel);
+		return new EncoderMeasurement(currTime, dataWord, accDist * FEET_TO_METERS, instVelocity, instAccel);
 	}
 	
 	/**{@inheritDoc}*/
@@ -309,21 +310,21 @@ public  class  RBSMNode extends SerialNode {
 		@Override
 		protected boolean startDecoratorNode() {
 			//Initialize subscribers to commanded angle and brakes state
-			new Subscriber(NodeChannel.DRIVE_CTRL.getMsgPath(),
+			new Subscriber("rbsm", NodeChannel.DRIVE_CTRL.getMsgPath(),
 					new MessageListener() {
 				@Override
 				public void actionPerformed(String topicName, Message m) {
 					commandedAngle = -((DriveControlMessage)m).getAngleInt();
 				}
 			});
-			new Subscriber(NodeChannel.BRAKE_CTRL.getMsgPath(),
+			new Subscriber("rbsm", NodeChannel.BRAKE_CTRL.getMsgPath(),
 					new MessageListener() {
 				@Override
 				public void actionPerformed(String topicName, Message m) {
 					commandedBrakeEngaged = ((BrakeControlMessage)m).isBrakeEngaged();
 				}
 			});
-			new Subscriber(NodeChannel.ENCODER_RESET.getMsgPath(), new MessageListener() {
+			new Subscriber("rbsm", NodeChannel.ENCODER_RESET.getMsgPath(), new MessageListener() {
 				@Override
 				public void actionPerformed(String topicName, Message m) {
 					byte[] message = new byte[6];

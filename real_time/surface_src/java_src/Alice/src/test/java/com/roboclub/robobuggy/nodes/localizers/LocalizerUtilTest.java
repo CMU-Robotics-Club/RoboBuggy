@@ -14,40 +14,46 @@ import static org.junit.Assert.assertEquals;
  */
 public class LocalizerUtilTest {
 
-    private static final double latPittsburgh = 40.440310;
-    private static final double lonPittsburgh = -79.9471537;
-    private static final double calcedDistOneDegMeters = 84721.0;
+    private static final double LAT_PITTSBURGH = 40.440310;
+    private static final double LON_PITTSBURGH = -79.9471537;
+    private static final double CALCED_DIST_ONE_DEG_METERS = 84721.0;
 
     // the distance in meters for 1˚ up and 1˚ right
-    private static final double diagDistMeters = 139505.0;
+    private static final double DIAG_DIST_METERS = 139505.0;
 
     private static final double FEET_TO_METERS = 0.3048;
 
+    /**
+     * tests to see whether the util can convert latlng to meters
+     */
     @Test
-    public void test_convertLatLngDeltaToMeters() throws Exception {
+    public void testConvertLatLngDeltaToMeters() {
 
-        LocTuple pitt = new LocTuple(latPittsburgh, lonPittsburgh);
-        LocTuple oneLonRight = new LocTuple(latPittsburgh, lonPittsburgh + 1);
-        LocTuple diagonalRightAndUp = new LocTuple(latPittsburgh + 1, lonPittsburgh + 1);
+        LocTuple pitt = new LocTuple(LAT_PITTSBURGH, LON_PITTSBURGH);
+        LocTuple oneLonRight = new LocTuple(LAT_PITTSBURGH, LON_PITTSBURGH + 1);
+        LocTuple diagonalRightAndUp = new LocTuple(LAT_PITTSBURGH + 1, LON_PITTSBURGH + 1);
 
         // one to the right
         Map.Entry<Double, Double> deltaAndHeading = LocalizerUtil.convertLatLngDeltaToMeters(pitt, oneLonRight);
 
-        assertEquals(deltaAndHeading.getKey(), calcedDistOneDegMeters, 500);
+        assertEquals(deltaAndHeading.getKey(), CALCED_DIST_ONE_DEG_METERS, 500);
         assertEquals(deltaAndHeading.getValue(), 0.0, 0.0000001);
 
         // one right and one up
         deltaAndHeading = LocalizerUtil.convertLatLngDeltaToMeters(pitt, diagonalRightAndUp);
 
-        assertEquals(diagDistMeters, deltaAndHeading.getKey(), 500);
+        assertEquals(DIAG_DIST_METERS, deltaAndHeading.getKey(), 500);
         assertEquals(PI/4, deltaAndHeading.getValue(), 0.01);
 
     }
 
+    /**
+     * tests to see whether we can convert meters to latlng
+     */
     @Test
-    public void test_convertMetersToLatLng() throws Exception {
+    public void testConvertMetersToLatLng() {
 
-        LocTuple deltaPos = LocalizerUtil.convertMetersToLatLng(calcedDistOneDegMeters, 0.0);
+        LocTuple deltaPos = LocalizerUtil.convertMetersToLatLng(CALCED_DIST_ONE_DEG_METERS, 0.0);
 
         assertEquals(0.0, deltaPos.getLatitude(), 0.00001);
         assertEquals(1.0, deltaPos.getLongitude(), 0.00005);

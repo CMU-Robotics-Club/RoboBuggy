@@ -10,12 +10,12 @@ public class LocTuple {
 	
 	/**
 	 * Construct a new {@link LocTuple}
-	 * @param x latitude
-	 * @param y longitude
+	 * @param latitude latitude
+	 * @param longitude longitude
 	 */
-	public LocTuple(double x, double y){
-		this.latitude = x;
-		this.longitude = y;
+	public LocTuple(double latitude, double longitude){
+		this.latitude = latitude;
+		this.longitude = longitude;
 	}
 	
 	/**

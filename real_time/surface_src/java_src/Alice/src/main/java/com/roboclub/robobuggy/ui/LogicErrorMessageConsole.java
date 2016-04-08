@@ -160,7 +160,7 @@ public class LogicErrorMessageConsole extends RobobuggyGUIContainer{
 		messages.setText("this is where user defined messages will go\n");
 
 		// Subscriber for LogicException updates
-		new Subscriber(NodeChannel.LOGIC_NOTIFICATION.getMsgPath(), new MessageListener() {
+		new Subscriber("uiLogicErrorConsole", NodeChannel.LOGIC_NOTIFICATION.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				RobobuggyLogicNotificationMeasurement msg = (RobobuggyLogicNotificationMeasurement)m;

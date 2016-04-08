@@ -1,9 +1,10 @@
 package com.roboclub.robobuggy.nodes.localizers;
 
+import com.roboclub.robobuggy.main.Util;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
-import com.roboclub.robobuggy.messages.MagneticMeasurement;
+import com.roboclub.robobuggy.messages.IMUAngularPositionMessage;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.Node;
@@ -26,10 +27,7 @@ public class HighTrustGPSLocalizer implements Node{
     private double buggyFrameRotZ;
     private Date mostRecentUpdate;
     private double lastEncoderReading;
-    //private double roll = 0;
-    //private double pitch = 0;
 
-    private static final double FEET_TO_METERS = 0.3048;
 
     private Publisher posePub;
 
@@ -47,7 +45,7 @@ public class HighTrustGPSLocalizer implements Node{
 
 
         //Initialize subscriber to GPS measurements
-        new Subscriber(NodeChannel.GPS.getMsgPath(), new MessageListener() {
+        new Subscriber("htGpsLoc", NodeChannel.GPS.getMsgPath(), new MessageListener() {
             @Override
             public void actionPerformed(String topicName, Message m) {
                 GpsMeasurement newGPSData = (GpsMeasurement)m;
@@ -56,17 +54,17 @@ public class HighTrustGPSLocalizer implements Node{
                     if(dt > 0.0){
                           // Get the delta latitude and longitude, use that to figure out how far we've travelled
 
-   //             double oldGPSX = buggyFrameGpsX;
-   //             double oldGPSY = buggyFrameGpsY;
+//               double oldGPSX = buggyFrameGpsX;
+//                 double oldGPSY = buggyFrameGpsY;
                 	buggyFrameGpsY = newGPSData.getLatitude();
                 	buggyFrameGpsX = newGPSData.getLongitude();
-   //             double dLat = buggyFrameGpsY - oldGPSY;
-   //             double dLon = buggyFrameGpsX - oldGPSX;
+    //            double dLat = buggyFrameGpsY - oldGPSY;
+    //            double dLon = buggyFrameGpsX - oldGPSX;
                 
     //            double oldRotZ = buggyFrameRotZ;
 
                 // take the arctangent in order to get the heading (in degrees)
- //               buggyFrameRotZ = Math.toDegrees(Math.atan2(dLat, -dLon));
+         //     buggyFrameRotZ = Math.toDegrees(Math.atan2(dLat, dLon));
 
                         publishUpdate();
                         mostRecentUpdate = newGPSData.getTimestamp();
@@ -75,22 +73,21 @@ public class HighTrustGPSLocalizer implements Node{
             }
         });
 
-        new Subscriber(NodeChannel.IMU_MAGNETIC.getMsgPath(),new MessageListener() {
-            @Override
-            public void actionPerformed(String topicName, Message m) {
-                MagneticMeasurement magM = (MagneticMeasurement)m;
-                double currAngle = magM.getRotationZ();
-                double offset = 0.0;
-                buggyFrameRotZ = currAngle - offset;
-                publishUpdate();
-                //TODO add a calibration step
-            }
-        });
+        
+        new Subscriber("HighTrustGpsLoc",NodeChannel.IMU_ANG_POS.getMsgPath(), ((topicName, m) -> {
+            IMUAngularPositionMessage mes = ((IMUAngularPositionMessage) m);
+            double y = mes.getRot()[0][1];
+            double x = mes.getRot()[0][0];
+            
+          buggyFrameRotZ = Util.normalizeAngleDeg(-Math.toDegrees(Math.atan2(y, x))+90);
+            
+           publishUpdate();
+        }));
 
-
+        
         // TODO note that we will probably run into precision errors since the changes are so small
         // would be good to batch up the encoder updates until we get a margin that we know can be represented proeprly
-        new Subscriber(NodeChannel.ENCODER.getMsgPath(), new MessageListener() {
+        new Subscriber("htGpsLoc", NodeChannel.ENCODER.getMsgPath(), new MessageListener() {
             @Override
             public void actionPerformed(String topicName, Message m) {
 
@@ -99,9 +96,8 @@ public class HighTrustGPSLocalizer implements Node{
                 // convert the feet from the last message into a delta degree, and update our position
                 double currentEncoderMeasurement = measurement.getDistance();
                 double deltaDistance = currentEncoderMeasurement - lastEncoderReading;
-                double deltaMeters = deltaDistance * FEET_TO_METERS;
 
-                LocTuple deltaPos = LocalizerUtil.convertMetersToLatLng(deltaMeters, buggyFrameRotZ);
+                LocTuple deltaPos = LocalizerUtil.convertMetersToLatLng(deltaDistance, buggyFrameRotZ);
                 buggyFrameGpsY += deltaPos.getLatitude();
                 buggyFrameGpsX += deltaPos.getLongitude();
 

@@ -102,7 +102,7 @@ public class LoggingNode extends BuggyDecoratorNode {
      * Starts the logging process
      */
     private void setupLoggingTrigger() {
-        new Subscriber(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath(), new MessageListener() {
+        new Subscriber("log", NodeChannel.GUI_LOGGING_BUTTON.getMsgPath(), new MessageListener() {
             @Override
             public void actionPerformed(String topicName, Message m) {
 
@@ -151,7 +151,7 @@ public class LoggingNode extends BuggyDecoratorNode {
      */
     private void setupSubscriberList() {
         for (NodeChannel filter : filters) {
-            new Subscriber(filter.getMsgPath(), new MessageListener() {
+            new Subscriber("log", filter.getMsgPath(), new MessageListener() {
                 @Override
                 public void actionPerformed(String topicName, Message m) {
                     messageQueue.add(m);
@@ -217,7 +217,7 @@ public class LoggingNode extends BuggyDecoratorNode {
     protected boolean startDecoratorNode() {
         loggingButtonPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
 
-        new Subscriber(Gui.GuiPubSubTopics.GUI_LOG_BUTTON_UPDATED.toString(), new MessageListener() {
+        new Subscriber("log", Gui.GuiPubSubTopics.GUI_LOG_BUTTON_UPDATED.toString(), new MessageListener() {
             @Override
             public void actionPerformed(String topicName, Message m) {
                 loggingButtonPub.publish(m);

@@ -3,6 +3,7 @@ package com.roboclub.robobuggy.robots;
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
+import com.roboclub.robobuggy.nodes.localizers.HighTrustGPSLocalizer;
 import com.roboclub.robobuggy.nodes.sensors.CameraNode;
 import com.roboclub.robobuggy.nodes.sensors.GpsNode;
 import com.roboclub.robobuggy.nodes.sensors.HillCrestImuNode;
@@ -14,10 +15,10 @@ import com.roboclub.robobuggy.ui.Gui;
 import com.roboclub.robobuggy.ui.ImuPanel;
 import com.roboclub.robobuggy.ui.ImuVisualWindow;
 import com.roboclub.robobuggy.ui.MainGuiWindow;
+import com.roboclub.robobuggy.ui.PathPanel;
 import com.roboclub.robobuggy.ui.PoseGraphsPanel;
 import com.roboclub.robobuggy.ui.RobobuggyGUITabs;
 import com.roboclub.robobuggy.ui.RobobuggyJFrame;
-import com.roboclub.robobuggy.ui.VelocityWindow;
 
 /**
  * A robot class for doing data collection only with the live robot, will not attempt to autonomously drive 
@@ -57,6 +58,7 @@ public final class TransistorDataCollection extends AbstractRobot {
 				RobobuggyConfigFile.RBSM_COMMAND_PERIOD));
 		nodeList.add(new CameraNode(NodeChannel.PUSHBAR_CAMERA, 100));
 		nodeList.add(new HillCrestImuNode());
+		nodeList.add(new HighTrustGPSLocalizer());
 
 		//setup the gui 
 		RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow",1.0,1.0);	
@@ -65,9 +67,9 @@ public final class TransistorDataCollection extends AbstractRobot {
 		mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
 		tabs.addTab(new MainGuiWindow(), "Home");
 		tabs.addTab(new ImuVisualWindow(), "IMU");
-		tabs.addTab(new VelocityWindow(), "Velocity");
 		tabs.addTab(new PoseGraphsPanel(),"poses");
 		tabs.addTab(new ImuPanel(),"IMU");
+		tabs.addTab(new PathPanel(),"Path Panel");
 		tabs.addTab(new ConfigurationPanel(),"Configuration");
 
 	}

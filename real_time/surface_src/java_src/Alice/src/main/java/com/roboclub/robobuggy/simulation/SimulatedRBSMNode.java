@@ -45,7 +45,7 @@ public class SimulatedRBSMNode extends PeriodicNode{
 		
 		//changes the angle that we are attempting to drive at based on the commanded angle messages we are getting 
 		//Initialize subscribers to commanded angle and brakes state
-		new Subscriber(NodeChannel.DRIVE_CTRL.getMsgPath(),
+		new Subscriber("simRbsmNode", NodeChannel.DRIVE_CTRL.getMsgPath(),
 				new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
@@ -53,12 +53,15 @@ public class SimulatedRBSMNode extends PeriodicNode{
 			}
 		});
 		
-		new Subscriber(NodeChannel.BRAKE_CTRL.getMsgPath(),
+		new Subscriber("simRbsmNode", NodeChannel.BRAKE_CTRL.getMsgPath(),
 				new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				commandedBrakeEngaged = ((BrakeControlMessage)m).isBrakeEngaged();
 				simBuggy.setBrakesDown(commandedBrakeEngaged);
+				
+				
+				
 			}
 		});
 		resume();//needed to start the node
