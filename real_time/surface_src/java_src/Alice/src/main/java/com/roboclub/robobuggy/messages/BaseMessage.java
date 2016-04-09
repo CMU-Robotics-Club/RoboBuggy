@@ -15,7 +15,7 @@ import java.util.Date;
 public abstract class BaseMessage implements Message {
 	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
 	protected long timestamp;
-    private String topicName;
+    	private String topicName;
 	private long sequenceNumber = -1;
 
 	/**
