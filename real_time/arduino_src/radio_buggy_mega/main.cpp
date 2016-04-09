@@ -126,12 +126,12 @@
 #define STEERING_CENTER_PORT PORTH
 #define STEERING_CENTER_PIN  PINH
 #define STEERING_CENTER_PINN PH3
-#define STEERING_CENTER_SEARCH_V 5000 // hundredths of deg/s
+#define STEERING_CENTER_SEARCH_V 800 // hundredths of deg/s
 
 #define WDT_INT WDT_vect
 
 //Uncomment the line below for testing. Otherwise leave commented out
-#define DEBUG
+// #define DEBUG
 
 #ifdef DEBUG
     #define dbg_printf(...) printf(__VA_ARGS__)
