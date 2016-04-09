@@ -21,7 +21,7 @@ import java.awt.Graphics;
 public class GpsPanel extends JPanel {
 	
 	private static final long serialVersionUID = 42L;
-	
+
 	private double theta = 0;
 	private MapPolygonImpl directionLine;
 	
@@ -82,9 +82,8 @@ public class GpsPanel extends JPanel {
 
 			}
 		});
-		
+
 		new Subscriber("uiGpsPanel", NodeChannel.POSE.getMsgPath(), new MessageListener() {
-			
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				GPSPoseMessage curpose = (GPSPoseMessage) m;
@@ -98,7 +97,6 @@ public class GpsPanel extends JPanel {
 		map.repaint();
 
 	}
-
 
 	@Override
 	protected void paintComponent(Graphics g) {

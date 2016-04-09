@@ -3,6 +3,7 @@ package com.roboclub.robobuggy.main;
 import com.roboclub.robobuggy.robots.AbstractRobot;
 import com.roboclub.robobuggy.robots.SimRobot;
 import com.roboclub.robobuggy.robots.TransistorDataCollection;
+import com.roboclub.robobuggy.simulation.SensorPlayer;
 import com.roboclub.robobuggy.ui.Gui;
 import com.roboclub.robobuggy.utilities.JNISetup;
 
@@ -33,6 +34,8 @@ public class RobobuggyMainFile {
 
 		new RobobuggyLogicNotification("Initializing GUI", RobobuggyMessageLevel.NOTE);
         Gui.getInstance();
+        new RobobuggyLogicNotification("Robobuggy Logic Notfication started", RobobuggyMessageLevel.NOTE);
+
 
 
 		new RobobuggyLogicNotification("Starting Robot", RobobuggyMessageLevel.NOTE);

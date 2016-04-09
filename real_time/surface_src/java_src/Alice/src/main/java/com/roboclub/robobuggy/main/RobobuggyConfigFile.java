@@ -46,8 +46,8 @@ public final class  RobobuggyConfigFile {
 	private static double playBackSpeed = 1.0;
 
 	//sensor com ports
-	private static String comPortImu  = "NOT_SET";
-	private static String comPortGps  = "NOT_SET";
+	private static String comPortImu = "NOT_SET";
+	private static String comPortGps = "NOT_SET";
 	private static String comPortRBSM = "NOT_SET";
 	private static String portVision = "NOT_SET";
 

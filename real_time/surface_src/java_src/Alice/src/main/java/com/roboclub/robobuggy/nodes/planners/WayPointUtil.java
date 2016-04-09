@@ -15,10 +15,8 @@ import com.roboclub.robobuggy.simulation.PlayBackUtil;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,7 +47,7 @@ public class WayPointUtil {
 			if (nextline.equals("")) {
 				break;
 			}
-			waypoints.add(translator.fromJson(nextline, GpsMeasurement.class));
+			waypoints.add(((GpsMeasurement) translator.fromJson(nextline, GpsMeasurement.class)));
 		}
 		
 		fileReader.close();
@@ -100,27 +98,27 @@ public class WayPointUtil {
 	/**
 	 * also places a log file just filled with waypoints
 	 * @param folder the folder name
-	 * @param filename the log file name
+	 * @param filepath the log file name
 	 * @return waypoint list
 	 * @throws IOException we couldn't find the file or folder
 	 */
-	public static ArrayList createWayPointsFromLog(String folder, String filename) throws IOException {
+	public static ArrayList<GpsMeasurement> createWayPointsFromLog(String folder, String filepath) throws IOException {
 			   
-				ArrayList messages = new ArrayList();
-				File outputFile = new File(folder + "/waypoints.txt");
-				if (!outputFile.createNewFile()) {
-					new RobobuggyLogicNotification("couldn't create file", RobobuggyMessageLevel.EXCEPTION);
-//					return null;
-				}
-				OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(outputFile), "UTF-8");
+				ArrayList<GpsMeasurement> messages = new ArrayList<>();
+//				File outputFile = new File(folder + "/waypoints.txt");
+//				if (!outputFile.createNewFile()) {
+//					new RobobuggyLogicNotification("couldn't create file", RobobuggyMessageLevel.EXCEPTION);
+//					return messages;
+//				}
+//				OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(outputFile), "UTF-8");
 
 				Gson translator = new GsonBuilder().serializeSpecialFloatingPointValues().create();
-	            InputStreamReader fileReader = new InputStreamReader(new FileInputStream(new File(folder + "/" + filename)), "UTF-8");
+	            InputStreamReader fileReader = new InputStreamReader(new FileInputStream(new File(filepath)), "UTF-8");
 	            JsonObject logFile = translator.fromJson(fileReader, JsonObject.class);
 
 	            if(!PlayBackUtil.validateLogFileMetadata(logFile)) {
 	                new RobobuggyLogicNotification("Log file doesn't have the proper header metadata!", RobobuggyMessageLevel.EXCEPTION);
-					writer.close();
+//					writer.close();
 					fileReader.close();
 	                return messages;
 	            }
@@ -135,9 +133,9 @@ public class WayPointUtil {
 
 	                    switch (versionID) {
 	                        case GpsMeasurement.VERSION_ID:
-	                        	Message transmitMessage = translator.fromJson(sensorDataJson, GpsMeasurement.class);
+	                        	GpsMeasurement transmitMessage = (GpsMeasurement) translator.fromJson(sensorDataJson, GpsMeasurement.class);
 	                            messages.add(transmitMessage);
-								writer.write(sensorDataJson.toString() + "\n");
+//								writer.write(sensorDataJson.toString() + "\n");
 	                            break;
 							default:
 								break;
@@ -145,10 +143,10 @@ public class WayPointUtil {
 	                   }
 	                }//for loop
 
-			writer.flush();
-		writer.close();
+//		writer.flush();
+//		writer.close();
 		fileReader.close();
-	            return messages;
+		return messages;
 	}
 	
 
