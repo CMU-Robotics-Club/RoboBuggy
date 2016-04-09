@@ -1,30 +1,22 @@
-import static org.junit.Assert.fail;
+import com.roboclub.robobuggy.messages.GPSPoseMessage;
+import com.roboclub.robobuggy.nodes.localizers.LocalizerUtil;
 
-import java.util.ArrayList;
-import java.util.Date;
-
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
-import com.roboclub.robobuggy.messages.BatteryLevelMessage;
-import com.roboclub.robobuggy.messages.GPSPoseMessage;
-import com.roboclub.robobuggy.messages.GpsMeasurement;
-import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
-import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
+import java.util.Date;
+
+import static org.junit.Assert.fail;
 
 
+/**
+ *
+ */
 public class TestWayPointFollowerPlanner {
 
-	
-	@Before
-	public void setUp() throws Exception {
-	}
 
-	@After
-	public void tearDown() throws Exception {
-	}
-
+	/**
+	 * Tests the waypoint follower by giving it different poses
+	 */
 	@Test
 	public void test() {
 		GPSPoseMessage zeroPose = new GPSPoseMessage(new Date(), 0.0, 0.0, 0.0);
@@ -38,22 +30,23 @@ public class TestWayPointFollowerPlanner {
 			fail("distance function does not respect idenity");
 		}
 		
-		if(Math.abs(GPSPoseMessage.getDistance(zeroPose, onePose) - 1.0) > .001){
+		if(Math.abs(GPSPoseMessage.getDistance(zeroPose, onePose) - LocalizerUtil.convertLonToMeters(1.0)) > .001){
 			fail("distance function does not handle some input correctly ");
 		}
 		
-		if(Math.abs(GPSPoseMessage.getDistance(aPose, zeroPose) -  1.802) > .001){
+		if(Math.abs(GPSPoseMessage.getDistance(onePose, aPose) - LocalizerUtil.convertLatToMeters(1.5)) > .001){
 			fail("distance function does not handle some input correctly ");
 		}
 		
-		if(Math.abs(GPSPoseMessage.getDistance(onePose, aPose) - 1.5) > .001){
+		if(Math.abs(GPSPoseMessage.getDistance(onePose, negPose) - LocalizerUtil.convertLonToMeters(2.0)) > .001){
 			fail("distance function does not handle some input correctly ");
 		}
 		
-		if(Math.abs(GPSPoseMessage.getDistance(onePose, negPose) - 2.0) > .001){
+		double dx = LocalizerUtil.convertLonToMeters(1.0);
+		double dy = LocalizerUtil.convertLatToMeters(1.5);
+		if(Math.abs(GPSPoseMessage.getDistance(aPose, zeroPose) -  Math.sqrt(dx*dx+dy*dy)) > .001){
 			fail("distance function does not handle some input correctly ");
 		}
-		
 		
 		
 		}

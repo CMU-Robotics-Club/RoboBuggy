@@ -10,7 +10,6 @@ import com.roboclub.robobuggy.ros.Subscriber;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -52,7 +51,7 @@ public class ImuVisualPanel extends JPanel {
 		setup = false;
 		
 		
-		imuSub = new Subscriber(NodeChannel.IMU.getMsgPath(), new MessageListener() {
+		imuSub = new Subscriber("uiImu", NodeChannel.IMU.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				

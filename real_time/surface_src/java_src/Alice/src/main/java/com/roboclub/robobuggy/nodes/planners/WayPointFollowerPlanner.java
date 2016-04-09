@@ -1,8 +1,12 @@
 package com.roboclub.robobuggy.nodes.planners;
 
+import com.roboclub.robobuggy.main.Util;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
+import com.roboclub.robobuggy.nodes.localizers.LocalizerUtil;
 import com.roboclub.robobuggy.ros.NodeChannel;
+import com.roboclub.robobuggy.ui.AnalyticsPanel;
+import org.openstreetmap.gui.jmapviewer.MapMarkerDot;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,7 +21,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 	/**
 	 * @param wayPoints the list of waypoints to follow
 	 */
-	public WayPointFollowerPlanner(ArrayList wayPoints) {
+	public WayPointFollowerPlanner(ArrayList<GpsMeasurement> wayPoints) {
 		super(NodeChannel.PATH_PLANNER);
 		this.wayPoints = wayPoints;
 		pose = new GPSPoseMessage(new Date(0), 0, 0, 0);// temp measurment
@@ -52,15 +56,13 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 			return 17433504; //A dummy value that we can never get
 		}
 
-		double delta = 10; //10/100000.0;
+		double delta = 10/100000.0; //10/100000.0;
 		//pick the first point that is at least delta away
 		//pick the point to follow
-		int targetIndex = closestIndex;
-		while(GPSPoseMessage.getDistance(pose,wayPoints.get(targetIndex).toGpsPoseMessage(0)) < delta){
-			targetIndex = targetIndex+1;
-		}
-
-
+		int targetIndex = closestIndex + 2; 
+//		while(GPSPoseMessage.getDistance(pose,wayPoints.get(targetIndex).toGpsPoseMessage(0)) < delta && targetIndex < wayPoints.size()){
+//			targetIndex = targetIndex+1;
+//		}
 
 		//if we are out of points then just go straight
 		if(targetIndex >= wayPoints.size())
@@ -70,32 +72,38 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 
 		GpsMeasurement targetPoint = wayPoints.get(targetIndex);
 
+		MapMarkerDot destPoint = new MapMarkerDot(targetPoint.getLatitude(), targetPoint.getLongitude());
+		AnalyticsPanel.getInstance().getDataPanel().getGpsPanel().setDestinationPoint(destPoint);
+
 		//find a path from our current location to that point
 		double dLon = targetPoint.getLongitude() - pose.getLongitude();
 		double dLat = targetPoint.getLatitude() - pose.getLatitude();
-		double desiredHeading = 180*Math.atan2(dLat, dLon)/Math.PI;
+		double desiredHeading = Math.toDegrees(Math.atan2(LocalizerUtil.convertLatToMeters(dLat), LocalizerUtil.convertLonToMeters(dLon)));
 
+		// basically we want all of our angles to be in the [0, 2pi) range, so that we don't
+		// have weird wraparound
+		desiredHeading = Util.normalizeAngleDeg(desiredHeading);
+		double poseHeading = Util.normalizeAngleDeg(pose.getHeading());
 
 		//find the angle we need to reach that point
 		//return pose.getHeading() - desiredHeading;
-		return  desiredHeading - pose.getHeading();
+		return Util.normalizeAngleDeg(desiredHeading - poseHeading);
 
 	}
 
 	@Override
 	protected boolean getDeployBrakeValue() {
-
+		return false;
+/*
 		int closestIndex = getClosestIndex(wayPoints,pose);
 		if(closestIndex == -1){
 			return true;
 		}
 
 		// if closest point is too far away throw breaks
-		if(GPSPoseMessage.getDistance(pose,wayPoints.get(closestIndex).toGpsPoseMessage(0)) < 1.0){
-			//if we are within 1 meter of any point then do not throw breaks
-			return false;
-		}
-		return true;
+		boolean shouldBrake =  GPSPoseMessage.getDistance(pose, wayPoints.get(closestIndex).toGpsPoseMessage(0)) >= 0.0001;
+		return shouldBrake;
+		*/
 	}
 
 

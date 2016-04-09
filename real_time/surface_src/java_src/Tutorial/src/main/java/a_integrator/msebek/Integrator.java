@@ -15,7 +15,7 @@ public class Integrator implements Node {
 	public Integrator() {
 		this.p = new Publisher("integratedValues");
 
-		this.s = new Subscriber("values", new MessageListener() {
+		this.s = new Subscriber("integrator", "values", new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				IntegerMessage im = (IntegerMessage) m;

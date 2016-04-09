@@ -10,7 +10,6 @@ import com.roboclub.robobuggy.ros.Subscriber;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -47,7 +46,7 @@ public class LocPanel extends JPanel {
 		}
 		setup = false;
 		
-		gpsSub = new Subscriber(NodeChannel.GPS.getMsgPath(), new MessageListener() {
+		gpsSub = new Subscriber("uiLoc", NodeChannel.GPS.getMsgPath(), new MessageListener() {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				double latitude = ((GpsMeasurement)m).getLatitude();

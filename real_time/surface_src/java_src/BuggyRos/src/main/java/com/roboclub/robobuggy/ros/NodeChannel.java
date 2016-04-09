@@ -7,10 +7,10 @@ public enum NodeChannel {
 	GPS("gps", true),    								//The most recent gps coordinate
 	IMU("imu", true),									//The most recent imu measurement
 	IMU_MAGNETIC("mag", true),
+	HILL_CREST_IMU("hill_crest_imu",true),
 	RC("rc_angle", true),								//?
 	STEERING("steering", true),						//The current angle that low level is steering to
 	PUSHBAR_CAMERA("push_bar_camera", true),
-	BRAKE("brake", true),
 	LOGIC_NOTIFICATION("logic_notification", true),
 	DRIVE_CTRL("drive_ctrl", true),
 	BRAKE_CTRL("commanded brake", true),
@@ -21,20 +21,25 @@ public enum NodeChannel {
 	STEERING_COMMANDED("commanded_steering", true),   // the angle that we are commanding the front wheel turn to
 	FP_HASH("fp_hash", true),
 	POSE("pose", true),
-	SIM_POSE("sim_pose",true),  //reperesents the hiddenn simulated ground truth 
+	SIM_POSE("sim_pose",true),  //represents the hidden simulated ground truth 
 	RESET("reset", true),
 	STATE("state", true),
 	SIMULATION("simulation", true),
 	NODE_STATUS("node_status", false),
 	PATH_PLANNER("path_planner", true),
 	BATTERY("battery", true),
-	ENCODERTIME("encoder_time", true),
+	MEGATIME("mega_time", true),
 	DEVICE_ID("device_id", true),
 	BRAKE_STATE("brake_state", true),
 	AUTON_STATE("auton_state", true),
 	ENCODER_RESET("encoder_reset", true),
 	AUTON_BRAKE_STATE("auton_brake_state", true),
 	TELEOP_BRAKE_STATE("teleop_brake_state", true),
+	IMU_LINEAR_ACC("imu_linear_acc", true),
+	IMU_LINEAR_NO_GRAV("imu_linear_no_grav", true),
+	IMU_ANG_VEL("imu_ang_vel", true),
+	IMU_TEMP("imu_temp", true),
+	IMU_ANG_POS("imu_ang_pos", true),
 	UNKNOWN_CHANNEL("unknown", false),
 	;
 	

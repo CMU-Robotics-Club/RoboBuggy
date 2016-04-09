@@ -2,6 +2,7 @@ package com.roboclub.robobuggy.nodes.sensors;
 
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
+import com.roboclub.robobuggy.messages.AutonBrakeStateMessage;
 import com.roboclub.robobuggy.messages.AutonStateMessage;
 import com.roboclub.robobuggy.messages.BatteryLevelMessage;
 import com.roboclub.robobuggy.messages.BrakeControlMessage;
@@ -9,12 +10,11 @@ import com.roboclub.robobuggy.messages.BrakeStateMessage;
 import com.roboclub.robobuggy.messages.DeviceIDMessage;
 import com.roboclub.robobuggy.messages.DriveControlMessage;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
-import com.roboclub.robobuggy.messages.EncoderTimeMessage;
+import com.roboclub.robobuggy.messages.MegaTimeMessage;
 import com.roboclub.robobuggy.messages.FingerPrintMessage;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.messages.TeleopBrakeStateMessage;
-import com.roboclub.robobuggy.messages.AutonBrakeStateMessage;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.NodeState;
 import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
@@ -57,6 +57,7 @@ public  class  RBSMNode extends SerialNode {
 	private static final double ARD_TO_DEG = 1;
 	/** Steering Angle offset?? */
 	private static final double OFFSET = 0;
+    private static final double FEET_TO_METERS = 0.3048;
 
 	// accumulated
 	private int encTicks = 0;
@@ -107,7 +108,7 @@ public  class  RBSMNode extends SerialNode {
 		
 		messagePubBat = new Publisher(NodeChannel.BATTERY.getMsgPath());
 		
-		messagePubEncTime = new Publisher(NodeChannel.ENCODERTIME.getMsgPath());
+		messagePubEncTime = new Publisher(NodeChannel.MEGATIME.getMsgPath());
 		
 		messagePubDeviceID = new Publisher(NodeChannel.DEVICE_ID.getMsgPath());
 		messagePubAutonState = new Publisher(NodeChannel.AUTON_STATE.getMsgPath());
@@ -142,7 +143,7 @@ public  class  RBSMNode extends SerialNode {
 		instVelocityLast = instVelocity;
 		timeLast = currTime;
 		
-		return new EncoderMeasurement(currTime, dataWord, accDist, instVelocity, instAccel);
+		return new EncoderMeasurement(currTime, dataWord, accDist * FEET_TO_METERS, instVelocity, instAccel);
 	}
 	
 	/**{@inheritDoc}*/
@@ -211,8 +212,8 @@ public  class  RBSMNode extends SerialNode {
 		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_ENC_RESET_CONFIRM")) {
 			new RobobuggyLogicNotification("Encoder Reset Confirmed by Zoe", RobobuggyMessageLevel.NOTE);
 		}
-		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_ENC_TIMESTAMP")){
-			messagePubEncTime.publish(new EncoderTimeMessage(message.getDataWord()));
+		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_TIMESTAMP")){
+			messagePubEncTime.publish(new MegaTimeMessage(message.getDataWord()));
 		}
 		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_STEER_FEEDBACK")) {
 			potValue = message.getDataWord();
@@ -232,7 +233,13 @@ public  class  RBSMNode extends SerialNode {
 			messagePubDeviceID.publish(new DeviceIDMessage(message.getDataWord()));
 		}
 		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_BRAKE_STATE")){
-			messagePubBrakeState.publish(new BrakeStateMessage(message.getDataWord()));
+			boolean brakesDown = false;
+
+			if (message.getDataWord() == 1) {
+				brakesDown = true;
+			}
+
+			messagePubBrakeState.publish(new BrakeStateMessage(brakesDown));
 		}
 		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_AUTON_STATE")){
 			messagePubAutonState.publish(new AutonStateMessage(message.getDataWord()));
@@ -275,7 +282,8 @@ public  class  RBSMNode extends SerialNode {
 		 * @param channel of the RSBM node
 		 */
 		RBSMPeriodicNode(NodeChannel channel, int period) {
-			super(new BuggyBaseNode(channel), period);
+			super(new BuggyBaseNode(channel), period,"RBSM_Periodic_Node");
+			resume();
 		}
 
 		/**
@@ -302,30 +310,30 @@ public  class  RBSMNode extends SerialNode {
 		@Override
 		protected boolean startDecoratorNode() {
 			//Initialize subscribers to commanded angle and brakes state
-			new Subscriber(NodeChannel.DRIVE_CTRL.getMsgPath(),
+			new Subscriber("rbsm", NodeChannel.DRIVE_CTRL.getMsgPath(),
 					new MessageListener() {
 				@Override
 				public void actionPerformed(String topicName, Message m) {
-					commandedAngle = ((DriveControlMessage)m).getAngleInt();
+					commandedAngle = -((DriveControlMessage)m).getAngleInt();
 				}
 			});
-			new Subscriber(NodeChannel.BRAKE_CTRL.getMsgPath(),
+			new Subscriber("rbsm", NodeChannel.BRAKE_CTRL.getMsgPath(),
 					new MessageListener() {
 				@Override
 				public void actionPerformed(String topicName, Message m) {
 					commandedBrakeEngaged = ((BrakeControlMessage)m).isBrakeEngaged();
 				}
 			});
-			new Subscriber(NodeChannel.ENCODER_RESET.getMsgPath(), new MessageListener() {
+			new Subscriber("rbsm", NodeChannel.ENCODER_RESET.getMsgPath(), new MessageListener() {
 				@Override
 				public void actionPerformed(String topicName, Message m) {
 					byte[] message = new byte[6];
-					message[0] = (byte)RBSerialMessage.getHeaderByte("RBSM_MID_ENC_RESET_REQUEST"); //Reset request header
+					message[0] = RBSerialMessage.getHeaderByte("RBSM_MID_ENC_RESET_REQUEST"); //Reset request header
 					message[1] = 0;
 					message[2] = 0;
 					message[3] = 0;
 					message[4] = 0;
-					message[5] = (byte)RBSerialMessage.getHeaderByte("FOOTER");
+					message[5] = RBSerialMessage.getHeaderByte("FOOTER");
 					send(message);
 				}
 				

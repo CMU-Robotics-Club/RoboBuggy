@@ -7,7 +7,7 @@ import com.roboclub.robobuggy.ros.Subscriber;
 
 public class RollingAverageSink implements Node {
 
-	Subscriber s = new Subscriber("rollingAverageValues", new MessageListener() {
+	Subscriber s = new Subscriber("rollingAverageSink","rollingAverageValues", new MessageListener() {
 		@Override
 		public void actionPerformed(String topicName, Message m) {
 			// Cast m to the correct message type. If this cast fails, an exception is thrown.

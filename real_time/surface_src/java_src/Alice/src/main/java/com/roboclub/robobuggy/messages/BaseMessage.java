@@ -15,12 +15,34 @@ import java.util.Date;
 public abstract class BaseMessage implements Message {
 	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
 	protected long timestamp;
+    	private String topicName;
+	private long sequenceNumber = -1;
 
 	/**
 	 * sets the date of the message to the current time
 	 */
 	public BaseMessage() {
 		timestamp = new Date().getTime();
+	}
+
+	/**
+	 * Publishers number their messages, increasing one each time.
+	 * If a message is dropped, then the subscriber will know if they keep
+	 * track of the current sequence number.
+	 * @return sequence number of the current message
+	 */
+	public long getSequenceNumber() {
+		return sequenceNumber;
+	}
+
+	/**
+	 * Sets the sequence number of this message. 
+	 * This should only be called by Publisher; it will
+	 * be overwritten if anyone else writes to it.
+	 * @param sequenceNumber sequence number of the current message. Ignored if not called from publisher.java
+	 */
+	public void setSequenceNumber(long sequenceNumber) {
+		this.sequenceNumber = sequenceNumber;
 	}
 
 	/**
@@ -57,4 +79,21 @@ public abstract class BaseMessage implements Message {
 	public Date getTimestamp() {
 		return new Date(timestamp);
 	}
+
+    /**
+     * Sets the topic name that the message is on
+     * This allows us to know which topic a message came from; very useful for serialization
+     * @param topicName Topic to set the name to
+     */
+    public void setTopicName(String topicName) {
+        this.topicName = topicName;
+    }
+    
+    /**
+     * Gets the topic name for this message
+     * @return name of the current topic
+     */
+    public String getTopicName() {
+        return this.topicName;
+    }
 }

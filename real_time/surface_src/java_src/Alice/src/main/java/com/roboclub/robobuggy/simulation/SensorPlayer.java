@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.main.Util;
@@ -30,7 +31,6 @@ import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
-import com.roboclub.robobuggy.ui.Gui;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -70,7 +70,7 @@ public class SensorPlayer extends Thread {
         magPub = new Publisher(NodeChannel.IMU_MAGNETIC.getMsgPath());
         gpsPub = new Publisher(NodeChannel.GPS.getMsgPath());
         encoderPub = new Publisher(NodeChannel.ENCODER.getMsgPath());
-        brakePub = new Publisher(NodeChannel.BRAKE.getMsgPath());
+        brakePub = new Publisher(NodeChannel.BRAKE_STATE.getMsgPath());
         steeringPub = new Publisher(NodeChannel.STEERING_COMMANDED.getMsgPath());
         loggingButtonPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
         logicNotificationPub = new Publisher(NodeChannel.LOGIC_NOTIFICATION.getMsgPath());
@@ -93,7 +93,7 @@ public class SensorPlayer extends Thread {
      * Sets up the playback trigger - hitting the start button will go through 1 iteration of a log file
      */
     public void setupPlaybackTrigger() {
-        new Subscriber(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath(), new MessageListener() {
+        new Subscriber("playback", NodeChannel.GUI_LOGGING_BUTTON.getMsgPath(), new MessageListener() {
             @Override
             public synchronized void actionPerformed(String topicName, Message m) {
                 GuiLoggingButtonMessage message = (GuiLoggingButtonMessage)m;
@@ -279,6 +279,6 @@ public class SensorPlayer extends Thread {
      * gets the new playback speed from the GUI and puts it into playbackSpeed
      */
     public void getNewPlaybackSpeed() {
-        playbackSpeed = Gui.getInstance().getMainGuiWindow().getCtrlPanel().getLoggingPanel().getPlaybackSpeed();
+    	playbackSpeed = RobobuggyConfigFile.getPlayBackSpeed();
     }
 }
