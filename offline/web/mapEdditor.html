@@ -155,7 +155,7 @@
 
         // Setup the click event listeners: simply set the map to Chicago.
         controlUI.addEventListener('click', function() {
-          addMarkerAt(40.440225,-79.9448904,markers.length);
+          addMarkerAt(map.getCenter().lat(),map.getCenter().lng(),markers.length);
           updatePathLine();
         });
 
@@ -228,7 +228,7 @@
       function addNewMarkerAt(i,diff){
           index = markers.indexOf(marker_lookup[i]);
 
-          addMarkerAt(40.440225,-79.9448904,index+diff);
+          addMarkerAt(map.getCenter().lat(),map.getCenter().lng(),index+diff);
 
       }
 
