@@ -56,13 +56,14 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 			return 17433504; //A dummy value that we can never get
 		}
 
-		double delta = 10/100000.0; //10/100000.0;
-		//pick the first point that is at least delta away
+		double delta = 20; // want a point that is 20 meters away
+		//pick the first point that is at least delta meters away
 		//pick the point to follow
-		int targetIndex = closestIndex + 2; 
-//		while(GPSPoseMessage.getDistance(pose,wayPoints.get(targetIndex).toGpsPoseMessage(0)) < delta && targetIndex < wayPoints.size()){
-//			targetIndex = targetIndex+1;
-//		}
+		int targetIndex = wayPoints.size();
+		
+		while(GPSPoseMessage.getDistance(pose,wayPoints.get(targetIndex).toGpsPoseMessage(0)) < delta && targetIndex < wayPoints.size()){
+			targetIndex = targetIndex+1;
+		}
 
 		//if we are out of points then just go straight
 		if(targetIndex >= wayPoints.size())
@@ -80,13 +81,12 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 		double dLat = targetPoint.getLatitude() - pose.getLatitude();
 		double desiredHeading = Math.toDegrees(Math.atan2(LocalizerUtil.convertLatToMeters(dLat), LocalizerUtil.convertLonToMeters(dLon)));
 
-		// basically we want all of our angles to be in the [0, 2pi) range, so that we don't
+		// basically we want all of our angles to be in the same range, so that we don't
 		// have weird wraparound
 		desiredHeading = Util.normalizeAngleDeg(desiredHeading);
 		double poseHeading = Util.normalizeAngleDeg(pose.getHeading());
 
 		//find the angle we need to reach that point
-		//return pose.getHeading() - desiredHeading;
 		return Util.normalizeAngleDeg(desiredHeading - poseHeading);
 
 	}
