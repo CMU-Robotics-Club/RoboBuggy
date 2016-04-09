@@ -56,6 +56,7 @@ public class MessageServer {
 				}
 				String topicName = request.getKey();
 				Message m = request.getValue();
+                		m.setTopicName(topicName);
 
 				outbox_lock.readLock().lock();
 				List<Subscriber> subs = outbox_mapping.get(topicName);
