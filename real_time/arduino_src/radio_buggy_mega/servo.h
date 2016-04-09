@@ -10,7 +10,7 @@ extern "C" {
 
 
 // library settings
-#define SERVO_REFRESH_US 20000L
+#define SERVO_REFRESH_US 5000L
 #define SERVO_MID_US 1500
 #define SERVO_MIN_US 544
 #define SERVO_MAX_US 2400

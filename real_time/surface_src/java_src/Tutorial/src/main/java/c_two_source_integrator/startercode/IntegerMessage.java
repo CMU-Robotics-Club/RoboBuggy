@@ -20,4 +20,16 @@ public class IntegerMessage implements Message {
 	public void setSequenceNumber(long sequenceNumber) {
 		this.sequenceNumber = sequenceNumber;
 	}
+
+    @Override
+    public void setTopicName(String name) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public String getTopicName() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }
