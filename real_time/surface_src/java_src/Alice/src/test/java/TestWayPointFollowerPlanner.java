@@ -1,6 +1,9 @@
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
+import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.nodes.localizers.LocalizerUtil;
+import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Date;
@@ -12,6 +15,8 @@ import static org.junit.Assert.fail;
  *
  */
 public class TestWayPointFollowerPlanner {
+
+	WayPointFollowerPlanner planner;
 
 
 	/**
@@ -51,4 +56,12 @@ public class TestWayPointFollowerPlanner {
 		
 		}
 
+	@Test
+	public void testGotoWaypoint10meters() {
+		GpsMeasurement currentPos = new GpsMeasurement(0, 0);
+		
+		double deltaLat = LocalizerUtil.convertMetersToLat(10);
+		
 	}
+	
+}
