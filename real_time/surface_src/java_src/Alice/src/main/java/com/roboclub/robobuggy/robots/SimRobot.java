@@ -53,17 +53,12 @@ public final class SimRobot extends AbstractRobot{
 		nodeList.add(new SimulatedImuNode(100));
 		nodeList.add(new SimulatedGPSNode(500));
 		nodeList.add(new SimulatedRBSMNode());
-	/*	ArrayList<GpsMeasurement> wayPoints = new ArrayList<GpsMeasurement>();
-		for(int i = 0;i<100;i++){
-			wayPoints.add(new GpsMeasurement(0,-i));
-		}
-		*/
+		
 		try {
 			ArrayList<GpsMeasurement> wayPoints =
 					WayPointUtil.createWayPointsFromWaypointList(RobobuggyConfigFile.getWaypointSourceLogFile());
 			nodeList.add(new WayPointFollowerPlanner(wayPoints));
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -93,7 +88,7 @@ public final class SimRobot extends AbstractRobot{
 		mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
 		tabs.addTab(new MainGuiWindow(), "Home");
 		tabs.addTab(new PoseGraphsPanel(),"poses");
-		tabs.addTab(new ImuPanel(),"IMU");
+		//tabs.addTab(new ImuPanel(),"IMU");
 		tabs.addTab(new AutonomousPanel(),"Autonomous");
 		tabs.addTab(new SimulationPanel(),"Simulation");
 		tabs.addTab(new PathPanel(),"Path Panel");

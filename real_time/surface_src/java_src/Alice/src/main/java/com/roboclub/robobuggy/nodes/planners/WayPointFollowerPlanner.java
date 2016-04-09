@@ -56,12 +56,14 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 			return 17433504; //A dummy value that we can never get
 		}
 
+		
 		double delta = 20; // want a point that is 20 meters away
 		//pick the first point that is at least delta meters away
 		//pick the point to follow
-		int targetIndex = wayPoints.size();
+		int targetIndex = closestIndex;
 		
-		while(GPSPoseMessage.getDistance(pose,wayPoints.get(targetIndex).toGpsPoseMessage(0)) < delta && targetIndex < wayPoints.size()){
+		while(targetIndex < wayPoints.size() && GPSPoseMessage.getDistance(pose,wayPoints.get(targetIndex).toGpsPoseMessage(0)) < delta ){
+			System.out.println(GPSPoseMessage.getDistance(pose,wayPoints.get(targetIndex).toGpsPoseMessage(0)));
 			targetIndex = targetIndex+1;
 		}
 
@@ -70,7 +72,8 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 		{
 			return 0;
 		}
-
+		
+			
 		GpsMeasurement targetPoint = wayPoints.get(targetIndex);
 
 		MapMarkerDot destPoint = new MapMarkerDot(targetPoint.getLatitude(), targetPoint.getLongitude());
@@ -93,17 +96,14 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 
 	@Override
 	protected boolean getDeployBrakeValue() {
-		return false;
-/*
 		int closestIndex = getClosestIndex(wayPoints,pose);
 		if(closestIndex == -1){
 			return true;
 		}
 
 		// if closest point is too far away throw breaks
-		boolean shouldBrake =  GPSPoseMessage.getDistance(pose, wayPoints.get(closestIndex).toGpsPoseMessage(0)) >= 0.0001;
+		boolean shouldBrake =  GPSPoseMessage.getDistance(pose, wayPoints.get(closestIndex).toGpsPoseMessage(0)) >= 5;
 		return shouldBrake;
-		*/
 	}
 
 
