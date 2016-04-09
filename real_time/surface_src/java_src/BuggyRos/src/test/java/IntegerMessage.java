@@ -21,4 +21,14 @@ public class IntegerMessage implements Message {
 		this.sequenceNumber = sequenceNumber;
 	}
 
+    @Override
+    public void setTopicName(String name) {
+        //autogen
+    }
+
+    @Override
+    public String getTopicName() {
+        return null;
+    }
+
 }

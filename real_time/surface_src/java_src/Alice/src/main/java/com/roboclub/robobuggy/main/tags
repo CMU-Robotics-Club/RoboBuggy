@@ -1,0 +1,7 @@
+!_TAG_FILE_SORTED	2	/0=unsorted, 1=sorted, 2=foldcase/
+com.roboclub.robobuggy.main	/home/mint/Documents/Roboclub/RoboBuggy/real_time/surface_src/java_src/Alice/src/main/java/com/roboclub/robobuggy/main/RobobuggyMainFile.java	/^package com.roboclub.robobuggy.main;$/;"	p	language:Java
+getCurrentRobot	/home/mint/Documents/Roboclub/RoboBuggy/real_time/surface_src/java_src/Alice/src/main/java/com/roboclub/robobuggy/main/RobobuggyMainFile.java	/^    public static AbstractRobot getCurrentRobot(){$/;"	m	language:Java	class:RobobuggyMainFile
+main	/home/mint/Documents/Roboclub/RoboBuggy/real_time/surface_src/java_src/Alice/src/main/java/com/roboclub/robobuggy/main/RobobuggyMainFile.java	/^    public static void main(String[] args) {$/;"	m	language:Java	class:RobobuggyMainFile
+resetSystem	/home/mint/Documents/Roboclub/RoboBuggy/real_time/surface_src/java_src/Alice/src/main/java/com/roboclub/robobuggy/main/RobobuggyMainFile.java	/^    public static void resetSystem(){$/;"	m	language:Java	class:RobobuggyMainFile
+RobobuggyMainFile	/home/mint/Documents/Roboclub/RoboBuggy/real_time/surface_src/java_src/Alice/src/main/java/com/roboclub/robobuggy/main/RobobuggyMainFile.java	/^public class RobobuggyMainFile {$/;"	c	language:Java
+robot	/home/mint/Documents/Roboclub/RoboBuggy/real_time/surface_src/java_src/Alice/src/main/java/com/roboclub/robobuggy/main/RobobuggyMainFile.java	/^	private static AbstractRobot robot;$/;"	f	language:Java	class:RobobuggyMainFile	file:

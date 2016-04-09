@@ -15,6 +15,7 @@ import java.util.Date;
 public abstract class BaseMessage implements Message {
 	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
 	protected long timestamp;
+    private String topicName;
 	private long sequenceNumber = -1;
 
 	/**
@@ -78,4 +79,21 @@ public abstract class BaseMessage implements Message {
 	public Date getTimestamp() {
 		return new Date(timestamp);
 	}
+
+    /**
+     * Sets the topic name that the message is on
+     * This allows us to know which topic a message came from; very useful for serialization
+     * @param topicName Topic to set the name to
+     */
+    public void setTopicName(String topicName) {
+        this.topicName = topicName;
+    }
+    
+    /**
+     * Gets the topic name for this message
+     * @return name of the current topic
+     */
+    public String getTopicName() {
+        return this.topicName;
+    }
 }
