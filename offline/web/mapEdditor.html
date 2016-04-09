@@ -138,7 +138,7 @@
 
         // Setup the click event listeners: simply set the map to Chicago.
         controlUI.addEventListener('click', function() {
-          addMarkerAt(40.440225,-79.9448904,markers.length-1);
+          addMarkerAt(40.440225,-79.9448904,markers.length);
           updatePathLine();
         });
 
@@ -149,7 +149,7 @@
         for(i = 0;i<markers.length;i++){
             var latlng = markers[i].getPosition();
             var out = {"VERSION_ID":"gpsV0.2","latitude":latlng.lat(),"longitude":latlng.lng()};
-            text = text+encodeURIComponent(JSON.stringify(out));
+            text = text+(JSON.stringify(out));
         }
 
    var filename = 'waypoints.txt';
@@ -177,19 +177,22 @@
         updatePathLine();
       }
 
-      function addNewMarkerAt(i){
-          addMarkerAt(40.440225,-79.9448904,i);
+      function addNewMarkerAt(i,diff){
+          index = markers.indexOf(marker_lookup[i]);
+
+          addMarkerAt(40.440225,-79.9448904,index+diff);
 
       }
 
       function addMarkerAt(lat,lng,i){
+
+
         marker = createMarker(lat,lng);
         markers.splice(i, 0, marker);
         updatePathLine();
       }
 
       function createMarker(lat,lng){   
-                  console.log("test:"+lat+","+lng);
 
         var marker = new google.maps.Marker({
             position:  {lat:lat,lng:lng},
@@ -197,7 +200,6 @@
             title: 'position',  //make the positon in the list 
             draggable:true,
             });
-            console.log("test2");
 
 
         marker.addListener('dragend',function(event) {
@@ -213,13 +215,24 @@
       }//addMarker
 
       function setMarkerPopUp(marker,i){
+
+
+          // basically we want to find the correct point to go to, and then base the adding off that
+          var index = i;
+          for (var q = 0; q < markers.length; q++) {
+              // the below check doesn't seem to work :(
+              if (markers[q].position.lat === marker.position.lat && markers[q].position.lng === marker.position.lng) {
+                  index = q;
+              }
+          }
+
       var contentString = '<div id="content">'+
         '<div id="siteNotice">'+
         '</div>'+
         '<div id="bodyContent">'+
-        '<p><a href="#" onClick="removeMarker('+i+')">'+'Remove Marker</a> '+
-        '<p><a href="#" onClick="addNewMarkerAt('+(i+1)+')">'+'Add Marker After</a> '+
-        '<p><a href="#" onClick="addNewMarkerAt('+i+')">'+'Add Marker Before</a> '+
+        '<p><a href="#" onClick="removeMarker('+index+')">'+'Remove Marker</a> '+
+        '<p><a href="#" onClick="addNewMarkerAt('+index+',+1)">'+'Add Marker After</a> '+
+        '<p><a href="#" onClick="addNewMarkerAt('+index +',0)">'+'Add Marker Before</a> '+
         '</div>'+
         '</div>';
         var infowindow = new google.maps.InfoWindow({
