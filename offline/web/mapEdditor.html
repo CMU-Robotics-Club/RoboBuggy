@@ -32,6 +32,21 @@
       var listeners = [];
       var pathLine;
 
+  function drawCircles(){
+    for(i = 0;i<markers.length;i++){
+    var circle = new google.maps.Circle({
+      strokeColor: '#FF0000',
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+      fillColor: '#FF0000',
+      fillOpacity: 0.35,
+      map: map,
+      center: markers[i].getPosition(),
+      radius: 4 //meters
+    });
+  }
+
+  }
 
   function updatePathLine(){
     if(pathLine != null){
@@ -51,6 +66,7 @@
     strokeOpacity: 1.0,
     strokeWeight: 2
   });
+
   pathLine.setMap(map);    
 
   }
@@ -61,11 +77,14 @@
     var reader = new FileReader();
     reader.onload = function(e) {
     var text = reader.result;
-    var points = JSON.parse(text);
-    for(i = 0;i < points.length;i++){
-        var lat = points[i].latitude;
-        var lng = points[i].longitude;
-        addMarker(lat,lng,i);
+    lines = text.split('\n');
+    for(i = 0;i < lines.length;i++){
+       console.log(lines[i]);
+       var points = JSON.parse(lines[i]);
+       console.log(points);
+        var lat = points.latitude;
+        var lng = points.longitude;
+        addMarkerAt(lat,lng,i);
 
 
     }
@@ -131,10 +150,8 @@
         controlText4.innerHTML = 'save Markers';
         controlUI4.appendChild(controlText4);
 
+        
 
-        //TODO add remove marker 
-        //TODO add load markers 
-        //TODO save markers 
 
         // Setup the click event listeners: simply set the map to Chicago.
         controlUI.addEventListener('click', function() {
@@ -148,9 +165,12 @@
         var url = 'data:text/json;charset=utf8,';
         for(i = 0;i<markers.length;i++){
             var latlng = markers[i].getPosition();
-            var out = {"VERSION_ID":"gpsV0.2","latitude":latlng.lat(),"longitude":latlng.lng()};
-            text = text+(JSON.stringify(out));
+            var out = {"VERSION_ID":"gpsV0.2","gpsTimestamp":"Mar 18, 2016 6:01:03 PM",
+                       "latitude":latlng.lat(),"north":true,"longitude":latlng.lng(),
+                       "west":true,"qualityValue":0,"numSatellites":0,"horizontalDilutionOfPrecision":0.0,"antennaAltitude":0.0,"rawGPSLat":0.0,"rawGPSLong":0.0,"DATE_FORMAT":"yyyy-MM-dd HH:mm:ss.SSS","timestamp":1458338463072};
+            text = text+(JSON.stringify(out))+'\n';
         }
+
 
    var filename = 'waypoints.txt';
    var element = document.createElement('a');
@@ -166,6 +186,34 @@
         window.open(url, '_blank');
         window.focus();
       });
+
+
+       // Set CSS for the control border.
+        var controlUI5 = document.createElement('div');
+        controlUI5.style.backgroundColor = '#fff';
+        controlUI5.style.border = '2px solid #fff';
+        controlUI5.style.borderRadius = '3px';
+        controlUI5.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+        controlUI5.style.cursor = 'pointer';
+        controlUI5.style.marginBottom = '22px';
+        controlUI5.style.textAlign = 'center';
+        controlUI5.title = 'Map Edditor';
+        controlDiv.appendChild(controlUI5);
+
+
+        var controlText5 = document.createElement('div');
+        controlText5.style.color = 'rgb(25,25,25)';
+        controlText5.style.fontFamily = 'Roboto,Arial,sans-serif';
+        controlText5.style.fontSize = '16px';
+        controlText5.style.lineHeight = '38px';
+        controlText5.style.paddingLeft = '5px';
+        controlText5.style.paddingRight = '5px';
+        controlText5.innerHTML = 'draw safe area';
+        controlUI5.appendChild(controlText5);
+
+    controlUI5.addEventListener('click',function(){
+       drawCircles();
+       });
 
 }
 
