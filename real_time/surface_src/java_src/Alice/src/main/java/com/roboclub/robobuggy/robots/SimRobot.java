@@ -3,6 +3,7 @@ package com.roboclub.robobuggy.robots;
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.nodes.localizers.HighTrustGPSLocalizer;
+import com.roboclub.robobuggy.nodes.localizers.KfLocalizer;
 import com.roboclub.robobuggy.nodes.localizers.LocalizerUtil;
 import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
 import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
@@ -50,6 +51,7 @@ public final class SimRobot extends AbstractRobot{
 		super();
 	
 		nodeList.add(new HighTrustGPSLocalizer());
+	//	nodeList.add(new KfLocalizer(100));
 		nodeList.add(new SimulatedImuNode(100));
 		nodeList.add(new SimulatedGPSNode(500));
 		nodeList.add(new SimulatedRBSMNode());
@@ -71,13 +73,15 @@ public final class SimRobot extends AbstractRobot{
 		simBuggy.setY(LocalizerUtil.convertLatToMeters(40.441705));
 		simBuggy.setX(LocalizerUtil.convertLonToMeters(-79.941585));
 		simBuggy.setTh(-110);
+		
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		simBuggy.setDx(.5);
+		
+		simBuggy.setDx(10);
 
 
 		nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION,
@@ -92,8 +96,8 @@ public final class SimRobot extends AbstractRobot{
 		RobobuggyGUITabs tabs = new RobobuggyGUITabs();
 		mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
 		tabs.addTab(new MainGuiWindow(), "Home");
-		tabs.addTab(new PoseGraphsPanel(),"poses");
-		tabs.addTab(new ImuPanel(),"IMU");
+	//	tabs.addTab(new PoseGraphsPanel(),"poses");
+	//	tabs.addTab(new ImuPanel(),"IMU");
 		tabs.addTab(new AutonomousPanel(),"Autonomous");
 		tabs.addTab(new SimulationPanel(),"Simulation");
 		tabs.addTab(new PathPanel(),"Path Panel");

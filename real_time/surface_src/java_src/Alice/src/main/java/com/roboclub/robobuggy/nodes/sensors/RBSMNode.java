@@ -54,7 +54,7 @@ public  class  RBSMNode extends SerialNode {
 	private static final double M_PER_REV = 0.61;
 	
 	/** Steering Angle Conversion Rate */
-	private static final double ARD_TO_DEG = 1;
+	private static final double ARD_TO_DEG = 100;
 	/** Steering Angle offset?? */
 	private static final double OFFSET = 0;
     private static final double FEET_TO_METERS = 0.3048;
