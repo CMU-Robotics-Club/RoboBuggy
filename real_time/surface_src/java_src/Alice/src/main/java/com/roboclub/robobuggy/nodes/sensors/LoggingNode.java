@@ -54,6 +54,8 @@ public class LoggingNode extends BuggyDecoratorNode {
     private LogWriterThread loggingThread;
     private boolean keepLogging;
 
+    private static int MAX_QUEUE_SIZE = 1000;
+    
     private Publisher statusPub;
 
     private static final String DATE_FILE_FORMAT = "yyyy-MM-dd-HH-mm-ss";
@@ -80,7 +82,7 @@ public class LoggingNode extends BuggyDecoratorNode {
         super(new BuggyBaseNode(channel), "logging_node");
 
         this.filters = filters;
-        messageQueue = new LinkedBlockingQueue<>();
+        messageQueue = new LinkedBlockingQueue<>(MAX_QUEUE_SIZE);
         keepLogging = true;
         outputDirectory = new File(outputDirPath);
 
@@ -154,7 +156,10 @@ public class LoggingNode extends BuggyDecoratorNode {
             new Subscriber("log", filter.getMsgPath(), new MessageListener() {
                 @Override
                 public void actionPerformed(String topicName, Message m) {
-                    messageQueue.add(m);
+                    if(!messageQueue.offer(m)){
+                    	messageQueue.remove();
+                    	messageQueue.add(m);
+                    }
                 }
             });
         }
