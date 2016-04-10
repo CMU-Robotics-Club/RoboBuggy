@@ -56,6 +56,42 @@ public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListen
 		int[] data = m.getMeData();
 		//assuming message is of type 0
 		int offset = 0;
+		
+		
+	    int axisVal;
+	    float scale;
+
+	    switch(m.getFormatSelect()) {
+	    case 1:
+	        scale = 10; // 0.1 degrees
+	        offset =  offset + 6; // Skip over acc
+	        offset = offset + 6;// Skip over lin acc
+	        offset = offset + 6; // Skip over ang vel
+	        offset = offset + 6; // Skip over mag
+	        offset = offset + 6; // Skip over inclination
+	        break;
+	    case 0:
+	    case 2:
+	    case 3:
+	        return; // No calibrated compass heading in this format
+	    default:
+	        return; // The format number was unrecognized
+	    }
+
+	    if (offset < 0) {
+	        return; // Compass heading flag not set
+	    }
+
+	    // Extract and convert the compass heading data
+	    axisVal = data[offset + 1] << 8 |  data[offset + 0];
+	    double compassHeading = convertQNToDouble((byte)data[offset], (byte)data[offset+1], 10);//((float) axisVal) / scale;
+		
+		System.out.println("Compass heading: " + compassHeading);
+	    
+
+		
+		/*
+		
 		//we do not parse ff0
 		if(m.getFf0()){
 			offset += 6;
@@ -132,6 +168,7 @@ public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListen
 			angPosPub.publish(new IMUAngularPositionMessage(rot));
 			offset += 8;
 		}
+		*/
 	}
 
 	@Override
@@ -155,7 +192,8 @@ public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListen
 	FreespaceMsgOutDataModeControlV2Request msg = new FreespaceMsgOutDataModeControlV2Request();
 	msg.setPacketSelect(8);  //
 	msg.setModeAndStatus(8);
-	msg.setFormatSelect(0);
+	//Set to 0 for gyro, accel, temp, mag, ang data.  Set to 1 for compass
+	msg.setFormatSelect(1);
 	//we really don't know what the format is so we are just going to log everything for now 
 	msg.setFf2(true); //linear Acceleration without Gravity 
 	msg.setFf3(true); //Angular Velocity
