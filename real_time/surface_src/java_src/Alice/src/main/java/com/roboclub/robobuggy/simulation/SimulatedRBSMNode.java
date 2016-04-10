@@ -1,5 +1,6 @@
 package com.roboclub.robobuggy.simulation;
 
+import com.roboclub.robobuggy.main.Util;
 import com.roboclub.robobuggy.map.So2Pose;
 import com.roboclub.robobuggy.messages.BrakeControlMessage;
 import com.roboclub.robobuggy.messages.DriveControlMessage;
@@ -29,6 +30,7 @@ public class SimulatedRBSMNode extends PeriodicNode{
 	private Publisher messagePubEnc;
 	private Publisher messagePubControllerSteering;
 	private Publisher messagePubBrakeState;
+	private Publisher messagePubSteering;
 	private int commandedAngle = 0;
 	private boolean commandedBrakeEngaged = true;
 
@@ -44,6 +46,7 @@ public class SimulatedRBSMNode extends PeriodicNode{
 		messagePubEnc = new Publisher(NodeChannel.ENCODER.getMsgPath());
 		messagePubControllerSteering = new Publisher(NodeChannel.STEERING_COMMANDED.getMsgPath());
 		messagePubBrakeState = new Publisher(NodeChannel.BRAKE_STATE.getMsgPath());
+		messagePubSteering = new Publisher(NodeChannel.STEERING.getMsgPath());
 
 		
 		//changes the angle that we are attempting to drive at based on the commanded angle messages we are getting 
@@ -64,7 +67,6 @@ public class SimulatedRBSMNode extends PeriodicNode{
 				simBuggy.setBrakesDown(commandedBrakeEngaged);
 				//echo the brake message 
 				messagePubBrakeState.publish(m);
-				System.out.println("brakes sent");
 			}
 		});
 		resume();//needed to start the node
@@ -93,8 +95,9 @@ public class SimulatedRBSMNode extends PeriodicNode{
 
 		
 		messagePubEnc.publish(new EncoderMeasurement(encoderDistance, 0.0)); //TODO calculate the actual velocity 
-		double potAngle = Math.atan2(dy, dx);
+		double potAngle = Util.normalizeAngleDeg(simBuggy.getWheelTh());
 		messagePubControllerSteering.publish(new SteeringMeasurement(potAngle));
+		messagePubSteering.publish(new SteeringMeasurement(potAngle));
 
 		int outputAngle = commandedAngle;
 		//update the commanded angle 

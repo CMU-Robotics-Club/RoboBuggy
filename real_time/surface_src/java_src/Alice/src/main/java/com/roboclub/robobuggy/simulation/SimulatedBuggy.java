@@ -40,9 +40,9 @@ public final class SimulatedBuggy {
 	private double  y = 0.0;
 	private double  th = 0.0;
 	private double wheelTh = 0.0;//the orintation in buggy coordinates of the front wheel 
+	private double desiredWheelTh = 0.0;
 	private double dx = 0.0;
 	private double dy = 0.0;
-	private double dth = 0.0;
 	private long lastUpdateTime;
 	
 	/**
@@ -66,7 +66,6 @@ public final class SimulatedBuggy {
 		th = 0.0; //in degrees
 		dx = 0.0;
 		dy = 0.0;
-		dth = 0.0; // in degrees
 		lastUpdateTime = new Date().getTime();
 		
 		java.util.Timer t = new java.util.Timer();
@@ -79,19 +78,27 @@ public final class SimulatedBuggy {
 		            	long now = new Date().getTime();
 		            	long dtMili = now - lastUpdateTime;
 		            	lastUpdateTime = now;
-		            	double dt = dtMili/100.0;
-		            	double heading = Util.normalizeAngleDeg(wheelTh + th + dth);
+		            	double dt = dtMili/1000.0;
+		            	double dth = desiredWheelTh - wheelTh;
+		            	if(dth > .1){
+		            		dth = .1;
+		            	}else if(dth < -.1){
+		            		dth = -.1;
+		            	}
+		            	wheelTh = desiredWheelTh;//wheelTh + dth;
+		            	//System.out.println("th"+th+"Wth:"+wheelTh+"dth:"+dth);
+		            	double heading = Util.normalizeAngleDeg(wheelTh + th);  //the direction of the front wheel in world frame
 		            	double headingRad = Math.toRadians(heading);
 		            	//now update the internal state
 		            	x = x +dx*Math.cos(headingRad)*dt -dy*Math.sin(headingRad)*dt+0;//(2*Math.random()-1)/10;
-		            	y = y +dx*Math.sin(headingRad)*dt+dy*Math.cos(headingRad)*dt+0;//(2*Math.random()-1)/10;
+		            	y = y +dx*Math.sin(headingRad)*dt +dy*Math.cos(headingRad)*dt+0;//(2*Math.random()-1)/10;
 		            	th = heading;
 		            	//TODO make pose message periodic 
 		            	simPosePub.publish(new GPSPoseMessage(new Date(), y, x, th));
 
 		            	
 		            }
-		        }, 1000, 50);
+		        }, 1000, 25);
 	}
 	
 	/**
@@ -108,7 +115,7 @@ public final class SimulatedBuggy {
 	 * @param newWheelTh the orientation of the front wheel
 	 */
 	public void setWheelTh(double newWheelTh){
-		wheelTh = newWheelTh;
+		desiredWheelTh = newWheelTh;
 	}
 
 	/**
@@ -181,19 +188,8 @@ public final class SimulatedBuggy {
 		this.dy = dy;
 	}
 
-	/**
-	 * @return the dth in degrees
-	 */
-	public double getDth() {
-		return dth;
-	}
 
-	/**
-	 * @param dth the dth to set in degrees
-	 */
-	public void setDth(double dth) {
-		this.dth = dth;
-	}
+	
 	
 	
 }
