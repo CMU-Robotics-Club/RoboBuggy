@@ -105,15 +105,29 @@ public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListen
 			double y = convertQNToDouble((byte)data[offset+4],(byte)data[offset+5],14);
 			double z = convertQNToDouble((byte)data[offset+6],(byte)data[offset+7],14);
 			
+			double r11 = 1-2*y*y-2*z*z;
+			double r12 = 2*x*y-2*z*w;
+			double r13 = 2*x*z+2*y*w;
+			double r21 = 2*x*y+2*z*w;
+			double r22 = 1-2*x*x-2*z*z;
+			double r23 = 2*y*z-2*x*w;
+			double r31 = 2*x*z-2*y*w;
+			double r32 = 2*y*z+2*x*w;
+			double r33 = 1-2*x*x-2*y*y;
+			
 			//TODO normalize 
 			//extracts 
 			double[][] rot = {
-				{1-2*y*y-2*z*z,      2*x*y-2*z*w,             2*x*z+2*y*w},
-				{2*x*y+2*z*w,        1-2*x*x-2*z*z,           2*y*z-2*x*w},
-				{2*x*z-2*y*w,        2*y*z+2*x*w,            1-2*x*x-2*y*y}
+				{r11, r12, r13},
+				{r21, r22, r23},
+				{r31, r32, r33}
 			};
 			
+			double yaw = Math.atan(r21/r11);
+			double pitch = -r31/Math.sqrt(r32*r32 + r33*r33);
+			double roll = Math.atan(r32/r33);
 			
+			System.out.println("Yaw: " + yaw + " Pitch: " + pitch + " Roll: " + roll);
 			
 			angPosPub.publish(new IMUAngularPositionMessage(rot));
 			offset += 8;
