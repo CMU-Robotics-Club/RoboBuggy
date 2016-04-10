@@ -63,13 +63,16 @@ public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListen
 
 	    switch(m.getFormatSelect()) {
 	    case 1:
+	    	System.out.println("Here\n");
 	        scale = 10; // 0.1 degrees
-	        offset =  offset + 6; // Skip over acc
-	        offset = offset + 6;// Skip over lin acc
-	        offset = offset + 6; // Skip over ang vel
-	        offset = offset + 6; // Skip over mag
-	        offset = offset + 6; // Skip over inclination
-	        break;
+	        if (m.getFf0()) offset =  offset + 6; // Skip over acc
+	        if (m.getFf1()) offset = offset + 6;// Skip over lin acc
+	        if (m.getFf2()) offset = offset + 6; // Skip over ang vel
+	        if (m.getFf3()) offset = offset + 6; // Skip over mag
+	        if (m.getFf4()) offset = offset + 6; // Skip over inclination
+	        if (!m.getFf5()) System.out.println("Compass heading flag not set!\n");
+	        	
+	        	break;
 	    case 0:
 	    case 2:
 	    case 3:
@@ -82,9 +85,11 @@ public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListen
 	        return; // Compass heading flag not set
 	    }
 
+	    
+	    
 	    // Extract and convert the compass heading data
 	    axisVal = data[offset + 1] << 8 |  data[offset + 0];
-	    double compassHeading = convertQNToDouble((byte)data[offset], (byte)data[offset+1], 10);//((float) axisVal) / scale;
+	    double compassHeading = ((float) axisVal) / scale; //convertQNToDouble((byte)data[offset], (byte)data[offset+1], 10);//
 		
 		System.out.println("Compass heading: " + compassHeading);
 	    
