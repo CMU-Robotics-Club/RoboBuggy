@@ -1,5 +1,6 @@
 package com.roboclub.robobuggy.nodes.localizers;
 
+import Jama.Matrix;
 import com.roboclub.robobuggy.main.Util;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
@@ -76,11 +77,20 @@ public class HighTrustGPSLocalizer implements Node{
         
         new Subscriber("HighTrustGpsLoc",NodeChannel.IMU_ANG_POS.getMsgPath(), ((topicName, m) -> {
             IMUAngularPositionMessage mes = ((IMUAngularPositionMessage) m);
-            double y = mes.getRot()[0][1];
-            double x = mes.getRot()[0][0];
-            
-          buggyFrameRotZ = Util.normalizeAngleDeg(-Math.toDegrees(Math.atan2(y, x))+90);
-            
+//            double y = mes.getRot()[0][1];
+//            double x = mes.getRot()[0][0];
+//
+//          buggyFrameRotZ = Util.normalizeAngleDeg(-Math.toDegrees(Math.atan2(y, x))+90);
+
+            Matrix r = new Matrix(mes.getRot());
+            double[][] xVec = {{1}, {0}, {0}};
+            double[][] yVec = {{0}, {1}, {0}};
+
+            double x = r.times(new Matrix(xVec)).get(0, 0);
+            double y = r.times(new Matrix(yVec)).get(0, 0);
+
+            buggyFrameRotZ = Util.normalizeAngleDeg(-Math.toDegrees(Math.atan2(y, x)) + 90);
+
            publishUpdate();
         }));
 

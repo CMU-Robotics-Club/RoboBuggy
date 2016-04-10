@@ -55,6 +55,8 @@ public class SensorPlayer extends Thread {
     private Publisher loggingButtonPub;
     private Publisher logicNotificationPub;
 
+    JsonArray sensorDataArray;
+
     // ---- Log File Defaults ----
     private static final String TERMINATING_VERSION_ID = "STOP";
 
@@ -84,6 +86,22 @@ public class SensorPlayer extends Thread {
         }
 
         setupPlaybackTrigger();
+
+        JsonObject logFile  = null;
+        try {
+            logFile = Util.readJSONFile(path);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        if(!PlayBackUtil.validateLogFileMetadata(logFile)) {
+            new RobobuggyLogicNotification("Log file doesn't have the proper header metadata!", RobobuggyMessageLevel.EXCEPTION);
+            return;
+        }
+
+
+        sensorDataArray = logFile.getAsJsonArray("sensor_data");
 
         this.playbackSpeed = playbackSpeed;
     }
@@ -128,15 +146,9 @@ public class SensorPlayer extends Thread {
 
         Gson translator = new GsonBuilder().create();
         try {
-        	JsonObject logFile  = Util.readJSONFile(path);
-            if(!PlayBackUtil.validateLogFileMetadata(logFile)) {
-                new RobobuggyLogicNotification("Log file doesn't have the proper header metadata!", RobobuggyMessageLevel.EXCEPTION);
-                return;
-            }
 
             long prevSensorTime = -1;
 
-            JsonArray sensorDataArray = logFile.getAsJsonArray("sensor_data");
             for (JsonElement sensorAsJElement: sensorDataArray) {
 
                 // spin in a tight loop until we've unpaused
@@ -144,7 +156,7 @@ public class SensorPlayer extends Thread {
                     Thread.sleep(100);
                 }
 
-                boolean waitForTimeDiff = true;
+                boolean waitForTimeDiff = false;
 
                 if(sensorAsJElement.isJsonObject()){
                     JsonObject sensorDataJson = sensorAsJElement.getAsJsonObject();
@@ -209,6 +221,7 @@ public class SensorPlayer extends Thread {
                     }
 
                     if (!waitForTimeDiff) {
+                        Thread.sleep(1000);
                         continue;
                     }
 
@@ -265,12 +278,12 @@ public class SensorPlayer extends Thread {
                 }
             }
 
-        } catch (FileNotFoundException e) {
-            new RobobuggyLogicNotification("SensorPlayer couldn't find log file!", RobobuggyMessageLevel.EXCEPTION);
+//        } catch (FileNotFoundException e) {
+//            new RobobuggyLogicNotification("SensorPlayer couldn't find log file!", RobobuggyMessageLevel.EXCEPTION);
         } catch (InterruptedException e) {
             new RobobuggyLogicNotification("SensorPlayer was interrupted", RobobuggyMessageLevel.WARNING);
-        } catch (UnsupportedEncodingException e) {
-            new RobobuggyLogicNotification("Log file had unsupported encoding", RobobuggyMessageLevel.EXCEPTION);
+//        } catch (UnsupportedEncodingException e) {
+//            new RobobuggyLogicNotification("Log file had unsupported encoding", RobobuggyMessageLevel.EXCEPTION);
         }
     }
 

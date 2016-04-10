@@ -1,5 +1,6 @@
 package com.roboclub.robobuggy.ui;
 
+import Jama.Matrix;
 import com.roboclub.robobuggy.messages.BatteryLevelMessage;
 import com.roboclub.robobuggy.messages.BrakeStateMessage;
 import com.roboclub.robobuggy.messages.FingerPrintMessage;
@@ -7,6 +8,7 @@ import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.IMUAngularPositionMessage;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
+import com.sun.javafx.geom.Matrix3f;
 
 import javax.imageio.ImageIO;
 import java.awt.Color;
@@ -69,10 +71,15 @@ public class BuggyStatusPanel extends RobobuggyGUIContainer {
 
         new Subscriber("buggyStatusPanel",NodeChannel.IMU_ANG_POS.getMsgPath(), ((topicName, m) -> {
             IMUAngularPositionMessage mes = ((IMUAngularPositionMessage) m);
-            double y = mes.getRot()[0][1];
-            double x = mes.getRot()[0][0];
+            Matrix r = new Matrix(mes.getRot());
+            double[][] xVec = {{1}, {0}, {0}};
+            double[][] yVec = {{0}, {1}, {0}};
+
+            double x = r.times(new Matrix(xVec)).get(0, 0);
+            double y = r.times(new Matrix(yVec)).get(0, 0);
             
-            imuAngle = -Math.atan2(y, x);
+            imuAngle = Math.atan2(y, x);
+            repaint();
         }));
         
         new Subscriber("buggyStatusPanel",NodeChannel.GPS.getMsgPath(), ((topicName, m) -> {
