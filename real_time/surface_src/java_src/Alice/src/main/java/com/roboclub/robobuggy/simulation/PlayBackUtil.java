@@ -17,7 +17,10 @@ public class PlayBackUtil {
      * @return whether or not the log file is valid
      */
     public static boolean validateLogFileMetadata(JsonObject logFile) {
-
+    	if(logFile == null){
+    		return false;
+    	}
+    	
         if (!logFile.get("name").getAsString().equals(METADATA_NAME)) {
             return false;
         }

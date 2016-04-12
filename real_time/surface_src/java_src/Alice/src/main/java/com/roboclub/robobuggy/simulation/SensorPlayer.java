@@ -145,7 +145,7 @@ public class SensorPlayer extends Thread {
     public void run() {
 
         Gson translator = new GsonBuilder().create();
-        try {
+       try {
 
             long prevSensorTime = -1;
 
@@ -155,8 +155,8 @@ public class SensorPlayer extends Thread {
                 while (isPaused) {
                     Thread.sleep(100);
                 }
+                
 
-                boolean waitForTimeDiff = false;
 
                 if(sensorAsJElement.isJsonObject()){
                     JsonObject sensorDataJson = sensorAsJElement.getAsJsonObject();
@@ -216,15 +216,9 @@ public class SensorPlayer extends Thread {
                             new RobobuggyLogicNotification("Stopping playback, hit a STOP", RobobuggyMessageLevel.NOTE);
                             return;
                         default:
-                            waitForTimeDiff = false;
                             break;
                     }
-
-                    if (!waitForTimeDiff) {
-                        Thread.sleep(1000);
-                        continue;
-                    }
-
+                    
                     getNewPlaybackSpeed();
 
                     BaseMessage timeMessage = (BaseMessage) transmitMessage;
@@ -238,11 +232,13 @@ public class SensorPlayer extends Thread {
                     }
                     else {
                         long currentSensorTime = timeMessage.getTimestamp().getTime();
-                        long timeDiff = currentSensorTime - prevSensorTime;
-                        if (timeDiff > 10) {
-                            Thread.sleep((long) (timeDiff / playbackSpeed));
+                        long timeDiff = currentSensorTime - prevSensorTime;  //in milliseconds
+                        long dt = (long) (timeDiff/playbackSpeed);
+                        if (dt > 100) {
+                            Thread.sleep(dt);
+                            prevSensorTime = currentSensorTime;
                         }
-                        prevSensorTime = currentSensorTime;
+                         
                     }
 
 
@@ -280,7 +276,7 @@ public class SensorPlayer extends Thread {
 
 //        } catch (FileNotFoundException e) {
 //            new RobobuggyLogicNotification("SensorPlayer couldn't find log file!", RobobuggyMessageLevel.EXCEPTION);
-        } catch (InterruptedException e) {
+       } catch (InterruptedException e) {
             new RobobuggyLogicNotification("SensorPlayer was interrupted", RobobuggyMessageLevel.WARNING);
 //        } catch (UnsupportedEncodingException e) {
 //            new RobobuggyLogicNotification("Log file had unsupported encoding", RobobuggyMessageLevel.EXCEPTION);
