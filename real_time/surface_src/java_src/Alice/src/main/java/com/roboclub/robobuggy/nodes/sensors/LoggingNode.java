@@ -54,7 +54,7 @@ public class LoggingNode extends BuggyDecoratorNode {
     private LogWriterThread loggingThread;
     private boolean keepLogging;
 
-    private static int MAX_QUEUE_SIZE = 1000;
+    private static int MAX_QUEUE_SIZE = 10000;
     
     private Publisher statusPub;
 
@@ -156,9 +156,8 @@ public class LoggingNode extends BuggyDecoratorNode {
             new Subscriber("log", filter.getMsgPath(), new MessageListener() {
                 @Override
                 public void actionPerformed(String topicName, Message m) {
-                    if(!messageQueue.offer(m)){
+                    while (!messageQueue.offer(m)){
                     	messageQueue.remove();
-                    	messageQueue.add(m);
                     }
                 }
             });
