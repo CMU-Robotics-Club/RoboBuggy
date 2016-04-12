@@ -54,7 +54,7 @@ public class LoggingNode extends BuggyDecoratorNode {
     private LogWriterThread loggingThread;
     private boolean keepLogging;
 
-    private static int MAX_QUEUE_SIZE = 10000;
+    private static final int MAX_QUEUE_SIZE = 10000;
     
     private Publisher statusPub;
 
@@ -336,6 +336,7 @@ public class LoggingNode extends BuggyDecoratorNode {
                     }
                     
                     fileWriteStream.println("        " + msgAsJsonString + ",");
+                    fileWriteStream.flush();
 
                 } catch (InterruptedException e) {
                     //flush all the messages that came after the stop button

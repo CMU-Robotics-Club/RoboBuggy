@@ -85,18 +85,7 @@ public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListen
 	        return; // Compass heading flag not set
 	    }
 
-	    
-	    
-	    // Extract and convert the compass heading data
-	    axisVal = data[offset + 1] << 8 |  data[offset + 0];
-	    double compassHeading = ((float) axisVal) / scale; //convertQNToDouble((byte)data[offset], (byte)data[offset+1], 10);//
-		
-		System.out.println("Compass heading: " + compassHeading);
-	    
 
-		
-		/*
-		
 		//we do not parse ff0
 		if(m.getFf0()){
 			offset += 6;
@@ -173,7 +162,6 @@ public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListen
 			angPosPub.publish(new IMUAngularPositionMessage(rot));
 			offset += 8;
 		}
-		*/
 	}
 
 	@Override

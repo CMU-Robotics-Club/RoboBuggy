@@ -55,7 +55,7 @@ public class SensorPlayer extends Thread {
     private Publisher loggingButtonPub;
     private Publisher logicNotificationPub;
 
-    JsonArray sensorDataArray;
+    private JsonArray sensorDataArray;
 
     // ---- Log File Defaults ----
     private static final String TERMINATING_VERSION_ID = "STOP";

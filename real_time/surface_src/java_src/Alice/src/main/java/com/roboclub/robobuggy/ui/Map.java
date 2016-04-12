@@ -2,11 +2,6 @@ package com.roboclub.robobuggy.ui;
 
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
-import com.roboclub.robobuggy.messages.GPSPoseMessage;
-import com.roboclub.robobuggy.ros.Message;
-import com.roboclub.robobuggy.ros.MessageListener;
-import com.roboclub.robobuggy.ros.NodeChannel;
-import com.roboclub.robobuggy.ros.Subscriber;
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.JMapViewerTree;
 import org.openstreetmap.gui.jmapviewer.MapMarkerDot;
@@ -55,15 +50,15 @@ public class Map extends JPanel {
         this.add(getMapTree());
         
         //adds track buggy  
-        new Subscriber("Map",NodeChannel.POSE.getMsgPath(), new MessageListener() {
-			//TODO make this optional 
-			@Override
-			public void actionPerformed(String topicName, Message m) {
-				GPSPoseMessage gpsM = (GPSPoseMessage)m;
+//        new Subscriber("Map",NodeChannel.POSE.getMsgPath(), new MessageListener() {
+//			//TODO make this optional
+//			@Override
+//			public void actionPerformed(String topicName, Message m) {
+//				GPSPoseMessage gpsM = (GPSPoseMessage)m;
 		     //   getMapTree().getViewer().setDisplayPosition(new Coordinate(gpsM.getLatitude(),
 		     //   		gpsM.getLongitude()),zoomLevel);				
-			}
-		});
+//			}
+//		});
     }
 
 
