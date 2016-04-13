@@ -1,6 +1,7 @@
 package com.roboclub.robobuggy.robots;
 
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
+import com.roboclub.robobuggy.simulation.LineByLineSensorPlayer;
 import com.roboclub.robobuggy.simulation.SensorPlayer;
 import com.roboclub.robobuggy.ui.AutonomousPanel;
 import com.roboclub.robobuggy.ui.ConfigurationPanel;
@@ -34,7 +35,7 @@ public final class PlayBackRobot extends AbstractRobot{
 	private PlayBackRobot(){
 		super();
 	
-		new SensorPlayer(RobobuggyConfigFile.getPlayBackSourceFile(), 1);
+		new LineByLineSensorPlayer(RobobuggyConfigFile.getPlayBackSourceFile(), 1);
 		RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow",1.0,1.0);	
 		Gui.getInstance().addWindow(mainWindow);
 		RobobuggyGUITabs tabs = new RobobuggyGUITabs();
