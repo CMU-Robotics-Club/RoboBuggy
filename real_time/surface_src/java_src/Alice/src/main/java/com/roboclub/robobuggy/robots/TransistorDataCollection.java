@@ -52,15 +52,15 @@ public final class TransistorDataCollection extends AbstractRobot {
 		}
 		new RobobuggyLogicNotification("Logic Exception Setup properly" ,  RobobuggyMessageLevel.NOTE);
 		// Initialize Nodes
-//		nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.getComPortGPS()));
-//		nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION,
-//				NodeChannel.getLoggingChannels()));
-//		nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING, RobobuggyConfigFile.getComPortRBSM(),
-//				RobobuggyConfigFile.RBSM_COMMAND_PERIOD));
+		nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.getComPortGPS()));
+		nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION,
+				NodeChannel.getLoggingChannels()));
+		nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING, RobobuggyConfigFile.getComPortRBSM(),
+				RobobuggyConfigFile.RBSM_COMMAND_PERIOD));
 //		nodeList.add(new CameraNode(NodeChannel.PUSHBAR_CAMERA, 100));
-//		nodeList.add(new HillCrestImuNode());
-		new SensorPlayer(RobobuggyConfigFile.getPlayBackSourceFile(), 1);
-//		nodeList.add(new HighTrustGPSLocalizer());
+		nodeList.add(new HillCrestImuNode());
+		nodeList.add(new HighTrustGPSLocalizer());
+//		new SensorPlayer(RobobuggyConfigFile.getPlayBackSourceFile(), 1);
 
 		//setup the gui 
 		RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow",1.0,1.0);	
