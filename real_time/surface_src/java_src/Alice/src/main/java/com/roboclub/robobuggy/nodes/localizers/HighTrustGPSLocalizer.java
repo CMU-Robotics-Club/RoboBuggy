@@ -68,7 +68,6 @@ public class HighTrustGPSLocalizer implements Node{
                 GpsMeasurement newGPSData = (GpsMeasurement)m;
                 synchronized (this) {
                     long dt = newGPSData.getTimestamp().getTime() - mostRecentUpdate.getTime();
-                    if(dt > 0.0){
                           // Get the delta latitude and longitude, use that to figure out how far we've travelled
                buggyFrameGpsY = newGPSData.getLatitude();
                buggyFrameGpsX = newGPSData.getLongitude();
@@ -80,13 +79,12 @@ public class HighTrustGPSLocalizer implements Node{
                 
 
                 // take the arctangent in order to get the heading (in degrees)
-                buggyFrameRotZ = Math.toDegrees(Math.atan2(dLat, dLon));
+                buggyFrameRotZ = Math.toDegrees(Math.atan2(LocalizerUtil.convertLatToMeters(dLat), LocalizerUtil.convertLonToMeters(dLon)));
 
                         publishUpdate();
                         mostRecentUpdate = newGPSData.getTimestamp();
                     }
                 }
-            }
         });
 
      
@@ -126,7 +124,7 @@ public class HighTrustGPSLocalizer implements Node{
                 LocTuple deltaPos = LocalizerUtil.convertMetersToLatLng(deltaDistance, buggyFrameRotZ+buggyHeading);
                 buggyFrameGpsY += deltaPos.getLatitude();
                 buggyFrameGpsX += deltaPos.getLongitude();
-              //  buggyFrameRotZ = buggyFrameRotZ+buggyHeading;
+               // buggyFrameRotZ = buggyFrameRotZ+buggyHeading;
                 lastEncoderReading = currentEncoderMeasurement;
 
                 publishUpdate();

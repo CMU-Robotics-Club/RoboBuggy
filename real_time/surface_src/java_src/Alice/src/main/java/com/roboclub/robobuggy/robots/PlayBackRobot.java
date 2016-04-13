@@ -1,6 +1,8 @@
 package com.roboclub.robobuggy.robots;
 
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
+import com.roboclub.robobuggy.nodes.localizers.HighTrustGPSLocalizer;
+import com.roboclub.robobuggy.nodes.localizers.KfLocalizer;
 import com.roboclub.robobuggy.simulation.LineByLineSensorPlayer;
 import com.roboclub.robobuggy.simulation.SensorPlayer;
 import com.roboclub.robobuggy.ui.AutonomousPanel;
@@ -34,14 +36,15 @@ public final class PlayBackRobot extends AbstractRobot{
 	
 	private PlayBackRobot(){
 		super();
-	
 		new LineByLineSensorPlayer(RobobuggyConfigFile.getPlayBackSourceFile(), 1);
+		//new HighTrustGPSLocalizer();
+		new KfLocalizer(10);
 		RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow",1.0,1.0);	
 		Gui.getInstance().addWindow(mainWindow);
 		RobobuggyGUITabs tabs = new RobobuggyGUITabs();
 		mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
 		tabs.addTab(new MainGuiWindow(), "Home");
-		tabs.addTab(new PoseGraphsPanel(),"poses");
+	//	tabs.addTab(new PoseGraphsPanel(),"poses");
 		tabs.addTab(new  AutonomousPanel(),"Autonomous");
 		tabs.add(new PathPanel(), "Path Visualizer");
 		tabs.addTab(new ConfigurationPanel(),"Configuration");

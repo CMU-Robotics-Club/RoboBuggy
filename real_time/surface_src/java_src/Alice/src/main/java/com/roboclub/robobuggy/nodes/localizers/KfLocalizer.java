@@ -60,7 +60,7 @@ public class KfLocalizer extends PeriodicNode{
              double dLat = buggyFrameGpsY - oldGPSY;
              double dLon = buggyFrameGpsX - oldGPSX;
              
-             double buggyFrameRotZ = Math.toDegrees(Math.atan2(dLat, dLon));                
+             double buggyFrameRotZ = Math.toDegrees(Math.atan2(LocalizerUtil.convertLatToMeters(dLat), LocalizerUtil.convertLonToMeters(dLon)));                
              double[][] observationModel = {{5,0,0},{0,5,0},{0,0,5}};
              double[][] meassurement = {{newGPSData.getLongitude()},{newGPSData.getLatitude()},{buggyFrameRotZ}};
              double[][] updateCovariance = {{.5,0,0},{0,.5,0},{0,0,1}};
@@ -91,7 +91,7 @@ public class KfLocalizer extends PeriodicNode{
             double[][] updateCovariance ={{10000,0,0},{0,10000,0},{0,0,100}};
             
             
-            updateStep(new Matrix(observationModel),new Matrix(meassurement),new Matrix(updateCovariance));  
+  //          updateStep(new Matrix(observationModel),new Matrix(meassurement),new Matrix(updateCovariance));  
 
         }));
        
@@ -114,7 +114,7 @@ public class KfLocalizer extends PeriodicNode{
                 double[][] messure = {{X},{Y},{state.get(2, 0)}};
                 double[][] cov = {{100,0,0},{0,100,0},{0,0,100}};
                 
-               updateStep(new Matrix(observationMatrix), new Matrix(messure), new Matrix(cov));
+          //     updateStep(new Matrix(observationMatrix), new Matrix(messure), new Matrix(cov));
                 lastEncoderReading = currentEncoderMeasurement;
 
             }});
@@ -130,7 +130,7 @@ public class KfLocalizer extends PeriodicNode{
 	                double[][] observationMatrix = {{0,0,0},{0,0,0},{0,0,1}};
 	                double[][] messure = {{0},{0},{state.get(2, 0)+buggyHeading}};
 	                double[][] cov = {{100,0,0},{0,100,0},{0,0,100}};
-	                updateStep(new Matrix(observationMatrix), new Matrix(messure), new Matrix(cov));
+//	                updateStep(new Matrix(observationMatrix), new Matrix(messure), new Matrix(cov));
 
 			}
 		});
@@ -145,20 +145,10 @@ public class KfLocalizer extends PeriodicNode{
 			 Matrix y = measurement.minus(observationMatrix.times(state));
 			 Matrix s = observationMatrix.times(covariance).times(observationMatrix.transpose()).plus(updateCovariance);
 			 
-			 for(int i = 0;i<3;i++){
-					 System.out.println(s.get(i, 0)+"\t "+s.get(i, 1)+"\t"+s.get(i,2));
-			 }
-			 System.out.println("");
+	
 			 Matrix k = covariance.times(observationMatrix.transpose()).times(s.inverse());
-			 System.out.println("k:"+k.get(0, 0)+","+k.get(1,0)+","+k.get(2,0)+"\n");
 			 state = state.plus(k.times(y));
 			 covariance = (Matrix.identity(covariance.getRowDimension(), covariance.getColumnDimension()).minus(k.times(observationMatrix)));
-			 System.out.println("covariance");
-			 for(int i = 0;i<3;i++){
-				 System.out.println(covariance.get(i, 0)+"\t "+covariance.get(i, 1)+"\t"+covariance.get(i,2));
-		 }
-			 System.out.println("\n state:"+state.get(0, 0)+","+state.get(1, 0)+","+state.get(2, 0));
-		 
 		
 		
 	}
@@ -166,7 +156,7 @@ public class KfLocalizer extends PeriodicNode{
 	@Override
 	protected void update() {
 		 predictStep();
-
+		 System.out.println("publishing"+state.get(0, 0) + ","+state.get(1, 0)+","+state.get(2, 0));
 		 //publish state 
 		 posePub.publish(new GPSPoseMessage(new Date(), state.get(1, 0), state.get(0,0), state.get(2, 0)));
 	}
