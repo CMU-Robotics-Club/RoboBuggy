@@ -41,6 +41,7 @@ public class Map extends JPanel {
 
     private double mapDragX = -1;
     private double mapDragY = -1;
+    private static final int MAX_POINT_BUF_SIZE = 20;
 
     /**
      * initializes a new Map with cache loaded
@@ -192,7 +193,11 @@ public class Map extends JPanel {
 	 * @param thisColor color of the point
 	 */
 	public void addPointsToMapTree(Color thisColor, LocTuple...points) {
-		for (LocTuple point : points) {
+        List<MapMarker> markers = getMapTree().getViewer().getMapMarkerList();
+        while (markers.size() > MAX_POINT_BUF_SIZE - points.length) {
+            markers.remove(0);
+        }
+        for (LocTuple point : points) {
 			getMapTree().getViewer().addMapMarker(new MapMarkerDot(thisColor, point.getLatitude(), point.getLongitude()));
 		}
 	}
