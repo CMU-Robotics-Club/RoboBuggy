@@ -79,14 +79,13 @@ public final class SimulatedBuggy {
 		            	long dtMili = now - lastUpdateTime;
 		            	lastUpdateTime = now;
 		            	double dt = dtMili/1000.0;
-		            	double dth = desiredWheelTh - wheelTh;
-		            	if(dth > .1){
-		            		dth = .1;
-		            	}else if(dth < -.1){
-		            		dth = -.1;
-		            	}
+//		            	double dth = desiredWheelTh - wheelTh;
+//		            	if(dth > .1){
+//		            		dth = .1;
+//		            	}else if(dth < -.1){
+//		            		dth = -.1;
+//		            	}
 		            	wheelTh = desiredWheelTh;//wheelTh + dth;
-		            	//System.out.println("th"+th+"Wth:"+wheelTh+"dth:"+dth);
 		            	double heading = Util.normalizeAngleDeg(wheelTh + th);  //the direction of the front wheel in world frame
 		            	double headingRad = Math.toRadians(heading);
 		            	//now update the internal state

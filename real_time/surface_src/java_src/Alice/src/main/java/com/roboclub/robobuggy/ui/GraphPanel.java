@@ -31,7 +31,6 @@ public class GraphPanel extends RobobuggyGUIContainer {
 		this.addComponent(steeringGraph, 0, 0, .25, 1.0);
 		this.addComponent(rollGraph, .25, 0, .25, 1.0);
 		this.addComponent(pitchGraph, .50, 0, .25, 1.0);
-		this.addComponent(new ImageViewer(NodeChannel.PUSHBAR_CAMERA.getMsgPath()), .75, 0, .25, 1.0);
 		
 		// Subscriber for drive control updates
 		new Subscriber("uiDriveControlUpdates", NodeChannel.STEERING.getMsgPath(), new MessageListener() {

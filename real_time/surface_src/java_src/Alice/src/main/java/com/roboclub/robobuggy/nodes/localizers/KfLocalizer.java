@@ -1,7 +1,6 @@
 package com.roboclub.robobuggy.nodes.localizers;
 
 import Jama.Matrix;
-
 import com.roboclub.robobuggy.main.Util;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
@@ -9,7 +8,6 @@ import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.IMUAngularPositionMessage;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
-import com.roboclub.robobuggy.nodes.baseNodes.BuggyNode;
 import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
@@ -34,6 +32,7 @@ public class KfLocalizer extends PeriodicNode{
 	private Matrix predictCovariance;
 	private double wheelBase;
 	
+
 	public KfLocalizer(int period) {
 		super(new BuggyBaseNode(NodeChannel.POSE), period, "KF");
 		posePub = new Publisher(NodeChannel.POSE.getMsgPath());
@@ -123,7 +122,7 @@ public class KfLocalizer extends PeriodicNode{
               updateStep(new Matrix(observationModel),new Matrix(meassurement),new Matrix(updateCovariance));  
             }});
         
-     
+
         new Subscriber("HighTrustGpsLoc",NodeChannel.IMU_ANG_POS.getMsgPath(), ((topicName, m) -> {
         	
             IMUAngularPositionMessage mes = ((IMUAngularPositionMessage) m);
@@ -172,9 +171,9 @@ public class KfLocalizer extends PeriodicNode{
         // would be good to batch up the encoder updates until we get a margin that we know can be represented proeprly
         new Subscriber("htGpsLoc", NodeChannel.ENCODER.getMsgPath(), new MessageListener() {
             @Override
-            public void actionPerformed(String topicName, Message m) {
+            public synchronized void actionPerformed(String topicName, Message m) {
                 EncoderMeasurement measurement = (EncoderMeasurement) m;
-                
+
                 // convert the feet from the last message into a delta degree, and update our position
                 double currentEncoderMeasurement = measurement.getDistance();
                 double deltaDistance = currentEncoderMeasurement - lastEncoderReading;
@@ -215,11 +214,11 @@ public class KfLocalizer extends PeriodicNode{
                 updateStep(new Matrix(observationModel),new Matrix(meassurement),new Matrix(updateCovariance));  
                 }
             }});
-        
+
         new Subscriber("htGpsLoc", NodeChannel.STEERING.getMsgPath(), new MessageListener() {
-			
+
 			@Override
-			public void actionPerformed(String topicName, Message m) {
+			public synchronized void actionPerformed(String topicName, Message m) {
 				SteeringMeasurement steerM = (SteeringMeasurement)m;
                 double[][] observationModel = {{0,0,0,0,0,0,0}, //x
                         {0,0,0,0,0,0,0}, //y
@@ -229,7 +228,6 @@ public class KfLocalizer extends PeriodicNode{
                         {0,0,0,0,0,0,0}, //th_dot
                         {0,0,0,0,0,0,1} //Heading
                         };
-
                 double[][] meassurement = {{0},
                     {0},
                     {0},
@@ -250,12 +248,10 @@ public class KfLocalizer extends PeriodicNode{
                 updateStep(new Matrix(observationModel),new Matrix(meassurement),new Matrix(updateCovariance)); 
 			}
 		});
-		
-        
         resume();
-        
+
 	}
-	
+
 	private synchronized void updateStep(Matrix observationMatrix,Matrix measurement,Matrix updateCovariance){
 		 	predictStep();
 			Matrix inovation = measurement.minus(observationMatrix.times(state));
@@ -263,6 +259,7 @@ public class KfLocalizer extends PeriodicNode{
 			Matrix kalmanGain = covariance.times(observationMatrix.transpose()).times(innovationCovariance.inverse());
 			state = state.plus(kalmanGain.times(inovation));
 			covariance = (Matrix.identity(covariance.getRowDimension(), covariance.getColumnDimension()).minus(kalmanGain.times(observationMatrix)));
+
 	}
 
 	@Override
@@ -312,6 +309,7 @@ public class KfLocalizer extends PeriodicNode{
 		covariance = predictCovariance.times(covariance).times(predictCovariance.transpose());
 		}
 	
+
 
 }
 

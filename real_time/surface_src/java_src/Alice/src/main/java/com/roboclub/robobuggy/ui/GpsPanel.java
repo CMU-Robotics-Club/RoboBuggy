@@ -78,7 +78,7 @@ public class GpsPanel extends JPanel {
 				double longitude = ((GpsMeasurement) m).getLongitude();
 
 				map.addPointsToMapTree(Color.BLUE, new LocTuple(latitude, longitude));
-				map.updateArrow();
+//				map.updateArrow();
 
 				map.repaint();
 				GpsPanel.this.repaint();  // refresh screen
@@ -87,7 +87,7 @@ public class GpsPanel extends JPanel {
 		});
 		
 		new Subscriber("uiGpsPanel", NodeChannel.POSE.getMsgPath(), new MessageListener() {
-			
+
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				GPSPoseMessage curpose = (GPSPoseMessage) m;
@@ -98,7 +98,7 @@ public class GpsPanel extends JPanel {
 		});
 
 		this.add(map);
-		map.repaint();
+//		map.repaint();
 
 	}
 

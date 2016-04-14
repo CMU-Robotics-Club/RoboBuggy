@@ -33,6 +33,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.net.URLConnection;
 import java.util.List;
 
 /**
@@ -48,6 +49,7 @@ public class Map extends JPanel {
 
     private double mapDragX = -1;
     private double mapDragY = -1;
+    private static final int MAX_POINT_BUF_SIZE = 3000;
 
     /**
      * initializes a new Map with cache loaded
@@ -58,15 +60,15 @@ public class Map extends JPanel {
         this.add(getMapTree());
         
         //adds track buggy  
-        new Subscriber("Map",NodeChannel.POSE.getMsgPath(), new MessageListener() {
-			//TODO make this optional 
-			@Override
-			public void actionPerformed(String topicName, Message m) {
-				GPSPoseMessage gpsM = (GPSPoseMessage)m;
+//        new Subscriber("Map",NodeChannel.POSE.getMsgPath(), new MessageListener() {
+//			//TODO make this optional
+//			@Override
+//			public void actionPerformed(String topicName, Message m) {
+//				GPSPoseMessage gpsM = (GPSPoseMessage)m;
 		     //   getMapTree().getViewer().setDisplayPosition(new Coordinate(gpsM.getLatitude(),
 		     //   		gpsM.getLongitude()),zoomLevel);				
-			}
-		});
+//			}
+//		});
     }
 
 
@@ -75,7 +77,13 @@ public class Map extends JPanel {
         getMapTree().getViewer().setTileSource(new BingAerialTileSource());
         getMapTree().setSize(getWidth(), getHeight());
         getMapTree().getViewer().setSize(getWidth(), getHeight());
-        getMapTree().getViewer().setTileLoader(new OsmTileLoader(getMapTree().getViewer()));
+        getMapTree().getViewer().setTileLoader(new OsmTileLoader(getMapTree().getViewer()) {
+
+            @Override
+            protected URLConnection loadTileFromOsm(Tile tile) throws IOException {
+                return super.loadTileFromOsm(tile);
+            }
+        });
         getMapTree().getViewer().setDisplayPosition(new Coordinate(mapViewerLat, mapViewerLon), zoomLevel);
         getMapTree().getViewer().addMouseListener(new MouseListener() {
 
@@ -193,7 +201,11 @@ public class Map extends JPanel {
 	 * @param thisColor color of the point
 	 */
 	public void addPointsToMapTree(Color thisColor, LocTuple...points) {
-		for (LocTuple point : points) {
+        List<MapMarker> markers = getMapTree().getViewer().getMapMarkerList();
+        while (markers.size() > MAX_POINT_BUF_SIZE - points.length) {
+            markers.remove(0);
+        }
+        for (LocTuple point : points) {
 			getMapTree().getViewer().addMapMarker(new MapMarkerDot(thisColor, point.getLatitude(), point.getLongitude()));
 		}
 	}

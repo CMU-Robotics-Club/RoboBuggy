@@ -42,6 +42,7 @@ public class PlayBackUtil {
 	  private static final  Publisher encoderPub  = new Publisher(NodeChannel.ENCODER.getMsgPath());
 	  private static final Publisher  brakePub = new Publisher(NodeChannel.BRAKE_STATE.getMsgPath());
 	  private static final Publisher  steeringPub = new Publisher(NodeChannel.STEERING.getMsgPath());
+	  private static final Publisher  steeringCommandPub = new Publisher(NodeChannel.STEERING_COMMANDED.getMsgPath());
 	  private static final Publisher  loggingButtonPub  = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
 	  private static final Publisher  logicNotificationPub = new Publisher(NodeChannel.LOGIC_NOTIFICATION.getMsgPath());
 
@@ -73,8 +74,16 @@ public class PlayBackUtil {
 
     
     public static Message parseSensorLog(JsonObject sensorDataJson,Gson translator,long playBacktime,long sensorStartTime,double playBackSpeed) throws InterruptedException{;
-            String versionID = sensorDataJson.get("VERSION_ID").getAsString();
+            // wait until the time this message is supposed to be sent
 			long sensorTime = sensorDataJson.get("timestamp").getAsLong();
+            long sensorDt = (sensorTime-sensorStartTime);
+            long dt = (long) (sensorDt/playBackSpeed) - playBacktime;
+            if(dt> 10){ //Milliseconds
+                Thread.sleep(dt);
+            }
+
+            // dispatch this message depending on version, maybe topic
+            String versionID = sensorDataJson.get("VERSION_ID").getAsString();
             Message transmitMessage = null;
             switch (versionID) {
                 case BrakeControlMessage.VERSION_ID:
@@ -82,27 +91,33 @@ public class PlayBackUtil {
                     break;
                 case BrakeMessage.VERSION_ID:
                     transmitMessage = translator.fromJson(sensorDataJson, BrakeMessage.class);
+                    brakePub.publish(transmitMessage);
                     break;
                 case MagneticMeasurement.VERSION_ID:
                     transmitMessage = translator.fromJson(sensorDataJson, MagneticMeasurement.class);
+                    magPub.publish(transmitMessage);
                     break;
                 case DriveControlMessage.VERSION_ID:
                     transmitMessage = translator.fromJson(sensorDataJson, DriveControlMessage.class);
                     break;
                 case EncoderMeasurement.VERSION_ID:
                     transmitMessage = translator.fromJson(sensorDataJson, EncoderMeasurement.class);
+                    encoderPub.publish(transmitMessage);
                     break;
                 case FingerPrintMessage.VERSION_ID:
                     transmitMessage = translator.fromJson(sensorDataJson, FingerPrintMessage.class);
                     break;
                 case GpsMeasurement.VERSION_ID:
                     transmitMessage = translator.fromJson(sensorDataJson, GpsMeasurement.class);
+                    gpsPub.publish(transmitMessage);
                     break;
                 case GuiLoggingButtonMessage.VERSION_ID:
                     transmitMessage = translator.fromJson(sensorDataJson, GuiLoggingButtonMessage.class);
+                    loggingButtonPub.publish(transmitMessage);
                     break;
                 case ImuMeasurement.VERSION_ID:
                     transmitMessage = translator.fromJson(sensorDataJson, ImuMeasurement.class);
+                    imuPub.publish(transmitMessage);
                     break;
                 case GPSPoseMessage.VERSION_ID:
                     transmitMessage = translator.fromJson(sensorDataJson, GPSPoseMessage.class);
@@ -118,16 +133,25 @@ public class PlayBackUtil {
                     break;
                 case RobobuggyLogicNotificationMeasurement.VERSION_ID:
                     transmitMessage = translator.fromJson(sensorDataJson, RobobuggyLogicNotificationMeasurement.class);
+                    logicNotificationPub.publish(transmitMessage);
                     break;
                 case StateMessage.VERSION_ID:
                     transmitMessage = translator.fromJson(sensorDataJson, StateMessage.class);
                     break;
                 case SteeringMeasurement.VERSION_ID:
-                	if(sensorDataJson.get("topicName").getAsString().equals(NodeChannel.STEERING.getMsgPath())){
-                		transmitMessage = translator.fromJson(sensorDataJson, SteeringMeasurement.class);
-                	}else{
-                		return transmitMessage;
-                	}
+                    // want to filter by steering feedback
+                    if(sensorDataJson.get("topicName").getAsString().equals(NodeChannel.STEERING.getMsgPath())) {
+                        transmitMessage = translator.fromJson(sensorDataJson, SteeringMeasurement.class);
+                        steeringPub.publish(transmitMessage);
+                    }
+                    else if(sensorDataJson.get("topicName").getAsString().equals(NodeChannel.STEERING_COMMANDED.getMsgPath())) {
+                        transmitMessage = translator.fromJson(sensorDataJson, SteeringMeasurement.class);
+                        steeringCommandPub.publish(transmitMessage);
+                    }
+                    // any other type of steering message we ignore
+                    else {
+                        return transmitMessage;
+                    }
                     break;
                 case WheelAngleCommandMeasurement.VERSION_ID:
                     transmitMessage = translator.fromJson(sensorDataJson, WheelAngleCommandMeasurement.class);
@@ -139,45 +163,6 @@ public class PlayBackUtil {
                 default:
                     break;
             }
-            long sensorDt = (sensorTime-sensorStartTime);
-            long dt = (long) (sensorDt/playBackSpeed) - playBacktime;
-            if(dt> 10){ //Milliseconds
-            	Thread.sleep(dt);
-            }
-            	
-            
-            //actually send the message  //TODO stop from using version id, should use topic instead
-            switch (versionID) {
-            case BrakeMessage.VERSION_ID:
-                brakePub.publish(transmitMessage);
-                break;
-            case EncoderMeasurement.VERSION_ID:
-                encoderPub.publish(transmitMessage);
-                break;
-            case GpsMeasurement.VERSION_ID:
-                gpsPub.publish(transmitMessage);
-                break;
-            case GuiLoggingButtonMessage.VERSION_ID:
-                loggingButtonPub.publish(transmitMessage);
-                break;
-            case ImuMeasurement.VERSION_ID:
-                imuPub.publish(transmitMessage);
-                break;
-            case IMUAngularPositionMessage.VERSION_ID:
-            	imuPosition.publish(transmitMessage);
-            	break;
-            case RobobuggyLogicNotificationMeasurement.VERSION_ID:
-                logicNotificationPub.publish(transmitMessage);
-                break;
-            case SteeringMeasurement.VERSION_ID:
-                steeringPub.publish(transmitMessage);
-                break;
-            case MagneticMeasurement.VERSION_ID:
-                magPub.publish(transmitMessage);
-                break;
-            default:
-                break;
-        }
 			return transmitMessage;
     }
 	

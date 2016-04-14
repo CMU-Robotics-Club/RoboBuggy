@@ -60,43 +60,12 @@ public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListen
 		
 	    int axisVal;
 	    float scale;
-
-	    switch(m.getFormatSelect()) {
-	    case 1:
-	    	System.out.println("Here\n");
-	        scale = 10; // 0.1 degrees
-	        if (m.getFf0()) offset =  offset + 6; // Skip over acc
-	        if (m.getFf1()) offset = offset + 6;// Skip over lin acc
-	        if (m.getFf2()) offset = offset + 6; // Skip over ang vel
-	        if (m.getFf3()) offset = offset + 6; // Skip over mag
-	        if (m.getFf4()) offset = offset + 6; // Skip over inclination
-	        if (!m.getFf5()) System.out.println("Compass heading flag not set!\n");
-	        	
-	        	break;
-	    case 0:
-	    case 2:
-	    case 3:
-	        return; // No calibrated compass heading in this format
-	    default:
-	        return; // The format number was unrecognized
-	    }
-
+		
 	    if (offset < 0) {
 	        return; // Compass heading flag not set
 	    }
 
-	    
-	    
-	    // Extract and convert the compass heading data
-	    axisVal = data[offset + 1] << 8 |  data[offset + 0];
-	    double compassHeading = ((float) axisVal) / scale; //convertQNToDouble((byte)data[offset], (byte)data[offset+1], 10);//
-		
-		System.out.println("Compass heading: " + compassHeading);
-	    
 
-		
-		/*
-		
 		//we do not parse ff0
 		if(m.getFf0()){
 			offset += 6;
@@ -168,12 +137,10 @@ public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListen
 			double pitch = -r31/Math.sqrt(r32*r32 + r33*r33);
 			double roll = Math.atan(r32/r33);
 			
-			System.out.println("Yaw: " + yaw + " Pitch: " + pitch + " Roll: " + roll);
-			
 			angPosPub.publish(new IMUAngularPositionMessage(rot));
 			offset += 8;
 		}
-		*/
+
 	}
 
 	@Override
