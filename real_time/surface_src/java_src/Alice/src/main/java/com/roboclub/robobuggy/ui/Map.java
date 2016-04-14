@@ -45,7 +45,7 @@ public class Map extends JPanel {
 
     private double mapViewerLat = 40.440138;
     private double mapViewerLon = -79.945306;
-    private int zoomLevel = 17;
+    private int zoomLevel = 20;
 
     private double mapDragX = -1;
     private double mapDragY = -1;
@@ -60,15 +60,15 @@ public class Map extends JPanel {
         this.add(getMapTree());
         
         //adds track buggy  
-//        new Subscriber("Map",NodeChannel.POSE.getMsgPath(), new MessageListener() {
-//			//TODO make this optional
-//			@Override
-//			public void actionPerformed(String topicName, Message m) {
-//				GPSPoseMessage gpsM = (GPSPoseMessage)m;
-		     //   getMapTree().getViewer().setDisplayPosition(new Coordinate(gpsM.getLatitude(),
-		     //   		gpsM.getLongitude()),zoomLevel);				
-//			}
-//		});
+        new Subscriber("Map",NodeChannel.POSE.getMsgPath(), new MessageListener() {
+			//TODO make this optional
+			@Override
+			public void actionPerformed(String topicName, Message m) {
+				GPSPoseMessage gpsM = (GPSPoseMessage)m;
+		        getMapTree().getViewer().setDisplayPosition(new Coordinate(gpsM.getLatitude(),
+		        		gpsM.getLongitude()),19);				
+			}
+		});
     }
 
 

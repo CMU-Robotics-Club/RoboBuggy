@@ -68,13 +68,13 @@ public class KfLocalizer extends PeriodicNode{
 		state = new Matrix(start);
 		
 		double[][] predictCovarianceArray = {
-				{100, 0, 0, 0, 0, 0, 0}, //x
-				{0, 100, 0, 0, 0, 0, 0}, //y
-				{0, 0, 100, 0, 0, 0, 0}, //x_b
-				{0, 0, 0, 100, 0, 0, 0}, //y_b
-				{0, 0, 0, 0, 100, 0, 0}, //th
-				{0, 0, 0, 0, 0, 100, 0}, //th_dot
-				{0, 0, 0, 0, 0, 0, 100} //heading 
+				{10, 0, 0, 0, 0, 0, 0}, //x
+				{0, 10, 0, 0, 0, 0, 0}, //y
+				{0, 0, 10, 0, 0, 0, 0}, //x_b
+				{0, 0, 0, 10, 0, 0, 0}, //y_b
+				{0, 0, 0, 0, 10, 0, 0}, //th
+				{0, 0, 0, 0, 0, 10, 0}, //th_dot
+				{0, 0, 0, 0, 0, 0, 10} //heading 
 		};
 		predictCovariance= new Matrix(predictCovarianceArray);
 		
@@ -86,8 +86,8 @@ public class KfLocalizer extends PeriodicNode{
               GpsMeasurement newGPSData = (GpsMeasurement)m; 
           	  LocTuple gpsLatLng = new LocTuple(newGPSData.getLatitude(),newGPSData.getLongitude());
     		  UTMTuple gpsUTM = LocalizerUtil.Deg2UTM(gpsLatLng);
-              double dx = gpsUTM.Easting - lastLastGPS.Easting;
-              double dy = gpsUTM.Northing - lastLastGPS.Northing;
+              double dx = gpsUTM.Easting - lastGPS.Easting;
+              double dy = gpsUTM.Northing - lastGPS.Northing;
               double th = Math.toDegrees(Math.atan2(dy, dx));
               lastLastGPS = lastGPS;
               lastGPS = gpsUTM;

@@ -29,8 +29,8 @@ public final class AnalyticsPanel extends RobobuggyGUIContainer {
 		name = "analytics";
 		dataPanel = new DataPanel();
 		BuggyStatusPanel buggyStatusPanel = new BuggyStatusPanel();
-		this.addComponent(dataPanel, 0, 0, 1, .6);
-		this.addComponent(buggyStatusPanel, 0, .6, 1, .4);
+		this.addComponent(dataPanel, 0, 0, 1, 1);
+		//this.addComponent(buggyStatusPanel, 0, .6, 1, .4);
 
 	}
 	
