@@ -49,7 +49,7 @@ public class SensorPlayer extends Thread {
 
 
 
-    JsonArray sensorDataArray;
+    private JsonArray sensorDataArray;
 
     // ---- Log File Defaults ----
     private static final String TERMINATING_VERSION_ID = "STOP";
