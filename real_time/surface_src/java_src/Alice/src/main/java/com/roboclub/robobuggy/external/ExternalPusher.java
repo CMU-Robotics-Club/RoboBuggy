@@ -54,7 +54,6 @@ public class ExternalPusher {
 	 * Method to subscribe to all channels.
 	 */
 	private void subscribeToAll() {
-		System.out.println("subscribe to all the things");
 		MessageListener callback = new MessageListener() {
 			
 			@Override
