@@ -154,7 +154,7 @@ public class KfLocalizer extends PeriodicNode{
 	protected void update() {
 		 predictStep();
 		 System.out.println("publishing"+state.get(0, 0) + ","+state.get(1, 0)+","+state.get(2, 0));
-git 		 //publish state
+ 		 //publish state
 
 		 posePub.publish(new GPSPoseMessage(new Date(), state.get(1, 0), state.get(0,0), state.get(2, 0)));
 	}

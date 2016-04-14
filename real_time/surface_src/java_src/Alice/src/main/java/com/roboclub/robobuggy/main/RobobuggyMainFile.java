@@ -45,18 +45,6 @@ public class RobobuggyMainFile {
 		new RobobuggyLogicNotification("Starting Robot", RobobuggyMessageLevel.NOTE);
 		robot.startNodes();
 
-		Publisher gpspub = new Publisher(NodeChannel.GPS.getMsgPath());
-
-		new Thread(() -> {
-			while (true) {
-				try {
-					Thread.sleep(100);
-					gpspub.publish(new GpsMeasurement(40.440115 + Math.random() / 1000, -79.945621 + Math.random() / 1000));
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}).start();
 	}
 
     /**
