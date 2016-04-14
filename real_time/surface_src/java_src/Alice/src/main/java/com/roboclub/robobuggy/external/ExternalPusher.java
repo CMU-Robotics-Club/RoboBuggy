@@ -95,6 +95,8 @@ public class ExternalPusher {
 							osw = new OutputStreamWriter(socket.getOutputStream(), "UTF-8");
 							threadConnecting = false;
 							return;
+						} catch (RuntimeException e) {
+							throw e;
 						} catch (Exception e) {
 							new RobobuggyLogicNotification("Attempting to reestablish connection to external server",
 									RobobuggyMessageLevel.WARNING);
