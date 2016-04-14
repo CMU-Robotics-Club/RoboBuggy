@@ -1,8 +1,13 @@
 package com.roboclub.robobuggy.main;
 
+import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.robots.AbstractRobot;
+import com.roboclub.robobuggy.robots.PlayBackRobot;
 import com.roboclub.robobuggy.robots.SimRobot;
+import com.roboclub.robobuggy.robots.TransistorAuton;
 import com.roboclub.robobuggy.robots.TransistorDataCollection;
+import com.roboclub.robobuggy.ros.NodeChannel;
+import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ui.Gui;
 import com.roboclub.robobuggy.utilities.JNISetup;
 
@@ -18,7 +23,7 @@ public class RobobuggyMainFile {
     public static void main(String[] args) {
 		new RobobuggyLogicNotification("Robobuggy Alice program started", RobobuggyMessageLevel.NOTE);
 
-        try {
+		try {
 			JNISetup.setupJNI(); //must run for jni to install
 			//note that errors are just printed to the console since the gui and logging system  has not been created yet
 		} catch (NoSuchFieldException | SecurityException | IllegalAccessException | IllegalArgumentException e1) {
@@ -28,18 +33,20 @@ public class RobobuggyMainFile {
 		RobobuggyConfigFile.loadConfigFile(); //TODO make sure that logic Notification is setup before this point
 
 		new RobobuggyLogicNotification("Initializing Robot", RobobuggyMessageLevel.NOTE);
-        robot = SimRobot.getInstance();
+//		robot = TransistorDataCollection.getInstance();
+		//robot = SimRobot.getInstance();
+		robot = PlayBackRobot.getInstance();
 
 
 		new RobobuggyLogicNotification("Initializing GUI", RobobuggyMessageLevel.NOTE);
-        Gui.getInstance();
+		Gui.getInstance();
 
 
 		new RobobuggyLogicNotification("Starting Robot", RobobuggyMessageLevel.NOTE);
 		robot.startNodes();
 
-    }
-    
+	}
+
     /**
      * Evaluates to a reference to the current Robot  
      * @return the robot reference 

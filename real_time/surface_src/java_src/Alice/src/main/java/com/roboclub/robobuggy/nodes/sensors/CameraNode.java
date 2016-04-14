@@ -36,6 +36,10 @@ public class CameraNode extends PeriodicNode{
 	private int count = 0;
 	private SequenceEncoder videoEncoder;
 
+	static {
+	    Webcam.setHandleTermSignal(true);
+	}
+	
 	/**
 	 *  @param channel The channel to publish messages on
 	 * @param period  How often new images should be pulled
@@ -64,7 +68,7 @@ public class CameraNode extends PeriodicNode{
 			Webcam webcam = Webcam.getDefault();
 			webcam.setCustomViewSizes(new Dimension[] {WebcamResolution.QVGA.getSize(), WebcamResolution.HD720.getSize()});
 			webcam.setViewSize(WebcamResolution.QVGA.getSize());
-			webcam.open();
+			
 		}
 		
 		//setup image publisher
@@ -86,10 +90,19 @@ public class CameraNode extends PeriodicNode{
 					if (status.equals(LoggingNode.LoggingNodeStatus.STARTED_LOGGING)) {
 						JsonObject params = message.getParams();
 						String outputDir = params.get("outputDir").getAsString();
+
+						if (!webcam.isOpen()) {
+							webcam.open();
+						}
 						videoEncoder = new SequenceEncoder(new File(outputDir + "/webcam.mp4"));
-					} else if (status.equals(LoggingNode.LoggingNodeStatus.STOPPED_LOGGING)) {
-						videoEncoder.finish();
-						videoEncoder = null;
+						new RobobuggyLogicNotification("Camera ready", RobobuggyMessageLevel.NOTE);
+					} 
+					else if (status.equals(LoggingNode.LoggingNodeStatus.STOPPED_LOGGING)) {
+						if (webcam.isOpen()) {
+							videoEncoder.finish();
+							webcam.close();
+						}
+
 					} else {
 						new RobobuggyLogicNotification("Status not recognized by CameraNode", RobobuggyMessageLevel.WARNING);
 					}
@@ -111,8 +124,7 @@ public class CameraNode extends PeriodicNode{
 
 	@Override
 	protected boolean shutdownDecoratorNode() {
-		webcam.close();
-		return false;
+		return true;
 	}
 	
 	@Override
@@ -126,12 +138,6 @@ public class CameraNode extends PeriodicNode{
 
 					if (videoEncoder != null) {
 						videoEncoder.encodeImage(mostRecentImage);
-					}
-				} else {
-					if (!webcam.open()) {
-						new RobobuggyLogicNotification("Webcam was closed and couldn't be reopened!", RobobuggyMessageLevel.EXCEPTION);
-					} else {
-						new RobobuggyLogicNotification("Webcam was closed but successfully reopened!", RobobuggyMessageLevel.WARNING);
 					}
 				}
 			}
