@@ -30,7 +30,7 @@ public class HighTrustGPSLocalizer implements Node{
     private double buggyFrameRotZ;
     private Date mostRecentUpdate;
     private double lastEncoderReading;
-    private double buggyHeading;
+    private double buggySteeringAngle;
     private double oldGPSX;
     private double oldGPSY;
 
@@ -45,7 +45,7 @@ public class HighTrustGPSLocalizer implements Node{
     	buggyFrameGpsX = 0.0;
     	buggyFrameGpsY = 0.0;
         buggyFrameRotZ = 0.0;
-        buggyHeading = 0.0;// wheel direction in buggy frame
+        buggySteeringAngle = 0.0;// wheel direction in buggy frame
         lastEncoderReading = 0.0;
         posePub = new Publisher(NodeChannel.POSE.getMsgPath());
         mostRecentUpdate = new Date();
@@ -56,8 +56,7 @@ public class HighTrustGPSLocalizer implements Node{
 			public void actionPerformed(String topicName, Message m) {
 				SteeringMeasurement steerM = (SteeringMeasurement)m;
 				// TODO Auto-generated method stub
-	             buggyHeading  = steerM.getAngle();
-	              publishUpdate();
+	            buggySteeringAngle  = steerM.getAngle();
 			}
 		});
         
@@ -121,10 +120,12 @@ public class HighTrustGPSLocalizer implements Node{
                 // convert the feet from the last message into a delta degree, and update our position
                 double currentEncoderMeasurement = measurement.getDistance();
                 double deltaDistance = currentEncoderMeasurement - lastEncoderReading;
-                LocTuple deltaPos = LocalizerUtil.convertMetersToLatLng(deltaDistance, buggyFrameRotZ+buggyHeading);
+                // update heading around curve
+                buggyFrameRotZ += MotionModel.getHeadingChange(deltaDistance, buggySteeringAngle);
+                // advance by foward in new heading
+                LocTuple deltaPos = LocalizerUtil.convertMetersToLatLng(deltaDistance, buggyFrameRotZ);
                 buggyFrameGpsY += deltaPos.getLatitude();
                 buggyFrameGpsX += deltaPos.getLongitude();
-               // buggyFrameRotZ = buggyFrameRotZ+buggyHeading;
                 lastEncoderReading = currentEncoderMeasurement;
 
                 publishUpdate();
