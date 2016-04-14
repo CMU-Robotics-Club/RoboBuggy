@@ -2,15 +2,18 @@ package com.roboclub.robobuggy.ui;
 
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
+import com.roboclub.robobuggy.nodes.localizers.LocTuple;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
+
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.MapMarkerDot;
 import org.openstreetmap.gui.jmapviewer.MapPolygonImpl;
 
 import javax.swing.JPanel;
+
 import java.awt.Color;
 import java.awt.Graphics;
 
@@ -75,7 +78,7 @@ public class GpsPanel extends JPanel {
 				double longitude = ((GpsMeasurement) m).getLongitude();
 
 				map.addPointsToMapTree(Color.BLUE, new LocTuple(latitude, longitude));
-				map.updateArrow();
+//				map.updateArrow();
 
 				map.repaint();
 				GpsPanel.this.repaint();  // refresh screen
@@ -84,7 +87,7 @@ public class GpsPanel extends JPanel {
 		});
 		
 		new Subscriber("uiGpsPanel", NodeChannel.POSE.getMsgPath(), new MessageListener() {
-			
+
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				GPSPoseMessage curpose = (GPSPoseMessage) m;
@@ -95,7 +98,7 @@ public class GpsPanel extends JPanel {
 		});
 
 		this.add(map);
-		map.repaint();
+//		map.repaint();
 
 	}
 

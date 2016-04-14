@@ -42,17 +42,20 @@ public class WayPointUtil {
 
 		File waypointFile = new File(filename);
 		Gson translator = new GsonBuilder().serializeSpecialFloatingPointValues().create();
-		Scanner fileReader = new Scanner(new FileInputStream(waypointFile), "UTF-8");
-
-		while (fileReader.hasNextLine()) {
-			String nextline = fileReader.nextLine();
-			if (nextline.equals("")) {
-				break;
+		try{
+			Scanner fileReader = new Scanner(new FileInputStream(waypointFile), "UTF-8");
+			while (fileReader.hasNextLine()) {
+				String nextline = fileReader.nextLine();
+				if (nextline.equals("")) {
+					break;
+				}
+				waypoints.add(translator.fromJson(nextline, GpsMeasurement.class));
 			}
-			waypoints.add(translator.fromJson(nextline, GpsMeasurement.class));
-		}
-		
 		fileReader.close();
+		
+		}catch(java.io.FileNotFoundException e){
+			new RobobuggyLogicNotification("could not read way point file:"+e.getMessage(), RobobuggyMessageLevel.EXCEPTION);
+		}
 
 		return waypoints;
 	}
