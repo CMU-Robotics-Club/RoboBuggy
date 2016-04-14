@@ -60,27 +60,7 @@ public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListen
 		
 	    int axisVal;
 	    float scale;
-
-//	    switch(m.getFormatSelect()) {
-//	    case 1:
-////	    	System.out.println("Here\n");
-//	        scale = 10; // 0.1 degrees
-//	        if (m.getFf0()) offset =  offset + 6; // Skip over acc
-//	        if (m.getFf1()) offset = offset + 6;// Skip over lin acc
-//	        if (m.getFf2()) offset = offset + 6; // Skip over ang vel
-//	        if (m.getFf3()) offset = offset + 6; // Skip over mag
-//	        if (m.getFf4()) offset = offset + 6; // Skip over inclination
-//	        if (!m.getFf5()) System.out.println("Compass heading flag not set!\n");
-//
-//	        	break;
-//	    case 0:
-//	    case 2:
-//	    case 3:
-//	        return; // No calibrated compass heading in this format
-//	    default:
-//	        return; // The format number was unrecognized
-//	    }
-
+		
 	    if (offset < 0) {
 	        return; // Compass heading flag not set
 	    }

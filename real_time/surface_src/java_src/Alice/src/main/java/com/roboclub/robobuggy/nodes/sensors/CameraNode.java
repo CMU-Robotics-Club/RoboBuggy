@@ -99,10 +99,8 @@ public class CameraNode extends PeriodicNode{
 					} 
 					else if (status.equals(LoggingNode.LoggingNodeStatus.STOPPED_LOGGING)) {
 						if (webcam.isOpen()) {
+							videoEncoder.finish();
 							webcam.close();
-							synchronized (CameraNode.this) {
-								videoEncoder.finish();
-							}
 						}
 
 					} else {
@@ -142,13 +140,6 @@ public class CameraNode extends PeriodicNode{
 						videoEncoder.encodeImage(mostRecentImage);
 					}
 				}
-//				else {
-//					if (!webcam.isOpen()) {
-//						new RobobuggyLogicNotification("Webcam was closed and couldn't be reopened!", RobobuggyMessageLevel.EXCEPTION);
-//					} else {
-//						new RobobuggyLogicNotification("Webcam was closed but successfully reopened!", RobobuggyMessageLevel.WARNING);
-//					}
-//				}
 			}
 		}
 		catch (IOException e) {

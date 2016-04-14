@@ -68,20 +68,20 @@ public class GpsPanel extends JPanel {
 				new Coordinate(0, 1)
 		);
 
-//		gpsSub = new Subscriber("uiGpsPanel", NodeChannel.GPS.getMsgPath(), new MessageListener() {
-//			@Override
-//			public void actionPerformed(String topicName, Message m) {
-//				double latitude = ((GpsMeasurement)m).getLatitude();
-//				double longitude = ((GpsMeasurement) m).getLongitude();
-//
-//				map.addPointsToMapTree(Color.BLUE, new LocTuple(latitude, longitude));
-//				map.updateArrow();
-//
-//				map.repaint();
-//				GpsPanel.this.repaint();  // refresh screen
-//
-//			}
-//		});
+		gpsSub = new Subscriber("uiGpsPanel", NodeChannel.GPS.getMsgPath(), new MessageListener() {
+			@Override
+			public void actionPerformed(String topicName, Message m) {
+				double latitude = ((GpsMeasurement)m).getLatitude();
+				double longitude = ((GpsMeasurement) m).getLongitude();
+
+				map.addPointsToMapTree(Color.BLUE, new LocTuple(latitude, longitude));
+				map.updateArrow();
+
+				map.repaint();
+				GpsPanel.this.repaint();  // refresh screen
+
+			}
+		});
 		
 		new Subscriber("uiGpsPanel", NodeChannel.POSE.getMsgPath(), new MessageListener() {
 

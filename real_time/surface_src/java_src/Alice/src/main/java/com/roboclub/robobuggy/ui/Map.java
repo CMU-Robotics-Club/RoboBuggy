@@ -41,7 +41,7 @@ public class Map extends JPanel {
 
     private double mapDragX = -1;
     private double mapDragY = -1;
-    private static final int MAX_POINT_BUF_SIZE = 20;
+    private static final int MAX_POINT_BUF_SIZE = 100;
 
     /**
      * initializes a new Map with cache loaded
