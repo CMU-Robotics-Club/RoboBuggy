@@ -1,5 +1,8 @@
 package com.roboclub.robobuggy.robots;
 
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
@@ -57,16 +60,61 @@ public final class TransistorDataCollection extends AbstractRobot {
 				NodeChannel.getLoggingChannels()));
 		nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING, RobobuggyConfigFile.getComPortRBSM(),
 				RobobuggyConfigFile.RBSM_COMMAND_PERIOD));
-//		nodeList.add(new CameraNode(NodeChannel.PUSHBAR_CAMERA, 100));
+		nodeList.add(new CameraNode(NodeChannel.PUSHBAR_CAMERA, 100));
 		nodeList.add(new HillCrestImuNode());
-		nodeList.add(new HighTrustGPSLocalizer());
-//		new SensorPlayer(RobobuggyConfigFile.getPlayBackSourceFile(), 1);
 
 		//setup the gui 
 		RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow",1.0,1.0);	
 		Gui.getInstance().addWindow(mainWindow);
 		RobobuggyGUITabs tabs = new RobobuggyGUITabs();
 		mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
+		
+		mainWindow.addWindowListener(new WindowListener() {
+			
+			@Override
+			public void windowOpened(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowIconified(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowDeiconified(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowDeactivated(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowClosing(WindowEvent e) {
+				// TODO Auto-generated method stub
+				System.out.println("shutting down");
+				TransistorDataCollection.this.shutDown();
+			}
+			
+			@Override
+			public void windowClosed(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowActivated(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
 		tabs.addTab(new MainGuiWindow(), "Home");
 //		tabs.addTab(new ImuVisualWindow(), "IMU");
 //		tabs.addTab(new PoseGraphsPanel(),"poses");

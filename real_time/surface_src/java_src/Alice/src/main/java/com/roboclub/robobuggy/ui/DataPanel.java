@@ -33,7 +33,7 @@ public class DataPanel extends RobobuggyGUIContainer {
 	private static final long serialVersionUID = 3950373392222628865L;
 	private static final int MAX_LENGTH = 10;
 	
-	private GpsPanel gpsPanel;
+//	private GpsPanel gpsPanel;
 	
 	/* Data Fields */
 	private JLabel aX, aY, aZ;
@@ -51,8 +51,8 @@ public class DataPanel extends RobobuggyGUIContainer {
 	 * Construct a new {@link DataPanel}
 	 */
 	public DataPanel() {
-		gpsPanel = new GpsPanel();
-		this.addComponent(gpsPanel, 0, 0, 1, .8);
+//		gpsPanel = new GpsPanel();
+//		this.addComponent(gpsPanel, 0, 0, 1, .8);
 		this.addComponent(createDataPanel(), 0, .8, 1, .2);
 	}
 	
@@ -253,7 +253,7 @@ public class DataPanel extends RobobuggyGUIContainer {
 	 * @return the gps panel
 	 */
 	public GpsPanel getGpsPanel() {
-		return gpsPanel;
+		return null;//gpsPanel;
 	}
 	
 	

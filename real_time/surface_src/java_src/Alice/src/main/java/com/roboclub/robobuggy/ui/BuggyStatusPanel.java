@@ -54,6 +54,7 @@ public class BuggyStatusPanel extends RobobuggyGUIContainer {
             e.printStackTrace();
         }
 
+//        this.addComponent(new ImageViewer(NodeChannel.PUSHBAR_CAMERA.getMsgPath()), .75, 0, .25, 1.0);
     }
 
     private void setupDataLoaders() {

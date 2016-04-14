@@ -157,7 +157,7 @@ public class LoggingNode extends BuggyDecoratorNode {
                 @Override
                 public void actionPerformed(String topicName, Message m) {
                     while (!messageQueue.offer(m)){
-                    	messageQueue.remove();
+                    	messageQueue.poll();
                     }
                 }
             });
