@@ -1,6 +1,5 @@
 package com.roboclub.robobuggy.nodes.localizers;
 
-import com.roboclub.robobuggy.ui.LocTuple;
 import org.junit.Test;
 
 import java.util.Map;

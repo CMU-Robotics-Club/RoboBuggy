@@ -15,6 +15,7 @@ import com.roboclub.robobuggy.messages.FingerPrintMessage;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
+import com.roboclub.robobuggy.messages.IMUAngularPositionMessage;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.messages.MagneticMeasurement;
 import com.roboclub.robobuggy.messages.RemoteWheelAngleRequest;
@@ -34,12 +35,13 @@ public class PlayBackUtil {
 	  private static final String METADATA_NAME = "Robobuggy Data Logs";
 	  private static final String METADATA_SCHEMA_VERSION = "1.1";
 	  private static final String METADATA_HIGHLEVEL_SW_VERSION = "1.0.0";
+	  private static final Publisher  imuPosition = new Publisher(NodeChannel.IMU_ANG_POS.getMsgPath());
 	  private static final  Publisher imuPub = new Publisher(NodeChannel.IMU.getMsgPath());
 	  private static final Publisher  magPub = new Publisher(NodeChannel.IMU_MAGNETIC.getMsgPath());;
 	  private static final Publisher  gpsPub = new Publisher(NodeChannel.GPS.getMsgPath());;
 	  private static final  Publisher encoderPub  = new Publisher(NodeChannel.ENCODER.getMsgPath());
 	  private static final Publisher  brakePub = new Publisher(NodeChannel.BRAKE_STATE.getMsgPath());
-	  private static final Publisher  steeringPub = new Publisher(NodeChannel.STEERING_COMMANDED.getMsgPath());
+	  private static final Publisher  steeringPub = new Publisher(NodeChannel.STEERING.getMsgPath());
 	  private static final Publisher  loggingButtonPub  = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
 	  private static final Publisher  logicNotificationPub = new Publisher(NodeChannel.LOGIC_NOTIFICATION.getMsgPath());
 
@@ -108,6 +110,9 @@ public class PlayBackUtil {
                 case RemoteWheelAngleRequest.VERSION_ID:
                     transmitMessage = translator.fromJson(sensorDataJson, RemoteWheelAngleRequest.class);
                     break;
+                case IMUAngularPositionMessage.VERSION_ID:
+                	transmitMessage = translator.fromJson(sensorDataJson, IMUAngularPositionMessage.class);
+                	break;
                 case ResetMessage.VERSION_ID:
                     transmitMessage = translator.fromJson(sensorDataJson, ResetMessage.class);
                     break;
@@ -118,7 +123,11 @@ public class PlayBackUtil {
                     transmitMessage = translator.fromJson(sensorDataJson, StateMessage.class);
                     break;
                 case SteeringMeasurement.VERSION_ID:
-                    transmitMessage = translator.fromJson(sensorDataJson, SteeringMeasurement.class);
+                	if(sensorDataJson.get("topicName").getAsString().equals(NodeChannel.STEERING.getMsgPath())){
+                		transmitMessage = translator.fromJson(sensorDataJson, SteeringMeasurement.class);
+                	}else{
+                		return transmitMessage;
+                	}
                     break;
                 case WheelAngleCommandMeasurement.VERSION_ID:
                     transmitMessage = translator.fromJson(sensorDataJson, WheelAngleCommandMeasurement.class);
@@ -154,6 +163,9 @@ public class PlayBackUtil {
             case ImuMeasurement.VERSION_ID:
                 imuPub.publish(transmitMessage);
                 break;
+            case IMUAngularPositionMessage.VERSION_ID:
+            	imuPosition.publish(transmitMessage);
+            	break;
             case RobobuggyLogicNotificationMeasurement.VERSION_ID:
                 logicNotificationPub.publish(transmitMessage);
                 break;

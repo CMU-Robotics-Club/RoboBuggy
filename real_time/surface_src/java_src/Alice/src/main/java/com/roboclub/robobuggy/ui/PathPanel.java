@@ -2,9 +2,11 @@ package com.roboclub.robobuggy.ui;
 
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
+import com.roboclub.robobuggy.nodes.localizers.LocTuple;
 import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
 
 import javax.swing.JPanel;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.io.IOException;

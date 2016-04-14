@@ -16,7 +16,6 @@ import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
-import com.roboclub.robobuggy.ui.LocTuple;
 
 import java.util.Date;
 
@@ -24,51 +23,107 @@ import java.util.Date;
  * localizes using a kalman filter
  */
 public class KfLocalizer extends PeriodicNode{
-	private Matrix motionModel;
 	private Publisher posePub;
 	private Matrix state;
 	private double lastEncoderReading;
-//	private Date startTime;
-	private Date mostRecentUpdateTime;
+	private long lastEncoderReadingTime;
 	private Matrix covariance;
-	private double buggyFrameGpsX;
-	private double buggyFrameGpsY;
-//	private Matrix matrixDF;
+	private UTMTuple lastGPS;
+	private Matrix motionMatrix;
+	private Date mostRecentUpdateTime;
+	private Matrix predictCovariance;
+	private double wheelBase;
 	
 	public KfLocalizer(int period) {
 		super(new BuggyBaseNode(NodeChannel.POSE), period, "KF");
 		posePub = new Publisher(NodeChannel.POSE.getMsgPath());
-//		startTime = new Date();
-		double[][] startCovariance = {{1000,0,0},{0,1000,0},{0,0,1000}};
-		covariance = new Matrix(startCovariance);
-		double [][] start = {{-79.9437947},{40.4416841},{-110}};
-		state = new Matrix(start);
+		wheelBase = 1.13; //meters
 
-//		mostRecentUpdateTime = startTime;
-		//matrixDF = //TODO
+		double[][] startCovariance = {
+					{1,0,0,0,0,0,0}, //x
+					{0,1,0,0,0,0,0}, //y
+					{0,0,1,0,0,0,0},    //x_b
+					{0,0,0,1,0,0,0},  //y_b
+					{0,0,0,0,1,0,0}, //th
+					{0,0,0,0,0,1,0},  //th_dot
+					{0,0,0,0,0,0,1}   //heading
+					};
+		covariance = new Matrix(startCovariance);
+		//state [x,y,x_b_dot,y_b_dot,th,th_dot,gamma]
+		LocTuple startLatLng = new LocTuple(40.4416651, -79.9437577);
+		UTMTuple startUTM = LocalizerUtil.Deg2UTM(startLatLng);
+		lastGPS = startUTM;
+		lastEncoderReadingTime = new Date().getTime();
+		mostRecentUpdateTime = new Date();
+		
+		double [][] start = {{startUTM.Easting},   // X meters
+							 {startUTM.Northing},  // Y meters 
+							 {0},                  // x_b_dot
+							 {0},                  // y_b_dot
+							 {-110},		       // th degree
+							 {0},			       // th_dot degrees/second
+							 {0}          	       // heading degree
+		};
+		state = new Matrix(start);
+		
+		double[][] predictCovarianceArray = {
+				{1, 0, 0, 0, 0, 0, 0}, //x
+				{0, 1, 0, 0, 0, 0, 0}, //y
+				{0, 0, 1, 0, 0, 0, 0}, //x_b
+				{0, 0, 0, 1, 0, 0, 0}, //y_b
+				{0, 0, 0, 0, 1, 0, 0}, //th
+				{0, 0, 0, 0, 0, 1, 0}, //th_dot
+				{0, 0, 0, 0, 0, 0, 1} //heading 
+		};
+		predictCovariance= new Matrix(predictCovarianceArray);
+		
 		
         //Initialize subscriber to GPS measurements
         new Subscriber("htGpsLoc", NodeChannel.GPS.getMsgPath(), new MessageListener() {
             @Override
             public void actionPerformed(String topicName, Message m) {
-                GpsMeasurement newGPSData = (GpsMeasurement)m;
-                
-              double oldGPSX = buggyFrameGpsX;
-              double oldGPSY = buggyFrameGpsY;
-             	buggyFrameGpsX = newGPSData.getLongitude();
-             	buggyFrameGpsY = newGPSData.getLatitude();
-             double dLat = buggyFrameGpsY - oldGPSY;
-             double dLon = buggyFrameGpsX - oldGPSX;
+              GpsMeasurement newGPSData = (GpsMeasurement)m; 
+          	  LocTuple gpsLatLng = new LocTuple(newGPSData.getLatitude(),newGPSData.getLongitude());
+    		  UTMTuple gpsUTM = LocalizerUtil.Deg2UTM(gpsLatLng);
+              double dx = gpsUTM.Easting - lastGPS.Easting;
+              double dy = gpsUTM.Northing - lastGPS.Northing;
+              double th = Math.toDegrees(Math.atan2(dy, dx));
+              lastGPS = gpsUTM;
              
-             double buggyFrameRotZ = Math.toDegrees(Math.atan2(LocalizerUtil.convertLatToMeters(dLat), LocalizerUtil.convertLonToMeters(dLon)));                
-             double[][] observationModel = {{5,0,0},{0,5,0},{0,0,5}};
-             double[][] meassurement = {{newGPSData.getLongitude()},{newGPSData.getLatitude()},{buggyFrameRotZ}};
-             double[][] updateCovariance = {{.5,0,0},{0,.5,0},{0,0,1}};
-             updateStep(new Matrix(observationModel),new Matrix(meassurement),new Matrix(updateCovariance));  
-                
+              double[][] observationModel = {{1,0,0,0,0,0,0}, //x
+            		                         {0,1,0,0,0,0,0}, //y
+            		                         {0,0,0,0,0,0,0}, //x_dot_b
+            		                         {0,0,0,0,0,0,0}, //y_dot_b
+            		                         {0,0,0,0,1,0,0}, //th
+            		                         {0,0,0,0,0,0,0}, //th_dot
+            		                         {0,0,0,0,0,0,0} //Heading
+            };
+              
+              //don't update angle if we did not move a lot
+              if(Math.sqrt(dx*dx + dy*dy) < .5){ 
+            	  observationModel[4][4] = 0;
+              }
+              
+              double[][] meassurement = {{gpsUTM.Easting},
+            		                     {gpsUTM.Northing},
+            		                     {0},
+            		                     {0},
+            		                     {th},
+            		                     {0},
+            		                     {0}
+              };
+              double[][] updateCovariance = {{1,  0, 0, 0, 0, 0, 0},  //x
+            		                         {0,  1, 0, 0, 0, 0, 0},  //y
+            		                         {0,   0, 1, 0, 0, 0, 0},  //x_dot
+            		                         {0,   0, 0, 1, 0, 0, 0},  //y_dot
+            		                         {0,   0, 0, 0, 1, 0, 0},  //th
+            		                         {0,   0, 0, 0, 0, 1, 0},  //th_dot  
+            		                         {0,   0, 0, 0, 0, 0, 1}   //heading
+            		                         };
+              updateStep(new Matrix(observationModel),new Matrix(meassurement),new Matrix(updateCovariance));  
             }});
         
-        
+     
         new Subscriber("HighTrustGpsLoc",NodeChannel.IMU_ANG_POS.getMsgPath(), ((topicName, m) -> {
         	
             IMUAngularPositionMessage mes = ((IMUAngularPositionMessage) m);
@@ -82,20 +137,37 @@ public class KfLocalizer extends PeriodicNode{
             double x = rot.times(xMat).get(0, 0);
             double y = rot.times(yMat).get(0, 0);
             double th = -(Math.toDegrees(Math.atan2(y, x))-90);
-            th = Util.normalizeAngleDeg((Util.normalizeAngleDeg(th)+state.get(2, 0))/2);
-            
-       
-            
-            double[][] observationModel= {{0,0,0},{0,0,0},{0,0,1}};
-            double[][] meassurement = {{0},{0},{th}};
-            double[][] updateCovariance ={{10000,0,0},{0,10000,0},{0,0,100}};
-            
-            
-  //          updateStep(new Matrix(observationModel),new Matrix(meassurement),new Matrix(updateCovariance));  
+                 double[][] observationModel = {{0,0,0,0,0,0,0}, //x
+                        {0,0,0,0,0,0,0}, //y
+                        {0,0,0,0,0,0,0}, //x_dot_b
+                        {0,0,0,0,0,0,0}, //y_dot_b
+                        {0,0,0,0,1,0,0}, //th
+                        {0,0,0,0,0,0,0}, //th_dot
+                        {0,0,0,0,0,0,0} //Heading
+                        };
+
+                double[][] meassurement = {{0},
+                    {0},
+                    {0},
+                    {0},
+                    {th},
+                    {0},
+                    {0}
+                };
+                double[][] updateCovariance = {
+                		{1,  0, 0, 0, 0, 0, 0},  //x
+                        {0,  1, 0, 0, 0, 0, 0},  //y
+                        {0,   0, 1, 0, 0, 0, 0},  //x_dot
+                        {0,   0, 0, 1, 0, 0, 0},  //y_dot
+                        {0,   0, 0, 0, 1, 0, 0},  //th
+                        {0,   0, 0, 0, 0, 1, 0},  //th_dot  
+                        {0,   0, 0, 0, 0, 0, 1}   //heading
+                        };
+              //  updateStep(new Matrix(observationModel),new Matrix(meassurement),new Matrix(updateCovariance)); 
 
         }));
        
-        
+       
         // TODO note that we will probably run into precision errors since the changes are so small
         // would be good to batch up the encoder updates until we get a margin that we know can be represented proeprly
         new Subscriber("htGpsLoc", NodeChannel.ENCODER.getMsgPath(), new MessageListener() {
@@ -106,17 +178,42 @@ public class KfLocalizer extends PeriodicNode{
                 // convert the feet from the last message into a delta degree, and update our position
                 double currentEncoderMeasurement = measurement.getDistance();
                 double deltaDistance = currentEncoderMeasurement - lastEncoderReading;
-
-                LocTuple deltaPos = LocalizerUtil.convertMetersToLatLng(deltaDistance, state.get(2, 0));
-                double X = state.get(0, 0)+deltaPos.getLongitude();
-                double Y = state.get(1, 0)+deltaPos.getLatitude();
-                double[][] observationMatrix = {{1,0,0},{0,1,0},{0,0,0}};
-                double[][] messure = {{X},{Y},{state.get(2, 0)}};
-                double[][] cov = {{100,0,0},{0,100,0},{0,0,100}};
-                
-          //     updateStep(new Matrix(observationMatrix), new Matrix(messure), new Matrix(cov));
+                long currentTime = new Date().getTime();
+                long dt = currentTime - lastEncoderReadingTime;
+                if(dt > 1){ //to remove numeric instability 
+                double bodySpeed = deltaDistance/(dt/1000.0);
+                lastEncoderReadingTime = currentTime;
                 lastEncoderReading = currentEncoderMeasurement;
 
+                double[][] observationModel = {
+                		{0,0,0,0,0,0,0}, //x
+                        {0,0,0,0,0,0,0}, //y
+                        {0,0,1,0,0,0,0}, //x_dot_b
+                        {0,0,0,0,0,0,0}, //y_dot_b
+                        {0,0,0,0,0,0,0}, //th
+                        {0,0,0,0,0,0,0}, //th_dot
+                        {0,0,0,0,0,0,0} //Heading
+                        };
+
+                double[][] meassurement = {{0},
+                    {0},
+                    {bodySpeed},
+                    {0},
+                    {0},
+                    {0},
+                    {0}
+                };
+                double[][] updateCovariance = {
+                		{1,  0, 0, 0, 0, 0, 0},  //x
+                        {0,  1, 0, 0, 0, 0, 0},  //y
+                        {0,   0, 1, 0, 0, 0, 0},  //x_dot
+                        {0,   0, 0, 1, 0, 0, 0},  //y_dot
+                        {0,   0, 0, 0, 1, 0, 0},  //th
+                        {0,   0, 0, 0, 0, 1, 0},  //th_dot  
+                        {0,   0, 0, 0, 0, 0, 1}   //heading
+                        };
+                updateStep(new Matrix(observationModel),new Matrix(meassurement),new Matrix(updateCovariance));  
+                }
             }});
         
         new Subscriber("htGpsLoc", NodeChannel.STEERING.getMsgPath(), new MessageListener() {
@@ -124,16 +221,36 @@ public class KfLocalizer extends PeriodicNode{
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				SteeringMeasurement steerM = (SteeringMeasurement)m;
-				// TODO Auto-generated method stub
-	             double buggyHeading  = steerM.getAngle();
-	             
-	                double[][] observationMatrix = {{0,0,0},{0,0,0},{0,0,1}};
-	                double[][] messure = {{0},{0},{state.get(2, 0)+buggyHeading}};
-	                double[][] cov = {{100,0,0},{0,100,0},{0,0,100}};
-//	                updateStep(new Matrix(observationMatrix), new Matrix(messure), new Matrix(cov));
+                double[][] observationModel = {{0,0,0,0,0,0,0}, //x
+                        {0,0,0,0,0,0,0}, //y
+                        {0,0,0,0,0,0,0}, //x_dot_b
+                        {0,0,0,0,0,0,0}, //y_dot_b
+                        {0,0,0,0,0,0,0}, //th
+                        {0,0,0,0,0,0,0}, //th_dot
+                        {0,0,0,0,0,0,1} //Heading
+                        };
 
+                double[][] meassurement = {{0},
+                    {0},
+                    {0},
+                    {0},
+                    {0},
+                    {0},
+                    {steerM.getAngle()}
+                };
+                double[][] updateCovariance = {
+                		{1,  0, 0, 0, 0, 0, 0},  //x
+                        {0,  1, 0, 0, 0, 0, 0},  //y
+                        {0,   0, 1, 0, 0, 0, 0},  //x_dot
+                        {0,   0, 0, 1, 0, 0, 0},  //y_dot
+                        {0,   0, 0, 0, 1, 0, 0},  //th
+                        {0,   0, 0, 0, 0, 1, 0},  //th_dot  
+                        {0,   0, 0, 0, 0, 0, 1}   //heading
+                        };
+                updateStep(new Matrix(observationModel),new Matrix(meassurement),new Matrix(updateCovariance)); 
 			}
 		});
+		
         
         resume();
         
@@ -141,24 +258,20 @@ public class KfLocalizer extends PeriodicNode{
 	
 	private synchronized void updateStep(Matrix observationMatrix,Matrix measurement,Matrix updateCovariance){
 		 	predictStep();
-
-			 Matrix y = measurement.minus(observationMatrix.times(state));
-			 Matrix s = observationMatrix.times(covariance).times(observationMatrix.transpose()).plus(updateCovariance);
-			 
-	
-			 Matrix k = covariance.times(observationMatrix.transpose()).times(s.inverse());
-			 state = state.plus(k.times(y));
-			 covariance = (Matrix.identity(covariance.getRowDimension(), covariance.getColumnDimension()).minus(k.times(observationMatrix)));
-		
-		
+			Matrix inovation = measurement.minus(observationMatrix.times(state));
+			Matrix innovationCovariance = observationMatrix.times(covariance).times(observationMatrix.transpose()).plus(updateCovariance);
+			Matrix kalmanGain = covariance.times(observationMatrix.transpose()).times(innovationCovariance.inverse());
+			state = state.plus(kalmanGain.times(inovation));
+			covariance = (Matrix.identity(covariance.getRowDimension(), covariance.getColumnDimension()).minus(kalmanGain.times(observationMatrix)));
 	}
 
 	@Override
 	protected void update() {
 		 predictStep();
-		 System.out.println("publishing"+state.get(0, 0) + ","+state.get(1, 0)+","+state.get(2, 0));
 		 //publish state 
-		 posePub.publish(new GPSPoseMessage(new Date(), state.get(1, 0), state.get(0,0), state.get(2, 0)));
+		 UTMTuple currentLatLng = new UTMTuple(17, 'T', state.get(0, 0), state.get(1, 0));
+		 LocTuple latLng = LocalizerUtil.UTM2Deg(currentLatLng);
+		 posePub.publish(new GPSPoseMessage(new Date(), latLng.getLatitude(), latLng.getLongitude(), state.get(4, 0)));
 	}
 
 
@@ -179,43 +292,26 @@ public class KfLocalizer extends PeriodicNode{
 	 */
 	//TODO
 	private  synchronized void predictStep(){
-		/*
-			Date now = new Date();
-			Date diff = new Date(now.getTime() - mostRecentUpdateTime.getTime());
-			double dt = (diff.getTime())/1000;
-			mostRecentUpdateTime = now;
-//			double[][] mModelArray = {{Math.cos(state.get(0, 2))*dt},{Math.sin(state.get(0,2))*dt},{1}};
-				motionModel = new Matrix(mModelArray);
-			//estimate state
-			state =  MotionModel.times(dt).times(state);
-			//estimate covariance
-			covariance = matrixDF.times(covariance).times(matrixDF.transpose());
-			*/
-		
-		//we don't track velocity so we won't use this 
+		Date now = new Date();
+		double diff = (now.getTime() - mostRecentUpdateTime.getTime())/1000.0;
+		mostRecentUpdateTime = now;
+		double th = Math.toRadians(state.get(4, 0));
+		double heading = Math.toRadians(state.get(6, 0));
+  		double[][] motionModel = {
+  			//   x  y x_b y_b th th_dot heading
+				{1, 0, Math.cos(th)*diff, - Math.sin(th)*diff, 0, 0, 0}, //x
+				{0, 1, Math.sin(th)*diff,    Math.cos(th)*diff, 0, 0, 0}, //y
+				{0, 0, 1, 0, 0, 0, 0}, //x_b
+				{0, 0, 0, 1, 0, 0, 0}, //y_b
+				{0, 0, 0, 0, 1, diff, 0}, //th
+				{0, 0, 180/(Math.PI*(wheelBase/Math.sin(heading))), 0, 0, 0, 0}, //th_dot
+				{0, 0, 0, 0, 0, 0, 1} //heading
+		};
+		motionMatrix = new Matrix(motionModel);
+		state = motionMatrix.times(state);
+		covariance = predictCovariance.times(covariance).times(predictCovariance.transpose());
 		}
-
-
-	/**
-	 * TODO
-	 * @param measurement TODO
-	 * @param oModel TODO
-	 * @param matrixDH TODO
-	 */
-	//TODO
-	public void updateStep(Matrix measurement,ObservationModel oModel,Matrix matrixDH){
-		//run predict to get to the current time 
-		predictStep();  //TODO consider sending time to predict to 
-		
-		
-		Matrix inovation = measurement.minus(oModel.getObservationSpaceState(state));
-		Matrix innovationCovariance = matrixDH.times(covariance).times(matrixDH.transpose());
-		Matrix kalmanGain = covariance.times(matrixDH.transpose()).times(innovationCovariance.inverse());
-		covariance = (Util.createIdentityMatrix(3).minus(kalmanGain.times(matrixDH)).times(covariance));
-		state = state.plus(kalmanGain.times(inovation));
-//		mostRecentUpdateTime = new Date();
-	}
-
+	
 
 }
 
