@@ -91,7 +91,7 @@ public class KfLocalizer extends PeriodicNode{
               double th = Math.toDegrees(Math.atan2(dy, dx));
               lastLastGPS = lastGPS;
               lastGPS = gpsUTM;
-              
+              System.out.println(th);
              
               double[][] observationModel = {{1,0,0,0,0,0,0}, //x
             		                         {0,1,0,0,0,0,0}, //y
@@ -258,7 +258,15 @@ public class KfLocalizer extends PeriodicNode{
 
 	private synchronized void updateStep(Matrix observationMatrix,Matrix measurement,Matrix updateCovariance){
 		 	predictStep();
+//		 	Matrix update = observationMatrix.times(state);
 			Matrix inovation = measurement.minus(observationMatrix.times(state));
+			if (inovation.get(6, 0) > 180) {
+				inovation.set(6, 0, 360 - inovation.get(6, 0));
+			}
+			System.out.println("Innovation");
+			System.out.println(inovation);
+			//Matrix innovation2 = observationMatrix.minus(measurement.times(state));
+			//Matrix inovation = (innovation.normF() > innovation2.normF()) ? innovation2 : innovation;
 			Matrix innovationCovariance = observationMatrix.times(covariance).times(observationMatrix.transpose()).plus(updateCovariance);
 			Matrix kalmanGain = covariance.times(observationMatrix.transpose()).times(innovationCovariance.inverse());
 			state = state.plus(kalmanGain.times(inovation));
