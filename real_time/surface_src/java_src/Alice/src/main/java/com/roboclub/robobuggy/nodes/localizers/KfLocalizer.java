@@ -68,13 +68,13 @@ public class KfLocalizer extends PeriodicNode{
 		state = new Matrix(start);
 		
 		double[][] predictCovarianceArray = {
-				{10, 0, 0, 0, 0, 0, 0}, //x
-				{0, 10, 0, 0, 0, 0, 0}, //y
-				{0, 0, 10, 0, 0, 0, 0}, //x_b
-				{0, 0, 0, 10, 0, 0, 0}, //y_b
-				{0, 0, 0, 0, 10, 0, 0}, //th
-				{0, 0, 0, 0, 0, 10, 0}, //th_dot
-				{0, 0, 0, 0, 0, 0, 10} //heading 
+				{1, 0, 0, 0, 0, 0, 0}, //x
+				{0, 1, 0, 0, 0, 0, 0}, //y
+				{0, 0, 1, 0, 0, 0, 0}, //x_b
+				{0, 0, 0, 1, 0, 0, 0}, //y_b
+				{0, 0, 0, 0, 1, 0, 0}, //th
+				{0, 0, 0, 0, 0, 1, 0}, //th_dot
+				{0, 0, 0, 0, 0, 0, 1} //heading 
 		};
 		predictCovariance= new Matrix(predictCovarianceArray);
 		
@@ -115,8 +115,8 @@ public class KfLocalizer extends PeriodicNode{
             		                     {0},
             		                     {0}
               };
-              double[][] updateCovariance = {{1,  0, 0, 0, 0, 0, 0},  //x
-            		                         {0,  1, 0, 0, 0, 0, 0},  //y
+              double[][] updateCovariance = {{10,  0, 0, 0, 0, 0, 0},  //x
+            		                         {0,  10, 0, 0, 0, 0, 0},  //y
             		                         {0,   0, 1, 0, 0, 0, 0},  //x_dot
             		                         {0,   0, 0, 1, 0, 0, 0},  //y_dot
             		                         {0,   0, 0, 0, 1, 0, 0},  //th
