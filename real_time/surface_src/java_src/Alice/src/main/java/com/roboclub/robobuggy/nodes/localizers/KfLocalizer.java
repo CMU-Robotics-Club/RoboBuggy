@@ -57,13 +57,13 @@ public class KfLocalizer extends PeriodicNode{
 		lastEncoderReadingTime = new Date().getTime();
 		mostRecentUpdateTime = new Date();
 		
-		double [][] start = {{startUTM.Easting},   // X meters
-							 {startUTM.Northing},  // Y meters 
-							 {0},                  // x_b_dot
-							 {0},                  // y_b_dot
-							 {-110},		       // th degree
-							 {0},			       // th_dot degrees/second
-							 {0}          	       // heading degree
+		double [][] start = {{startUTM.Easting},   // X meters  0
+							 {startUTM.Northing},  // Y meters  1
+							 {0},                  // x_b_dot   2
+							 {0},                  // y_b_dot   3
+							 {-110},		       // th degree 4
+							 {0},			       // th_dot degrees/second 5
+							 {0}          	       // heading degree  6
 		};
 		state = new Matrix(start);
 		
@@ -260,8 +260,12 @@ public class KfLocalizer extends PeriodicNode{
 		 	predictStep();
 //		 	Matrix update = observationMatrix.times(state);
 			Matrix inovation = measurement.minus(observationMatrix.times(state));
-			if (inovation.get(6, 0) > 180) {
-				inovation.set(6, 0, 360 - inovation.get(6, 0));
+			for(int i = 4;i<7;i++){
+			if (inovation.get(i, 0) > 180) {
+				inovation.set(i, 0, -360 +inovation.get(i, 0));
+			}else if(inovation.get(i, 0) < -180){
+				inovation.set(i, 0, 360 + inovation.get(i, 0));
+			}
 			}
 			System.out.println("Innovation");
 			System.out.println(inovation);
