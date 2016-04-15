@@ -29,8 +29,8 @@ public class RobobuggyMainFile {
 		RobobuggyConfigFile.loadConfigFile(); //TODO make sure that logic Notification is setup before this point
 
 		new RobobuggyLogicNotification("Initializing Robot", RobobuggyMessageLevel.NOTE);
-        //robot = TransistorAuton.getInstance();//TransistorDataCollection.getInstance();
-		robot = PlayBackRobot.getInstance();
+        robot = TransistorAuton.getInstance();//TransistorDataCollection.getInstance();
+	//	robot = PlayBackRobot.getInstance();
 
 		new RobobuggyLogicNotification("Initializing GUI", RobobuggyMessageLevel.NOTE);
         Gui.getInstance();

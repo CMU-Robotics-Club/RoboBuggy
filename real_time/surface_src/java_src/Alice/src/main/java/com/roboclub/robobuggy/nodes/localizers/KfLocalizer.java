@@ -267,8 +267,8 @@ public class KfLocalizer extends PeriodicNode{
 				inovation.set(i, 0, 360 + inovation.get(i, 0));
 			}
 			}
-			System.out.println("Innovation");
-			System.out.println(inovation);
+		
+	
 			//Matrix innovation2 = observationMatrix.minus(measurement.times(state));
 			//Matrix inovation = (innovation.normF() > innovation2.normF()) ? innovation2 : innovation;
 			Matrix innovationCovariance = observationMatrix.times(covariance).times(observationMatrix.transpose()).plus(updateCovariance);

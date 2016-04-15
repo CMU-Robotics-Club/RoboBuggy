@@ -5,6 +5,7 @@ import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.nodes.localizers.HighTrustGPSLocalizer;
+import com.roboclub.robobuggy.nodes.localizers.KfLocalizer;
 import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
 import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
 import com.roboclub.robobuggy.nodes.sensors.CameraNode;
@@ -63,7 +64,8 @@ public final class TransistorAuton extends AbstractRobot {
 		new RobobuggyLogicNotification("Logic Exception Setup properly", RobobuggyMessageLevel.NOTE);
 		// Initialize Nodes
 
-		nodeList.add(new HighTrustGPSLocalizer());
+		nodeList.add(new KfLocalizer(10));
+		
 		nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.getComPortGPS()));
 		nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION,
 				NodeChannel.getLoggingChannels()));
@@ -86,8 +88,8 @@ public final class TransistorAuton extends AbstractRobot {
 		RobobuggyGUITabs tabs = new RobobuggyGUITabs();
 		mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
 		tabs.addTab(new MainGuiWindow(), "Home");
-		tabs.addTab(new PoseGraphsPanel(),"poses");
-		tabs.addTab(new  AutonomousPanel(),"Autonomous");
+	//	tabs.addTab(new PoseGraphsPanel(),"poses");
+	//	tabs.addTab(new  AutonomousPanel(),"Autonomous");
 		tabs.add(new PathPanel(), "Path Visualizer");
 		tabs.addTab(new ConfigurationPanel(),"Configuration");
 		

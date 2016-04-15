@@ -57,7 +57,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode{
 		}
 
 
-		double delta = 20; //meters
+		double delta = 10; //meters
 		//pick the first point that is at least delta away
 		//pick the point to follow
 		int targetIndex = closestIndex; 
