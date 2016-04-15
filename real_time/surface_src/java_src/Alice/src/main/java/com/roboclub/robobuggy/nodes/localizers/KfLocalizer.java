@@ -115,8 +115,8 @@ public class KfLocalizer extends PeriodicNode{
             		                     {0},
             		                     {0}
               };
-              double[][] updateCovariance = {{10,  0, 0, 0, 0, 0, 0},  //x
-            		                         {0,  10, 0, 0, 0, 0, 0},  //y
+              double[][] updateCovariance = {{1,  0, 0, 0, 0, 0, 0},  //x
+            		                         {0,  1, 0, 0, 0, 0, 0},  //y
             		                         {0,   0, 1, 0, 0, 0, 0},  //x_dot
             		                         {0,   0, 0, 1, 0, 0, 0},  //y_dot
             		                         {0,   0, 0, 0, 1, 0, 0},  //th

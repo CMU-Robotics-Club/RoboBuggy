@@ -65,8 +65,9 @@ public class Map extends JPanel {
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				GPSPoseMessage gpsM = (GPSPoseMessage)m;
+				zoomLevel = getMapTree().getViewer().getZoom();
 		        getMapTree().getViewer().setDisplayPosition(new Coordinate(gpsM.getLatitude(),
-		        		gpsM.getLongitude()),19);				
+		        		gpsM.getLongitude()),zoomLevel);				
 			}
 		});
     }
