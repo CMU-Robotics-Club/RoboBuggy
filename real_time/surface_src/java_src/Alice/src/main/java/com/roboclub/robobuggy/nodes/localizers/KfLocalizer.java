@@ -1,6 +1,7 @@
 package com.roboclub.robobuggy.nodes.localizers;
 
 import Jama.Matrix;
+
 import com.roboclub.robobuggy.main.Util;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
@@ -16,6 +17,8 @@ import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
 
 import java.util.Date;
+
+import javax.script.Invocable;
 
 /**
  * localizes using a kalman filter
@@ -258,8 +261,11 @@ public class KfLocalizer extends PeriodicNode{
 
 	private synchronized void updateStep(Matrix observationMatrix,Matrix measurement,Matrix updateCovariance){
 		 	predictStep();
+		 
 //		 	Matrix update = observationMatrix.times(state);
 			Matrix inovation = measurement.minus(observationMatrix.times(state));
+			
+			System.out.println(state.get(4, 0)+"\t"+inovation.get(4, 0));
 			for(int i = 4;i<7;i++){
 			if (inovation.get(i, 0) > 180) {
 				inovation.set(i, 0, -360 +inovation.get(i, 0));
@@ -323,6 +329,14 @@ public class KfLocalizer extends PeriodicNode{
 		motionMatrix = new Matrix(motionModel);
 		state = motionMatrix.times(state);
 		covariance = predictCovariance.times(covariance).times(predictCovariance.transpose());
+		for(int i =4;i<7;i++){
+			while(state.get(i,0) < -180){
+				state.set(i, 0,state.get(i,0)+360);
+			}
+			while(state.get(i, 0) > 180){
+				state.set(i, 0, state.get(i, 0)-360);
+			}	
+		}
 		}
 	
 
