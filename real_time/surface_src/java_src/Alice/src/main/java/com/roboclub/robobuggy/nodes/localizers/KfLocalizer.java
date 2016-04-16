@@ -265,7 +265,6 @@ public class KfLocalizer extends PeriodicNode{
 //		 	Matrix update = observationMatrix.times(state);
 			Matrix inovation = measurement.minus(observationMatrix.times(state));
 			
-			System.out.println(state.get(4, 0)+"\t"+inovation.get(4, 0));
 			for(int i = 4;i<7;i++){
 			if (inovation.get(i, 0) > 180) {
 				inovation.set(i, 0, -360 +inovation.get(i, 0));
