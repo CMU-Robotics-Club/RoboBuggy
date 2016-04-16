@@ -53,18 +53,19 @@ public class KfLocalizer extends PeriodicNode{
 					};
 		covariance = new Matrix(startCovariance);
 		//state [x,y,x_b_dot,y_b_dot,th,th_dot,gamma]
-		LocTuple startLatLng = new LocTuple(40.4416651, -79.9437577);
+		LocTuple startLatLng = new LocTuple(40.441670,-79.9416362);
 		UTMTuple startUTM = LocalizerUtil.Deg2UTM(startLatLng);
 		lastGPS = startUTM;
 		lastLastGPS = startUTM;
 		lastEncoderReadingTime = new Date().getTime();
 		mostRecentUpdateTime = new Date();
+		double startAngle = 250;
 		
 		double [][] start = {{startUTM.Easting},   // X meters  0
 							 {startUTM.Northing},  // Y meters  1
 							 {0},                  // x_b_dot   2
 							 {0},                  // y_b_dot   3
-							 {-110},		       // th degree 4
+							 {startAngle},		       // th degree 4
 							 {0},			       // th_dot degrees/second 5
 							 {0}          	       // heading degree  6
 		};
@@ -94,7 +95,6 @@ public class KfLocalizer extends PeriodicNode{
               double th = Math.toDegrees(Math.atan2(dy, dx));
               lastLastGPS = lastGPS;
               lastGPS = gpsUTM;
-              System.out.println(th);
              
               double[][] observationModel = {{1,0,0,0,0,0,0}, //x
             		                         {0,1,0,0,0,0,0}, //y
@@ -108,6 +108,10 @@ public class KfLocalizer extends PeriodicNode{
               //don't update angle if we did not move a lot
               if(Math.sqrt(dx*dx + dy*dy) <  .5){//|| Math.abs(th- state.get(4, 0)) > 90){ 
             	  observationModel[4][4] = 0;
+              }
+              
+              if(Math.abs(gpsUTM.Easting - startUTM.Easting) +  Math.abs(gpsUTM.Northing - startUTM.Northing) < 10.0){
+            	  th = startAngle;
               }
               
               double[][] meassurement = {{gpsUTM.Easting},
@@ -265,7 +269,6 @@ public class KfLocalizer extends PeriodicNode{
 //		 	Matrix update = observationMatrix.times(state);
 			Matrix inovation = measurement.minus(observationMatrix.times(state));
 			
-			System.out.println(state.get(4, 0)+"\t"+inovation.get(4, 0));
 			for(int i = 4;i<7;i++){
 			if (inovation.get(i, 0) > 180) {
 				inovation.set(i, 0, -360 +inovation.get(i, 0));
@@ -329,7 +332,7 @@ public class KfLocalizer extends PeriodicNode{
 		motionMatrix = new Matrix(motionModel);
 		state = motionMatrix.times(state);
 		covariance = predictCovariance.times(covariance).times(predictCovariance.transpose());
-		for(int i =4;i<7;i++){
+		for(int i =4;i<7;i++){  
 			while(state.get(i,0) < -180){
 				state.set(i, 0,state.get(i,0)+360);
 			}
