@@ -27,7 +27,6 @@ public class HighTrustGPSLocalizer implements Node{
     private double buggyFrameGpsX;
     private double buggyFrameGpsY;
     private double buggyFrameRotZ;
-    private Date mostRecentUpdate;
     private double lastEncoderReading;
     private double buggySteeringAngle;
     private double oldGPSX;
@@ -47,7 +46,6 @@ public class HighTrustGPSLocalizer implements Node{
         buggySteeringAngle = 0.0;// wheel direction in buggy frame
         lastEncoderReading = 0.0;
         posePub = new Publisher(NodeChannel.POSE.getMsgPath());
-        mostRecentUpdate = new Date();
 
         new Subscriber("htGpsLoc", NodeChannel.STEERING.getMsgPath(), new MessageListener() {
 			
@@ -65,8 +63,7 @@ public class HighTrustGPSLocalizer implements Node{
             public void actionPerformed(String topicName, Message m) {
                 GpsMeasurement newGPSData = (GpsMeasurement)m;
                 synchronized (this) {
-                    long dt = newGPSData.getTimestamp().getTime() - mostRecentUpdate.getTime();
-                          // Get the delta latitude and longitude, use that to figure out how far we've travelled
+                // Get the delta latitude and longitude, use that to figure out how far we've travelled
                buggyFrameGpsY = newGPSData.getLatitude();
                buggyFrameGpsX = newGPSData.getLongitude();
                double dLat = buggyFrameGpsY - oldGPSY;
@@ -80,12 +77,11 @@ public class HighTrustGPSLocalizer implements Node{
                 buggyFrameRotZ = Math.toDegrees(Math.atan2(LocalizerUtil.convertLatToMeters(dLat), LocalizerUtil.convertLonToMeters(dLon)));
 
                         publishUpdate();
-                        mostRecentUpdate = newGPSData.getTimestamp();
                     }
                 }
         });
 
-     
+ /*    
         new Subscriber("HighTrustGpsLoc",NodeChannel.IMU_ANG_POS.getMsgPath(), ((topicName, m) -> {
             IMUAngularPositionMessage mes = ((IMUAngularPositionMessage) m);
 //            double y = mes.getRot()[0][1];
@@ -98,13 +94,13 @@ public class HighTrustGPSLocalizer implements Node{
             double[][] yVec = {{0}, {1}, {0}};
 
             double x = r.times(new Matrix(xVec)).get(0, 0);
-            double y = r.times(new Matrix(yVec)).get(0, 0);
-
-          //  buggyFrameRotZ = Util.normalizeAngleDeg(Math.toDegrees(-Math.atan2(y, x))+90 );
+           double y = r.times(new Matrix(yVec)).get(0, 0);
+            buggyFrameRotZ = Util.normalizeAngleDeg(Math.toDegrees(-Math.atan2(y, x))+90 );
 
 
            publishUpdate();
         }));
+        */
         
 
       

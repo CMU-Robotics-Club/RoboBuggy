@@ -16,8 +16,8 @@ public class MotionModel {
 	/**
 	 * Project our path around a circle of our turning radius to find change in heading.
 	 * @param deltaDistance Distance traveled since last heading update. Assumed to be along constant radius arc.
-	 * @param steeringAngle
-	 * @return
+	 * @param steeringAngle the current steering angle 
+	 * @return the heading change
 	 */
 	public static double getHeadingChange(double deltaDistance, double steeringAngle) {
 		double turningRadius = WHEELBASE_M / Math.sin(Math.toRadians(steeringAngle));

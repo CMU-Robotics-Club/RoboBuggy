@@ -2,11 +2,9 @@ package com.roboclub.robobuggy.nodes.localizers;
 
 import Jama.Matrix;
 
-import com.roboclub.robobuggy.main.Util;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
-import com.roboclub.robobuggy.messages.IMUAngularPositionMessage;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
@@ -18,7 +16,6 @@ import com.roboclub.robobuggy.ros.Subscriber;
 
 import java.util.Date;
 
-import javax.script.Invocable;
 
 /**
  * localizes using a kalman filter
@@ -30,7 +27,6 @@ public class KfLocalizer extends PeriodicNode {
 	private long lastEncoderReadingTime;
 	private Matrix covariance;
 	private UTMTuple lastGPS;
-	private UTMTuple lastLastGPS;
 	private Matrix motionMatrix;
 	private Date mostRecentUpdateTime;
 	private Matrix predictCovariance;
@@ -61,13 +57,12 @@ public class KfLocalizer extends PeriodicNode {
 		LocTuple startLatLng = new LocTuple(40.441670, -79.9416362);
 		UTMTuple startUTM = LocalizerUtil.deg2UTM(startLatLng);
 		lastGPS = startUTM;
-		lastLastGPS = startUTM;
 		lastEncoderReadingTime = new Date().getTime();
 		mostRecentUpdateTime = new Date();
 		double startAngle = 250;
 
-		double[][] start = { { startUTM.Easting }, // X meters 0
-				{ startUTM.Northing }, // Y meters 1
+		double[][] start = { { startUTM.getEasting() }, // X meters 0
+				{ startUTM.getNorthing() }, // Y meters 1
 				{ 0 }, // x_b_dot 2
 				{ 0 }, // y_b_dot 3
 				{ startAngle }, // th degree 4
@@ -90,15 +85,14 @@ public class KfLocalizer extends PeriodicNode {
 		new Subscriber("htGpsLoc", NodeChannel.GPS.getMsgPath(),
 				new MessageListener() {
 					@Override
-					public void actionPerformed(String topicName, Message m) {
+					public synchronized void actionPerformed(String topicName, Message m) {
 						GpsMeasurement newGPSData = (GpsMeasurement) m;
 						LocTuple gpsLatLng = new LocTuple(newGPSData
 								.getLatitude(), newGPSData.getLongitude());
 						UTMTuple gpsUTM = LocalizerUtil.deg2UTM(gpsLatLng);
-						double dx = gpsUTM.Easting - lastGPS.Easting;
-						double dy = gpsUTM.Northing - lastGPS.Northing;
+						double dx = gpsUTM.getEasting() - lastGPS.getEasting();
+						double dy = gpsUTM.getNorthing() - lastGPS.getNorthing();
 						double th = Math.toDegrees(Math.atan2(dy, dx));
-						lastLastGPS = lastGPS;
 						lastGPS = gpsUTM;
 
 						double[][] observationModel = {
@@ -119,13 +113,13 @@ public class KfLocalizer extends PeriodicNode {
 							observationModel[4][4] = 0;
 						}
 
-						if (Math.abs(gpsUTM.Easting - startUTM.Easting)
-								+ Math.abs(gpsUTM.Northing - startUTM.Northing) < 10.0) {
+						if (Math.abs(gpsUTM.getEasting() - startUTM.getEasting())
+								+ Math.abs(gpsUTM.getNorthing() - startUTM.getNorthing()) < 10.0) {
 							th = startAngle;
 						}
 
-						double[][] meassurement = { { gpsUTM.Easting },
-								{ gpsUTM.Northing }, { 0 }, { 0 }, { th },
+						double[][] meassurement = { { gpsUTM.getEasting() },
+								{ gpsUTM.getNorthing() }, { 0 }, { 0 }, { th },
 								{ 0 }, { 0 } };
 						double[][] updateCovariance = {
 								{ 1, 0, 0, 0, 0, 0, 0 }, // x
@@ -141,6 +135,7 @@ public class KfLocalizer extends PeriodicNode {
 					}
 				});
 
+		/*
 		new Subscriber(
 				"HighTrustGpsLoc",
 				NodeChannel.IMU_ANG_POS.getMsgPath(),
@@ -180,6 +175,7 @@ public class KfLocalizer extends PeriodicNode {
 					// Matrix(meassurement),new Matrix(updateCovariance));
 
 				}));
+				*/
 
 		// TODO note that we will probably run into precision errors since the
 		// changes are so small

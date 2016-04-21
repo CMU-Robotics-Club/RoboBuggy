@@ -16,8 +16,19 @@ import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 
+/**
+ * 
+ * @author Trevor Decker
+ * a tool for reading log files line by line
+ *
+ */
 public class LineByLineSensorPlayer {
 	
+	/**
+	 * Constructor for sensor player
+	 * @param filePath the file to play
+	 * @param playBackSpeed the playback sped
+	 */
 	public LineByLineSensorPlayer(String filePath,double playBackSpeed) {
 		//open up the log file 
 		
@@ -54,7 +65,8 @@ public class LineByLineSensorPlayer {
 			    				long now = new Date().getTime();
 			    				 sensorObject =  translator.fromJson(nextLine, JsonObject.class);
 			    				 long dt = now - startTimeReal;
-			    				PlayBackUtil.parseSensorLog(sensorObject, translator,dt,startTimeSensor,RobobuggyConfigFile.getPlayBackSpeed());
+			    				PlayBackUtil.parseSensorLog(sensorObject, translator,dt,startTimeSensor,
+			    						RobobuggyConfigFile.getPlayBackSpeed());
 			    				//TODO deal with delay stuff
 							
 			    				nextLine = br.readLine(); 

@@ -14,11 +14,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 
-@Deprecated
 /**
  * Class used for playing back old log files. It does this by reading BuggyROS
  * messages stored in the log file and reinjecting them into the BuggyROS network.
  */
+@Deprecated
 public class SensorPlayer extends Thread {
 
     private String path;
