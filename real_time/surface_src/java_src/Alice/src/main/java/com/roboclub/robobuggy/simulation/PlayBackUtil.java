@@ -72,7 +72,16 @@ public class PlayBackUtil {
     }
     
 
-    
+    /**
+     * reads a sensor log and outputs the next message, if the next message is not suppose to appear for some time then this method will block until that time
+     * @param sensorDataJson
+     * @param translator
+     * @param playBacktime
+     * @param sensorStartTime 
+     * @param playBackSpeed the speed to playback at
+     * @return the message from the log
+     * @throws InterruptedException
+     */
     public static Message parseSensorLog(JsonObject sensorDataJson,Gson translator,long playBacktime,long sensorStartTime,double playBackSpeed) throws InterruptedException{;
             // wait until the time this message is supposed to be sent
 			long sensorTime = sensorDataJson.get("timestamp").getAsLong();

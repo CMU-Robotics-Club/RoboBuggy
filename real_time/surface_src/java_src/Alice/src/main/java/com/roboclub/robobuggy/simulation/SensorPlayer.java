@@ -1,35 +1,13 @@
 package com.roboclub.robobuggy.simulation;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.main.Util;
-import com.roboclub.robobuggy.messages.BaseMessage;
-import com.roboclub.robobuggy.messages.BrakeControlMessage;
-import com.roboclub.robobuggy.messages.BrakeMessage;
-import com.roboclub.robobuggy.messages.DriveControlMessage;
-import com.roboclub.robobuggy.messages.EncoderMeasurement;
-import com.roboclub.robobuggy.messages.FingerPrintMessage;
-import com.roboclub.robobuggy.messages.GPSPoseMessage;
-import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
-import com.roboclub.robobuggy.messages.ImuMeasurement;
-import com.roboclub.robobuggy.messages.MagneticMeasurement;
-import com.roboclub.robobuggy.messages.RemoteWheelAngleRequest;
-import com.roboclub.robobuggy.messages.ResetMessage;
-import com.roboclub.robobuggy.messages.RobobuggyLogicNotificationMeasurement;
-import com.roboclub.robobuggy.messages.StateMessage;
-import com.roboclub.robobuggy.messages.SteeringMeasurement;
-import com.roboclub.robobuggy.messages.WheelAngleCommandMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
-import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
 
 import java.io.File;
@@ -44,15 +22,9 @@ import java.io.UnsupportedEncodingException;
 public class SensorPlayer extends Thread {
 
     private String path;
-    private double playbackSpeed;
     private boolean isPaused = false;
 
 
-
-    private JsonArray sensorDataArray;
-
-    // ---- Log File Defaults ----
-    private static final String TERMINATING_VERSION_ID = "STOP";
 
 
     /**
@@ -85,10 +57,6 @@ public class SensorPlayer extends Thread {
             return;
         }
 
-
-        sensorDataArray = logFile.getAsJsonArray("sensor_data");
-
-        this.playbackSpeed = playbackSpeed;
     }
 
 
@@ -124,68 +92,5 @@ public class SensorPlayer extends Thread {
 
             }
         });
-    }
-
-    @Override
-    public void run() {
-
-        Gson translator = new GsonBuilder().create();
-        /*
-       try {
-
-            long prevSensorTime = -1;
-
-            for (JsonElement sensorAsJElement: sensorDataArray) {
-                
-                // spin in a tight loop until we've unpaused
-                while (isPaused) {
-                    Thread.sleep(100);
-                }
-
-                if(sensorAsJElement.isJsonObject()){
-                	Message transmitMessage =  PlayBackUtil.parseSensorLog(sensorAsJElement.getAsJsonObject(),translator, );
-                    getNewPlaybackSpeed();
-                    BaseMessage timeMessage = (BaseMessage) transmitMessage;
-
-                    if (timeMessage == null) {
-                        continue;
-                    }
-
-                    if (prevSensorTime == -1) {
-                        prevSensorTime = timeMessage.getTimestamp().getTime();
-                    }
-                    else {
-                        long currentSensorTime = timeMessage.getTimestamp().getTime();
-                        long timeDiff = currentSensorTime - prevSensorTime;  //in milliseconds
-                        long dt = (long) (timeDiff/playbackSpeed);
-                        if (dt > 100) {
-                            Thread.sleep(dt);
-                            prevSensorTime = currentSensorTime;
-                        }
-                         
-                    }
-
-
-                   
-
-                }
-            }
-
-//        } catch (FileNotFoundException e) {
-//            new RobobuggyLogicNotification("SensorPlayer couldn't find log file!", RobobuggyMessageLevel.EXCEPTION);
-       } catch (InterruptedException e) {
-            new RobobuggyLogicNotification("SensorPlayer was interrupted", RobobuggyMessageLevel.WARNING);
-//        } catch (UnsupportedEncodingException e) {
-//            new RobobuggyLogicNotification("Log file had unsupported encoding", RobobuggyMessageLevel.EXCEPTION);
-        }
-        */
-    }
-
-
-    /**
-     * gets the new playback speed from the GUI and puts it into playbackSpeed
-     */
-    public void getNewPlaybackSpeed() {
-    	playbackSpeed = RobobuggyConfigFile.getPlayBackSpeed();
     }
 }
