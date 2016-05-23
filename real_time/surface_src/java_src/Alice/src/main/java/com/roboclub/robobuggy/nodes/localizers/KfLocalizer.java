@@ -70,7 +70,8 @@ public class KfLocalizer extends PeriodicNode {
 		};
 		state = new Matrix(start);
 
-		double[][] predictCovarianceArray = { { 1, 0, 0, 0, 0, 0, 0 }, // x
+		double[][] predictCovarianceArray = {
+				{ 1, 0, 0, 0, 0, 0, 0 }, // x
 				{ 0, 1, 0, 0, 0, 0, 0 }, // y
 				{ 0, 0, 1, 0, 0, 0, 0 }, // x_b
 				{ 0, 0, 0, 1, 0, 0, 0 }, // y_b

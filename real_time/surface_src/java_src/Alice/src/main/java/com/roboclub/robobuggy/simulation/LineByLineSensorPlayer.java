@@ -16,13 +16,13 @@ import java.io.InputStreamReader;
 import java.util.Date;
 
 /**
- * 
+ *
  * @author Trevor Decker
  * a tool for reading log files line by line
  *
  */
 public class LineByLineSensorPlayer {
-	
+
 	/**
 	 * Constructor for sensor player
 	 * @param filePath the file to play
@@ -30,7 +30,7 @@ public class LineByLineSensorPlayer {
 	 */
 	public LineByLineSensorPlayer(String filePath,double playBackSpeed) {
 		//open up the log file 
-		
+
 		 new RobobuggyLogicNotification("initializing the SensorPlayer", RobobuggyMessageLevel.NOTE);
 		 Thread thread = new Thread(){
 			    public void run(){
@@ -39,23 +39,35 @@ public class LineByLineSensorPlayer {
 			    	try {
 			    		InputStream is = new FileInputStream(filePath);
 			    		// create new input stream reader
-			    		InputStreamReader isr = new InputStreamReader(is);
-			    		//the file was created so lets try and read it 
+			    		InputStreamReader isr = new InputStreamReader(is, "UTF-8");
+			    		//the file was created so lets try and read it
 			    		BufferedReader br = new BufferedReader(isr);
 			    		String nextLine;
 			    			nextLine= br.readLine();  //reads {
+						if(nextLine != null)
 			    			nextLine = br.readLine();  // name
+						else {
+							new RobobuggyLogicNotification("File wasn't a log file!", RobobuggyMessageLevel.EXCEPTION);
+							br.close();
+							return;
+						}
+						if(nextLine != null)
 			    			nextLine = br.readLine();  //schema version
+						if(nextLine != null)
 			    			nextLine = br.readLine();  //date recorded
-			    			nextLine = br.readLine();  //software version 
+						if(nextLine != null)
+			    			nextLine = br.readLine();  //software version
+						if(nextLine != null)
 			    			nextLine = br.readLine();  //Sensor_data
-			    			nextLine = br.readLine(); 
+						if(nextLine != null)
+			    			nextLine = br.readLine();
+						if(nextLine != null)
 		    				nextLine = nextLine.substring(0, nextLine.length()-1);
 			    			JsonObject sensorObject =  translator.fromJson(nextLine, JsonObject.class);
 			    			long startTimeSensor = sensorObject.get("timestamp").getAsLong();
-			    			
+
 			    			long startTimeReal = new Date().getTime();
-			    			nextLine = br.readLine(); 
+			    			nextLine = br.readLine();
 			    			while(nextLine != null && !nextLine.startsWith("]")){
 			    			try {
 			    				//has not reached the end of the log yet
@@ -67,8 +79,8 @@ public class LineByLineSensorPlayer {
 			    				PlayBackUtil.parseSensorLog(sensorObject, translator,dt,startTimeSensor,
 			    						RobobuggyConfigFile.getPlayBackSpeed());
 			    				//TODO deal with delay stuff
-							
-			    				nextLine = br.readLine(); 
+
+			    				nextLine = br.readLine();
 			    			} catch (IOException e) {
 			    				// TODO Auto-generated catch block
 			    				e.printStackTrace();
@@ -77,8 +89,9 @@ public class LineByLineSensorPlayer {
 								e.printStackTrace();
 							}
 						}//while
+						br.close();
 
-			
+
 				} catch (FileNotFoundException e) {
 		            new RobobuggyLogicNotification("File doesn't exist!", RobobuggyMessageLevel.EXCEPTION);
 					e.printStackTrace();
@@ -91,9 +104,9 @@ public class LineByLineSensorPlayer {
 		 };//thread
 
 				  thread.start();
-	            
-	       
+
+
 	}
-	
+
 
 }
