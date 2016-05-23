@@ -8,7 +8,6 @@ import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
 import com.roboclub.robobuggy.ui.Map;
 
 import javax.swing.JFrame;
-
 import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;

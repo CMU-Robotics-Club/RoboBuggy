@@ -1,7 +1,6 @@
 package com.roboclub.robobuggy.nodes.localizers;
 
 import Jama.Matrix;
-
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;

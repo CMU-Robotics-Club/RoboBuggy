@@ -8,7 +8,6 @@ import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.IMUAngularPositionMessage;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
-import com.sun.javafx.geom.Matrix3f;
 
 import javax.imageio.ImageIO;
 import java.awt.Color;
