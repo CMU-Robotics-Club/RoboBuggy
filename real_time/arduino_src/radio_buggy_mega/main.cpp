@@ -293,7 +293,7 @@ int8_t steering_center() {
     uint32_t time_next_loop;
 
     // if sensor is already tripped, move left first to clear
-    for(int16_t i = search_loop_count; i > 0; i++) {
+    for(int16_t i = search_loop_count; i > 0; i--) {
         time_next_loop = micros() + STEERING_LOOP_TIME_US;
         steering_center_tripped = !(STEERING_CENTER_PIN & _BV(STEERING_CENTER_PINN));
         if(!steering_center_tripped) {
@@ -306,7 +306,7 @@ int8_t steering_center() {
     steer_set_velocity(0);
 
     // now find the edge moving to the right
-    for(int16_t i = search_loop_count; i > 0; i++) {
+    for(int16_t i = search_loop_count; i > 0; i--) {
         time_next_loop = micros() + STEERING_LOOP_TIME_US;
         steering_center_tripped = !(STEERING_CENTER_PIN & _BV(STEERING_CENTER_PINN));
         if(steering_center_tripped) {
