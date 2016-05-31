@@ -43,8 +43,8 @@ public class HighTrustGPSLocalizer implements Node{
         lastEncoderReading = 0.0;
         posePub = new Publisher(NodeChannel.POSE.getMsgPath());
 
-        new Subscriber("htGpsLoc", NodeChannel.STEERING.getMsgPath(), new MessageListener() {
-			
+        //Read all the steering messages we're getting and adjust our stored steering angle accordingly
+        new Subscriber("htGpsLoc", NodeChannel.STEERING.getMsgPath(), new MessageListener() {			
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				SteeringMeasurement steerM = (SteeringMeasurement)m;
@@ -62,12 +62,10 @@ public class HighTrustGPSLocalizer implements Node{
                 // Get the delta latitude and longitude, use that to figure out how far we've travelled
                buggyFrameGpsY = newGPSData.getLatitude();
                buggyFrameGpsX = newGPSData.getLongitude();
-               double dLat = buggyFrameGpsY - oldGPSY;
+               double dLat = buggyFrameGpsY - oldGPSY; //Do we ever initialize oldGPSX and oldGPSY? If not, what does this do the first time it runs?
                double dLon = buggyFrameGpsX - oldGPSX;
                oldGPSX = buggyFrameGpsX;
                oldGPSY = buggyFrameGpsY;
-
-                
 
                 // take the arctangent in order to get the heading (in degrees)
                 buggyFrameRotZ = Math.toDegrees(Math.atan2(LocalizerUtil.convertLatToMeters(dLat), LocalizerUtil.convertLonToMeters(dLon)));
@@ -77,6 +75,7 @@ public class HighTrustGPSLocalizer implements Node{
                 }
         });
 
+        //No idea what this is supposed to do, but it's commented out, so I'm going to ignore it for now.
  /*    
         new Subscriber("HighTrustGpsLoc",NodeChannel.IMU_ANG_POS.getMsgPath(), ((topicName, m) -> {
             IMUAngularPositionMessage mes = ((IMUAngularPositionMessage) m);
@@ -99,7 +98,8 @@ public class HighTrustGPSLocalizer implements Node{
         */
         
 
-      
+        //Update our position based on encoder readings
+        
         // TODO note that we will probably run into precision errors since the changes are so small
         // would be good to batch up the encoder updates until we get a margin that we know can be represented proeprly
         new Subscriber("htGpsLoc", NodeChannel.ENCODER.getMsgPath(), new MessageListener() {
@@ -114,7 +114,10 @@ public class HighTrustGPSLocalizer implements Node{
                 // update heading around curve
                 buggyFrameRotZ += MotionModel.getHeadingChange(deltaDistance, buggySteeringAngle);
                 // advance by foward in new heading
-                LocTuple deltaPos = LocalizerUtil.convertMetersToLatLng(deltaDistance, buggyFrameRotZ);
+                LocTuple deltaPos = LocalizerUtil.convertMetersToLatLng(deltaDistance, buggyFrameRotZ); //This line throws errors because LocalizerUtil doesn't have a LocTuple defined
+                //But LocTuple (which supposedly had been in com.roboclub.robobuggy.ui) doesn't seem to exist anymore. Not sure what's supposed to be happening here.
+                
+                //Update our position estimate
                 buggyFrameGpsY += deltaPos.getLatitude();
                 buggyFrameGpsX += deltaPos.getLongitude();
                 lastEncoderReading = currentEncoderMeasurement;

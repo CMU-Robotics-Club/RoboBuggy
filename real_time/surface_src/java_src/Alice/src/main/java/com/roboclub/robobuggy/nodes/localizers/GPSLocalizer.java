@@ -21,9 +21,10 @@ import java.util.Date;
  *
  */
 public final class GPSLocalizer extends BuggyDecoratorNode {
+	//This thing doesn't seem to use the encoder at all. Do we run this together with some encoder function, or is this obsolete?
 
 	private Publisher posePub;
-	private LocTuple lastReading;
+	private LocTuple lastReading; //Also needs a LocTuple; that still no longer exists. What's happening here?
 	
 	/**
 	 * Construct a new {@link GPSLocalizer} object
