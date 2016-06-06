@@ -25,8 +25,8 @@ public class HighTrustGPSLocalizer implements Node{
     private double buggyFrameRotZ;
     private double lastEncoderReading;
     private double buggySteeringAngle;
-    private double oldGPSX;
-    private double oldGPSY;
+    private double oldGPSX = 0.0;
+    private double oldGPSY = 0.0;
 
 
     private Publisher posePub;
@@ -62,7 +62,7 @@ public class HighTrustGPSLocalizer implements Node{
                 // Get the delta latitude and longitude, use that to figure out how far we've travelled
                buggyFrameGpsY = newGPSData.getLatitude();
                buggyFrameGpsX = newGPSData.getLongitude();
-               double dLat = buggyFrameGpsY - oldGPSY; //Do we ever initialize oldGPSX and oldGPSY? If not, what does this do the first time it runs?
+               double dLat = buggyFrameGpsY - oldGPSY;
                double dLon = buggyFrameGpsX - oldGPSX;
                oldGPSX = buggyFrameGpsX;
                oldGPSY = buggyFrameGpsY;
@@ -75,8 +75,7 @@ public class HighTrustGPSLocalizer implements Node{
                 }
         });
 
-        //No idea what this is supposed to do, but it's commented out, so I'm going to ignore it for now.
- /*    
+ /*
         new Subscriber("HighTrustGpsLoc",NodeChannel.IMU_ANG_POS.getMsgPath(), ((topicName, m) -> {
             IMUAngularPositionMessage mes = ((IMUAngularPositionMessage) m);
 //            double y = mes.getRot()[0][1];

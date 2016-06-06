@@ -27,21 +27,48 @@ import com.roboclub.robobuggy.ros.Publisher;
 /**
  * utilities for playback
  */
-public class PlayBackUtil {
+public final class PlayBackUtil {
 	  private static final String METADATA_NAME = "Robobuggy Data Logs";
 	  private static final String METADATA_SCHEMA_VERSION = "1.1";
 	  private static final String METADATA_HIGHLEVEL_SW_VERSION = "1.0.0";
-	  private static final  Publisher IMU_PUB = new Publisher(NodeChannel.IMU.getMsgPath());
-	  private static final Publisher  MAG_PUB = new Publisher(NodeChannel.IMU_MAGNETIC.getMsgPath());;
-	  private static final Publisher  GPS_PUB = new Publisher(NodeChannel.GPS.getMsgPath());;
-	  private static final  Publisher ENCODER_PUB  = new Publisher(NodeChannel.ENCODER.getMsgPath());
-	  private static final Publisher  BRAKE_PUB = new Publisher(NodeChannel.BRAKE_STATE.getMsgPath());
-	  private static final Publisher  STEERING_PUB = new Publisher(NodeChannel.STEERING.getMsgPath());
-	  private static final Publisher  STEERING_COMMAND_PUB = new Publisher(NodeChannel.STEERING_COMMANDED.getMsgPath());
-	  private static final Publisher  LOGGING_BUTTON_PUB  = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
-	  private static final Publisher  LOGIC_NOTIFICIATION_PUB = new Publisher(NodeChannel.LOGIC_NOTIFICATION.getMsgPath());
+    private static PlayBackUtil instance;
+
+	  private Publisher imuPub;
+	  private Publisher magPub;
+	  private Publisher gpsPub;
+	  private Publisher encoderPub;
+	  private Publisher brakePub;
+	  private Publisher steeringPub;
+	  private Publisher steeringCommandPub;
+	  private Publisher loggingButtonPub;
+	  private Publisher logicNotificationPub;
 
 
+    /**
+     * Gets the PlaybackUtil instance
+     * @return the current PlaybackUtil instance, or makes one if it wasn't available
+     */
+    private static PlayBackUtil getPrivateInstance() {
+        if (instance == null) {
+            instance = new PlayBackUtil();
+        }
+        return instance;
+    }
+
+    /**
+     * Initializes the publishers for the playback util
+     */
+    private PlayBackUtil() {
+        imuPub = new Publisher(NodeChannel.IMU.getMsgPath());
+        magPub = new Publisher(NodeChannel.IMU_MAGNETIC.getMsgPath());
+        gpsPub = new Publisher(NodeChannel.GPS.getMsgPath());
+        encoderPub = new Publisher(NodeChannel.ENCODER.getMsgPath());
+        brakePub = new Publisher(NodeChannel.BRAKE_STATE.getMsgPath());
+        steeringPub = new Publisher(NodeChannel.STEERING.getMsgPath());
+        steeringCommandPub = new Publisher(NodeChannel.STEERING_COMMANDED.getMsgPath());
+        loggingButtonPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
+        logicNotificationPub = new Publisher(NodeChannel.LOGIC_NOTIFICATION.getMsgPath());
+    }
 
     /**
      * validates the log file metadata
@@ -96,33 +123,33 @@ public class PlayBackUtil {
                     break;
                 case BrakeMessage.VERSION_ID:
                     transmitMessage = translator.fromJson(sensorDataJson, BrakeMessage.class);
-                    BRAKE_PUB.publish(transmitMessage);
+                    getPrivateInstance().brakePub.publish(transmitMessage);
                     break;
                 case MagneticMeasurement.VERSION_ID:
                     transmitMessage = translator.fromJson(sensorDataJson, MagneticMeasurement.class);
-                    MAG_PUB.publish(transmitMessage);
+                    getPrivateInstance().magPub.publish(transmitMessage);
                     break;
                 case DriveControlMessage.VERSION_ID:
                     transmitMessage = translator.fromJson(sensorDataJson, DriveControlMessage.class);
                     break;
                 case EncoderMeasurement.VERSION_ID:
                     transmitMessage = translator.fromJson(sensorDataJson, EncoderMeasurement.class);
-                    ENCODER_PUB.publish(transmitMessage);
+                    getPrivateInstance().encoderPub.publish(transmitMessage);
                     break;
                 case FingerPrintMessage.VERSION_ID:
                     transmitMessage = translator.fromJson(sensorDataJson, FingerPrintMessage.class);
                     break;
                 case GpsMeasurement.VERSION_ID:
                     transmitMessage = translator.fromJson(sensorDataJson, GpsMeasurement.class);
-                    GPS_PUB.publish(transmitMessage);
+                    getPrivateInstance().gpsPub.publish(transmitMessage);
                     break;
                 case GuiLoggingButtonMessage.VERSION_ID:
                     transmitMessage = translator.fromJson(sensorDataJson, GuiLoggingButtonMessage.class);
-                    LOGGING_BUTTON_PUB.publish(transmitMessage);
+                    getPrivateInstance().loggingButtonPub.publish(transmitMessage);
                     break;
                 case ImuMeasurement.VERSION_ID:
                     transmitMessage = translator.fromJson(sensorDataJson, ImuMeasurement.class);
-                    IMU_PUB.publish(transmitMessage);
+                    getPrivateInstance().imuPub.publish(transmitMessage);
                     break;
                 case GPSPoseMessage.VERSION_ID:
                     transmitMessage = translator.fromJson(sensorDataJson, GPSPoseMessage.class);
@@ -138,7 +165,7 @@ public class PlayBackUtil {
                     break;
                 case RobobuggyLogicNotificationMeasurement.VERSION_ID:
                     transmitMessage = translator.fromJson(sensorDataJson, RobobuggyLogicNotificationMeasurement.class);
-                    LOGIC_NOTIFICIATION_PUB.publish(transmitMessage);
+                    getPrivateInstance().logicNotificationPub.publish(transmitMessage);
                     break;
                 case StateMessage.VERSION_ID:
                     transmitMessage = translator.fromJson(sensorDataJson, StateMessage.class);
@@ -147,11 +174,11 @@ public class PlayBackUtil {
                     // want to filter by steering feedback
                     if(sensorDataJson.get("topicName").getAsString().equals(NodeChannel.STEERING.getMsgPath())) {
                         transmitMessage = translator.fromJson(sensorDataJson, SteeringMeasurement.class);
-                        STEERING_PUB.publish(transmitMessage);
+                        getPrivateInstance().steeringPub.publish(transmitMessage);
                     }
                     else if(sensorDataJson.get("topicName").getAsString().equals(NodeChannel.STEERING_COMMANDED.getMsgPath())) {
                         transmitMessage = translator.fromJson(sensorDataJson, SteeringMeasurement.class);
-                        STEERING_COMMAND_PUB.publish(transmitMessage);
+                        getPrivateInstance().steeringCommandPub.publish(transmitMessage);
                     }
                     // any other type of steering message we ignore
                     else {

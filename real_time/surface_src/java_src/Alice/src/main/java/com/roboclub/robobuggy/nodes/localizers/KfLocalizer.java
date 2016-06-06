@@ -43,7 +43,8 @@ public class KfLocalizer extends PeriodicNode {
 		posePub = new Publisher(NodeChannel.POSE.getMsgPath());
 		wheelBase = 1.13; // meters
 
-		double[][] startCovariance = { { 1, 0, 0, 0, 0, 0, 0 }, // x
+		double[][] startCovariance = {
+				{ 1, 0, 0, 0, 0, 0, 0 }, // x
 				{ 0, 1, 0, 0, 0, 0, 0 }, // y
 				{ 0, 0, 1, 0, 0, 0, 0 }, // x_b
 				{ 0, 0, 0, 1, 0, 0, 0 }, // y_b

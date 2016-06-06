@@ -16,15 +16,17 @@ import java.util.Date;
 /**
  * {@link BuggyDecoratorNode} used create {@link PoseMessage}s based upon GPS 
  * sensor input
- * 
+ *
+ * This class isn't necessarily used in real time, but more as a guideline as to what
+ * these localizers should look like.
+ *
  * @author Zachary Dawson
  *
  */
 public final class GPSLocalizer extends BuggyDecoratorNode {
-	//This thing doesn't seem to use the encoder at all. Do we run this together with some encoder function, or is this obsolete?
 
 	private Publisher posePub;
-	private LocTuple lastReading; //Also needs a LocTuple; that still no longer exists. What's happening here?
+	private LocTuple lastReading;
 	
 	/**
 	 * Construct a new {@link GPSLocalizer} object
