@@ -63,29 +63,29 @@ public class RobobuggyLogicNotification {
 			case EXCEPTION:
 				return true;
 			case WARNING:
-				return false;
+				return true;
 			case NOTE:
-				return false;
+				return true;
 			default:
 				return true;
 			}
 		case WARNING:
 			switch(RobobuggyConfigFile.REPORTING_LEVEL){
 			case EXCEPTION:
-				return true;
+				return false;
 			case WARNING:
 				return true;
 			case NOTE:
-				return false;
+				return true;
 			default:
 				return true;
 			}
 		case NOTE:
 			switch (RobobuggyConfigFile.REPORTING_LEVEL) {
 				case EXCEPTION:
-					return true;
+					return false;
 				case WARNING:
-					return true;
+					return false;
 				case NOTE:
 					return true;		
 				default:
