@@ -38,5 +38,15 @@ public class ImageMessage extends BaseMessage {
 	public BufferedImage getImage() {
 		return thisImage;
 	}
+	
+	/**
+	 * Set the image of this message
+	 * (used when I want to do video playback)
+	 * @param myImage the image to be added
+	 */
+	//Added for video playback
+	public void setImage(BufferedImage myImage){
+		thisImage = myImage;
+	}
 
 }

@@ -10,24 +10,24 @@ import java.util.HashMap;
 /**
  * {@link JFrame} used to represent the robobuggy gui
  * @author Trevor Decker
- * @author Kevin Brennan 
+ * @author Kevin Brennan
  *
  * @version 0.5
- * 
+ *
  * CHANGELOG: NONE
- * 
- * DESCRIPTION: This class is the top level controller for the graphical user interface displayed to the user 
+ *
+ * DESCRIPTION: This class is the top level controller for the graphical user interface displayed to the user
  */
 public final class Gui extends JFrame {
 	private static final long serialVersionUID = 670947948979376738L;
 
 
 	//The windowList is a list of all of the windows that are a part of the gui
-    private HashMap<Integer, RobobuggyJFrame> windowMap;
+	private HashMap<Integer, RobobuggyJFrame> windowMap;
 	private int currentWindowId;
 
 	private static Gui instance;
-	
+
 	/**
 	 * Enum of {@link Gui} publisher and subscriber topics
 	 */
@@ -41,9 +41,9 @@ public final class Gui extends JFrame {
 	public void fixPaint(){
 		windowMap.forEach((key,window) -> window.repaint());
 	}
-	
+
 	/**
-	 * Returns a reference to the one instance of the {@link Gui}. 
+	 * Returns a reference to the one instance of the {@link Gui}.
 	 * If none exists, one will be constructed.
 	 * @return a reference to the one instance of the {@link Gui}
 	 */
@@ -63,38 +63,38 @@ public final class Gui extends JFrame {
 		currentWindowId = -1;
 
 	}
-	
-	
+
+
 	/**
-	 * Adds a new window to the 
+	 * Adds a new window to the
 	 * @param newWindow the window you want added
-	 * @return a unique reference number to the window for access later 
+	 * @return a unique reference number to the window for access later
 	 */
 	public synchronized int addWindow(RobobuggyJFrame newWindow){
 		currentWindowId++;
 		windowMap.put(currentWindowId, newWindow);
-		return currentWindowId;		
+		return currentWindowId;
 	}
-	
+
 	/**
-	 * gets a reference to a particular frame of the window 
+	 * gets a reference to a particular frame of the window
 	 * @param windowReference the reference to receive
-	 * @return the requested frames reference 
+	 * @return the requested frames reference
 	 */
 	public synchronized RobobuggyJFrame getWindow(int windowReference){
 		return windowMap.get(windowReference);
 	}
-	
+
 	/**
-	 * removes a reference to a particular frame of the window 
+	 * removes a reference to a particular frame of the window
 	 * @param windowReference the reference to remove
-	 * @return 
+	 * @return
 	 */
 	public synchronized void deleteWindow(int windowReference){
 		windowMap.remove(windowReference);
-		
+
 	}
-	
+
 	/**
 	 * Closes the {@link Gui}
 	 */

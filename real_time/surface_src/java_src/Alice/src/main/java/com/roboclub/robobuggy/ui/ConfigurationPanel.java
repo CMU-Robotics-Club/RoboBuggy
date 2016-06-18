@@ -49,7 +49,8 @@ public class ConfigurationPanel extends RobobuggyGUIContainer{
 					File selectedFile = fc.getSelectedFile();
 					RobobuggyConfigFile.setConfigFile(selectedFile.getAbsolutePath());
 					currentConfigFileLabel.setText(RobobuggyConfigFile.getConfigFile());
-						RobobuggyMainFile.resetSystem();
+					
+					RobobuggyMainFile.resetSystem();
 				}else{
 					new RobobuggyLogicNotification("did not select a file properly", RobobuggyMessageLevel.WARNING);
 				}

@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
-import com.roboclub.robobuggy.messages.BrakeMessage;
+import com.roboclub.robobuggy.messages.BrakeStateMessage;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.FingerPrintMessage;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
@@ -47,6 +47,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class LoggingNode extends BuggyDecoratorNode {
 
     private Publisher loggingButtonPub;
+
     private File outputFile;
     private File outputDirectory;
     private NodeChannel[] filters;
@@ -87,16 +88,18 @@ public class LoggingNode extends BuggyDecoratorNode {
         statusPub = new Publisher(NodeChannel.NODE_STATUS.getMsgPath());
 
         setupSubscriberList();
-
-        if (!RobobuggyConfigFile.isDataPlayBack()) {
-            setupLoggingTrigger();
-        }
+        setupLoggingTrigger();
 
         statusPub.publish(new NodeStatusMessage(LoggingNode.class, LoggingNodeStatus.INITIALIZED, null));
 
     }
 
-
+    /**
+     * @return the current output file
+     */
+    File getOutputFile() {
+        return outputFile;
+    }
 
     /**
      * Starts the logging process
@@ -177,7 +180,7 @@ public class LoggingNode extends BuggyDecoratorNode {
      * @return the status of the operation - true if it succeeded, false if it didn't
      */
     private boolean createNewLogFile() {
-        if (!outputDirectory.exists() || !outputDirectory.isDirectory()) {
+        if ((!outputDirectory.mkdirs() && !outputDirectory.exists()) || !outputDirectory.isDirectory()) {
             new RobobuggyLogicNotification("Output directory path isn't a folder!", RobobuggyMessageLevel.EXCEPTION);
             return false;
         }
@@ -305,7 +308,7 @@ public class LoggingNode extends BuggyDecoratorNode {
 
                     // and if you look on your right you'll see the almost-unnecessary
                     // giganti-frickin-ic telemetry block
-                    if (toSort instanceof BrakeMessage) {
+                    if (toSort instanceof BrakeStateMessage) {
                         brakeHits++;
                     } else if (toSort instanceof EncoderMeasurement) {
                         encoderHits++;

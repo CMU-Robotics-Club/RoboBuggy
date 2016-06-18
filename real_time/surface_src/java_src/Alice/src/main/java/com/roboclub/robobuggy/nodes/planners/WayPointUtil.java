@@ -12,14 +12,20 @@ import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.simulation.PlayBackUtil;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Modifier;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
@@ -30,6 +36,52 @@ import java.util.Scanner;
  *
  */
 public class WayPointUtil {
+	/**
+	 * Changes a point. This should be obsolete by now
+	 * @param filename File to be changed
+	 * @param npoint Number of point to be changed
+	 * @param latitude Latitude of new point
+	 * @param north Whether that's north
+	 * @param longitude Longitude of new point
+	 * @param west Whether that's west
+	 * @throws IOException We read from a file...
+	 */
+	public static void changeWaypoint(String filename, int npoint, double latitude, boolean north, double longitude, boolean west) throws IOException{
+		
+		GpsMeasurement newpoint = new GpsMeasurement(Date.from(Instant.now()), Date.from(Instant.now()),
+				latitude, north, longitude, west, -1, -1, -1, -1);
+		
+        Gson messageTranslator = new GsonBuilder()
+                .excludeFieldsWithModifiers(Modifier.TRANSIENT)
+                .serializeSpecialFloatingPointValues()
+                .create()
+                ;
+		String newstring = messageTranslator.toJson(newpoint);
+		
+		ArrayList<String> al = new ArrayList<String>();
+		
+		//Read the file; store the lines; insert the new reading at the end of the sensor part
+		//BufferedReader input = new BufferedReader(new FileReader(filename));
+		BufferedReader input = new BufferedReader(new InputStreamReader(new FileInputStream(filename), "UTF-8"));
+		int x = 0;
+		while(input.ready()){
+			String instring = input.readLine();
+			if(x == npoint){
+				al.add(newstring);
+			}
+			else{
+				al.add(instring);
+			}
+			x++;
+		}
+		input.close();
+		BufferedWriter output = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename), "UTF-8"));
+		//output.write("Modified file\n");
+		while(al.size()>0){
+			output.write(al.remove(0) + "\n");
+		}
+		output.close();
+	}
 
 
 	/**

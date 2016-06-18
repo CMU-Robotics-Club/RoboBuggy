@@ -8,6 +8,7 @@ import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
 import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
 import com.roboclub.robobuggy.nodes.sensors.LoggingNode;
 import com.roboclub.robobuggy.ros.NodeChannel;
+import com.roboclub.robobuggy.simulation.SensorPlayer;
 import com.roboclub.robobuggy.simulation.SimulatedBuggy;
 import com.roboclub.robobuggy.simulation.SimulatedGPSNode;
 import com.roboclub.robobuggy.simulation.SimulatedImuNode;
@@ -48,7 +49,6 @@ public final class SimRobot extends AbstractRobot{
 	
 	private SimRobot(){
 		super();
-	
 		nodeList.add(new HighTrustGPSLocalizer());
 		nodeList.add(new SimulatedImuNode(100));
 		nodeList.add(new SimulatedGPSNode(500));

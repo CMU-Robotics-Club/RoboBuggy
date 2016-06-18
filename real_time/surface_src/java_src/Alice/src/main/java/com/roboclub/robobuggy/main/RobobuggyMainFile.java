@@ -16,7 +16,8 @@ public class RobobuggyMainFile {
 	 * @param args : None
 	 */
     public static void main(String[] args) {
-		new RobobuggyLogicNotification("Robobuggy Alice program started", RobobuggyMessageLevel.NOTE);
+
+    	new RobobuggyLogicNotification("Robobuggy Alice program started", RobobuggyMessageLevel.NOTE);
 
         try {
 			JNISetup.setupJNI(); //must run for jni to install
@@ -30,9 +31,9 @@ public class RobobuggyMainFile {
 		new RobobuggyLogicNotification("Initializing Robot", RobobuggyMessageLevel.NOTE);
         robot = SimRobot.getInstance();
 
-
 		new RobobuggyLogicNotification("Initializing GUI", RobobuggyMessageLevel.NOTE);
         Gui.getInstance();
+
 
 
 		new RobobuggyLogicNotification("Starting Robot", RobobuggyMessageLevel.NOTE);
