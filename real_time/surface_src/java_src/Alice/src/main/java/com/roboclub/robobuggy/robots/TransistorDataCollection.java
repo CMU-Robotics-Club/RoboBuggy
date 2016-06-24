@@ -92,7 +92,6 @@ public final class TransistorDataCollection extends AbstractRobot {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				// TODO Auto-generated method stub
-				System.out.println("shutting down");
 				TransistorDataCollection.this.shutDown();
 			}
 			
