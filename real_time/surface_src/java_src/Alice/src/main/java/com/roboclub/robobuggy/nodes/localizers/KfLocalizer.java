@@ -296,7 +296,7 @@ public class KfLocalizer extends PeriodicNode {
 	}
 
 	@Override
-	protected void update() {
+	protected synchronized void update() {
 		predictStep();
 		// publish state
 		UTMTuple currentLatLng = new UTMTuple(17, 'T', state.get(0, 0),

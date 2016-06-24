@@ -1,8 +1,11 @@
 package com.roboclub.robobuggy.nodes.localizers;
 
+import Jama.Matrix;
+import com.roboclub.robobuggy.main.Util;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
+import com.roboclub.robobuggy.messages.IMUAngularPositionMessage;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
@@ -75,7 +78,6 @@ public class HighTrustGPSLocalizer implements Node{
                 }
         });
 
- /*
         new Subscriber("HighTrustGpsLoc",NodeChannel.IMU_ANG_POS.getMsgPath(), ((topicName, m) -> {
             IMUAngularPositionMessage mes = ((IMUAngularPositionMessage) m);
 //            double y = mes.getRot()[0][1];
@@ -94,8 +96,7 @@ public class HighTrustGPSLocalizer implements Node{
 
            publishUpdate();
         }));
-        */
-        
+
 
         //Update our position based on encoder readings
         
@@ -113,9 +114,8 @@ public class HighTrustGPSLocalizer implements Node{
                 // update heading around curve
                 buggyFrameRotZ += MotionModel.getHeadingChange(deltaDistance, buggySteeringAngle);
                 // advance by foward in new heading
-                LocTuple deltaPos = LocalizerUtil.convertMetersToLatLng(deltaDistance, buggyFrameRotZ); //This line throws errors because LocalizerUtil doesn't have a LocTuple defined
-                //But LocTuple (which supposedly had been in com.roboclub.robobuggy.ui) doesn't seem to exist anymore. Not sure what's supposed to be happening here.
-                
+                LocTuple deltaPos = LocalizerUtil.convertMetersToLatLng(deltaDistance, buggyFrameRotZ);
+
                 //Update our position estimate
                 buggyFrameGpsY += deltaPos.getLatitude();
                 buggyFrameGpsX += deltaPos.getLongitude();

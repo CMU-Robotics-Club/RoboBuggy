@@ -132,11 +132,7 @@ public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListen
 				{r21, r22, r23},
 				{r31, r32, r33}
 			};
-			
-			double yaw = Math.atan(r21/r11);
-			double pitch = -r31/Math.sqrt(r32*r32 + r33*r33);
-			double roll = Math.atan(r32/r33);
-			
+
 			angPosPub.publish(new IMUAngularPositionMessage(rot));
 			offset += 8;
 		}
