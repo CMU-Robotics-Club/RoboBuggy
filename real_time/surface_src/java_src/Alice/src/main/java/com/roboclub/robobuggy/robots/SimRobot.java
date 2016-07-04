@@ -65,14 +65,6 @@ public final class SimRobot extends AbstractRobot{
 		simBuggy.setY(LocalizerUtil.convertLatToMeters(40.441705));
 		simBuggy.setX(LocalizerUtil.convertLonToMeters(-79.941585));
 		simBuggy.setTh(-110);
-		
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 		simBuggy.setDx(10);
 
 
