@@ -16,7 +16,10 @@ public class SimulatedImuNode extends PeriodicNode{
 	private Publisher imuPub = new Publisher(NodeChannel.IMU.getMsgPath());
 	private Publisher imuRotPub = new Publisher(NodeChannel.IMU_ANG_POS.getMsgPath());
 	private SimulatedBuggy simBuggy = SimulatedBuggy.getInstance();
-
+	
+	private double angleBias = 10.0; //degrees
+	private double angleVariance = 1.0;
+	
 	/**
 	 * Constructor for the simulated imu node
 	 * @param period how many milliseconds between new simulated imu messages
@@ -31,7 +34,13 @@ public class SimulatedImuNode extends PeriodicNode{
 	@Override
 	protected void update() {
 		imuPub.publish(new ImuMeasurement(simBuggy.getTh(), 0.0, 0.0));
-		double th = Math.toRadians(simBuggy.getTh());
+		double th = -Math.toRadians(simBuggy.getTh());
+
+		th = th+ Math.PI/2; //to fit the way the imu is mounted on the buggy 
+		
+		//adds error in orinatation 
+		th = th + Math.toRadians(angleBias + angleVariance*(2*Math.random()-1));
+		
 		double[][] rotMat = {{Math.cos(th),Math.sin(th), 0},
 				             {-Math.sin(th),Math.cos(th	),0},
 				             {0,0,1}};

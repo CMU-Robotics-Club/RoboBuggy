@@ -68,6 +68,7 @@ public final class Util {
 
     }
 	
+	
 	/**
 	 * Normalizes an an input angle in degrees to be between -180 and 180
 	 * @param degrees input angle in degrees

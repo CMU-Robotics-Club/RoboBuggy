@@ -10,8 +10,8 @@ import com.roboclub.robobuggy.messages.BrakeStateMessage;
 import com.roboclub.robobuggy.messages.DeviceIDMessage;
 import com.roboclub.robobuggy.messages.DriveControlMessage;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
-import com.roboclub.robobuggy.messages.MegaTimeMessage;
 import com.roboclub.robobuggy.messages.FingerPrintMessage;
+import com.roboclub.robobuggy.messages.MegaTimeMessage;
 import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.messages.TeleopBrakeStateMessage;
@@ -54,7 +54,7 @@ public  class  RBSMNode extends SerialNode {
 	private static final double M_PER_REV = 0.61;
 	
 	/** Steering Angle Conversion Rate */
-	private static final double ARD_TO_DEG = 1;
+	private static final double ARD_TO_DEG = 100;
 	/** Steering Angle offset?? */
 	private static final double OFFSET = 0;
     private static final double FEET_TO_METERS = 0.3048;
@@ -207,7 +207,11 @@ public  class  RBSMNode extends SerialNode {
 			messagePubEnc.publish(estimateVelocity(message.getDataWord()));
 		}
 		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_ERROR")) {
-			new RobobuggyLogicNotification("RBSM_MID_ERROR:"+message.getDataWord(), RobobuggyMessageLevel.EXCEPTION);
+			// don't want to publish the status ok messages
+			// TODO change this to an enum
+			if (message.getDataWord() != 0) {
+				new RobobuggyLogicNotification("RBSM_MID_ERROR:" + message.getDataWord(), RobobuggyMessageLevel.EXCEPTION);
+			}
 		}
 		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_ENC_RESET_CONFIRM")) {
 			new RobobuggyLogicNotification("Encoder Reset Confirmed by Zoe", RobobuggyMessageLevel.NOTE);
@@ -226,7 +230,6 @@ public  class  RBSMNode extends SerialNode {
 			messagePubFp.publish(new FingerPrintMessage(message.getDataWord()));
 		}
 		else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_MEGA_BATTERY_LEVEL")){
-			//TODO: Display the battery level in the GUI
 			messagePubBat.publish(new BatteryLevelMessage(message.getDataWord()));
 		}
 		else if (headerNumber == RBSerialMessage.getHeaderByte("DEVICE_ID")){

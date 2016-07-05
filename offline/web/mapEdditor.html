@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Custom controls</title>
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+  <input type="file" id="files" name="files[]" multiple />
+<output id="list"></output>
+    <div id="map"></div>
+    <script>
+    //TODO clean up 
+    //TODO add brakeing area 
+    //TODO verify saved file format
+
+    /********** DEFINE GLOBAL **************/
+      var map;
+      var markerId = 0;
+      var markers = [];
+      var marker_lookup = [];
+      var listeners = [];
+      var pathLine;
+
+  function drawCircles(){
+    for(i = 0;i<markers.length;i++){
+    var circle = new google.maps.Circle({
+      strokeColor: '#FF0000',
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+      fillColor: '#FF0000',
+      fillOpacity: 0.35,
+      map: map,
+      center: markers[i].getPosition(),
+      radius: 4 //meters
+    });
+  }
+
+  }
+
+  function updatePathLine(){
+    if(pathLine != null){
+      //remove the old line
+      pathLine.setMap(null);
+
+    }
+
+    var pathCords =[];
+    for(i = 0;i<markers.length;i++){
+      pathCords.push(markers[i].getPosition());
+    }
+    pathLine =  new google.maps.Polyline({
+    path: pathCords,
+    geodesic: true,
+    strokeColor: '#FF0000',
+    strokeOpacity: 1.0,
+    strokeWeight: 2
+  });
+
+  pathLine.setMap(map);    
+
+  }
+
+  function handleFileSelect(evt) {
+    var files = evt.target.files; // FileList object
+    var theFile = files[0];
+    var reader = new FileReader();
+    reader.onload = function(e) {
+    var text = reader.result;
+    lines = text.split('\n');
+    for(i = 0;i < lines.length;i++){
+       console.log(lines[i]);
+       var points = JSON.parse(lines[i]);
+       console.log(points);
+        var lat = points.latitude;
+        var lng = points.longitude;
+        addMarkerAt(lat,lng,i);
+
+
+    }
+      updatePathLine();
+  }
+
+  reader.readAsText(theFile);
+
+  }
+
+  document.getElementById('files').addEventListener('change', handleFileSelect, false);
+
+      /**
+       * The CenterControl adds a control to the map that recenters the map on
+       * Chicago.
+       * This constructor takes the control DIV as an argument.
+       * @constructor
+       */
+      function CenterControl(controlDiv, map) {
+
+        // Set CSS for the control border.
+        var controlUI = document.createElement('div');
+        controlUI.style.backgroundColor = '#fff';
+        controlUI.style.border = '2px solid #fff';
+        controlUI.style.borderRadius = '3px';
+        controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+        controlUI.style.cursor = 'pointer';
+        controlUI.style.marginBottom = '22px';
+        controlUI.style.textAlign = 'left';
+        controlUI.title = 'Map Edditor';
+        controlDiv.appendChild(controlUI);
+
+        // Set CSS for the control interior.
+        var controlText = document.createElement('div');
+        controlText.style.color = 'rgb(25,25,25)';
+        controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+        controlText.style.fontSize = '16px';
+        controlText.style.lineHeight = '38px';
+        controlText.style.paddingLeft = '5px';
+        controlText.style.paddingRight = '5px';
+        controlText.innerHTML = 'Add Marker';
+        controlUI.appendChild(controlText);
+
+                // Set CSS for the control border.
+        var controlUI4 = document.createElement('div');
+        controlUI4.style.backgroundColor = '#fff';
+        controlUI4.style.border = '2px solid #fff';
+        controlUI4.style.borderRadius = '3px';
+        controlUI4.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+        controlUI4.style.cursor = 'pointer';
+        controlUI4.style.marginBottom = '22px';
+        controlUI4.style.textAlign = 'center';
+        controlUI4.title = 'Map Edditor';
+        controlDiv.appendChild(controlUI4);
+
+        var controlText4 = document.createElement('div');
+        controlText4.style.color = 'rgb(25,25,25)';
+        controlText4.style.fontFamily = 'Roboto,Arial,sans-serif';
+        controlText4.style.fontSize = '16px';
+        controlText4.style.lineHeight = '38px';
+        controlText4.style.paddingLeft = '5px';
+        controlText4.style.paddingRight = '5px';
+        controlText4.innerHTML = 'save Markers';
+        controlUI4.appendChild(controlText4);
+
+        
+
+
+        // Setup the click event listeners: simply set the map to Chicago.
+        controlUI.addEventListener('click', function() {
+          addMarkerAt(map.getCenter().lat(),map.getCenter().lng(),markers.length);
+          updatePathLine();
+        });
+
+
+    controlUI4.addEventListener('click',function(){
+        var text = "";
+        var url = 'data:text/json;charset=utf8,';
+        for(i = 0;i<markers.length;i++){
+            var latlng = markers[i].getPosition();
+            var out = {"VERSION_ID":"gpsV0.2","gpsTimestamp":"Mar 18, 2016 6:01:03 PM",
+                       "latitude":latlng.lat(),"north":true,"longitude":latlng.lng(),
+                       "west":true,"qualityValue":0,"numSatellites":0,"horizontalDilutionOfPrecision":0.0,"antennaAltitude":0.0,"rawGPSLat":0.0,"rawGPSLong":0.0,"DATE_FORMAT":"yyyy-MM-dd HH:mm:ss.SSS","timestamp":1458338463072};
+            text = text+(JSON.stringify(out))+'\n';
+        }
+
+
+   var filename = 'waypoints.txt';
+   var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+  element.setAttribute('download', filename);
+
+  element.style.display = 'none';
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
+        window.open(url, '_blank');
+        window.focus();
+      });
+
+
+       // Set CSS for the control border.
+        var controlUI5 = document.createElement('div');
+        controlUI5.style.backgroundColor = '#fff';
+        controlUI5.style.border = '2px solid #fff';
+        controlUI5.style.borderRadius = '3px';
+        controlUI5.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+        controlUI5.style.cursor = 'pointer';
+        controlUI5.style.marginBottom = '22px';
+        controlUI5.style.textAlign = 'center';
+        controlUI5.title = 'Map Edditor';
+        controlDiv.appendChild(controlUI5);
+
+
+        var controlText5 = document.createElement('div');
+        controlText5.style.color = 'rgb(25,25,25)';
+        controlText5.style.fontFamily = 'Roboto,Arial,sans-serif';
+        controlText5.style.fontSize = '16px';
+        controlText5.style.lineHeight = '38px';
+        controlText5.style.paddingLeft = '5px';
+        controlText5.style.paddingRight = '5px';
+        controlText5.innerHTML = 'draw safe area';
+        controlUI5.appendChild(controlText5);
+
+    controlUI5.addEventListener('click',function(){
+       drawCircles();
+       });
+
+}
+
+    //TODO readjust marker numbers 
+      function removeMarker(i){
+        marker_lookup[i].setMap(null);
+        index = markers.indexOf(marker_lookup[i]);
+        markers.splice(index, 1);
+        updatePathLine();
+      }
+
+      function addNewMarkerAt(i,diff){
+          index = markers.indexOf(marker_lookup[i]);
+
+          addMarkerAt(map.getCenter().lat(),map.getCenter().lng(),index+diff);
+
+      }
+
+      function addMarkerAt(lat,lng,i){
+
+
+        marker = createMarker(lat,lng);
+        markers.splice(i, 0, marker);
+        updatePathLine();
+      }
+
+      function createMarker(lat,lng){   
+
+        var marker = new google.maps.Marker({
+            position:  {lat:lat,lng:lng},
+            map: map,
+            title: 'position',  //make the positon in the list 
+            draggable:true,
+            });
+
+
+        marker.addListener('dragend',function(event) {
+       updatePathLine();
+    });
+        setMarkerPopUp(marker,markerId);
+        marker_lookup.push(marker);
+        markerId = markerId + 1;
+
+        return marker;
+
+
+      }//addMarker
+
+      function setMarkerPopUp(marker,i){
+
+
+          // basically we want to find the correct point to go to, and then base the adding off that
+          var index = i;
+          for (var q = 0; q < markers.length; q++) {
+              // the below check doesn't seem to work :(
+              if (markers[q].position.lat === marker.position.lat && markers[q].position.lng === marker.position.lng) {
+                  index = q;
+              }
+          }
+
+      var contentString = '<div id="content">'+
+        '<div id="siteNotice">'+
+        '</div>'+
+        '<div id="bodyContent">'+
+        '<p><a href="#" onClick="removeMarker('+index+')">'+'Remove Marker</a> '+
+        '<p><a href="#" onClick="addNewMarkerAt('+index+',+1)">'+'Add Marker After</a> '+
+        '<p><a href="#" onClick="addNewMarkerAt('+index +',0)">'+'Add Marker Before</a> '+
+        '</div>'+
+        '</div>';
+        var infowindow = new google.maps.InfoWindow({
+          content: contentString
+        });
+        //google.maps.event.clearListeners(marker,'click');
+        marker.addListener('click', function() {
+          infowindow.open(map, marker);
+        });
+
+      }
+
+      function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 18,
+          center: {lat:40.440225,lng:-79.9448904}
+        });
+
+        // Create the DIV to hold the control and call the CenterControl()
+        // constructor passing in this DIV.
+        var centerControlDiv = document.createElement('div');
+        var centerControl = new CenterControl(centerControlDiv, map);
+
+        centerControlDiv.index = 1;
+        map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
+      }
+
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBJNnetiCvNgZHXvV7iM2E1xXTz86kT0gg&callback=initMap">
+    </script>
+  </body>
+</html>

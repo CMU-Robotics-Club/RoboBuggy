@@ -15,10 +15,8 @@ import com.roboclub.robobuggy.simulation.SimulatedRBSMNode;
 import com.roboclub.robobuggy.ui.AutonomousPanel;
 import com.roboclub.robobuggy.ui.ConfigurationPanel;
 import com.roboclub.robobuggy.ui.Gui;
-import com.roboclub.robobuggy.ui.ImuPanel;
 import com.roboclub.robobuggy.ui.MainGuiWindow;
 import com.roboclub.robobuggy.ui.PathPanel;
-import com.roboclub.robobuggy.ui.PoseGraphsPanel;
 import com.roboclub.robobuggy.ui.RobobuggyGUITabs;
 import com.roboclub.robobuggy.ui.RobobuggyJFrame;
 import com.roboclub.robobuggy.ui.SimulationPanel;
@@ -50,20 +48,16 @@ public final class SimRobot extends AbstractRobot{
 		super();
 	
 		nodeList.add(new HighTrustGPSLocalizer());
+	//	nodeList.add(new KfLocalizer(100));
 		nodeList.add(new SimulatedImuNode(100));
 		nodeList.add(new SimulatedGPSNode(500));
 		nodeList.add(new SimulatedRBSMNode());
-	/*	ArrayList<GpsMeasurement> wayPoints = new ArrayList<GpsMeasurement>();
-		for(int i = 0;i<100;i++){
-			wayPoints.add(new GpsMeasurement(0,-i));
-		}
-		*/
+		
 		try {
 			ArrayList<GpsMeasurement> wayPoints =
 					WayPointUtil.createWayPointsFromWaypointList(RobobuggyConfigFile.getWaypointSourceLogFile());
 			nodeList.add(new WayPointFollowerPlanner(wayPoints));
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -71,13 +65,7 @@ public final class SimRobot extends AbstractRobot{
 		simBuggy.setY(LocalizerUtil.convertLatToMeters(40.441705));
 		simBuggy.setX(LocalizerUtil.convertLonToMeters(-79.941585));
 		simBuggy.setTh(-110);
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		simBuggy.setDx(.5);
+		simBuggy.setDx(10);
 
 
 		nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION,
@@ -92,8 +80,8 @@ public final class SimRobot extends AbstractRobot{
 		RobobuggyGUITabs tabs = new RobobuggyGUITabs();
 		mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
 		tabs.addTab(new MainGuiWindow(), "Home");
-		tabs.addTab(new PoseGraphsPanel(),"poses");
-		tabs.addTab(new ImuPanel(),"IMU");
+	//	tabs.addTab(new PoseGraphsPanel(),"poses");
+	//	tabs.addTab(new ImuPanel(),"IMU");
 		tabs.addTab(new AutonomousPanel(),"Autonomous");
 		tabs.addTab(new SimulationPanel(),"Simulation");
 		tabs.addTab(new PathPanel(),"Path Panel");

@@ -40,11 +40,12 @@ import java.io.UnsupportedEncodingException;
  * Class used for playing back old log files. It does this by reading BuggyROS
  * messages stored in the log file and reinjecting them into the BuggyROS network.
  */
+@Deprecated
 public class SensorPlayer extends Thread {
 
     private String path;
-    private double playbackSpeed;
     private boolean isPaused = false;
+    private double playbackSpeed;
 
     private Publisher imuPub;
     private Publisher magPub;
@@ -66,6 +67,8 @@ public class SensorPlayer extends Thread {
      */
     public SensorPlayer(String filePath, int playbackSpeed) {
 
+        this.playbackSpeed = playbackSpeed;
+
         imuPub = new Publisher(NodeChannel.IMU.getMsgPath());
         magPub = new Publisher(NodeChannel.IMU_MAGNETIC.getMsgPath());
         gpsPub = new Publisher(NodeChannel.GPS.getMsgPath());
@@ -74,7 +77,6 @@ public class SensorPlayer extends Thread {
         steeringPub = new Publisher(NodeChannel.STEERING_COMMANDED.getMsgPath());
         loggingButtonPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
         logicNotificationPub = new Publisher(NodeChannel.LOGIC_NOTIFICATION.getMsgPath());
-
 
         new RobobuggyLogicNotification("initializing the SensorPlayer", RobobuggyMessageLevel.NOTE);
         path = filePath;
@@ -85,7 +87,19 @@ public class SensorPlayer extends Thread {
 
         setupPlaybackTrigger();
 
-        this.playbackSpeed = playbackSpeed;
+        JsonObject logFile  = null;
+        try {
+            logFile = Util.readJSONFile(path);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        if(!PlayBackUtil.validateLogFileMetadata(logFile)) {
+            new RobobuggyLogicNotification("Log file doesn't have the proper header metadata!", RobobuggyMessageLevel.EXCEPTION);
+            return;
+        }
+
     }
 
 
@@ -123,7 +137,7 @@ public class SensorPlayer extends Thread {
         });
     }
 
-    @Override
+     @Override
     public void run() {
 
         Gson translator = new GsonBuilder().create();

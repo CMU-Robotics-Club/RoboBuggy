@@ -1,6 +1,5 @@
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.nodes.localizers.LocalizerUtil;
-
 import org.junit.Test;
 
 import java.util.Date;
@@ -51,4 +50,10 @@ public class TestWayPointFollowerPlanner {
 		
 		}
 
+	@Test
+	public void testGotoWaypoint10meters() {
+		LocalizerUtil.convertMetersToLat(10);
+		
 	}
+	
+}

@@ -10,14 +10,16 @@ import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
-import com.roboclub.robobuggy.ui.LocTuple;
 
 import java.util.Date;
 
 /**
  * {@link BuggyDecoratorNode} used create {@link PoseMessage}s based upon GPS 
  * sensor input
- * 
+ *
+ * This class isn't necessarily used in real time, but more as a guideline as to what
+ * these localizers should look like.
+ *
  * @author Zachary Dawson
  *
  */

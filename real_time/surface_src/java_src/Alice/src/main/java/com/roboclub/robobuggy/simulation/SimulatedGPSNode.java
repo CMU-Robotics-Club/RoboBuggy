@@ -16,6 +16,7 @@ import java.util.Date;
  */
 public class SimulatedGPSNode extends PeriodicNode{
 	private Publisher gpsPub = new Publisher(NodeChannel.GPS.getMsgPath());
+	private double noise = 0.5;
 	
 	/**
 	 * constructor for the simulated gps node
@@ -34,8 +35,8 @@ public class SimulatedGPSNode extends PeriodicNode{
 		 synchronized (this) {
 			 //TODO convert to lat lon 
 			 
-		double xVal = LocalizerUtil.convertMetersToLon(simBuggy.getX());
-		double yVal = LocalizerUtil.convertMetersToLat(simBuggy.getY());
+		double xVal = LocalizerUtil.convertMetersToLon(simBuggy.getX()+(2*Math.random()-1)*noise);
+		double yVal = LocalizerUtil.convertMetersToLat(simBuggy.getY()+(2*Math.random()-1)*noise);
 		gpsPub.publish(new GpsMeasurement(new Date(), new Date(), yVal, true, xVal, true, 0, 0, 0.0, 0.0));		
 		 }
 		 }

@@ -56,6 +56,16 @@ public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListen
 		int[] data = m.getMeData();
 		//assuming message is of type 0
 		int offset = 0;
+		
+		
+	    int axisVal;
+	    float scale;
+		
+	    if (offset < 0) {
+	        return; // Compass heading flag not set
+	    }
+
+
 		//we do not parse ff0
 		if(m.getFf0()){
 			offset += 6;
@@ -105,19 +115,28 @@ public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListen
 			double y = convertQNToDouble((byte)data[offset+4],(byte)data[offset+5],14);
 			double z = convertQNToDouble((byte)data[offset+6],(byte)data[offset+7],14);
 			
+			double r11 = 1-2*y*y-2*z*z;
+			double r12 = 2*x*y-2*z*w;
+			double r13 = 2*x*z+2*y*w;
+			double r21 = 2*x*y+2*z*w;
+			double r22 = 1-2*x*x-2*z*z;
+			double r23 = 2*y*z-2*x*w;
+			double r31 = 2*x*z-2*y*w;
+			double r32 = 2*y*z+2*x*w;
+			double r33 = 1-2*x*x-2*y*y;
+			
 			//TODO normalize 
 			//extracts 
 			double[][] rot = {
-				{1-2*y*y-2*z*z,      2*x*y-2*z*w,             2*x*z+2*y*w},
-				{2*x*y+2*z*w,        1-2*x*x-2*z*z,           2*y*z-2*x*w},
-				{2*x*z-2*y*w,        2*y*z+2*x*w,            1-2*x*x-2*y*y}
+				{r11, r12, r13},
+				{r21, r22, r23},
+				{r31, r32, r33}
 			};
-			
-			
-			
+
 			angPosPub.publish(new IMUAngularPositionMessage(rot));
 			offset += 8;
 		}
+
 	}
 
 	@Override
@@ -141,7 +160,8 @@ public class HillCrestImuNode implements DiscoveryListenerInterface,DeviceListen
 	FreespaceMsgOutDataModeControlV2Request msg = new FreespaceMsgOutDataModeControlV2Request();
 	msg.setPacketSelect(8);  //
 	msg.setModeAndStatus(8);
-	msg.setFormatSelect(0);
+	//Set to 0 for gyro, accel, temp, mag, ang data.  Set to 1 for compass
+	msg.setFormatSelect(1);
 	//we really don't know what the format is so we are just going to log everything for now 
 	msg.setFf2(true); //linear Acceleration without Gravity 
 	msg.setFf3(true); //Angular Velocity

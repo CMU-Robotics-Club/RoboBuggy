@@ -3,6 +3,7 @@ package com.roboclub.robobuggy.ui;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
+import com.roboclub.robobuggy.nodes.localizers.LocTuple;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
@@ -41,10 +42,11 @@ public class Map extends JPanel {
 
     private double mapViewerLat = 40.440138;
     private double mapViewerLon = -79.945306;
-    private int zoomLevel = 17;
+    private int zoomLevel = 20;
 
     private double mapDragX = -1;
     private double mapDragY = -1;
+    private static final int MAX_POINT_BUF_SIZE = 3000;
 
     /**
      * initializes a new Map with cache loaded
@@ -56,10 +58,11 @@ public class Map extends JPanel {
         
         //adds track buggy  
         new Subscriber("Map",NodeChannel.POSE.getMsgPath(), new MessageListener() {
-			//TODO make this optional 
+			//TODO make this optional
 			@Override
 			public void actionPerformed(String topicName, Message m) {
 				GPSPoseMessage gpsM = (GPSPoseMessage)m;
+				zoomLevel = getMapTree().getViewer().getZoom();
 		        getMapTree().getViewer().setDisplayPosition(new Coordinate(gpsM.getLatitude(),
 		        		gpsM.getLongitude()),zoomLevel);				
 			}
@@ -190,7 +193,11 @@ public class Map extends JPanel {
 	 * @param thisColor color of the point
 	 */
 	public void addPointsToMapTree(Color thisColor, LocTuple...points) {
-		for (LocTuple point : points) {
+        List<MapMarker> markers = getMapTree().getViewer().getMapMarkerList();
+        while (markers.size() > MAX_POINT_BUF_SIZE - points.length) {
+            markers.remove(0);
+        }
+        for (LocTuple point : points) {
 			getMapTree().getViewer().addMapMarker(new MapMarkerDot(thisColor, point.getLatitude(), point.getLongitude()));
 		}
 	}

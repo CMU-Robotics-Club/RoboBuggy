@@ -1,5 +1,6 @@
 package com.roboclub.robobuggy.ui;
 
+import Jama.Matrix;
 import com.roboclub.robobuggy.messages.BatteryLevelMessage;
 import com.roboclub.robobuggy.messages.BrakeStateMessage;
 import com.roboclub.robobuggy.messages.FingerPrintMessage;
@@ -52,6 +53,7 @@ public class BuggyStatusPanel extends RobobuggyGUIContainer {
             e.printStackTrace();
         }
 
+//        this.addComponent(new ImageViewer(NodeChannel.PUSHBAR_CAMERA.getMsgPath()), .75, 0, .25, 1.0);
     }
 
     private void setupDataLoaders() {
@@ -69,10 +71,15 @@ public class BuggyStatusPanel extends RobobuggyGUIContainer {
 
         new Subscriber("buggyStatusPanel",NodeChannel.IMU_ANG_POS.getMsgPath(), ((topicName, m) -> {
             IMUAngularPositionMessage mes = ((IMUAngularPositionMessage) m);
-            double y = mes.getRot()[0][1];
-            double x = mes.getRot()[0][0];
+            Matrix r = new Matrix(mes.getRot());
+            double[][] xVec = {{1}, {0}, {0}};
+            double[][] yVec = {{0}, {1}, {0}};
+
+            double x = r.times(new Matrix(xVec)).get(0, 0);
+            double y = r.times(new Matrix(yVec)).get(0, 0);
             
-            imuAngle = -Math.atan2(y, x);
+            imuAngle = Math.atan2(y, x);
+            repaint();
         }));
         
         new Subscriber("buggyStatusPanel",NodeChannel.GPS.getMsgPath(), ((topicName, m) -> {
