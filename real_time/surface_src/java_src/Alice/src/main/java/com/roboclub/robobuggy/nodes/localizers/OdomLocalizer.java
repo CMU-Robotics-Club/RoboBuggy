@@ -16,87 +16,80 @@ import java.util.Date;
 
 
 /**
- * 
  * @author Trevor Decker
- *
- *  This node produces a position estimate with full trust based only on input from the front wheel
- *   encoder and the front wheel commanded angle 
- *
+ *         <p>
+ *         This node produces a position estimate with full trust based only on input from the front wheel
+ *         encoder and the front wheel commanded angle
  */
-public class OdomLocalizer  extends PeriodicNode{
-	private So2Pose pose;
-	private Publisher posePub = new Publisher(NodeChannel.POSE.getMsgPath());
+public class OdomLocalizer extends PeriodicNode {
+    private So2Pose pose;
+    private Publisher posePub = new Publisher(NodeChannel.POSE.getMsgPath());
 
-	private double currentEncoderVal = 0;
-	private double previousEncoderVal = 0;
-	private volatile double currentAngle = 0;
-	private double previousAngle = 0;
-
-
-	/**
-	 * initializes a new odomlocalizer
-	 */
-	public OdomLocalizer() {
-		super(new  BuggyBaseNode(NodeChannel.POSE), 100, "odomLocalizer");
-		
-		// Initialize subscriber to encoder measurements
-		// Since the Encoder sub only consumes currentAngle, by making it volatile we allow
-		//  the callbacks to run on different threads/procs and updates will still happen atomically.
-		new Subscriber("OdomLoc", NodeChannel.ENCODER.getMsgPath(), new MessageListener() {
-		@Override
-		public void actionPerformed(String topicName, Message m) {
-			EncoderMeasurement encM = (EncoderMeasurement)m;
-			double dist = encM.getDistance();
-				previousEncoderVal = currentEncoderVal;
-				currentEncoderVal = dist;
-			if (pose == null) {
-				pose = new So2Pose(0.0, 0.0, 0.0);
-			}
-			double deltaAngle = currentAngle - previousAngle;
-			double deltaEncoder = currentEncoderVal - previousEncoderVal;
-			So2Pose deltaPose = new So2Pose(deltaEncoder, 0.0, deltaAngle);
-			pose = pose.mult(deltaPose);
-			posePub.publish(new GPSPoseMessage(new Date(), pose.getX(), pose.getY(), pose.getOrientation()));
-			previousAngle = currentAngle;
-			
-			}
-		});
-		
-		//Initialize subscriber for what steering angle low level is currently at
-		new Subscriber("OdomLoc", NodeChannel.STEERING.getMsgPath(), new MessageListener() {
-			
-			@Override
-			public void actionPerformed(String topicName, Message m) {
-				SteeringMeasurement steerMeasur =  (SteeringMeasurement)m;
-				currentAngle = (steerMeasur.getAngle())*Math.PI/180;
-			}
-		});
-	}
-
-	
-	@Override
-	protected void update() {
-			
-	}
+    private double currentEncoderVal = 0;
+    private double previousEncoderVal = 0;
+    private volatile double currentAngle = 0;
+    private double previousAngle = 0;
 
 
-	@Override
-	protected boolean startDecoratorNode() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    /**
+     * initializes a new odomlocalizer
+     */
+    public OdomLocalizer() {
+        super(new BuggyBaseNode(NodeChannel.POSE), 100, "odomLocalizer");
+
+        // Initialize subscriber to encoder measurements
+        // Since the Encoder sub only consumes currentAngle, by making it volatile we allow
+        //  the callbacks to run on different threads/procs and updates will still happen atomically.
+        new Subscriber("OdomLoc", NodeChannel.ENCODER.getMsgPath(), new MessageListener() {
+            @Override
+            public void actionPerformed(String topicName, Message m) {
+                EncoderMeasurement encM = (EncoderMeasurement) m;
+                double dist = encM.getDistance();
+                previousEncoderVal = currentEncoderVal;
+                currentEncoderVal = dist;
+                if (pose == null) {
+                    pose = new So2Pose(0.0, 0.0, 0.0);
+                }
+                double deltaAngle = currentAngle - previousAngle;
+                double deltaEncoder = currentEncoderVal - previousEncoderVal;
+                So2Pose deltaPose = new So2Pose(deltaEncoder, 0.0, deltaAngle);
+                pose = pose.mult(deltaPose);
+                posePub.publish(new GPSPoseMessage(new Date(), pose.getX(), pose.getY(), pose.getOrientation()));
+                previousAngle = currentAngle;
+
+            }
+        });
+
+        //Initialize subscriber for what steering angle low level is currently at
+        new Subscriber("OdomLoc", NodeChannel.STEERING.getMsgPath(), new MessageListener() {
+
+            @Override
+            public void actionPerformed(String topicName, Message m) {
+                SteeringMeasurement steerMeasur = (SteeringMeasurement) m;
+                currentAngle = (steerMeasur.getAngle()) * Math.PI / 180;
+            }
+        });
+    }
 
 
-	@Override
-	protected boolean shutdownDecoratorNode() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
-	
-	
-	
-	
+    @Override
+    protected void update() {
 
-	
+    }
+
+
+    @Override
+    protected boolean startDecoratorNode() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+
+    @Override
+    protected boolean shutdownDecoratorNode() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+
 }

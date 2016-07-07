@@ -17,12 +17,11 @@ import com.roboclub.robobuggy.ros.Subscriber;
 import java.util.Date;
 
 /**
- *
  * This class runs a Node that will build a fused position estimate by trusting all new GPS measurements completely
- * @author Trevor Decker
  *
+ * @author Trevor Decker
  */
-public class HighTrustGPSLocalizer implements Node{
+public class HighTrustGPSLocalizer implements Node {
     private double buggyFrameGpsX;
     private double buggyFrameGpsY;
     private double buggyFrameRotZ;
@@ -37,48 +36,48 @@ public class HighTrustGPSLocalizer implements Node{
     /**
      * Constructor for the High Trust Localizer which will initialize the system to an identity (zero position)
      */
-    public HighTrustGPSLocalizer(){
+    public HighTrustGPSLocalizer() {
         //init values
-    	buggyFrameGpsX = 0.0;
-    	buggyFrameGpsY = 0.0;
+        buggyFrameGpsX = 0.0;
+        buggyFrameGpsY = 0.0;
         buggyFrameRotZ = 0.0;
         buggySteeringAngle = 0.0;// wheel direction in buggy frame
         lastEncoderReading = 0.0;
         posePub = new Publisher(NodeChannel.POSE.getMsgPath());
 
         //Read all the steering messages we're getting and adjust our stored steering angle accordingly
-        new Subscriber("htGpsLoc", NodeChannel.STEERING.getMsgPath(), new MessageListener() {			
-			@Override
-			public void actionPerformed(String topicName, Message m) {
-				SteeringMeasurement steerM = (SteeringMeasurement)m;
-				// TODO Auto-generated method stub
-	            buggySteeringAngle  = steerM.getAngle();
-			}
-		});
-        
+        new Subscriber("htGpsLoc", NodeChannel.STEERING.getMsgPath(), new MessageListener() {
+            @Override
+            public void actionPerformed(String topicName, Message m) {
+                SteeringMeasurement steerM = (SteeringMeasurement) m;
+                // TODO Auto-generated method stub
+                buggySteeringAngle = steerM.getAngle();
+            }
+        });
+
         //Initialize subscriber to GPS measurements
         new Subscriber("htGpsLoc", NodeChannel.GPS.getMsgPath(), new MessageListener() {
             @Override
             public void actionPerformed(String topicName, Message m) {
-                GpsMeasurement newGPSData = (GpsMeasurement)m;
+                GpsMeasurement newGPSData = (GpsMeasurement) m;
                 synchronized (this) {
-                // Get the delta latitude and longitude, use that to figure out how far we've travelled
-               buggyFrameGpsY = newGPSData.getLatitude();
-               buggyFrameGpsX = newGPSData.getLongitude();
-               double dLat = buggyFrameGpsY - oldGPSY;
-               double dLon = buggyFrameGpsX - oldGPSX;
-               oldGPSX = buggyFrameGpsX;
-               oldGPSY = buggyFrameGpsY;
+                    // Get the delta latitude and longitude, use that to figure out how far we've travelled
+                    buggyFrameGpsY = newGPSData.getLatitude();
+                    buggyFrameGpsX = newGPSData.getLongitude();
+                    double dLat = buggyFrameGpsY - oldGPSY;
+                    double dLon = buggyFrameGpsX - oldGPSX;
+                    oldGPSX = buggyFrameGpsX;
+                    oldGPSY = buggyFrameGpsY;
 
-                // take the arctangent in order to get the heading (in degrees)
-                buggyFrameRotZ = Math.toDegrees(Math.atan2(LocalizerUtil.convertLatToMeters(dLat), LocalizerUtil.convertLonToMeters(dLon)));
+                    // take the arctangent in order to get the heading (in degrees)
+                    buggyFrameRotZ = Math.toDegrees(Math.atan2(LocalizerUtil.convertLatToMeters(dLat), LocalizerUtil.convertLonToMeters(dLon)));
 
-                        publishUpdate();
-                    }
+                    publishUpdate();
                 }
+            }
         });
 
-        new Subscriber("HighTrustGpsLoc",NodeChannel.IMU_ANG_POS.getMsgPath(), ((topicName, m) -> {
+        new Subscriber("HighTrustGpsLoc", NodeChannel.IMU_ANG_POS.getMsgPath(), ((topicName, m) -> {
             IMUAngularPositionMessage mes = ((IMUAngularPositionMessage) m);
 //            double y = mes.getRot()[0][1];
 //            double x = mes.getRot()[0][0];
@@ -86,20 +85,20 @@ public class HighTrustGPSLocalizer implements Node{
 //          buggyFrameRotZ = Util.normalizeAngleDeg(-Math.toDegrees(Math.atan2(y, x))+90);
 
             Matrix r = new Matrix(mes.getRot());
-            double[][] xVec = {{1}, {0}, {0}};
-            double[][] yVec = {{0}, {1}, {0}};
+            double[][] xVec = { { 1 }, { 0 }, { 0 } };
+            double[][] yVec = { { 0 }, { 1 }, { 0 } };
 
             double x = r.times(new Matrix(xVec)).get(0, 0);
-           double y = r.times(new Matrix(yVec)).get(0, 0);
-            buggyFrameRotZ = Util.normalizeAngleDeg(Math.toDegrees(-Math.atan2(y, x))+90 );
+            double y = r.times(new Matrix(yVec)).get(0, 0);
+            buggyFrameRotZ = Util.normalizeAngleDeg(Math.toDegrees(-Math.atan2(y, x)) + 90);
 
 
-           publishUpdate();
+            publishUpdate();
         }));
 
 
         //Update our position based on encoder readings
-        
+
         // TODO note that we will probably run into precision errors since the changes are so small
         // would be good to batch up the encoder updates until we get a margin that we know can be represented proeprly
         new Subscriber("htGpsLoc", NodeChannel.ENCODER.getMsgPath(), new MessageListener() {
@@ -124,13 +123,13 @@ public class HighTrustGPSLocalizer implements Node{
                 publishUpdate();
             }
         });
-      
+
 
     }
 
-    private void publishUpdate(){
+    private void publishUpdate() {
         posePub.publish(new GPSPoseMessage(new Date(), buggyFrameGpsY, buggyFrameGpsX, buggyFrameRotZ));
-    }	
+    }
 
     @Override
     public boolean startNode() {
@@ -154,7 +153,6 @@ public class HighTrustGPSLocalizer implements Node{
     public String getName() {
         return "High Trust GPS Localizer";
     }
-
 
 
 }

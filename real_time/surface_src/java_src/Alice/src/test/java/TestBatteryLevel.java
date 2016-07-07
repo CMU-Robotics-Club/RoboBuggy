@@ -9,16 +9,16 @@ import static org.junit.Assert.fail;
  */
 public class TestBatteryLevel {
 
-	/**
-	 * tries to create a new battery level message
-	 */
-	@Test
-	public void test() {
-		BatteryLevelMessage battery = new BatteryLevelMessage(10);
-		if(battery.getBatteryLevel() != 10){
-			fail("battery level does not match");
-		}
+    /**
+     * tries to create a new battery level message
+     */
+    @Test
+    public void test() {
+        BatteryLevelMessage battery = new BatteryLevelMessage(10);
+        if (battery.getBatteryLevel() != 10) {
+            fail("battery level does not match");
+        }
 
-	}
+    }
 
 }

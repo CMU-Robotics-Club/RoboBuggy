@@ -16,24 +16,24 @@ public class DeadreckoningPlanner extends PathPlannerNode {
      * @param channel {@link NodeChannel} on which to broadcast status
      *                information about the node
      */
-    public DeadreckoningPlanner(NodeChannel channel)  {
+    public DeadreckoningPlanner(NodeChannel channel) {
         super(channel);
- 
+
     }
 
     @Override
     protected void updatePositionEstimate(GPSPoseMessage m) {
         // do nothing here, this is just a simple sweep
         // we don't need to know the position
-    	if(m.getLatitude() < 45.0){
-    		//go straight
-    		currentCommandedSteeringAngle = 0.0;
-    		
-    	}else{
-    		//turn right 
-    		currentCommandedSteeringAngle = 10;
-    	}
-    	
+        if (m.getLatitude() < 45.0) {
+            //go straight
+            currentCommandedSteeringAngle = 0.0;
+
+        } else {
+            //turn right
+            currentCommandedSteeringAngle = 10;
+        }
+
     }
 
     @Override

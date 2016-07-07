@@ -14,60 +14,64 @@ import com.roboclub.robobuggy.ros.Subscriber;
 import java.util.Date;
 
 /**
- * {@link BuggyDecoratorNode} used create {@link PoseMessage}s based upon GPS 
+ * {@link BuggyDecoratorNode} used create {@link PoseMessage}s based upon GPS
  * sensor input
- *
+ * <p>
  * This class isn't necessarily used in real time, but more as a guideline as to what
  * these localizers should look like.
  *
  * @author Zachary Dawson
- *
  */
 public final class GPSLocalizer extends BuggyDecoratorNode {
 
-	private Publisher posePub;
-	private LocTuple lastReading;
-	
-	/**
-	 * Construct a new {@link GPSLocalizer} object
-	 * @param channel channel {@link NodeChannel} on which to broadcast status
-	 *  information about the node
-	 */
-	public GPSLocalizer(NodeChannel channel) {
-		super(new BuggyBaseNode(channel), "GPSLocalizer");
-		lastReading = null;
-		posePub = new Publisher(NodeChannel.POSE.getMsgPath());
-	}
+    private Publisher posePub;
+    private LocTuple lastReading;
 
-	/**{@inheritDoc}*/
-	@Override
-	protected boolean startDecoratorNode() {
-		//Initialize subscriber to GPS measurements
-		new Subscriber("gpsLoc", NodeChannel.GPS.getMsgPath(), new MessageListener() {
-			@Override
-			public void actionPerformed(String topicName, Message m) {
-				GpsMeasurement gpsM = (GpsMeasurement)m;
-				LocTuple reading = new LocTuple(gpsM.getLatitude(), gpsM.getLongitude());
-				if(lastReading != null) {
-					LocTuple diff = LocTuple.subtract(lastReading, reading);
-					posePub.publish(new GPSPoseMessage(new Date(), reading.getLatitude(),
-							reading.getLongitude(), diff.getHeadingAngle()));
-				}
-				lastReading = reading;
-				
-				//Feed the watchdog
-				setNodeState(NodeState.ON);
-			}
-			
-		});
-		return true;
-	}
+    /**
+     * Construct a new {@link GPSLocalizer} object
+     *
+     * @param channel channel {@link NodeChannel} on which to broadcast status
+     *                information about the node
+     */
+    public GPSLocalizer(NodeChannel channel) {
+        super(new BuggyBaseNode(channel), "GPSLocalizer");
+        lastReading = null;
+        posePub = new Publisher(NodeChannel.POSE.getMsgPath());
+    }
 
-	/**{@inheritDoc}*/
-	@Override
-	protected boolean shutdownDecoratorNode() {
-		//Always return true as this node always shuts down successfully
-		return true;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean startDecoratorNode() {
+        //Initialize subscriber to GPS measurements
+        new Subscriber("gpsLoc", NodeChannel.GPS.getMsgPath(), new MessageListener() {
+            @Override
+            public void actionPerformed(String topicName, Message m) {
+                GpsMeasurement gpsM = (GpsMeasurement) m;
+                LocTuple reading = new LocTuple(gpsM.getLatitude(), gpsM.getLongitude());
+                if (lastReading != null) {
+                    LocTuple diff = LocTuple.subtract(lastReading, reading);
+                    posePub.publish(new GPSPoseMessage(new Date(), reading.getLatitude(),
+                            reading.getLongitude(), diff.getHeadingAngle()));
+                }
+                lastReading = reading;
+
+                //Feed the watchdog
+                setNodeState(NodeState.ON);
+            }
+
+        });
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean shutdownDecoratorNode() {
+        //Always return true as this node always shuts down successfully
+        return true;
+    }
 
 }

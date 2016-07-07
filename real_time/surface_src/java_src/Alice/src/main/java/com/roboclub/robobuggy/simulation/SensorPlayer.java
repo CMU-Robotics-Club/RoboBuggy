@@ -62,7 +62,8 @@ public class SensorPlayer extends Thread {
 
     /**
      * Construct a new {@link SensorPlayer} object
-     * @param filePath {@link String} of the name and location of the log file
+     *
+     * @param filePath      {@link String} of the name and location of the log file
      * @param playbackSpeed the initial playback speed
      */
     public SensorPlayer(String filePath, int playbackSpeed) {
@@ -81,13 +82,13 @@ public class SensorPlayer extends Thread {
         new RobobuggyLogicNotification("initializing the SensorPlayer", RobobuggyMessageLevel.NOTE);
         path = filePath;
         File f = new File(path);
-        if(!f.exists()) {
+        if (!f.exists()) {
             new RobobuggyLogicNotification("File doesn't exist!", RobobuggyMessageLevel.EXCEPTION);
         }
 
         setupPlaybackTrigger();
 
-        JsonObject logFile  = null;
+        JsonObject logFile = null;
         try {
             logFile = Util.readJSONFile(path);
         } catch (UnsupportedEncodingException e) {
@@ -95,7 +96,7 @@ public class SensorPlayer extends Thread {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        if(!PlayBackUtil.validateLogFileMetadata(logFile)) {
+        if (!PlayBackUtil.validateLogFileMetadata(logFile)) {
             new RobobuggyLogicNotification("Log file doesn't have the proper header metadata!", RobobuggyMessageLevel.EXCEPTION);
             return;
         }
@@ -110,25 +111,22 @@ public class SensorPlayer extends Thread {
         new Subscriber("playback", NodeChannel.GUI_LOGGING_BUTTON.getMsgPath(), new MessageListener() {
             @Override
             public synchronized void actionPerformed(String topicName, Message m) {
-                GuiLoggingButtonMessage message = (GuiLoggingButtonMessage)m;
+                GuiLoggingButtonMessage message = (GuiLoggingButtonMessage) m;
                 if (message.getLoggingMessage().equals(GuiLoggingButtonMessage.LoggingMessage.START)) {
 
                     //unpause it if we paused, or start fresh if we haven't paused
                     if (SensorPlayer.this.isPaused) {
                         SensorPlayer.this.isPaused = false;
                         new RobobuggyLogicNotification("Resumed playback", RobobuggyMessageLevel.NOTE);
-                    }
-                    else {
+                    } else {
                         SensorPlayer.this.start();
                         new RobobuggyLogicNotification("Started playback", RobobuggyMessageLevel.NOTE);
                     }
-                }
-                else if (message.getLoggingMessage().equals(GuiLoggingButtonMessage.LoggingMessage.STOP)) {
+                } else if (message.getLoggingMessage().equals(GuiLoggingButtonMessage.LoggingMessage.STOP)) {
                     if (!SensorPlayer.this.isPaused) {
                         SensorPlayer.this.isPaused = true;
                         new RobobuggyLogicNotification("Paused playback", RobobuggyMessageLevel.NOTE);
-                    }
-                    else {
+                    } else {
                         new RobobuggyLogicNotification("Quit playback, please restart GUI to reset", RobobuggyMessageLevel.NOTE);
                     }
                 }
@@ -137,13 +135,13 @@ public class SensorPlayer extends Thread {
         });
     }
 
-     @Override
+    @Override
     public void run() {
 
         Gson translator = new GsonBuilder().create();
         try {
-        	JsonObject logFile  = Util.readJSONFile(path);
-            if(!PlayBackUtil.validateLogFileMetadata(logFile)) {
+            JsonObject logFile = Util.readJSONFile(path);
+            if (!PlayBackUtil.validateLogFileMetadata(logFile)) {
                 new RobobuggyLogicNotification("Log file doesn't have the proper header metadata!", RobobuggyMessageLevel.EXCEPTION);
                 return;
             }
@@ -151,7 +149,7 @@ public class SensorPlayer extends Thread {
             long prevSensorTime = -1;
 
             JsonArray sensorDataArray = logFile.getAsJsonArray("sensor_data");
-            for (JsonElement sensorAsJElement: sensorDataArray) {
+            for (JsonElement sensorAsJElement : sensorDataArray) {
 
                 // spin in a tight loop until we've unpaused
                 while (isPaused) {
@@ -160,7 +158,7 @@ public class SensorPlayer extends Thread {
 
                 boolean waitForTimeDiff = true;
 
-                if(sensorAsJElement.isJsonObject()){
+                if (sensorAsJElement.isJsonObject()) {
                     JsonObject sensorDataJson = sensorAsJElement.getAsJsonObject();
                     String versionID = sensorDataJson.get("VERSION_ID").getAsString();
 
@@ -236,8 +234,7 @@ public class SensorPlayer extends Thread {
 
                     if (prevSensorTime == -1) {
                         prevSensorTime = timeMessage.getTimestamp().getTime();
-                    }
-                    else {
+                    } else {
                         long currentSensorTime = timeMessage.getTimestamp().getTime();
                         long timeDiff = currentSensorTime - prevSensorTime;
                         if (timeDiff > 10) {
@@ -293,6 +290,6 @@ public class SensorPlayer extends Thread {
      * gets the new playback speed from the GUI and puts it into playbackSpeed
      */
     public void getNewPlaybackSpeed() {
-    	playbackSpeed = RobobuggyConfigFile.getPlayBackSpeed();
+        playbackSpeed = RobobuggyConfigFile.getPlayBackSpeed();
     }
 }

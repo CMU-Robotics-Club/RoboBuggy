@@ -3,13 +3,11 @@
 import com.roboclub.robobuggy.main.Robot;
 */
 /**
- * 
  * @author Trevor Decker
- *
  * @version 0.5
- * 
+ * <p>
  * CHANGELOG: NONE
- * 
+ * <p>
  * DESCRIPTION: tester class for the servo
  */
 /*

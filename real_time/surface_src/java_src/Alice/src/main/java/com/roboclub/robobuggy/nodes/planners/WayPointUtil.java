@@ -26,133 +26,134 @@ import java.util.Scanner;
 
 /**
  * Parses a log file and creates a set of waypoints from the relevant data
- * @author Trevor Decker
  *
+ * @author Trevor Decker
  */
 public class WayPointUtil {
 
 
-	/**
-	 * @param filename log file
-	 * @return arraylist of waypoints
-	 * @throws FileNotFoundException if we couldn't find the log file
-	 */
-	public static ArrayList<GpsMeasurement> createWayPointsFromWaypointList(String filename) throws FileNotFoundException {
-		ArrayList<GpsMeasurement> waypoints = new ArrayList<>();
+    /**
+     * @param filename log file
+     * @return arraylist of waypoints
+     * @throws FileNotFoundException if we couldn't find the log file
+     */
+    public static ArrayList<GpsMeasurement> createWayPointsFromWaypointList(String filename) throws FileNotFoundException {
+        ArrayList<GpsMeasurement> waypoints = new ArrayList<>();
 
-		File waypointFile = new File(filename);
-		Gson translator = new GsonBuilder().serializeSpecialFloatingPointValues().create();
-		try{
-			Scanner fileReader = new Scanner(new FileInputStream(waypointFile), "UTF-8");
-			while (fileReader.hasNextLine()) {
-				String nextline = fileReader.nextLine();
-				if (nextline.equals("")) {
-					break;
-				}
-				waypoints.add(translator.fromJson(nextline, GpsMeasurement.class));
-			}
-		fileReader.close();
-		
-		}catch(java.io.FileNotFoundException e){
-			new RobobuggyLogicNotification("could not read way point file:"+e.getMessage(), RobobuggyMessageLevel.EXCEPTION);
-		}
+        File waypointFile = new File(filename);
+        Gson translator = new GsonBuilder().serializeSpecialFloatingPointValues().create();
+        try {
+            Scanner fileReader = new Scanner(new FileInputStream(waypointFile), "UTF-8");
+            while (fileReader.hasNextLine()) {
+                String nextline = fileReader.nextLine();
+                if (nextline.equals("")) {
+                    break;
+                }
+                waypoints.add(translator.fromJson(nextline, GpsMeasurement.class));
+            }
+            fileReader.close();
 
-		return waypoints;
-	}
+        } catch (java.io.FileNotFoundException e) {
+            new RobobuggyLogicNotification("could not read way point file:" + e.getMessage(), RobobuggyMessageLevel.EXCEPTION);
+        }
 
-	/**
-	 * @param filename log file with odom localizations
-	 * @return waypoint list
-	 * @throws FileNotFoundException if we couldn't find the log file
-	 * @throws UnsupportedEncodingException if you're stupid and not using a utf encoded file :)
-	 */
-	public static ArrayList<GpsMeasurement> createWaypointsFromOdomLocalizerLog(String filename)
-										throws FileNotFoundException, UnsupportedEncodingException {
-		File odomLog = new File(filename);
-		Gson translator = new GsonBuilder().create();
-		ArrayList<GpsMeasurement> waypoints = new ArrayList<>();
+        return waypoints;
+    }
 
-		InputStreamReader stream = new InputStreamReader(new FileInputStream(odomLog), "UTF-8");
-		JsonObject logFile = translator.fromJson(stream, JsonObject.class);
+    /**
+     * @param filename log file with odom localizations
+     * @return waypoint list
+     * @throws FileNotFoundException        if we couldn't find the log file
+     * @throws UnsupportedEncodingException if you're stupid and not using a utf encoded file :)
+     */
+    public static ArrayList<GpsMeasurement> createWaypointsFromOdomLocalizerLog(String filename)
+            throws FileNotFoundException, UnsupportedEncodingException {
+        File odomLog = new File(filename);
+        Gson translator = new GsonBuilder().create();
+        ArrayList<GpsMeasurement> waypoints = new ArrayList<>();
 
-		if(PlayBackUtil.validateLogFileMetadata(logFile)) {
-			JsonArray sensorDataArray = logFile.getAsJsonArray("sensor_data");
-			for (JsonElement sensorAsJElement : sensorDataArray) {
-				JsonObject sensorDataJson = sensorAsJElement.getAsJsonObject();
-				String versionId = sensorDataJson.get("VERSION_ID").getAsString();
+        InputStreamReader stream = new InputStreamReader(new FileInputStream(odomLog), "UTF-8");
+        JsonObject logFile = translator.fromJson(stream, JsonObject.class);
 
-				Message transmit;
+        if (PlayBackUtil.validateLogFileMetadata(logFile)) {
+            JsonArray sensorDataArray = logFile.getAsJsonArray("sensor_data");
+            for (JsonElement sensorAsJElement : sensorDataArray) {
+                JsonObject sensorDataJson = sensorAsJElement.getAsJsonObject();
+                String versionId = sensorDataJson.get("VERSION_ID").getAsString();
 
-				switch (versionId) {
-					case GPSPoseMessage.VERSION_ID:
-						transmit = translator.fromJson(sensorDataJson, GPSPoseMessage.class);
-						GPSPoseMessage pose = (GPSPoseMessage) transmit;
-						GpsMeasurement waypoint = new GpsMeasurement(new Date(), pose.getLatitude(),
-								true, pose.getLongitude(), true, 0, 0, 0, 0, 0, 0);
-						waypoints.add(waypoint);
-						break;
-					default:
-						break;
-				}
-			}
-		}
+                Message transmit;
 
-		return waypoints;
-	}
+                switch (versionId) {
+                    case GPSPoseMessage.VERSION_ID:
+                        transmit = translator.fromJson(sensorDataJson, GPSPoseMessage.class);
+                        GPSPoseMessage pose = (GPSPoseMessage) transmit;
+                        GpsMeasurement waypoint = new GpsMeasurement(new Date(), pose.getLatitude(),
+                                true, pose.getLongitude(), true, 0, 0, 0, 0, 0, 0);
+                        waypoints.add(waypoint);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
 
-	/**
-	 * also places a log file just filled with waypoints
-	 * @param folder the folder name
-	 * @param filename the log file name
-	 * @return waypoint list
-	 * @throws IOException we couldn't find the file or folder
-	 */
-	public static ArrayList createWayPointsFromLog(String folder, String filename) throws IOException {
-			   
-				ArrayList messages = new ArrayList();
-				File outputFile = new File(folder + "/waypoints.txt");
-				if (!outputFile.createNewFile()) {
-					new RobobuggyLogicNotification("couldn't create file", RobobuggyMessageLevel.EXCEPTION);
+        return waypoints;
+    }
+
+    /**
+     * also places a log file just filled with waypoints
+     *
+     * @param folder   the folder name
+     * @param filename the log file name
+     * @return waypoint list
+     * @throws IOException we couldn't find the file or folder
+     */
+    public static ArrayList createWayPointsFromLog(String folder, String filename) throws IOException {
+
+        ArrayList messages = new ArrayList();
+        File outputFile = new File(folder + "/waypoints.txt");
+        if (!outputFile.createNewFile()) {
+            new RobobuggyLogicNotification("couldn't create file", RobobuggyMessageLevel.EXCEPTION);
 //					return null;
-				}
-				OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(outputFile), "UTF-8");
+        }
+        OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(outputFile), "UTF-8");
 
-				Gson translator = new GsonBuilder().serializeSpecialFloatingPointValues().create();
-	            InputStreamReader fileReader = new InputStreamReader(new FileInputStream(new File(folder + "/" + filename)), "UTF-8");
-	            JsonObject logFile = translator.fromJson(fileReader, JsonObject.class);
+        Gson translator = new GsonBuilder().serializeSpecialFloatingPointValues().create();
+        InputStreamReader fileReader = new InputStreamReader(new FileInputStream(new File(folder + "/" + filename)), "UTF-8");
+        JsonObject logFile = translator.fromJson(fileReader, JsonObject.class);
 
-	            if(!PlayBackUtil.validateLogFileMetadata(logFile)) {
-	                new RobobuggyLogicNotification("Log file doesn't have the proper header metadata!", RobobuggyMessageLevel.EXCEPTION);
-					writer.close();
-					fileReader.close();
-	                return messages;
-	            }
-
-
-	            JsonArray sensorDataArray = logFile.getAsJsonArray("sensor_data");
-	            for (JsonElement sensorAsJElement: sensorDataArray) {
-	                if(sensorAsJElement.isJsonObject()){
-	                    JsonObject sensorDataJson = sensorAsJElement.getAsJsonObject();
-	                    String versionID = sensorDataJson.get("VERSION_ID").getAsString();
+        if (!PlayBackUtil.validateLogFileMetadata(logFile)) {
+            new RobobuggyLogicNotification("Log file doesn't have the proper header metadata!", RobobuggyMessageLevel.EXCEPTION);
+            writer.close();
+            fileReader.close();
+            return messages;
+        }
 
 
-	                    switch (versionID) {
-	                        case GpsMeasurement.VERSION_ID:
-	                        	Message transmitMessage = translator.fromJson(sensorDataJson, GpsMeasurement.class);
-	                            messages.add(transmitMessage);
-								writer.write(sensorDataJson.toString() + "\n");
-	                            break;
-							default:
-								break;
-	                    }
-	                   }
-	                }//for loop
+        JsonArray sensorDataArray = logFile.getAsJsonArray("sensor_data");
+        for (JsonElement sensorAsJElement : sensorDataArray) {
+            if (sensorAsJElement.isJsonObject()) {
+                JsonObject sensorDataJson = sensorAsJElement.getAsJsonObject();
+                String versionID = sensorDataJson.get("VERSION_ID").getAsString();
 
-			writer.flush();
-		writer.close();
-		fileReader.close();
-	            return messages;
-	}
-	
+
+                switch (versionID) {
+                    case GpsMeasurement.VERSION_ID:
+                        Message transmitMessage = translator.fromJson(sensorDataJson, GpsMeasurement.class);
+                        messages.add(transmitMessage);
+                        writer.write(sensorDataJson.toString() + "\n");
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }//for loop
+
+        writer.flush();
+        writer.close();
+        fileReader.close();
+        return messages;
+    }
+
 
 }

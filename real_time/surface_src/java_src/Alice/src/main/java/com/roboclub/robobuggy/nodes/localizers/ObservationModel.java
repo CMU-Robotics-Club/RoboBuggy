@@ -7,6 +7,6 @@ import Jama.Matrix;
  */
 public abstract class ObservationModel {
 
-	abstract Matrix getObservationSpaceState(Matrix state);
+    abstract Matrix getObservationSpaceState(Matrix state);
 
 }

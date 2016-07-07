@@ -12,42 +12,42 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * A gui element that shows the waypoints for the path that we are currently trying drive 
- * @author Trevor Decker
+ * A gui element that shows the waypoints for the path that we are currently trying drive
  *
+ * @author Trevor Decker
  */
 public class PathPanel extends JPanel {
 
-	private Map map;
+    private Map map;
 
-	/**
-	 * makes a new PathPanel
-	 */
-	public PathPanel() {
+    /**
+     * makes a new PathPanel
+     */
+    public PathPanel() {
 
-		map = new Map();
-		map.setBounds(0, 0, getWidth(), getHeight());
-		add(map);
+        map = new Map();
+        map.setBounds(0, 0, getWidth(), getHeight());
+        add(map);
 
-		try {
-			ArrayList<GpsMeasurement> waypoints = WayPointUtil.createWayPointsFromWaypointList(RobobuggyConfigFile.getWaypointSourceLogFile());
-			for(int i = 0;i<waypoints.size();i++){
-				GpsMeasurement thisPoint = waypoints.get(i);
-				map.addPointsToMapTree(Color.BLACK, new LocTuple(thisPoint.getLatitude(), thisPoint.getLongitude()));
-				map.repaint();
-			}
+        try {
+            ArrayList<GpsMeasurement> waypoints = WayPointUtil.createWayPointsFromWaypointList(RobobuggyConfigFile.getWaypointSourceLogFile());
+            for (int i = 0; i < waypoints.size(); i++) {
+                GpsMeasurement thisPoint = waypoints.get(i);
+                map.addPointsToMapTree(Color.BLACK, new LocTuple(thisPoint.getLatitude(), thisPoint.getLongitude()));
+                map.repaint();
+            }
 
-		} catch (IOException e) {
+        } catch (IOException e) {
 
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	@Override
-	public void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		map.setBounds(0, 0, getWidth(), getHeight());
-	}
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        map.setBounds(0, 0, getWidth(), getHeight());
+    }
 
 }
