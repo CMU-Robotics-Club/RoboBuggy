@@ -42,7 +42,7 @@ public class LocalizerUtilTest {
         deltaAndHeading = LocalizerUtil.convertLatLngDeltaToMeters(pitt, diagonalRightAndUp);
 
         assertEquals(DIAG_DIST_METERS, deltaAndHeading.getKey(), 500);
-        assertEquals(PI/4, deltaAndHeading.getValue(), 0.01);
+        assertEquals(PI / 4, deltaAndHeading.getValue(), 0.01);
 
     }
 

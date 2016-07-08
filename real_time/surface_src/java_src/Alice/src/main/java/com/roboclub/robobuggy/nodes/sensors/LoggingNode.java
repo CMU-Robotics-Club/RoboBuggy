@@ -42,7 +42,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * {@link SerialNode} for reading in logging commands from the GUI
  * When logging begins, a new folder is created, and then logging begins
- *  to that folder
+ * to that folder
  */
 public class LoggingNode extends BuggyDecoratorNode {
 
@@ -55,7 +55,7 @@ public class LoggingNode extends BuggyDecoratorNode {
     private boolean keepLogging;
 
     private static final int MAX_QUEUE_SIZE = 10000;
-    
+
     private Publisher statusPub;
 
     private static final String DATE_FILE_FORMAT = "yyyy-MM-dd-HH-mm-ss";
@@ -71,14 +71,14 @@ public class LoggingNode extends BuggyDecoratorNode {
     }
 
 
-
     /**
      * Create a new {@link LoggingNode} decorator
-     * @param channel the {@link NodeChannel} of the {@link LoggingNode}
+     *
+     * @param channel       the {@link NodeChannel} of the {@link LoggingNode}
      * @param outputDirPath The path to the output directory (not file)
-     * @param filters sensors to log. To log all sensors, just use NodeChannel.values()
+     * @param filters       sensors to log. To log all sensors, just use NodeChannel.values()
      */
-    public LoggingNode(NodeChannel channel, String outputDirPath, NodeChannel...filters) {
+    public LoggingNode(NodeChannel channel, String outputDirPath, NodeChannel... filters) {
         super(new BuggyBaseNode(channel), "logging_node");
 
         this.filters = filters;
@@ -97,7 +97,6 @@ public class LoggingNode extends BuggyDecoratorNode {
         statusPub.publish(new NodeStatusMessage(LoggingNode.class, LoggingNodeStatus.INITIALIZED, null));
 
     }
-
 
 
     /**
@@ -129,16 +128,14 @@ public class LoggingNode extends BuggyDecoratorNode {
                     params.addProperty("outputDir", outputDirectory.getPath());
                     statusPub.publish(new NodeStatusMessage(LoggingNode.class, LoggingNodeStatus.STARTED_LOGGING, params));
 
-                }
-                else if (message.getLoggingMessage().equals(GuiLoggingButtonMessage.LoggingMessage.STOP)) {
+                } else if (message.getLoggingMessage().equals(GuiLoggingButtonMessage.LoggingMessage.STOP)) {
 
                     keepLogging = false;
                     new RobobuggyLogicNotification("Stopping logging thread!", RobobuggyMessageLevel.NOTE);
                     statusPub.publish(new NodeStatusMessage(LoggingNode.class, LoggingNodeStatus.STOPPED_LOGGING, null));
                     loggingThread.interrupt();
 
-                }
-                else {
+                } else {
 
                     new RobobuggyLogicNotification("Gui said something logger couldn't understand!", RobobuggyMessageLevel.EXCEPTION);
 
@@ -156,8 +153,8 @@ public class LoggingNode extends BuggyDecoratorNode {
             new Subscriber("log", filter.getMsgPath(), new MessageListener() {
                 @Override
                 public void actionPerformed(String topicName, Message m) {
-                    while (!messageQueue.offer(m)){
-                    	messageQueue.poll();
+                    while (!messageQueue.offer(m)) {
+                        messageQueue.poll();
                     }
                 }
             });
@@ -166,6 +163,7 @@ public class LoggingNode extends BuggyDecoratorNode {
 
     /**
      * Method to create a file name from a Date
+     *
      * @param d date to create the file name from
      * @return the date as a filename-compatible string
      */
@@ -189,7 +187,7 @@ public class LoggingNode extends BuggyDecoratorNode {
         Date logCreationDate = new Date();
 
 
-        outputDirectory = new File(RobobuggyConfigFile.LOG_FILE_LOCATION + "/"  + formatDateIntoFile(logCreationDate));
+        outputDirectory = new File(RobobuggyConfigFile.LOG_FILE_LOCATION + "/" + formatDateIntoFile(logCreationDate));
 
         if (!outputDirectory.mkdirs()) {
             new RobobuggyLogicNotification("Couldn't create log folder!", RobobuggyMessageLevel.EXCEPTION);
@@ -202,7 +200,7 @@ public class LoggingNode extends BuggyDecoratorNode {
                 formatDateIntoFile(logCreationDate) + ".txt")
         ;
         try {
-            if(!outputFile.createNewFile()) {
+            if (!outputFile.createNewFile()) {
                 new RobobuggyLogicNotification("Couldn't create log file!", RobobuggyMessageLevel.EXCEPTION);
                 return false;
             }
@@ -216,7 +214,9 @@ public class LoggingNode extends BuggyDecoratorNode {
     }
 
 
-    /**{@inheritDoc}*/
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected boolean startDecoratorNode() {
         loggingButtonPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
@@ -231,7 +231,9 @@ public class LoggingNode extends BuggyDecoratorNode {
         return true;
     }
 
-    /**{@inheritDoc}*/
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected boolean shutdownDecoratorNode() {
         return true;
@@ -331,10 +333,10 @@ public class LoggingNode extends BuggyDecoratorNode {
                         stateHits++;
                     } else if (toSort instanceof SteeringMeasurement) {
                         steeringHits++;
-                    } else if(toSort instanceof ImageMessage){
+                    } else if (toSort instanceof ImageMessage) {
                         imageHits++;
                     }
-                    
+
                     fileWriteStream.println("        " + msgAsJsonString + ",");
                     fileWriteStream.flush();
 

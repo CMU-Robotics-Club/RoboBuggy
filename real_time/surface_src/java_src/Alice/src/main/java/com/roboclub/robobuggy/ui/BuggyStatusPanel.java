@@ -69,24 +69,23 @@ public class BuggyStatusPanel extends RobobuggyGUIContainer {
             fphash = String.format("%x", ((FingerPrintMessage) m).getFpHash());
         });
 
-        new Subscriber("buggyStatusPanel",NodeChannel.IMU_ANG_POS.getMsgPath(), ((topicName, m) -> {
+        new Subscriber("buggyStatusPanel", NodeChannel.IMU_ANG_POS.getMsgPath(), ((topicName, m) -> {
             IMUAngularPositionMessage mes = ((IMUAngularPositionMessage) m);
             Matrix r = new Matrix(mes.getRot());
-            double[][] xVec = {{1}, {0}, {0}};
-            double[][] yVec = {{0}, {1}, {0}};
+            double[][] xVec = { { 1 }, { 0 }, { 0 } };
+            double[][] yVec = { { 0 }, { 1 }, { 0 } };
 
             double x = r.times(new Matrix(xVec)).get(0, 0);
             double y = r.times(new Matrix(yVec)).get(0, 0);
-            
+
             imuAngle = Math.atan2(y, x);
             repaint();
         }));
-        
-        new Subscriber("buggyStatusPanel",NodeChannel.GPS.getMsgPath(), ((topicName, m) -> {
+
+        new Subscriber("buggyStatusPanel", NodeChannel.GPS.getMsgPath(), ((topicName, m) -> {
             if (prevGPS == null) {
                 prevGPS = ((GpsMeasurement) m);
-            }
-            else {
+            } else {
                 GpsMeasurement gps = ((GpsMeasurement) m);
                 double dlat = gps.getLatitude() - prevGPS.getLatitude();
                 double dlon = gps.getLongitude() - prevGPS.getLongitude();
@@ -96,10 +95,8 @@ public class BuggyStatusPanel extends RobobuggyGUIContainer {
         }));
     }
 
-    private static BufferedImage toBufferedImage(Image img)
-    {
-        if (img instanceof BufferedImage)
-        {
+    private static BufferedImage toBufferedImage(Image img) {
+        if (img instanceof BufferedImage) {
             return (BufferedImage) img;
         }
 
@@ -126,22 +123,22 @@ public class BuggyStatusPanel extends RobobuggyGUIContainer {
         int battLevelBoxLeft = brakeX + getHeight();
 
         if (brakesDown) {
-            brakeY = getHeight() - getHeight()/3;
+            brakeY = getHeight() - getHeight() / 3;
             status = "down";
         }
 
-        Graphics2D g = (Graphics2D)f;
+        Graphics2D g = (Graphics2D) f;
 
         g.setColor(Color.RED);
-        g.fillOval(brakeX, brakeY, getHeight()/3, getHeight()/3);
+        g.fillOval(brakeX, brakeY, getHeight() / 3, getHeight() / 3);
 
 
         g.setColor(Color.GREEN);
-        g.fillRect(battLevelBoxLeft, 0, getHeight()/3, getHeight());
+        g.fillRect(battLevelBoxLeft, 0, getHeight() / 3, getHeight());
         g.setColor(Color.BLACK);
         g.setFont(new Font("Arial", Font.BOLD, 30));
-        g.drawString("batt = " + batteryLevel, battLevelBoxLeft, getHeight()/2);
-        g.drawString("status = " + status, 0, getHeight()/2);
+        g.drawString("batt = " + batteryLevel, battLevelBoxLeft, getHeight() / 2);
+        g.drawString("status = " + status, 0, getHeight() / 2);
         g.drawString("fphash = " + fphash, battLevelBoxLeft, 30);
 
         // shamelessly ripped from stackoverflow

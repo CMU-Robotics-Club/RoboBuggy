@@ -9,21 +9,24 @@ import java.util.List;
  */
 public interface RosMaster {
 
-	/**
-	 * Returns a list of the {@link Node}s in the system
-	 * @return a list of the {@link Node}s in the system
-	 */
-	List<Node> getNodes();
+    /**
+     * Returns a list of the {@link Node}s in the system
+     *
+     * @return a list of the {@link Node}s in the system
+     */
+    List<Node> getNodes();
 
-	/**
-	 * Starts the {@link RosMaster} and all its {@link Node}s safely
-	 * @return true iff the {@link RosMaster} starts successfully
-	 */
-	boolean startNodes();
-	
-	/**
-	 * Shuts down the {@link RosMaster} safely
-	 * @return true iff the {@link RosMaster} shut down successfully
-	 */
-	boolean shutDown();
+    /**
+     * Starts the {@link RosMaster} and all its {@link Node}s safely
+     *
+     * @return true iff the {@link RosMaster} starts successfully
+     */
+    boolean startNodes();
+
+    /**
+     * Shuts down the {@link RosMaster} safely
+     *
+     * @return true iff the {@link RosMaster} shut down successfully
+     */
+    boolean shutDown();
 }

@@ -16,9 +16,9 @@ public class NodeStatusMessage extends BaseMessage {
 
 
     /**
-     * @param node the node reporting the status
+     * @param node    the node reporting the status
      * @param message the status of the node
-     * @param params any parameters they want to pass along
+     * @param params  any parameters they want to pass along
      */
     public NodeStatusMessage(Class node, INodeStatus message, JsonObject params) {
         this.node = node;

@@ -13,12 +13,13 @@ public class BuggyStatusPanelTest {
 
     /**
      * Toggles the brakes at 1 hz
+     *
      * @throws InterruptedException if ur stupid (lol jk) its just there for teh lolz
-     * (and the fact that we put sleeps in)
+     *                              (and the fact that we put sleeps in)
      */
     @Test
     public void testGuiBrakesToggle() throws InterruptedException {
-        if(!System.getProperty("os.name").equals("Mac OS X")) {
+        if (!System.getProperty("os.name").equals("Mac OS X")) {
             System.out.println("skipping this test because you are not running mac OS X ");
             //this test fails on travis so we only want to run it locally
             return;
@@ -35,12 +36,13 @@ public class BuggyStatusPanelTest {
 
     /**
      * Increases the battery at 1 hz by 1000
+     *
      * @throws InterruptedException if ur stupid (lol jk) its just there for teh lolz
-     * (and the fact that we put sleeps in)
+     *                              (and the fact that we put sleeps in)
      */
     @Test
     public void testGuiBatteryLevelIncrease() throws InterruptedException {
-        if(!System.getProperty("os.name").equals("Mac OS X")) {
+        if (!System.getProperty("os.name").equals("Mac OS X")) {
             System.out.println("skipping this test because you are not running mac OS X ");
             //this test fails on travis so we only want to run it locally
             return;

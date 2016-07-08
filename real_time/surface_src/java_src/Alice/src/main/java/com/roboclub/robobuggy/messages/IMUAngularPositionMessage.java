@@ -4,35 +4,37 @@ import java.util.Date;
 
 /**
  * Message for passing IMU angular positions measurements within BuggyROS
- * @author Sean Buckley
  *
+ * @author Sean Buckley
  * @version 0.5
- * 
+ *          <p>
  *          CHANGELOG: NONE
- * 
+ *          <p>
  *          DESCRIPTION: TODO
  */
 public class IMUAngularPositionMessage extends BaseMessage {
 
-	public static final String VERSION_ID = "imuAngularPositionV0.0";
+    public static final String VERSION_ID = "imuAngularPositionV0.0";
 
-	private double[][] rot;
+    private double[][] rot;
 
-	/**
-	 * Constructs a new {@link IMUAngularPositionMessage} at time now
-	 * @param rotMat The matrix containing all values
-	 */
-	public IMUAngularPositionMessage(double [][] rotMat) {
-		this.timestamp = new Date().getTime();
-		this.rot = rotMat.clone();
-	}
-	
-	/**
-	 * Returns the rot value of the {@link IMUAngularPositionMessage}
-	 * @return the rot value of the {@link IMUAngularPositionMessage}
-	 */
-	public double[][] getRot() {
-		return this.rot.clone();
-	}
+    /**
+     * Constructs a new {@link IMUAngularPositionMessage} at time now
+     *
+     * @param rotMat The matrix containing all values
+     */
+    public IMUAngularPositionMessage(double[][] rotMat) {
+        this.timestamp = new Date().getTime();
+        this.rot = rotMat.clone();
+    }
+
+    /**
+     * Returns the rot value of the {@link IMUAngularPositionMessage}
+     *
+     * @return the rot value of the {@link IMUAngularPositionMessage}
+     */
+    public double[][] getRot() {
+        return this.rot.clone();
+    }
 
 }

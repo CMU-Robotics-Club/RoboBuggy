@@ -16,97 +16,96 @@ import java.io.InputStreamReader;
 import java.util.Date;
 
 /**
- *
  * @author Trevor Decker
- * a tool for reading log files line by line
- *
+ *         a tool for reading log files line by line
  */
 public class LineByLineSensorPlayer {
 
-	/**
-	 * Constructor for sensor player
-	 * @param filePath the file to play
-	 * @param playBackSpeed the playback sped
-	 */
-	public LineByLineSensorPlayer(String filePath,double playBackSpeed) {
-		//open up the log file 
+    /**
+     * Constructor for sensor player
+     *
+     * @param filePath      the file to play
+     * @param playBackSpeed the playback sped
+     */
+    public LineByLineSensorPlayer(String filePath, double playBackSpeed) {
+        //open up the log file
 
-		 new RobobuggyLogicNotification("initializing the SensorPlayer", RobobuggyMessageLevel.NOTE);
-		 Thread thread = new Thread(){
-			    public void run(){
-			    	Gson translator = new GsonBuilder().create();//TODO don't create a new one for every call of this function
-			    	// open input stream test.txt for reading purpose.
-			    	try {
-			    		InputStream is = new FileInputStream(filePath);
-			    		// create new input stream reader
-			    		InputStreamReader isr = new InputStreamReader(is, "UTF-8");
-			    		//the file was created so lets try and read it
-			    		BufferedReader br = new BufferedReader(isr);
-			    		String nextLine;
-			    			nextLine= br.readLine();  //reads {
-						if(nextLine != null)
-			    			nextLine = br.readLine();  // name
-						else {
-							new RobobuggyLogicNotification("File wasn't a log file!", RobobuggyMessageLevel.EXCEPTION);
-							br.close();
-							return;
-						}
-						if(nextLine != null)
-			    			nextLine = br.readLine();  //schema version
-						if(nextLine != null)
-			    			nextLine = br.readLine();  //date recorded
-						if(nextLine != null)
-			    			nextLine = br.readLine();  //software version
-						if(nextLine != null)
-			    			nextLine = br.readLine();  //Sensor_data
-						if(nextLine != null)
-			    			nextLine = br.readLine();
-						if(nextLine != null)
-		    				nextLine = nextLine.substring(0, nextLine.length()-1);
-			    			JsonObject sensorObject =  translator.fromJson(nextLine, JsonObject.class);
-			    			long startTimeSensor = sensorObject.get("timestamp").getAsLong();
+        new RobobuggyLogicNotification("initializing the SensorPlayer", RobobuggyMessageLevel.NOTE);
+        Thread thread = new Thread() {
+            public void run() {
+                Gson translator = new GsonBuilder().create();//TODO don't create a new one for every call of this function
+                // open input stream test.txt for reading purpose.
+                try {
+                    InputStream is = new FileInputStream(filePath);
+                    // create new input stream reader
+                    InputStreamReader isr = new InputStreamReader(is, "UTF-8");
+                    //the file was created so lets try and read it
+                    BufferedReader br = new BufferedReader(isr);
+                    String nextLine;
+                    nextLine = br.readLine();  //reads {
+                    if (nextLine != null)
+                        nextLine = br.readLine();  // name
+                    else {
+                        new RobobuggyLogicNotification("File wasn't a log file!", RobobuggyMessageLevel.EXCEPTION);
+                        br.close();
+                        return;
+                    }
+                    if (nextLine != null)
+                        nextLine = br.readLine();  //schema version
+                    if (nextLine != null)
+                        nextLine = br.readLine();  //date recorded
+                    if (nextLine != null)
+                        nextLine = br.readLine();  //software version
+                    if (nextLine != null)
+                        nextLine = br.readLine();  //Sensor_data
+                    if (nextLine != null)
+                        nextLine = br.readLine();
+                    if (nextLine != null)
+                        nextLine = nextLine.substring(0, nextLine.length() - 1);
+                    JsonObject sensorObject = translator.fromJson(nextLine, JsonObject.class);
+                    long startTimeSensor = sensorObject.get("timestamp").getAsLong();
 
-			    			long startTimeReal = new Date().getTime();
-			    			nextLine = br.readLine();
-			    			while(nextLine != null && !nextLine.startsWith("]")){
-			    			try {
-			    				//has not reached the end of the log yet
-			    				//removes the comma at the end of the line
-			    				nextLine = nextLine.substring(0, nextLine.length()-1);
-			    				long now = new Date().getTime();
-			    				 sensorObject =  translator.fromJson(nextLine, JsonObject.class);
-			    				 long dt = now - startTimeReal;
-			    				PlayBackUtil.parseSensorLog(sensorObject, translator,dt,startTimeSensor,
-			    						RobobuggyConfigFile.getPlayBackSpeed());
-			    				//TODO deal with delay stuff
+                    long startTimeReal = new Date().getTime();
+                    nextLine = br.readLine();
+                    while (nextLine != null && !nextLine.startsWith("]")) {
+                        try {
+                            //has not reached the end of the log yet
+                            //removes the comma at the end of the line
+                            nextLine = nextLine.substring(0, nextLine.length() - 1);
+                            long now = new Date().getTime();
+                            sensorObject = translator.fromJson(nextLine, JsonObject.class);
+                            long dt = now - startTimeReal;
+                            PlayBackUtil.parseSensorLog(sensorObject, translator, dt, startTimeSensor,
+                                    RobobuggyConfigFile.getPlayBackSpeed());
+                            //TODO deal with delay stuff
 
-			    				nextLine = br.readLine();
-			    			} catch (IOException e) {
-			    				// TODO Auto-generated catch block
-			    				e.printStackTrace();
-			    			} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}//while
-						br.close();
-
-
-				} catch (FileNotFoundException e) {
-		            new RobobuggyLogicNotification("File doesn't exist!", RobobuggyMessageLevel.EXCEPTION);
-					e.printStackTrace();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				    }//run
-
-		 };//thread
-
-				  thread.start();
+                            nextLine = br.readLine();
+                        } catch (IOException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        } catch (InterruptedException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    }//while
+                    br.close();
 
 
-	}
+                } catch (FileNotFoundException e) {
+                    new RobobuggyLogicNotification("File doesn't exist!", RobobuggyMessageLevel.EXCEPTION);
+                    e.printStackTrace();
+                } catch (IOException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+            }//run
+
+        };//thread
+
+        thread.start();
+
+
+    }
 
 
 }

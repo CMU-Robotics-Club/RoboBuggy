@@ -55,18 +55,18 @@ public class Map extends JPanel {
         initMapTree();
         addCacheToTree();
         this.add(getMapTree());
-        
+
         //adds track buggy  
-        new Subscriber("Map",NodeChannel.POSE.getMsgPath(), new MessageListener() {
-			//TODO make this optional
-			@Override
-			public void actionPerformed(String topicName, Message m) {
-				GPSPoseMessage gpsM = (GPSPoseMessage)m;
-				zoomLevel = getMapTree().getViewer().getZoom();
-		        getMapTree().getViewer().setDisplayPosition(new Coordinate(gpsM.getLatitude(),
-		        		gpsM.getLongitude()),zoomLevel);				
-			}
-		});
+        new Subscriber("Map", NodeChannel.POSE.getMsgPath(), new MessageListener() {
+            //TODO make this optional
+            @Override
+            public void actionPerformed(String topicName, Message m) {
+                GPSPoseMessage gpsM = (GPSPoseMessage) m;
+                zoomLevel = getMapTree().getViewer().getZoom();
+                getMapTree().getViewer().setDisplayPosition(new Coordinate(gpsM.getLatitude(),
+                        gpsM.getLongitude()), zoomLevel);
+            }
+        });
     }
 
 
@@ -135,13 +135,13 @@ public class Map extends JPanel {
             TileCache courseCache = new MemoryTileCache();
             String mapCacheFolderDiskPath = "images/cachedCourseMap";
             File mapCacheDir = new File(mapCacheFolderDiskPath);
-            if(!mapCacheDir.isDirectory() || !mapCacheDir.exists()) {
+            if (!mapCacheDir.isDirectory() || !mapCacheDir.exists()) {
                 throw new IOException("cache dir isn't properly structured or doesn't exist");
             }
 
             FilenameFilter filter = (dir, name) -> {
                 // TODO Auto-generated method stub
-                if(name.contains("png")) {
+                if (name.contains("png")) {
                     return true;
                 }
                 return false;
@@ -150,7 +150,7 @@ public class Map extends JPanel {
             if (cachedImages == null) {
                 return;
             }
-            for(String imageName : cachedImages) {
+            for (String imageName : cachedImages) {
                 BufferedImage tileImageSource = ImageIO.read(new File(mapCacheDir.getAbsolutePath() + "/" + imageName));
                 String[] tileCoords = imageName.substring(0, imageName.indexOf(".")).split("_");
                 int xCoord = Integer.parseInt(tileCoords[0]);
@@ -164,8 +164,7 @@ public class Map extends JPanel {
             }
 
             getMapTree().getViewer().getTileController().setTileCache(courseCache);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             new RobobuggyLogicNotification("Something is wrong with the map cache: " + e.getMessage(), RobobuggyMessageLevel.EXCEPTION);
         }
     }
@@ -174,67 +173,67 @@ public class Map extends JPanel {
      * updates the current arrow displaying on the GUI - shows orientation based on GPS
      */
     public void updateArrow() {
-		List<MapPolygon> polygons = getMapTree().getViewer().getMapPolygonList();
-			List<MapMarker> markers = getMapTree().getViewer().getMapMarkerList();
-			if (markers.size() >= 2) {
-				MapMarker backMarker = markers.get(markers.size() - 2);
-				MapMarker frontMarker = markers.get(markers.size() - 1);
+        List<MapPolygon> polygons = getMapTree().getViewer().getMapPolygonList();
+        List<MapMarker> markers = getMapTree().getViewer().getMapMarkerList();
+        if (markers.size() >= 2) {
+            MapMarker backMarker = markers.get(markers.size() - 2);
+            MapMarker frontMarker = markers.get(markers.size() - 1);
 
-				double endpointLat = 50 * (frontMarker.getLat() - backMarker.getLat()) + frontMarker.getLat();
-				double endpointLon = 50 * (frontMarker.getLon() - backMarker.getLon()) + frontMarker.getLon();
+            double endpointLat = 50 * (frontMarker.getLat() - backMarker.getLat()) + frontMarker.getLat();
+            double endpointLon = 50 * (frontMarker.getLon() - backMarker.getLon()) + frontMarker.getLon();
 
-				polygons.clear();
-				addLineToMap(new LocTuple(frontMarker.getLat(), frontMarker.getLon()), new LocTuple(endpointLat, endpointLon), Color.RED);
-			}
-	}
+            polygons.clear();
+            addLineToMap(new LocTuple(frontMarker.getLat(), frontMarker.getLon()), new LocTuple(endpointLat, endpointLon), Color.RED);
+        }
+    }
 
-	/**
-	 * @param points points to add to the map
-	 * @param thisColor color of the point
-	 */
-	public void addPointsToMapTree(Color thisColor, LocTuple...points) {
+    /**
+     * @param points    points to add to the map
+     * @param thisColor color of the point
+     */
+    public void addPointsToMapTree(Color thisColor, LocTuple... points) {
         List<MapMarker> markers = getMapTree().getViewer().getMapMarkerList();
         while (markers.size() > MAX_POINT_BUF_SIZE - points.length) {
             markers.remove(0);
         }
         for (LocTuple point : points) {
-			getMapTree().getViewer().addMapMarker(new MapMarkerDot(thisColor, point.getLatitude(), point.getLongitude()));
-		}
-	}
+            getMapTree().getViewer().addMapMarker(new MapMarkerDot(thisColor, point.getLatitude(), point.getLongitude()));
+        }
+    }
 
-	/**
-	 * @param point1 1st endpoint of line to add
-	 * @param point2 2nd endpoint of line to add
-	 * @param lineColor color of the line
-	 */
-	public void addLineToMap(LocTuple point1, LocTuple point2, Color lineColor) {
-		MapPolygonImpl polygon = new MapPolygonImpl(
-				new Coordinate(point1.getLatitude(), point1.getLongitude()),
-				new Coordinate(point1.getLatitude(), point1.getLongitude()),
-				new Coordinate(point2.getLatitude(), point2.getLongitude())
-		);
-		polygon.setColor(lineColor);
-		getMapTree().getViewer().addMapPolygon(polygon);
-	}
+    /**
+     * @param point1    1st endpoint of line to add
+     * @param point2    2nd endpoint of line to add
+     * @param lineColor color of the line
+     */
+    public void addLineToMap(LocTuple point1, LocTuple point2, Color lineColor) {
+        MapPolygonImpl polygon = new MapPolygonImpl(
+                new Coordinate(point1.getLatitude(), point1.getLongitude()),
+                new Coordinate(point1.getLatitude(), point1.getLongitude()),
+                new Coordinate(point2.getLatitude(), point2.getLongitude())
+        );
+        polygon.setColor(lineColor);
+        getMapTree().getViewer().addMapPolygon(polygon);
+    }
 
-	/**
-     * @param originPoint the origin point of the ray
-     * @param angle the heading of the ray in radians
-     * @param lineColor the color of the line
+    /**
+     * @param originPoint   the origin point of the ray
+     * @param angle         the heading of the ray in radians
+     * @param lineColor     the color of the line
      * @param clearPrevLine update the line or add a new one
      */
-	public void addLineToMap(LocTuple originPoint, double angle, Color lineColor, boolean clearPrevLine) {
+    public void addLineToMap(LocTuple originPoint, double angle, Color lineColor, boolean clearPrevLine) {
         if (clearPrevLine) {
             getMapTree().getViewer().getMapPolygonList().clear();
         }
 
-		double scalingFactor = 0.0005;
-		double dx = Math.cos(angle) * scalingFactor;
-		double dy = Math.sin(angle) * scalingFactor;
+        double scalingFactor = 0.0005;
+        double dx = Math.cos(angle) * scalingFactor;
+        double dy = Math.sin(angle) * scalingFactor;
 
-		LocTuple endpoint = new LocTuple(originPoint.getLatitude() + dy, originPoint.getLongitude() + dx);
-		addLineToMap(originPoint, endpoint, lineColor);
-	}
+        LocTuple endpoint = new LocTuple(originPoint.getLatitude() + dy, originPoint.getLongitude() + dx);
+        addLineToMap(originPoint, endpoint, lineColor);
+    }
 
     @Override
     public void paintComponent(Graphics g) {
@@ -245,19 +244,19 @@ public class Map extends JPanel {
     }
 
 
-	/**
-	 * @return the mapTree
-	 */
-	public JMapViewerTree getMapTree() {
-		return mapTree;
-	}
+    /**
+     * @return the mapTree
+     */
+    public JMapViewerTree getMapTree() {
+        return mapTree;
+    }
 
 
-	/**
-	 * @param mapTree the mapTree to set
-	 */
-	public void setMapTree(JMapViewerTree mapTree) {
-		this.mapTree = mapTree;
-	}
+    /**
+     * @param mapTree the mapTree to set
+     */
+    public void setMapTree(JMapViewerTree mapTree) {
+        this.mapTree = mapTree;
+    }
 
 }

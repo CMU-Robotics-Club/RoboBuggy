@@ -46,14 +46,15 @@ public class HighTrustGPSLocalizerTest {
 
     /**
      * tests whether the pose estimator can translate meters into latlng stuffs
+     *
      * @throws InterruptedException if timers somehow failed
      */
     @Test
     public void testDistanceBetweenOneDegLat() throws InterruptedException {
         final double[] lat1 = { 0.0 };
-        final double[] lon1 = {0.0};
-        final double[] lat2 = {0.0};
-        final double[] lon2 = {0.0};
+        final double[] lon1 = { 0.0 };
+        final double[] lat2 = { 0.0 };
+        final double[] lon2 = { 0.0 };
 
         new Subscriber("highTrustGpsLocalizerTest", NodeChannel.POSE.getMsgPath(), new MessageListener() {
             @Override
@@ -63,8 +64,7 @@ public class HighTrustGPSLocalizerTest {
                 if (lat1[0] == 0.0) {
                     lat1[0] = pm.getLatitude();
                     lon1[0] = pm.getLongitude();
-                }
-                else {
+                } else {
                     lat2[0] = pm.getLatitude();
                     lon2[0] = pm.getLongitude();
 

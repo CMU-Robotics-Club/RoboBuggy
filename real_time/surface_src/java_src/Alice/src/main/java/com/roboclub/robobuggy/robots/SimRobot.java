@@ -26,67 +26,69 @@ import java.util.ArrayList;
 
 
 /**
- * A robot file for a simulated robot that can be used for internal testing of nodes along simulated paths 
- * @author Trevor Decker
+ * A robot file for a simulated robot that can be used for internal testing of nodes along simulated paths
  *
+ * @author Trevor Decker
  */
-public final class SimRobot extends AbstractRobot{
+public final class SimRobot extends AbstractRobot {
     private static SimRobot instance;
-	/**
-	 * Returns a reference to the one instance of the {@link Robot} object.
-	 * If no instance exists, a new one is created.
-	 * @return a reference to the one instance of the {@link Robot} object
-	 */
-	public static AbstractRobot getInstance() {
-		if (instance == null) {
-			instance =  new SimRobot();
-		}
-		return instance;
-	}
-	
-	private SimRobot(){
-		super();
-	
-		nodeList.add(new HighTrustGPSLocalizer());
-	//	nodeList.add(new KfLocalizer(100));
-		nodeList.add(new SimulatedImuNode(100));
-		nodeList.add(new SimulatedGPSNode(500));
-		nodeList.add(new SimulatedRBSMNode());
-		
-		try {
-			ArrayList<GpsMeasurement> wayPoints =
-					WayPointUtil.createWayPointsFromWaypointList(RobobuggyConfigFile.getWaypointSourceLogFile());
-			nodeList.add(new WayPointFollowerPlanner(wayPoints));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		
-		SimulatedBuggy simBuggy = SimulatedBuggy.getInstance();
-		simBuggy.setY(LocalizerUtil.convertLatToMeters(40.441705));
-		simBuggy.setX(LocalizerUtil.convertLonToMeters(-79.941585));
-		simBuggy.setTh(-110);
-		simBuggy.setDx(10);
+
+    /**
+     * Returns a reference to the one instance of the {@link Robot} object.
+     * If no instance exists, a new one is created.
+     *
+     * @return a reference to the one instance of the {@link Robot} object
+     */
+    public static AbstractRobot getInstance() {
+        if (instance == null) {
+            instance = new SimRobot();
+        }
+        return instance;
+    }
+
+    private SimRobot() {
+        super();
+
+        nodeList.add(new HighTrustGPSLocalizer());
+        //	nodeList.add(new KfLocalizer(100));
+        nodeList.add(new SimulatedImuNode(100));
+        nodeList.add(new SimulatedGPSNode(500));
+        nodeList.add(new SimulatedRBSMNode());
+
+        try {
+            ArrayList<GpsMeasurement> wayPoints =
+                    WayPointUtil.createWayPointsFromWaypointList(RobobuggyConfigFile.getWaypointSourceLogFile());
+            nodeList.add(new WayPointFollowerPlanner(wayPoints));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        SimulatedBuggy simBuggy = SimulatedBuggy.getInstance();
+        simBuggy.setY(LocalizerUtil.convertLatToMeters(40.441705));
+        simBuggy.setX(LocalizerUtil.convertLonToMeters(-79.941585));
+        simBuggy.setTh(-110);
+        simBuggy.setDx(10);
 
 
-		nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION,
-				NodeChannel.getLoggingChannels()));
-		//simBuggy.setDth(1);
-	//	simBuggy.setDth(0.10);
-		
-		
-		//setup the gui 
-		RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow",1.0,1.0);	
-		Gui.getInstance().addWindow(mainWindow);
-		RobobuggyGUITabs tabs = new RobobuggyGUITabs();
-		mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
-		tabs.addTab(new MainGuiWindow(), "Home");
-	//	tabs.addTab(new PoseGraphsPanel(),"poses");
-	//	tabs.addTab(new ImuPanel(),"IMU");
-		tabs.addTab(new AutonomousPanel(),"Autonomous");
-		tabs.addTab(new SimulationPanel(),"Simulation");
-		tabs.addTab(new PathPanel(),"Path Panel");
-		tabs.addTab(new ConfigurationPanel(), "Configuration");
+        nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION,
+                NodeChannel.getLoggingChannels()));
+        //simBuggy.setDth(1);
+        //	simBuggy.setDth(0.10);
 
 
-	}
+        //setup the gui
+        RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow", 1.0, 1.0);
+        Gui.getInstance().addWindow(mainWindow);
+        RobobuggyGUITabs tabs = new RobobuggyGUITabs();
+        mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
+        tabs.addTab(new MainGuiWindow(), "Home");
+        //	tabs.addTab(new PoseGraphsPanel(),"poses");
+        //	tabs.addTab(new ImuPanel(),"IMU");
+        tabs.addTab(new AutonomousPanel(), "Autonomous");
+        tabs.addTab(new SimulationPanel(), "Simulation");
+        tabs.addTab(new PathPanel(), "Path Panel");
+        tabs.addTab(new ConfigurationPanel(), "Configuration");
+
+
+    }
 }

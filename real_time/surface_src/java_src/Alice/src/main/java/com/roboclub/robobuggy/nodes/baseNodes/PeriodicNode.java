@@ -8,40 +8,40 @@ import java.util.TimerTask;
  *
  * @author Zachary Dawson
  * @author Trevor Decker
- *
  */
 public abstract class PeriodicNode extends BuggyDecoratorNode {
 
     private final int runPeriod;
     private TimerTask timerTask;
-    private  Timer timer;
+    private Timer timer;
 
     /**
      * Create a new {@link PeriodicNode} decorator
-     * @param base {@link BuggyNode} to decorate
+     *
+     * @param base   {@link BuggyNode} to decorate
      * @param period of the periodically executed portion of the node
-     * Note the timer needs to be started by running resume
+     *               Note the timer needs to be started by running resume
      */
-    protected PeriodicNode(BuggyNode base, int period,String name){
-    	super(base, name);
+    protected PeriodicNode(BuggyNode base, int period, String name) {
+        super(base, name);
         runPeriod = period;
         timerTask = new UpdateTask();
         pause();
     }
-    
-    protected synchronized void pause(){
-    	if(timer != null){
-    		timer.cancel();
-    	}
-    	
+
+    protected synchronized void pause() {
+        if (timer != null) {
+            timer.cancel();
+        }
+
     }
-    
-    protected synchronized void resume(){
-    	timer = new Timer(true);
+
+    protected synchronized void resume() {
+        timer = new Timer(true);
         timer.scheduleAtFixedRate(timerTask, 0, runPeriod);
-    	
+
     }
-    
+
     /**
      * Method run periodically by the {@link PeriodicNode}
      */
@@ -50,11 +50,11 @@ public abstract class PeriodicNode extends BuggyDecoratorNode {
     /**
      * Task used to call the update method
      */
-	private class UpdateTask extends TimerTask{
-	
-	        @Override
-	        public void run() {
-	                update();
-	        }
-	}
+    private class UpdateTask extends TimerTask {
+
+        @Override
+        public void run() {
+            update();
+        }
+    }
 }

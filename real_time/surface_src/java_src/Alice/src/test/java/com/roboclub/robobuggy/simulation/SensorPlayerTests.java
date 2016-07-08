@@ -13,6 +13,7 @@ public class SensorPlayerTests {
 
     /**
      * makes sure we can parse a log file
+     *
      * @param args default
      */
     public static void main(String[] args) {

@@ -27,7 +27,7 @@ public class SweepNode extends PathPlannerNode {
      * @param channel {@link NodeChannel} on which to broadcast status
      *                information about the node
      */
-    public SweepNode(NodeChannel channel)  {
+    public SweepNode(NodeChannel channel) {
         super(channel);
 
         steeringPublisher = new Publisher(NodeChannel.DRIVE_CTRL.getMsgPath());
@@ -36,33 +36,34 @@ public class SweepNode extends PathPlannerNode {
         t1 = new Thread(new Runnable() {
             private boolean sweepUp = false;
 
-            public void run()
-            {
-                while(true){
-                	if(!sweepUp && currentCommandedSteeringAngle <= STEERING_ANGLE_LOWER_BOUND) {
-                		sweepUp = true;
-                	}else if(sweepUp && currentCommandedSteeringAngle >= STEERING_ANGLE_UPPER_BOUND){
-                		sweepUp = false;
-                	}
-                	
-                	if (sweepUp){ 
-                		currentCommandedSteeringAngle += STEERING_ANGLE_INCREMENT;
-                	}else {
-                		currentCommandedSteeringAngle -= STEERING_ANGLE_INCREMENT;
-                	}
-                	try {
-                		Thread.sleep(100);
-                	} catch (InterruptedException e) {
-                		e.printStackTrace();
-                	}	
+            public void run() {
+                while (true) {
+                    if (!sweepUp && currentCommandedSteeringAngle <= STEERING_ANGLE_LOWER_BOUND) {
+                        sweepUp = true;
+                    } else if (sweepUp && currentCommandedSteeringAngle >= STEERING_ANGLE_UPPER_BOUND) {
+                        sweepUp = false;
+                    }
 
-                	steeringPublisher.publish(new DriveControlMessage(new Date(), currentCommandedSteeringAngle));
+                    if (sweepUp) {
+                        currentCommandedSteeringAngle += STEERING_ANGLE_INCREMENT;
+                    } else {
+                        currentCommandedSteeringAngle -= STEERING_ANGLE_INCREMENT;
+                    }
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    steeringPublisher.publish(new DriveControlMessage(new Date(), currentCommandedSteeringAngle));
                     brakePublisher.publish(new BrakeControlMessage(new Date(), false));
 
-                }            }});  
-            t1.start();
+                }
+            }
+        });
+        t1.start();
 
- 
+
     }
 
     @Override
@@ -86,11 +87,13 @@ public class SweepNode extends PathPlannerNode {
     public String getName() {
         return "Sweep Test";
     }
-    
-	/**{@inheritDoc}*/
-	@Override
-	protected final boolean shutdownDecoratorNode() {
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected final boolean shutdownDecoratorNode() {
         t1.interrupt();
-		return true;
-	}
+        return true;
+    }
 }

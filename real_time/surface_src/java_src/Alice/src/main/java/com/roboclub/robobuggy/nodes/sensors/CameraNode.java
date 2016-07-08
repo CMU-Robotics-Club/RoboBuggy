@@ -23,129 +23,124 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * 
  * @author Trevor Decker
- * 
- * A software driver for listening to a camera and publishing images from 
- * it to a message channel 
- * 
+ *         <p>
+ *         A software driver for listening to a camera and publishing images from
+ *         it to a message channel
  */
-public class CameraNode extends PeriodicNode{
-	private Webcam webcam;
-	private Publisher imagePublisher;
-	private int count = 0;
-	private SequenceEncoder videoEncoder;
+public class CameraNode extends PeriodicNode {
+    private Webcam webcam;
+    private Publisher imagePublisher;
+    private int count = 0;
+    private SequenceEncoder videoEncoder;
 
-	static {
-	    Webcam.setHandleTermSignal(true);
-	}
-	
-	/**
-	 *  @param channel The channel to publish messages on
-	 * @param period  How often new images should be pulled
-	 */
-	public CameraNode(NodeChannel channel, int period) {
-		super(new BuggyBaseNode(channel),period, "Camera_Node");
+    static {
+        Webcam.setHandleTermSignal(true);
+    }
 
-
-		//setup the webcam
-		List<Webcam> webcams = Webcam.getWebcams();
-
-		//TODO figure out a better way to select
-		for (Webcam webcam : webcams) {
-			if (webcam.getName().contains("Logitech")) {
-				this.webcam = webcam;
-				this.webcam.setViewSize(WebcamResolution.QVGA.getSize());
-				this.webcam.open();
-				break;
-			}
-		}
-
-		if (this.webcam == null) {
-			new RobobuggyLogicNotification("Couldn't find Logitech webcam!", RobobuggyMessageLevel.EXCEPTION);
-			this.webcam = Webcam.getDefault();
-			// your camera have to support HD720p to run this code
-			Webcam webcam = Webcam.getDefault();
-			webcam.setCustomViewSizes(new Dimension[] {WebcamResolution.QVGA.getSize(), WebcamResolution.HD720.getSize()});
-			webcam.setViewSize(WebcamResolution.QVGA.getSize());
-			
-		}
-		
-		//setup image publisher
-		imagePublisher = new Publisher(channel.getMsgPath());
-
-		setupLoggingTrigger();
-		resume();
-	}
-
-	private void setupLoggingTrigger() {
-
-		new Subscriber("cam", NodeChannel.NODE_STATUS.getMsgPath(), new MessageListener() {
-			@Override
-			public void actionPerformed(String topicName, Message m) {
-				try {
-					NodeStatusMessage message = (NodeStatusMessage) m;
-					INodeStatus status = message.getMessage();
-
-					if (status.equals(LoggingNode.LoggingNodeStatus.STARTED_LOGGING)) {
-						JsonObject params = message.getParams();
-						String outputDir = params.get("outputDir").getAsString();
-
-						if (!webcam.isOpen()) {
-							webcam.open();
-						}
-						videoEncoder = new SequenceEncoder(new File(outputDir + "/webcam.mp4"));
-						new RobobuggyLogicNotification("Camera ready", RobobuggyMessageLevel.NOTE);
-					} 
-					else if (status.equals(LoggingNode.LoggingNodeStatus.STOPPED_LOGGING)) {
-						if (webcam.isOpen()) {
-							videoEncoder.finish();
-							webcam.close();
-						}
-
-					} else {
-						new RobobuggyLogicNotification("Status not recognized by CameraNode", RobobuggyMessageLevel.WARNING);
-					}
-				}
-				catch (IOException e) {
-					new RobobuggyLogicNotification("Log directory doesn't exist!", RobobuggyMessageLevel.EXCEPTION);
-				}
-			}
-		});
-
-	}
+    /**
+     * @param channel The channel to publish messages on
+     * @param period  How often new images should be pulled
+     */
+    public CameraNode(NodeChannel channel, int period) {
+        super(new BuggyBaseNode(channel), period, "Camera_Node");
 
 
-	@Override
-	protected boolean startDecoratorNode() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+        //setup the webcam
+        List<Webcam> webcams = Webcam.getWebcams();
 
-	@Override
-	protected boolean shutdownDecoratorNode() {
-		return true;
-	}
-	
-	@Override
-	protected void update() {
-		try {
-			if (webcam != null && imagePublisher != null) {
-				if (webcam.isOpen()) {
-					BufferedImage mostRecentImage = webcam.getImage();
-					imagePublisher.publish(new ImageMessage(mostRecentImage, count));
-					count = count + 1;
+        //TODO figure out a better way to select
+        for (Webcam webcam : webcams) {
+            if (webcam.getName().contains("Logitech")) {
+                this.webcam = webcam;
+                this.webcam.setViewSize(WebcamResolution.QVGA.getSize());
+                this.webcam.open();
+                break;
+            }
+        }
 
-					if (videoEncoder != null) {
-						videoEncoder.encodeImage(mostRecentImage);
-					}
-				}
-			}
-		}
-		catch (IOException e) {
-			new RobobuggyLogicNotification("Something went wrong trying to get image!", RobobuggyMessageLevel.EXCEPTION);
-		}
+        if (this.webcam == null) {
+            new RobobuggyLogicNotification("Couldn't find Logitech webcam!", RobobuggyMessageLevel.EXCEPTION);
+            this.webcam = Webcam.getDefault();
+            // your camera have to support HD720p to run this code
+            Webcam webcam = Webcam.getDefault();
+            webcam.setCustomViewSizes(new Dimension[] { WebcamResolution.QVGA.getSize(), WebcamResolution.HD720.getSize() });
+            webcam.setViewSize(WebcamResolution.QVGA.getSize());
 
-	}
+        }
+
+        //setup image publisher
+        imagePublisher = new Publisher(channel.getMsgPath());
+
+        setupLoggingTrigger();
+        resume();
+    }
+
+    private void setupLoggingTrigger() {
+
+        new Subscriber("cam", NodeChannel.NODE_STATUS.getMsgPath(), new MessageListener() {
+            @Override
+            public void actionPerformed(String topicName, Message m) {
+                try {
+                    NodeStatusMessage message = (NodeStatusMessage) m;
+                    INodeStatus status = message.getMessage();
+
+                    if (status.equals(LoggingNode.LoggingNodeStatus.STARTED_LOGGING)) {
+                        JsonObject params = message.getParams();
+                        String outputDir = params.get("outputDir").getAsString();
+
+                        if (!webcam.isOpen()) {
+                            webcam.open();
+                        }
+                        videoEncoder = new SequenceEncoder(new File(outputDir + "/webcam.mp4"));
+                        new RobobuggyLogicNotification("Camera ready", RobobuggyMessageLevel.NOTE);
+                    } else if (status.equals(LoggingNode.LoggingNodeStatus.STOPPED_LOGGING)) {
+                        if (webcam.isOpen()) {
+                            videoEncoder.finish();
+                            webcam.close();
+                        }
+
+                    } else {
+                        new RobobuggyLogicNotification("Status not recognized by CameraNode", RobobuggyMessageLevel.WARNING);
+                    }
+                } catch (IOException e) {
+                    new RobobuggyLogicNotification("Log directory doesn't exist!", RobobuggyMessageLevel.EXCEPTION);
+                }
+            }
+        });
+
+    }
+
+
+    @Override
+    protected boolean startDecoratorNode() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    protected boolean shutdownDecoratorNode() {
+        return true;
+    }
+
+    @Override
+    protected void update() {
+        try {
+            if (webcam != null && imagePublisher != null) {
+                if (webcam.isOpen()) {
+                    BufferedImage mostRecentImage = webcam.getImage();
+                    imagePublisher.publish(new ImageMessage(mostRecentImage, count));
+                    count = count + 1;
+
+                    if (videoEncoder != null) {
+                        videoEncoder.encodeImage(mostRecentImage);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            new RobobuggyLogicNotification("Something went wrong trying to get image!", RobobuggyMessageLevel.EXCEPTION);
+        }
+
+    }
 
 }
