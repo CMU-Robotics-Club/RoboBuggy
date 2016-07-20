@@ -20,7 +20,7 @@ import java.util.Scanner;
 public final class RobobuggyConfigFile {
 
     //Library info
-    private static String aliceLibraryVersion;
+    private static String aliceLibraryVersion = "";
     public static final String RBSM_HEADER_FILE_LOCATION = "../../../rbsm_config.txt";
 
     // for what messages should be printed to the console
@@ -101,11 +101,11 @@ public final class RobobuggyConfigFile {
             setPortVision(configJson.get("PORT_VISION").getAsString());
             setWayPointSourceLogFile(configJson.get("WAYPOINT_SOURCE_LOG_FILE").getAsString());
             setPlayBackSourceFile(configJson.get("PLAY_BACK_SOURCE_FILE").getAsString());
-            getAliceLibraryVersion();
 
         } catch (UnsupportedEncodingException | FileNotFoundException e) {
             new RobobuggyLogicNotification("could not load Part of configFile" + e.toString(), RobobuggyMessageLevel.WARNING);
         }
+        getAliceLibraryVersion();
     }
 
     /**
@@ -119,7 +119,7 @@ public final class RobobuggyConfigFile {
             try {
                 String gitCommand = "git show";
                 Process gitGetter = Runtime.getRuntime().exec(gitCommand);
-                Scanner s = new Scanner(gitGetter.getInputStream());
+                Scanner s = new Scanner(gitGetter.getInputStream(), "UTF-8");
                 if (s.hasNextLine()) {
                     String fullCommitLine = s.nextLine();
                     String pattern = "commit (\\d+)";
