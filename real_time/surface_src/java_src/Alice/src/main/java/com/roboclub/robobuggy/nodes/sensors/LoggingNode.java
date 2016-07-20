@@ -43,6 +43,12 @@ import java.util.concurrent.LinkedBlockingQueue;
  * {@link SerialNode} for reading in logging commands from the GUI
  * When logging begins, a new folder is created, and then logging begins
  * to that folder
+ *
+ * Schema 1.1:
+ *  The entire file is one big object, with the messages as part of a JSON array, and the data breakdown is a sub-object of the file
+ * Schema 2.0:
+ *  The file is written line-by-line, much in the same way that the OG logs were. The header is it's own separate object. This is mainly to address the
+ *  problems created when shutting down early, files with schema 1.1 can't be read correctly, so schema 2.0 is better for reading line-by-line
  */
 public class LoggingNode extends BuggyDecoratorNode {
 
@@ -78,7 +84,7 @@ public class LoggingNode extends BuggyDecoratorNode {
      * @param outputDirPath The path to the output directory (not file)
      * @param filters       sensors to log. To log all sensors, just use NodeChannel.values()
      */
-    public LoggingNode(NodeChannel channel, String outputDirPath, NodeChannel... filters) {
+    public LoggingNode(NodeChannel channel, String outputDirPath, NodeChannel...filters) {
         super(new BuggyBaseNode(channel), "logging_node");
 
         this.filters = filters;
@@ -261,13 +267,7 @@ public class LoggingNode extends BuggyDecoratorNode {
         private int resetHits = 0;
         private int stateHits = 0;
 
-        private String name = "\"name\": \"Robobuggy Data Logs\",";
-        private String schemaVersion = "\"schema_version\": 1.1,";
-        private String dateRecorded = "\"date_recorded\": \"" +
-                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()) + "\",";
-        private String swVersion = "\"software_version\": \"" + RobobuggyConfigFile.ALICE_LIBRARY_VERSION + "\",";
-        private String sensorDataHeader = "\"sensor_data\": [";
-        private String footerDataEntry = "        {\"VERSION_ID\":\"STOP\"}";
+        private String footerDataEntry = "{\"VERSION_ID\":\"STOP\"}";
 
         @Override
         public void interrupt() {
@@ -296,8 +296,13 @@ public class LoggingNode extends BuggyDecoratorNode {
                 return;
             }
 
-            fileWriteStream.println("{" + "\n    " + name + "\n    " + schemaVersion + "\n    " + dateRecorded
-                    + "\n    " + swVersion + "\n    " + sensorDataHeader);
+            JsonObject header = new JsonObject();
+            header.addProperty("name", "Robobuggy Data Logs");
+            header.addProperty("schema_version", "2.0");
+            header.addProperty("date_recorded", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
+            header.addProperty("software_version", RobobuggyConfigFile.getAliceLibraryVersion());
+
+            fileWriteStream.println(header.toString());
 
             //always want to log :)
             while (keepLogging) {
@@ -337,7 +342,7 @@ public class LoggingNode extends BuggyDecoratorNode {
                         imageHits++;
                     }
 
-                    fileWriteStream.println("        " + msgAsJsonString + ",");
+                    fileWriteStream.println(msgAsJsonString + ",");
                     fileWriteStream.flush();
 
                 } catch (InterruptedException e) {
@@ -366,7 +371,7 @@ public class LoggingNode extends BuggyDecoratorNode {
             dataBreakdown.addProperty(NodeChannel.STATE.getName(), stateHits);
 
             fileWriteStream.println(footerDataEntry);
-            fileWriteStream.println("    ],\n    \"data_breakdown\" : " + dataBreakdown.toString() + "\n}");
+            fileWriteStream.println(dataBreakdown.toString());
             fileWriteStream.close();
             new RobobuggyLogicNotification("Finished writing to file", RobobuggyMessageLevel.NOTE);
         }
