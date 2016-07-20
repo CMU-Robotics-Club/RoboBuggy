@@ -6,6 +6,9 @@ import com.google.gson.JsonObject;
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
+import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
+import com.roboclub.robobuggy.nodes.baseNodes.BuggyDecoratorNode;
+import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.simulation.PlayBackUtil;
 
 import java.io.BufferedReader;
@@ -17,10 +20,9 @@ import java.io.InputStreamReader;
 import java.util.Date;
 
 /**
- * @author Trevor Decker
- *         a tool for reading log files line by line
+ * a tool for reading log files line by line
  */
-public class LineByLineSensorPlayer {
+public class PlaybackNode extends BuggyDecoratorNode {
 
     /**
      * Constructor for sensor player
@@ -28,7 +30,8 @@ public class LineByLineSensorPlayer {
      * @param filePath      the file to play
      * @param playBackSpeed the playback speed
      */
-    public LineByLineSensorPlayer(String filePath, double playBackSpeed) {
+    public PlaybackNode(String filePath, double playBackSpeed) {
+        super(new BuggyBaseNode(NodeChannel.PLAYBACK), "Playback");
         //open up the log file
 
         new RobobuggyLogicNotification("initializing the SensorPlayer", RobobuggyMessageLevel.NOTE);
@@ -109,4 +112,13 @@ public class LineByLineSensorPlayer {
     }
 
 
+    @Override
+    protected boolean startDecoratorNode() {
+        return false;
+    }
+
+    @Override
+    protected boolean shutdownDecoratorNode() {
+        return false;
+    }
 }

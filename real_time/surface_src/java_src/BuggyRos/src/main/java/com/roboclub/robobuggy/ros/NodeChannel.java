@@ -41,7 +41,7 @@ public enum NodeChannel {
 	IMU_TEMP("imu_temp", true),
 	IMU_ANG_POS("imu_ang_pos", true),
 	UNKNOWN_CHANNEL("unknown", false),
-	;
+    PLAYBACK("playback", false);
 	
 	
 
