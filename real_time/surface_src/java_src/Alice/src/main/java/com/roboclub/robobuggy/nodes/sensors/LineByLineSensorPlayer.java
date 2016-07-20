@@ -1,4 +1,4 @@
-package com.roboclub.robobuggy.simulation;
+package com.roboclub.robobuggy.nodes.sensors;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
+import com.roboclub.robobuggy.simulation.PlayBackUtil;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -25,7 +26,7 @@ public class LineByLineSensorPlayer {
      * Constructor for sensor player
      *
      * @param filePath      the file to play
-     * @param playBackSpeed the playback sped
+     * @param playBackSpeed the playback speed
      */
     public LineByLineSensorPlayer(String filePath, double playBackSpeed) {
         //open up the log file

@@ -2,7 +2,7 @@ package com.roboclub.robobuggy.robots;
 
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.nodes.localizers.KfLocalizer;
-import com.roboclub.robobuggy.simulation.LineByLineSensorPlayer;
+import com.roboclub.robobuggy.nodes.sensors.LineByLineSensorPlayer;
 import com.roboclub.robobuggy.ui.AutonomousPanel;
 import com.roboclub.robobuggy.ui.ConfigurationPanel;
 import com.roboclub.robobuggy.ui.Gui;
