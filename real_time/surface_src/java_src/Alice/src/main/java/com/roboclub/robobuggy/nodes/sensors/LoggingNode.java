@@ -302,6 +302,7 @@ public class LoggingNode extends BuggyDecoratorNode {
                 return;
             }
 
+            // create our metadata header object and print it to the file
             JsonObject header = new JsonObject();
             header.addProperty("name", "Robobuggy Data Logs");
             header.addProperty("schema_version", "2.0");
@@ -376,6 +377,7 @@ public class LoggingNode extends BuggyDecoratorNode {
             dataBreakdown.addProperty(NodeChannel.RESET.getName(), resetHits);
             dataBreakdown.addProperty(NodeChannel.STATE.getName(), stateHits);
 
+            // print the footer and then the data breakdown lines
             fileWriteStream.println(footerDataEntry);
             fileWriteStream.println(dataBreakdown.toString());
             fileWriteStream.close();

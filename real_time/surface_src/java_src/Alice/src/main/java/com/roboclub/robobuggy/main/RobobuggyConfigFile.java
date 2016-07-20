@@ -118,11 +118,15 @@ public final class RobobuggyConfigFile {
         else {
             try {
                 String gitCommand = "git show";
+
+                // run a shell command to get the last git commit
                 Process gitGetter = Runtime.getRuntime().exec(gitCommand);
                 Scanner s = new Scanner(gitGetter.getInputStream(), "UTF-8");
                 if (s.hasNextLine()) {
                     String fullCommitLine = s.nextLine();
                     String pattern = "commit (\\d+)";
+
+                    // regex the number out
                     aliceLibraryVersion = fullCommitLine.replaceAll(pattern, "$1");
                     return aliceLibraryVersion;
                 }
