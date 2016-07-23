@@ -62,7 +62,7 @@ public final class TransistorAuton extends AbstractRobot {
         nodeList.add(new KfLocalizer(10));
 
         nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.getComPortGPS()));
-        nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION,
+        nodeList.add(new LoggingNode(RobobuggyConfigFile.LOG_FILE_LOCATION,
                 NodeChannel.getLoggingChannels()));
         nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING, RobobuggyConfigFile.getComPortRBSM(),
                 RobobuggyConfigFile.RBSM_COMMAND_PERIOD));

@@ -47,7 +47,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Schema 1.1:
  *  The entire file is one big object, with the messages as part of a JSON array, and the data breakdown is a sub-object of the file
  * Schema 2.0:
- *  The file is written line-by-line, much in the same way that the OG logs were. The header is it's own separate object. This is mainly to address the
+ *  The file is written line-by-line, much in the same way that the OG logs were. The header is its own separate object. This is mainly to address the
  *  problems created when shutting down early, files with schema 1.1 can't be read correctly, so schema 2.0 is better for reading line-by-line
  */
 public class LoggingNode extends BuggyDecoratorNode {
@@ -79,13 +79,11 @@ public class LoggingNode extends BuggyDecoratorNode {
 
     /**
      * Create a new {@link LoggingNode} decorator
-     *
-     * @param channel       the {@link NodeChannel} of the {@link LoggingNode}
-     * @param outputDirPath The path to the output directory (not file)
+     *  @param outputDirPath The path to the output directory (not file)
      * @param filters       sensors to log. To log all sensors, just use NodeChannel.values()
      */
-    public LoggingNode(NodeChannel channel, String outputDirPath, NodeChannel...filters) {
-        super(new BuggyBaseNode(channel), "logging_node");
+    public LoggingNode(String outputDirPath, NodeChannel... filters) {
+        super(new BuggyBaseNode(NodeChannel.GUI_LOGGING_BUTTON), "logging_node");
 
         this.filters = filters;
         messageQueue = new LinkedBlockingQueue<>(MAX_QUEUE_SIZE);

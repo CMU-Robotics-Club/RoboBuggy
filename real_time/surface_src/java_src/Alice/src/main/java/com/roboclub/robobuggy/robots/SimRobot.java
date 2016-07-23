@@ -70,7 +70,7 @@ public final class SimRobot extends AbstractRobot {
         simBuggy.setDx(10);
 
 
-        nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION,
+        nodeList.add(new LoggingNode(RobobuggyConfigFile.LOG_FILE_LOCATION,
                 NodeChannel.getLoggingChannels()));
         //simBuggy.setDth(1);
         //	simBuggy.setDth(0.10);
