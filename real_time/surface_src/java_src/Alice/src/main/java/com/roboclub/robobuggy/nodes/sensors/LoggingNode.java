@@ -185,20 +185,8 @@ public class LoggingNode extends BuggyDecoratorNode {
      * @return the status of the operation - true if it succeeded, false if it didn't
      */
     private boolean createNewLogFile() {
-        if (!outputDirectory.exists()) {
-            if (!outputDirectory.mkdirs()) {
-                new RobobuggyLogicNotification("Couldn't create logs folder!", RobobuggyMessageLevel.EXCEPTION);
-                return false;
-            }
-            if (!outputDirectory.isDirectory()) {
-                new RobobuggyLogicNotification("Output directory path isn't a folder!", RobobuggyMessageLevel.EXCEPTION);
-                return false;
-            }
-        }
 
         Date logCreationDate = new Date();
-
-
         outputDirectory = new File(RobobuggyConfigFile.LOG_FILE_LOCATION + "/" + formatDateIntoFile(logCreationDate));
 
         if (!outputDirectory.mkdirs()) {
