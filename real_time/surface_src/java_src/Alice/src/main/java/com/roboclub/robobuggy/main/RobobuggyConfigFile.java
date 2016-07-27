@@ -117,7 +117,7 @@ public final class RobobuggyConfigFile {
         }
         else {
             try {
-                String gitCommand = "git log -1";
+                String gitCommand = "git log -1 --pretty=\"format:%h\"";
 
                 // run a shell command to get the last git commit
                 Process gitGetter = Runtime.getRuntime().exec(gitCommand);

@@ -24,74 +24,80 @@ import java.util.Date;
  */
 public class PlaybackNode extends BuggyDecoratorNode {
 
+    private Thread playbackThread;
+
     /**
      * Constructor for sensor player
+     *  @param filePath      the file to play
      *
-     * @param filePath      the file to play
-     * @param playBackSpeed the playback speed
      */
-    public PlaybackNode(String filePath, double playBackSpeed) {
+    public PlaybackNode(String filePath) {
         super(new BuggyBaseNode(NodeChannel.PLAYBACK), "Playback");
         //open up the log file
+        Gson translator = new GsonBuilder().create();
 
-        new RobobuggyLogicNotification("initializing the SensorPlayer", RobobuggyMessageLevel.NOTE);
-        Thread thread = new Thread() {
+        new RobobuggyLogicNotification("Initializing the PlaybackNode", RobobuggyMessageLevel.NOTE);
+        playbackThread = new Thread() {
             public void run() {
-                Gson translator = new GsonBuilder().create();//TODO don't create a new one for every call of this function
                 // open input stream test.txt for reading purpose.
+                BufferedReader br;
                 try {
                     InputStream is = new FileInputStream(filePath);
                     // create new input stream reader
                     InputStreamReader isr = new InputStreamReader(is, "UTF-8");
                     //the file was created so lets try and read it
-                    BufferedReader br = new BufferedReader(isr);
+                    br = new BufferedReader(isr);
                     String nextLine;
-                    nextLine = br.readLine();  //reads {
-                    if (nextLine != null)
-                        nextLine = br.readLine();  // name
-                    else {
-                        new RobobuggyLogicNotification("File wasn't a log file!", RobobuggyMessageLevel.EXCEPTION);
+
+                    // read the metadata line
+                    nextLine = br.readLine();
+                    if (nextLine == null) {
+                        new RobobuggyLogicNotification("Empty log file!", RobobuggyMessageLevel.EXCEPTION);
                         br.close();
                         return;
                     }
-                    if (nextLine != null)
-                        nextLine = br.readLine();  //schema version
-                    if (nextLine != null)
-                        nextLine = br.readLine();  //date recorded
-                    if (nextLine != null)
-                        nextLine = br.readLine();  //software version
-                    if (nextLine != null)
-                        nextLine = br.readLine();  //Sensor_data
-                    if (nextLine != null)
-                        nextLine = br.readLine();
-                    if (nextLine != null)
-                        nextLine = nextLine.substring(0, nextLine.length() - 1);
-                    JsonObject sensorObject = translator.fromJson(nextLine, JsonObject.class);
-                    long startTimeSensor = sensorObject.get("timestamp").getAsLong();
+                    JsonObject metadataObject = translator.fromJson(nextLine, JsonObject.class);
+                    String message =
+                            "name : " + metadataObject.getAsJsonObject("name").getAsString() +
+                            " schema : " + metadataObject.getAsJsonObject("schema_version").getAsString() +
+                            " date_recorded " + metadataObject.getAsJsonObject("date_recorded").getAsString() +
+                            " git hash " + metadataObject.getAsJsonObject("software_version").getAsString();
+                    new RobobuggyLogicNotification("parsing log file:\n " + message, RobobuggyMessageLevel.NOTE);
 
                     long startTimeReal = new Date().getTime();
+                    long startTimeSensor;
+
+                    // get the first sensor reading, and get it's timestamp
                     nextLine = br.readLine();
-                    while (nextLine != null && !nextLine.startsWith("]")) {
+                    if (nextLine == null) {
+                        new RobobuggyLogicNotification("Incomplete log file!", RobobuggyMessageLevel.EXCEPTION);
+                        br.close();
+                        return;
+                    }
+
+                    JsonObject sensorObject = translator.fromJson(nextLine, JsonObject.class);
+                    startTimeSensor = sensorObject.get("timestamp").getAsLong();
+
+                    // read the rest of the file
+                    while ((nextLine = br.readLine()) != null) {
+                        long now = new Date().getTime();
+                        sensorObject = translator.fromJson(nextLine, JsonObject.class);
+                        long dt = now - startTimeReal;
+
+                        if (sensorObject.get("VERSION_ID").getAsString().equals(LoggingNode.DATA_BREAKDOWN_ID)) {
+                            break;
+                        }
+
                         try {
-                            //has not reached the end of the log yet
-                            //removes the comma at the end of the line
-                            nextLine = nextLine.substring(0, nextLine.length() - 1);
-                            long now = new Date().getTime();
-                            sensorObject = translator.fromJson(nextLine, JsonObject.class);
-                            long dt = now - startTimeReal;
                             PlayBackUtil.parseSensorLog(sensorObject, translator, dt, startTimeSensor,
                                     RobobuggyConfigFile.getPlayBackSpeed());
-                            //TODO deal with delay stuff
-
-                            nextLine = br.readLine();
-                        } catch (IOException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
                         } catch (InterruptedException e) {
-                            // TODO Auto-generated catch block
+                            new RobobuggyLogicNotification("Couldn't parse sensor object: " + nextLine, RobobuggyMessageLevel.WARNING);
                             e.printStackTrace();
                         }
-                    }//while
+                    }
+
+                    // TODO do something clever with the data breakdown
                     br.close();
 
 
@@ -99,18 +105,20 @@ public class PlaybackNode extends BuggyDecoratorNode {
                     new RobobuggyLogicNotification("File doesn't exist!", RobobuggyMessageLevel.EXCEPTION);
                     e.printStackTrace();
                 } catch (IOException e1) {
-                    // TODO Auto-generated catch block
+                    new RobobuggyLogicNotification("Error while reading the file", RobobuggyMessageLevel.EXCEPTION);
                     e1.printStackTrace();
                 }
-            }//run
+            }
 
-        };//thread
-
-        thread.start();
-
-
+        };
     }
 
+    /**
+     * starts playing back the file
+     */
+    public void startPlayback() {
+        playbackThread.start();
+    }
 
     @Override
     protected boolean startDecoratorNode() {

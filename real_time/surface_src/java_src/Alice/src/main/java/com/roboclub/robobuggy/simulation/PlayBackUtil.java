@@ -190,10 +190,6 @@ public final class PlayBackUtil {
             case WheelAngleCommandMeasurement.VERSION_ID:
                 transmitMessage = translator.fromJson(sensorDataJson, WheelAngleCommandMeasurement.class);
                 break;
-             /*   case TERMINATING_VERSION_ID:
-                    new RobobuggyLogicNotification("Stopping playback, hit a STOP", RobobuggyMessageLevel.NOTE);
-                    return;
-                    */
             default:
                 break;
         }

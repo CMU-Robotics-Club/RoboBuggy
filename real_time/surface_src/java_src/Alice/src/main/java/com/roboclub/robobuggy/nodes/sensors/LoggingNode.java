@@ -65,6 +65,7 @@ public class LoggingNode extends BuggyDecoratorNode {
     private Publisher statusPub;
 
     private static final String DATE_FILE_FORMAT = "yyyy-MM-dd-HH-mm-ss";
+    protected static final String DATA_BREAKDOWN_ID = "data_breakdown";
 
 
     /**
@@ -350,6 +351,7 @@ public class LoggingNode extends BuggyDecoratorNode {
         private synchronized void printDataBreakdown() {
             //we've stopped logging
             JsonObject dataBreakdown = new JsonObject();
+            dataBreakdown.addProperty("VERSION_ID", LoggingNode.DATA_BREAKDOWN_ID);
             dataBreakdown.addProperty(NodeChannel.GUI_LOGGING_BUTTON.getName(), logButtonHits);
             dataBreakdown.addProperty(NodeChannel.GPS.getName(), gpsHits);
             dataBreakdown.addProperty(NodeChannel.IMU.getName(), imuHits);

@@ -35,7 +35,7 @@ public final class PlayBackRobot extends AbstractRobot {
 
     private PlayBackRobot() {
         super();
-        new PlaybackNode(RobobuggyConfigFile.getPlayBackSourceFile(), 1);
+        new PlaybackNode(RobobuggyConfigFile.getPlayBackSourceFile());
 //		new SensorPlayer(RobobuggyConfigFile.getPlayBackSourceFile(), 1);
 //		new HighTrustGPSLocalizer();
         new KfLocalizer(10);
