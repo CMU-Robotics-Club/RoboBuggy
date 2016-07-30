@@ -1,7 +1,10 @@
 package com.roboclub.robobuggy.main;
 
 import com.roboclub.robobuggy.robots.AbstractRobot;
+import com.roboclub.robobuggy.robots.PlayBackRobot;
+import com.roboclub.robobuggy.robots.SimRobot;
 import com.roboclub.robobuggy.robots.TransistorAuton;
+import com.roboclub.robobuggy.robots.TransistorDataCollection;
 import com.roboclub.robobuggy.ui.Gui;
 import com.roboclub.robobuggy.utilities.JNISetup;
 
@@ -30,7 +33,17 @@ public class RobobuggyMainFile {
         RobobuggyConfigFile.loadConfigFile(); //TODO make sure that logic Notification is setup before this point
 
         new RobobuggyLogicNotification("Initializing Robot", RobobuggyMessageLevel.NOTE);
-        robot = TransistorAuton.getInstance();
+        String robottype = RobobuggyConfigFile.getRobotType();
+        switch(robottype){
+	        case "PlayBackRobot": robot = PlayBackRobot.getInstance(); break;
+	        case "SimRobot": robot = SimRobot.getInstance(); break;
+	        case "TransistorDataCollection": robot = TransistorDataCollection.getInstance(); break;
+	        case "TransistorAuton": robot = TransistorAuton.getInstance(); break;
+	        default: {
+	        	new RobobuggyLogicNotification("Unknown robot type; assuming TransistorAuton", RobobuggyMessageLevel.WARNING);
+	        	robot = TransistorAuton.getInstance(); break;
+	        }
+        }
 
         new RobobuggyLogicNotification("Initializing GUI", RobobuggyMessageLevel.NOTE);
         Gui.getInstance();

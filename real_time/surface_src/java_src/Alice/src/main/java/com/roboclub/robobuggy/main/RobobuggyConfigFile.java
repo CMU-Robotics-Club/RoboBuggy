@@ -60,6 +60,9 @@ public final class RobobuggyConfigFile {
 
     //is where values from this file are saved so that they can be updated between runs
     private static String configFile = "config.config";
+    
+    //Name of current robot being run
+    private static String robottype = "UNKNOWN";
 
     /**
      * creates a .config file that stores as json the current configuration settings
@@ -73,6 +76,7 @@ public final class RobobuggyConfigFile {
         settings.addProperty("COM_PORT_GPS", getComPortGPS());
         settings.addProperty("WAYPOINT_SOURCE_LOG_FILE", getWaypointSourceLogFile());
         settings.addProperty("PLAY_BACK_SOURCE_FILE", getPlayBackSourceFile());
+        settings.addProperty("ROBOT_TYPE", getRobotType());
         try {
             File file = new File(getConfigFile());
             Writer w = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
@@ -100,6 +104,7 @@ public final class RobobuggyConfigFile {
             setPortVision(configJson.get("PORT_VISION").getAsString());
             setWayPointSourceLogFile(configJson.get("WAYPOINT_SOURCE_LOG_FILE").getAsString());
             setPlayBackSourceFile(configJson.get("PLAY_BACK_SOURCE_FILE").getAsString());
+            setRobotType(configJson.get("ROBOT_TYPE").getAsString());
 
 
         } catch (UnsupportedEncodingException | FileNotFoundException e) {
@@ -326,6 +331,20 @@ public final class RobobuggyConfigFile {
      */
     public static void setPlayBackSpeed(double playBackSpeed) {
         RobobuggyConfigFile.playBackSpeed = playBackSpeed;
+    }
+    
+    /**
+     * @return the robottype
+     */
+    public static String getRobotType() {
+        return robottype;
+    }
+
+    /**
+     * @param robottype the robottype to set
+     */
+    public static void setRobotType(String robottype) {
+        RobobuggyConfigFile.robottype = robottype;
     }
 
 }

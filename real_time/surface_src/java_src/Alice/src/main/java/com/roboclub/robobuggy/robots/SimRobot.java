@@ -48,7 +48,6 @@ public final class SimRobot extends AbstractRobot {
 
     private SimRobot() {
         super();
-
         nodeList.add(new HighTrustGPSLocalizer());
         //	nodeList.add(new KfLocalizer(100));
         nodeList.add(new SimulatedImuNode(100));
