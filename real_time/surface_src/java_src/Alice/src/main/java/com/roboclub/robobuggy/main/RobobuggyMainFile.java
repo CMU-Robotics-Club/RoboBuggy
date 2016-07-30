@@ -39,10 +39,10 @@ public class RobobuggyMainFile {
 	        case "SimRobot": robot = SimRobot.getInstance(); break;
 	        case "TransistorDataCollection": robot = TransistorDataCollection.getInstance(); break;
 	        case "TransistorAuton": robot = TransistorAuton.getInstance(); break;
-	        default: {
+	        default: 
 	        	new RobobuggyLogicNotification("Unknown robot type; assuming TransistorAuton", RobobuggyMessageLevel.WARNING);
 	        	robot = TransistorAuton.getInstance(); break;
-	        }
+	        
         }
 
         new RobobuggyLogicNotification("Initializing GUI", RobobuggyMessageLevel.NOTE);
