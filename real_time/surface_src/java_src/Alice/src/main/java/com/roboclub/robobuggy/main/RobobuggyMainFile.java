@@ -33,17 +33,7 @@ public class RobobuggyMainFile {
         RobobuggyConfigFile.loadConfigFile(); //TODO make sure that logic Notification is setup before this point
 
         new RobobuggyLogicNotification("Initializing Robot", RobobuggyMessageLevel.NOTE);
-        String robottype = RobobuggyConfigFile.getRobotType();
-        switch(robottype){
-	        case "PlayBackRobot": robot = PlayBackRobot.getInstance(); break;
-	        case "SimRobot": robot = SimRobot.getInstance(); break;
-	        case "TransistorDataCollection": robot = TransistorDataCollection.getInstance(); break;
-	        case "TransistorAuton": robot = TransistorAuton.getInstance(); break;
-	        default: 
-	        	new RobobuggyLogicNotification("Unknown robot type; assuming TransistorAuton", RobobuggyMessageLevel.WARNING);
-	        	robot = TransistorAuton.getInstance(); break;
-	        
-        }
+        robot = RobobuggyConfigFile.getRobot();
 
         new RobobuggyLogicNotification("Initializing GUI", RobobuggyMessageLevel.NOTE);
         Gui.getInstance();
