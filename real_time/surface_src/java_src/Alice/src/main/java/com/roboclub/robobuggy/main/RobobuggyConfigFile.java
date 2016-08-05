@@ -67,7 +67,7 @@ public final class RobobuggyConfigFile {
     private static String configFile = "config.config";
     
     //Values relating to the type of robot being run
-    private static String robottype = "UNKNOWN";
+    private static String robotType = "UNKNOWN";
     private static AbstractRobot robot;
 
     /**
@@ -113,7 +113,7 @@ public final class RobobuggyConfigFile {
             setPlayBackSourceFile(configJson.get("PLAY_BACK_SOURCE_FILE").getAsString());
             setRobotType(configJson.get("ROBOT_TYPE").getAsString());
             //Create the robot based on the robot type
-            switch(robottype){
+            switch(robotType){
 	        case "PlayBackRobot": 
 	        	robot = PlayBackRobot.getInstance();
 	        	break;
@@ -364,14 +364,14 @@ public final class RobobuggyConfigFile {
      * @return the robottype (whatever's in the config file)
      */
     public static String getRobotType() {
-        return robottype;
+        return robotType;
     }
 
     /**
      * @param robottype the robottype to set
      */
     public static void setRobotType(String robottype) {
-        RobobuggyConfigFile.robottype = robottype;
+        RobobuggyConfigFile.robotType = robottype;
     }
 
     
