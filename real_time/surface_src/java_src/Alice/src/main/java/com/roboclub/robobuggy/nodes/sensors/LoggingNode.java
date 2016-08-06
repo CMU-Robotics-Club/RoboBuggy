@@ -53,7 +53,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class LoggingNode extends BuggyDecoratorNode {
 
     private Publisher loggingButtonPub;
-    private File outputFile;
+    protected File outputFile;
     private File outputDirectory;
     private NodeChannel[] filters;
     private LinkedBlockingQueue<Message> messageQueue;

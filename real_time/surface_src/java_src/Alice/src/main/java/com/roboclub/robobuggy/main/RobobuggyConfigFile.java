@@ -117,17 +117,13 @@ public final class RobobuggyConfigFile {
         }
         else {
             try {
-                String gitCommand = "git log -1 --pretty=\"format:%h\"";
+                String gitCommand = "git log -1 --format=%h";
 
                 // run a shell command to get the last git commit
                 Process gitGetter = Runtime.getRuntime().exec(gitCommand);
                 Scanner s = new Scanner(gitGetter.getInputStream(), "UTF-8");
                 if (s.hasNextLine()) {
-                    String fullCommitLine = s.nextLine();
-                    String pattern = "commit (\\d+)";
-
-                    // regex the number out
-                    aliceLibraryVersion = fullCommitLine.replaceAll(pattern, "$1");
+                    aliceLibraryVersion = s.nextLine();
                     return aliceLibraryVersion;
                 }
                 return "Couldn't get hash of most recent commit";
