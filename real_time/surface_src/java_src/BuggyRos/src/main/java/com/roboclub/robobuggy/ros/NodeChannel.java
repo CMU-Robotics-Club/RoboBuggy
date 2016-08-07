@@ -17,7 +17,7 @@ public enum NodeChannel {
 	VISION("vision", true),
 	ENCODER("encoder", true),
 	AUTO("auto", true),
-	GUI_LOGGING_BUTTON("logging_button", true),
+	GUI_LOGGING_BUTTON("logging_button", false),
 	STEERING_COMMANDED("commanded_steering", true),   // the angle that we are commanding the front wheel turn to
 	FP_HASH("fp_hash", true),
 	POSE("pose", true),

@@ -336,7 +336,7 @@ public class LoggingNode extends BuggyDecoratorNode {
                         imageHits++;
                     }
 
-                    fileWriteStream.println(msgAsJsonString + ",");
+                    fileWriteStream.println(msgAsJsonString);
                     fileWriteStream.flush();
 
                 } catch (InterruptedException e) {
