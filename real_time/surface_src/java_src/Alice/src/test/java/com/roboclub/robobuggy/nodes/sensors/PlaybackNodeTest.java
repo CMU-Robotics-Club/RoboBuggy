@@ -10,7 +10,9 @@ import org.junit.Test;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import static org.junit.Assert.fail;
 
@@ -30,6 +32,17 @@ public class PlaybackNodeTest {
      * @param trace the formatted String the log will contain
      */
     public void createLogWithTrace(String logName, String trace) throws IOException {
+        String log =
+                "\\{\"name\":\"Robobuggy Data Logs\",\"schema_version\":2.0\"date_recorded\":\"" +
+                        new SimpleDateFormat(LoggingNode.DATE_FILE_FORMAT).format(new Date()) + "\"," +
+                        "\"software_version\":\"qqqqqq\"\\}\n" +
+                trace +
+                "\\{\"VERSION_ID\":\"STOP\"\\}\n" +
+                "\\{\"VERSION_ID\":\"data_breakdown\",\"logging_button\":0,\"gps\":0,\"imu\":0,\"encoder\":" +
+                        "0,\"brake_state\":0,\"steering\":0,\"fp_hash\":0,\"logic_notification\":0," +
+                        "\"push_bar_camera\":0,\"pose\":0,\"reset\":0,\"state\":0\\}";
+
+
         File f = new File(logName);
         if (!f.createNewFile()) {
             fail("Couldn't create log file!");
@@ -51,7 +64,7 @@ public class PlaybackNodeTest {
     }
     
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         subList = new ArrayList<>();
         messagesExpected = new ArrayList<>();
         messagesReceived = new ArrayList<>();
@@ -64,10 +77,14 @@ public class PlaybackNodeTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
 
     }
 
+    /**
+     * Checks to see if all the messages expected were received, and that all messages received were expected
+     * Fails if not
+     */
     public void assertCorrectMessagesPlayed() {
         for (Message m : messagesReceived) {
             if (!messagesExpected.contains(m)) {
@@ -88,9 +105,13 @@ public class PlaybackNodeTest {
      * By empty we mean that the header is there, the footer is there, the STOP is there, but there are no messages logged
      */
     @Test
-    public void testPlaybackEmptyLog() {
-
-        fail("Not implemented");
+    public void testPlaybackEmptyLog() throws IOException, InterruptedException {
+        createLogWithTrace("empty.txt", "");
+        playbackNode = new PlaybackNode("empty.txt");
+        playbackNode.startPlayback();
+        Thread.sleep(1000);
+        deleteLogFile("empty.txt");
+        assertCorrectMessagesPlayed();
     }
 
     /**

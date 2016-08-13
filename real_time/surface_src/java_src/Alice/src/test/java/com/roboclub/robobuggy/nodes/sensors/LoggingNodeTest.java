@@ -60,7 +60,7 @@ public class LoggingNodeTest {
 
     private void compareFileToMessageList(String messageList) throws IOException {
         String fileRegex =
-                "\\{\"name\":\"Robobuggy Data Logs\",\"schema_version\":\"\\d+.0\",\"date_recorded\":\"\\d+-\\d+-\\d+ "+
+                "\\{\"name\":\"Robobuggy Data Logs\",\"schema_version\":\\d+.0,\"date_recorded\":\"\\d+-\\d+-\\d+ "+
                         "\\d+:\\d+:\\d+.\\d+\",\"software_version\":\"\\w+\"\\}\n" +
                 "\\{\"VERSION_ID\":\"logic_notification\",\"message\":\"Starting up logging thread!\",\"level\":" +
                         "\"NOTE\",\"DATE_FORMAT\":\"yyyy-MM-dd HH:mm:ss.SSS\",\"timestamp\":\\d+,\"topicName\"" +

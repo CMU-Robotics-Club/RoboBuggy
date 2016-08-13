@@ -64,7 +64,7 @@ public class LoggingNode extends BuggyDecoratorNode {
 
     private Publisher statusPub;
 
-    private static final String DATE_FILE_FORMAT = "yyyy-MM-dd-HH-mm-ss";
+    protected static final String DATE_FILE_FORMAT = "yyyy-MM-dd-HH-mm-ss";
     protected static final String DATA_BREAKDOWN_ID = "data_breakdown";
 
 
