@@ -1,5 +1,9 @@
 package com.roboclub.robobuggy.nodes.sensors;
 
+import com.roboclub.robobuggy.messages.BatteryLevelMessage;
+import com.roboclub.robobuggy.messages.BrakeMessage;
+import com.roboclub.robobuggy.messages.RobobuggyLogicNotificationMeasurement;
+import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
@@ -8,11 +12,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import static org.junit.Assert.fail;
 
@@ -23,8 +28,8 @@ public class PlaybackNodeTest {
 
     private ArrayList<Subscriber> subList;
     private PlaybackNode playbackNode;
-    private ArrayList<Message> messagesExpected;
-    private ArrayList<Message> messagesReceived;
+    private ArrayList<Class> messagesExpected;
+    private LinkedBlockingQueue<Message> messagesReceived;
 
     /**
      * Creates a log with the specified trace, throws failure if file couldn't be created
@@ -33,22 +38,22 @@ public class PlaybackNodeTest {
      */
     public void createLogWithTrace(String logName, String trace) throws IOException {
         String log =
-                "\\{\"name\":\"Robobuggy Data Logs\",\"schema_version\":2.0\"date_recorded\":\"" +
+                "{\"name\":\"Robobuggy Data Logs\",\"schema_version\":2.0,\"date_recorded\":\"" +
                         new SimpleDateFormat(LoggingNode.DATE_FILE_FORMAT).format(new Date()) + "\"," +
-                        "\"software_version\":\"qqqqqq\"\\}\n" +
+                        "\"software_version\":\"qqqqqq\"}\n" +
                 trace +
-                "\\{\"VERSION_ID\":\"STOP\"\\}\n" +
-                "\\{\"VERSION_ID\":\"data_breakdown\",\"logging_button\":0,\"gps\":0,\"imu\":0,\"encoder\":" +
+                "{\"VERSION_ID\":\"STOP\"}\n" +
+                "{\"VERSION_ID\":\"data_breakdown\",\"logging_button\":0,\"gps\":0,\"imu\":0,\"encoder\":" +
                         "0,\"brake_state\":0,\"steering\":0,\"fp_hash\":0,\"logic_notification\":0," +
-                        "\"push_bar_camera\":0,\"pose\":0,\"reset\":0,\"state\":0\\}";
+                        "\"push_bar_camera\":0,\"pose\":0,\"reset\":0,\"state\":0}";
 
 
         File f = new File(logName);
         if (!f.createNewFile()) {
             fail("Couldn't create log file!");
         }
-        FileWriter w = new FileWriter(logName);
-        w.write(trace);
+        PrintWriter w = new PrintWriter(f, "UTF-8");
+        w.write(log);
         w.close();
     }
 
@@ -67,11 +72,13 @@ public class PlaybackNodeTest {
     public void setUp() {
         subList = new ArrayList<>();
         messagesExpected = new ArrayList<>();
-        messagesReceived = new ArrayList<>();
+        messagesReceived = new LinkedBlockingQueue<>();
 
         for (NodeChannel c : NodeChannel.getLoggingChannels()) {
             subList.add(new Subscriber("PlaybackNodeTest", c.getMsgPath(), (topicName, m) -> {
-                messagesReceived.add(m);
+                if (!messagesReceived.offer(m)) {
+                    System.err.println("Couldnt add received message :(");
+                }
             }));
         }
     }
@@ -87,16 +94,18 @@ public class PlaybackNodeTest {
      */
     public void assertCorrectMessagesPlayed() {
         for (Message m : messagesReceived) {
-            if (!messagesExpected.contains(m)) {
-                fail("Message " + m.toString() + " was not expected");
+            if (m  instanceof RobobuggyLogicNotificationMeasurement) {
+                continue;
             }
-            messagesExpected.remove(m);
+
+            Class c = messagesExpected.remove(0);
+            if (!m.getClass().equals(c)) {
+                fail("Expected type " + c.toString() + " got " + m.getClass());
+            }
         }
-        for (Message m : messagesExpected) {
-            System.err.println("Message " + m.toString() + " was expected but not received");
-        }
+
         if (!messagesExpected.isEmpty()) {
-            fail();
+            fail("Didn't get all messages expected");
         }
     }
 
@@ -118,16 +127,54 @@ public class PlaybackNodeTest {
      * Plays back a log file with only one sensor
      */
     @Test
-    public void testPlaybackOnePubLog() {
-        fail("Not implemented");
+    public void testPlaybackOnePubLog() throws IOException, InterruptedException {
+        String msgAddition = "";
+        for (int i = 0; i < 10; i++) {
+            msgAddition = msgAddition.concat("{\"VERSION_ID\":\"" + SteeringMeasurement.VERSION_ID + "\",\"angle\":" + i +
+                    ".0,\"DATE_FORMAT\":\"yyyy-MM-dd HH:mm:ss.SSS\",\"timestamp\":0," +
+                    "\"topicName\":\"sensors/steering\"," +
+                    "\"sequenceNumber\":1}\n");
+
+            messagesExpected.add(SteeringMeasurement.class);
+        }
+
+        createLogWithTrace("onePub.txt", msgAddition);
+        playbackNode = new PlaybackNode("onePub.txt");
+        playbackNode.startPlayback();
+        Thread.sleep(6000);
+        deleteLogFile("onePub.txt");
+        assertCorrectMessagesPlayed();
     }
 
     /**
      * Plays back a standard log file
      */
     @Test
-    public void testPlaybackStandardLog() {
-        fail("Not implemented");
+    public void testPlaybackStandardLog() throws InterruptedException, IOException {
+        String msgAddition = "";
+        for (int i = 0; i < 10; i++) {
+            msgAddition = msgAddition.concat("{\"VERSION_ID\":\"" + SteeringMeasurement.VERSION_ID + "\",\"angle\":" + i +
+                    ".0,\"DATE_FORMAT\":\"yyyy-MM-dd HH:mm:ss.SSS\",\"timestamp\":12345678," +
+                    "\"topicName\":\"sensors/steering\",\"sequenceNumber\":1}\n");
+            msgAddition = msgAddition.concat("{\"VERSION_ID\":\"" + BrakeMessage.VERSION_ID + "\",\"down\":false," +
+                    "\"DATE_FORMAT\":\"yyyy-MM-dd HH:mm:ss.SSS\",\"timestamp\":12345678,\"topicName\":\"Topic\"," +
+                    "\"sequenceNumber\":1}\n");
+            msgAddition = msgAddition.concat("{\"VERSION_ID\":\"" + BatteryLevelMessage.VERSION_ID + "\",\"level\":" + i +
+                    "," +
+                    "\"DATE_FORMAT\":\"yyyy-MM-dd HH:mm:ss.SSS\",\"timestamp\":12345678,\"topicName\":\"Topic\"," +
+                    "\"sequenceNumber\":1}\n");
+
+            messagesExpected.add(SteeringMeasurement.class);
+            messagesExpected.add(BrakeMessage.class);
+            messagesExpected.add(BatteryLevelMessage.class);
+        }
+
+        createLogWithTrace("standard.txt", msgAddition);
+        playbackNode = new PlaybackNode("standard.txt");
+        playbackNode.startPlayback();
+        Thread.sleep(4000);
+        deleteLogFile("standard.txt");
+        assertCorrectMessagesPlayed();
     }
 
 }

@@ -292,7 +292,7 @@ public class LoggingNode extends BuggyDecoratorNode {
             // create our metadata header object and print it to the file
             JsonObject header = new JsonObject();
             header.addProperty("name", "Robobuggy Data Logs");
-            header.addProperty("schema_version", "2.0");
+            header.addProperty("schema_version", 2.0);
             header.addProperty("date_recorded", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
             header.addProperty("software_version", RobobuggyConfigFile.getAliceLibraryVersion());
 

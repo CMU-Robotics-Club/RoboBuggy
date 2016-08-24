@@ -58,34 +58,30 @@ public class PlaybackNode extends BuggyDecoratorNode {
                     }
                     JsonObject metadataObject = translator.fromJson(nextLine, JsonObject.class);
                     String message =
-                            "name : " + metadataObject.getAsJsonObject("name").getAsString() +
-                            " schema : " + metadataObject.getAsJsonObject("schema_version").getAsString() +
-                            " date_recorded " + metadataObject.getAsJsonObject("date_recorded").getAsString() +
-                            " git hash " + metadataObject.getAsJsonObject("software_version").getAsString();
+                            "name : " + metadataObject.get("name").getAsString() +
+                            " schema : " + metadataObject.get("schema_version").getAsString() +
+                            " date_recorded " + metadataObject.get("date_recorded").getAsString() +
+                            " git hash " + metadataObject.get("software_version").getAsString();
                     new RobobuggyLogicNotification("parsing log file:\n " + message, RobobuggyMessageLevel.NOTE);
 
                     long startTimeReal = new Date().getTime();
-                    long startTimeSensor;
+                    long startTimeSensor = -1;
 
-                    // get the first sensor reading, and get it's timestamp
-                    nextLine = br.readLine();
-                    if (nextLine == null) {
-                        new RobobuggyLogicNotification("Incomplete log file!", RobobuggyMessageLevel.EXCEPTION);
-                        br.close();
-                        return;
-                    }
-
-                    JsonObject sensorObject = translator.fromJson(nextLine, JsonObject.class);
-                    startTimeSensor = sensorObject.get("timestamp").getAsLong();
 
                     // read the rest of the file
                     while ((nextLine = br.readLine()) != null) {
                         long now = new Date().getTime();
-                        sensorObject = translator.fromJson(nextLine, JsonObject.class);
+                        JsonObject sensorObject = translator.fromJson(nextLine, JsonObject.class);
                         long dt = now - startTimeReal;
 
-                        if (sensorObject.get("VERSION_ID").getAsString().equals(LoggingNode.DATA_BREAKDOWN_ID)) {
+                        if (sensorObject.get("VERSION_ID").getAsString().equals(LoggingNode.DATA_BREAKDOWN_ID) ||
+                                sensorObject.get("VERSION_ID").getAsString().equals("STOP")) {
                             break;
+                        }
+
+                        if (startTimeSensor == -1) {
+                            // get the first sensor reading, and get it's timestamp
+                            startTimeSensor = sensorObject.get("timestamp").getAsLong();
                         }
 
                         try {
