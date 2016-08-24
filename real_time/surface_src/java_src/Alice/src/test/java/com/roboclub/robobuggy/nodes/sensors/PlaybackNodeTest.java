@@ -157,17 +157,18 @@ public class PlaybackNodeTest {
         long timeNow = new Date().getTime();
         for (int i = 0; i < 10; i++) {
             msgAddition = msgAddition.concat("{\"VERSION_ID\":\"" + SteeringMeasurement.VERSION_ID + "\",\"angle\":" + i +
-                    ".0,\"DATE_FORMAT\":\"yyyy-MM-dd HH:mm:ss.SSS\",\"timestamp\":" + Long.toString(timeNow + (i*30))
+                    ".0,\"DATE_FORMAT\":\"yyyy-MM-dd HH:mm:ss.SSS\",\"timestamp\":" + Long.toString(timeNow + (i*300))
                     + "," +
                     "\"topicName\":\"sensors/steering\",\"sequenceNumber\":1}\n");
             msgAddition = msgAddition.concat("{\"VERSION_ID\":\"" + BrakeMessage.VERSION_ID + "\",\"down\":false," +
-                    "\"DATE_FORMAT\":\"yyyy-MM-dd HH:mm:ss.SSS\",\"timestamp\":" + Long.toString(timeNow + (i*30) +
+                    "\"DATE_FORMAT\":\"yyyy-MM-dd HH:mm:ss.SSS\",\"timestamp\":" + Long.toString(timeNow + (i*300) +
                     10) + "," +
                     "\"topicName\":\"Topic\"," +
                     "\"sequenceNumber\":1}\n");
             msgAddition = msgAddition.concat("{\"VERSION_ID\":\"" + BatteryLevelMessage.VERSION_ID + "\",\"level\":" + i +
                     "," +
-                    "\"DATE_FORMAT\":\"yyyy-MM-dd HH:mm:ss.SSS\",\"timestamp\":" + Long.toString(timeNow + (i*30) + 20) + "," +
+                    "\"DATE_FORMAT\":\"yyyy-MM-dd HH:mm:ss.SSS\",\"timestamp\":" + Long.toString(timeNow + (i*300) +
+                    20) + "," +
                     "\"topicName\":\"Topic\"," +
                     "\"sequenceNumber\":1}\n");
 
