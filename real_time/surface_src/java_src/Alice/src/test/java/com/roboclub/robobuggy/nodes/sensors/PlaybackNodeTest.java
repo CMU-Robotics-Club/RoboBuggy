@@ -64,7 +64,7 @@ public class PlaybackNodeTest {
     public void deleteLogFile(String logName) {
         File f = new File(logName);
         if (!f.delete()) {
-            fail("Cleanup failed!");
+            System.err.println("Cleanup failed :(");
         }
     }
     
@@ -129,9 +129,11 @@ public class PlaybackNodeTest {
     @Test
     public void testPlaybackOnePubLog() throws IOException, InterruptedException {
         String msgAddition = "";
+        long timeNow = new Date().getTime();
         for (int i = 0; i < 10; i++) {
             msgAddition = msgAddition.concat("{\"VERSION_ID\":\"" + SteeringMeasurement.VERSION_ID + "\",\"angle\":" + i +
-                    ".0,\"DATE_FORMAT\":\"yyyy-MM-dd HH:mm:ss.SSS\",\"timestamp\":0," +
+                    ".0,\"DATE_FORMAT\":\"yyyy-MM-dd HH:mm:ss.SSS\",\"timestamp\":" + Long.toString(timeNow + i*20) +
+                    "," +
                     "\"topicName\":\"sensors/steering\"," +
                     "\"sequenceNumber\":1}\n");
 
@@ -152,16 +154,21 @@ public class PlaybackNodeTest {
     @Test
     public void testPlaybackStandardLog() throws InterruptedException, IOException {
         String msgAddition = "";
+        long timeNow = new Date().getTime();
         for (int i = 0; i < 10; i++) {
             msgAddition = msgAddition.concat("{\"VERSION_ID\":\"" + SteeringMeasurement.VERSION_ID + "\",\"angle\":" + i +
-                    ".0,\"DATE_FORMAT\":\"yyyy-MM-dd HH:mm:ss.SSS\",\"timestamp\":12345678," +
+                    ".0,\"DATE_FORMAT\":\"yyyy-MM-dd HH:mm:ss.SSS\",\"timestamp\":" + Long.toString(timeNow + (i*30))
+                    + "," +
                     "\"topicName\":\"sensors/steering\",\"sequenceNumber\":1}\n");
             msgAddition = msgAddition.concat("{\"VERSION_ID\":\"" + BrakeMessage.VERSION_ID + "\",\"down\":false," +
-                    "\"DATE_FORMAT\":\"yyyy-MM-dd HH:mm:ss.SSS\",\"timestamp\":12345678,\"topicName\":\"Topic\"," +
+                    "\"DATE_FORMAT\":\"yyyy-MM-dd HH:mm:ss.SSS\",\"timestamp\":" + Long.toString(timeNow + (i*30) +
+                    10) + "," +
+                    "\"topicName\":\"Topic\"," +
                     "\"sequenceNumber\":1}\n");
             msgAddition = msgAddition.concat("{\"VERSION_ID\":\"" + BatteryLevelMessage.VERSION_ID + "\",\"level\":" + i +
                     "," +
-                    "\"DATE_FORMAT\":\"yyyy-MM-dd HH:mm:ss.SSS\",\"timestamp\":12345678,\"topicName\":\"Topic\"," +
+                    "\"DATE_FORMAT\":\"yyyy-MM-dd HH:mm:ss.SSS\",\"timestamp\":" + Long.toString(timeNow + (i*30) + 20) + "," +
+                    "\"topicName\":\"Topic\"," +
                     "\"sequenceNumber\":1}\n");
 
             messagesExpected.add(SteeringMeasurement.class);
@@ -172,7 +179,7 @@ public class PlaybackNodeTest {
         createLogWithTrace("standard.txt", msgAddition);
         playbackNode = new PlaybackNode("standard.txt");
         playbackNode.startPlayback();
-        Thread.sleep(4000);
+        Thread.sleep(10000);
         deleteLogFile("standard.txt");
         assertCorrectMessagesPlayed();
     }

@@ -81,6 +81,7 @@ public class LoggingNodeTest {
 
         if (!fileMatcher.find()) {
             Assert.fail("Couldn't match regex");
+            System.out.println(logFile);
         }
 
     }
@@ -106,6 +107,7 @@ public class LoggingNodeTest {
 
         for (int i = 0; i < 10; i++) {
             batteryPub.publish(new BatteryLevelMessage(1337));
+            Thread.sleep(500);
         }
 
         stopLogging();
@@ -133,11 +135,11 @@ public class LoggingNodeTest {
 
         for (int i = 0; i < 10; i++) {
             batteryPub.publish(new BatteryLevelMessage(1337));
-            Thread.sleep(100);
+            Thread.sleep(500);
             brakePub.publish(new BrakeMessage(0));
-            Thread.sleep(100);
+            Thread.sleep(500);
             steeringPub.publish(new SteeringMeasurement(1337.0));
-            Thread.sleep(100);
+            Thread.sleep(500);
         }
 
         stopLogging();
