@@ -17,6 +17,7 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import static org.junit.Assert.fail;
@@ -28,7 +29,7 @@ public class PlaybackNodeTest {
 
     private ArrayList<Subscriber> subList;
     private PlaybackNode playbackNode;
-    private ArrayList<Class> messagesExpected;
+    private Hashtable<Class, Integer> messagesExpected;
     private LinkedBlockingQueue<Message> messagesReceived;
 
     /**
@@ -71,7 +72,7 @@ public class PlaybackNodeTest {
     @Before
     public void setUp() {
         subList = new ArrayList<>();
-        messagesExpected = new ArrayList<>();
+        messagesExpected = new Hashtable<>();
         messagesReceived = new LinkedBlockingQueue<>();
 
         for (NodeChannel c : NodeChannel.getLoggingChannels()) {
@@ -98,14 +99,22 @@ public class PlaybackNodeTest {
                 continue;
             }
 
-            Class c = messagesExpected.remove(0);
-            if (!m.getClass().equals(c)) {
-                fail("Expected type " + c.toString() + " got " + m.getClass());
+            Integer numExpectedLeft = messagesExpected.get(m.getClass());
+            if (numExpectedLeft == null) {
+                fail("Didn't expect class " + m.getClass().toString());
             }
+            if (numExpectedLeft == 0) {
+                fail("Got extra of class " + m.getClass().toString());
+            }
+
+            numExpectedLeft = numExpectedLeft - 1;
+            messagesExpected.put(m.getClass(), numExpectedLeft);
         }
 
-        if (!messagesExpected.isEmpty()) {
-            fail("Didn't get all messages expected");
+        for (Class c : messagesExpected.keySet()) {
+            if (messagesExpected.get(c) != 0) {
+                fail("Didn't get all expected of " + c.toString());
+            }
         }
     }
 
@@ -137,8 +146,8 @@ public class PlaybackNodeTest {
                     "\"topicName\":\"sensors/steering\"," +
                     "\"sequenceNumber\":1}\n");
 
-            messagesExpected.add(SteeringMeasurement.class);
         }
+        messagesExpected.put(SteeringMeasurement.class, 10);
 
         createLogWithTrace("onePub.txt", msgAddition);
         playbackNode = new PlaybackNode("onePub.txt");
@@ -171,11 +180,10 @@ public class PlaybackNodeTest {
                     20) + "," +
                     "\"topicName\":\"Topic\"," +
                     "\"sequenceNumber\":1}\n");
-
-            messagesExpected.add(SteeringMeasurement.class);
-            messagesExpected.add(BrakeMessage.class);
-            messagesExpected.add(BatteryLevelMessage.class);
         }
+        messagesExpected.put(SteeringMeasurement.class, 10);
+        messagesExpected.put(BrakeMessage.class, 10);
+        messagesExpected.put(BatteryLevelMessage.class, 10);
 
         createLogWithTrace("standard.txt", msgAddition);
         playbackNode = new PlaybackNode("standard.txt");
