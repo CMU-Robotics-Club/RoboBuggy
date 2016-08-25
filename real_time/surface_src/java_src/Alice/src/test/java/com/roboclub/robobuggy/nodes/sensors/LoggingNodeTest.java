@@ -95,6 +95,7 @@ public class LoggingNodeTest {
         stopLogging();
 
         compareFileToMessageList("");
+        Assert.assertTrue(true);
     }
 
     /**
@@ -121,6 +122,7 @@ public class LoggingNodeTest {
         }
 
         compareFileToMessageList(extraMessages);
+        Assert.assertTrue(true);
     }
 
     /**
@@ -162,6 +164,7 @@ public class LoggingNodeTest {
         }
 
         compareFileToMessageList(extraMessages);
+        Assert.assertTrue(true);
     }
 
 }

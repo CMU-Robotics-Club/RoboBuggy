@@ -7,7 +7,6 @@ import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -27,10 +25,13 @@ import static org.junit.Assert.fail;
  */
 public class PlaybackNodeTest {
 
-    private ArrayList<Subscriber> subList;
     private PlaybackNode playbackNode;
     private Hashtable<Class, Integer> messagesExpected;
     private LinkedBlockingQueue<Message> messagesReceived;
+
+    public PlaybackNodeTest() {
+        System.out.println("Starting Playback Tests");
+    }
 
     /**
      * Creates a log with the specified trace, throws failure if file couldn't be created
@@ -71,22 +72,16 @@ public class PlaybackNodeTest {
     
     @Before
     public void setUp() {
-        subList = new ArrayList<>();
         messagesExpected = new Hashtable<>();
         messagesReceived = new LinkedBlockingQueue<>();
 
         for (NodeChannel c : NodeChannel.getLoggingChannels()) {
-            subList.add(new Subscriber("PlaybackNodeTest", c.getMsgPath(), (topicName, m) -> {
+            new Subscriber("PlaybackNodeTest", c.getMsgPath(), (topicName, m) -> {
                 if (!messagesReceived.offer(m)) {
                     System.err.println("Couldnt add received message :(");
                 }
-            }));
+            });
         }
-    }
-
-    @After
-    public void tearDown() {
-
     }
 
     /**
