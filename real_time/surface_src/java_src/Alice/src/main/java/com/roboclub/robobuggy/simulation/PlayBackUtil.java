@@ -3,6 +3,7 @@ package com.roboclub.robobuggy.simulation;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.roboclub.robobuggy.messages.BatteryLevelMessage;
 import com.roboclub.robobuggy.messages.BrakeControlMessage;
 import com.roboclub.robobuggy.messages.BrakeMessage;
 import com.roboclub.robobuggy.messages.DriveControlMessage;
@@ -42,6 +43,7 @@ public final class PlayBackUtil {
     private Publisher steeringCommandPub;
     private Publisher loggingButtonPub;
     private Publisher logicNotificationPub;
+    private Publisher batteryLevelPub;
 
 
     /**
@@ -69,6 +71,7 @@ public final class PlayBackUtil {
         steeringCommandPub = new Publisher(NodeChannel.STEERING_COMMANDED.getMsgPath());
         loggingButtonPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
         logicNotificationPub = new Publisher(NodeChannel.LOGIC_NOTIFICATION.getMsgPath());
+        batteryLevelPub = new Publisher(NodeChannel.BATTERY.getMsgPath());
     }
 
     /**
@@ -121,6 +124,10 @@ public final class PlayBackUtil {
         String versionID = sensorDataJson.get("VERSION_ID").getAsString();
         Message transmitMessage = null;
         switch (versionID) {
+            case BatteryLevelMessage.VERSION_ID:
+                transmitMessage = translator.fromJson(sensorDataJson, BatteryLevelMessage.class);
+                getPrivateInstance().batteryLevelPub.publish(transmitMessage);
+                break;
             case BrakeControlMessage.VERSION_ID:
                 transmitMessage = translator.fromJson(sensorDataJson, BrakeControlMessage.class);
                 break;
@@ -190,10 +197,6 @@ public final class PlayBackUtil {
             case WheelAngleCommandMeasurement.VERSION_ID:
                 transmitMessage = translator.fromJson(sensorDataJson, WheelAngleCommandMeasurement.class);
                 break;
-             /*   case TERMINATING_VERSION_ID:
-                    new RobobuggyLogicNotification("Stopping playback, hit a STOP", RobobuggyMessageLevel.NOTE);
-                    return;
-                    */
             default:
                 break;
         }

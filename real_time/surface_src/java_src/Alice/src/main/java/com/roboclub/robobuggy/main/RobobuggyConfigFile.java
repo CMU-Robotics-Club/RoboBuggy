@@ -10,6 +10,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.util.Scanner;
 
 // add JSON parser for RobobuggyConfigFile
 
@@ -19,7 +20,7 @@ import java.io.Writer;
 public final class RobobuggyConfigFile {
 
     //Library info
-    public static final String ALICE_LIBRARY_VERSION = "1.0.0";
+    private static String aliceLibraryVersion = "";
     public static final String RBSM_HEADER_FILE_LOCATION = "../../../rbsm_config.txt";
 
     // for what messages should be printed to the console
@@ -101,9 +102,35 @@ public final class RobobuggyConfigFile {
             setWayPointSourceLogFile(configJson.get("WAYPOINT_SOURCE_LOG_FILE").getAsString());
             setPlayBackSourceFile(configJson.get("PLAY_BACK_SOURCE_FILE").getAsString());
 
-
         } catch (UnsupportedEncodingException | FileNotFoundException e) {
             new RobobuggyLogicNotification("could not load Part of configFile" + e.toString(), RobobuggyMessageLevel.WARNING);
+        }
+        getAliceLibraryVersion();
+    }
+
+    /**
+     * @return the current library version
+     */
+    public static String getAliceLibraryVersion() {
+        if (!aliceLibraryVersion.equals("")) {
+            return aliceLibraryVersion;
+        }
+        else {
+            try {
+                String gitCommand = "git log -1 --format=%h";
+
+                // run a shell command to get the last git commit
+                Process gitGetter = Runtime.getRuntime().exec(gitCommand);
+                Scanner s = new Scanner(gitGetter.getInputStream(), "UTF-8");
+                if (s.hasNextLine()) {
+                    aliceLibraryVersion = s.nextLine();
+                    return aliceLibraryVersion;
+                }
+                return "Couldn't get hash of most recent commit";
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "Couldn't load Git status";
+            }
         }
     }
 
