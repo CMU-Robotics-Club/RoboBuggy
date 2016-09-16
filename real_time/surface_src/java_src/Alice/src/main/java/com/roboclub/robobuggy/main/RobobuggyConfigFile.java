@@ -112,7 +112,6 @@ public final class RobobuggyConfigFile {
             setWayPointSourceLogFile(configJson.get("WAYPOINT_SOURCE_LOG_FILE").getAsString());
             setPlayBackSourceFile(configJson.get("PLAY_BACK_SOURCE_FILE").getAsString());
             setRobotType(configJson.get("ROBOT_TYPE").getAsString());
-            //Create the robot based on the robot type
             switch(robotType){
 	        case "PlayBackRobot": 
 	        	robot = PlayBackRobot.getInstance();
