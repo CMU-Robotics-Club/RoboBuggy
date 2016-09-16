@@ -75,19 +75,5 @@ public final class SimRobot extends AbstractRobot {
         //	simBuggy.setDth(0.10);
 
 
-        //setup the gui
-        RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow", 1.0, 1.0);
-        Gui.getInstance().addWindow(mainWindow);
-        RobobuggyGUITabs tabs = new RobobuggyGUITabs();
-        mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
-        tabs.addTab(new MainGuiWindow(), "Home");
-        //	tabs.addTab(new PoseGraphsPanel(),"poses");
-        //	tabs.addTab(new ImuPanel(),"IMU");
-        tabs.addTab(new AutonomousPanel(), "Autonomous");
-        tabs.addTab(new SimulationPanel(), "Simulation");
-        tabs.addTab(new PathPanel(), "Path Panel");
-        tabs.addTab(new ConfigurationPanel(), "Configuration");
-
-
     }
 }

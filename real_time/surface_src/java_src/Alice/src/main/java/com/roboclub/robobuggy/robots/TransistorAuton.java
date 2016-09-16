@@ -77,17 +77,6 @@ public final class TransistorAuton extends AbstractRobot {
             e.printStackTrace();
         }
 
-        //setup the gui
-        RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow", 1.0, 1.0);
-        Gui.getInstance().addWindow(mainWindow);
-        RobobuggyGUITabs tabs = new RobobuggyGUITabs();
-        mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
-        tabs.addTab(new MainGuiWindow(), "Home");
-        //	tabs.addTab(new PoseGraphsPanel(),"poses");
-        //	tabs.addTab(new  AutonomousPanel(),"Autonomous");
-        tabs.add(new PathPanel(), "Path Visualizer");
-        tabs.addTab(new ConfigurationPanel(), "Configuration");
-
 
     }
 }
