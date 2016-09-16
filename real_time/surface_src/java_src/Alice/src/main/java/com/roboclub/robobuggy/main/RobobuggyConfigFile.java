@@ -126,11 +126,10 @@ public final class RobobuggyConfigFile {
 	        case "TransistorAuton":
 	        	robot = TransistorAuton.getInstance();
 	        	break;
-	        default: 
-	        	new RobobuggyLogicNotification("Unknown robot type; assuming TransistorAuton", RobobuggyMessageLevel.WARNING);
-	        	robot = TransistorAuton.getInstance();
-	        	break;
-	        
+	        default:
+
+	        	new RobobuggyLogicNotification("Unknown robot type: " + robotType, RobobuggyMessageLevel.EXCEPTION);
+                throw new IllegalArgumentException("Unknown robot type: " + robotType);
             }
 
 
