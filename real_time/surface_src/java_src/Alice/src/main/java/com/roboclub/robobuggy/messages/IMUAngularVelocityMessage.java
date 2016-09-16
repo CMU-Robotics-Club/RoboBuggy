@@ -12,6 +12,7 @@ import java.util.Date;
  *          <p>
  *          DESCRIPTION: TODO
  */
+@Deprecated
 public class IMUAngularVelocityMessage extends BaseMessage {
 
     public static final String VERSION_ID = "imuAngularVelocityV0.0";

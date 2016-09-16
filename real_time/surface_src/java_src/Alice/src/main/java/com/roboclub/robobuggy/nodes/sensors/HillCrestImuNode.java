@@ -22,6 +22,7 @@ import com.roboclub.robobuggy.ros.Publisher;
  * @author Trevor Decker
  * @author Sean Buckley
  */
+@Deprecated
 public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListenerInterface, com.roboclub.robobuggy.ros.Node {
     private Device thisDevice;
     private Publisher linearAccPub = new Publisher(NodeChannel.IMU_LINEAR_ACC.getMsgPath());

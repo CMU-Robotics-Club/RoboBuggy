@@ -5,6 +5,7 @@ package com.roboclub.robobuggy.messages;
  *
  * @author Trevor Decker
  */
+@Deprecated
 public class HillCrestIMUMessage extends BaseMessage {
     private String message = "";
 

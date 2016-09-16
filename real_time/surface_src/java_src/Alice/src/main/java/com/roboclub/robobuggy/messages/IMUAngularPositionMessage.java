@@ -12,6 +12,7 @@ import java.util.Date;
  *          <p>
  *          DESCRIPTION: TODO
  */
+@Deprecated
 public class IMUAngularPositionMessage extends BaseMessage {
 
     public static final String VERSION_ID = "imuAngularPositionV0.0";

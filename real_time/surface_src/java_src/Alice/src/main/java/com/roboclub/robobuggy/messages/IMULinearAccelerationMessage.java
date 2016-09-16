@@ -12,6 +12,7 @@ import java.util.Date;
  *          <p>
  *          DESCRIPTION: TODO
  */
+@Deprecated
 public class IMULinearAccelerationMessage extends BaseMessage {
 
     public static final String VERSION_ID = "LinearAccelerationV0.0";
