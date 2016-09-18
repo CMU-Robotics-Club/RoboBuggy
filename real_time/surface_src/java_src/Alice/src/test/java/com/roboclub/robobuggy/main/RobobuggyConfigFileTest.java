@@ -4,7 +4,6 @@ import com.roboclub.robobuggy.robots.PlayBackRobot;
 import com.roboclub.robobuggy.robots.SimRobot;
 import com.roboclub.robobuggy.robots.TransistorAuton;
 import com.roboclub.robobuggy.robots.TransistorDataCollection;
-import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -16,27 +15,66 @@ import java.io.*;
  */
 public class RobobuggyConfigFileTest {
 
+    /**
+     * Sets up test cases
+     *  @throws Exception
+     */
     @Before
     public void setUp() throws Exception {
         //Runs before each test case, denoted "@Test" before the method
     }
 
+    /**
+     * Cleans up test cases
+     * @throws Exception
+     */
     @After
     public void tearDown() throws Exception {
         //Runs after each test case
     }
 
+    /**
+     * Creates a config file, setting the ROBOT field to the given input
+     * @param s: String to be used as the robot type
+     * @throws IOException
+     */
     public void createConfigFileWithRobot(String s) throws IOException{
-        BufferedWriter writer = new BufferedWriter(new FileWriter(new File("/Users/davidneiman/RoboBuggy/real_time/surface_src/java_src/Alice/config.config")));
-        writer.write("{\"COM_PORT_IMU\":\"NOT_SET\",\"COM_PORT_RBSM\":\"NOT_SET\",\"PORT_VISION\":\"NOT_SET\",\"COM_PORT_GPS\":\"NOT_SET\",\"WAYPOINT_SOURCE_LOG_FILE\":\"config.config\",\"PLAY_BACK_SOURCE_FILE\":\"NOT_SET\",\"VIDEO_FILE\":\"/Users/davidneiman/RoboBuggy/real_time/surface_src/java_src/Alice/logs/2016-02-20-06-50-45/webcam.mp4\",\"ROBOT_TYPE\":\"");
+
+        //BufferedWriter writer = new BufferedWriter(new FileWriter(new File("config.config")));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("config.config")), "UTF-8"));
+
+        writer.write("{" +
+                "\"COM_PORT_IMU\":\"NOT_SET\"," +
+                "\"COM_PORT_RBSM\":\"NOT_SET\"," +
+                "\"PORT_VISION\":\"NOT_SET\"," +
+                "\"COM_PORT_GPS\":\"NOT_SET\"," +
+                "\"WAYPOINT_SOURCE_LOG_FILE\":\"config.config\"," +
+                "\"PLAY_BACK_SOURCE_FILE\":\"NOT_SET\"," +
+                "\"VIDEO_FILE\":\"NOT_SET\"," +
+                "\"ROBOT_TYPE\":\"");
         writer.write(s);
         writer.write("\"}");
         writer.close();
     }
 
+    /**
+     * Creates a config file without a ROBOT field
+     * Use only for testing; it's supposed to lead to null-pointer exceptions
+     * @throws IOException
+     */
     public void createConfigFileWithoutRobot() throws IOException{
-        BufferedWriter writer = new BufferedWriter(new FileWriter(new File("/Users/davidneiman/RoboBuggy/real_time/surface_src/java_src/Alice/config.config")));
-        writer.write("{\"COM_PORT_IMU\":\"NOT_SET\",\"COM_PORT_RBSM\":\"NOT_SET\",\"PORT_VISION\":\"NOT_SET\",\"COM_PORT_GPS\":\"NOT_SET\",\"WAYPOINT_SOURCE_LOG_FILE\":\"config.config\",\"PLAY_BACK_SOURCE_FILE\":\"NOT_SET\",\"VIDEO_FILE\":\"/Users/davidneiman/RoboBuggy/real_time/surface_src/java_src/Alice/logs/2016-02-20-06-50-45/webcam.mp4\"}");
+        //BufferedWriter writer = new BufferedWriter(new FileWriter(new File("config.config")));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("config.config")), "UTF-8"));
+
+        writer.write("{" +
+                "\"COM_PORT_IMU\":\"NOT_SET\"," +
+                "\"COM_PORT_RBSM\":\"NOT_SET\"," +
+                "\"PORT_VISION\":\"NOT_SET\"," +
+                "\"COM_PORT_GPS\":\"NOT_SET\"," +
+                "\"WAYPOINT_SOURCE_LOG_FILE\":\"config.config\"," +
+                "\"PLAY_BACK_SOURCE_FILE\":\"NOT_SET\"," +
+                "\"VIDEO_FILE\":\"NOT_SET" +
+                "\"}");
         writer.close();
     }
 
@@ -54,88 +92,36 @@ public class RobobuggyConfigFileTest {
             RobobuggyConfigFile.loadConfigFile();
         } catch (IOException e) {
             e.printStackTrace();
-            assert false;
+            Assert.fail();
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            assert false;
+            Assert.fail();
         }
 
-        //Test getRobotType and setRobotType
-        assert RobobuggyConfigFile.getRobotType().equals("TransistorAuton");
-        RobobuggyConfigFile.setRobotType("TempBuggy!!!");
-        assert RobobuggyConfigFile.getRobotType().equals("TempBuggy!!!");
+        //Test getRobotType
+        assert(RobobuggyConfigFile.getRobotType().equals("TransistorAuton"));
     }
 
     /**
-     * Creates a config file that specifies a TransistorAuton robot, then creates the robot
+     * Creates all the different robot types and tests to make sure they're the correct types
      */
     @Test
-    public void testTransistorAuton(){
-        try {
-            createConfigFileWithRobot("TransistorAuton");
-            RobobuggyConfigFile.loadConfigFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-            assert false;
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            assert false;
+    public void testAllRobotTypes(){
+        String[] robots = {"TransistorAuton", "TransistorDataCollection", "PlayBackRobot", "SimRobot"};
+        for(int x = 0; x < robots.length; x++){
+            try {
+                createConfigFileWithRobot(robots[x]);
+                RobobuggyConfigFile.loadConfigFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+                Assert.fail();
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+                Assert.fail();
+            }
+            assert(RobobuggyConfigFile.getRobot().getClass().getSimpleName().equals(robots[x]));
         }
-        assert RobobuggyConfigFile.getRobot() instanceof TransistorAuton;
-    }
 
-    /**
-     * Creates a config file that specifies a TransistorDataCollection robot, then creates the robot
-     */
-    @Test
-    public void testTransistorDataCollection(){
-        try {
-            createConfigFileWithRobot("TransistorDataCollection");
-            RobobuggyConfigFile.loadConfigFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Assert.fail();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
-        assert RobobuggyConfigFile.getRobot() instanceof TransistorDataCollection;
-    }
-
-    /**
-     * Creates a config file that specifies a PlayBackRobot robot, then creates the robot
-     */
-    @Test
-    public void testPlayBackRobot(){
-        try {
-            createConfigFileWithRobot("PlayBackRobot");
-            RobobuggyConfigFile.loadConfigFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Assert.fail();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
-        assert RobobuggyConfigFile.getRobot() instanceof PlayBackRobot;
-    }
-
-    /**
-     * Creates a config file that specifies a SimRobot robot, then creates the robot
-     */
-    @Test
-    public void testSimRobot(){
-        try {
-            createConfigFileWithRobot("SimRobot");
-            RobobuggyConfigFile.loadConfigFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Assert.fail();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
-        assert RobobuggyConfigFile.getRobot() instanceof SimRobot;
     }
 
     /**
@@ -152,8 +138,9 @@ public class RobobuggyConfigFileTest {
             e.printStackTrace();
             Assert.fail();
         } catch (IllegalArgumentException e) {
-            //Good;test passed
+            return;
         }
+        Assert.fail();
     }
 
     /**
@@ -170,8 +157,9 @@ public class RobobuggyConfigFileTest {
             e.printStackTrace();
             Assert.fail();
         } catch (IllegalArgumentException e) {
-            //Good;test passed
+            return;
         }
+        Assert.fail();
     }
 
     /**
@@ -188,12 +176,13 @@ public class RobobuggyConfigFileTest {
             e.printStackTrace();
             Assert.fail();
         } catch (IllegalArgumentException e) {
-            //Good;test passed
+            return;
         }
+        Assert.fail();
     }
 
     /**
-     * Creates a config file without a robot field
+     * Creates a config file without a key-robot value pair
      * This is different from the above because the JSON parser shouldn't find a robot field
      * It's expected to throw a NullPointerException (not an IllegalArgument exception like the previous)
      */
@@ -210,7 +199,8 @@ public class RobobuggyConfigFileTest {
             e.printStackTrace();
             Assert.fail();
         } catch (NullPointerException e) {
-            //Good;test passed
+            return;
         }
+        Assert.fail();
     }
 }

@@ -111,24 +111,23 @@ public final class RobobuggyConfigFile {
             setPortVision(configJson.get("PORT_VISION").getAsString());
             setWayPointSourceLogFile(configJson.get("WAYPOINT_SOURCE_LOG_FILE").getAsString());
             setPlayBackSourceFile(configJson.get("PLAY_BACK_SOURCE_FILE").getAsString());
-            setRobotType(configJson.get("ROBOT_TYPE").getAsString());
+            RobobuggyConfigFile.robotType = configJson.get("ROBOT_TYPE").getAsString();
             switch(robotType){
-	        case "PlayBackRobot": 
-	        	robot = PlayBackRobot.getInstance();
-	        	break;
-	        case "SimRobot":
-	        	robot = SimRobot.getInstance();
-	        	break;
-	        case "TransistorDataCollection":
-	        	robot = TransistorDataCollection.getInstance();
-	        	break;
-	        case "TransistorAuton":
-	        	robot = TransistorAuton.getInstance();
-	        	break;
-	        default:
-
-	        	new RobobuggyLogicNotification("Unknown robot type: " + robotType, RobobuggyMessageLevel.EXCEPTION);
-                throw new IllegalArgumentException("Unknown robot type: " + robotType);
+                case "PlayBackRobot":
+                    robot = PlayBackRobot.getInstance();
+                    break;
+                case "SimRobot":
+                    robot = SimRobot.getInstance();
+                    break;
+                case "TransistorDataCollection":
+                    robot = TransistorDataCollection.getInstance();
+                    break;
+                case "TransistorAuton":
+                    robot = TransistorAuton.getInstance();
+                    break;
+                default:
+                    new RobobuggyLogicNotification("Unknown robot type: " + robotType, RobobuggyMessageLevel.EXCEPTION);
+                    throw new IllegalArgumentException("Unknown robot type: " + robotType);
             }
 
 
@@ -364,14 +363,6 @@ public final class RobobuggyConfigFile {
     public static String getRobotType() {
         return robotType;
     }
-
-    /**
-     * @param robottype the robottype to set
-     */
-    public static void setRobotType(String robottype) {
-        RobobuggyConfigFile.robotType = robottype;
-    }
-
     
     /**
      * @return the robot
