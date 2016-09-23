@@ -54,6 +54,7 @@ public class CameraNode extends PeriodicNode {
             webcams = Webcam.getWebcams();
         } catch (WebcamException e) {
             e.printStackTrace();
+            new RobobuggyLogicNotification("Couldn't load webcams!", RobobuggyMessageLevel.EXCEPTION);
         }
 
         //TODO figure out a better way to select
