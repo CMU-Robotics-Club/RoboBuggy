@@ -2,6 +2,7 @@ package com.roboclub.robobuggy.nodes.sensors;
 
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamResolution;
+import com.github.sarxos.webcam.WebcamException;
 import com.google.gson.JsonObject;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
@@ -54,7 +55,7 @@ public class CameraNode extends PeriodicNode {
         List<Webcam> webcams;
         try {
             webcams = Webcam.getWebcams();
-        } catch (Exception e) { // TODO remove bad practice here
+        } catch (WebcamException e) {
             e.printStackTrace();
             new RobobuggyLogicNotification("Couldn't load webcams!", RobobuggyMessageLevel.EXCEPTION);
             statePub.publish(new StateMessage(NodeState.ERROR));
