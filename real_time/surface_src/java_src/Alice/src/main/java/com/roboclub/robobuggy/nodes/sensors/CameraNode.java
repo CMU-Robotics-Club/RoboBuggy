@@ -54,7 +54,7 @@ public class CameraNode extends PeriodicNode {
         statePub = new Publisher(channel.getStatePath());
 
         //setup the webcam
-        List<Webcam> webcams = new ArrayList<>();
+        List<Webcam> webcams;
         try {
             webcams = Webcam.getWebcams();
         } catch (Exception e) { // TODO remove bad practice here
