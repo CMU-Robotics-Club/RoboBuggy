@@ -1,9 +1,6 @@
 package com.roboclub.robobuggy.ui;
 
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.LayoutManager;
+import java.awt.*;
 import java.util.ArrayList;
 
 /**

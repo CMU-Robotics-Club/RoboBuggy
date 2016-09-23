@@ -3,20 +3,8 @@ package com.roboclub.robobuggy.robots;
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
-import com.roboclub.robobuggy.nodes.sensors.CameraNode;
-import com.roboclub.robobuggy.nodes.sensors.GpsNode;
-import com.roboclub.robobuggy.nodes.sensors.HillCrestImuNode;
-import com.roboclub.robobuggy.nodes.sensors.LoggingNode;
-import com.roboclub.robobuggy.nodes.sensors.RBSMNode;
+import com.roboclub.robobuggy.nodes.sensors.*;
 import com.roboclub.robobuggy.ros.NodeChannel;
-import com.roboclub.robobuggy.ui.ConfigurationPanel;
-import com.roboclub.robobuggy.ui.Gui;
-import com.roboclub.robobuggy.ui.MainGuiWindow;
-import com.roboclub.robobuggy.ui.RobobuggyGUITabs;
-import com.roboclub.robobuggy.ui.RobobuggyJFrame;
-
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 
 /**
  * A robot class for doing data collection only with the live robot, will not attempt to autonomously drive

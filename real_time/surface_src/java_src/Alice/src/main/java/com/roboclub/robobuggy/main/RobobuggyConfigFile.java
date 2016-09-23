@@ -1,20 +1,9 @@
 package com.roboclub.robobuggy.main;
 
 import com.google.gson.JsonObject;
-import com.roboclub.robobuggy.robots.AbstractRobot;
-import com.roboclub.robobuggy.robots.PlayBackRobot;
-import com.roboclub.robobuggy.robots.SimRobot;
-import com.roboclub.robobuggy.robots.TransistorAuton;
-import com.roboclub.robobuggy.robots.TransistorDataCollection;
+import com.roboclub.robobuggy.robots.*;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
+import java.io.*;
 
 // add JSON parser for RobobuggyConfigFile
 

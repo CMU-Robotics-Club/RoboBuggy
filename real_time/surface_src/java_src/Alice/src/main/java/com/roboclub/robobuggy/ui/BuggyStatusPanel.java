@@ -1,20 +1,12 @@
 package com.roboclub.robobuggy.ui;
 
 import Jama.Matrix;
-import com.roboclub.robobuggy.messages.BatteryLevelMessage;
-import com.roboclub.robobuggy.messages.BrakeStateMessage;
-import com.roboclub.robobuggy.messages.FingerPrintMessage;
-import com.roboclub.robobuggy.messages.GpsMeasurement;
-import com.roboclub.robobuggy.messages.IMUAngularPositionMessage;
+import com.roboclub.robobuggy.messages.*;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
 
 import javax.imageio.ImageIO;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;

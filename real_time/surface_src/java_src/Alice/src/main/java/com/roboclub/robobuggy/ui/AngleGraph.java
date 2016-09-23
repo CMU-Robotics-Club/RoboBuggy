@@ -1,11 +1,7 @@
 package com.roboclub.robobuggy.ui;
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * {@link RobobuggyGUIContainer} used to display an angular graph

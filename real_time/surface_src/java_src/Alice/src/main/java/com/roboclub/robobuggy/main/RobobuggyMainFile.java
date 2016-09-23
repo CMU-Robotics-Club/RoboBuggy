@@ -1,7 +1,6 @@
 package com.roboclub.robobuggy.main;
 
 import com.roboclub.robobuggy.robots.AbstractRobot;
-
 import com.roboclub.robobuggy.ui.Gui;
 import com.roboclub.robobuggy.utilities.JNISetup;
 

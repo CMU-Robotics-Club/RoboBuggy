@@ -1,15 +1,8 @@
 package com.roboclub.robobuggy.ui;
 
-import com.roboclub.robobuggy.main.RobobuggyConfigFile;
-import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
-import com.roboclub.robobuggy.main.RobobuggyMainFile;
-import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
-import com.roboclub.robobuggy.main.Util;
+import com.roboclub.robobuggy.main.*;
 
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
