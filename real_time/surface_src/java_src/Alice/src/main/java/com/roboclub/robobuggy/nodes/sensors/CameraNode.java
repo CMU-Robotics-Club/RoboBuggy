@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author Trevor Decker
@@ -52,7 +53,7 @@ public class CameraNode extends PeriodicNode {
         List<Webcam> webcams = new ArrayList<>();
         try {
             webcams = Webcam.getWebcams();
-        } catch (WebcamException e) {
+        } catch (Exception e) { // TODO remove bad practice here
             e.printStackTrace();
             new RobobuggyLogicNotification("Couldn't load webcams!", RobobuggyMessageLevel.EXCEPTION);
         }
