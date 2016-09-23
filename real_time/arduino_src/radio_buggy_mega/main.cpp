@@ -528,13 +528,14 @@ int main(void)
 
         // Detect dropped radio conections
         // note: interrupts must be disabled while checking system clock so that
-        //       timestamps are not updated under our feet
-        cli(); //disable interrupts
+        //      timestamps are not updated under our feet.  These
+        //      operations are atomic so we're fine
+
         unsigned long time_now = micros();
         unsigned long time1 = g_steering_rx.GetLastTimestamp();
         unsigned long time2 = g_brake_rx.GetLastTimestamp();
         unsigned long time3 = g_auton_rx.GetLastTimestamp();
-        sei(); //enable interrupts
+
         //RC time deltas
         unsigned long delta1 = time_now - time1;
         unsigned long delta2 = time_now - time2;
