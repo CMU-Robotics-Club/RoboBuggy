@@ -1,6 +1,7 @@
 package com.roboclub.robobuggy.nodes.sensors;
 
 import com.github.sarxos.webcam.Webcam;
+import com.github.sarxos.webcam.WebcamException;
 import com.github.sarxos.webcam.WebcamResolution;
 import com.google.gson.JsonObject;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
@@ -20,6 +21,7 @@ import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,7 +49,12 @@ public class CameraNode extends PeriodicNode {
 
 
         //setup the webcam
-        List<Webcam> webcams = Webcam.getWebcams();
+        List<Webcam> webcams = new ArrayList<>();
+        try {
+            webcams = Webcam.getWebcams();
+        } catch (WebcamException e) {
+            e.printStackTrace();
+        }
 
         //TODO figure out a better way to select
         for (Webcam webcam : webcams) {
