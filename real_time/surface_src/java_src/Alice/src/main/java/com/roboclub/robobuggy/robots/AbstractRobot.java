@@ -49,6 +49,8 @@ public abstract class AbstractRobot implements RosMaster {
         nodeList = new LinkedList<>();
     }
 
+    public abstract AbstractRobot getInstance();
+
     /** note all subclasses need to implement a static method that will get the robot */
 
 

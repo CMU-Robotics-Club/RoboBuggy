@@ -1,9 +1,5 @@
 package com.roboclub.robobuggy.main;
 
-import com.roboclub.robobuggy.robots.PlayBackRobot;
-import com.roboclub.robobuggy.robots.SimRobot;
-import com.roboclub.robobuggy.robots.TransistorAuton;
-import com.roboclub.robobuggy.robots.TransistorDataCollection;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -39,8 +35,6 @@ public class RobobuggyConfigFileTest {
      * @throws IOException
      */
     public void createConfigFileWithRobot(String s) throws IOException{
-
-        //BufferedWriter writer = new BufferedWriter(new FileWriter(new File("config.config")));
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("config.config")), "UTF-8"));
 
         writer.write("{" +
@@ -63,7 +57,6 @@ public class RobobuggyConfigFileTest {
      * @throws IOException
      */
     public void createConfigFileWithoutRobot() throws IOException{
-        //BufferedWriter writer = new BufferedWriter(new FileWriter(new File("config.config")));
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("config.config")), "UTF-8"));
 
         writer.write("{" +
@@ -90,10 +83,7 @@ public class RobobuggyConfigFileTest {
         try {
             createConfigFileWithRobot("TransistorAuton");
             RobobuggyConfigFile.loadConfigFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Assert.fail();
-        } catch (IllegalArgumentException e) {
+        } catch (IOException|IllegalArgumentException e) {
             e.printStackTrace();
             Assert.fail();
         }
