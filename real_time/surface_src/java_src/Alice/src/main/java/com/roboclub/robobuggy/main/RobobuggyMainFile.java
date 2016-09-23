@@ -29,7 +29,7 @@ public class RobobuggyMainFile {
         RobobuggyConfigFile.loadConfigFile(); //TODO make sure that logic Notification is setup before this point
 
         new RobobuggyLogicNotification("Initializing Robot", RobobuggyMessageLevel.NOTE);
-        robot = RobobuggyConfigFile.getRobot().getInstance();
+        robot = RobobuggyConfigFile.getRobot();
 
         new RobobuggyLogicNotification("Initializing GUI", RobobuggyMessageLevel.NOTE);
         Gui.getInstance();

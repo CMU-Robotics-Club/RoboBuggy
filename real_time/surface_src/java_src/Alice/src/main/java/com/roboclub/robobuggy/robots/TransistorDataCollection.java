@@ -3,7 +3,11 @@ package com.roboclub.robobuggy.robots;
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
-import com.roboclub.robobuggy.nodes.sensors.*;
+import com.roboclub.robobuggy.nodes.sensors.CameraNode;
+import com.roboclub.robobuggy.nodes.sensors.GpsNode;
+import com.roboclub.robobuggy.nodes.sensors.HillCrestImuNode;
+import com.roboclub.robobuggy.nodes.sensors.LoggingNode;
+import com.roboclub.robobuggy.nodes.sensors.RBSMNode;
 import com.roboclub.robobuggy.ros.NodeChannel;
 
 /**
