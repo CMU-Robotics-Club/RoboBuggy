@@ -180,24 +180,72 @@ inline long clamp(long input,
 }
 
 
-void adc_init(void) 
+void adc_init(void) // copy-pasted from wirin.c l.353
 {
-    // set up adc hardware in non-freerunning mode
-    // prescaler of 128 gives 125kHz sampling
-    // AREF = AVCC
-    // 8 bit return values
-    ADCSRA |= _BV(ADEN) | _BV(ADPS2) | _BV(ADPS1) | _BV(ADPS0);
-    ADMUX |= _BV(REFS0) | _BV(ADLAR);
+#if defined(ADCSRA)
+    // set a2d prescaler so we are inside the desired 50-200 KHz range.
+#if F_CPU >= 16000000 // 16 MHz / 128 = 125 KHz
+    sbi(ADCSRA, ADPS2);
+    sbi(ADCSRA, ADPS1);
+    sbi(ADCSRA, ADPS0);
+#elif F_CPU >= 8000000 // 8 MHz / 64 = 125 KHz
+    sbi(ADCSRA, ADPS2);
+    sbi(ADCSRA, ADPS1);
+    cbi(ADCSRA, ADPS0);
+#elif F_CPU >= 4000000 // 4 MHz / 32 = 125 KHz
+    sbi(ADCSRA, ADPS2);
+    cbi(ADCSRA, ADPS1);
+    sbi(ADCSRA, ADPS0);
+#elif F_CPU >= 2000000 // 2 MHz / 16 = 125 KHz
+    sbi(ADCSRA, ADPS2);
+    cbi(ADCSRA, ADPS1);
+    cbi(ADCSRA, ADPS0);
+#elif F_CPU >= 1000000 // 1 MHz / 8 = 125 KHz
+    cbi(ADCSRA, ADPS2);
+    sbi(ADCSRA, ADPS1);
+    sbi(ADCSRA, ADPS0);
+#else // 128 kHz / 2 = 64 KHz -> This is the closest you can get, the prescaler is 2
+    cbi(ADCSRA, ADPS2);
+    cbi(ADCSRA, ADPS1);
+    sbi(ADCSRA, ADPS0);
+#endif
+    // enable a2d conversions
+    sbi(ADCSRA, ADEN);
+#endif
 }
 
-uint8_t adc_read_blocking(uint8_t channel) 
+int adc_read_blocking(uint8_t pin) // takes less than 28us
 {
-    // in single ended mode, highest bit of ADC channel is in ADCSRB
-    ADMUX = (ADMUX & 0xE0) | (channel & 0x07);
-    ADCSRB = (ADCSRB & 0xF7) | (channel & 0x08);
-    ADCSRA |= _BV(ADSC);
-    while((ADCSRA & _BV(ADSC)) == 1) {}
-    return ADCH;
+    uint8_t low, high;
+
+    //if (pin >= 54) pin -= 54; // allow for channel or pin numbers
+
+    // the MUX5 bit of ADCSRB selects whether we're reading from channels
+    // 0 to 7 (MUX5 low) or 8 to 15 (MUX5 high).
+    ADCSRB = (ADCSRB & ~(1 << MUX5)) | (((pin >> 3) & 0x01) << MUX5);
+
+    // set the analog reference (high two bits of ADMUX) and select the
+    // channel (low 4 bits).  this also sets ADLAR (left-adjust result)
+    // to 0 (the default).
+    ADMUX = (1 << 6) | (pin & 0x07);
+
+    //delay(1);
+
+    // start the conversion
+    sbi(ADCSRA, ADSC);
+
+    // ADSC is cleared when the conversion finishes
+    while (bit_is_set(ADCSRA, ADSC));
+
+    // we have to read ADCL first; doing so locks both ADCL
+    // and ADCH until ADCH is read.  reading ADCL second would
+    // cause the results of each conversion to be discarded,
+    // as ADCL and ADCH would be locked when it completed.
+    low  = ADCL;
+    high = ADCH;
+
+    // combine the two bytes
+    return (high << 8) | low;
 }
 
 
