@@ -1,0 +1,12 @@
+package robobuggy;
+
+option java_package = "com.roboclub.robobuggy.messaging";
+option java_outer_classname = "RobobuggyMessagingProto";
+
+syntax = "proto3";
+
+message RobobuggyMessage {
+    required string messageOrigin = 1;
+    optional string sensor = 2;
+    optional string sensorSubtype = 3;
+}
