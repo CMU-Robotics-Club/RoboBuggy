@@ -152,18 +152,7 @@ microseconds since startup or last overflow.  This operation is atomic
 */
 unsigned long ServoReceiver::GetLastTimestamp() 
 {
-    uint8_t oldSREG;
-    unsigned long temp;
-
-    oldSREG = SREG;
-
-    cli();
-    temp = last_timestamp_;
-
-    //Return the register to its original state rather than re-enable interrupts
-    SREG = oldSREG;
-
-    return temp;
+    return last_timestamp_;
 }
 
 
@@ -173,18 +162,7 @@ Return the last read pulse width in microseconds.  This operation is atomic
 */
 unsigned long ServoReceiver::GetPulseWidth() 
 {
-    uint8_t oldSREG;
-    unsigned long temp;
-
-    oldSREG = SREG;
-
-    cli();
-    temp = rc_value_;
-
-    //Return the register to its original state rather than re-enable interrupts
-    SREG = oldSREG;
-
-    return temp;
+    return rc_value_;
 }
 
 

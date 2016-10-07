@@ -401,6 +401,8 @@ int main(void)
     EICRA |= _BV(ISC20);
     EICRA &= ~_BV(ISC21);
 
+    print("Hello Sean");
+
     // setup steering encoder on pcint 0 with pullups off
     ENCODER_STEERING_A_PORT &= ~_BV(ENCODER_STEERING_A_PINN);
     ENCODER_STEERING_A_DDR &= ~_BV(ENCODER_STEERING_A_PINN);
@@ -531,10 +533,12 @@ int main(void)
         //      timestamps are not updated under our feet.  These
         //      operations are atomic so we're fine
 
+        cli();
         unsigned long time_now = micros();
         unsigned long time1 = g_steering_rx.GetLastTimestamp();
         unsigned long time2 = g_brake_rx.GetLastTimestamp();
         unsigned long time3 = g_auton_rx.GetLastTimestamp();
+        sei();
 
         //RC time deltas
         unsigned long delta1 = time_now - time1;
@@ -556,6 +560,7 @@ int main(void)
                 // we haven't heard from the RC receiver in too long
                 g_errors |= _BV(RBSM_EID_RC_LOST_SIGNAL);
                 brake_needs_reset = true;
+                printf("RC Timeout! %lu %lu %lu\n", delta1, delta2, delta3);
             }
             else {
                 g_errors &= ~_BV(RBSM_EID_RC_LOST_SIGNAL);
@@ -565,6 +570,7 @@ int main(void)
             if(auton_timeout) {
                 g_errors |= _BV(RBSM_EID_AUTON_LOST_SIGNAL);
                 brake_needs_reset = true;
+                printf("Auton Timeout!\n");
             }
             else {
                 g_errors &= ~_BV(RBSM_EID_AUTON_LOST_SIGNAL);
