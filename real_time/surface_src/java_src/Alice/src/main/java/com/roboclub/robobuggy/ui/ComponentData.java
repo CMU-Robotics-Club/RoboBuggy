@@ -1,6 +1,6 @@
 package com.roboclub.robobuggy.ui;
 
-import java.awt.*;
+import java.awt.Component;
 
 /**
  * Class for storing and passing around the gui component data

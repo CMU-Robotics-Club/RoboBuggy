@@ -4,7 +4,7 @@ import com.roboclub.robobuggy.main.RobobuggyMainFile;
 import com.roboclub.robobuggy.robots.AbstractRobot;
 import com.roboclub.robobuggy.ros.Node;
 
-import javax.swing.*;
+import javax.swing.JButton;
 import java.util.ArrayList;
 import java.util.List;
 

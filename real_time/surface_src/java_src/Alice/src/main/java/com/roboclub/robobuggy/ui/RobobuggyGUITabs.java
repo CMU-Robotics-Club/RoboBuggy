@@ -1,6 +1,7 @@
 package com.roboclub.robobuggy.ui;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JTabbedPane;
 
 /**
  * @author Trevor Decker

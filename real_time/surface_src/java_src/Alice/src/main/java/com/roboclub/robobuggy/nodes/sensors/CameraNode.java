@@ -19,7 +19,7 @@ import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
 import org.jcodec.api.awt.SequenceEncoder;
 
-import java.awt.*;
+import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;

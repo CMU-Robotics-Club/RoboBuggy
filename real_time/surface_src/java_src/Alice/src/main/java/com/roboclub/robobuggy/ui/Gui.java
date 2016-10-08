@@ -3,7 +3,7 @@ package com.roboclub.robobuggy.ui;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 
-import javax.swing.*;
+import javax.swing.JFrame;
 import java.awt.event.WindowEvent;
 import java.util.HashMap;
 

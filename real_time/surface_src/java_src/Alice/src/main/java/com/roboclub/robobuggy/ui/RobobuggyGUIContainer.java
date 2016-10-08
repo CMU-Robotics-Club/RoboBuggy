@@ -1,7 +1,7 @@
 package com.roboclub.robobuggy.ui;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JPanel;
+import java.awt.Component;
 import java.util.ArrayList;
 
 /**
