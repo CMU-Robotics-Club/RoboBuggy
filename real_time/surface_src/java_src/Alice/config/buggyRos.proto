@@ -6,12 +6,32 @@ option java_package = "com.roboclub.robobuggy.messaging_autogen";
 option java_outer_classname = "RobobuggyMessagingProto";
 
 message RobobuggyMessage {
-    string messageOrigin = 1;
-    string sensor = 2;
-    string sensorSubtype = 3;
 
-    enum RobobuggyMessageChannels {
+    message RobobuggyMessageMetadata {
+        RobobuggySensors sensor = 1;
+        string sensorSubtype = 2;
+    }
+
+    message RobobuggyMessageParameterSet {
+        string key = 1;
+        int32 valueAsInt = 2;
+        bool valueAsBool = 3;
+        double valueAsDouble = 4;
+        string valueAsString = 5;
+    }
+
+    RobobuggyMessageMetadata metadata = 1;
+    repeated RobobuggyMessageParameterSet params = 2;
+
+    enum RobobuggySensors {
         GPS = 0;
         IMU = 1;
-    };
+        ENCODER = 2;
+        CAMERA = 3;
+        LOGGING = 4;
+        PATH_PLANNER = 5;
+        LOCALIZER = 6;
+        LOGIC_NOTIFICATION = 7;
+    }
+
 }
