@@ -7,6 +7,7 @@ import com.roboclub.robobuggy.messaging_autogen.RobobuggyMessagingProto.Robobugg
 
 /**
  * Created by vivaanbahl on 10/7/16.
+ * A wrapper class for the protobuf messages
  */
 public class RobobuggyProtoWrapper extends BaseMessage {
     private RobobuggyMessage.Builder protoMessageBuilder;
@@ -15,7 +16,6 @@ public class RobobuggyProtoWrapper extends BaseMessage {
      * Creates a new message wrapper for a protobuf message
      * @param sensor the sensor the message is coming from
      * @param sensorSubtype the subtype of the sensor (imu temperature vs imu magnetometer)
-     * @param messageOrigin The class the message originated from
      */
     public RobobuggyProtoWrapper(RobobuggySensors sensor, String sensorSubtype) {
         RobobuggyMessageMetadata metadata = RobobuggyMessageMetadata.newBuilder()
