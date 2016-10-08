@@ -1,12 +1,17 @@
-package robobuggy;
-
-option java_package = "com.roboclub.robobuggy.messaging";
-option java_outer_classname = "RobobuggyMessagingProto";
-
 syntax = "proto3";
 
+package robobuggy;
+
+option java_package = "com.roboclub.robobuggy.messaging_autogen";
+option java_outer_classname = "RobobuggyMessagingProto";
+
 message RobobuggyMessage {
-    required string messageOrigin = 1;
-    optional string sensor = 2;
-    optional string sensorSubtype = 3;
+    string messageOrigin = 1;
+    string sensor = 2;
+    string sensorSubtype = 3;
+
+    enum RobobuggyMessageChannels {
+        GPS = 0;
+        IMU = 1;
+    };
 }

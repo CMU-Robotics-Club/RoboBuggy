@@ -16,6 +16,8 @@ configurations.all {
 
 findbugs {
   toolVersion = "3.0.0"
+    sourceSets = [sourceSets.main]
+    findbugsMain.excludeFilter = new File("config/findbugs/excludeFilter.xml")
 }
 
 checkstyle{
@@ -23,6 +25,7 @@ checkstyle{
   sourceSets = [sourceSets.main]
   checkstyleMain.exclude '**/edu/cmu/cs/cs214/hw6/util/*'
   checkstyleMain.exclude '**/edu/cmu/cs/cs214/hw6/plugin/**'
+    checkstyleMain.exclude '**/com/roboclub/robobuggy/messaging_autogen/**'
 }
 
 repositories {
@@ -54,6 +57,7 @@ dependencies {
     compile files('library/RXTXcomm.jar')
     compile files('library/JMapViewer.jar')
     compile files('library/jfreespace.jar')
+    compile files('library/protobuf_base.jar')
 
 
 }
