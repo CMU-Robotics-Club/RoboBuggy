@@ -98,7 +98,9 @@
 #define ENCODER_STEERING_B_PINN PB6
 #define ENCODER_STEERING_PCINT  PCINT0_vect
 
-#define BATTERY_ADC 0
+#define BATTERY_ADC 0 // pin to read battery level from (A0)
+#define BATTERY_ADC_SLOPE  14.683 // in mV, obtained from calibration
+#define BATTERY_ADC_OFFSET 44.359
 #define STEERING_POT_ADC 9
 
 #define BRAKE_OUT_DDR  DDRH
@@ -145,7 +147,7 @@
 
 // Global state
 static bool g_is_autonomous;
-static unsigned long g_current_voltage;
+static unsigned long g_current_voltage; // in mV
 static unsigned long g_steering_feedback;
 static int steer_angle;
 static int auto_steering_angle;
@@ -629,12 +631,12 @@ int main(void)
             g_errors &= ~_BV(RBSM_EID_AUTON_LOST_SIGNAL);
         }
 
-        // For the old buggy, the voltage divider is 10k ohm on the adc side and
-        // 16k ohm on top.
-        // Calculated map normally set to 13000, but the avcc is 4.86 volts
-        // rather than 5.
-        g_current_voltage = adc_read_blocking(BATTERY_ADC);
-        g_current_voltage = map_signal(g_current_voltage, 0, 255, 0, 12636); // in millivolts
+        // Voltage divider mounted with 24k/12k ohm resistors
+        // Constants obtained through caracterisation of divider and ADC reader
+        // scanning the full range and then doing a linear regression
+        g_current_voltage  = adc_read_blocking(BATTERY_ADC);
+        g_current_voltage *= BATTERY_ADC_SLOPE;
+        g_current_voltage += BATTERY_ADC_OFFSET;
 
         // Read/convert steering pot
         g_steering_feedback = adc_read_blocking(STEERING_POT_ADC);
