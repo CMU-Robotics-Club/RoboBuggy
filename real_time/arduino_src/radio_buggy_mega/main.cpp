@@ -182,38 +182,14 @@ inline long clamp(long input,
 }
 
 
-void adc_init(void) // copy-pasted from wirin.c l.353
+void adc_init(void) // copy-pasted from wiring.c l.353
 {
-#if defined(ADCSRA)
     // set a2d prescaler so we are inside the desired 50-200 KHz range.
-#if F_CPU >= 16000000 // 16 MHz / 128 = 125 KHz
     sbi(ADCSRA, ADPS2);
     sbi(ADCSRA, ADPS1);
     sbi(ADCSRA, ADPS0);
-#elif F_CPU >= 8000000 // 8 MHz / 64 = 125 KHz
-    sbi(ADCSRA, ADPS2);
-    sbi(ADCSRA, ADPS1);
-    cbi(ADCSRA, ADPS0);
-#elif F_CPU >= 4000000 // 4 MHz / 32 = 125 KHz
-    sbi(ADCSRA, ADPS2);
-    cbi(ADCSRA, ADPS1);
-    sbi(ADCSRA, ADPS0);
-#elif F_CPU >= 2000000 // 2 MHz / 16 = 125 KHz
-    sbi(ADCSRA, ADPS2);
-    cbi(ADCSRA, ADPS1);
-    cbi(ADCSRA, ADPS0);
-#elif F_CPU >= 1000000 // 1 MHz / 8 = 125 KHz
-    cbi(ADCSRA, ADPS2);
-    sbi(ADCSRA, ADPS1);
-    sbi(ADCSRA, ADPS0);
-#else // 128 kHz / 2 = 64 KHz -> This is the closest you can get, the prescaler is 2
-    cbi(ADCSRA, ADPS2);
-    cbi(ADCSRA, ADPS1);
-    sbi(ADCSRA, ADPS0);
-#endif
     // enable a2d conversions
     sbi(ADCSRA, ADEN);
-#endif
 }
 
 int adc_read_blocking(uint8_t pin) // takes less than 28us
@@ -230,8 +206,6 @@ int adc_read_blocking(uint8_t pin) // takes less than 28us
     // channel (low 4 bits).  this also sets ADLAR (left-adjust result)
     // to 0 (the default).
     ADMUX = (1 << 6) | (pin & 0x07);
-
-    //delay(1);
 
     // start the conversion
     sbi(ADCSRA, ADSC);
@@ -683,6 +657,7 @@ int main(void)
         g_rbsm.Send(RBSM_MID_MEGA_AUTON_BRAKE_COMMAND, (long unsigned)brake_cmd_auton_engaged);
         g_rbsm.Send(RBSM_MID_MEGA_AUTON_STATE, (long unsigned)g_is_autonomous);
         g_rbsm.Send(RBSM_MID_MEGA_BATTERY_LEVEL, g_current_voltage);
+        dbg_printf("Voltage battery [mV]: %d \n", g_current_voltage);
         g_rbsm.Send(RBSM_MID_MEGA_STEER_FEEDBACK, steering_feedback_angle);
         g_rbsm.Send(RBSM_MID_ENC_TICKS_RESET, g_encoder_distance.GetTicks());
         g_rbsm.Send(RBSM_MID_MEGA_TIMESTAMP, millis());
