@@ -101,11 +101,17 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
             offset += 6;
             magPub.publish(new MagneticMeasurement(xMag, yMag, zMag));
         }
-        //ff5 is temperature
+        //ff5 is compass for format 1
         if (m.getFf5()) {
-            double temperature = convertQNToDouble((byte) data[offset + 0], (byte) data[offset + 1], 7);
+            int lsb = (byte) data[offset];
+            int msb = (byte) data[offset + 1];
+
+            int degreesInTenths = (msb << 8) | lsb;
+            double degrees = degreesInTenths/10.0;
+
+            tempPub.publish(new IMUTemperatureMessage(degrees));
+
             offset += 2;
-            tempPub.publish(new IMUTemperatureMessage(temperature));
         }
         //ff6 is angular position
         if (m.getFf6()) {
