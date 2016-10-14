@@ -103,10 +103,14 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
         }
         //ff5 is compass for format 1
         if (m.getFf5()) {
-            int lsb = (byte) data[offset];
-            int msb = (byte) data[offset + 1];
+            byte lsbAsByte = (byte) data[offset];
+            byte msbAsByte = (byte) data[offset + 1];
+
+            int lsb = ((int) lsbAsByte) & 0xFF;
+            int msb = ((int) msbAsByte) & 0xFF;
 
             int degreesInTenths = (msb << 8) | lsb;
+            degreesInTenths = degreesInTenths & 0xFFFF;
             double degrees = degreesInTenths/10.0;
 
             tempPub.publish(new IMUTemperatureMessage(degrees));
