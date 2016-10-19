@@ -4,6 +4,7 @@
 % TODO: change dt?, graph map, compare to raw latlon, fix mistakes
 
 addpath('./latlonutm/Codes/matlab');
+addpath('./zoharby-plot_google_map')
 
 % constants
 dt = (1/10) * 1000; % 10 Hz in ms
@@ -161,4 +162,9 @@ for i = 1:size(logs, 2)
 end
 
 % graph results
+lat = [48.8708 51.5188 41.9260 40.4312 52.523 37.982]; 
+lon = [2.4131 -0.1300 12.4951 -3.6788 13.415 23.715]; 
+plot(lon, lat, '.r', 'MarkerSize', 20) 
+plot_google_map
+
 
