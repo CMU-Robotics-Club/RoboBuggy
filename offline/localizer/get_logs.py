@@ -16,16 +16,19 @@ if d is None:
     exit()
 
 messages = d['sensor_data']
-map_names = ['imu', 'imu_ang_pos', 'imu_ang_vel',
+map_names = ['imu_linear_no_grav', 'imu_ang_pos', 'imu_ang_vel',
              'gps', 'encoder', 'steering']
-map_names = np.asarray(map_names, dtype='object')
+map_names_nd = np.asarray(map_names, dtype='object')
 
 if combined:
     logs = []
     for msg in messages:
-        name = msg['topicName']
-        name = name[8:]
-        ind = map_names.index(name)
+        try:
+            name = msg['topicName']
+            name = str(name[8:])
+            ind = map_names.index(name)
+        except:
+            continue
 
         if name == 'imu_linear_no_grav':
             logs.append([
@@ -33,7 +36,10 @@ if combined:
                 msg['x'], msg['y'], msg['z'], 0, 0, 0, 0, 0, 0])
         elif name == 'imu_ang_pos':
             line = [ind, msg['timestamp']]
-            line.extend(msg['rot'])
+            R = msg['rot'][0]
+            R.extend(msg['rot'][1])
+            R.extend(msg['rot'][2])
+            line.extend(R)
             logs.append(line)
         elif name == 'imu_ang_vel':
             logs.append([
@@ -42,8 +48,8 @@ if combined:
         elif name == 'gps':
             logs.append([
                 ind, msg['timestamp'],
-                msg['latitude'], msg['longitude']],
-                msg['antennaAltitude', 0, 0, 0, 0, 0, 0])
+                msg['latitude'], msg['longitude'],
+                msg['antennaAltitude'], 0, 0, 0, 0, 0, 0])
         elif name == 'encoder':
             logs.append([
                 ind, msg['timestamp'],
@@ -54,7 +60,8 @@ if combined:
                 msg['angle'], 0, 0, 0, 0, 0, 0, 0, 0])
 
     logs = np.array(logs)
-    vars_map = {'map_names': map_names, 'logs': logs}
+    print(logs.shape)
+    vars_map = {'map_names': map_names_nd, 'logs': logs}
     scipy.io.savemat('./roll_logs_combined.mat', mdict=vars_map)
 
 else:
@@ -101,7 +108,7 @@ else:
     encoder = np.array(encoder)
     steering = np.array(steering)
 
-    vars_map = {'map_names': map_names, 'imu': imu,
+    vars_map = {'map_names': map_names_nd, 'imu': imu,
                 'imu_ang_pos': imu_ang_pos, 'imu_ang_vel': imu_ang_vel,
                 'gps': gps, 'encoder': encoder, 'steering': steering}
     scipy.io.savemat('./roll_logs_separate.mat', mdict=vars_map)

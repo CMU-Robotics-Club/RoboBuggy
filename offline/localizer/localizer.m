@@ -1,31 +1,72 @@
-% localizer code, as seen in java codebase
-% Bereket Abraham
+function [trajectory] = localizer()
+    % localizer code, as seen in java codebase
+    % Bereket Abraham
 
-% TODO: change dt?, graph map, compare to raw latlon, fix mistakes
+    % TODO: change dt?, compare to raw latlon, granular position
 
-addpath('./latlonutm/Codes/matlab');
-addpath('./zoharby-plot_google_map')
+    addpath('./latlonutm/Codes/matlab');
 
-% constants
-dt = (1/10) * 1000; % 10 Hz in ms
-wheel_base = 1.13;
-utm_zone = 17;
-Q = eye(7); % model noise covariance
-R = eye(7); % measurement noise covariance
+    global wheel_base
+    save_data = true;
 
-% globals
-first_theta = 250;
-lat_long = [40.441670, -79.9416362];
-[x, y, zone] = ll2utm(lat_long(1), lat_long(2));
-first_gps = [x y];
-last_gps = [x y];
-utm_zone = zone; % fixed
-last_encoder = 0;
-last_encoder_time = 0;
+    % constants
+    dt = (1/10) * 1000; % 10 Hz in ms
+    wheel_base = 1.13;
+    utm_zone = 17;
+    first_theta = 250;
+    lat_long = [40.441670, -79.9416362];
 
-function llog = log_line(x)
+    [x, y, zone] = ll2utm(lat_long(1), lat_long(2));
+    first_gps = [x y];
+    last_gps = [x y];
+    utm_zone = zone; % fixed
+    last_encoder = 0;
+    last_encoder_time = 0;
+
+    % initialize Kalman filter
+    P = eye(7); % covariance
+
+    X = [x;  % X, m, UTM coors
+         y;  % Y, m, UTM coors
+         0;  % d_Xb, body velocity
+         0;  % d_Yb
+         first_theta; % theta, deg, global
+         0;  % d_theta, deg/s
+         0]; % heading, deg, body orientation
+
+    trajectory = [X; lat_long'; norm(P)];
+
+    load('./roll_logs_combined.mat');
+
+    for i = 1:size(logs, 1)
+        llog = logs(i, :);
+        name = map_names{llog(1) + 1};
+        time = llog(2);
+
+        if strcmp(name, 'gps')
+            [C, z] = gps_meaurement(llog(3), llog(4), first_gps, last_gps, first_theta);
+        elseif strcmp(name,'encoder')
+            [C, z] = encoder_meaurement(llog(3), time, last_encoder, last_encoder_time);
+        elseif strcmp(name, 'steering')
+            [C, z] = steering_measurement(llog(3));
+        else
+            continue;
+        end
+
+        [P_pre, X_pre] = predict_step(P, X, dt);
+        [P, X] = update_step(C, z, P_pre, X_pre);
+        snapshot = summarize(P, X, utm_zone);
+        trajectory = [trajectory, snapshot];
+    end
+
+    if save_data
+        save('localizer_v2.mat', 'trajectory', 'P');
+    end
+end
+
+function snapshot = summarize(P, x, utm_zone)
     [lat, lon] = utm2ll(x(1), x(2), utm_zone);
-    llog = [lat, lon, x(5)]';
+    snapshot = [x; lat; lon; norm(P)];
 end
 
 function x = scrubAngles(x)
@@ -39,8 +80,9 @@ function x = scrubAngles(x)
     end
 end
 
-function A = model(x)
+function A = model(x, dt)
     % dynamic model
+    global wheel_base
     theta = deg2rad(x(3));
     heading = deg2rad(x(7));
     A = [1, 0, dt*cos(theta), -dt*sin(theta), 0, 0, 0;
@@ -52,22 +94,26 @@ function A = model(x)
          0, 0, 0, 0, 0, 0, 1];
 end
 
-function [P_pre, x_pre] = predict_step(P, x)
-    A = model(x);
+function [P_pre, x_pre] = predict_step(P, x, dt)
+    R = eye(7); % measurement noise covariance
+    A = model(x, dt);
     x_pre = A * x;
-    P_pre = eye(7) * P * eye(7)'; % !error! P_pre = A * P * A' + R;
+    % P_pre = eye(7) * P * eye(7)';
+    P_pre = A * P * A' + R;
     x_pre = scrubAngles(x_pre);
 end
 
 function [P, x] = update_step(C, z, P_pre, x_pre)
+    Q = eye(7); % model noise covariance
     residual = z - (C * x_pre);
     residual = scrubAngles(residual);
     K = P_pre * C' * inv((C * P_pre * C') + Q); % gain
     x = x_pre + (K * residual);
-    P = (eye(7) - (K * C)); % !error! P = (eye(7) - (K * C)) * P_pre;
+    % P = (eye(7) - (K * C));
+    P = (eye(7) - (K * C)) * P_pre;
 end
 
-function [C, z] = gps_meaurement(lat, long)
+function [C, z] = gps_meaurement(lat, long, first_gps, last_gps, first_theta)
     [x, y, ~] = ll2utm(lat, long);
     dx = x - last_gps(1);
     dy = y - last_gps(2);
@@ -93,7 +139,7 @@ end
 
 % TODO possible precision errors since changes are so small
 % maybe batch encoder updates until we get a decent margin
-function [C, z] = encoder_meaurement(encoder_dist, encoder_time)
+function [C, z] = encoder_meaurement(encoder_dist, encoder_time, last_encoder, last_encoder_time)
     dx = encoder_dist - last_encoder;
     dt = encoder_time - last_encoder_time;
     C = zeros(7, 7);
@@ -116,7 +162,8 @@ function [C, z] = steering_measurement(heading)
     z(7) = heading;
 end
 
-function [C, z] = imu_measurement(R)
+function [C, z] = imu_ang_pos_measurement(R)
+    R = reshape(R, 3,3)';
     x = R(1, 1);
     x = R(1, 2);
     theta = 90 - rad2deg(atan2(y, x));
@@ -126,45 +173,4 @@ function [C, z] = imu_measurement(R)
     z = zeros(7, 1);
     z(5) = theta;
 end
-
-
-% initialize Kalman filter
-P = eye(7); % covariance
-
-X = [x;  % X, m, UTM coors
-     y;  % Y, m, UTM coors
-     0;  % d_Xb, body velocity
-     0;  % d_Yb
-     first_theta; % theta, deg, global
-     0;  % d_theta, deg/s
-     0]; % heading, deg, body orientation
-
-trajectory = [X; norm(P)];
-
-load('./roll_logs.mat');
-
-for i = 1:size(logs, 2)
-    llog = logs(:, i);
-    if llog(1) == 'sensors/gps'
-        time = llog(2);
-        [C, z] = gps_meaurement(llog(3), llog(4));
-    elseif llog(1) == 'sensors/encoder'
-        time = llog(2);
-        [C, z] = encoder_meaurement(llog(3), time)
-    elseif llog(1) == 'sensors/steering'
-        time = llog(2);
-        [C, z] = steering_measurement(llog(3))
-    end
-
-    [P_pre, X_pre] = predict_step(P, X);
-    [P, X] = update_step(C, z, P_pre, X_pre)
-    trajectory = [trajectory, [X; norm(P)]];
-end
-
-% graph results
-lat = [48.8708 51.5188 41.9260 40.4312 52.523 37.982]; 
-lon = [2.4131 -0.1300 12.4951 -3.6788 13.415 23.715]; 
-plot(lon, lat, '.r', 'MarkerSize', 20) 
-plot_google_map
-
 

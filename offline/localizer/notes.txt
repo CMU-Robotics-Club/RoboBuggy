@@ -1,0 +1,52 @@
+double[][] motionModel = {
+        // x y x_b y_b th th_dot heading
+        { 1, 0, Math.cos(th) * diff, -Math.sin(th) * diff, 0, 0, 0 }, // x
+        { 0, 1, Math.sin(th) * diff, Math.cos(th) * diff, 0, 0, 0 }, // y
+        { 0, 0, 1, 0, 0, 0, 0 }, // x_b
+        { 0, 0, 0, 1, 0, 0, 0 }, // y_b
+        { 0, 0, 0, 0, 1, diff, 0 }, // th
+        { 0, 0, 180 / (Math.PI * (wheelBase / Math.sin(heading))), 0,
+                0, 0, 0 }, // th_dot
+        { 0, 0, 0, 0, 0, 0, 1 } // heading
+};
+
+Measurement stuff:
+
+GPS:
+{"VERSION_ID":"gpsV0.2","gpsTimestamp":"Oct 9, 2016 6:17:15 AM","latitude":40.441633333333336,"north":true,"longitude":-79.941644,"west":true,"qualityValue":2,"numSatellites":10,"horizontalDilutionOfPrecision":1.18,"antennaAltitude":292.1,"rawGPSLat":4026.498,"rawGPSLong":7956.49864,"DATE_FORMAT":"yyyy-MM-dd HH:mm:ss.SSS","timestamp":1476008235951,"topicName":"sensors/gps","sequenceNumber":290},
+
+Get x from latitude, y from longitude
+x = x + x_dot*cos(theta)*dt - y_dot*sin(theta)*dt
+y = y + y_dot*sin(theta)*dt + ydot*cos(theta)*dt
+
+Encoder:
+{"VERSION_ID":"encoderV0.0","distance":0.4336513119533528,"velocity":NaN,"dataWord":8.0,"accel":NaN,"DATE_FORMAT":"yyyy-MM-dd HH:mm:ss.SSS","timestamp":1476008235950,"topicName":"sensors/encoder","sequenceNumber":14473},
+
+Get x_dot from distance
+x_dot = x_dot
+y_dot = y_dot
+
+y_dot completely unaffected by measurement (if we're sliding sideways, something's going horribly wrong...)
+
+theta currently computed by the difference between our new GPS reading and the previous one:
+if (Math.abs(gpsUTM.getEasting() - startUTM.getEasting())
+        + Math.abs(gpsUTM.getNorthing() - startUTM.getNorthing()) < 10.0) {
+    th = startAngle;
+}
+theta_dot currently completely unaffected by measurement
+
+Ideally, we'd get theta and theta_dot from an IMU message.
+
+IMU Angular Position:
+
+{"VERSION_ID":"imuAngularPositionV0.0","rot":[[0.25653892010450363,0.030666396021842957,-0.01811222732067108],[0.032628461718559265,0.9959298074245453,-0.04417908191680908],[0.014278098940849304,-0.045562922954559326,0.25790490955114365]],"DATE_FORMAT":"yyyy-MM-dd HH:mm:ss.SSS","timestamp":1476008235961,"topicName":"sensors/imu_ang_pos","sequenceNumber":18152},
+
+IMU Angular Velocity:
+
+{"VERSION_ID":"imuAngularVelocityV0.0","x":0.14453125,"y":-0.361328125,"z":-0.3271484375,"DATE_FORMAT":"yyyy-MM-dd HH:mm:ss.SSS","timestamp":1476008235961,"topicName":"sensors/imu_ang_vel","sequenceNumber":18152},
+
+Steering:
+
+{"VERSION_ID":"steering","angle":0.07,"DATE_FORMAT":"yyyy-MM-dd HH:mm:ss.SSS","timestamp":1476008235966,"topicName":"sensors/steering","sequenceNumber":14474},
+
+phi is the angle field. Careful to check the topicName; we want sensors/steering, not sensors/commandedSteering
