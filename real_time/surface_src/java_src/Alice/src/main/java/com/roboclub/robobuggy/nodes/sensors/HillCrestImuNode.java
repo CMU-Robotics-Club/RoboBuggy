@@ -11,7 +11,7 @@ import com.hcrest.jfreespace.outreport.HidOutMsg;
 import com.roboclub.robobuggy.messages.IMUAngularPositionMessage;
 import com.roboclub.robobuggy.messages.IMUAngularVelocityMessage;
 import com.roboclub.robobuggy.messages.IMULinearAccelerationMessage;
-import com.roboclub.robobuggy.messages.IMUTemperatureMessage;
+import com.roboclub.robobuggy.messages.IMUCompassMessage;
 import com.roboclub.robobuggy.messages.MagneticMeasurement;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
@@ -28,7 +28,7 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
     private Publisher linearAccNoGravPub = new Publisher(NodeChannel.IMU_LINEAR_NO_GRAV.getMsgPath());
     private Publisher angVelPub = new Publisher(NodeChannel.IMU_ANG_VEL.getMsgPath());
     private Publisher magPub = new Publisher(NodeChannel.IMU_MAGNETIC.getMsgPath());
-    private Publisher tempPub = new Publisher(NodeChannel.IMU_TEMP.getMsgPath());
+    private Publisher compassPub = new Publisher(NodeChannel.IMU_COMPASS.getMsgPath());
     private Publisher angPosPub = new Publisher(NodeChannel.IMU_ANG_POS.getMsgPath());
 
     /**
@@ -113,7 +113,7 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
             degreesInTenths = degreesInTenths & 0xFFFF;
             double degrees = degreesInTenths/10.0;
 
-            tempPub.publish(new IMUTemperatureMessage(degrees));
+            compassPub.publish(new IMUCompassMessage(degrees));
 
             offset += 2;
         }
