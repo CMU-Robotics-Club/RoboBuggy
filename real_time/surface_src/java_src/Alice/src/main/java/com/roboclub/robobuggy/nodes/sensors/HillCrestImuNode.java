@@ -24,6 +24,8 @@ import com.roboclub.robobuggy.ros.Publisher;
  */
 public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListenerInterface, com.roboclub.robobuggy.ros.Node {
     private Device thisDevice;
+
+    private Publisher accelPub = new Publisher(NodeChannel.IMU_ACCELERATION.getMsgPath());
     private Publisher linearAccPub = new Publisher(NodeChannel.IMU_LINEAR_ACC.getMsgPath());
     private Publisher linearAccNoGravPub = new Publisher(NodeChannel.IMU_LINEAR_NO_GRAV.getMsgPath());
     private Publisher angVelPub = new Publisher(NodeChannel.IMU_ANG_VEL.getMsgPath());
@@ -65,9 +67,29 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
         }
 
 
-        //we do not parse ff0
+        // FF0 is acceleration for Format 1
         if (m.getFf0()) {
-            offset += 6;
+            byte xLSBbyte = (byte) data[offset];
+            byte xMSBbyte = (byte) data[offset + 1];
+            int xLSB = ((int) xLSBbyte) & 0xFF;
+            int xMSB = ((int) xMSBbyte) & 0xFF;
+            int xAccelInHundredths = (xMSB << 8) | xLSB;
+            double xAccel = xAccelInHundredths / 100.0;
+
+            byte yLSBbyte = (byte) data[offset + 2];
+            byte yMSBbyte = (byte) data[offset + 3];
+            int yLSB = ((int) yLSBbyte) & 0xFF;
+            int yMSB = ((int) yMSBbyte) & 0xFF;
+            int yAccelInHundredths = (yMSB << 8) | yLSB;
+            double yAccel = yAccelInHundredths / 100.0;
+
+            byte zLSBbyte = (byte) data[offset + 4];
+            byte zMSBbyte = (byte) data[offset + 5];
+            int zLSB = ((int) zLSBbyte) & 0xFF;
+            int zMSB = ((int) zMSBbyte) & 0xFF;
+            int zAccelInHundredths = (zMSB << 8) | zLSB;
+            double zAccel = zAccelInHundredths / 100.0;
+
         }
         //ff1 is linear acceleration
         if (m.getFf1()) {

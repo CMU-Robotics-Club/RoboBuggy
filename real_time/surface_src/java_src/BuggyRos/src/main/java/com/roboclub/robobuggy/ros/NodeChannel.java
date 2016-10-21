@@ -41,6 +41,7 @@ public enum NodeChannel {
 	IMU_COMPASS("imu_compass", true),
 	IMU_ANG_POS("imu_ang_pos", true),
 	UNKNOWN_CHANNEL("unknown", false),
+	IMU_ACCELERATION("imu_acceleration", true)
 	;
 	
 	
