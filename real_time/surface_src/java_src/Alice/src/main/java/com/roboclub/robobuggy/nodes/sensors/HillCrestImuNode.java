@@ -8,8 +8,10 @@ import com.hcrest.jfreespace.inreport.FreespaceMsgInMotionEngineOutput;
 import com.hcrest.jfreespace.inreport.HidInMsg;
 import com.hcrest.jfreespace.outreport.FreespaceMsgOutDataModeControlV2Request;
 import com.hcrest.jfreespace.outreport.HidOutMsg;
+import com.roboclub.robobuggy.messages.IMUAccelerationMessage;
 import com.roboclub.robobuggy.messages.IMUAngularPositionMessage;
 import com.roboclub.robobuggy.messages.IMUAngularVelocityMessage;
+import com.roboclub.robobuggy.messages.IMUInclinationMessage;
 import com.roboclub.robobuggy.messages.IMULinearAccelerationMessage;
 import com.roboclub.robobuggy.messages.IMUCompassMessage;
 import com.roboclub.robobuggy.messages.MagneticMeasurement;
@@ -27,7 +29,7 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
 
     private Publisher accelPub = new Publisher(NodeChannel.IMU_ACCELERATION.getMsgPath());
     private Publisher linearAccPub = new Publisher(NodeChannel.IMU_LINEAR_ACC.getMsgPath());
-    private Publisher linearAccNoGravPub = new Publisher(NodeChannel.IMU_LINEAR_NO_GRAV.getMsgPath());
+    private Publisher inclinationPub = new Publisher(NodeChannel.IMU_INCLINATION.getMsgPath());
     private Publisher angVelPub = new Publisher(NodeChannel.IMU_ANG_VEL.getMsgPath());
     private Publisher magPub = new Publisher(NodeChannel.IMU_MAGNETIC.getMsgPath());
     private Publisher compassPub = new Publisher(NodeChannel.IMU_COMPASS.getMsgPath());
@@ -68,76 +70,98 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
 
 
         // FF0 is acceleration for Format 1
+        // reported in units of 0.01g
         if (m.getFf0()) {
-            byte xLSBbyte = (byte) data[offset];
-            byte xMSBbyte = (byte) data[offset + 1];
-            int xLSB = ((int) xLSBbyte) & 0xFF;
-            int xMSB = ((int) xMSBbyte) & 0xFF;
-            int xAccelInHundredths = (xMSB << 8) | xLSB;
+            int xAccelInHundredths = extractByteFromDataArray(data, offset);
             double xAccel = xAccelInHundredths / 100.0;
+            offset += 2;
 
-            byte yLSBbyte = (byte) data[offset + 2];
-            byte yMSBbyte = (byte) data[offset + 3];
-            int yLSB = ((int) yLSBbyte) & 0xFF;
-            int yMSB = ((int) yMSBbyte) & 0xFF;
-            int yAccelInHundredths = (yMSB << 8) | yLSB;
+            int yAccelInHundredths = extractByteFromDataArray(data, offset);
             double yAccel = yAccelInHundredths / 100.0;
+            offset += 2;
 
-            byte zLSBbyte = (byte) data[offset + 4];
-            byte zMSBbyte = (byte) data[offset + 5];
-            int zLSB = ((int) zLSBbyte) & 0xFF;
-            int zMSB = ((int) zMSBbyte) & 0xFF;
-            int zAccelInHundredths = (zMSB << 8) | zLSB;
+            int zAccelInHundredths = extractByteFromDataArray(data, offset);
             double zAccel = zAccelInHundredths / 100.0;
+            offset += 2;
+
+            accelPub.publish(new IMUAccelerationMessage(xAccel, yAccel, zAccel));
 
         }
-        //ff1 is linear acceleration
+        //ff1 is linear acceleration for Format 1
+        // reported in units of 0.01g
         if (m.getFf1()) {
-            double xAccel = convertQNToDouble((byte) data[offset + 0], (byte) data[offset + 1], 10);
-            double yAccel = convertQNToDouble((byte) data[offset + 2], (byte) data[offset + 3], 10);
-            double zAccel = convertQNToDouble((byte) data[offset + 4], (byte) data[offset + 5], 10);
-            offset += 6;
+            int xAccelInHundredths = extractByteFromDataArray(data, offset);
+            double xAccel = xAccelInHundredths / 100.0;
+            offset += 2;
+
+            int yAccelInHundredths = extractByteFromDataArray(data, offset);
+            double yAccel = yAccelInHundredths / 100.0;
+            offset += 2;
+
+            int zAccelInHundredths = extractByteFromDataArray(data, offset);
+            double zAccel = zAccelInHundredths / 100.0;
+            offset += 2;
+
             linearAccPub.publish(new IMULinearAccelerationMessage(xAccel, yAccel, zAccel));
         }
-        //ff2 is linear Acceleration no gravity
+        //ff2 is angular velocity for Format 1
+        // reported in units of 0.1 deg/sec
         if (m.getFf2()) {
-            double xAccel = convertQNToDouble((byte) data[offset + 0], (byte) data[offset + 1], 10);
-            double yAccel = convertQNToDouble((byte) data[offset + 2], (byte) data[offset + 3], 10);
-            double zAccel = convertQNToDouble((byte) data[offset + 4], (byte) data[offset + 5], 10);
-            offset += 6;
-            linearAccNoGravPub.publish(new IMULinearAccelerationMessage(xAccel, yAccel, zAccel));
-        }
-        //ff3 is Angular velocity
-        if (m.getFf3()) {
-            double xAngularVel = convertQNToDouble((byte) data[offset + 0], (byte) data[offset + 1], 10);
-            double yAngularVel = convertQNToDouble((byte) data[offset + 2], (byte) data[offset + 3], 10);
-            double zAngularVel = convertQNToDouble((byte) data[offset + 4], (byte) data[offset + 5], 10);
-            offset += 6;
+            int xAngularVelocityInTenths = extractByteFromDataArray(data, offset);
+            double xAngularVel = xAngularVelocityInTenths / 10.0;
+            offset += 2;
+
+            int yAngularVelocityInTenths = extractByteFromDataArray(data, offset);
+            double yAngularVel = yAngularVelocityInTenths / 10.0;
+            offset += 2;
+
+            int zAngularVelocityInTenths = extractByteFromDataArray(data, offset);
+            double zAngularVel = zAngularVelocityInTenths / 10.0;
+            offset += 2;
+
             angVelPub.publish(new IMUAngularVelocityMessage(xAngularVel, yAngularVel, zAngularVel));
         }
-        //ff4 is magnetometer
-        if (m.getFf4()) {
-            double xMag = convertQNToDouble((byte) data[offset + 0], (byte) data[offset + 1], 12);
-            double yMag = convertQNToDouble((byte) data[offset + 2], (byte) data[offset + 3], 12);
-            double zMag = convertQNToDouble((byte) data[offset + 4], (byte) data[offset + 5], 12);
-            offset += 6;
+        //ff3 is magnetometer for Format 1
+        // reported in units of 0.001 gauss
+        if (m.getFf3()) {
+            int xMagInThousandths = extractByteFromDataArray(data, offset);
+            double xMag = xMagInThousandths / 1000.0;
+            offset += 2;
+
+            int yMagInThousandths = extractByteFromDataArray(data, offset);
+            double yMag = yMagInThousandths / 1000.0;
+            offset += 2;
+
+            int zMagInThousandths = extractByteFromDataArray(data, offset);
+            double zMag = zMagInThousandths / 1000.0;
+            offset += 2;
+
             magPub.publish(new MagneticMeasurement(xMag, yMag, zMag));
+        }
+        //ff4 is inclination
+        // reported in units of 0.1 degrees
+        if (m.getFf4()) {
+            int xInclinationInTenths = extractByteFromDataArray(data, offset);
+            double xInclination = xInclinationInTenths / 10.0;
+            offset += 2;
+
+            int yInclinationInTenths = extractByteFromDataArray(data, offset);
+            double yInclination = yInclinationInTenths / 10.0;
+            offset += 2;
+
+            int zInclinationInTenths = extractByteFromDataArray(data, offset);
+            double zInclination = zInclinationInTenths / 10.0;
+            offset += 2;
+
+            inclinationPub.publish(new IMUInclinationMessage(xInclination, yInclination, zInclination));
         }
         //ff5 is compass for format 1
         if (m.getFf5()) {
-            byte lsbAsByte = (byte) data[offset];
-            byte msbAsByte = (byte) data[offset + 1];
-
-            int lsb = ((int) lsbAsByte) & 0xFF;
-            int msb = ((int) msbAsByte) & 0xFF;
-
-            int degreesInTenths = (msb << 8) | lsb;
-            degreesInTenths = degreesInTenths & 0xFFFF;
+            int degreesInTenths = extractByteFromDataArray(data, offset);
             double degrees = degreesInTenths/10.0;
+            offset += 2;
 
             compassPub.publish(new IMUCompassMessage(degrees));
-
-            offset += 2;
         }
         //ff6 is angular position
         if (m.getFf6()) {
@@ -258,6 +282,16 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
         double d = sT.doubleValue();
         return Math.pow(2, -1 * qn) * d;
 
+    }
+
+    private int extractByteFromDataArray(int[] data, int offset) {
+
+        byte lsbByte = (byte) data[offset];
+        byte msbByte = (byte) data[offset + 1];
+        int lsb = ((int) lsbByte) & 0xFF;
+        int msb = ((int) msbByte) & 0xFF;
+
+        return ((msb << 8) | lsb) & 0xFFFF;
     }
 
 }
