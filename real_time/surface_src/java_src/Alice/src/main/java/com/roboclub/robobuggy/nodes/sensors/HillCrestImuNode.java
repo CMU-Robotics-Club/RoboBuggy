@@ -31,6 +31,9 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
     private Publisher tempPub = new Publisher(NodeChannel.IMU_TEMP.getMsgPath());
     private Publisher angPosPub = new Publisher(NodeChannel.IMU_ANG_POS.getMsgPath());
 
+
+    // Modifications! Excitement!
+
     /**
      * Constructor for the hillcrest imu
      */
