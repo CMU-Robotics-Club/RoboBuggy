@@ -1,10 +1,14 @@
 % graph results
 
+clear;
+close all;
+
 addpath('./latlonutm/Codes/matlab');
 % addpath('./zoharby-plot_google_map');
 addpath('./altmany-export_fig');
 
-load('localizer_v2.mat', 'trajectory', 'P');
+file = 'localizer_v3.mat';
+load(file, 'trajectory', 'P');
 save_plot = false;
 
 k = 1000;
@@ -15,6 +19,7 @@ t2 = 1476009019782;
 t = linspace(0, (t2 - t1)/1000, size(trajectory,2));
 figure();
 plot(t, trajectory(10,:))
+title(['Uncertainty ', file]);
 
 % plot(trajectory(8,:), trajectory(9,:), '.r', 'MarkerSize', 20) 
 % plot_google_map('maptype','roadmap', 'APIKey','AIzaSyBYLaDqr2QKRCCRAHhrOf21DVJL-kkkyr8')
@@ -30,4 +35,4 @@ hold on;
 plot(trajectory(1,1:k:end), trajectory(2,1:k:end))
 quiver(trajectory(1,1:k:end), trajectory(2,1:k:end), cos(theta), sin(theta))
 hold off;
-
+title(['Heading ', file]);

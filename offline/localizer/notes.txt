@@ -50,3 +50,9 @@ Steering:
 {"VERSION_ID":"steering","angle":0.07,"DATE_FORMAT":"yyyy-MM-dd HH:mm:ss.SSS","timestamp":1476008235966,"topicName":"sensors/steering","sequenceNumber":14474},
 
 phi is the angle field. Careful to check the topicName; we want sensors/steering, not sensors/commandedSteering
+
+IMU Temperature:
+might be the compass angle
+
+{"VERSION_ID":"temperatureV0.1","temperature":13.53125,"DATE_FORMAT":"yyyy-MM-dd HH:mm:ss.SSS","timestamp":1476008235676,"topicName":"sensors/imu_temp","sequenceNumber":18117},
+
