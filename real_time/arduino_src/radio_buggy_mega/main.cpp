@@ -182,7 +182,7 @@ inline long clamp(long input,
 }
 
 
-void adc_init(void) // copy-pasted from wiring.c l.353
+void adc_init(void) // copy-pasted from wiring.c l.353 (Arduino library)
 {
     // set a2d prescaler so we are inside the desired 50-200 KHz range.
     sbi(ADCSRA, ADPS2);
@@ -192,11 +192,9 @@ void adc_init(void) // copy-pasted from wiring.c l.353
     sbi(ADCSRA, ADEN);
 }
 
-int adc_read_blocking(uint8_t pin) // takes less than 28us
+int adc_read_blocking(uint8_t pin) // takes less than 160us
 {
     uint8_t low, high;
-
-    //if (pin >= 54) pin -= 54; // allow for channel or pin numbers
 
     // the MUX5 bit of ADCSRB selects whether we're reading from channels
     // 0 to 7 (MUX5 low) or 8 to 15 (MUX5 high).
