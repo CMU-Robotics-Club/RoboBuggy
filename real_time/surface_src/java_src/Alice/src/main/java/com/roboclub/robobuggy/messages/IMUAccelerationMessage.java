@@ -1,7 +1,7 @@
 package com.roboclub.robobuggy.messages;
 
 /**
- * Created by vivaanbahl on 10/23/16.
+ * Message for representing IMU's acceleration
  */
 public class IMUAccelerationMessage extends BaseMessage {
 

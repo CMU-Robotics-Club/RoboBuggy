@@ -43,8 +43,6 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
         Discovery discover = Discovery.getInstance();
         discover.addListener(this);
 
-
-        // TODO Auto-generated constructor stub
     }
 
 
@@ -59,15 +57,6 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
         int[] data = m.getMeData();
         //assuming message is of type 0
         int offset = 0;
-
-
-        int axisVal;
-        float scale;
-
-        if (offset < 0) {
-            return; // Compass heading flag not set
-        }
-
 
         // FF0 is acceleration for Format 1
         // reported in units of 0.01g

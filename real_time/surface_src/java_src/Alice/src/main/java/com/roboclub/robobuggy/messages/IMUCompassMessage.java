@@ -14,8 +14,11 @@ import java.util.Date;
  */
 public class IMUCompassMessage extends BaseMessage {
 
-    public static final String VERSION_ID = "temperatureV0.1";
+    public static final String VERSION_ID = "imu_compass_headingV0.1";
 
+    /**
+     * a double from 0.0 to 359.9
+     */
     private double compassHeading;
 
     /**
