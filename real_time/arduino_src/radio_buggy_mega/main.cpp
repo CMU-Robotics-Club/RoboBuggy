@@ -98,6 +98,8 @@
 #define ENCODER_STEERING_B_PINN PB6
 #define ENCODER_STEERING_PCINT  PCINT0_vect
 
+// Constants obtained by measuring the sensor ADC value as function of
+// applied voltage, scanning the full range and then doing a linear regression
 #define BATTERY_ADC 0 // pin to read battery level from (A0)
 #define BATTERY_ADC_SLOPE  14.683 // in mV, obtained from calibration
 #define BATTERY_ADC_OFFSET 44.359
@@ -192,7 +194,7 @@ void adc_init(void) // copy-pasted from wiring.c l.353 (Arduino library)
     sbi(ADCSRA, ADEN);
 }
 
-int adc_read_blocking(uint8_t pin) // takes less than 160us
+int adc_read_blocking(uint8_t pin) // takes less than 160us, return 0 to 1023
 {
     uint8_t low, high;
 
@@ -603,9 +605,7 @@ int main(void)
             g_errors &= ~_BV(RBSM_EID_AUTON_LOST_SIGNAL);
         }
 
-        // Voltage divider mounted with 24k/12k ohm resistors
-        // Constants obtained through caracterisation of divider and ADC reader
-        // scanning the full range and then doing a linear regression
+        // Reading battery voltage from the voltage 24/12 kOhm divider
         g_current_voltage  = adc_read_blocking(BATTERY_ADC);
         g_current_voltage *= BATTERY_ADC_SLOPE;
         g_current_voltage += BATTERY_ADC_OFFSET;
