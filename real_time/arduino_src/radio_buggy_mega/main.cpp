@@ -555,10 +555,12 @@ int main(void)
         //      timestamps are not updated under our feet.  These
         //      operations are atomic so we're fine
 
+        cli();
         unsigned long time_now = micros();
         unsigned long time1 = g_steering_rx.GetLastTimestamp();
         unsigned long time2 = g_brake_rx.GetLastTimestamp();
         unsigned long time3 = g_auton_rx.GetLastTimestamp();
+        sei();
 
         //RC time deltas
         unsigned long delta1 = time_now - time1;
