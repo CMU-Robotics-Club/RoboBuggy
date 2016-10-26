@@ -655,7 +655,6 @@ int main(void)
         g_rbsm.Send(RBSM_MID_MEGA_AUTON_BRAKE_COMMAND, (long unsigned)brake_cmd_auton_engaged);
         g_rbsm.Send(RBSM_MID_MEGA_AUTON_STATE, (long unsigned)g_is_autonomous);
         g_rbsm.Send(RBSM_MID_MEGA_BATTERY_LEVEL, g_current_voltage);
-        dbg_printf("Voltage battery [mV]: %d \n", g_current_voltage);
         g_rbsm.Send(RBSM_MID_MEGA_STEER_FEEDBACK, steering_feedback_angle);
         g_rbsm.Send(RBSM_MID_ENC_TICKS_RESET, g_encoder_distance.GetTicks());
         g_rbsm.Send(RBSM_MID_MEGA_TIMESTAMP, millis());
