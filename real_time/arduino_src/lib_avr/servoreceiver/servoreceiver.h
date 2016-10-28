@@ -22,7 +22,8 @@ class ServoReceiver {
     int k_scale_stored_angle;
     volatile unsigned long up_switch_time_;
     volatile unsigned long rc_value_;
-    unsigned long last_timestamp_;
+    //TODO: Make this volatile and see if it works better?
+    volatile unsigned long last_timestamp_;
 
     public:
         ServoReceiver();

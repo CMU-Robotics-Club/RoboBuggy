@@ -401,7 +401,6 @@ int main(void)
     EICRA |= _BV(ISC20);
     EICRA &= ~_BV(ISC21);
 
-    print("Hello Sean");
 
     // setup steering encoder on pcint 0 with pullups off
     ENCODER_STEERING_A_PORT &= ~_BV(ENCODER_STEERING_A_PINN);
@@ -533,12 +532,12 @@ int main(void)
         //      timestamps are not updated under our feet.  These
         //      operations are atomic so we're fine
 
-        cli();
         unsigned long time_now = micros();
         unsigned long time1 = g_steering_rx.GetLastTimestamp();
         unsigned long time2 = g_brake_rx.GetLastTimestamp();
         unsigned long time3 = g_auton_rx.GetLastTimestamp();
-        sei();
+        //NOTE: Calling cli() in GetLastTimeStamp and sei() here once the function returns
+        //  seems to make this function call atomic
 
         //RC time deltas
         unsigned long delta1 = time_now - time1;
