@@ -3,14 +3,7 @@ package com.roboclub.robobuggy.messages;
 import java.util.Date;
 
 /**
- * Message for passing IMU compassHeading measurements within BuggyROS
- *
- * @author ?
- * @version 0.5
- *          <p>
- *          CHANGELOG: NONE
- *          <p>
- *          DESCRIPTION: TODO
+ * Message for passing IMU compass measurements within BuggyROS, in degrees from 0 - 359.9
  */
 public class IMUCompassMessage extends BaseMessage {
 
