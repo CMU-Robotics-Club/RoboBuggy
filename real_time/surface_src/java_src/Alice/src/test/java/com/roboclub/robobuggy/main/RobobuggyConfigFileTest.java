@@ -76,13 +76,14 @@ public class RobobuggyConfigFileTest {
         writer.close();
     }
 
+    //I'd like to test reading in from a config file, but I'm not sure what I'm actually reading in
 
     /**
      * Tests basic get/set functionality for a normal config file
      * Doesn't actually create any robots
      */
     @Test
-    public void testRobotTypeGetSet() {
+    public void testGetSet() {
 
         //Create a new config file with a reasonable robot type
         try {
@@ -95,6 +96,53 @@ public class RobobuggyConfigFileTest {
 
         //Test getRobotType
         assert(RobobuggyConfigFile.getRobotType().equals("TransistorAuton"));
+
+        //Test other stuff
+        RobobuggyConfigFile.setImuEnabled(false);
+        assert(!RobobuggyConfigFile.isImuEnabled());
+        RobobuggyConfigFile.setImuEnabled(true);
+        assert(RobobuggyConfigFile.isImuEnabled());
+
+        //isDataPlayback? How do I test this?
+
+        RobobuggyConfigFile.setComPortImu("SafetyDuck!");
+        assert(RobobuggyConfigFile.getComPortImu().equals("SafetyDuck!"));
+
+        RobobuggyConfigFile.setConfigFile("SafetyDuck!!");
+        assert(RobobuggyConfigFile.getConfigFile().equals("SafetyDuck!"));
+
+        RobobuggyConfigFile.setWayPointSourceLogFile("safetyDuck!");
+        assert(RobobuggyConfigFile.getWaypointSourceLogFile().equals("safetyDuck!"));
+
+        RobobuggyConfigFile.setPlayBackSourceFile("SSafetyDuck!");
+        assert(RobobuggyConfigFile.getPlayBackSourceFile().equals("SSafetyDuck!"));
+
+        RobobuggyConfigFile.setComPortGps("SSSafetyDuck!");
+        assert(RobobuggyConfigFile.getComPortGPS().equals("SSSafetyDuck!"));
+
+        RobobuggyConfigFile.setComPortRBSM("SSSSafetyDuck!");
+        assert(RobobuggyConfigFile.getComPortRBSM().equals("SSSSafetyDuck!"));
+
+        RobobuggyConfigFile.setGpsEnabled(false);
+        assert(!RobobuggyConfigFile.isGpsEnabled());
+        RobobuggyConfigFile.setGpsEnabled(true);
+        assert(RobobuggyConfigFile.isGpsEnabled());
+
+        RobobuggyConfigFile.setEncoderEnabled(false);
+        assert(!RobobuggyConfigFile.isEncoderEnabled());
+        RobobuggyConfigFile.setEncoderEnabled(true);
+        assert(RobobuggyConfigFile.isEncoderEnabled());
+
+        RobobuggyConfigFile.setPortVision("SSSSSafetyDuck!");
+        assert(RobobuggyConfigFile.getPortVision().equals("SSSSSafetyDuck!"));
+
+        RobobuggyConfigFile.setVisionSystemEnabled(false);
+        assert(!RobobuggyConfigFile.isVisionSystemEnabled());
+        RobobuggyConfigFile.setVisionSystemEnabled(true);
+        assert(RobobuggyConfigFile.isVisionSystemEnabled());
+
+        RobobuggyConfigFile.setPlayBackSpeed(3.1415);
+        assert(RobobuggyConfigFile.getPlayBackSpeed() == 3.1415);
     }
 
     /**
