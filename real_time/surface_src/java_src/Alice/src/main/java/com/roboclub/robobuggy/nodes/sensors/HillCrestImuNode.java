@@ -56,22 +56,22 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
         FreespaceMsgInMotionEngineOutput m = (FreespaceMsgInMotionEngineOutput) arg1;
         int[] data = m.getMeData();
         //assuming message is of type 0
-        int offset = 0;
+        int offsetInBytes = 0;
 
         // FF0 is acceleration for Format 1
         // reported in units of 0.01g
         if (m.getFf0()) {
-            int xAccelInHundredths = extractByteFromDataArray(data, offset);
+            int xAccelInHundredths = extractHalfWordFromDataArray(data, offsetInBytes);
             double xAccel = xAccelInHundredths / 100.0;
-            offset += 2;
+            offsetInBytes += 2;
 
-            int yAccelInHundredths = extractByteFromDataArray(data, offset);
+            int yAccelInHundredths = extractHalfWordFromDataArray(data, offsetInBytes);
             double yAccel = yAccelInHundredths / 100.0;
-            offset += 2;
+            offsetInBytes += 2;
 
-            int zAccelInHundredths = extractByteFromDataArray(data, offset);
+            int zAccelInHundredths = extractHalfWordFromDataArray(data, offsetInBytes);
             double zAccel = zAccelInHundredths / 100.0;
-            offset += 2;
+            offsetInBytes += 2;
 
             accelPub.publish(new IMUAccelerationMessage(xAccel, yAccel, zAccel));
 
@@ -79,85 +79,85 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
         //ff1 is linear acceleration for Format 1
         // reported in units of 0.01g
         if (m.getFf1()) {
-            int xAccelInHundredths = extractByteFromDataArray(data, offset);
+            int xAccelInHundredths = extractHalfWordFromDataArray(data, offsetInBytes);
             double xAccel = xAccelInHundredths / 100.0;
-            offset += 2;
+            offsetInBytes += 2;
 
-            int yAccelInHundredths = extractByteFromDataArray(data, offset);
+            int yAccelInHundredths = extractHalfWordFromDataArray(data, offsetInBytes);
             double yAccel = yAccelInHundredths / 100.0;
-            offset += 2;
+            offsetInBytes += 2;
 
-            int zAccelInHundredths = extractByteFromDataArray(data, offset);
+            int zAccelInHundredths = extractHalfWordFromDataArray(data, offsetInBytes);
             double zAccel = zAccelInHundredths / 100.0;
-            offset += 2;
+            offsetInBytes += 2;
 
             linearAccPub.publish(new IMULinearAccelerationMessage(xAccel, yAccel, zAccel));
         }
         //ff2 is angular velocity for Format 1
         // reported in units of 0.1 deg/sec
         if (m.getFf2()) {
-            int xAngularVelocityInTenths = extractByteFromDataArray(data, offset);
+            int xAngularVelocityInTenths = extractHalfWordFromDataArray(data, offsetInBytes);
             double xAngularVel = xAngularVelocityInTenths / 10.0;
-            offset += 2;
+            offsetInBytes += 2;
 
-            int yAngularVelocityInTenths = extractByteFromDataArray(data, offset);
+            int yAngularVelocityInTenths = extractHalfWordFromDataArray(data, offsetInBytes);
             double yAngularVel = yAngularVelocityInTenths / 10.0;
-            offset += 2;
+            offsetInBytes += 2;
 
-            int zAngularVelocityInTenths = extractByteFromDataArray(data, offset);
+            int zAngularVelocityInTenths = extractHalfWordFromDataArray(data, offsetInBytes);
             double zAngularVel = zAngularVelocityInTenths / 10.0;
-            offset += 2;
+            offsetInBytes += 2;
 
             angVelPub.publish(new IMUAngularVelocityMessage(xAngularVel, yAngularVel, zAngularVel));
         }
         //ff3 is magnetometer for Format 1
         // reported in units of 0.001 gauss
         if (m.getFf3()) {
-            int xMagInThousandths = extractByteFromDataArray(data, offset);
+            int xMagInThousandths = extractHalfWordFromDataArray(data, offsetInBytes);
             double xMag = xMagInThousandths / 1000.0;
-            offset += 2;
+            offsetInBytes += 2;
 
-            int yMagInThousandths = extractByteFromDataArray(data, offset);
+            int yMagInThousandths = extractHalfWordFromDataArray(data, offsetInBytes);
             double yMag = yMagInThousandths / 1000.0;
-            offset += 2;
+            offsetInBytes += 2;
 
-            int zMagInThousandths = extractByteFromDataArray(data, offset);
+            int zMagInThousandths = extractHalfWordFromDataArray(data, offsetInBytes);
             double zMag = zMagInThousandths / 1000.0;
-            offset += 2;
+            offsetInBytes += 2;
 
             magPub.publish(new MagneticMeasurement(xMag, yMag, zMag));
         }
         //ff4 is inclination
         // reported in units of 0.1 degrees
         if (m.getFf4()) {
-            int xInclinationInTenths = extractByteFromDataArray(data, offset);
+            int xInclinationInTenths = extractHalfWordFromDataArray(data, offsetInBytes);
             double xInclination = xInclinationInTenths / 10.0;
-            offset += 2;
+            offsetInBytes += 2;
 
-            int yInclinationInTenths = extractByteFromDataArray(data, offset);
+            int yInclinationInTenths = extractHalfWordFromDataArray(data, offsetInBytes);
             double yInclination = yInclinationInTenths / 10.0;
-            offset += 2;
+            offsetInBytes += 2;
 
-            int zInclinationInTenths = extractByteFromDataArray(data, offset);
+            int zInclinationInTenths = extractHalfWordFromDataArray(data, offsetInBytes);
             double zInclination = zInclinationInTenths / 10.0;
-            offset += 2;
+            offsetInBytes += 2;
 
             inclinationPub.publish(new IMUInclinationMessage(xInclination, yInclination, zInclination));
         }
         //ff5 is compass for format 1
         if (m.getFf5()) {
-            int degreesInTenths = extractByteFromDataArray(data, offset);
+            int degreesInTenths = extractHalfWordFromDataArray(data, offsetInBytes);
             double degrees = degreesInTenths/10.0;
-            offset += 2;
+            offsetInBytes += 2;
 
             compassPub.publish(new IMUCompassMessage(degrees));
         }
         //ff6 is angular position
         if (m.getFf6()) {
-            double w = convertQNToDouble((byte) data[offset + 0], (byte) data[offset + 1], 14);
-            double x = convertQNToDouble((byte) data[offset + 2], (byte) data[offset + 3], 14);
-            double y = convertQNToDouble((byte) data[offset + 4], (byte) data[offset + 5], 14);
-            double z = convertQNToDouble((byte) data[offset + 6], (byte) data[offset + 7], 14);
+            double w = convertQNToDouble((byte) data[offsetInBytes + 0], (byte) data[offsetInBytes + 1], 14);
+            double x = convertQNToDouble((byte) data[offsetInBytes + 2], (byte) data[offsetInBytes + 3], 14);
+            double y = convertQNToDouble((byte) data[offsetInBytes + 4], (byte) data[offsetInBytes + 5], 14);
+            double z = convertQNToDouble((byte) data[offsetInBytes + 6], (byte) data[offsetInBytes + 7], 14);
 
             double r11 = 1 - 2 * y * y - 2 * z * z;
             double r12 = 2 * x * y - 2 * z * w;
@@ -178,7 +178,7 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
             };
 
             angPosPub.publish(new IMUAngularPositionMessage(rot));
-            offset += 8;
+            offsetInBytes += 8;
         }
 
     }
@@ -273,14 +273,18 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
 
     }
 
-    private int extractByteFromDataArray(int[] data, int offset) {
+    /**
+     * Returns a 2-byte data value from the IMU's data array
+     * @param data the byte array for the IMU
+     * @param offsetInBytes the offset into the data array where the halfword starts from. Note that this value does
+     *                      NOT get increased, you will need to keep track of an offset externally
+     * @return the halfword extracted
+     */
+    private int extractHalfWordFromDataArray(int[] data, int offsetInBytes) {
 
-        byte lsbByte = (byte) data[offset];
-        byte msbByte = (byte) data[offset + 1];
-        int lsb = ((int) lsbByte) & 0xFF;
-        int msb = ((int) msbByte) & 0xFF;
-
-        return ((msb << 8) | lsb) & 0xFFFF;
+        int lsb = data[offsetInBytes];
+        int msb = data[offsetInBytes + 1];
+        return ((msb << 8) | lsb);
     }
 
 }
