@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public enum NodeChannel {
 
-	GPS("gps", true),    								//The most recent gps coordinate
+	GPS("gps", true), //The most recent gps coordinate
 
 	LOGIC_NOTIFICATION("logic_notification", true),
 
@@ -18,17 +18,17 @@ public enum NodeChannel {
 	SIMULATION("simulation", true),
 
 	POSE("pose", true),
-	SIM_POSE("sim_pose",true),  //represents the hidden simulated ground truth 
+	SIM_POSE("sim_pose",true), //represents the hidden simulated ground truth
 	NODE_STATUS("node_status", false),
 	PATH_PLANNER("path_planner", true),
 
-	RC("rc_angle", true),								//?
+	RC("rc_angle", true), //?
 	FP_HASH("fp_hash", true),
-	STEERING("steering", true),						//The current angle that low level is steering to
+	STEERING("steering", true), //The current angle that low level is steering to
 	DRIVE_CTRL("drive_ctrl", true),
 	BRAKE_CTRL("commanded brake", true),
 	ENCODER("encoder", true),
-	STEERING_COMMANDED("commanded_steering", true),   // the angle that we are commanding the front wheel turn to
+	STEERING_COMMANDED("commanded_steering", true), // the angle that we are commanding the front wheel turn to
 	BATTERY("battery", true),
 	MEGATIME("mega_time", true),
 	DEVICE_ID("device_id", true),
@@ -38,7 +38,7 @@ public enum NodeChannel {
 	AUTON_BRAKE_STATE("auton_brake_state", true),
 	TELEOP_BRAKE_STATE("teleop_brake_state", true),
 
-	IMU("imu", true),									//The most recent imu measurement
+	IMU("imu", true), //The most recent imu measurement
 	HILL_CREST_IMU("hill_crest_imu",true),
 	IMU_MAGNETIC("mag", true),
 	IMU_LINEAR_ACC("imu_linear_acc", true),
