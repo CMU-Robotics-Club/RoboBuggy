@@ -54,8 +54,13 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
         }
 
         FreespaceMsgInMotionEngineOutput m = (FreespaceMsgInMotionEngineOutput) arg1;
+
+        // we can only parse format 1 for now
+        if (m.getFormatSelect() != 1) {
+            return;
+        }
+
         int[] data = m.getMeData();
-        //assuming message is of type 0
         int offsetInBytes = 0;
 
         // FF0 is acceleration for Format 1

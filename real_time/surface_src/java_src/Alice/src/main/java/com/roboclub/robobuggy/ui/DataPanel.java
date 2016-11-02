@@ -3,7 +3,6 @@ package com.roboclub.robobuggy.ui;
 import com.roboclub.robobuggy.messages.BrakeControlMessage;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
-import com.roboclub.robobuggy.messages.IMUCompassMessage;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.ros.Message;
@@ -136,10 +135,6 @@ public class DataPanel extends RobobuggyGUIContainer {
 
             }
         });
-
-        new Subscriber("compass", NodeChannel.IMU_COMPASS.getMsgPath(), ((topicName, m) -> {
-            aX.setText(String.valueOf(((IMUCompassMessage)m).getCompassHeading()));
-        }));
 
         new Subscriber("uiDataPan", NodeChannel.GPS.getMsgPath(), new MessageListener() {
             @Override

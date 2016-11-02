@@ -1,7 +1,7 @@
 package com.roboclub.robobuggy.messages;
 
 /**
- * Reports the IMU's inclination, in roll-pitch-yaw format
+ * Reports the IMU's inclination, in pitch-roll-yaw format
  */
 public class IMUInclinationMessage extends BaseMessage {
 
