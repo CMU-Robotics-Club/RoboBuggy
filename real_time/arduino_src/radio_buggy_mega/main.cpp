@@ -425,7 +425,6 @@ int main(void)
     EICRA |= _BV(ISC20);
     EICRA &= ~_BV(ISC21);
 
-
     // setup steering encoder on pcint 0 with pullups off
     ENCODER_STEERING_A_PORT &= ~_BV(ENCODER_STEERING_A_PINN);
     ENCODER_STEERING_A_DDR &= ~_BV(ENCODER_STEERING_A_PINN);
@@ -552,17 +551,14 @@ int main(void)
         g_is_autonomous = g_auton_rx.GetAngle() > PWM_STATE_THRESHOLD;
 
         // Detect dropped radio conections
-        // note: interrupts must be disabled while checking system clock so that
-        //      timestamps are not updated under our feet.  These
-        //      operations are atomic so we're fine
 
         unsigned long time1 = g_steering_rx.GetLastTimestamp();
         unsigned long time2 = g_brake_rx.GetLastTimestamp();
         unsigned long time3 = g_auton_rx.GetLastTimestamp();
-        unsigned long time_now = micros();
         //We need to call micros last because if we called it first, 
-        //  time1, time2, or time3 could be greater than time_now, and since
-        //  we have unsigned longs, our delta values will be extremely large
+        //  time1, time2, or time3 could be greater than time_now if an interrupt
+        //  fires and updates its timestamp and our delta values will underflow
+        unsigned long time_now = micros();
 
 
         //RC time deltas
@@ -585,7 +581,7 @@ int main(void)
                 // we haven't heard from the RC receiver in too long
                 g_errors |= _BV(RBSM_EID_RC_LOST_SIGNAL);
                 brake_needs_reset = true;
-                printf("RC Timeout! %lu %lu %lu\n", delta1, delta2, delta3);
+                dbg_printf("RC Timeout! %lu %lu %lu\n", delta1, delta2, delta3);
             }
             else {
                 g_errors &= ~_BV(RBSM_EID_RC_LOST_SIGNAL);
@@ -595,7 +591,7 @@ int main(void)
             if(auton_timeout) {
                 g_errors |= _BV(RBSM_EID_AUTON_LOST_SIGNAL);
                 brake_needs_reset = true;
-                printf("Auton Timeout!\n");
+                dbg_printf("Auton Timeout! %lu %lu\n", delta4, delta5);
             }
             else {
                 g_errors &= ~_BV(RBSM_EID_AUTON_LOST_SIGNAL);
