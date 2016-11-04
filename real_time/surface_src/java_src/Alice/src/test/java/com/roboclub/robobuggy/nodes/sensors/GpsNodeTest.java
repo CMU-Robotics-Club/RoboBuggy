@@ -17,6 +17,8 @@ import org.junit.Test;
 
 import java.lang.InterruptedException;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -28,19 +30,14 @@ import static org.junit.Assert.fail;
  */
 public class GpsNodeTest {
     private static LinkedBlockingQueue<GpsMeasurement> messageList = new LinkedBlockingQueue<>();
-    private LocTuple lastReading;
-    private Publisher pub; //figure out relationship between publisher, subscriber etc.
 
     @BeforeClass
     public static void oneTime() {
         new Subscriber("gpsLoc", NodeChannel.GPS.getMsgPath(), new MessageListener() {
             @Override
             public void actionPerformed(String topicName, Message m) {
-                GpsMeasurement gpsM = (GpsMeasurement) m;
                 messageList.add((GpsMeasurement) m);
 
-                //Feed the watchdog
-                //setNodeState(NodeState.ON);
             }
 
         });
@@ -65,11 +62,10 @@ public class GpsNodeTest {
     {
         // to do - move subscriber stuff to oneTimeSetup(), call peel with the sample input, let it sleep for a
         // seconds, then check the LinkedBlockingQueue for messages
-      GpsNode gpsNode1 = new GpsNode(NodeChannel.GPS,"buggy");
+      GpsNode gpsNode1 = new GpsNode(NodeChannel.GPS, "");
         //testing peel
         String input = "$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47";
-        char[] inputChars = input.toCharArray();
-        byte[] bytes = new String(inputChars).getBytes();
+        byte[] bytes = Charset.forName("UTF-8").encode(input).array();
         gpsNode1.peel(bytes,0,bytes.length);
         try {
             Thread.sleep(3000);
