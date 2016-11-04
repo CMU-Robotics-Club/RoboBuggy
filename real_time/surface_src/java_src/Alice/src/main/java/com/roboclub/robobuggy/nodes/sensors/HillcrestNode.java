@@ -10,11 +10,9 @@ import com.hcrest.jfreespace.outreport.FreespaceMsgOutDataModeControlV2Request;
 import com.hcrest.jfreespace.outreport.HidOutMsg;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
-import com.roboclub.robobuggy.messages.ImuMeasurement;
+import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyDecoratorNode;
-import com.roboclub.robobuggy.nodes.baseNodes.BuggyNode;
 import com.roboclub.robobuggy.ros.NodeChannel;
-import com.roboclub.robobuggy.ros.Publisher;
 
 /**
  * A node to communicate with the Hillcrest Freespace 9DOF IMU
@@ -24,14 +22,10 @@ public class HillcrestNode extends BuggyDecoratorNode implements DeviceListenerI
     private Device hillcrestImu;
 
     /**
-     * Creates a new decorator for the given {@link Node}
-     *
-     * @param node {@link Node} to decorate
-     * @param name the name we want for this node to store so that it can be referenced later
+     * Creates a new Hillcrest IMU node
      */
-    public HillcrestNode(BuggyNode node, String name) {
-        super(node, name);
-
+    public HillcrestNode() {
+        super(new BuggyBaseNode(NodeChannel.IMU), "Hillcrest IMU");
     }
 
     @Override
