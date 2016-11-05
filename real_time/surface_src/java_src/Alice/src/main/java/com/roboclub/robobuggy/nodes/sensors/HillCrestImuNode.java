@@ -8,10 +8,12 @@ import com.hcrest.jfreespace.inreport.FreespaceMsgInMotionEngineOutput;
 import com.hcrest.jfreespace.inreport.HidInMsg;
 import com.hcrest.jfreespace.outreport.FreespaceMsgOutDataModeControlV2Request;
 import com.hcrest.jfreespace.outreport.HidOutMsg;
+import com.roboclub.robobuggy.messages.IMUAccelerationMessage;
 import com.roboclub.robobuggy.messages.IMUAngularPositionMessage;
 import com.roboclub.robobuggy.messages.IMUAngularVelocityMessage;
+import com.roboclub.robobuggy.messages.IMUInclinationMessage;
 import com.roboclub.robobuggy.messages.IMULinearAccelerationMessage;
-import com.roboclub.robobuggy.messages.IMUTemperatureMessage;
+import com.roboclub.robobuggy.messages.IMUCompassMessage;
 import com.roboclub.robobuggy.messages.MagneticMeasurement;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
@@ -25,11 +27,13 @@ import com.roboclub.robobuggy.ros.Publisher;
 @Deprecated
 public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListenerInterface, com.roboclub.robobuggy.ros.Node {
     private Device thisDevice;
+
+    private Publisher accelPub = new Publisher(NodeChannel.IMU_ACCELERATION.getMsgPath());
     private Publisher linearAccPub = new Publisher(NodeChannel.IMU_LINEAR_ACC.getMsgPath());
-    private Publisher linearAccNoGravPub = new Publisher(NodeChannel.IMU_LINEAR_NO_GRAV.getMsgPath());
+    private Publisher inclinationPub = new Publisher(NodeChannel.IMU_INCLINATION.getMsgPath());
     private Publisher angVelPub = new Publisher(NodeChannel.IMU_ANG_VEL.getMsgPath());
     private Publisher magPub = new Publisher(NodeChannel.IMU_MAGNETIC.getMsgPath());
-    private Publisher tempPub = new Publisher(NodeChannel.IMU_TEMP.getMsgPath());
+    private Publisher compassPub = new Publisher(NodeChannel.IMU_COMPASS.getMsgPath());
     private Publisher angPosPub = new Publisher(NodeChannel.IMU_ANG_POS.getMsgPath());
 
     /**
@@ -40,8 +44,6 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
         Discovery discover = Discovery.getInstance();
         discover.addListener(this);
 
-
-        // TODO Auto-generated constructor stub
     }
 
 
@@ -53,67 +55,115 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
         }
 
         FreespaceMsgInMotionEngineOutput m = (FreespaceMsgInMotionEngineOutput) arg1;
+
+        // we can only parse format 1 for now
+        if (m.getFormatSelect() != 1) {
+            return;
+        }
+
         int[] data = m.getMeData();
-        //assuming message is of type 0
-        int offset = 0;
+        int offsetInBytes = 0;
 
-
-        int axisVal;
-        float scale;
-
-        if (offset < 0) {
-            return; // Compass heading flag not set
-        }
-
-
-        //we do not parse ff0
+        // FF0 is acceleration for Format 1
+        // reported in units of 0.01g
         if (m.getFf0()) {
-            offset += 6;
+            int xAccelInHundredths = extractHalfWordFromDataArray(data, offsetInBytes);
+            double xAccel = xAccelInHundredths / 100.0;
+            offsetInBytes += 2;
+
+            int yAccelInHundredths = extractHalfWordFromDataArray(data, offsetInBytes);
+            double yAccel = yAccelInHundredths / 100.0;
+            offsetInBytes += 2;
+
+            int zAccelInHundredths = extractHalfWordFromDataArray(data, offsetInBytes);
+            double zAccel = zAccelInHundredths / 100.0;
+            offsetInBytes += 2;
+
+            accelPub.publish(new IMUAccelerationMessage(xAccel, yAccel, zAccel));
+
         }
-        //ff1 is linear acceleration
+        //ff1 is linear acceleration for Format 1
+        // reported in units of 0.01g
         if (m.getFf1()) {
-            double xAccel = convertQNToDouble((byte) data[offset + 0], (byte) data[offset + 1], 10);
-            double yAccel = convertQNToDouble((byte) data[offset + 2], (byte) data[offset + 3], 10);
-            double zAccel = convertQNToDouble((byte) data[offset + 4], (byte) data[offset + 5], 10);
-            offset += 6;
+            int xAccelInHundredths = extractHalfWordFromDataArray(data, offsetInBytes);
+            double xAccel = xAccelInHundredths / 100.0;
+            offsetInBytes += 2;
+
+            int yAccelInHundredths = extractHalfWordFromDataArray(data, offsetInBytes);
+            double yAccel = yAccelInHundredths / 100.0;
+            offsetInBytes += 2;
+
+            int zAccelInHundredths = extractHalfWordFromDataArray(data, offsetInBytes);
+            double zAccel = zAccelInHundredths / 100.0;
+            offsetInBytes += 2;
+
             linearAccPub.publish(new IMULinearAccelerationMessage(xAccel, yAccel, zAccel));
         }
-        //ff2 is linear Acceleration no gravity
+        //ff2 is angular velocity for Format 1
+        // reported in units of 0.1 deg/sec
         if (m.getFf2()) {
-            double xAccel = convertQNToDouble((byte) data[offset + 0], (byte) data[offset + 1], 10);
-            double yAccel = convertQNToDouble((byte) data[offset + 2], (byte) data[offset + 3], 10);
-            double zAccel = convertQNToDouble((byte) data[offset + 4], (byte) data[offset + 5], 10);
-            offset += 6;
-            linearAccNoGravPub.publish(new IMULinearAccelerationMessage(xAccel, yAccel, zAccel));
-        }
-        //ff3 is Angular velocity
-        if (m.getFf3()) {
-            double xAngularVel = convertQNToDouble((byte) data[offset + 0], (byte) data[offset + 1], 10);
-            double yAngularVel = convertQNToDouble((byte) data[offset + 2], (byte) data[offset + 3], 10);
-            double zAngularVel = convertQNToDouble((byte) data[offset + 4], (byte) data[offset + 5], 10);
-            offset += 6;
+            int xAngularVelocityInTenths = extractHalfWordFromDataArray(data, offsetInBytes);
+            double xAngularVel = xAngularVelocityInTenths / 10.0;
+            offsetInBytes += 2;
+
+            int yAngularVelocityInTenths = extractHalfWordFromDataArray(data, offsetInBytes);
+            double yAngularVel = yAngularVelocityInTenths / 10.0;
+            offsetInBytes += 2;
+
+            int zAngularVelocityInTenths = extractHalfWordFromDataArray(data, offsetInBytes);
+            double zAngularVel = zAngularVelocityInTenths / 10.0;
+            offsetInBytes += 2;
+
             angVelPub.publish(new IMUAngularVelocityMessage(xAngularVel, yAngularVel, zAngularVel));
         }
-        //ff4 is magnetometer
-        if (m.getFf4()) {
-            double xMag = convertQNToDouble((byte) data[offset + 0], (byte) data[offset + 1], 12);
-            double yMag = convertQNToDouble((byte) data[offset + 2], (byte) data[offset + 3], 12);
-            double zMag = convertQNToDouble((byte) data[offset + 4], (byte) data[offset + 5], 12);
-            offset += 6;
+        //ff3 is magnetometer for Format 1
+        // reported in units of 0.001 gauss
+        if (m.getFf3()) {
+            int xMagInThousandths = extractHalfWordFromDataArray(data, offsetInBytes);
+            double xMag = xMagInThousandths / 1000.0;
+            offsetInBytes += 2;
+
+            int yMagInThousandths = extractHalfWordFromDataArray(data, offsetInBytes);
+            double yMag = yMagInThousandths / 1000.0;
+            offsetInBytes += 2;
+
+            int zMagInThousandths = extractHalfWordFromDataArray(data, offsetInBytes);
+            double zMag = zMagInThousandths / 1000.0;
+            offsetInBytes += 2;
+
             magPub.publish(new MagneticMeasurement(xMag, yMag, zMag));
         }
-        //ff5 is temperature
+        //ff4 is inclination
+        // reported in units of 0.1 degrees
+        if (m.getFf4()) {
+            int xInclinationInTenths = extractHalfWordFromDataArray(data, offsetInBytes);
+            double xInclination = xInclinationInTenths / 10.0;
+            offsetInBytes += 2;
+
+            int yInclinationInTenths = extractHalfWordFromDataArray(data, offsetInBytes);
+            double yInclination = yInclinationInTenths / 10.0;
+            offsetInBytes += 2;
+
+            int zInclinationInTenths = extractHalfWordFromDataArray(data, offsetInBytes);
+            double zInclination = zInclinationInTenths / 10.0;
+            offsetInBytes += 2;
+
+            inclinationPub.publish(new IMUInclinationMessage(xInclination, yInclination, zInclination));
+        }
+        //ff5 is compass for format 1
         if (m.getFf5()) {
-            double temperature = convertQNToDouble((byte) data[offset + 0], (byte) data[offset + 1], 7);
-            offset += 2;
-            tempPub.publish(new IMUTemperatureMessage(temperature));
+            int degreesInTenths = extractHalfWordFromDataArray(data, offsetInBytes);
+            double degrees = degreesInTenths/10.0;
+            offsetInBytes += 2;
+
+            compassPub.publish(new IMUCompassMessage(degrees));
         }
         //ff6 is angular position
         if (m.getFf6()) {
-            double w = convertQNToDouble((byte) data[offset + 0], (byte) data[offset + 1], 14);
-            double x = convertQNToDouble((byte) data[offset + 2], (byte) data[offset + 3], 14);
-            double y = convertQNToDouble((byte) data[offset + 4], (byte) data[offset + 5], 14);
-            double z = convertQNToDouble((byte) data[offset + 6], (byte) data[offset + 7], 14);
+            double w = convertQNToDouble((byte) data[offsetInBytes + 0], (byte) data[offsetInBytes + 1], 14);
+            double x = convertQNToDouble((byte) data[offsetInBytes + 2], (byte) data[offsetInBytes + 3], 14);
+            double y = convertQNToDouble((byte) data[offsetInBytes + 4], (byte) data[offsetInBytes + 5], 14);
+            double z = convertQNToDouble((byte) data[offsetInBytes + 6], (byte) data[offsetInBytes + 7], 14);
 
             double r11 = 1 - 2 * y * y - 2 * z * z;
             double r12 = 2 * x * y - 2 * z * w;
@@ -134,7 +184,7 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
             };
 
             angPosPub.publish(new IMUAngularPositionMessage(rot));
-            offset += 8;
+            offsetInBytes += 8;
         }
 
     }
@@ -227,6 +277,20 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
         double d = sT.doubleValue();
         return Math.pow(2, -1 * qn) * d;
 
+    }
+
+    /**
+     * Returns a 2-byte data value from the IMU's data array
+     * @param data the byte array for the IMU
+     * @param offsetInBytes the offset into the data array where the halfword starts from. Note that this value does
+     *                      NOT get increased, you will need to keep track of an offset externally
+     * @return the halfword extracted
+     */
+    private int extractHalfWordFromDataArray(int[] data, int offsetInBytes) {
+
+        int lsb = data[offsetInBytes];
+        int msb = data[offsetInBytes + 1];
+        return ((msb << 8) | lsb);
     }
 
 }

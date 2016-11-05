@@ -4,13 +4,6 @@ import java.util.Date;
 
 /**
  * Message for passing IMU angular positions measurements within BuggyROS
- *
- * @author Sean Buckley
- * @version 0.5
- *          <p>
- *          CHANGELOG: NONE
- *          <p>
- *          DESCRIPTION: TODO
  */
 @Deprecated
 public class IMUAngularPositionMessage extends BaseMessage {

@@ -4,13 +4,6 @@ import java.util.Date;
 
 /**
  * Message for passing IMU angular velocity measurements within BuggyROS
- *
- * @author ?
- * @version 0.5
- *          <p>
- *          CHANGELOG: NONE
- *          <p>
- *          DESCRIPTION: TODO
  */
 @Deprecated
 public class IMUAngularVelocityMessage extends BaseMessage {
