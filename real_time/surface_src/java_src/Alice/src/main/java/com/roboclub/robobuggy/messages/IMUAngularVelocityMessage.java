@@ -28,6 +28,7 @@ public class IMUAngularVelocityMessage extends BaseMessage {
      * @param x x value
      * @param y y value
      * @param z z value
+     * @param imuID the ID of the IMU that generated the data
      */
     public IMUAngularVelocityMessage(double x, double y, double z, int imuID) {
         this.timestamp = new Date().getTime();

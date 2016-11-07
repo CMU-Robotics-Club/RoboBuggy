@@ -28,6 +28,7 @@ public class IMULinearAccelerationMessage extends BaseMessage {
      * @param x x acceleration value
      * @param y y acceleration value
      * @param z z acceleration value
+     * @param imuID the ID of the IMU that generated the data
      */
     public IMULinearAccelerationMessage(double x, double y, double z, int imuID) {
         this.timestamp = new Date().getTime();

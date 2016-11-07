@@ -23,6 +23,7 @@ public class IMUAngularPositionMessage extends BaseMessage {
      * Constructs a new {@link IMUAngularPositionMessage} at time now
      *
      * @param rotMat The matrix containing all values
+     * @param imuID the ID of the IMU that generated the data
      */
     public IMUAngularPositionMessage(double[][] rotMat, int imuID) {
         this.timestamp = new Date().getTime();

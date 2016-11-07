@@ -23,6 +23,7 @@ public class IMUTemperatureMessage extends BaseMessage {
      * Constructs a new {@link IMUTemperatureMessage} at time now
      *
      * @param temp temperature reading from the IMU
+     * @param imuID the ID of the IMU that generated the data
      */
     public IMUTemperatureMessage(double temp, int imuID) {
         this.timestamp = new Date().getTime();

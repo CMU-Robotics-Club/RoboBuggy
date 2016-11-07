@@ -28,6 +28,7 @@ public class MagneticMeasurement extends BaseMessage {
      * @param magX magX value
      * @param magY magY value
      * @param magZ magZ value
+     * @param imuID the ID of the IMU that generated the data
      */
     public MagneticMeasurement(double magX, double magY, double magZ, int imuID) {
         this.timestamp = new Date().getTime();
