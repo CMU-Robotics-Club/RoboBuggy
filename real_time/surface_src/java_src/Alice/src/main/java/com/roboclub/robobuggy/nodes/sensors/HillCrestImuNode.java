@@ -15,6 +15,7 @@ import com.roboclub.robobuggy.messages.IMUTemperatureMessage;
 import com.roboclub.robobuggy.messages.MagneticMeasurement;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
+import java.util.ArrayList;
 
 /**
  * Driver for the Hillcrest IMUs
@@ -23,7 +24,7 @@ import com.roboclub.robobuggy.ros.Publisher;
  * @author Sean Buckley
  */
 public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListenerInterface, com.roboclub.robobuggy.ros.Node {
-    private Device thisDevice;
+    private ArrayList<Device> registeredDevices;
     private Publisher linearAccPub = new Publisher(NodeChannel.IMU_LINEAR_ACC.getMsgPath());
     private Publisher linearAccNoGravPub = new Publisher(NodeChannel.IMU_LINEAR_NO_GRAV.getMsgPath());
     private Publisher angVelPub = new Publisher(NodeChannel.IMU_ANG_VEL.getMsgPath());
@@ -46,6 +47,12 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
 
     @Override
     public void handleRead(Device arg0, HidInMsg arg1, int arg2, long arg3) {
+        int deviceID = registeredDevices.indexOf(arg0);
+        if(deviceID == -1) {
+            //TODO send a message to the console saying that this device was not found
+            //Should we return here?
+        }
+
         //TODO handle other kinds of messages
         if (!(arg1 instanceof FreespaceMsgInMotionEngineOutput)) {
             return;
@@ -75,7 +82,7 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
             double yAccel = convertQNToDouble((byte) data[offset + 2], (byte) data[offset + 3], 10);
             double zAccel = convertQNToDouble((byte) data[offset + 4], (byte) data[offset + 5], 10);
             offset += 6;
-            linearAccPub.publish(new IMULinearAccelerationMessage(xAccel, yAccel, zAccel));
+            linearAccPub.publish(new IMULinearAccelerationMessage(xAccel, yAccel, zAccel, deviceID));
         }
         //ff2 is linear Acceleration no gravity
         if (m.getFf2()) {
@@ -83,7 +90,7 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
             double yAccel = convertQNToDouble((byte) data[offset + 2], (byte) data[offset + 3], 10);
             double zAccel = convertQNToDouble((byte) data[offset + 4], (byte) data[offset + 5], 10);
             offset += 6;
-            linearAccNoGravPub.publish(new IMULinearAccelerationMessage(xAccel, yAccel, zAccel));
+            linearAccNoGravPub.publish(new IMULinearAccelerationMessage(xAccel, yAccel, zAccel, deviceID));
         }
         //ff3 is Angular velocity
         if (m.getFf3()) {
@@ -91,7 +98,7 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
             double yAngularVel = convertQNToDouble((byte) data[offset + 2], (byte) data[offset + 3], 10);
             double zAngularVel = convertQNToDouble((byte) data[offset + 4], (byte) data[offset + 5], 10);
             offset += 6;
-            angVelPub.publish(new IMUAngularVelocityMessage(xAngularVel, yAngularVel, zAngularVel));
+            angVelPub.publish(new IMUAngularVelocityMessage(xAngularVel, yAngularVel, zAngularVel, deviceID));
         }
         //ff4 is magnetometer
         if (m.getFf4()) {
@@ -99,13 +106,13 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
             double yMag = convertQNToDouble((byte) data[offset + 2], (byte) data[offset + 3], 12);
             double zMag = convertQNToDouble((byte) data[offset + 4], (byte) data[offset + 5], 12);
             offset += 6;
-            magPub.publish(new MagneticMeasurement(xMag, yMag, zMag));
+            magPub.publish(new MagneticMeasurement(xMag, yMag, zMag, deviceID));
         }
         //ff5 is temperature
         if (m.getFf5()) {
             double temperature = convertQNToDouble((byte) data[offset + 0], (byte) data[offset + 1], 7);
             offset += 2;
-            tempPub.publish(new IMUTemperatureMessage(temperature));
+            tempPub.publish(new IMUTemperatureMessage(temperature, deviceID));
         }
         //ff6 is angular position
         if (m.getFf6()) {
@@ -132,7 +139,7 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
                     { r31, r32, r33 }
             };
 
-            angPosPub.publish(new IMUAngularPositionMessage(rot));
+            angPosPub.publish(new IMUAngularPositionMessage(rot, deviceID));
             offset += 8;
         }
 
@@ -153,8 +160,8 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
     @Override
     public void freespaceDeviceInserted(Device arg0) {
         // TODO Auto-generated method stub
-        thisDevice = arg0;
-        thisDevice.open(this);
+        registeredDevices.add(arg0);
+        arg0.open(this);
 
         FreespaceMsgOutDataModeControlV2Request msg = new FreespaceMsgOutDataModeControlV2Request();
         msg.setPacketSelect(8);  //
@@ -168,13 +175,13 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
         msg.setFf5(true); //Tempeature
         msg.setFf6(true); //Angular position
 
-        thisDevice.sendMessageAsync(msg);
+        arg0.sendMessageAsync(msg);
     }
 
     @Override
     public void freespaceDeviceRemoved(Device arg0) {
         // TODO Auto-generated method stub
-        thisDevice = null;
+        registeredDevices.remove(arg0);
 
     }
 

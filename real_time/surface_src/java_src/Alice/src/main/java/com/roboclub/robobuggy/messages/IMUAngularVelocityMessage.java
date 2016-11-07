@@ -16,6 +16,7 @@ public class IMUAngularVelocityMessage extends BaseMessage {
 
     public static final String VERSION_ID = "imuAngularVelocityV0.0";
 
+    private int IMU;
 
     private double x;
     private double y;
@@ -28,8 +29,9 @@ public class IMUAngularVelocityMessage extends BaseMessage {
      * @param y y value
      * @param z z value
      */
-    public IMUAngularVelocityMessage(double x, double y, double z) {
+    public IMUAngularVelocityMessage(double x, double y, double z, int imuID) {
         this.timestamp = new Date().getTime();
+        this.IMU = imuID;
         this.x = x;
         this.y = y;
         this.z = z;
@@ -61,5 +63,12 @@ public class IMUAngularVelocityMessage extends BaseMessage {
     public double getZ() {
         return z;
     }
+
+    /**
+     * Returns the ID of the IMU for the {@link IMUAngularPositionMessage}
+     *
+     * @return the ID of the IMU for the {@link IMUAngularPositionMessage}
+     */
+    public int getIMU() { return this.IMU; }
 
 }

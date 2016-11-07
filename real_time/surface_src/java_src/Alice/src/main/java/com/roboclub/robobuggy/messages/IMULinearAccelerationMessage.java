@@ -16,6 +16,8 @@ public class IMULinearAccelerationMessage extends BaseMessage {
 
     public static final String VERSION_ID = "LinearAccelerationV0.0";
 
+    int IMU;
+
     private double x;
     private double y;
     private double z;
@@ -27,8 +29,9 @@ public class IMULinearAccelerationMessage extends BaseMessage {
      * @param y y acceleration value
      * @param z z acceleration value
      */
-    public IMULinearAccelerationMessage(double x, double y, double z) {
+    public IMULinearAccelerationMessage(double x, double y, double z, int imuID) {
         this.timestamp = new Date().getTime();
+        this.IMU = imuID;
         this.x = x;
         this.y = y;
         this.z = z;
@@ -61,4 +64,10 @@ public class IMULinearAccelerationMessage extends BaseMessage {
         return z;
     }
 
+    /**
+     * Returns the ID of the IMU for the {@link IMULinearAccelerationMessage}
+     *
+     * @return the ID of the IMU for the {@link IMULinearAccelerationMessage}
+     */
+    public int getIMU() { return this.IMU; }
 }
