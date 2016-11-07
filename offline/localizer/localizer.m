@@ -109,12 +109,12 @@ function [A] = model(x, time)
          0, 0, 1, 0, 0, 0, 0;
          0, 0, 0, 1, 0, 0, 0;
          0, 0, 0, 0, 1, dt, 0;
-         0, 0, 180.0/(pi*(wheel_base/sin(heading))), 0, 0, 0, 0;
+         0, 0, 180.0/(pi*(wheel_base/tan(heading))), 0, 0, 0, 0; % used to be sin, ERROR !!
          0, 0, 0, 0, 0, 0, 1];
 end
 
 function [P_pre, x_pre] = predict_step(P, x, time)
-    R = eye(7); % measurement noise covariance
+    R = eye(7) .* (0.5); % measurement noise covariance
     A = model(x, time);
     x_pre = A * x;
     % P_pre = eye(7) * P * eye(7)'; % ERROR !!
@@ -123,7 +123,7 @@ function [P_pre, x_pre] = predict_step(P, x, time)
 end
 
 function [P, x] = update_step(C, z, P_pre, x_pre)
-    Q = eye(7); % model noise covariance
+    Q = eye(7) .* (0.1); % model noise covariance
     residual = z - (C * x_pre);
     residual = scrubAngles(residual);
     K = P_pre * C' * inv((C * P_pre * C') + Q); % gain

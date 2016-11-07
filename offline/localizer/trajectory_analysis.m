@@ -36,3 +36,7 @@ plot(trajectory(1,1:k:end), trajectory(2,1:k:end))
 quiver(trajectory(1,1:k:end), trajectory(2,1:k:end), cos(theta), sin(theta))
 hold off;
 title(['Heading ', file]);
+
+% plot on google maps
+ss = [trajectory(8,1:k:end); trajectory(9,1:k:end)];
+fprintf(1, '%5.20f, %5.20f\n', ss);
