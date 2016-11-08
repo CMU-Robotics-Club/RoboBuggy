@@ -41,23 +41,12 @@
  * (1000 hundredths), the PWM_SCALE_STEERING_OUT and POT_SCALE_STEERING_IN
  * should be adjusted until a 10 deg input/output is seen/observed.
  */
-#if BUGGY == transistor 
-    #define PWM_OFFSET_STEERING_OUT 1905
-    #define PWM_SCALE_STEERING_OUT -220
-    #define PWM_OFFSET_STORED_ANGLE 0
-    #define PWM_SCALE_STORED_ANGLE 1000 // in hundredths of a degree for precision
-    #define POT_OFFSET_STEERING_IN 121
-    #define POT_SCALE_STEERING_IN -10
-    #define STEERING_LIMIT_LEFT -1500   //steering_set assumes that left is less than right.
-    #define STEERING_LIMIT_RIGHT 1500
-#elif BUGGY == nixie
-    #define PWM_OFFSET_STEERING_OUT 1789
-    #define PWM_SCALE_STEERING_OUT -150
-    #define PWM_OFFSET_STORED_ANGLE 0
-    #define PWM_SCALE_STORED_ANGLE 1000 // in hundredths of a degree for precision
-#else
-    #error "must compile with BUGGY_TRANSISTOR or BUGGY_NIXI flag"
-#endif
+#define PWM_OFFSET_STORED_ANGLE 0
+#define PWM_SCALE_STORED_ANGLE 1000 // in hundredths of a degree for precision
+#define POT_OFFSET_STEERING_IN 121
+#define POT_SCALE_STEERING_IN -10
+#define STEERING_LIMIT_LEFT -1500   //steering_set assumes that left is less than right.
+#define STEERING_LIMIT_RIGHT 1500
 
 #define PWM_STATE_THRESHOLD 120
 
