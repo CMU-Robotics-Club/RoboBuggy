@@ -75,6 +75,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
 
         // set our initial state
         //  - take our initial position and perform UTM conversions on it
+        // todo set the initial state
 
 
         // add all our subscribers for our current state update stream
@@ -108,8 +109,31 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
 
     @Override
     protected void update() {
+        // a kalman filter consists of two distinct steps - predict and update
+
+        // the predict step is responsible for determining the estimate of the next state
+        //   What we do is we
+        //
+        //   todo fill this out
+        predictStep();
+
+        // the update step is responsible for updating the current state, and resolving
+        // discrepancies between the prediction and actual state
+        //   What we do is we
+        //
+        //
+        //   todo fill this out
+        updateStep();
+    }
+
+    private void predictStep() {
 
     }
+
+    private void updateStep() {
+
+    }
+
 
     @Override
     protected boolean startDecoratorNode() {
