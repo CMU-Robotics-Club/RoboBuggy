@@ -42,11 +42,7 @@ volatile unsigned long timer0_overflow_count = 0;
 volatile unsigned long timer0_millis = 0;
 static unsigned char timer0_fract = 0;
 
-#if defined(__AVR_ATtiny24__) || defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny84__)
-ISR(TIM0_OVF_vect)
-#else
 ISR(TIMER0_OVF_vect)
-#endif
 {
 	// copy these to local variables so they can be stored in registers
 	// (volatile variables must be read from memory on every access)
@@ -85,23 +81,10 @@ unsigned long micros() {
 	
 	cli();
 	m = timer0_overflow_count;
-#if defined(TCNT0)
 	t = TCNT0;
-#elif defined(TCNT0L)
-	t = TCNT0L;
-#else
-	#error TIMER 0 not defined
-#endif
 
-  
-#ifdef TIFR0
-	if ((TIFR0 & _BV(TOV0)) && (t < 255))
+    if ((TIFR0 & _BV(TOV0)) && (t < 255))
 		m++;
-#else
-	if ((TIFR & _BV(TOV0)) && (t < 255))
-		m++;
-#endif
-
 	SREG = oldSREG;
 	
 	return ((m << 8) + t) * (64 / clockCyclesPerMicrosecond());
@@ -125,26 +108,7 @@ void delay_microseconds(unsigned int us)
 	// calling avrlib's delay_us() function with low values (e.g. 1 or
 	// 2 microseconds) gives delays longer than desired.
 	//delay_us(us);
-#if F_CPU >= 20000000L
-	// for the 20 MHz clock on rare Arduino boards
-
-	// for a one-microsecond delay, simply wait 2 cycle and return. The overhead
-	// of the function call yields a delay of exactly a one microsecond.
-	__asm__ __volatile__ (
-		"nop" "\n\t"
-		"nop"); //just waiting 2 cycle
-	if (--us == 0)
-		return;
-
-	// the following loop takes a 1/5 of a microsecond (4 cycles)
-	// per iteration, so execute it five times for each microsecond of
-	// delay requested.
-	us = (us<<2) + us; // x5 us
-
-	// account for the time taken in the preceeding commands.
-	us -= 2;
-
-#elif F_CPU >= 16000000L
+    
 	// for the 16 MHz clock on most Arduino boards
 
 	// for a one-microsecond delay, simply return.  the overhead
@@ -159,26 +123,6 @@ void delay_microseconds(unsigned int us)
 
 	// account for the time taken in the preceeding commands.
 	us -= 2;
-#else
-	// for the 8 MHz internal clock on the ATmega168
-
-	// for a one- or two-microsecond delay, simply return.  the overhead of
-	// the function calls takes more than two microseconds.  can't just
-	// subtract two, since us is unsigned; we'd overflow.
-	if (--us == 0)
-		return;
-	if (--us == 0)
-		return;
-
-	// the following loop takes half of a microsecond (4 cycles)
-	// per iteration, so execute it twice for each microsecond of
-	// delay requested.
-	us <<= 1;
-    
-	// partially compensate for the time taken by the preceeding commands.
-	// we can't subtract any more than this or we'd overflow w/ small delays.
-	us--;
-#endif
 
 	// busy wait
 	__asm__ __volatile__ (
@@ -196,39 +140,14 @@ void system_clock_init()
 	// on the ATmega168, timer 0 is also used for fast hardware pwm
 	// (using phase-correct PWM would mean that timer 0 overflowed half as often
 	// resulting in different millis() behavior on the ATmega8 and ATmega168)
-#if defined(TCCR0A) && defined(WGM01)
 	sbi(TCCR0A, WGM01);
 	sbi(TCCR0A, WGM00);
-#endif  
 
 	// set timer 0 prescale factor to 64
-#if defined(__AVR_ATmega128__)
-	// CPU specific: different values for the ATmega128
-	sbi(TCCR0, CS02);
-#elif defined(TCCR0) && defined(CS01) && defined(CS00)
-	// this combination is for the standard atmega8
-	sbi(TCCR0, CS01);
-	sbi(TCCR0, CS00);
-#elif defined(TCCR0B) && defined(CS01) && defined(CS00)
 	// this combination is for the standard 168/328/1280/2560
-	sbi(TCCR0B, CS01);
+    sbi(TCCR0B, CS01);
 	sbi(TCCR0B, CS00);
-#elif defined(TCCR0A) && defined(CS01) && defined(CS00)
-	// this combination is for the __AVR_ATmega645__ series
-	sbi(TCCR0A, CS01);
-	sbi(TCCR0A, CS00);
-#else
-	#error Timer 0 prescale factor 64 not set correctly
-#endif
 
 	// enable timer 0 overflow interrupt
-#if defined(TIMSK) && defined(TOIE0)
-	sbi(TIMSK, TOIE0);
-#elif defined(TIMSK0) && defined(TOIE0)
 	sbi(TIMSK0, TOIE0);
-#else
-	#error	Timer 0 overflow interrupt not set correctly
-#endif
-
-
 }
