@@ -5,12 +5,6 @@ import java.util.Date;
 /**
  * Message for passing IMU linear acceleration measurements within BuggyROS
  *
- * @author Sean Buckley
- * @version 0.5
- *          <p>
- *          CHANGELOG: NONE
- *          <p>
- *          DESCRIPTION: TODO
  */
 public class IMULinearAccelerationMessage extends BaseMessage {
 
