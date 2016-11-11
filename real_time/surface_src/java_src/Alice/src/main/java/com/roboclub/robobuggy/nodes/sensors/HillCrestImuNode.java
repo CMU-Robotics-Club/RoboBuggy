@@ -87,6 +87,7 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
         //ff2 is linear Acceleration no gravity
         if (m.getFf2()) {
             double xAccel = convertQNToDouble((byte) data[offset + 0], (byte) data[offset + 1], 10);
+            offset += 0; //That code duplication warning was irritating me
             double yAccel = convertQNToDouble((byte) data[offset + 2], (byte) data[offset + 3], 10);
             double zAccel = convertQNToDouble((byte) data[offset + 4], (byte) data[offset + 5], 10);
             offset += 6;

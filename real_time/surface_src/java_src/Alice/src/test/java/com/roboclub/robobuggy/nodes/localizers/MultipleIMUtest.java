@@ -13,91 +13,73 @@ import com.roboclub.robobuggy.ros.*;
  * Created by Alex on 11/10/2016.
  */
 public class MultipleIMUtest {
-    private Subscriber linAccSub = new Subscriber("test", NodeChannel.IMU_LINEAR_ACC.getMsgPath(), new MessageListener() {
-        @Override
-        public void actionPerformed(String topicName, Message m) {
-            if(m instanceof IMULinearAccelerationMessage){
-                System.out.println("Linear Acceleration Message; Topic is : " + topicName);
-                IMULinearAccelerationMessage mes = ((IMULinearAccelerationMessage)m);
-                System.out.println("IMU: " + mes.getIMU());
-                System.out.println("X: " + mes.getX());
-                System.out.println("Y: " + mes.getY());
-                System.out.println("Z: " + mes.getZ());
-                System.out.println("\n====================================================");
-            }
+    private Subscriber linAccSub = new Subscriber("test", NodeChannel.IMU_LINEAR_ACC.getMsgPath(), (topicName, m) -> {
+        if(m instanceof IMULinearAccelerationMessage){
+            System.out.println("Linear Acceleration Message; Topic is : " + topicName);
+            IMULinearAccelerationMessage mes = ((IMULinearAccelerationMessage)m);
+            System.out.println("IMU: " + mes.getIMU());
+            System.out.println("X: " + mes.getX());
+            System.out.println("Y: " + mes.getY());
+            System.out.println("Z: " + mes.getZ());
+            System.out.println("\n====================================================");
         }
     });
 
-    private Subscriber linAccNoGravSub = new Subscriber("test", NodeChannel.IMU_LINEAR_NO_GRAV.getMsgPath(), new MessageListener() {
-        @Override
-        public void actionPerformed(String topicName, Message m) {
-            if(m instanceof IMULinearAccelerationMessage){
-                System.out.println("Linear Acceleration Message; Topic is : " + topicName);
-                IMULinearAccelerationMessage mes = ((IMULinearAccelerationMessage)m);
-                System.out.println("IMU: " + mes.getIMU());
-                System.out.println("X: " + mes.getX());
-                System.out.println("Y: " + mes.getY());
-                System.out.println("Z: " + mes.getZ());
-                System.out.println("\n====================================================");
-            }
+    private Subscriber linAccNoGravSub = new Subscriber("test", NodeChannel.IMU_LINEAR_NO_GRAV.getMsgPath(), (topicName, m) -> {
+        if(m instanceof IMULinearAccelerationMessage){
+            System.out.println("Linear Acceleration (No Gravity) Message; Topic is : " + topicName);
+            IMULinearAccelerationMessage mes = ((IMULinearAccelerationMessage)m);
+            System.out.println("IMU: " + mes.getIMU());
+            System.out.println("X: " + mes.getX());
+            System.out.println("Y: " + mes.getY());
+            System.out.println("Z: " + mes.getZ());
+            System.out.println("\n====================================================");
         }
     });
 
-    private Subscriber angVelSub = new Subscriber("test", NodeChannel.IMU_ANG_VEL.getMsgPath(), new MessageListener() {
-        @Override
-        public void actionPerformed(String topicName, Message m) {
-            if(m instanceof IMUAngularVelocityMessage){
-                System.out.println("Linear Acceleration Message; Topic is : " + topicName);
-                IMUAngularVelocityMessage mes = ((IMUAngularVelocityMessage)m);
-                System.out.println("IMU: " + mes.getIMU());
-                System.out.println("X: " + mes.getX());
-                System.out.println("Y: " + mes.getY());
-                System.out.println("Z: " + mes.getZ());
-                System.out.println("\n====================================================");
-            }
+    private Subscriber angVelSub = new Subscriber("test", NodeChannel.IMU_ANG_VEL.getMsgPath(), (topicName, m) -> {
+        if(m instanceof IMUAngularVelocityMessage){
+            System.out.println("Linear Acceleration Message; Topic is : " + topicName);
+            IMUAngularVelocityMessage mes = ((IMUAngularVelocityMessage)m);
+            System.out.println("IMU: " + mes.getIMU());
+            System.out.println("X: " + mes.getX());
+            System.out.println("Y: " + mes.getY());
+            System.out.println("Z: " + mes.getZ());
+            System.out.println("\n====================================================");
         }
     });
 
-    private Subscriber magSub = new Subscriber("test", NodeChannel.IMU_MAGNETIC.getMsgPath(), new MessageListener() {
-        @Override
-        public void actionPerformed(String topicName, Message m) {
-            if(m instanceof MagneticMeasurement){
-                System.out.println("Linear Acceleration Message; Topic is : " + topicName);
-                MagneticMeasurement mes = ((MagneticMeasurement)m);
-                System.out.println("IMU: " + mes.getIMU());
-                System.out.println("X: " + mes.getmagX());
-                System.out.println("Y: " + mes.getmagY());
-                System.out.println("Z: " + mes.getmagZ());
-                System.out.println("\n====================================================");
-            }
+    private Subscriber magSub = new Subscriber("test", NodeChannel.IMU_MAGNETIC.getMsgPath(), (topicName, m) -> {
+        if(m instanceof MagneticMeasurement){
+            System.out.println("Linear Acceleration Message; Topic is : " + topicName);
+            MagneticMeasurement mes = ((MagneticMeasurement)m);
+            System.out.println("IMU: " + mes.getIMU());
+            System.out.println("X: " + mes.getmagX());
+            System.out.println("Y: " + mes.getmagY());
+            System.out.println("Z: " + mes.getmagZ());
+            System.out.println("\n====================================================");
         }
     });
 
-    private Subscriber tempSub = new Subscriber("test", NodeChannel.IMU_TEMP.getMsgPath(), new MessageListener() {
-        @Override
-        public void actionPerformed(String topicName, Message m) {
-            if(m instanceof IMUTemperatureMessage){
-                System.out.println("Linear Acceleration Message; Topic is : " + topicName);
-                IMUTemperatureMessage mes = ((IMUTemperatureMessage)m);
-                System.out.println("IMU: " + mes.getIMU());
-                System.out.println("Temperature: " + mes.getTemp());
-                System.out.println("\n====================================================");
-            }
+    private Subscriber tempSub = new Subscriber("test", NodeChannel.IMU_TEMP.getMsgPath(), (topicName, m) -> {
+        if(m instanceof IMUTemperatureMessage){
+            System.out.println("Linear Acceleration Message; Topic is : " + topicName);
+            IMUTemperatureMessage mes = ((IMUTemperatureMessage)m);
+            System.out.println("IMU: " + mes.getIMU());
+            System.out.println("Temperature: " + mes.getTemp());
+            System.out.println("\n====================================================");
         }
     });
 
-    private Subscriber angPosSub = new Subscriber("test", NodeChannel.IMU_ANG_POS.getMsgPath(), new MessageListener() {
-        @Override
-        public void actionPerformed(String topicName, Message m) {
-            if(m instanceof IMUAngularPositionMessage){
-                System.out.println("Linear Acceleration Message; Topic is : " + topicName);
-                IMUAngularPositionMessage mes = ((IMUAngularPositionMessage)m);
-                System.out.println("IMU: " + mes.getIMU());
-                double[][] rot = mes.getRot();
-                System.out.println("Values");
-                System.out.println(rot.toString());
-                System.out.println("\n====================================================");
-            }
+    private Subscriber angPosSub = new Subscriber("test", NodeChannel.IMU_ANG_POS.getMsgPath(), (topicName, m) -> {
+        if(m instanceof IMUAngularPositionMessage){
+            System.out.println("Linear Acceleration Message; Topic is : " + topicName);
+            IMUAngularPositionMessage mes = ((IMUAngularPositionMessage)m);
+            System.out.println("IMU: " + mes.getIMU());
+            double[][] rot = mes.getRot();
+            System.out.println("Values");
+            System.out.println(rot.toString());
+            System.out.println("\n====================================================");
         }
     });
 
@@ -119,7 +101,7 @@ public class MultipleIMUtest {
         node.handleRead(b, msgB, 34, System.currentTimeMillis());
     }
 
-    public static HidInMsg makeMessage(int id) {
+    private static HidInMsg makeMessage(int id) {
         byte[] data = new byte[34];
         data[0] = 0;
         data[1] = 0;
@@ -188,17 +170,17 @@ public class MultipleIMUtest {
 
     public static class fakeHillcrest extends Device {
 
-
-
         public fakeHillcrest(int id, String name, int vendorId, int productId, int hVer) {
             super(id, name, vendorId, productId, hVer);
         }
 
         public boolean getFf0() {
+            System.out.println("Hey look I was actually called (0)");
             return true;
         }
 
         public boolean getFf1() {
+            System.out.println("Hey look I was actually called (1)");
             return true;
         }
     }
