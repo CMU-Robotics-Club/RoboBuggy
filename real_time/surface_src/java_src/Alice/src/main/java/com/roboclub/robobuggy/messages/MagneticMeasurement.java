@@ -23,7 +23,21 @@ public class MagneticMeasurement extends BaseMessage {
     private double magZ;
 
     /**
-     * Constructs a new {@link MagMeasurement} at time now
+     * Constructs a new {@link MagneticMeasurement} at time now with IMU ID = 0
+     *
+     * @param magX magX value
+     * @param magY magY value
+     * @param magZ magZ value
+     */
+    public MagneticMeasurement(double magX, double magY, double magZ) {
+        this.timestamp = new Date().getTime();
+        this.magX = magX;
+        this.magY = magY;
+        this.magZ = magZ;
+    }
+
+    /**
+     * Constructs a new {@link MagneticMeasurement} at time now
      *
      * @param magX magX value
      * @param magY magY value

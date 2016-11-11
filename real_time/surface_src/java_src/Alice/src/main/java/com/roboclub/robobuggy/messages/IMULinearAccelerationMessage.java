@@ -23,6 +23,20 @@ public class IMULinearAccelerationMessage extends BaseMessage {
     private double z;
 
     /**
+     * Constructs a new {@link IMULinearAccelerationMessage} at time now with IMU ID = 0
+     *
+     * @param x x acceleration value
+     * @param y y acceleration value
+     * @param z z acceleration value
+     */
+    public IMULinearAccelerationMessage(double x, double y, double z) {
+        this.timestamp = new Date().getTime();
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
+    /**
      * Constructs a new {@link IMULinearAccelerationMessage} at time now
      *
      * @param x x acceleration value

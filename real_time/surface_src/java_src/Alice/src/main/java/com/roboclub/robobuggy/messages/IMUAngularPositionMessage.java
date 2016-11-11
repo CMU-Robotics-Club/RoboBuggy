@@ -20,6 +20,17 @@ public class IMUAngularPositionMessage extends BaseMessage {
     private double[][] rot;
 
     /**
+     * Constructs a new {@link IMUAngularPositionMessage} at time now, with IMU set to 0
+     *
+     * @param rotMat The matrix containing all values
+     */
+    public IMUAngularPositionMessage(double[][] rotMat) {
+        this.timestamp = new Date().getTime();
+        this.rot = rotMat.clone();
+        this.IMU = 0;
+    }
+
+    /**
      * Constructs a new {@link IMUAngularPositionMessage} at time now
      *
      * @param rotMat The matrix containing all values

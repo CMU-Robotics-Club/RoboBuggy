@@ -220,7 +220,7 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
     public double convertQNToDouble(byte lsb, byte msb, int qn) {
         // converting Qn fixed point
 
-        int msbAsInt = ((int) msb) & 0xFF;
+        int msbAsInt = ((int) msb) & 0xFF; //Why bitwise and by 0xFF? is there other stuff we need?
         int lsbAsInt = ((int) lsb & 0xFF);
 
         int squashedTogether = ((msbAsInt << 8) | lsbAsInt);

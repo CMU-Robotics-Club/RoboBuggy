@@ -20,6 +20,17 @@ public class IMUTemperatureMessage extends BaseMessage {
     private double temperature;
 
     /**
+     * Constructs a new {@link IMUTemperatureMessage} at time now with IMU ID = 0
+     *
+     * @param temp temperature reading from the IMU
+     */
+    public IMUTemperatureMessage(double temp) {
+        this.timestamp = new Date().getTime();
+        this.temperature = temp;
+        this.IMU = 0;
+    }
+
+    /**
      * Constructs a new {@link IMUTemperatureMessage} at time now
      *
      * @param temp temperature reading from the IMU

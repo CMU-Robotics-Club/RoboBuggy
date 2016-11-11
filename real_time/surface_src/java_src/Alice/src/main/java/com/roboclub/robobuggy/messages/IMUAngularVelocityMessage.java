@@ -23,6 +23,21 @@ public class IMUAngularVelocityMessage extends BaseMessage {
     private double z;
 
     /**
+     * Constructs a new {@link IMUAngularVelocityMessage} at time now with IMU ID 0
+     *
+     * @param x x value
+     * @param y y value
+     * @param z z value
+     */
+    public IMUAngularVelocityMessage(double x, double y, double z) {
+        this.timestamp = new Date().getTime();
+        this.IMU = 0;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
+    /**
      * Constructs a new {@link IMUAngularVelocityMessage} at time now
      *
      * @param x x value
