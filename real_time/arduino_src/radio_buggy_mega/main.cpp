@@ -214,14 +214,15 @@ int adc_read_blocking(uint8_t pin) // takes less than 160us, return 0 to 1023
 }
 
 
-long steer_set_prev_ticks = 0;
-long steer_set_prev_velocity = 0;
 /** @brief sets the velocity of the steering motor to target_velocity
  *
  *  @param target_velocity is in hundredths of a degree per second. values > 0
  *      drive to the right
  */
 void steer_set_velocity(long target_velocity) {
+    static long steer_set_prev_ticks = 0;
+    static long steer_set_prev_velocity = 0;
+
 	target_velocity = clamp(target_velocity, STEERING_MAX_SPEED, -(STEERING_MAX_SPEED));
 	
 	long current_ticks = g_encoder_steering.GetTicks();
@@ -248,14 +249,14 @@ void steer_set_velocity(long target_velocity) {
 }
 
 
-long steer_set_error_prev = 0; //This is used to find the d term for position.
-
 /** @brief sets the steering angle using PID feedback
  *
  *  @param angle set point in hundredths of a degree
  */
 void steering_set(int angle) //TODO: should angle be an int or a long?
 {
+    static long steer_set_error_prev = 0; //This is used to find the d term for position.
+
 	//TODO: delete short circuiting code for testing velocity measure
 	// steer_set_velocity(angle);
 	// return;
@@ -585,9 +586,7 @@ int main(void)
                 g_errors &= ~_BV(RBSM_EID_AUTON_LOST_SIGNAL);
             }
         }
-
-        // or reset the system if connection is back and driver engages brakes
-        else {
+        else { // or reset the system if connection is back and driver engages brakes
             if(brake_cmd_teleop_engaged == true) {
                 brake_needs_reset = false;
             }
