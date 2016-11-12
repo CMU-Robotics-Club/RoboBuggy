@@ -132,7 +132,6 @@
 // Global state
 static bool g_is_autonomous;
 static unsigned long g_current_voltage; // in mV
-static unsigned long g_steering_feedback;
 static int steer_angle;
 static int auto_steering_angle;
 static unsigned long g_errors;
