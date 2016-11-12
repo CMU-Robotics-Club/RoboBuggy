@@ -38,13 +38,12 @@
 /*
  * These values map the physical input/output (voltage/ms of pwm pulse) to a
  * fixed physical angle. When software commands a steering angle of 10 deg
- * (1000 hundredths), the PWM_SCALE_STEERING_OUT and POT_SCALE_STEERING_IN
+ * (1000 hundredths), the PWM_SCALE_STEERING_OUT
  * should be adjusted until a 10 deg input/output is seen/observed.
  */
 #define PWM_OFFSET_STORED_ANGLE 0
 #define PWM_SCALE_STORED_ANGLE 1000 // in hundredths of a degree for precision
-#define POT_OFFSET_STEERING_IN 121
-#define POT_SCALE_STEERING_IN -10
+
 #define STEERING_LIMIT_LEFT -1500   //steering_set assumes that left is less than right.
 #define STEERING_LIMIT_RIGHT 1500
 
@@ -92,7 +91,6 @@
 #define BATTERY_ADC 0 // pin to read battery level from (A0)
 #define BATTERY_ADC_SLOPE  14.683 // in mV, obtained from calibration
 #define BATTERY_ADC_OFFSET 44.359
-#define STEERING_POT_ADC 9
 
 #define BRAKE_OUT_DDR  DDRH
 #define BRAKE_OUT_PORT PORTH
@@ -600,14 +598,7 @@ int main(void)
         g_current_voltage *= BATTERY_ADC_SLOPE;
         g_current_voltage += BATTERY_ADC_OFFSET;
 
-        // Read/convert steering pot
-        g_steering_feedback = adc_read_blocking(STEERING_POT_ADC);
-        g_steering_feedback = map_signal(g_steering_feedback,
-                                         POT_OFFSET_STEERING_IN,
-                                         POT_SCALE_STEERING_IN,
-                                         PWM_OFFSET_STORED_ANGLE,
-                                         PWM_SCALE_STORED_ANGLE);
-
+        
         // Set outputs
         if(g_is_autonomous)
         {
