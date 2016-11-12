@@ -4,6 +4,7 @@ import Jama.Matrix;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.IMUCompassMessage;
+import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyNode;
 import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
 import com.roboclub.robobuggy.ros.NodeChannel;
@@ -55,8 +56,8 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
      * @param name the name of the node
      * @param initialPosition the initial position of the localizer
      */
-    protected RobobuggyKFLocalizer(BuggyNode base, int period, String name, LocTuple initialPosition) {
-        super(base, period, name);
+    protected RobobuggyKFLocalizer(int period, String name, LocTuple initialPosition) {
+        super(new BuggyBaseNode(NodeChannel.POSE), period, name);
         posePub = new Publisher(NodeChannel.POSE.getMsgPath());
         this.initialPosition = initialPosition;
 
@@ -66,8 +67,8 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         // The covariance matrix consists of 7 rows:
         //      x       - x position in the world frame, in meters
         //      y       - y position in the world frame, in meters
-        //      x_b     -
-        //      y_b     -
+        //      x_b     - the body velocity of the buggy (x-velocity relative to the buggy frame)
+        //      y_b     - y velocity relative to the buggy frame (always 0 since we cant strafe)
         //      th      -
         //      th_dot  -
         //      heading -
@@ -110,19 +111,34 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
     @Override
     protected void update() {
         // a kalman filter consists of two distinct steps - predict and update
+        /*
+
+            <x[k-1], p[k-1]> ---> {A} ---> <xhat[k], phat[k]> ---> |
+                   ^                                               |> {filter} ---> <x[k], p[k]> ---|
+                   |                                        z ---> |                                |
+                   |                                                                                |
+                   ---------------------------------------------------------------------------------|
+
+         */
 
         // the predict step is responsible for determining the estimate of the next state
-        //   What we do is we
         //
-        //   todo fill this out
+        //   What we do is we take our current state (x[k-1]) and current noise estimate
+        //   (p[k-1]), and plug them into the motion model (A). This lets us determine our
+        //   prediction state (xhat[k]) and our prediction noise (phat[k])
+        //
         predictStep();
 
         // the update step is responsible for updating the current state, and resolving
         // discrepancies between the prediction and actual state
-        //   What we do is we
         //
+        //   What we do is we take our measurements (z) that were captured from sensors,
+        //   as well as the predictions from the previous step (xhat[k], phat[k]) and run
+        //   them through the filter which todo fill this part out about innovation etc
         //
-        //   todo fill this out
+        //   This produces your next state (x[k]) and your next noise estimation (p[k]),
+        //   which connect in a feedback loop to become the new current state
+        //
         updateStep();
     }
 
