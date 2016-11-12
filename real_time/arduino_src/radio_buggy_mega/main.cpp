@@ -95,11 +95,6 @@
 #define BRAKE_OUT_DDR  DDRH
 #define BRAKE_OUT_PORT PORTH
 #define BRAKE_OUT_PINN PH5 // arduino 8
-#define BRAKE_INDICATOR_DDR  DDRE
-#define BRAKE_INDICATOR_PORT PORTE
-#define BRAKE_INDICATOR_PINN PE3 // arduino 5
-
-
 
 #define STEERING_LOOP_TIME_US 10000L
 #define MICROSECONDS_PER_SECOND 1000000L
@@ -339,7 +334,6 @@ int8_t steering_center() {
 void brake_init() 
 {
     BRAKE_OUT_DDR |= _BV(BRAKE_OUT_PINN);
-    BRAKE_INDICATOR_DDR |= _BV(BRAKE_INDICATOR_PINN);
 }
 
 
@@ -348,7 +342,6 @@ void brake_init()
 void brake_raise() 
 {
     BRAKE_OUT_PORT |= _BV(BRAKE_OUT_PINN);
-    BRAKE_INDICATOR_PORT &= ~_BV(BRAKE_INDICATOR_PINN);
 }
 
 
@@ -357,7 +350,6 @@ void brake_raise()
 void brake_drop() 
 {
     BRAKE_OUT_PORT &= ~_BV(BRAKE_OUT_PINN);
-    BRAKE_INDICATOR_PORT |= _BV(BRAKE_INDICATOR_PINN);
 }
 
 /*
@@ -442,11 +434,6 @@ int main(void)
     adc_init();
     brake_init();
     steering_center(); // this call takes time
-
-    // servo power control starts outputting low
-    // PBH4 = Arduino 7
-    PORTH &= ~_BV(4);
-    DDRH |= _BV(4);
 
     // setup rbsm
     g_rbsm.Init(&g_uart_rbsm, &g_uart_rbsm);
