@@ -30,9 +30,9 @@
 #define DEBUG_DDR  DDRB
 #define DEBUG_PORT PORTB
 #define DEBUG_PINN PB7 // arduino 13
-#define SERVO_DDR  DDRB
-#define SERVO_PORT PORTB
-#define SERVO_PINN PB5 // arduino 11 TODO: this is not used here
+//#define SERVO_DDR  DDRB
+//#define SERVO_PORT PORTB
+//#define SERVO_PINN PB5 // arduino 11 TODO: this is not used here
 #define CONNECTION_TIMEOUT_US 1000000L // 1000ms
 
 /*
@@ -50,20 +50,20 @@
 
 #define PWM_STATE_THRESHOLD 120
 
-#define RX_STEERING_DDR  DDRE
-#define RX_STEERING_PORT PORTE
+//#define RX_STEERING_DDR  DDRE
+//#define RX_STEERING_PORT PORTE
 #define RX_STEERING_PIN  PINE
 #define RX_STEERING_PINN PE4 // arduino 2
 #define RX_STEERING_INT  INT4_vect
 #define RX_STEERING_INTN 4
-#define RX_BRAKE_DDR  DDRD
-#define RX_BRAKE_PORT PORTD
+//#define RX_BRAKE_DDR  DDRD
+//#define RX_BRAKE_PORT PORTD
 #define RX_BRAKE_PIN  PIND
 #define RX_BRAKE_PINN PD0 // arduino 21
 #define RX_BRAKE_INT  INT0_vect
 #define RX_BRAKE_INTN 0
-#define RX_AUTON_DDR  DDRD
-#define RX_AUTON_PORT PORTD
+//#define RX_AUTON_DDR  DDRD
+//#define RX_AUTON_PORT PORTD
 #define RX_AUTON_PIN  PIND
 #define RX_AUTON_PINN PD1 // arduino 20
 #define RX_AUTON_INT  INT1_vect
@@ -74,8 +74,8 @@
 #define ENCODER_PIN  PIND
 #define ENCODER_PINN PD2 // arduino 19
 #define ENCODER_INT  INT2_vect
-#define ENCODER_INTN 2
-#define ENCODER_TIMEOUT_US 500 // 50mph w/ 6" wheel = 280 ticks/sec; 4000us/tick
+//#define ENCODER_INTN 2
+//#define ENCODER_TIMEOUT_US 500 // 50mph w/ 6" wheel = 280 ticks/sec; 4000us/tick
 
 #define ENCODER_STEERING_A_DDR  DDRB
 #define ENCODER_STEERING_A_PORT PORTB
