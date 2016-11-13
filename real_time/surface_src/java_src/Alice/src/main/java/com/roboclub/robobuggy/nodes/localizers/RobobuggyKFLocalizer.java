@@ -161,12 +161,35 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         // get the time elapsed in seconds
         double timeDiff = (currentTimeAsDate.getTime() - currentStateTime.getTime()) / 1000;
 
-        // get the current state's global heading
+        // get the current state's global heading and steering angle
         double currentStateTH = currentStatePose.get(HEADING_GLOBAL_ROW, 0);
         double currentStateSteering = currentStatePose.get(STEERING_ANGLE_ROW, 0);
 
+        // get our new model based on current heading and steering angle
+        motionModel = getNewMotionModel(currentStateTH, currentStateSteering, timeDiff);
+
+    }
+
+    private Matrix getNewMotionModel(double currentStateTH, double currentStateSteering, double timeDiff) {
+
+        double motionModelXDotX = Math.cos(currentStateTH) * timeDiff;
+        double motionModelYDotX = -Math.sin(currentStateTH) * timeDiff;
+        double motionModelXDotY = Math.sin(currentStateTH) * timeDiff;
+        double motionModelYDotY = Math.cos(currentStateTH) * timeDiff;
+        double motionModelHeadingUpdate = 180/ (Math.PI * (WHEELBASE / Math.sin(currentStateSteering)));
+
         double[][] motionModel = {
+                // x y x_b y_b th th_dot heading
+                { 1, 0, motionModelXDotX,         motionModelYDotX, 0, 0,        0 }, // x
+                { 0, 1, motionModelXDotY,         motionModelYDotY, 0, 0,        0 }, // y
+                { 0, 0, 1,                        0,                0, 0,        0 }, // x_b
+                { 0, 0, 0,                        1,                0, 0,        0 }, // y_b
+                { 0, 0, 0,                        0,                1, timeDiff, 0 }, // th
+                { 0, 0, motionModelHeadingUpdate, 0,                0, 0,        0 }, // th_dot
+                { 0, 0, 0,                        0,                0, 0,        1 } // heading
         };
+
+        return new Matrix(motionModel);
     }
 
     private void updateStep() {
