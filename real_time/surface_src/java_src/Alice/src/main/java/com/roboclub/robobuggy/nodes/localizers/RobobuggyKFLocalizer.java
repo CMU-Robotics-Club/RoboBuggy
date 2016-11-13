@@ -48,6 +48,13 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
             {0, 0, 0, 0, 0, 1, 0},
             {0, 0, 0, 0, 0, 0, 1}
     };
+    private static final int X_GLOBAL_ROW = 0;
+    private static final int Y_GLOBAL_ROW = 1;
+    private static final int X_BODY_VELOCITY_ROW = 2;
+    private static final int Y_BODY_VELOCITY_ROW = 3;
+    private static final int HEADING_GLOBAL_ROW = 4;
+    private static final int HEADING_VELOCITY_ROW = 5;
+    private static final int STEERING_ANGLE_ROW = 6;
 
 
 
@@ -64,8 +71,10 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         posePub = new Publisher(NodeChannel.POSE.getMsgPath());
         this.initialPosition = initialPosition;
 
-        // set our initial covariance
-        // The covariance matrix consists of 7 rows:
+        // set our initial state
+        //  - take our initial position and perform UTM conversions on it
+        // todo set the initial state
+        // The state matrix consists of 7 rows:
         //      x       - x position in the world frame, in meters
         //      y       - y position in the world frame, in meters
         //      x_b     - the body velocity of the buggy (x-velocity relative to the buggy frame)
@@ -73,12 +82,9 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         //      th      - yaw angle with respect to the world frame
         //      th_dot  - change in th over time
         //      heading - current steering angle
+
+        // set our initial covariance
         covariance = new Matrix(SEVEN_ROW_IDENTITY_MATRIX);
-
-        // set our initial state
-        //  - take our initial position and perform UTM conversions on it
-        // todo set the initial state
-
 
         // add all our subscribers for our current state update stream
         // these subscribers are only meant as catchers, just stupidly simple relays
@@ -150,7 +156,17 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
     }
 
     private void predictStep() {
+        Date currentTimeAsDate = new Date();
 
+        // get the time elapsed in seconds
+        double timeDiff = (currentTimeAsDate.getTime() - currentStateTime.getTime()) / 1000;
+
+        // get the current state's global heading
+        double currentStateTH = currentStatePose.get(HEADING_GLOBAL_ROW, 0);
+        double currentStateSteering = currentStatePose.get(STEERING_ANGLE_ROW, 0);
+
+        double[][] motionModel = {
+        };
     }
 
     private void updateStep() {
