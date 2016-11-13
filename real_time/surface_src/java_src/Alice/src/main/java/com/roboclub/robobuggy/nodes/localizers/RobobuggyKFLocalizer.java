@@ -22,9 +22,12 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
     private Publisher posePub;
 
     // matrices that are used in the kalman filter
-    private Matrix covariance;
-    private Matrix state;
-    private Matrix motionMatrix;
+    private Matrix covariance;            // a matrix that defines our levels of trust for each sensor
+    private Matrix currentStatePose;      // our current position estimate
+    private Matrix currentStateNoise;     // our current noise estimate
+    private Matrix nextStatePose;         // an estimate of the next state, based on the motion model
+    private Matrix nextStateNoise;        // an estimate of the next state's noise, based on the motion model
+    private Matrix motionModel;           // a set of equations that model how the buggy behaves
 
     // state variables
     private LocTuple currentStateGPS;     // current GPS location
@@ -62,16 +65,14 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         this.initialPosition = initialPosition;
 
         // set our initial covariance
-        // turns out it's just the I matrix
-        // todo fill out descriptions
         // The covariance matrix consists of 7 rows:
         //      x       - x position in the world frame, in meters
         //      y       - y position in the world frame, in meters
         //      x_b     - the body velocity of the buggy (x-velocity relative to the buggy frame)
         //      y_b     - y velocity relative to the buggy frame (always 0 since we cant strafe)
-        //      th      -
-        //      th_dot  -
-        //      heading -
+        //      th      - yaw angle with respect to the world frame
+        //      th_dot  - change in th over time
+        //      heading - current steering angle
         covariance = new Matrix(SEVEN_ROW_IDENTITY_MATRIX);
 
         // set our initial state
@@ -140,6 +141,12 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         //   which connect in a feedback loop to become the new current state
         //
         updateStep();
+
+        // publish the current findings
+
+        // and update our understanding of time
+        currentStatePose = nextStatePose;
+        currentStateNoise = nextStateNoise;
     }
 
     private void predictStep() {
