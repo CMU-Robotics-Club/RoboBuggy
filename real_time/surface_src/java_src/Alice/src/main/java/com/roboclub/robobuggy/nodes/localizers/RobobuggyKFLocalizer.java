@@ -168,9 +168,32 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         // get our new model based on current heading and steering angle
         motionModel = getNewMotionModel(currentStateTH, currentStateSteering, timeDiff);
 
+        // calculate the next state prediction
+        nextStatePose = motionModel.times(currentStatePose);
+
+        // get the new covariance
+        // todo explain
+
+        // clamp all the angles between -180˚ and +180˚
+
+    }
+
+    private void updateStep() {
+        // get the innovation matrix
+        // todo explain
+
+        // clamp all angles in the innovation matrix to -180˚ to +180˚
+
+        // get the kalman gain
+        // todo explain
+
+        // get the new covariance
+        // todo explain
     }
 
     private Matrix getNewMotionModel(double currentStateTH, double currentStateSteering, double timeDiff) {
+
+        // todo explain
 
         double motionModelXDotX = Math.cos(currentStateTH) * timeDiff;
         double motionModelYDotX = -Math.sin(currentStateTH) * timeDiff;
@@ -190,10 +213,6 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         };
 
         return new Matrix(motionModel);
-    }
-
-    private void updateStep() {
-
     }
 
 
