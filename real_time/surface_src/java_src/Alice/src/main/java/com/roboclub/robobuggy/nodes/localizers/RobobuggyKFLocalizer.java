@@ -118,15 +118,14 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
     @Override
     protected void update() {
         // a kalman filter consists of two distinct steps - predict and update
-        /*
-
-            <x[k-1], p[k-1]> ---> {A} ---> <xhat[k], phat[k]> ---> |
-                   ^                                               |> {filter} ---> <x[k], p[k]> ---|
-                   |                                        z ---> |                                |
-                   |                                                                                |
-                   ---------------------------------------------------------------------------------|
-
-         */
+        // a state diagram is shown below
+        //
+        //<x[k-1], p[k-1]> ---> {A} ---> <xhat[k], phat[k]> ---> |
+        //       A                                               |---> {filter} ---> <x[k], p[k]> ---|
+        //       |                                        z ---> |                                   |
+        //       |                                                                                   |
+        //       ------------------------------------------------------------------------------------|
+        //
 
         // the predict step is responsible for determining the estimate of the next state
         //
