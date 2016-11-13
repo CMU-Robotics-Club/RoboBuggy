@@ -11,6 +11,8 @@ public class IMUInclinationMessage extends BaseMessage {
     private double yInclination;
     private double zInclination;
 
+    private int IMU;
+
     /**
      * Constructs a new Inclination Message
      * @param xInclination x inclination (pitch)
@@ -22,6 +24,20 @@ public class IMUInclinationMessage extends BaseMessage {
         this.yInclination = yInclination;
         this.zInclination = zInclination;
     }
+
+    /**
+     * Constructs a new Inclination Message
+     * @param xInclination x inclination (pitch)
+     * @param yInclination y inclination (roll)
+     * @param zInclination z inclination (yaw)
+     */
+    public IMUInclinationMessage(double xInclination, double yInclination, double zInclination, int imuID) {
+        this.xInclination = xInclination;
+        this.yInclination = yInclination;
+        this.zInclination = zInclination;
+        this.IMU = imuID;
+    }
+
 
     /**
      * @return x inclination
@@ -43,4 +59,11 @@ public class IMUInclinationMessage extends BaseMessage {
     public double getZInclination() {
         return zInclination;
     }
+
+    /**
+     * Returns the ID of the IMU for the {@link IMUInclinationMessage}
+     *
+     * @return the ID of the IMU for the {@link IMUInclinationMessage}
+     */
+    public int getIMU() { return this.IMU; }
 }

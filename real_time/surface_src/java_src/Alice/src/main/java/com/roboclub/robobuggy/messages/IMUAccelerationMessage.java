@@ -11,6 +11,8 @@ public class IMUAccelerationMessage extends BaseMessage {
     private double yAccel;
     private double zAccel;
 
+    private int imuID;
+
     /**
      * Constructor for a new Acceleration message
      *
@@ -23,6 +25,22 @@ public class IMUAccelerationMessage extends BaseMessage {
         this.yAccel = yAccel;
         this.zAccel = zAccel;
     }
+
+    /**
+     * Constructor for a new Acceleration message
+     *
+     * @param xAccel x acceleration
+     * @param yAccel y acceleration
+     * @param zAccel z acceleration
+     */
+    public IMUAccelerationMessage(double xAccel, double yAccel, double zAccel, int imuID) {
+        this.xAccel = xAccel;
+        this.yAccel = yAccel;
+        this.zAccel = zAccel;
+        this.imuID  = imuID;
+    }
+
+
 
     /**
      * @return the x acceleration
@@ -44,4 +62,11 @@ public class IMUAccelerationMessage extends BaseMessage {
     public double getZAccel() {
         return zAccel;
     }
+
+    /**
+     * Returns the ID of the IMU for the {@link IMUAccelerationMessage}
+     *
+     * @return the ID of the IMU for the {@link IMUAccelerationMessage}
+     */
+    public int getIMU() { return this.imuID; }
 }

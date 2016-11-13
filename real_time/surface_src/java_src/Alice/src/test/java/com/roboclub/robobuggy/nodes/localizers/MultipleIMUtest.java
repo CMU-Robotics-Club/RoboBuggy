@@ -4,7 +4,6 @@ import com.hcrest.jfreespace.Device;
 import com.hcrest.jfreespace.inreport.DecoderFactory;
 import com.hcrest.jfreespace.inreport.FreespaceMsgInMotionEngineOutput;
 import com.hcrest.jfreespace.inreport.HidInMsg;
-import com.hcrest.jfreespace.inreport.HidInMsgType;
 import com.roboclub.robobuggy.messages.*;
 import com.roboclub.robobuggy.nodes.sensors.HillCrestImuNode;
 import com.roboclub.robobuggy.ros.*;
@@ -13,6 +12,18 @@ import com.roboclub.robobuggy.ros.*;
  * Created by Alex on 11/10/2016.
  */
 public class MultipleIMUtest {
+    private Subscriber accSub = new Subscriber("test", NodeChannel.IMU_ACCELERATION.getMsgPath(), (topicName, m) -> {
+        if(m instanceof IMUAccelerationMessage){
+            System.out.println("Acceleration Message; Topic is : " + topicName);
+            IMUAccelerationMessage mes = ((IMUAccelerationMessage)m);
+            System.out.println("IMU: " + mes.getIMU());
+            System.out.println("X: " + mes.getXAccel());
+            System.out.println("Y: " + mes.getYAccel());
+            System.out.println("Z: " + mes.getZAccel());
+            System.out.println("\n====================================================");
+        }
+    });
+
     private Subscriber linAccSub = new Subscriber("test", NodeChannel.IMU_LINEAR_ACC.getMsgPath(), (topicName, m) -> {
         if(m instanceof IMULinearAccelerationMessage){
             System.out.println("Linear Acceleration Message; Topic is : " + topicName);
@@ -25,21 +36,9 @@ public class MultipleIMUtest {
         }
     });
 
-    private Subscriber linAccNoGravSub = new Subscriber("test", NodeChannel.IMU_LINEAR_NO_GRAV.getMsgPath(), (topicName, m) -> {
-        if(m instanceof IMULinearAccelerationMessage){
-            System.out.println("Linear Acceleration (No Gravity) Message; Topic is : " + topicName);
-            IMULinearAccelerationMessage mes = ((IMULinearAccelerationMessage)m);
-            System.out.println("IMU: " + mes.getIMU());
-            System.out.println("X: " + mes.getX());
-            System.out.println("Y: " + mes.getY());
-            System.out.println("Z: " + mes.getZ());
-            System.out.println("\n====================================================");
-        }
-    });
-
     private Subscriber angVelSub = new Subscriber("test", NodeChannel.IMU_ANG_VEL.getMsgPath(), (topicName, m) -> {
         if(m instanceof IMUAngularVelocityMessage){
-            System.out.println("Linear Acceleration Message; Topic is : " + topicName);
+            System.out.println("Angular Velocity Message; Topic is : " + topicName);
             IMUAngularVelocityMessage mes = ((IMUAngularVelocityMessage)m);
             System.out.println("IMU: " + mes.getIMU());
             System.out.println("X: " + mes.getX());
@@ -51,7 +50,7 @@ public class MultipleIMUtest {
 
     private Subscriber magSub = new Subscriber("test", NodeChannel.IMU_MAGNETIC.getMsgPath(), (topicName, m) -> {
         if(m instanceof MagneticMeasurement){
-            System.out.println("Linear Acceleration Message; Topic is : " + topicName);
+            System.out.println("Magnetic Measurement Message; Topic is : " + topicName);
             MagneticMeasurement mes = ((MagneticMeasurement)m);
             System.out.println("IMU: " + mes.getIMU());
             System.out.println("X: " + mes.getmagX());
@@ -61,19 +60,31 @@ public class MultipleIMUtest {
         }
     });
 
-    private Subscriber tempSub = new Subscriber("test", NodeChannel.IMU_TEMP.getMsgPath(), (topicName, m) -> {
-        if(m instanceof IMUTemperatureMessage){
-            System.out.println("Linear Acceleration Message; Topic is : " + topicName);
-            IMUTemperatureMessage mes = ((IMUTemperatureMessage)m);
+    private Subscriber incSub = new Subscriber("test", NodeChannel.IMU_INCLINATION.getMsgPath(), (topicName, m) -> {
+        if(m instanceof IMUInclinationMessage){
+            System.out.println("Inclination Message; Topic is : " + topicName);
+            IMUInclinationMessage mes = ((IMUInclinationMessage)m);
             System.out.println("IMU: " + mes.getIMU());
-            System.out.println("Temperature: " + mes.getTemp());
+            System.out.println("X: " + mes.getXInclination());
+            System.out.println("Y: " + mes.getYInclination());
+            System.out.println("Z: " + mes.getZInclination());
+            System.out.println("\n====================================================");
+        }
+    });
+
+    private Subscriber compSub = new Subscriber("test", NodeChannel.IMU_COMPASS.getMsgPath(), (topicName, m) -> {
+        if(m instanceof IMUCompassMessage){
+            System.out.println("Compass Message; Topic is : " + topicName);
+            IMUCompassMessage mes = ((IMUCompassMessage)m);
+            System.out.println("IMU: " + mes.getIMU());
+            System.out.println("Heading: " + mes.getCompassHeading());
             System.out.println("\n====================================================");
         }
     });
 
     private Subscriber angPosSub = new Subscriber("test", NodeChannel.IMU_ANG_POS.getMsgPath(), (topicName, m) -> {
         if(m instanceof IMUAngularPositionMessage){
-            System.out.println("Linear Acceleration Message; Topic is : " + topicName);
+            System.out.println("Angular Position Message; Topic is : " + topicName);
             IMUAngularPositionMessage mes = ((IMUAngularPositionMessage)m);
             System.out.println("IMU: " + mes.getIMU());
             double[][] rot = mes.getRot();
@@ -102,56 +113,60 @@ public class MultipleIMUtest {
     }
 
     private static HidInMsg makeMessage(int id) {
-        byte[] data = new byte[34];
-        data[0] = 0;
-        data[1] = 0;
-        data[2] = 0;
-        data[3] = 0;
-        data[4] = 0;
-        data[5] = 0;
 
         boolean a = id == 0;
 
+        byte[] data = new byte[40];
+
+        /** Acceleration **/
+
+        data[0] = 0x20; /** X - Value: 8 **/
+        data[1] = 0x03;
+        data[2] = 0x50; /** Y - Value: 3.36 **/
+        data[3] = 0x01;
+        data[4] = 0x00; /** Z - Value: 40.96 for id = 0, 5.12 otherwise **/
+        data[5] = (byte) (a ? 0x10 : 0x02);
+
         /** Linear Acceleration **/
 
-        data[6] = 0x00; /** X - Value: 8 **/
-        data[7] = 0x20;
-        data[8] = 0x00; /** Y - Value: 4 **/
-        data[9] = 0x10;
-        data[10] = 0x00; /** Z - Value: 4 for id = 0, 8 otherwise **/
-        data[11] = (byte) (a ? 0x10 : 0x20);
-
-        /** Linear Acceleration (No Gravity) **/
-
-        data[12] = 0x00; /** X - Value: 8.5 **/
-        data[13] = 0x22;
-        data[14] = 0x00; /** Y - Value: 9.5 **/
-        data[15] = 0x26;
-        data[16] = 0x00; /** Z - Value: 1 if id = 0, 4 otherwise **/
-        data[17] = (byte) (a ? 0x04 : 0x10);
+        data[6] = 0x50; /** X - Value: 4 **/
+        data[7] = 0x01;
+        data[8] = 0x20; /** Y - Value: 8 **/
+        data[9] = 0x03;
+        data[10] = 0x00; /** Z - Value: 3 for id = 0, 0.44 otherwise **/
+        data[11] = (byte) (a ? 0x01 : 0x00);
 
         /** Angular Velocity **/
 
-        data[18] = 0x00; /** X - Value: 1.5 **/
-        data[19] = 0x08;
-        data[20] = 0x00; /** Y - Value: 4.25 **/
-        data[21] = 0x11;
-        data[22] = 0x00; /** Z - Value: 0 if id = 0, 1 otherwise **/
-        data[23] = (byte) (a ? 0x00 : 0x04);
+        data[12] = 0x55; /** X - Value: 8.5 **/
+        data[13] = 0x00;
+        data[14] = 0x5F; /** Y - Value: 9.5 **/
+        data[15] = 0x00;
+        data[16] = 0x7E; /** Z - Value: 63.8 if id = 0, 115 otherwise **/
+        data[17] = (byte) (a ? 0x02 : 0x04);
 
         /** Magnetometer **/
 
-        data[24] = 0x00; /** X - Value: -6 **/
-        data[25] = (byte) 0xA0;
-        data[26] = 0x00; /** Y - Value: -5 **/
-        data[27] = (byte) 0xB0;
-        data[28] = 0x00; /** Z - Value: 1 if id = 0, -1 otherwise **/
-        data[29] = (byte) (a ? 0x10 : 0xF0);
+        data[18] = 0x5C; /** X - Value: 0.86 **/
+        data[19] = 0x03;
+        data[20] = 0x6A; /** Y - Value: 4.202 **/
+        data[21] = 0x10;
+        data[22] = 0x00; /** Z - Value: 0 if id = 0, 1.024 otherwise **/
+        data[23] = (byte) (a ? 0x00 : 0x04);
 
-        /** Temperature **/
+        /** Inclination **/
 
-        data[30] = 0x00; /** Temperature: 128 if id = 0, 4 otherwise **/
-        data[31] = (byte) (a ? 0x40 : 0x01);
+        data[24] = 0x3C; /** X - Value: 6 **/
+        data[25] = 0x00;
+        data[26] = 0x32; /** Y - Value: 5 **/
+        data[27] = 0x00;
+        data[28] = 0x00; /** Z - Value: 25.6 if id = 0, 76.8 otherwise **/
+        data[29] = (byte) (a ? 0x01 : 0x03);
+
+        /** Compass **/
+
+        data[30] = 0x1A; /** Compass: 1692.2 if id = 0, 6402.6 otherwise **/
+        data[31] = (byte) (a ? 0x42 : 0xFA);
 
         /** Angular Position **/
 

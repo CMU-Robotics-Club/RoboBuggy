@@ -14,6 +14,8 @@ public class IMUCompassMessage extends BaseMessage {
      */
     private double compassHeading;
 
+    private int imuID;
+
     /**
      * Constructs a new {@link IMUCompassMessage} at time now
      *
@@ -25,6 +27,18 @@ public class IMUCompassMessage extends BaseMessage {
     }
 
     /**
+     * Constructs a new {@link IMUCompassMessage} at time now
+     *
+     * @param compassHeading compassHeading reading from the IMU
+     * @param imuID ID for the IMU
+     */
+    public IMUCompassMessage(double compassHeading, int imuID) {
+        this.timestamp = new Date().getTime();
+        this.compassHeading = compassHeading;
+        this.imuID = imuID;
+    }
+
+    /**
      * Returns the compassHeading value of the {@link IMUCompassMessage}
      *
      * @return the compassHeading value of the {@link IMUCompassMessage}
@@ -33,4 +47,11 @@ public class IMUCompassMessage extends BaseMessage {
         return this.compassHeading;
     }
 
+
+    /**
+     * Returns the ID of the IMU for the {@link IMUCompassMessage}
+     *
+     * @return the ID of the IMU for the {@link IMUCompassMessage}
+     */
+    public int getIMU() { return this.imuID; }
 }
