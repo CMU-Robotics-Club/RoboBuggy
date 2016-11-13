@@ -83,170 +83,136 @@ public class KfLocalizer extends PeriodicNode {
 
         // Initialize subscriber to GPS measurements
         new Subscriber("htGpsLoc", NodeChannel.GPS.getMsgPath(),
-                new MessageListener() {
-                    @Override
-                    public synchronized void actionPerformed(String topicName, Message m) {
-                        GpsMeasurement newGPSData = (GpsMeasurement) m;
-                        LocTuple gpsLatLng = new LocTuple(newGPSData
-                                .getLatitude(), newGPSData.getLongitude());
-                        UTMTuple gpsUTM = LocalizerUtil.deg2UTM(gpsLatLng);
-                        double dx = gpsUTM.getEasting() - lastGPS.getEasting();
-                        double dy = gpsUTM.getNorthing() - lastGPS.getNorthing();
-                        double th = Math.toDegrees(Math.atan2(dy, dx));
-                        lastGPS = gpsUTM;
+            new MessageListener() {
+                @Override
+                public synchronized void actionPerformed(String topicName, Message m) {
+                    GpsMeasurement newGPSData = (GpsMeasurement) m;
+                    LocTuple gpsLatLng = new LocTuple(newGPSData
+                            .getLatitude(), newGPSData.getLongitude());
+                    UTMTuple gpsUTM = LocalizerUtil.deg2UTM(gpsLatLng);
+                    double dx = gpsUTM.getEasting() - lastGPS.getEasting();
+                    double dy = gpsUTM.getNorthing() - lastGPS.getNorthing();
+                    double th = Math.toDegrees(Math.atan2(dy, dx));
+                    lastGPS = gpsUTM;
 
-                        double[][] observationModel = {
-                                { 1, 0, 0, 0, 0, 0, 0 }, // x
-                                { 0, 1, 0, 0, 0, 0, 0 }, // y
-                                { 0, 0, 0, 0, 0, 0, 0 }, // x_dot_b
-                                { 0, 0, 0, 0, 0, 0, 0 }, // y_dot_b
-                                { 0, 0, 0, 0, 1, 0, 0 }, // th
-                                { 0, 0, 0, 0, 0, 0, 0 }, // th_dot
-                                { 0, 0, 0, 0, 0, 0, 0 } // Heading
-                        };
+                    double[][] observationModel = {
+                            { 1, 0, 0, 0, 0, 0, 0 }, // x
+                            { 0, 1, 0, 0, 0, 0, 0 }, // y
+                            { 0, 0, 0, 0, 0, 0, 0 }, // x_dot_b
+                            { 0, 0, 0, 0, 0, 0, 0 }, // y_dot_b
+                            { 0, 0, 0, 0, 1, 0, 0 }, // th
+                            { 0, 0, 0, 0, 0, 0, 0 }, // th_dot
+                            { 0, 0, 0, 0, 0, 0, 0 }  // Heading
+                    };
 
-                        // don't update angle if we did not move a lot
-                        if (Math.sqrt(dx * dx + dy * dy) < .5) {// ||
-                            // Math.abs(th-
-                            // state.get(4,
-                            // 0)) > 90){
-                            observationModel[4][4] = 0;
-                        }
-
-                        if (Math.abs(gpsUTM.getEasting() - startUTM.getEasting())
-                                + Math.abs(gpsUTM.getNorthing() - startUTM.getNorthing()) < 10.0) {
-                            th = startAngle;
-                        }
-
-                        double[][] meassurement = { { gpsUTM.getEasting() },
-                                { gpsUTM.getNorthing() }, { 0 }, { 0 }, { th },
-                                { 0 }, { 0 } };
-                        double[][] updateCovariance = {
-                                { 1, 0, 0, 0, 0, 0, 0 }, // x
-                                { 0, 1, 0, 0, 0, 0, 0 }, // y
-                                { 0, 0, 1, 0, 0, 0, 0 }, // x_dot
-                                { 0, 0, 0, 1, 0, 0, 0 }, // y_dot
-                                { 0, 0, 0, 0, 1, 0, 0 }, // th
-                                { 0, 0, 0, 0, 0, 1, 0 }, // th_dot
-                                { 0, 0, 0, 0, 0, 0, 1 } // heading
-                        };
-                        updateStep(new Matrix(observationModel), new Matrix(
-                                meassurement), new Matrix(updateCovariance));
+                    // don't update angle if we did not move a lot
+                    if (Math.sqrt(dx * dx + dy * dy) < .5) {// ||
+                        // Math.abs(th-
+                        // state.get(4,
+                        // 0)) > 90){
+                        observationModel[4][4] = 0;
                     }
-                });
+
+                    if (Math.abs(gpsUTM.getEasting() - startUTM.getEasting())
+                            + Math.abs(gpsUTM.getNorthing() - startUTM.getNorthing()) < 10.0) {
+                        th = startAngle;
+                    }
+
+                    double[][] meassurement = { { gpsUTM.getEasting() },
+                            { gpsUTM.getNorthing() }, { 0 }, { 0 }, { th },
+                            { 0 }, { 0 } };
+                    double[][] updateCovariance = {
+                            { 1, 0, 0, 0, 0, 0, 0 }, // x
+                            { 0, 1, 0, 0, 0, 0, 0 }, // y
+                            { 0, 0, 1, 0, 0, 0, 0 }, // x_dot
+                            { 0, 0, 0, 1, 0, 0, 0 }, // y_dot
+                            { 0, 0, 0, 0, 1, 0, 0 }, // th
+                            { 0, 0, 0, 0, 0, 1, 0 }, // th_dot
+                            { 0, 0, 0, 0, 0, 0, 1 } // heading
+                    };
+                    updateStep(new Matrix(observationModel), new Matrix(
+                            meassurement), new Matrix(updateCovariance));
+                }
+            });
 
 		/*
         new Subscriber(
-				"HighTrustGpsLoc",
-				NodeChannel.IMU_ANG_POS.getMsgPath(),
-				((topicName, m) -> {
+			"HighTrustGpsLoc",
+			NodeChannel.IMU_ANG_POS.getMsgPath(),
+			((topicName, m) -> {
 
-					IMUAngularPositionMessage mes = ((IMUAngularPositionMessage) m);
-					// double y = mes.getRot()[0][1];
-					// double x = mes.getRot()[0][0];
-					double[][] xVar = { { 1 }, { 0 }, { 0 } };
-					double[][] yVar = { { 0 }, { 1 }, { 0 } };
-					Matrix xMat = new Matrix(xVar);
-					Matrix yMat = new Matrix(yVar);
-					Matrix rot = new Matrix(mes.getRot());
-					double x = rot.times(xMat).get(0, 0);
-					double y = rot.times(yMat).get(0, 0);
-					double th = -(Math.toDegrees(Math.atan2(y, x)) - 90);
-					double[][] observationModel = { { 0, 0, 0, 0, 0, 0, 0 }, // x
-							{ 0, 0, 0, 0, 0, 0, 0 }, // y
-							{ 0, 0, 0, 0, 0, 0, 0 }, // x_dot_b
-							{ 0, 0, 0, 0, 0, 0, 0 }, // y_dot_b
-							{ 0, 0, 0, 0, 1, 0, 0 }, // th
-							{ 0, 0, 0, 0, 0, 0, 0 }, // th_dot
-							{ 0, 0, 0, 0, 0, 0, 0 } // Heading
-					};
+				IMUAngularPositionMessage mes = ((IMUAngularPositionMessage) m);
+				// double y = mes.getRot()[0][1];
+				// double x = mes.getRot()[0][0];
+				double[][] xVar = { { 1 }, { 0 }, { 0 } };
+				double[][] yVar = { { 0 }, { 1 }, { 0 } };
+				Matrix xMat = new Matrix(xVar);
+				Matrix yMat = new Matrix(yVar);
+				Matrix rot = new Matrix(mes.getRot());
+				double x = rot.times(xMat).get(0, 0);
+				double y = rot.times(yMat).get(0, 0);
+				double th = -(Math.toDegrees(Math.atan2(y, x)) - 90);
+				double[][] observationModel = { { 0, 0, 0, 0, 0, 0, 0 }, // x
+						{ 0, 0, 0, 0, 0, 0, 0 }, // y
+						{ 0, 0, 0, 0, 0, 0, 0 }, // x_dot_b
+						{ 0, 0, 0, 0, 0, 0, 0 }, // y_dot_b
+						{ 0, 0, 0, 0, 1, 0, 0 }, // th
+						{ 0, 0, 0, 0, 0, 0, 0 }, // th_dot
+						{ 0, 0, 0, 0, 0, 0, 0 } // Heading
+				};
 
-					double[][] meassurement = { { 0 }, { 0 }, { 0 }, { 0 },
-							{ th }, { 0 }, { 0 } };
-					double[][] updateCovariance = { { 1, 0, 0, 0, 0, 0, 0 }, // x
-							{ 0, 1, 0, 0, 0, 0, 0 }, // y
-							{ 0, 0, 1, 0, 0, 0, 0 }, // x_dot
-							{ 0, 0, 0, 1, 0, 0, 0 }, // y_dot
-							{ 0, 0, 0, 0, 1, 0, 0 }, // th
-							{ 0, 0, 0, 0, 0, 1, 0 }, // th_dot
-							{ 0, 0, 0, 0, 0, 0, 1 } // heading
-					};
-					// updateStep(new Matrix(observationModel),new
-					// Matrix(meassurement),new Matrix(updateCovariance));
+				double[][] meassurement = { { 0 }, { 0 }, { 0 }, { 0 },
+						{ th }, { 0 }, { 0 } };
+				double[][] updateCovariance = { { 1, 0, 0, 0, 0, 0, 0 }, // x
+						{ 0, 1, 0, 0, 0, 0, 0 }, // y
+						{ 0, 0, 1, 0, 0, 0, 0 }, // x_dot
+						{ 0, 0, 0, 1, 0, 0, 0 }, // y_dot
+						{ 0, 0, 0, 0, 1, 0, 0 }, // th
+						{ 0, 0, 0, 0, 0, 1, 0 }, // th_dot
+						{ 0, 0, 0, 0, 0, 0, 1 } // heading
+				};
+				// updateStep(new Matrix(observationModel),new
+				// Matrix(meassurement),new Matrix(updateCovariance));
 
-				}));
-				*/
+			}));
+			*/
 
         // TODO note that we will probably run into precision errors since the
         // changes are so small
         // would be good to batch up the encoder updates until we get a margin
         // that we know can be represented proeprly
         new Subscriber("htGpsLoc", NodeChannel.ENCODER.getMsgPath(),
-                new MessageListener() {
-                    @Override
-                    public synchronized void actionPerformed(String topicName,
-                                                             Message m) {
-                        EncoderMeasurement measurement = (EncoderMeasurement) m;
+            new MessageListener() {
+                @Override
+                public synchronized void actionPerformed(String topicName,
+                                                         Message m) {
+                    EncoderMeasurement measurement = (EncoderMeasurement) m;
 
-                        // convert the feet from the last message into a delta
-                        // degree, and update our position
-                        double currentEncoderMeasurement = measurement
-                                .getDistance();
-                        double deltaDistance = currentEncoderMeasurement
-                                - lastEncoderReading;
-                        long currentTime = new Date().getTime();
-                        long dt = currentTime - lastEncoderReadingTime;
-                        if (dt > 1) { // to remove numeric instability
-                            double bodySpeed = deltaDistance / (dt / 1000.0);
-                            lastEncoderReadingTime = currentTime;
-                            lastEncoderReading = currentEncoderMeasurement;
+                    // convert the feet from the last message into a delta
+                    // degree, and update our position
+                    double currentEncoderMeasurement = measurement
+                            .getDistance();
+                    double deltaDistance = currentEncoderMeasurement
+                            - lastEncoderReading;
+                    long currentTime = new Date().getTime();
+                    long dt = currentTime - lastEncoderReadingTime;
+                    if (dt > 1) { // to remove numeric instability
+                        double bodySpeed = deltaDistance / (dt / 1000.0);
+                        lastEncoderReadingTime = currentTime;
+                        lastEncoderReading = currentEncoderMeasurement;
 
-                            double[][] observationModel = {
-                                    { 0, 0, 0, 0, 0, 0, 0 }, // x
-                                    { 0, 0, 0, 0, 0, 0, 0 }, // y
-                                    { 0, 0, 1, 0, 0, 0, 0 }, // x_dot_b
-                                    { 0, 0, 0, 0, 0, 0, 0 }, // y_dot_b
-                                    { 0, 0, 0, 0, 0, 0, 0 }, // th
-                                    { 0, 0, 0, 0, 0, 0, 0 }, // th_dot
-                                    { 0, 0, 0, 0, 0, 0, 0 } // Heading
-                            };
-
-                            double[][] meassurement = { { 0 }, { 0 },
-                                    { bodySpeed }, { 0 }, { 0 }, { 0 }, { 0 } };
-                            double[][] updateCovariance = {
-                                    { 1, 0, 0, 0, 0, 0, 0 }, // x
-                                    { 0, 1, 0, 0, 0, 0, 0 }, // y
-                                    { 0, 0, 1, 0, 0, 0, 0 }, // x_dot
-                                    { 0, 0, 0, 1, 0, 0, 0 }, // y_dot
-                                    { 0, 0, 0, 0, 1, 0, 0 }, // th
-                                    { 0, 0, 0, 0, 0, 1, 0 }, // th_dot
-                                    { 0, 0, 0, 0, 0, 0, 1 } // heading
-                            };
-                            updateStep(new Matrix(observationModel),
-                                    new Matrix(meassurement), new Matrix(
-                                            updateCovariance));
-                        }
-                    }
-                });
-
-        new Subscriber("htGpsLoc", NodeChannel.STEERING.getMsgPath(),
-                new MessageListener() {
-
-                    @Override
-                    public synchronized void actionPerformed(String topicName,
-                                                             Message m) {
-                        SteeringMeasurement steerM = (SteeringMeasurement) m;
                         double[][] observationModel = {
                                 { 0, 0, 0, 0, 0, 0, 0 }, // x
                                 { 0, 0, 0, 0, 0, 0, 0 }, // y
-                                { 0, 0, 0, 0, 0, 0, 0 }, // x_dot_b
+                                { 0, 0, 1, 0, 0, 0, 0 }, // x_dot_b
                                 { 0, 0, 0, 0, 0, 0, 0 }, // y_dot_b
                                 { 0, 0, 0, 0, 0, 0, 0 }, // th
                                 { 0, 0, 0, 0, 0, 0, 0 }, // th_dot
-                                { 0, 0, 0, 0, 0, 0, 1 } // Heading
+                                { 0, 0, 0, 0, 0, 0, 0 } // Heading
                         };
-                        double[][] meassurement = { { 0 }, { 0 }, { 0 }, { 0 },
-                                { 0 }, { 0 }, { steerM.getAngle() } };
+
+                        double[][] meassurement = { { 0 }, { 0 },
+                                { bodySpeed }, { 0 }, { 0 }, { 0 }, { 0 } };
                         double[][] updateCovariance = {
                                 { 1, 0, 0, 0, 0, 0, 0 }, // x
                                 { 0, 1, 0, 0, 0, 0, 0 }, // y
@@ -256,10 +222,44 @@ public class KfLocalizer extends PeriodicNode {
                                 { 0, 0, 0, 0, 0, 1, 0 }, // th_dot
                                 { 0, 0, 0, 0, 0, 0, 1 } // heading
                         };
-                        updateStep(new Matrix(observationModel), new Matrix(
-                                meassurement), new Matrix(updateCovariance));
+                        updateStep(new Matrix(observationModel),
+                                new Matrix(meassurement), new Matrix(
+                                        updateCovariance));
                     }
-                });
+                }
+            });
+
+        new Subscriber("htGpsLoc", NodeChannel.STEERING.getMsgPath(),
+            new MessageListener() {
+
+                @Override
+                public synchronized void actionPerformed(String topicName,
+                                                         Message m) {
+                    SteeringMeasurement steerM = (SteeringMeasurement) m;
+                    double[][] observationModel = {
+                            { 0, 0, 0, 0, 0, 0, 0 }, // x
+                            { 0, 0, 0, 0, 0, 0, 0 }, // y
+                            { 0, 0, 0, 0, 0, 0, 0 }, // x_dot_b
+                            { 0, 0, 0, 0, 0, 0, 0 }, // y_dot_b
+                            { 0, 0, 0, 0, 0, 0, 0 }, // th
+                            { 0, 0, 0, 0, 0, 0, 0 }, // th_dot
+                            { 0, 0, 0, 0, 0, 0, 1 } // Heading
+                    };
+                    double[][] meassurement = { { 0 }, { 0 }, { 0 }, { 0 },
+                            { 0 }, { 0 }, { steerM.getAngle() } };
+                    double[][] updateCovariance = {
+                            { 1, 0, 0, 0, 0, 0, 0 }, // x
+                            { 0, 1, 0, 0, 0, 0, 0 }, // y
+                            { 0, 0, 1, 0, 0, 0, 0 }, // x_dot
+                            { 0, 0, 0, 1, 0, 0, 0 }, // y_dot
+                            { 0, 0, 0, 0, 1, 0, 0 }, // th
+                            { 0, 0, 0, 0, 0, 1, 0 }, // th_dot
+                            { 0, 0, 0, 0, 0, 0, 1 } // heading
+                    };
+                    updateStep(new Matrix(observationModel), new Matrix(
+                            meassurement), new Matrix(updateCovariance));
+                }
+            });
         resume();
 
     }
