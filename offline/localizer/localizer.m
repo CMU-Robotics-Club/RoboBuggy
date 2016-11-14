@@ -12,6 +12,8 @@ function [trajectory] = localizer()
     global last_encoder
     global last_encoder_time
     global last_time
+    global R
+    global Q
     save_data = true;
 
     % constants
@@ -22,6 +24,9 @@ function [trajectory] = localizer()
     first_theta = 250;
     lat_long = [40.441670, -79.9416362];
 
+    R = eye(7) .* (0.5); % measurement noise covariance
+    Q = eye(7) .* (0.1); % model noise covariance
+
     [x, y, zone] = ll2utm(lat_long(1), lat_long(2));
     first_gps = [x y];
     last_gps = [x y];
@@ -29,7 +34,10 @@ function [trajectory] = localizer()
     last_encoder = -1;
 
     % initialize Kalman filter
-    P = eye(7); % covariance
+    % covariance matrix
+    P = [100 0 0 0 0;
+         0 100 0 0 0;
+         0 0 ];
 
     X = [x;  % X, m, UTM coors
          y;  % Y, m, UTM coors
@@ -114,7 +122,7 @@ function [A] = model(x, time)
 end
 
 function [P_pre, x_pre] = predict_step(P, x, time)
-    R = eye(7) .* (0.5); % measurement noise covariance
+    global R
     A = model(x, time);
     x_pre = A * x;
     % P_pre = eye(7) * P * eye(7)'; % ERROR !!
@@ -123,7 +131,7 @@ function [P_pre, x_pre] = predict_step(P, x, time)
 end
 
 function [P, x] = update_step(C, z, P_pre, x_pre)
-    Q = eye(7) .* (0.1); % model noise covariance
+    global Q
     residual = z - (C * x_pre);
     residual = scrubAngles(residual);
     K = P_pre * C' * inv((C * P_pre * C') + Q); % gain
