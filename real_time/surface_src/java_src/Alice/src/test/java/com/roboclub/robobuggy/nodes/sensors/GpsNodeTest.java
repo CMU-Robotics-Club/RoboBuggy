@@ -72,7 +72,6 @@ public class GpsNodeTest {
             if (messageList.size() != 1) {
                 fail("Did not receive message");
             }
-            Thread.sleep(3000);
 
             while (!messageList.isEmpty()) {
                 GpsMeasurement m = messageList.take();
@@ -85,10 +84,81 @@ public class GpsNodeTest {
             //check stuff in LinkedBlockingQueue
         }
         catch (Exception e){
-
+                fail("Exception");
         }
 
 
     }
+
+    /**
+     * tests for correct failure if given longitude with invalid character
+     */
+    @Test
+    public void testBadLong()
+    {
+        GpsNode gpsNode1 = new GpsNode(NodeChannel.GPS,"buggy");
+        String input = "$GPGGA,123519,4807.038,N,011A1.000,E,1,08,0.9,545.4,M,46.9,M,,*47";
+        byte[] bytes = Charset.forName("UTF-8").encode(input).array();
+
+
+        try {
+            gpsNode1.peel(bytes,0,bytes.length);
+
+            fail("This shouldn't parse longitude");
+
+            //check stuff in LinkedBlockingQueue
+        }
+        catch (Exception e){
+            return;
+        }
+    }
+
+    /**
+     * tests for correct failure if given latitude with invalid character
+     */
+    @Test
+    public void testBadLat()
+    {
+        GpsNode gpsNode1 = new GpsNode(NodeChannel.GPS,"buggy");
+        String input = "$GPGGA,123519,48I7.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47";
+        byte[] bytes = Charset.forName("UTF-8").encode(input).array();
+
+
+        try {
+            gpsNode1.peel(bytes,0,bytes.length);
+
+            fail("This shouldn't parse latitude");
+            //check stuff in LinkedBlockingQueue
+        }
+        catch (Exception e){
+            return;
+        }
+    }
+
+    /**
+     * tests for correct failure if given latitude and longitude with invalid characters
+     */
+    @Test
+    public void testBadLatAndLong()
+    {
+        GpsNode gpsNode1 = new GpsNode(NodeChannel.GPS,"buggy");
+        String input = "$GPGGA,123519,48I7.038,N,011R1.000,E,1,08,0.9,545.4,M,46.9,M,,*47";
+        byte[] bytes = Charset.forName("UTF-8").encode(input).array();
+
+
+        try {
+            gpsNode1.peel(bytes,0,bytes.length);
+
+            fail("This shouldn't parse latitude and longitude");
+            //check stuff in LinkedBlockingQueue
+        }
+        catch (Exception e){
+            return;
+        }
+    }
+
+
+
+
 
 }
