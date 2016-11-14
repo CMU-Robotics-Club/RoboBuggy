@@ -2,14 +2,15 @@ package com.roboclub.robobuggy.nodes.localizers;
 
 import Jama.Matrix;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
+import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
-import com.roboclub.robobuggy.messages.IMUCompassMessage;
+import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
-import com.roboclub.robobuggy.nodes.baseNodes.BuggyNode;
 import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
+
 import java.util.Date;
 
 /**
@@ -29,8 +30,8 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
 
     private static final double WHEELBASE = 1.13; // meters
     private static final int UTMZONE = 17;
-    private final LocTuple initialGPS = LocalizerUtil.deg2UTM(
-                                            new LocTuple(40.441670, -79.9416362));
+    private final UTMTuple initialGPS = LocalizerUtil.deg2UTM(
+            new LocTuple(40.441670, -79.9416362));
     private final double initialHeading = 4.36; // rad
 
     // The state consists of 4 elements:
@@ -39,21 +40,16 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
     //      dy_body  - forward velocity in the body frame, in meters/s
     //      heading  - heading, or yaw angle, in the world frame, in rad
     //      dheading - angular velocity in the world frame, in rad/s
-    private Matrix R = arrayToMatrix({4, 4, 0.25, 0.01, 0.01});   // measurement noise covariance matrix
-    private Matrix Q = arrayToMatrix({4, 4, 0.25, 0.02, 0.02});   // model noise covariance matrix
-    private Matrix P = arrayToMatrix({25, 25, 0.25, 2.46, 2.46}); // covariance matrix
-    private Matrix x; // state
-    // output matrices
-    private Matrix C_gps = new Matrix({
-        {1, 0, 0, 0, 0},
-        {0, 1, 0, 0, 0},
-        {0, 0, 0, 1, 0}
-    });
-    private Matrix C_encoder = new Matrix({
-        {0, 0, 1, 0, 0}
-    });
+    private Matrix x;  // state
+    private Matrix R;  // measurement noise covariance matrix
+    private Matrix Q;  // model noise covariance matrix
+    private Matrix P;  // covariance matrix
 
-    private Date lastTime;
+    // output matrices
+    private Matrix C_gps;
+    private Matrix C_encoder;
+
+    private long lastTime;
     private UTMTuple lastGPS;
     // private Date lastGPSTime;
     private double lastEncoder; // deadreckoning value
@@ -65,7 +61,6 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
     /**
      * Create a new {@link PeriodicNode} decorator
      *
-     * @param base   {@link BuggyNode} to decorate
      * @param period of the periodically executed portion of the node
      * @param name the name of the node
      * @param initialPosition the initial position of the localizer
@@ -81,16 +76,34 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         lastGPS = initialGPS;
         // lastGPSTime = lastTime;
 
-        x = new Matrix({
-            { initialGPS.getEasting() },
-            { initialGPS.getNorthing() },
-            { 0 },
-            { initialHeading },
-            { 0 }
-        });
+        double[][] x2D = {
+                { initialGPS.getEasting() },
+                { initialGPS.getNorthing() },
+                { 0 },
+                { initialHeading },
+                { 0 }
+        };
+        x = new Matrix(x2D);
 
-        // set our initial covariance
-        covariance = new Matrix(SEVEN_ROW_IDENTITY_MATRIX);
+        double[] rArray = {4, 4, 0.25, 0.01, 0.01};
+        double[] qArray = {4, 4, 0.25, 0.02, 0.02};
+        double[] pArray = {25, 25, 0.25, 2.46, 2.46};
+
+        R = arrayToMatrix(rArray);
+        Q = arrayToMatrix(qArray);
+        P = arrayToMatrix(pArray);
+
+        double[][] cGPS2D = {
+                {1, 0, 0, 0, 0},
+                {0, 1, 0, 0, 0},
+                {0, 0, 0, 1, 0}
+        };
+        C_gps = new Matrix(cGPS2D);
+
+        double[][] cEncoder2D = {
+                {0, 0, 1, 0, 0}
+        };
+        C_encoder = new Matrix(cEncoder2D);
 
         // add all our subscribers for our current state update stream
         // these subscribers are only meant as catchers, just stupidly simple relays
@@ -117,22 +130,16 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
             double bodySpeed = dx / (dt / 1000.0);
             lastEncoderTime = currentTime;
             lastEncoder = currentEncoder;
-            
+
             // measurement
-            Matrix z = new Matrix({
-                { bodySpeed }
-            });
+            double[][] z2D = {
+                    { bodySpeed }
+            };
+            Matrix z = new Matrix(z2D);
 
             kalmanFilter(C_encoder, z);
         }));
     }
-
-    // private void setupIMUSubscriber() {
-    //     new Subscriber("KF Localizer", NodeChannel.IMU_COMPASS.getMsgPath(), ((topicName, m) -> {
-    //         IMUCompassMessage compassMessage = (IMUCompassMessage) m;
-    //         currentHeading = compassMessage.getCompassHeading();
-    //     }));
-    // }
 
     private void setupGPSSubscriber() {
         new Subscriber("KF Localizer", NodeChannel.GPS.getMsgPath(), ((topicName, m) -> {
@@ -141,7 +148,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
             UTMTuple gps = LocalizerUtil.deg2UTM(loc);
             double dx = gps.getEasting() - lastGPS.getEasting();
             double dy = gps.getNorthing() - lastGPS.getNorthing();
-            lastGPS = gpsUTM;
+            lastGPS = gps;
 
             // don't update angle if we did not move a lot
             double heading = Math.atan2(dy, dx);
@@ -155,11 +162,13 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
             }
 
             // measurement
-            Matrix z = new Matrix({
-                { gps.getEasting() },
-                { gps.getNorthing() },
-                { heading }
-            });
+            double[][] z2D = {
+                    { gps.getEasting() },
+                    { gps.getNorthing() },
+                    { heading }
+            };
+
+            Matrix z = new Matrix(z2D);
 
             kalmanFilter(C_gps, z);
         }));
@@ -184,15 +193,17 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
     }
 
     // Kalman filter step 0: Generate the motion model for the buggy
-    private Matrix motionModel(double dt) {
-        return new Matrix({
+    private Matrix getMotionModel(double dt) {
+        double[][] motionModel2D = {
                 // x y dy_b heading dheading
                 { 1, 0, dt * Math.cos(x.get(HEADING_GLOBAL_ROW, 0)), 0, 0 }, // x
                 { 0, 1, dt * Math.sin(x.get(HEADING_GLOBAL_ROW, 0)), 0, 0 }, // y
                 { 0, 0, 1, 0, 0 }, // dy_b
                 { 0, 0, 0, 1, dt, 0 }, // heading
                 { 0, 0, Math.tan(steeringAngle) / WHEELBASE, 0, 0 }, // dheading
-        });
+        };
+
+        return new Matrix(motionModel2D);
     }
 
     /*
@@ -213,7 +224,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         double dt = (now.getTime() - lastTime) / 1000.0;
         lastTime = now.getTime();
 
-        Matrix A = motionModel(dt);
+        Matrix A = getMotionModel(dt);
 
         /*
         the predict step is responsible for determining the estimate of the next state
@@ -228,7 +239,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         Matrix x_pre = A.times(x);
         Matrix P_pre = A.times(P).times(A.transpose());
         P_pre = P_pre.plus(R);
-        
+
         x_pre.set(HEADING_GLOBAL_ROW, 0, scrubAngle(x_pre.get(HEADING_GLOBAL_ROW, 0)));
         x_pre.set(HEADING_VEL_ROW, 0, scrubAngle(x_pre.get(HEADING_VEL_ROW, 0)));
 
@@ -267,7 +278,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         double dt = (now.getTime() - lastTime) / 1000.0;
 
         // x_pre = A * x
-        Matrix A = motionModel(dt);
+        Matrix A = getMotionModel(dt);
         return A.times(x);
     }
 
@@ -283,13 +294,14 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
     }
 
     private static Matrix arrayToMatrix(double[] arr) {
-        return new Matrix({
-            {arr[0], 0, 0, 0, 0},
-            {0, arr[1], 0, 0, 0},
-            {0, 0, arr[2], 0, 0},
-            {0, 0, 0, arr[3], 0},
-            {0, 0, 0, 0, arr[4]}
-        });
+        double[][] arr2D = {
+                {arr[0], 0, 0, 0, 0},
+                {0, arr[1], 0, 0, 0},
+                {0, 0, arr[2], 0, 0},
+                {0, 0, 0, arr[3], 0},
+                {0, 0, 0, 0, arr[4]}
+        };
+        return new Matrix(arr2D);
     }
 
     // clamp all the angles between -pi and +pi
