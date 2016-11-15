@@ -8,14 +8,8 @@ import com.hcrest.jfreespace.inreport.FreespaceMsgInMotionEngineOutput;
 import com.hcrest.jfreespace.inreport.HidInMsg;
 import com.hcrest.jfreespace.outreport.FreespaceMsgOutDataModeControlV2Request;
 import com.hcrest.jfreespace.outreport.HidOutMsg;
-import com.roboclub.robobuggy.messages.IMUAccelerationMessage;
-import com.roboclub.robobuggy.messages.IMUAngularPositionMessage;
-import com.roboclub.robobuggy.messages.IMUAngularVelocityMessage;
-import com.roboclub.robobuggy.messages.IMUCompassMessage;
-import com.roboclub.robobuggy.messages.IMUInclinationMessage;
-import com.roboclub.robobuggy.messages.IMULinearAccelerationMessage;
-import com.roboclub.robobuggy.messages.IMUTemperatureMessage;
-import com.roboclub.robobuggy.messages.MagneticMeasurement;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
+import com.roboclub.robobuggy.messages.*;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 
@@ -36,6 +30,7 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
     private Publisher magPub = new Publisher(NodeChannel.IMU_MAGNETIC.getMsgPath());
     private Publisher compassPub = new Publisher(NodeChannel.IMU_COMPASS.getMsgPath());
     private Publisher angPosPub = new Publisher(NodeChannel.IMU_ANG_POS.getMsgPath());
+    private Publisher logicPub = new Publisher(NodeChannel.LOGIC_NOTIFICATION.getMsgPath());
 
     /**
      * Constructor for the hillcrest imu
@@ -44,7 +39,7 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
         super();
         Discovery discover = Discovery.getInstance();
         discover.addListener(this);
-
+        registeredDevices = new ArrayList<>();
     }
 
 
@@ -52,7 +47,8 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
     public void handleRead(Device arg0, HidInMsg arg1, int arg2, long arg3) {
         int deviceID = registeredDevices.indexOf(arg0);
         if(deviceID == -1) {
-            //TODO send a message to the console saying that this device was not found
+            logicPub.publish(new RobobuggyLogicNotificationMeasurement("Device " + arg0.toString() + " not found",
+                    RobobuggyMessageLevel.WARNING));
             return;
         }
 

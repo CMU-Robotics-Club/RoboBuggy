@@ -1,12 +1,15 @@
 package com.roboclub.robobuggy.nodes.localizers;
 
 import com.hcrest.jfreespace.Device;
+import com.hcrest.jfreespace.FreespaceErrorCodes;
 import com.hcrest.jfreespace.inreport.DecoderFactory;
 import com.hcrest.jfreespace.inreport.FreespaceMsgInMotionEngineOutput;
 import com.hcrest.jfreespace.inreport.HidInMsg;
+import com.hcrest.jfreespace.outreport.HidOutMsg;
 import com.roboclub.robobuggy.messages.*;
 import com.roboclub.robobuggy.nodes.sensors.HillCrestImuNode;
 import com.roboclub.robobuggy.ros.*;
+import org.junit.Test;
 
 /**
  * Created by Alex on 11/10/2016.
@@ -94,7 +97,8 @@ public class MultipleIMUtest {
         }
     });
 
-    public static void main() {
+    @Test
+    public void testStandardIMUData() {
         fakeHillcrest a = new fakeHillcrest(1, "HillCrest A", 1, 1, 1);
         fakeHillcrest b = new fakeHillcrest(2, "HillCrest B", 1, 1, 1);
 
@@ -106,9 +110,21 @@ public class MultipleIMUtest {
         HidInMsg msgA = makeMessage(0);
         HidInMsg msgB = makeMessage(1);
 
+        System.out.println("\n====================================================\n");
+        System.out.println("Testing MSG 0 with hillcrest 0");
+        System.out.println("====================================================");
         node.handleRead(a, msgA, 34, System.currentTimeMillis());
+
+        System.out.println("Testing MSG 0 with hillcrest 1");
+        System.out.println("====================================================");
         node.handleRead(b, msgA, 34, System.currentTimeMillis());
+
+        System.out.println("Testing MSG 1 with hillcrest 0");
+        System.out.println("====================================================");
         node.handleRead(a, msgB, 34, System.currentTimeMillis());
+
+        System.out.println("Testing MSG 1 with hillcrest 1");
+        System.out.println("====================================================");
         node.handleRead(b, msgB, 34, System.currentTimeMillis());
     }
 
@@ -116,7 +132,7 @@ public class MultipleIMUtest {
 
         boolean a = id == 0;
 
-        byte[] data = new byte[40];
+        byte[] data = new byte[1000];
 
         /** Acceleration **/
 
@@ -129,7 +145,7 @@ public class MultipleIMUtest {
 
         /** Linear Acceleration **/
 
-        data[6] = 0x50; /** X - Value: 4 **/
+        data[6] = 0x50; /** X - Value: 3.36 **/
         data[7] = 0x01;
         data[8] = 0x20; /** Y - Value: 8 **/
         data[9] = 0x03;
@@ -179,7 +195,7 @@ public class MultipleIMUtest {
         data[38] = 0x00; /** Z - Value: 1 if id = 0, 0.15625 otherwise **/
         data[39] = (byte) (a ? 0x40 : 0x01);
 
-        HidInMsg msg = new FreespaceMsgInMotionEngineOutput(data, DecoderFactory.HID_MESSAGE_VERSION.FSP16x);
+        HidInMsg msg = new fakeMsg(data, null);
         return msg;
     }
 
@@ -189,14 +205,54 @@ public class MultipleIMUtest {
             super(id, name, vendorId, productId, hVer);
         }
 
+        public FreespaceErrorCodes sendMessageAsync(HidOutMsg msg) {
+            return null;
+        }
+    }
+
+    public static class fakeMsg extends FreespaceMsgInMotionEngineOutput {
+        private byte[] meData_;
+
+        public fakeMsg(byte[] msg, DecoderFactory.HID_MESSAGE_VERSION version) {
+            super(msg, DecoderFactory.HID_MESSAGE_VERSION.FSP2xx);
+            this.meData_ = msg;
+        }
+
+        public int[] getMeData() {
+            int[] ret = new int[meData_.length];
+            for(int i = 0; i < meData_.length; i++) {
+                ret[i] = meData_[i];
+            }
+            return ret;
+        }
+
+        public int getFormatSelect() {
+            return 1;
+        }
+
         public boolean getFf0() {
-            System.out.println("Hey look I was actually called (0)");
             return true;
         }
 
         public boolean getFf1() {
-            System.out.println("Hey look I was actually called (1)");
             return true;
         }
+
+        public boolean getFf2() {
+            return true;
+        }
+
+        public boolean getFf3() {
+            return true;
+        }
+
+        public boolean getFf4() {
+            return true;
+        }
+
+        public boolean getFf5() {
+            return true;
+        }
+
     }
 }
