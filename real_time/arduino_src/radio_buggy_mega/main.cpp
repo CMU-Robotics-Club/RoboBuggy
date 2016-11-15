@@ -27,9 +27,6 @@
 // ATMega 2560 datasheet Table 22-12.
 #define BAUD 76800
 
-#define DEBUG_DDR  DDRB
-#define DEBUG_PORT PORTB
-#define DEBUG_PINN PB7 // arduino 13
 //#define SERVO_DDR  DDRB
 //#define SERVO_PORT PORTB
 //#define SERVO_PINN PB5 // arduino 11 TODO: this is not used here
@@ -391,11 +388,6 @@ int main(void)
     unsigned long auton_brake_last = time_start;
     unsigned long auton_steer_last = time_start;
 
-    // turn the ledPin on
-    // DEBUG_PORT |= _BV(DEBUG_PINN);
-    DEBUG_PORT &= ~_BV(DEBUG_PINN);
-    DEBUG_DDR |= _BV(DEBUG_PINN);
-
     // setup encoder pin with pullups and interrupt
     ENCODER_PORT |= _BV(ENCODER_PINN);
     ENCODER_DDR &= ~_BV(ENCODER_PINN);
@@ -458,13 +450,6 @@ int main(void)
     {
         // prepare to time the main loop
         unsigned long time_next_loop = micros() + STEERING_LOOP_TIME_US;
-        DEBUG_PORT &= ~_BV(DEBUG_PINN);
-
-        // enable servo power after timeout
-        if(millis() > 200) 
-        {
-            PORTH |= _BV(4);
-        }
 
         // Check for incomming serial messages
         rb_message_t new_command;
@@ -628,7 +613,6 @@ int main(void)
         g_rbsm.Send(RBSM_MID_COMP_HASH, (long unsigned)(FP_HEXCOMMITHASH));
         g_rbsm.Send(RBSM_MID_ERROR, g_errors);
 
-        DEBUG_PORT |= _BV(DEBUG_PINN);
         // wait for the next regular loop time in a tight loop
         // note: this is before the watchdog reset so it can catch us if
         // something goes wrong
