@@ -226,7 +226,7 @@ void steer_set_velocity(long target_velocity) {
 	long output_p = error * STEERING_KV_NUMERATOR / STEERING_KV_DENOMENATOR;
     output_us = output_p;
     long output_int_us = steer_set_prev_velocity + output_us;
-    output_int_us = clamp(output_int_us, 150, -150);
+    output_int_us = clamp(output_int_us, 150, -150); // TODO MAGIC NUMBER
 		
 	// dbg_printf("target: %ld, current: %ld, error: %ld, correction: %ld, output: %ld\n", target_velocity, actual_velocity, error, output_us, output_int_us);
 	
@@ -253,7 +253,7 @@ void steering_set(int angle) //TODO: should angle be an int or a long?
 	angle = clamp(angle, STEERING_LIMIT_RIGHT, STEERING_LIMIT_LEFT);
 	
     //For the DC motor
-    long feed_forward = 200;
+    long feed_forward = 200; // TODO MAGIC NUMBER
     long actual = map_signal(g_encoder_steering.GetTicks(),
                              0,
                              MOTOR_ENCODER_TICKS_PER_REV,
@@ -262,7 +262,7 @@ void steering_set(int angle) //TODO: should angle be an int or a long?
 	
     long error = angle - actual;
     long output_vel = 0;
-    if(labs(error) > 5) { //0.1 degree deadband
+    if(labs(error) > 5) { //0.1 degree deadband // TODO MAGIC NUMBER
         long output_p = (STEERING_KP_NUMERATOR * error) / STEERING_KP_DEMONENATOR;
         long output_ff = (error > 0) ? feed_forward : -feed_forward;
         long d =  (error - steer_set_error_prev); //not dividing by time
