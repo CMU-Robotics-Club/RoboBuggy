@@ -40,23 +40,20 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
     //      dy_body  - forward velocity in the body frame, in meters/s
     //      heading  - heading, or yaw angle, in the world frame, in rad
     //      dheading - angular velocity in the world frame, in rad/s
-    private Matrix x;  // state
-    private Matrix R;  // measurement noise covariance matrix
-    private Matrix Q;  // model noise covariance matrix
-    private Matrix P;  // covariance matrix
+    private Matrix x;                   // current state
+    private Matrix R;                   // measurement noise covariance matrix
+    private Matrix Q;                   // model noise covariance matrix
+    private Matrix P;                   // covariance matrix
 
     // output matrices
-    private Matrix C_gps;
-    private Matrix C_encoder;
+    private Matrix C_gps;               // a description of how the GPS impacts x
+    private Matrix C_encoder;           // how the encoder affects x
 
-    private long lastTime;
-    private UTMTuple lastGPS;
-    // private Date lastGPSTime;
-    private double lastEncoder; // deadreckoning value
-    private long lastEncoderTime;
-    private double currentEncoder;
-    private long currentEncoderTime;
-    private double steeringAngle = 0;
+    private long lastTime;              // the last time we updated the current position estimate
+    private UTMTuple lastGPS;           // the most recent value of the GPS coordinates, expressed as a UTM measurement
+    private double lastEncoder;         // deadreckoning value
+    private long lastEncoderTime;       // the most recent time of the encoder reading, used for getting buggy velocity
+    private double steeringAngle = 0;   // current steering angle of the buggy
 
     /**
      * Create a new {@link PeriodicNode} decorator
@@ -207,7 +204,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
     }
 
     /*
-    Kalman filter step 1: Use the motion model to predict the next state 
+    Kalman filter step 1: Use the motion model to predict the next state
     and covariance matrix. (_pre = predicted)
     Kalman filter step 2: Update the prediction based off of measurements /
     sensor readings
