@@ -347,6 +347,46 @@ int8_t steering_center() {
     return 0;
 }
 
+void indicator_light_init()
+{
+    // set all pins to zero output
+    RX_STATUS_LIGHT_PORT &= ~_BV(3);
+    RX_STATUS_LIGHT_DDR |= _BV(3);
+    RX_STATUS_LIGHT_PORT &= ~_BV(5);
+    RX_STATUS_LIGHT_DDR |= _BV(5);
+    RX_STATUS_LIGHT_PORT_RED &= ~_BV(5);
+    RX_STATUS_LIGHT_DDR_RED |= _BV(5);
+}
+
+void watch_dog_failure_light()
+{
+    // red for this light
+    // watch dog failure light on when PE4 is on
+    RX_STATUS_LIGHT_PORT |= _BV(3);
+}
+
+void auton_timeout_light()
+{
+    // green for this light
+    RX_STATUS_LIGHT_PORT_RED |= _BV(5);
+}
+void radio_timeout_light()
+{
+    RX_STATUS_LIGHT_PORT |= _BV(5);
+}
+void watch_dog_failure_light_reset()
+{
+    RX_STATUS_LIGHT_PORT &= ~_BV(3);
+}
+void auton_timeout_light_reset()
+{
+    RX_STATUS_LIGHT_PORT_RED &= ~_BV(5);
+}
+void radio_timeout_light_reset()
+{
+    RX_STATUS_LIGHT_PORT &= ~_BV(5);
+}
+
 
 void brake_init() 
 {
@@ -454,6 +494,8 @@ int main(void)
     adc_init();
     brake_init();
     steering_center(); // this call takes time
+
+    indicator_light_init();
 
     // servo power control starts outputting low
     // PBH4 = Arduino 7
