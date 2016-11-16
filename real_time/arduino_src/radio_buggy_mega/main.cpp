@@ -27,9 +27,6 @@
 // ATMega 2560 datasheet Table 22-12.
 #define BAUD 76800
 
-//#define SERVO_DDR  DDRB
-//#define SERVO_PORT PORTB
-//#define SERVO_PINN PB5 // arduino 11 TODO: this is not used here
 #define CONNECTION_TIMEOUT_US 1000000L // 1000ms
 
 /*
@@ -70,8 +67,6 @@
 #define ENCODER_PIN  PIND
 #define ENCODER_PINN PD2 // arduino 19
 #define ENCODER_INT  INT2_vect
-//#define ENCODER_INTN 2
-//#define ENCODER_TIMEOUT_US 500 // 50mph w/ 6" wheel = 280 ticks/sec; 4000us/tick
 
 #define ENCODER_STEERING_A_DDR  DDRB
 #define ENCODER_STEERING_A_PORT PORTB
@@ -242,14 +237,10 @@ void steer_set_velocity(long target_velocity) {
  *
  *  @param angle set point in hundredths of a degree
  */
-void steering_set(int angle) //TODO: should angle be an int or a long?
+void steering_set(int angle)
 {
     static long steer_set_error_prev = 0; //This is used to find the d term for position.
 
-	//TODO: delete short circuiting code for testing velocity measure
-	// steer_set_velocity(angle);
-	// return;
-	
 	angle = clamp(angle, STEERING_LIMIT_RIGHT, STEERING_LIMIT_LEFT);
 	
     //For the DC motor
