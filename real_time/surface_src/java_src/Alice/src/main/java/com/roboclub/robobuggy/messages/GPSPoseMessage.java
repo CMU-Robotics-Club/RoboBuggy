@@ -52,9 +52,9 @@ public class GPSPoseMessage extends BaseMessage {
     }
 
     /**
-     * Returns the heading of the {@link GPSPoseMessage} (in degrees from North)
+     * Returns the heading of the {@link GPSPoseMessage} (in RADIANS from North)
      *
-     * @return the heading of the {@link GPSPoseMessage} (in degrees from North)
+     * @return the heading of the {@link GPSPoseMessage} (in RADIANS from North)
      */
     public double getHeading() {
         return heading;

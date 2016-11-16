@@ -79,7 +79,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         // basically we want all of our angles to be in the same range, so that we don't
         // have weird wraparound
         desiredHeading = Util.normalizeAngleDeg(desiredHeading);
-        double poseHeading = Util.normalizeAngleDeg(pose.getHeading());
+        double poseHeading = Util.normalizeAngleDeg(Math.toDegrees(pose.getHeading()));
 
         //find the angle we need to reach that point
         return Util.normalizeAngleDeg(desiredHeading - poseHeading);
