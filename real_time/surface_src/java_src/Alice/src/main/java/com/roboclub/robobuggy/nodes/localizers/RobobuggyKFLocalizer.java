@@ -28,11 +28,10 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
     private static final int HEADING_GLOBAL_ROW = 3;
     private static final int HEADING_VEL_ROW = 4;
 
-    private static final double WHEELBASE = 1.13; // meters
+    private static final double WHEELBASE_IN_METERS = 1.13; // meters
     private static final int UTMZONE = 17;
-    private final UTMTuple initialGPS = LocalizerUtil.deg2UTM(
-            new LocTuple(40.441670, -79.9416362));
-    private final double initialHeading = 4.36; // rad
+    private final UTMTuple initialLocationGPS; // new LocTuple(40.441670, -79.9416362));
+    private static final double INITIAL_HEADING_IN_RADS = 4.36; // rad
 
     // The state consists of 4 elements:
     //      x        - x position in the world frame, in meters
@@ -66,18 +65,19 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         super(new BuggyBaseNode(NodeChannel.POSE), period, name);
         posePub = new Publisher(NodeChannel.POSE.getMsgPath());
 
+        initialLocationGPS = LocalizerUtil.deg2UTM(initialPosition);
+
         // set initial state
         lastTime = new Date().getTime();
         lastEncoder = 0;
         lastEncoderTime = lastTime;
-        lastGPS = initialGPS;
-        // lastGPSTime = lastTime;
+        lastGPS = initialLocationGPS;
 
         double[][] x2D = {
-                { initialGPS.getEasting() },
-                { initialGPS.getNorthing() },
+                { initialLocationGPS.getEasting() },
+                { initialLocationGPS.getNorthing() },
                 { 0 },
-                { initialHeading },
+                { INITIAL_HEADING_IN_RADS },
                 { 0 }
         };
         x = new Matrix(x2D);
@@ -103,10 +103,8 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         C_encoder = new Matrix(cEncoder2D);
 
         // add all our subscribers for our current state update stream
-        // these subscribers are only meant as catchers, just stupidly simple relays
-        // that feed the current state variables
+        // Every time we get a new sensor update, trigger the new kalman update
         setupGPSSubscriber();
-        // setupIMUSubscriber();
         setupEncoderSubscriber();
         setupWheelSubscriber();
     }
@@ -153,9 +151,9 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
                 heading = x.get(HEADING_GLOBAL_ROW, 0);
             }
             // close the loop
-            if (Math.abs(gps.getEasting() - initialGPS.getEasting())
-                    + Math.abs(gps.getNorthing() - initialGPS.getNorthing()) < 10.0) {
-                heading = initialHeading;
+            if (Math.abs(gps.getEasting() - initialLocationGPS.getEasting())
+                    + Math.abs(gps.getNorthing() - initialLocationGPS.getNorthing()) < 10.0) {
+                heading = INITIAL_HEADING_IN_RADS;
             }
 
             // measurement
@@ -197,7 +195,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
                 { 0, 1, dt * Math.sin(x.get(HEADING_GLOBAL_ROW, 0)), 0, 0 }, // y
                 { 0, 0, 1, 0, 0 }, // dy_b
                 { 0, 0, 0, 1, dt, 0 }, // heading
-                { 0, 0, Math.tan(steeringAngle) / WHEELBASE, 0, 0 }, // dheading
+                { 0, 0, Math.tan(steeringAngle) / WHEELBASE_IN_METERS, 0, 0 }, // dheading
         };
 
         return new Matrix(motionModel2D);
@@ -237,8 +235,8 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         Matrix P_pre = A.times(P).times(A.transpose());
         P_pre = P_pre.plus(R);
 
-        x_pre.set(HEADING_GLOBAL_ROW, 0, scrubAngle(x_pre.get(HEADING_GLOBAL_ROW, 0)));
-        x_pre.set(HEADING_VEL_ROW, 0, scrubAngle(x_pre.get(HEADING_VEL_ROW, 0)));
+        x_pre.set(HEADING_GLOBAL_ROW, 0, clampAngle(x_pre.get(HEADING_GLOBAL_ROW, 0)));
+        x_pre.set(HEADING_VEL_ROW, 0, clampAngle(x_pre.get(HEADING_VEL_ROW, 0)));
 
         /* 
         the update step is responsible for updating the current state, and resolving
@@ -246,7 +244,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         
         What we do is we take our measurements (z) that were captured from sensors,
         as well as the predictions from the previous step (xhat[k], phat[k]) and run
-        them through the filter which todo fill this part out about innovation etc
+        them through the filter
         
         This produces your next state (x[k]) and your next noise estimation (p[k]),
         which connect in a feedback loop to become the new current state
@@ -264,8 +262,8 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         P = Matrix.identity(5, 5).minus(K.times(C));
         P = P.times(P_pre);
 
-        x.set(HEADING_GLOBAL_ROW, 0, scrubAngle(x.get(HEADING_GLOBAL_ROW, 0)));
-        x.set(HEADING_VEL_ROW, 0, scrubAngle(x.get(HEADING_VEL_ROW, 0)));
+        x.set(HEADING_GLOBAL_ROW, 0, clampAngle(x.get(HEADING_GLOBAL_ROW, 0)));
+        x.set(HEADING_VEL_ROW, 0, clampAngle(x.get(HEADING_VEL_ROW, 0)));
     }
 
     // Propagate the motion model forward in time since the last sensor reading
@@ -302,7 +300,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
     }
 
     // clamp all the angles between -pi and +pi
-    private double scrubAngle(double theta) {
+    private double clampAngle(double theta) {
         while (theta < -Math.PI) {
             theta = theta + (2 * Math.PI);
         }
