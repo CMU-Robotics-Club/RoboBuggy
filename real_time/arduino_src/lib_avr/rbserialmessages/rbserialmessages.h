@@ -35,19 +35,11 @@
 #define RBSM_TWO_BYTE_SIZE 16
 #define RBSM_THREE_BYTE_SIZE 24
 #define RBSM_ONE_BYTE_MASK 0xFF
-#define RBSM_TWO_BYTE_MASK 0xFFFF
-#define RBSM_BAUD_RATE 9600
 
 // Message types are defined in rbsmheaders.h
 
-#define RBSM_MID_RESERVED 252 // 0xFC, message head
-#define RBSM_MID_ERROR 254
-#define RBSM_MID_DEVICE_ID 255
-
-
 // Device Types
 #define RBSM_DID_MEGA 0
-#define RBSM_DID_DRIVE_ENCODER 1
 
 
 struct rb_message_t

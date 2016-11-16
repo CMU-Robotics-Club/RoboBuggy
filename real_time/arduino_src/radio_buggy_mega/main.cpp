@@ -602,7 +602,7 @@ int main(void)
                              DEGREE_HUNDREDTHS_PER_REV);
 
         // Send the rest of the telemetry messages
-        g_rbsm.Send(RBSM_MID_DEVICE_ID, RBSM_DID_MEGA);
+        g_rbsm.Send(DEVICE_ID, RBSM_DID_MEGA);
         g_rbsm.Send(RBSM_MID_MEGA_TELEOP_BRAKE_COMMAND, (long unsigned)brake_cmd_teleop_engaged);
         g_rbsm.Send(RBSM_MID_MEGA_AUTON_BRAKE_COMMAND, (long unsigned)brake_cmd_auton_engaged);
         g_rbsm.Send(RBSM_MID_MEGA_AUTON_STATE, (long unsigned)g_is_autonomous);
