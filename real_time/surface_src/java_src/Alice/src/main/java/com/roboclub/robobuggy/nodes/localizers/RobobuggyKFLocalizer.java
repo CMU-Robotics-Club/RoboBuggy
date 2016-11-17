@@ -93,12 +93,18 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         double[][] cGPS2D = {
                 {1, 0, 0, 0, 0},
                 {0, 1, 0, 0, 0},
-                {0, 0, 0, 1, 0}
+                {0, 0, 0, 0, 0},
+                {0, 0, 0, 1, 0},
+                {0, 0, 0, 0, 0},
         };
         C_gps = new Matrix(cGPS2D);
 
         double[][] cEncoder2D = {
-                {0, 0, 1, 0, 0}
+                {0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0},
+                {0, 0, 1, 0, 0},
+                {0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0},
         };
         C_encoder = new Matrix(cEncoder2D);
 
@@ -128,7 +134,11 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
 
             // measurement
             double[][] z2D = {
-                    { bodySpeed }
+                    { 0 },
+                    { 0 },
+                    { bodySpeed },
+                    { 0 },
+                    { 0 },
             };
             Matrix z = new Matrix(z2D);
 
@@ -160,7 +170,9 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
             double[][] z2D = {
                     { gps.getEasting() },
                     { gps.getNorthing() },
-                    { heading }
+                    { 0 },
+                    { heading },
+                    { 0 },
             };
 
             Matrix z = new Matrix(z2D);
@@ -194,7 +206,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
                 { 1, 0, dt * Math.cos(x.get(HEADING_GLOBAL_ROW, 0)), 0, 0 }, // x
                 { 0, 1, dt * Math.sin(x.get(HEADING_GLOBAL_ROW, 0)), 0, 0 }, // y
                 { 0, 0, 1, 0, 0 }, // dy_b
-                { 0, 0, 0, 1, dt, 0 }, // heading
+                { 0, 0, 0, 1, dt }, // heading
                 { 0, 0, Math.tan(steeringAngle) / WHEELBASE_IN_METERS, 0, 0 }, // dheading
         };
 
@@ -256,7 +268,10 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
             P = (I - (K * C)) * P_pre
         */
         Matrix residual = z.minus(C.times(x));
-        Matrix K = C.times(P_pre).times(C.transpose()).plus(Q);
+        Matrix K = C;
+        K = K.times(P_pre);
+        K = K.times(C.transpose());
+        K = K.plus(Q);
         K = P_pre.times(C.transpose()).times(K.inverse());
         x = x_pre.plus(K.times(residual));
         P = Matrix.identity(5, 5).minus(K.times(C));
