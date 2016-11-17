@@ -163,6 +163,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
             // close the loop
             if (Math.abs(gps.getEasting() - initialLocationGPS.getEasting())
                     + Math.abs(gps.getNorthing() - initialLocationGPS.getNorthing()) < 10.0) {
+                // todo should this be previous heading?
                 heading = INITIAL_HEADING_IN_RADS;
             }
 

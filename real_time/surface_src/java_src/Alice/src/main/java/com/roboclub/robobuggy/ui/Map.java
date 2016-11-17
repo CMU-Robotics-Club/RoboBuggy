@@ -65,6 +65,7 @@ public class Map extends JPanel {
                 zoomLevel = getMapTree().getViewer().getZoom();
                 getMapTree().getViewer().setDisplayPosition(new Coordinate(gpsM.getLatitude(),
                         gpsM.getLongitude()), zoomLevel);
+                addPointsToMapTree(Color.RED, new LocTuple(gpsM.getLatitude(), gpsM.getLongitude()));
             }
         });
     }
