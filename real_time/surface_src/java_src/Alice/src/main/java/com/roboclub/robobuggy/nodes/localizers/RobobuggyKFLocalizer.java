@@ -42,7 +42,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
     private Matrix x;                   // current state
     private Matrix R;                   // measurement noise covariance matrix
     private Matrix P;                   // covariance matrix
-    private Matrix Q_qps;               // model noise covariance matrix
+    private Matrix Q_gps;               // model noise covariance matrix
     private Matrix Q_encoder;
 
     // output matrices
@@ -173,7 +173,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
 
             Matrix z = new Matrix(z2D);
 
-            kalmanFilter(C_gps, Q_gps z);
+            kalmanFilter(C_gps, Q_gps, z);
         }));
     }
 
