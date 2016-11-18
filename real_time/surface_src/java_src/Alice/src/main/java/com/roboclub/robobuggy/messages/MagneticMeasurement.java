@@ -16,14 +16,14 @@ public class MagneticMeasurement extends BaseMessage {
 
     public static final String VERSION_ID = "magV0.0";
 
-    private int IMU;
+    private int imuID;
 
     private double magX;
     private double magY;
     private double magZ;
 
     /**
-     * Constructs a new {@link MagneticMeasurement} at time now with IMU ID = 0
+     * Constructs a new {@link MagneticMeasurement} at time now with IMU ID = -1
      *
      * @param magX magX value
      * @param magY magY value
@@ -34,6 +34,7 @@ public class MagneticMeasurement extends BaseMessage {
         this.magX = magX;
         this.magY = magY;
         this.magZ = magZ;
+        this.imuID = -1;
     }
 
     /**
@@ -49,7 +50,7 @@ public class MagneticMeasurement extends BaseMessage {
         this.magX = magX;
         this.magY = magY;
         this.magZ = magZ;
-        this.IMU = imuID;
+        this.imuID = imuID;
     }
 
     /**
@@ -85,5 +86,5 @@ public class MagneticMeasurement extends BaseMessage {
      *
      * @return the ID of the IMU for the {@link MagneticMeasurement}
      */
-    public int getIMU() { return this.IMU; }
+    public int getImuID() { return this.imuID; }
 }

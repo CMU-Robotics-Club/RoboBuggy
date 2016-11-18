@@ -16,18 +16,18 @@ public class IMUTemperatureMessage extends BaseMessage {
 
     public static final String VERSION_ID = "temperatureV0.1";
 
-    private int IMU;
+    private int imuID;
     private double temperature;
 
     /**
-     * Constructs a new {@link IMUTemperatureMessage} at time now with IMU ID = 0
+     * Constructs a new {@link IMUTemperatureMessage} at time now with IMU ID = -1
      *
      * @param temp temperature reading from the IMU
      */
     public IMUTemperatureMessage(double temp) {
         this.timestamp = new Date().getTime();
         this.temperature = temp;
-        this.IMU = 0;
+        this.imuID = -1;
     }
 
     /**
@@ -39,7 +39,7 @@ public class IMUTemperatureMessage extends BaseMessage {
     public IMUTemperatureMessage(double temp, int imuID) {
         this.timestamp = new Date().getTime();
         this.temperature = temp;
-        this.IMU = imuID;
+        this.imuID = imuID;
     }
 
     /**
@@ -56,6 +56,6 @@ public class IMUTemperatureMessage extends BaseMessage {
      *
      * @return the ID of the IMU for the {@link IMUTemperatureMessage}
      */
-    public int getIMU() { return this.IMU; }
+    public int getImuID() { return this.imuID; }
 
 }

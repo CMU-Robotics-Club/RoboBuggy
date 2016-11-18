@@ -37,9 +37,9 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
      */
     public HillCrestImuNode() {
         super();
+        registeredDevices = new ArrayList<>();
         Discovery discover = Discovery.getInstance();
         discover.addListener(this);
-        registeredDevices = new ArrayList<>();
     }
 
 
@@ -209,7 +209,6 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
         // TODO Auto-generated method stub
         registeredDevices.add(arg0);
         arg0.open(this);
-
         FreespaceMsgOutDataModeControlV2Request msg = new FreespaceMsgOutDataModeControlV2Request();
         msg.setPacketSelect(8);  //
         msg.setModeAndStatus(8);

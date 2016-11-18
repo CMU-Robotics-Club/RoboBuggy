@@ -9,18 +9,18 @@ public class IMUAngularPositionMessage extends BaseMessage {
 
     public static final String VERSION_ID = "imuAngularPositionV0.0";
 
-    private int IMU;
+    private int imuID;
     private double[][] rot;
 
     /**
-     * Constructs a new {@link IMUAngularPositionMessage} at time now, with IMU set to 0
+     * Constructs a new {@link IMUAngularPositionMessage} at time now, with IMU set to -1
      *
      * @param rotMat The matrix containing all values
      */
     public IMUAngularPositionMessage(double[][] rotMat) {
         this.timestamp = new Date().getTime();
         this.rot = rotMat.clone();
-        this.IMU = 0;
+        this.imuID = -1;
     }
 
     /**
@@ -32,7 +32,7 @@ public class IMUAngularPositionMessage extends BaseMessage {
     public IMUAngularPositionMessage(double[][] rotMat, int imuID) {
         this.timestamp = new Date().getTime();
         this.rot = rotMat.clone();
-        this.IMU = imuID;
+        this.imuID = imuID;
     }
 
     /**
@@ -49,5 +49,5 @@ public class IMUAngularPositionMessage extends BaseMessage {
      *
      * @return the ID of the IMU for the {@link IMUAngularPositionMessage}
      */
-    public int getIMU() { return this.IMU; }
+    public int getImuID() { return this.imuID; }
 }

@@ -18,169 +18,245 @@ import java.util.concurrent.TimeUnit;
  * Created by Alex on 11/10/2016.
  */
 public class MultipleIMUtest {
-    private Subscriber accSub = new Subscriber("test", NodeChannel.IMU_ACCELERATION.getMsgPath(), (topicName, m) -> {
-        if(m instanceof IMUAccelerationMessage){
-            processMessage(m);
-            System.out.println("Received Acceleration Message");
-            /*
-            System.out.println("Acceleration Message; Topic is : " + topicName);
-            IMUAccelerationMessage mes = ((IMUAccelerationMessage)m);
-            System.out.println("IMU: " + mes.getIMU());
-            System.out.println("X: " + mes.getXAccel());
-            System.out.println("Y: " + mes.getYAccel());
-            System.out.println("Z: " + mes.getZAccel());
-            System.out.println("\n====================================================");
-            */
-        }
-    });
+    private static ArrayList<Message> messages;
 
-    private Subscriber linAccSub = new Subscriber("test", NodeChannel.IMU_LINEAR_ACC.getMsgPath(), (topicName, m) -> {
-        if(m instanceof IMULinearAccelerationMessage){
-            processMessage(m);
-            System.out.println("Received Linear Acceleration Message");
-            /*
-            System.out.println("Linear Acceleration Message; Topic is : " + topicName);
-            IMULinearAccelerationMessage mes = ((IMULinearAccelerationMessage)m);
-            System.out.println("IMU: " + mes.getIMU());
-            System.out.println("X: " + mes.getX());
-            System.out.println("Y: " + mes.getY());
-            System.out.println("Z: " + mes.getZ());
-            System.out.println("\n====================================================");
-            */
-        }
-    });
+    private double EPS = Math.pow(10, -5);
+    private long waitTime = 10 * 1000;
 
-    private Subscriber angVelSub = new Subscriber("test", NodeChannel.IMU_ANG_VEL.getMsgPath(), (topicName, m) -> {
-        if(m instanceof IMUAngularVelocityMessage){
-            processMessage(m);
-            System.out.println("Received Angular Velocity Message");
-            /*
-            System.out.println("Angular Velocity Message; Topic is : " + topicName);
-            IMUAngularVelocityMessage mes = ((IMUAngularVelocityMessage)m);
-            System.out.println("IMU: " + mes.getIMU());
-            System.out.println("X: " + mes.getX());
-            System.out.println("Y: " + mes.getY());
-            System.out.println("Z: " + mes.getZ());
-            System.out.println("\n====================================================");
-            */
-        }
-    });
+    private HillCrestImuNode node;
 
-    private Subscriber magSub = new Subscriber("test", NodeChannel.IMU_MAGNETIC.getMsgPath(), (topicName, m) -> {
-        if(m instanceof MagneticMeasurement){
-            processMessage(m);
-            System.out.println("Received Magnetic Message");
-            /*
-            System.out.println("Magnetic Measurement Message; Topic is : " + topicName);
-            MagneticMeasurement mes = ((MagneticMeasurement)m);
-            System.out.println("IMU: " + mes.getIMU());
-            System.out.println("X: " + mes.getmagX());
-            System.out.println("Y: " + mes.getmagY());
-            System.out.println("Z: " + mes.getmagZ());
-            System.out.println("\n====================================================");
-            */
-        }
-    });
+    private FakeHillcrest a;
+    private FakeHillcrest b;
 
-    private Subscriber incSub = new Subscriber("test", NodeChannel.IMU_INCLINATION.getMsgPath(), (topicName, m) -> {
-        if(m instanceof IMUInclinationMessage){
-            processMessage(m);
-            System.out.println("Received Inclination Message");
-            /*
-            System.out.println("Inclination Message; Topic is : " + topicName);
-            IMUInclinationMessage mes = ((IMUInclinationMessage)m);
-            System.out.println("IMU: " + mes.getIMU());
-            System.out.println("X: " + mes.getXInclination());
-            System.out.println("Y: " + mes.getYInclination());
-            System.out.println("Z: " + mes.getZInclination());
-            System.out.println("\n====================================================");
-            */
-        }
-    });
-
-    private Subscriber compSub = new Subscriber("test", NodeChannel.IMU_COMPASS.getMsgPath(), (topicName, m) -> {
-        if(m instanceof IMUCompassMessage){
-            processMessage(m);
-            System.out.println("Received Compass Message");
-            /*
-            System.out.println("Compass Message; Topic is : " + topicName);
-            IMUCompassMessage mes = ((IMUCompassMessage)m);
-            System.out.println("IMU: " + mes.getIMU());
-            System.out.println("Heading: " + mes.getCompassHeading());
-            System.out.println("\n====================================================");
-            */
-        }
-    });
-
-    private Subscriber angPosSub = new Subscriber("test", NodeChannel.IMU_ANG_POS.getMsgPath(), (topicName, m) -> {
-        if(m instanceof IMUAngularPositionMessage){
-            processMessage(m);
-            System.out.println("Received Angular Position Message");
-            /*
-            IMUAngularPositionMessage mes = ((IMUAngularPositionMessage)m);
-            System.out.println("IMU: " + mes.getIMU());
-            double[][] rot = mes.getRot();
-            System.out.println("Values");
-            for(int i = 0; i < rot.length; i++) {
-                for(int j = 0; j < rot[i].length; j++) {
-                    System.out.println("rot["+i+"]["+j+"] = " + rot[i][j]);
-                }
-            }
-            System.out.println("\n====================================================");
-            */
-
-        }
-    });
-
-    private static ArrayList<Message> messages = new ArrayList<>();
-
-    double EPS = Math.pow(10, -5);
-    long waitTime = 3000;
+    private boolean setUp = false;
 
     @Test
     public void testStandardIMUData() {
-        System.out.println("Begin Tests");
+        System.out.println("Run All Tests");
         System.out.println("\n====================================================\n");
-        fakeHillcrest a = new fakeHillcrest(1, "HillCrest A", 1, 1, 1);
-        fakeHillcrest b = new fakeHillcrest(2, "HillCrest B", 1, 1, 1);
 
-        HillCrestImuNode node = new HillCrestImuNode();
+        if(!setUp) {
+            oneTimeSetup();
+        }
+
+        testImu0Msg0();
+        testImu1Msg0();
+        testImu0Msg1();
+        testImu1Msg1();
+    }
+
+    @Test
+    public void testImu0Msg0() {
+        System.out.println("Testing MSG 0 with IMU 0");
+        System.out.println("====================================================");
+
+        if(!setUp) {
+            oneTimeSetup();
+        }
+
+        HidInMsg msg = makeMessage(0);
+        node.handleRead(a, msg, 34, System.currentTimeMillis());
+
+        testMessages(waitTime, 0, 0);
+
+
+        System.out.println("Success\n");
+    }
+
+    @Test
+    public void testImu1Msg0() {
+        System.out.println("Testing MSG 0 with IMU 1");
+        System.out.println("====================================================");
+
+        if(!setUp) {
+            oneTimeSetup();
+        }
+
+        HidInMsg msg = makeMessage(0);
+        node.handleRead(b, msg, 34, System.currentTimeMillis());
+
+        testMessages(waitTime, 0, 1);
+
+
+        System.out.println("Success\n");
+    }
+
+    @Test
+    public void testImu0Msg1() {
+        System.out.println("Testing MSG 1 with IMU 0");
+        System.out.println("====================================================");
+
+        if(!setUp) {
+            oneTimeSetup();
+        }
+
+        HidInMsg msg = makeMessage(1);
+        node.handleRead(a, msg, 34, System.currentTimeMillis());
+
+        testMessages(waitTime, 1, 0);
+
+
+        System.out.println("Success\n");
+    }
+
+    @Test
+    public void testImu1Msg1() {
+        System.out.println("Testing MSG 1 with IMU 1");
+        System.out.println("====================================================");
+
+        if(!setUp) {
+            oneTimeSetup();
+        }
+
+        HidInMsg msg = makeMessage(1);
+        node.handleRead(b, msg, 34, System.currentTimeMillis());
+
+        testMessages(waitTime, 1, 1);
+
+        System.out.println("Success\n");
+    }
+
+    public void testMessages (long delayinMS, int messageID, int imuID) {
+        boolean z = messageID == 0;
+
+        System.out.println("Waiting " + delayinMS + " ms ....");
+        try {
+            TimeUnit.MILLISECONDS.sleep(delayinMS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Testing Message Results");
+        while(!messages.isEmpty()) {
+            Message m = messages.remove(0);
+            if(m instanceof IMUAccelerationMessage) {
+                IMUAccelerationMessage a = (IMUAccelerationMessage) m;
+                accelerationTest(a, z, imuID);
+            } else if(m instanceof IMULinearAccelerationMessage) {
+                IMULinearAccelerationMessage a = (IMULinearAccelerationMessage) m;
+                linAccelerationTest(a, z, imuID);
+            } else if(m instanceof IMUAngularVelocityMessage) {
+                IMUAngularVelocityMessage a = (IMUAngularVelocityMessage) m;
+                angularVelTest(a, z, imuID);
+            } else if(m instanceof MagneticMeasurement) {
+                MagneticMeasurement a = (MagneticMeasurement) m;
+                magneticTest(a, z, imuID);
+            } else if(m instanceof IMUInclinationMessage) {
+                IMUInclinationMessage a = (IMUInclinationMessage) m;
+                inclinationTest(a, z, imuID);
+            } else if(m instanceof IMUCompassMessage) {
+                IMUCompassMessage a = (IMUCompassMessage) m;
+                compassTest(a, z, imuID);
+            } else if(m instanceof IMUAngularPositionMessage) {
+                IMUAngularPositionMessage a = (IMUAngularPositionMessage) m;
+                angularPositionTest(a, z, imuID);
+            } else {
+                System.out.println("Class not found");
+                System.out.println("Class given was " + m.getClass().toString());
+                assert false;
+            }
+        }
+    }
+
+    public void accelerationTest(IMUAccelerationMessage a, boolean z, int imuID) {
+        assert a.getImuID() == imuID;
+        assert approxEq(a.getXAccel(), 8, EPS);
+        assert approxEq(a.getYAccel(), 3.36, EPS);
+        assert approxEq(a.getZAccel(), z ? 40.96 : 5.12, EPS);
+    }
+
+    public void linAccelerationTest(IMULinearAccelerationMessage a, boolean z, int imuID) {
+        assert a.getImuID() == imuID;
+        assert approxEq(a.getX(), 3.36, EPS);
+        assert approxEq(a.getY(), 8, EPS);
+        assert approxEq(a.getZ(), z ? 2.56 : 0, EPS);
+    }
+
+    public void angularVelTest(IMUAngularVelocityMessage a, boolean z, int imuID) {
+        assert a.getImuID() == imuID;
+        assert approxEq(a.getX(), 8.5, EPS);
+        assert approxEq(a.getY(), 9.5, EPS);
+        assert approxEq(a.getZ(), z ? 63.8 : 115, EPS);
+    }
+
+    public void magneticTest(MagneticMeasurement a, boolean z, int imuID) {
+        assert a.getImuID() == imuID;
+        assert approxEq(a.getmagX(), 0.86, EPS);
+        assert approxEq(a.getmagY(), 4.202, EPS);
+        assert approxEq(a.getmagZ(), z ? 0 : 1.024, EPS);
+    }
+
+    public void inclinationTest(IMUInclinationMessage a, boolean z, int imuID) {
+        assert a.getImuID() == imuID;
+        assert approxEq(a.getXInclination(), 6, EPS);
+        assert approxEq(a.getYInclination(), 5, EPS);
+        assert approxEq(a.getZInclination(), z ? 25.6 : 76.8, EPS);
+    }
+
+    public void compassTest(IMUCompassMessage a, boolean z, int imuID) {
+        assert a.getImuID() == imuID;
+        assert approxEq(a.getCompassHeading(), z ? 1692.2 : -151.0, EPS);
+    }
+
+    public void angularPositionTest(IMUAngularPositionMessage a, boolean z, int imuID) {
+        assert a.getImuID() == imuID;
+
+        double[][] rot = a.getRot();
+        assert rot.length == 3;
+        assert rot[0].length == 3;
+        assert rot[1].length == 3;
+        assert rot[2].length == 3;
+        assert rot[0][0] == (z ? -1.125 : 0.87451171875);
+        assert rot[0][1] == (z ? -2.75 : 0.203125);
+        assert rot[0][2] == (z ? 1.75 : 0.765625);
+        assert rot[1][0] == (z ? 3.25 : 0.296875);
+        assert rot[1][1] == (z ? -1.5 : 0.49951171875);
+        assert rot[1][2] == (z ? -1.0 : -1.4921875);
+        assert rot[2][0] == (z ? 0.25 : -0.734375);
+        assert rot[2][1] == (z ? 2.0 : 1.5078125);
+        assert rot[2][2] == (z ? 0.375 : 0.375);
+    }
+
+    private void oneTimeSetup() {
+        setUp = true;
+        messages = new ArrayList<>();
+        Subscriber angPosSub = new Subscriber("test", NodeChannel.IMU_ANG_POS.getMsgPath(), (topicName, m) -> {
+            processMessage(m);
+            System.out.println("Received Angular Position Message");
+        });
+        Subscriber compSub = new Subscriber("test", NodeChannel.IMU_COMPASS.getMsgPath(), (topicName, m) -> {
+            processMessage(m);
+            System.out.println("Received Compass Message");
+        });
+        Subscriber incSub = new Subscriber("test", NodeChannel.IMU_INCLINATION.getMsgPath(), (topicName, m) -> {
+            processMessage(m);
+            System.out.println("Received Inclination Message");
+        });
+        Subscriber magSub = new Subscriber("test", NodeChannel.IMU_MAGNETIC.getMsgPath(), (topicName, m) -> {
+            processMessage(m);
+            System.out.println("Received Magnetic Message");
+        });
+        Subscriber angVelSub = new Subscriber("test", NodeChannel.IMU_ANG_VEL.getMsgPath(), (topicName, m) -> {
+            processMessage(m);
+            System.out.println("Received Angular Velocity Message");
+        });
+        Subscriber linAccSub = new Subscriber("test", NodeChannel.IMU_LINEAR_ACC.getMsgPath(), (topicName, m) -> {
+            processMessage(m);
+            System.out.println("Received Linear Acceleration Message");
+        });
+        Subscriber accSub = new Subscriber("test", NodeChannel.IMU_ACCELERATION.getMsgPath(), (topicName, m) -> {
+            processMessage(m);
+            System.out.println("Received Acceleration Message");
+        });
+
+        a = new FakeHillcrest(1, "HillCrest A", 1, 1, 1);
+        b = new FakeHillcrest(2, "HillCrest B", 1, 1, 1);
+
+        node = new HillCrestImuNode();
 
         node.freespaceDeviceInserted(a);
         node.freespaceDeviceInserted(b);
 
-        HidInMsg msgA = makeMessage(0);
-        HidInMsg msgB = makeMessage(1);
-
-
-        System.out.println("Testing MSG 0 with IMU 0");
-        System.out.println("====================================================");
-        node.handleRead(a, msgA, 34, System.currentTimeMillis());
-
-        verifyTest(waitTime, 0, 0);
-
-        System.out.println("Success\n");
-        System.out.println("Testing MSG 0 with IMU 1");
-        System.out.println("====================================================");
-        node.handleRead(b, msgA, 34, System.currentTimeMillis());
-
-        verifyTest(waitTime, 0, 1);
-
-        System.out.println("Success\n");
-        System.out.println("Testing MSG 1 with IMU 0");
-        System.out.println("====================================================");
-        node.handleRead(a, msgB, 34, System.currentTimeMillis());
-
-        verifyTest(waitTime, 1, 0);
-
-        System.out.println("Success\n");
-        System.out.println("Testing MSG 1 with IMU 1");
-        System.out.println("====================================================");
-        node.handleRead(b, msgB, 34, System.currentTimeMillis());
-
-        verifyTest(waitTime, 1, 1);
-
-        System.out.println("Success\n");
     }
 
     private static HidInMsg makeMessage(int id) {
@@ -250,7 +326,7 @@ public class MultipleIMUtest {
         data[38] = 0x00; /** Z - Value: 1 if id = 0, 0.15625 otherwise **/
         data[39] = (byte) (a ? 0x40 : 0x01);
 
-        HidInMsg msg = new fakeMsg(data, null);
+        HidInMsg msg = new FakeMsg(data, null);
         return msg;
     }
 
@@ -258,84 +334,14 @@ public class MultipleIMUtest {
         messages.add(m);
     }
 
-    public void verifyTest(long delayinMS, int messageID, int imuID) {
-        boolean z = messageID == 0;
-
-        System.out.println("Waiting " + delayinMS + " ms ....");
-        try {
-            TimeUnit.MILLISECONDS.sleep(delayinMS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("Testing Message Results");
-        while(!messages.isEmpty()) {
-            Message m = messages.remove(0);
-            if(m instanceof IMUAccelerationMessage) {
-                IMUAccelerationMessage a = (IMUAccelerationMessage) m;
-                assert a.getIMU() == imuID;
-                assert approxEq(a.getXAccel(), 8, EPS);
-                assert approxEq(a.getYAccel(), 3.36, EPS);
-                assert approxEq(a.getZAccel(), z ? 40.96 : 5.12, EPS);
-            } else if(m instanceof IMULinearAccelerationMessage) {
-                IMULinearAccelerationMessage a = (IMULinearAccelerationMessage) m;
-                assert a.getIMU() == imuID;
-                assert approxEq(a.getX(), 3.36, EPS);
-                assert approxEq(a.getY(), 8, EPS);
-                assert approxEq(a.getZ(), z ? 2.56 : 0, EPS);
-            } else if(m instanceof IMUAngularVelocityMessage) {
-                IMUAngularVelocityMessage a = (IMUAngularVelocityMessage) m;
-                assert a.getIMU() == imuID;
-                assert approxEq(a.getX(), 8.5, EPS);
-                assert approxEq(a.getY(), 9.5, EPS);
-                assert approxEq(a.getZ(), z ? 63.8 : 115, EPS);
-            } else if(m instanceof MagneticMeasurement) {
-                MagneticMeasurement a = (MagneticMeasurement) m;
-                assert a.getIMU() == imuID;
-                assert approxEq(a.getmagX(), 0.86, EPS);
-                assert approxEq(a.getmagY(), 4.202, EPS);
-                assert approxEq(a.getmagZ(), z ? 0 : 1.024, EPS);
-            } else if(m instanceof IMUInclinationMessage) {
-                IMUInclinationMessage a = (IMUInclinationMessage) m;
-                assert a.getIMU() == imuID;
-                assert approxEq(a.getXInclination(), 6, EPS);
-                assert approxEq(a.getYInclination(), 5, EPS);
-                assert approxEq(a.getZInclination(), z ? 25.6 : 76.8, EPS);
-            } else if(m instanceof IMUCompassMessage) {
-                IMUCompassMessage a = (IMUCompassMessage) m;
-                assert a.getIMU() == imuID;
-                assert approxEq(a.getCompassHeading(), z ? 1692.2 : -151.0, EPS);
-            } else if(m instanceof IMUAngularPositionMessage) {
-                double[][] rot = ((IMUAngularPositionMessage) m).getRot();
-
-                assert rot.length == 3;
-                assert rot[0].length == 3;
-                assert rot[1].length == 3;
-                assert rot[2].length == 3;
-                assert rot[0][0] == (z ? -1.125 : 0.87451171875);
-                assert rot[0][1] == (z ? -2.75 : 0.203125);
-                assert rot[0][2] == (z ? 1.75 : 0.765625);
-                assert rot[1][0] == (z ? 3.25 : 0.296875);
-                assert rot[1][1] == (z ? -1.5 : 0.49951171875);
-                assert rot[1][2] == (z ? -1.0 : -1.4921875);
-                assert rot[2][0] == (z ? 0.25 : -0.734375);
-                assert rot[2][1] == (z ? 2.0 : 1.5078125);
-                assert rot[2][2] == (z ? 0.375 : 0.375);
-            } else {
-                System.out.println("Class not found");
-                System.out.println("Class given was " + m.getClass().toString());
-                assert false;
-            }
-        }
-    }
 
     public boolean approxEq(double x, double y, double epsilon) {
         return y - epsilon <= x && x <= y + epsilon;
     }
 
-    public static class fakeHillcrest extends Device {
+    public static class FakeHillcrest extends Device {
 
-        public fakeHillcrest(int id, String name, int vendorId, int productId, int hVer) {
+        public FakeHillcrest(int id, String name, int vendorId, int productId, int hVer) {
             super(id, name, vendorId, productId, hVer);
         }
 
@@ -344,10 +350,10 @@ public class MultipleIMUtest {
         }
     }
 
-    public static class fakeMsg extends FreespaceMsgInMotionEngineOutput {
+    public static class FakeMsg extends FreespaceMsgInMotionEngineOutput {
         private byte[] meData_;
 
-        public fakeMsg(byte[] msg, DecoderFactory.HID_MESSAGE_VERSION version) {
+        public FakeMsg(byte[] msg, DecoderFactory.HID_MESSAGE_VERSION version) {
             super(msg, DecoderFactory.HID_MESSAGE_VERSION.FSP2xx);
             this.meData_ = msg;
         }
