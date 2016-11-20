@@ -1,10 +1,6 @@
 package com.roboclub.robobuggy.main;
 
 import com.roboclub.robobuggy.robots.AbstractRobot;
-<<<<<<< HEAD
-=======
-import com.roboclub.robobuggy.robots.TransistorDataCollection;
->>>>>>> master
 import com.roboclub.robobuggy.ui.Gui;
 import com.roboclub.robobuggy.utilities.JNISetup;
 
