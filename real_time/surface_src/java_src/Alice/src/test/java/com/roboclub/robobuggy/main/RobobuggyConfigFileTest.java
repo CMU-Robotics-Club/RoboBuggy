@@ -25,7 +25,7 @@ public class RobobuggyConfigFileTest {
      *  @throws Exception
      */
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         //Runs before each test case, denoted "@Test" before the method
     }
 
@@ -34,16 +34,16 @@ public class RobobuggyConfigFileTest {
      * @throws Exception
      */
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         //Runs after each test case
     }
 
     /**
-     * Creates a config file, setting the ROBOT field to the given input
-     * @param robotName: String to be used as the robot type
-     * @throws IOException
+     * Creates a config file with the specified robot name
+     * @param robotName name of the robot to create (e.g. "TransistorAuton", "SimRobot")
+     * @throws IOException if we couldn't create the config file
      */
-    public void createConfigFileWithRobot(String robotName) throws IOException{
+    public void createConfigFileWithRobot(String robotName) throws IOException {
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("config.config")), "UTF-8"));
 
         writer.write("{" +
@@ -63,9 +63,10 @@ public class RobobuggyConfigFileTest {
     /**
      * Creates a config file without a ROBOT field
      * Use only for testing; it's supposed to lead to null-pointer exceptions
-     * @throws IOException
+     *
+     * @throws IOException if we couldn't create the config file
      */
-    public void createConfigFileWithoutRobot() throws IOException{
+    public void createConfigFileWithoutRobot() throws IOException {
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("config.config")), "UTF-8"));
 
         writer.write("{" +
