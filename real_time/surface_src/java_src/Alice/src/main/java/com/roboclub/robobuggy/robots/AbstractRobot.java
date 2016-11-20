@@ -34,8 +34,15 @@ public abstract class AbstractRobot implements RosMaster {
      */
     @Override
     public boolean startNodes() {
+        addNodesToRobot();
         return nodeList.stream().map(n -> n.startNode()).reduce(true, (a, b) -> a && b);
     }
+
+    /**
+     * Method to add all the nodes for the robot
+     * Nodes should NOT be added in the constructor, they should be added here
+     */
+    protected abstract void addNodesToRobot();
 
     /**
      * {@inheritDoc}

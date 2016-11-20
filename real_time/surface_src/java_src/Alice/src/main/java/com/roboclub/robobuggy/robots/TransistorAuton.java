@@ -16,7 +16,6 @@ import com.roboclub.robobuggy.ros.NodeChannel;
 import java.io.IOException;
 import java.util.ArrayList;
 
-
 /**
  * A robot class for having transistor drive itself
  *
@@ -39,11 +38,9 @@ public final class TransistorAuton extends AbstractRobot {
         return instance;
     }
 
-    /**
-     * Constructor for TransistorAuton robot class
-     */
-    private TransistorAuton() {
-        super();
+    @Override
+    protected void addNodesToRobot() {
+
         try {
             Thread.sleep(ARDUINO_BOOTLOADER_TIMEOUT);
         } catch (InterruptedException e) {
@@ -70,7 +67,12 @@ public final class TransistorAuton extends AbstractRobot {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
 
-
+    /**
+     * Constructor for TransistorAuton robot class
+     */
+    private TransistorAuton() {
+        super();
     }
 }

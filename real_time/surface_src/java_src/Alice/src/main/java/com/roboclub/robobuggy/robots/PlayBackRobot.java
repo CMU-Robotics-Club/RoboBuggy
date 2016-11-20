@@ -26,12 +26,16 @@ public final class PlayBackRobot extends AbstractRobot {
         return instance;
     }
 
-    private PlayBackRobot() {
-        super();
+    @Override
+    protected void addNodesToRobot() {
         new LineByLineSensorPlayer(RobobuggyConfigFile.getPlayBackSourceFile(), 1);
 //		new SensorPlayer(RobobuggyConfigFile.getPlayBackSourceFile(), 1);
 //		new HighTrustGPSLocalizer();
         new KfLocalizer(10);
+    }
+
+    private PlayBackRobot() {
+        super();
     }
 }	
 
