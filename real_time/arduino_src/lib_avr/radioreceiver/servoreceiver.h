@@ -1,6 +1,7 @@
 #ifndef _LIB_AVR_SERVORECEIVER_H_
 #define _LIB_AVR_SERVORECEIVER_H_
 
+#include "rcreceiver.h"
 #include <avr/io.h>
 #include <stdio.h>
 #include "../../radio_buggy_mega/system_clock.h"
@@ -8,7 +9,7 @@
 // legacy: needed by get_angle
 #define AIL_RIGHTMOST 980
 
-class ServoReceiver {
+class ServoReceiver : RCReceiver{
     volatile uint8_t *receiver_pin_reg_;
     uint8_t receiver_pin_num_;
     uint8_t int_num_;
@@ -26,13 +27,8 @@ class ServoReceiver {
 
     public:
         ServoReceiver();
-        void Init(volatile uint8_t *pin_reg, uint8_t pin_num, uint8_t int_num);
-        void OnInterruptReceiver();
-        unsigned long GetLastTimestamp();
-        unsigned long GetPulseWidth();
         int GetAngle();
         int GetAngleHundredths();
-        void PrintDebugInfo(FILE *out_stream);
 };
 
 #endif /* _LIB_AVR_SERVORECEIVER_H_ */
