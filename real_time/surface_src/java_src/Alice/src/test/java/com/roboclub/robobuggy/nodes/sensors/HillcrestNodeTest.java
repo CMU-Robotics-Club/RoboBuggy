@@ -11,12 +11,18 @@ import static org.junit.Assert.assertEquals;
  */
 public class HillcrestNodeTest {
 
+    /**
+     * setup done before each test
+     */
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
     }
 
+    /**
+     * work that's done after each test
+     */
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
 
     }
 
