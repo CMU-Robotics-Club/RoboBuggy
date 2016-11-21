@@ -551,16 +551,15 @@ int main(void)
         g_is_autonomous = g_auton_rx.GetAngle() > PWM_STATE_THRESHOLD;
 
         // Detect dropped radio conections
-        // note: interrupts must be disabled while checking system clock so that
-        //      timestamps are not updated under our feet.  These
-        //      operations are atomic so we're fine
 
-        cli();
-        unsigned long time_now = micros();
         unsigned long time1 = g_steering_rx.GetLastTimestamp();
         unsigned long time2 = g_brake_rx.GetLastTimestamp();
         unsigned long time3 = g_auton_rx.GetLastTimestamp();
-        sei();
+        //We need to call micros last because if we called it first, 
+        //  time1, time2, or time3 could be greater than time_now if an interrupt
+        //  fires and updates its timestamp and our delta values will underflow
+        unsigned long time_now = micros();
+
 
         //RC time deltas
         unsigned long delta1 = time_now - time1;
@@ -582,6 +581,7 @@ int main(void)
                 // we haven't heard from the RC receiver in too long
                 g_errors |= _BV(RBSM_EID_RC_LOST_SIGNAL);
                 brake_needs_reset = true;
+                dbg_printf("RC Timeout! %lu %lu %lu\n", delta1, delta2, delta3);
             }
             else {
                 g_errors &= ~_BV(RBSM_EID_RC_LOST_SIGNAL);
@@ -591,6 +591,7 @@ int main(void)
             if(auton_timeout) {
                 g_errors |= _BV(RBSM_EID_AUTON_LOST_SIGNAL);
                 brake_needs_reset = true;
+                dbg_printf("Auton Timeout! %lu %lu\n", delta4, delta5);
             }
             else {
                 g_errors &= ~_BV(RBSM_EID_AUTON_LOST_SIGNAL);
