@@ -1,5 +1,0 @@
-!_TAG_FILE_SORTED	2	/0=unsorted, 1=sorted, 2=foldcase/
-control	/afs/andrew.cmu.edu/usr20/dapatil/RoboBuggy/offline/controller/controller.m	/^function [u] = control(desired_traj, X) $/;"	f	language:MatLab
-controller	/afs/andrew.cmu.edu/usr20/dapatil/RoboBuggy/offline/controller/controller.m	/^function [trajectory] = controller()$/;"	f	language:MatLab
-model	/afs/andrew.cmu.edu/usr20/dapatil/RoboBuggy/offline/controller/controller.m	/^function [A] = model(x, u, dt)$/;"	f	language:MatLab
-processWaypoints	/afs/andrew.cmu.edu/usr20/dapatil/RoboBuggy/offline/controller/controller.m	/^function [trajectory] = processWaypoints(lat_long)$/;"	f	language:MatLab

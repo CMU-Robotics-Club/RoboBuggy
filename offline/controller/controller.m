@@ -11,32 +11,39 @@ function [trajectory] = controller()
     lat_long = [40.441670, -79.9416362];
     dt = 0.001; % 1000Hz
     m = 20; % 20Hz
+    velocity = 3; % m/s, 6.7mph
 
-    [x, y] = ll2utm(lat_long(1), lat_long(2));
+    [x, y, ~] = ll2utm(lat_long(1), lat_long(2));
 
     X = [x;  % X, m, UTM coors
          y;  % Y, m, UTM coors
-         0;  % d_Yb, body velocity
+         velocity;  % d_Yb, body velocity
          first_heading; % heading, rad, world frame
          0];  % d_heading, rad/s
 
     load('./waypoints.mat');
     desired_traj = processWaypoints(logs);
-    desired_traj = desired_traj(:, 1:2);
     % time = linspace(0, 240, size(trajectory,2));
     time = 0:dt:240;
     u = 0; % steering angle
-    trajectory = [];
+    trajectory = [X; lat_long'; u];
 
     for i = 1:size(time, 2)
         t = time(i);
         A = model(X, u, dt);
         X = A*X;
+
+        X(4) = clampAngle(X(4));
+        X(5) = clampAngle(X(5));
+
         if(mod(i, m) == 0)
-            u = control(desired_traj, X)
+            u = control(desired_traj, X);
+            u = clampAngle(u);
         end
 
-        trajectory = [trajectory, X];
+        % trajectory = [trajectory, X];
+        snapshot = summarize(X, utm_zone, u);
+        trajectory = [trajectory, snapshot];
     end
     
     if save_data
@@ -44,11 +51,24 @@ function [trajectory] = controller()
     end
 end
 
-function [trajectory] = processWaypoints(lat_long)
+function [desired] = processWaypoints(lat_long)
     [x, y, zone] = ll2utm(lat_long);
-    trajectory = [x,y,(ones(size(x, 1), 1)*zone)];
+    desired = [x y];
 end
 
+function snapshot = summarize(x, utm_zone, steeringAngle)
+    [lat, lon] = utm2ll(x(1), x(2), utm_zone);
+    snapshot = [x; lat; lon; steeringAngle];
+end
+
+function a = clampAngle(a)
+    while (a < -pi)
+        a = a + 2*pi;
+    end
+    while (a > pi)
+        a = a - 2*pi;
+    end
+end
 
 function [A] = model(x, u, dt)
     global wheel_base
