@@ -2,12 +2,8 @@ package com.roboclub.robobuggy.nodes.baseNodes;
 
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
-import gnu.io.CommPort;
-import gnu.io.CommPortIdentifier;
-import gnu.io.NoSuchPortException;
-import gnu.io.PortInUseException;
-import gnu.io.SerialPort;
-import gnu.io.UnsupportedCommOperationException;
+import purejavacomm.*;
+
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -71,7 +67,7 @@ public abstract class SerialNode extends BuggyDecoratorNode {
                 }
             }
         } catch (NoSuchPortException | PortInUseException | UnsupportedCommOperationException e) {
-            new RobobuggyLogicNotification("Error: Unable to connect to port" + portName, RobobuggyMessageLevel.EXCEPTION);
+            new RobobuggyLogicNotification("Er  ror: Unable to connect to port" + portName, RobobuggyMessageLevel.EXCEPTION);
 
         }
         return null;
@@ -209,6 +205,7 @@ public abstract class SerialNode extends BuggyDecoratorNode {
             while (running) {
 
                 try {
+
                     numBytes += serialInput.read(buf, start + numBytes, buf.length - numBytes);
 
                     while (true) {
@@ -219,6 +216,7 @@ public abstract class SerialNode extends BuggyDecoratorNode {
                         start += numRead;
                         numBytes -= numRead;
                     }
+
 
                     // Shift the array by the amount that we read.
                     // TODO this is stupid and should be fixed
@@ -232,8 +230,9 @@ public abstract class SerialNode extends BuggyDecoratorNode {
                     } catch (InterruptedException e) {
                         new RobobuggyLogicNotification("sleep .... interrupted?", RobobuggyMessageLevel.EXCEPTION);
                     }
-                } catch (IOException e) {
+                } catch (IOException | NullPointerException  | IndexOutOfBoundsException e) {
                     // TODO handle this error reasonably.
+                    sp.close();
                     setNodeState(NodeState.DISCONNECTED);
                     e.printStackTrace();
                 }
