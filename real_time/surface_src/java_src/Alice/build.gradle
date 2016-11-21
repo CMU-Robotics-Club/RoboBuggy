@@ -51,7 +51,8 @@ dependencies {
     compile files('library/orsoncharts-1.4-eval-nofx.jar')
 
 
-    compile files('library/RXTXcomm.jar')
+    compile files('library/purejavacomm.jar')
+    compile files('library/jna-4.0.0.jar')
     compile files('library/JMapViewer.jar')
     compile files('library/jfreespace.jar')
 
