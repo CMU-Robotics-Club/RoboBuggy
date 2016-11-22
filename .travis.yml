@@ -20,7 +20,7 @@ script:
     - echo $HOME
     - echo $BUGGY_ROOT
     # for running the build and tests of the high level code
-    - (cd real_time/surface_src/java_src/Alice && $GRADLE_BIN/gradle clean && $GRADLE_BIN/gradle build)
+    - (cd real_time/surface_src/java_src/Alice && $GRADLE_BIN/gradle build)
     - bash real_time/surface_src/java_src/Alice/travisStyleCheck.sh
     - bash real_time/arduino_src/travisStyleCheck.sh
 
