@@ -79,6 +79,13 @@
 #define RX_AUTON_PINN PD1 // arduino 20
 #define RX_AUTON_INT  INT1_vect
 #define RX_AUTON_INTN 1
+#define RX_STATUS_LIGHT_PORT PORTE
+#define RX_STATUS_LIGHT_PINN_BLUE PE3
+#define RX_STATUS_LIGHT_DDR DDRE
+#define RX_STATUS_LIGHT_PINN_GREEN PE5
+#define RX_STATUS_LIGHT_PORT_RED PORTH
+#define RX_STATUS_LIGHT_PINN_RED PH6
+#define RX_STATUS_LIGHT_DDR_RED DDRH
 
 #define ENCODER_DDR  DDRD
 #define ENCODER_PORT PORTD
@@ -354,39 +361,38 @@ void indicator_light_init()
     RX_STATUS_LIGHT_DDR |= _BV(3);
     RX_STATUS_LIGHT_PORT &= ~_BV(5);
     RX_STATUS_LIGHT_DDR |= _BV(5);
-    RX_STATUS_LIGHT_PORT_RED &= ~_BV(5);
-    RX_STATUS_LIGHT_DDR_RED |= _BV(5);
+    RX_STATUS_LIGHT_PORT_RED &= ~_BV(6);
+    RX_STATUS_LIGHT_DDR_RED |= _BV(6);
 }
-
-void watch_dog_failure_light()
+void voltage_too_low_light()
 {
-    // red for this light
-    // watch dog failure light on when PE4 is on
-    RX_STATUS_LIGHT_PORT |= _BV(3);
+    // blue for this light
+    // watch dog failure light on when PE3 is on
+    RX_STATUS_LIGHT_PORT |= _BV(RX_STATUS_LIGHT_PINN_BLUE);
 }
 
 void auton_timeout_light()
 {
+    // red for this light
+    RX_STATUS_LIGHT_PORT_RED |= _BV(RX_STATUS_LIGHT_PINN_RED);
+}
+void rc_timeout_failure_light()
+{
     // green for this light
-    RX_STATUS_LIGHT_PORT_RED |= _BV(5);
+    RX_STATUS_LIGHT_PORT |= _BV(RX_STATUS_LIGHT_PINN_GREEN);
 }
-void radio_timeout_light()
+void voltage_too_low_light_reset()
 {
-    RX_STATUS_LIGHT_PORT |= _BV(5);
-}
-void watch_dog_failure_light_reset()
-{
-    RX_STATUS_LIGHT_PORT &= ~_BV(3);
+    RX_STATUS_LIGHT_PORT &= ~_BV(RX_STATUS_LIGHT_PINN_BLUE);
 }
 void auton_timeout_light_reset()
 {
-    RX_STATUS_LIGHT_PORT_RED &= ~_BV(5);
+    RX_STATUS_LIGHT_PORT_RED &= ~_BV(RX_STATUS_LIGHT_PINN_RED);
 }
-void radio_timeout_light_reset()
+void rc_timeout_failure_light_reset()
 {
-    RX_STATUS_LIGHT_PORT &= ~_BV(5);
+    RX_STATUS_LIGHT_PORT &= ~_BV(RX_STATUS_LIGHT_PINN_GREEN);
 }
-
 
 void brake_init() 
 {
@@ -400,7 +406,6 @@ void brake_init()
 void brake_raise() 
 {
     BRAKE_OUT_PORT |= _BV(BRAKE_OUT_PINN);
-    BRAKE_INDICATOR_PORT &= ~_BV(BRAKE_INDICATOR_PINN);
 }
 
 
@@ -409,7 +414,6 @@ void brake_raise()
 void brake_drop() 
 {
     BRAKE_OUT_PORT &= ~_BV(BRAKE_OUT_PINN);
-    BRAKE_INDICATOR_PORT |= _BV(BRAKE_INDICATOR_PINN);
 }
 
 /*
@@ -493,9 +497,9 @@ int main(void)
     servo_init();
     adc_init();
     brake_init();
+    indicator_light_init();
     steering_center(); // this call takes time
 
-    indicator_light_init();
 
     // servo power control starts outputting low
     // PBH4 = Arduino 7
@@ -624,6 +628,7 @@ int main(void)
                 // we haven't heard from the RC receiver in too long
                 g_errors |= _BV(RBSM_EID_RC_LOST_SIGNAL);
                 brake_needs_reset = true;
+                rc_timeout_failure_light();
             }
             else {
                 g_errors &= ~_BV(RBSM_EID_RC_LOST_SIGNAL);
@@ -633,6 +638,7 @@ int main(void)
             if(auton_timeout) {
                 g_errors |= _BV(RBSM_EID_AUTON_LOST_SIGNAL);
                 brake_needs_reset = true;
+                auton_timeout_light();
             }
             else {
                 g_errors &= ~_BV(RBSM_EID_AUTON_LOST_SIGNAL);
@@ -647,13 +653,23 @@ int main(void)
 
             g_errors &= ~_BV(RBSM_EID_RC_LOST_SIGNAL);
             g_errors &= ~_BV(RBSM_EID_AUTON_LOST_SIGNAL);
+            // once the connection is back can turn off lights
+            auton_timeout_light_reset();
+            rc_timeout_failure_light_reset();
         }
 
         // Reading battery voltage from the voltage 24/12 kOhm divider
         g_current_voltage  = adc_read_blocking(BATTERY_ADC);
         g_current_voltage *= BATTERY_ADC_SLOPE;
         g_current_voltage += BATTERY_ADC_OFFSET;
-
+        
+        if (g_current_voltage < 12000) {
+            voltage_too_low_light();
+        }
+        else {
+            voltage_too_low_light_reset();
+        }
+        
         // Read/convert steering pot
         g_steering_feedback = adc_read_blocking(STEERING_POT_ADC);
         g_steering_feedback = map_signal(g_steering_feedback,
