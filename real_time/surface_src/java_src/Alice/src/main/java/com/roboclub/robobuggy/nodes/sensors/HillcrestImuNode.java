@@ -29,7 +29,7 @@ import com.roboclub.robobuggy.ros.Publisher;
  * Comments will make callbacks to page numbers on the datasheet/reference manual, which can be found here:
  * http://hillcrestlabs.com/resources/download-materials/download-info/hcomm-reference-manual/
  */
-public class HillCrestImuNode extends BuggyDecoratorNode implements DeviceListenerInterface, DiscoveryListenerInterface {
+public class HillcrestImuNode extends BuggyDecoratorNode implements DeviceListenerInterface, DiscoveryListenerInterface {
 
     private Device hillcrestImu;
 
@@ -48,7 +48,7 @@ public class HillCrestImuNode extends BuggyDecoratorNode implements DeviceListen
     /**
      * Creates a new Hillcrest IMU node
      */
-    public HillCrestImuNode() {
+    public HillcrestImuNode() {
         super(new BuggyBaseNode(NodeChannel.IMU), "Hillcrest IMU");
 
         // initialize the publishers

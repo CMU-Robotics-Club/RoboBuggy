@@ -9,16 +9,16 @@ import static org.junit.Assert.assertEquals;
 /**
  * Created by vivaanbahl on 9/8/16.
  */
-public class HillCrestImuNodeTest {
+public class HillcrestImuNodeTest {
 
-    private HillCrestImuNode testNode;
+    private HillcrestImuNode testNode;
 
     /**
      * setup done before each test
      */
     @Before
     public void setUp() {
-        testNode = new HillCrestImuNode();
+        testNode = new HillcrestImuNode();
     }
 
     /**
@@ -36,7 +36,7 @@ public class HillCrestImuNodeTest {
      */
     @Test
     public void testCreation() {
-        HillCrestImuNode imu = new HillCrestImuNode();
+        HillcrestImuNode imu = new HillcrestImuNode();
         assertEquals(imu.getName(), "Hillcrest IMU");
     }
 

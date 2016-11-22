@@ -8,7 +8,7 @@ import com.roboclub.robobuggy.nodes.localizers.KfLocalizer;
 import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
 import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
 import com.roboclub.robobuggy.nodes.sensors.GpsNode;
-import com.roboclub.robobuggy.nodes.sensors.HillCrestImuNode;
+import com.roboclub.robobuggy.nodes.sensors.HillcrestImuNode;
 import com.roboclub.robobuggy.nodes.sensors.LoggingNode;
 import com.roboclub.robobuggy.nodes.sensors.RBSMNode;
 import com.roboclub.robobuggy.ros.NodeChannel;
@@ -67,7 +67,7 @@ public final class TransistorAuton extends AbstractRobot {
         nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING, RobobuggyConfigFile.getComPortRBSM(),
                 RobobuggyConfigFile.RBSM_COMMAND_PERIOD));
 //		nodeList.add(new CameraNode(NodeChannel.PUSHBAR_CAMERA, 100));
-        nodeList.add(new HillCrestImuNode());
+        nodeList.add(new HillcrestImuNode());
 
         try {
             ArrayList<GpsMeasurement> wayPoints = WayPointUtil.createWayPointsFromWaypointList(RobobuggyConfigFile.getWaypointSourceLogFile());
