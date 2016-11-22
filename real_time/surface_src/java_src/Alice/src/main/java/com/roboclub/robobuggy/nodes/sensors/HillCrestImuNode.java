@@ -25,6 +25,7 @@ import com.roboclub.robobuggy.ros.Publisher;
  * @author Sean Buckley
  */
 @Deprecated
+@SuppressWarnings("Duplicates")
 public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListenerInterface, com.roboclub.robobuggy.ros.Node {
     private Device thisDevice;
 

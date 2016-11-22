@@ -6,7 +6,6 @@ import java.util.Date;
  * Message for passing IMU linear acceleration measurements within BuggyROS
  *
  */
-@Deprecated
 public class IMULinearAccelerationMessage extends BaseMessage {
 
     public static final String VERSION_ID = "LinearAccelerationV0.0";

@@ -5,7 +5,6 @@ import java.util.Date;
 /**
  * Message for passing IMU angular velocity measurements within BuggyROS
  */
-@Deprecated
 public class IMUAngularVelocityMessage extends BaseMessage {
 
     public static final String VERSION_ID = "imuAngularVelocityV0.0";

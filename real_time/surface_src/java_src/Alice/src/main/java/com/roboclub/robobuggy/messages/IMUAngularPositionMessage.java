@@ -5,7 +5,6 @@ import java.util.Date;
 /**
  * Message for passing IMU angular positions measurements within BuggyROS
  */
-@Deprecated
 public class IMUAngularPositionMessage extends BaseMessage {
 
     public static final String VERSION_ID = "imuAngularPositionV0.0";
