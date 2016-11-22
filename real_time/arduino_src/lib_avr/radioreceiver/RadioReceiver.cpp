@@ -104,7 +104,9 @@ void RadioReceiver::OnInterruptReceiver() {
     if (new_pin_value != 0) {
         // record the start of a suspected pulse
         up_switch_time_ = micros();
+        //printf("up\n");
     } else  {
+        //printf("down\n");
         // check that we actually recorded the beginning of this pulse
         if (up_switch_time_ != 0) {
             // check pulse width is within normal range
@@ -116,6 +118,7 @@ void RadioReceiver::OnInterruptReceiver() {
             }
         }
     }
+    //printf("%ul\n", last_timestamp_);
 }
 
 

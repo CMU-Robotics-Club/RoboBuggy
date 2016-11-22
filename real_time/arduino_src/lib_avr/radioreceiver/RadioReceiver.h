@@ -20,8 +20,8 @@ class RadioReceiver {
     public:
         RadioReceiver();
         virtual void Init(volatile uint8_t *pin_reg, uint8_t pin_num, uint8_t int_num);
-        void OnInterruptReceiver();
-        unsigned long GetLastTimestamp();
+        virtual void OnInterruptReceiver();
+        virtual unsigned long GetLastTimestamp();
         unsigned long GetPulseWidth();
         void PrintDebugInfo(FILE *out_stream);
         void HardwareInit(uint8_t int_num);
