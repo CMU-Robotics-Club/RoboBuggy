@@ -16,7 +16,8 @@
 
 #include "../lib_avr/encoder/encoder.h"
 #include "../lib_avr/rbserialmessages/rbserialmessages.h"
-#include "../lib_avr/servoreceiver/servoreceiver.h"
+#include "../lib_avr/radioreceiver/RadioReceiver.h"
+#include "../lib_avr/radioreceiver/ServoReceiver.h"
 #include "../lib_avr/uart/uart_extra.h"
 #include "servo.h"
 // #include "uart.h"
@@ -158,8 +159,8 @@ static unsigned long g_errors;
 RBSerialMessages g_rbsm;
 rb_message_t g_new_rbsm;
 ServoReceiver g_steering_rx;
-ServoReceiver g_brake_rx;
-ServoReceiver g_auton_rx;
+RadioReceiver g_brake_rx;
+RadioReceiver g_auton_rx;
 Encoder g_encoder_distance;
 Encoder g_encoder_steering;
 
@@ -547,8 +548,9 @@ int main(void)
 
         // Check for RC commands
         steer_angle = g_steering_rx.GetAngleHundredths();
-        brake_cmd_teleop_engaged = g_brake_rx.GetAngle() > PWM_STATE_THRESHOLD;
-        g_is_autonomous = g_auton_rx.GetAngle() > PWM_STATE_THRESHOLD;
+        //TODO: PWM_STATE_THRESHOLD needs to be updated to reflect this
+        brake_cmd_teleop_engaged = g_brake_rx.GetPulseWidth() > PWM_STATE_THRESHOLD;
+        g_is_autonomous = g_auton_rx.GetPulseWidth() > PWM_STATE_THRESHOLD;
 
         // Detect dropped radio conections
 

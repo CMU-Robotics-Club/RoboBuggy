@@ -1,6 +1,6 @@
 # Hey Emacs, this is a -*- makefile -*-
 #----------------------------------------------------------------------------
-# WinAVR Makefile Template written by Eric B. Weddington, Jörg Wunsch, et al.
+# WinAVR Makefile Template written by Eric B. Weddington, JÃ¶rg Wunsch, et al.
 #
 # Released to the Public Domain
 #
@@ -12,11 +12,13 @@
 # Markus Pfaff
 # Sander Pool
 # Frederik Rouleau
+
 #
 #----------------------------------------------------------------------------
 # On command line:
 #
 # make all = Make software.
+
 #
 # make clean = Clean out built project files.
 #
@@ -69,7 +71,8 @@ SRC = $(TARGET).c
 SRC += system_clock.c
 SRC += servo.c
 SRC += ../lib_avr/rbserialmessages/rbserialmessages.cpp
-SRC += ../lib_avr/servoreceiver/servoreceiver.cpp
+SRC += ../lib_avr/radioreceiver/RadioReceiver.cpp
+SRC += ../lib_avr/radioreceiver/ServoReceiver.cpp
 SRC += ../lib_avr/uart/uart.c
 SRC += ../lib_avr/encoder/encoder.cpp
 #ff.o sd.o diskio.o rtc.o
