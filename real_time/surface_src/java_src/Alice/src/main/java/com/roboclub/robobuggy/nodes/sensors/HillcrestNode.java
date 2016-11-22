@@ -29,7 +29,6 @@ import com.roboclub.robobuggy.ros.Publisher;
  * Comments will make callbacks to page numbers on the datasheet/reference manual, which can be found here:
  * http://hillcrestlabs.com/resources/download-materials/download-info/hcomm-reference-manual/
  */
-@SuppressWarnings("Duplicates")
 public class HillcrestNode extends BuggyDecoratorNode implements DeviceListenerInterface, DiscoveryListenerInterface {
 
     private Device hillcrestImu;
