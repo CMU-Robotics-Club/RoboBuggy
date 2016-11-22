@@ -336,7 +336,13 @@ public class HillcrestImuNode extends BuggyDecoratorNode implements DeviceListen
     @Override
     public void freespaceDeviceInserted(Device device) {
         hillcrestImu = device;
-        hillcrestImu.open(this);
+
+        // open the device
+        FreespaceErrorCodes openResponse = hillcrestImu.open(this);
+        if (!openResponse.equals(FreespaceErrorCodes.FREESPACE_SUCCESS)) {
+            new RobobuggyLogicNotification("Error opening IMU!", RobobuggyMessageLevel.EXCEPTION);
+            return;
+        }
 
         int modeAndStatus = 8;               // bit 3 set gives Full Motion On mode - page 41
         int packetSelect  = 8;               // 8 = MotionEngineOutput              - page 41
@@ -360,8 +366,8 @@ public class HillcrestImuNode extends BuggyDecoratorNode implements DeviceListen
         configMsg.setFf7(true);
 
         // send down the config info, and get the response
-        FreespaceErrorCodes response = hillcrestImu.sendMessage(configMsg);
-        if (!response.equals(FreespaceErrorCodes.FREESPACE_SUCCESS)) {
+        FreespaceErrorCodes configResponse = hillcrestImu.sendMessage(configMsg);
+        if (!configResponse.equals(FreespaceErrorCodes.FREESPACE_SUCCESS)) {
             new RobobuggyLogicNotification("Error configuring IMU!", RobobuggyMessageLevel.EXCEPTION);
         }
     }
