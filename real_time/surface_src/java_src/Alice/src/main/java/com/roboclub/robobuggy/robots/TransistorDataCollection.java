@@ -5,7 +5,7 @@ import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.nodes.sensors.CameraNode;
 import com.roboclub.robobuggy.nodes.sensors.GpsNode;
-import com.roboclub.robobuggy.nodes.sensors.HillCrestImuNode;
+import com.roboclub.robobuggy.nodes.sensors.HillcrestImuNode;
 import com.roboclub.robobuggy.nodes.sensors.LoggingNode;
 import com.roboclub.robobuggy.nodes.sensors.RBSMNode;
 import com.roboclub.robobuggy.ros.NodeChannel;
@@ -56,7 +56,7 @@ public final class TransistorDataCollection extends AbstractRobot {
         nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING, RobobuggyConfigFile.getComPortRBSM(),
                 RobobuggyConfigFile.RBSM_COMMAND_PERIOD));
         nodeList.add(new CameraNode(NodeChannel.PUSHBAR_CAMERA, 100));
-        nodeList.add(new HillCrestImuNode());
+        nodeList.add(new HillcrestImuNode());
 
         //setup the gui
         RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow", 1.0, 1.0);
