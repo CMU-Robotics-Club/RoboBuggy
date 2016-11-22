@@ -8,7 +8,7 @@
 
 class RadioReceiver {
 
-    private:
+    protected:
         volatile uint8_t *receiver_pin_reg_;
         uint8_t receiver_pin_num_;
         uint32_t k_min_pulse_;
@@ -20,8 +20,8 @@ class RadioReceiver {
     public:
         RadioReceiver();
         virtual void Init(volatile uint8_t *pin_reg, uint8_t pin_num, uint8_t int_num);
-        virtual void OnInterruptReceiver();
-        virtual unsigned long GetLastTimestamp();
+        void OnInterruptReceiver();
+        unsigned long GetLastTimestamp();
         unsigned long GetPulseWidth();
         void PrintDebugInfo(FILE *out_stream);
         void HardwareInit(uint8_t int_num);

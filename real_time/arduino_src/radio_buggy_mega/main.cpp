@@ -550,7 +550,7 @@ int main(void)
 
         // Check for RC commands
         steer_angle = g_steering_rx.GetAngleHundredths();
-        printf("Steer angle: %d\n", steer_angle);
+        //printf("Steer angle: %d\n", steer_angle);
         brake_cmd_teleop_engaged = g_brake_rx.GetPulseWidth() > PWM_STATE_THRESHOLD;
         g_is_autonomous = g_auton_rx.GetPulseWidth() > PWM_STATE_THRESHOLD;
 
