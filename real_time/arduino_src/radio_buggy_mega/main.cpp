@@ -19,7 +19,6 @@
 #include "../lib_avr/servoreceiver/servoreceiver.h"
 #include "../lib_avr/uart/uart_extra.h"
 #include "servo.h"
-// #include "uart.h"
 #include "system_clock.h"
 #include "fingerprint.h"
 
@@ -43,20 +42,16 @@
 
 #define PWM_STATE_THRESHOLD 120
 
-//#define RX_STEERING_DDR  DDRE
-//#define RX_STEERING_PORT PORTE
 #define RX_STEERING_PIN  PINE
 #define RX_STEERING_PINN PE4 // arduino 2
 #define RX_STEERING_INT  INT4_vect
 #define RX_STEERING_INTN 4
-//#define RX_BRAKE_DDR  DDRD
-//#define RX_BRAKE_PORT PORTD
+
 #define RX_BRAKE_PIN  PIND
 #define RX_BRAKE_PINN PD0 // arduino 21
 #define RX_BRAKE_INT  INT0_vect
 #define RX_BRAKE_INTN 0
-//#define RX_AUTON_DDR  DDRD
-//#define RX_AUTON_PORT PORTD
+
 #define RX_AUTON_PIN  PIND
 #define RX_AUTON_PINN PD1 // arduino 20
 #define RX_AUTON_INT  INT1_vect
