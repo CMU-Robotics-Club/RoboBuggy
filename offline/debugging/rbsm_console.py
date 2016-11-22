@@ -32,6 +32,7 @@ signal.signal(signal.SIGINT, signal.SIG_DFL)
 screenCopy = None
 
 #Create a dictionary of message headers
+#TODO create it from ../../real_time/rbsm_config.txt
 mid_to_str = {
     0: "ENC_TICKS_LAST",
     1: "ENC_TICKS_RESET",
@@ -48,7 +49,7 @@ mid_to_str = {
     30: "COMP_HASH",
     253: "MEGA_TIMESTAMP",
     254: "ERROR",
-    255: "DEVICE_ID",
+    255: "DEVICE_ID"
 }
 
 def redraw(state):
