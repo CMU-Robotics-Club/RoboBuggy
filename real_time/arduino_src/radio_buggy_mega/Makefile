@@ -12,13 +12,11 @@
 # Markus Pfaff
 # Sander Pool
 # Frederik Rouleau
-
 #
 #----------------------------------------------------------------------------
 # On command line:
 #
 # make all = Make software.
-
 #
 # make clean = Clean out built project files.
 #
