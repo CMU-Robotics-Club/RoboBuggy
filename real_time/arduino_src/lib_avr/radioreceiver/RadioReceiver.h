@@ -24,7 +24,7 @@ class RadioReceiver {
         unsigned long GetLastTimestamp();
         unsigned long GetPulseWidth();
         void PrintDebugInfo(FILE *out_stream);
-        void HardwareInit();
+        void HardwareInit(uint8_t int_num);
 };
 
 #endif /* _LIB_AVR_RADIORECEIVER_H_ */

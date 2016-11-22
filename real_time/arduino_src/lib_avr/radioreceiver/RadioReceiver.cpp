@@ -20,10 +20,10 @@ void RadioReceiver::Init(volatile uint8_t *pin_reg,
     rc_value_ = 0;       // last recorded pulse width in us
     last_timestamp_ = 0; // us
 
-    HarewareInit(int_num);
+    HardwareInit(int_num);
 }
 
-void HardwareInit(uint8_t int_num) {
+void RadioReceiver::HardwareInit(uint8_t int_num) {
     // enable the necessary external interrupt
     switch(int_num) {
         case(0):
