@@ -11,7 +11,6 @@ class ServoReceiver : public RadioReceiver {
     private: 
         volatile uint8_t *receiver_pin_reg_;
         uint8_t receiver_pin_num_;
-        uint8_t int_num_;
         uint32_t k_min_pulse_;
         uint32_t k_max_pulse_;
         int k_offset_rc_in;

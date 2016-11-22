@@ -60,7 +60,9 @@
     #error "must compile with BUGGY_TRANSISTOR or BUGGY_NIXI flag"
 #endif
 
-#define PWM_STATE_THRESHOLD 120
+//Off/down state is 1500 +- 20 microseconds, on/up state is 2000 +- 20, 
+//  so 1750 serves as a fair threshold value to deliminate the two
+#define PWM_STATE_THRESHOLD 1750
 
 #define RX_STEERING_DDR  DDRE
 #define RX_STEERING_PORT PORTE
@@ -548,7 +550,6 @@ int main(void)
 
         // Check for RC commands
         steer_angle = g_steering_rx.GetAngleHundredths();
-        //TODO: PWM_STATE_THRESHOLD needs to be updated to reflect this
         brake_cmd_teleop_engaged = g_brake_rx.GetPulseWidth() > PWM_STATE_THRESHOLD;
         g_is_autonomous = g_auton_rx.GetPulseWidth() > PWM_STATE_THRESHOLD;
 
@@ -626,13 +627,24 @@ int main(void)
         // Set outputs
         if(g_is_autonomous)
         {
+            //TODO: Remove
+            printf("Auton on!   ");
             steering_set(auto_steering_angle);
             g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)(auto_steering_angle));
         }
         else
         {
+            //TODO: Remove
+            printf("Auton off!   ");
             steering_set(steer_angle);
             g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
+        }
+
+        //TODO: Remove
+        if (brake_cmd_teleop_engaged) {
+            printf("Brake down!\n");
+        } else {
+            printf("Brake up!\n");
         }
         
         if(brake_cmd_teleop_engaged == true ||

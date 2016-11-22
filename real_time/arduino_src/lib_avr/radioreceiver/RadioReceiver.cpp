@@ -11,7 +11,7 @@ void RadioReceiver::Init(volatile uint8_t *pin_reg,
     // save instance information
     receiver_pin_reg_ = pin_reg;
     receiver_pin_num_ = pin_num;
-    int_num_ = int_num;
+
 
     // set constants
     k_min_pulse_ = 500;  // min pulse width in us
@@ -20,8 +20,12 @@ void RadioReceiver::Init(volatile uint8_t *pin_reg,
     rc_value_ = 0;       // last recorded pulse width in us
     last_timestamp_ = 0; // us
 
+    HarewareInit(int_num);
+}
+
+void HardwareInit(uint8_t int_num) {
     // enable the necessary external interrupt
-    switch(int_num_) {
+    switch(int_num) {
         case(0):
             #if defined(INT0)
             EIMSK |= _BV(INT0);
@@ -87,7 +91,6 @@ void RadioReceiver::Init(volatile uint8_t *pin_reg,
             break;
     }
 }
-
 
 /*
 no arguments
