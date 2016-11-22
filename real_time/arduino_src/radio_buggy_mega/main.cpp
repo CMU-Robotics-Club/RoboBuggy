@@ -550,7 +550,6 @@ int main(void)
 
         // Check for RC commands
         steer_angle = g_steering_rx.GetAngleHundredths();
-        //printf("Steer angle: %d\n", steer_angle);
         brake_cmd_teleop_engaged = g_brake_rx.GetPulseWidth() > PWM_STATE_THRESHOLD;
         g_is_autonomous = g_auton_rx.GetPulseWidth() > PWM_STATE_THRESHOLD;
 
@@ -585,7 +584,7 @@ int main(void)
                 // we haven't heard from the RC receiver in too long
                 g_errors |= _BV(RBSM_EID_RC_LOST_SIGNAL);
                 brake_needs_reset = true;
-                printf("RC Timeout! %lu %lu %lu\n", delta1, delta2, delta3);
+                dbg_printf("RC Timeout! %lu %lu %lu\n", delta1, delta2, delta3);
             }
             else {
                 g_errors &= ~_BV(RBSM_EID_RC_LOST_SIGNAL);
@@ -595,7 +594,7 @@ int main(void)
             if(auton_timeout) {
                 g_errors |= _BV(RBSM_EID_AUTON_LOST_SIGNAL);
                 brake_needs_reset = true;
-                printf("Auton Timeout! %lu %lu\n", delta4, delta5);
+                dbg_printf("Auton Timeout! %lu %lu\n", delta4, delta5);
             }
             else {
                 g_errors &= ~_BV(RBSM_EID_AUTON_LOST_SIGNAL);
@@ -628,37 +627,24 @@ int main(void)
         // Set outputs
         if(g_is_autonomous)
         {
-            //TODO: Remove
-            //printf("Auton on!   ");
             steering_set(auto_steering_angle);
             g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)(auto_steering_angle));
         }
         else
         {
-            //TODO: Remove
-            //printf("Auton off!   ");
             steering_set(steer_angle);
             g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
-        }
-
-        //TODO: Remove
-        if (brake_cmd_teleop_engaged) {
-            //printf("Brake down!\n");
-        } else {
-            //printf("Brake up!\n");
         }
         
         if(brake_cmd_teleop_engaged == true ||
            (g_is_autonomous == true && brake_cmd_auton_engaged == true) ||
            brake_needs_reset == true)
         {
-            //printf("We're here\n");
             brake_drop();
             g_rbsm.Send(RBSM_MID_MEGA_BRAKE_STATE,(long unsigned)true);
         } 
         else 
         {
-            //printf("Raising the break!\n");
             brake_raise();
             g_rbsm.Send(RBSM_MID_MEGA_BRAKE_STATE,(long unsigned)false);
         }

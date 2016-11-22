@@ -9,7 +9,6 @@
 
 class ServoReceiver : public RadioReceiver {
     private: 
-        uint8_t int_num_;
         int k_offset_rc_in;
         int k_scale_rc_in;
         int k_offset_steering_out;

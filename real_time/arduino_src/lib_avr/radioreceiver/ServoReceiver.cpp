@@ -20,7 +20,6 @@ void ServoReceiver::Init(volatile uint8_t *pin_reg,
     // save instance information
     receiver_pin_reg_ = pin_reg;
     receiver_pin_num_ = pin_num;
-    int_num_ = int_num;
 
     // set constants
     k_min_pulse_ = 500;  // min pulse width in us
