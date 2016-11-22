@@ -308,8 +308,18 @@ public class HillcrestNode extends BuggyDecoratorNode implements DeviceListenerI
         // convert it to a double
         double qDouble = (double) q;
 
+        // get the sign bit
+        int signBit = (q >> 15) & 0x1;
+        int sign = 0;
+        if (signBit == 0) {
+            sign = 1;
+        }
+        else {
+            sign = -1;
+        }
+
         // multiply it by 2^(-n)
-        return qDouble * Math.pow(2, -1 * n);
+        return sign * qDouble * Math.pow(2, -1 * n);
 
     }
 
