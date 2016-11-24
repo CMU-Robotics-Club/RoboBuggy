@@ -7,22 +7,30 @@ import com.hcrest.jfreespace.inreport.DecoderFactory;
 import com.hcrest.jfreespace.inreport.FreespaceMsgInMotionEngineOutput;
 import com.hcrest.jfreespace.inreport.HidInMsg;
 import com.hcrest.jfreespace.outreport.HidOutMsg;
-import com.roboclub.robobuggy.messages.*;
+import com.roboclub.robobuggy.messages.IMUAccelerationMessage;
+import com.roboclub.robobuggy.messages.IMUAngularVelocityMessage;
+import com.roboclub.robobuggy.messages.IMULinearAccelerationMessage;
+import com.roboclub.robobuggy.messages.IMUAngularPositionMessage;
+import com.roboclub.robobuggy.messages.IMUCompassMessage;
+import com.roboclub.robobuggy.messages.IMUInclinationMessage;
+import com.roboclub.robobuggy.messages.MagneticMeasurement;
 import com.roboclub.robobuggy.nodes.sensors.HillCrestImuNode;
-import com.roboclub.robobuggy.ros.*;
-import org.junit.Before;
+import com.roboclub.robobuggy.ros.Message;
+import com.roboclub.robobuggy.ros.NodeChannel;
+import com.roboclub.robobuggy.ros.Subscriber;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * Tests Multiple IMUs
  * Created by Alex on 11/10/2016.
  */
 public class MultipleIMUtest {
     private static ArrayList<ArrayList<Message>> messages;
 
-    private final double EPS = Math.pow(10, -5);
+    private final double eps = Math.pow(10, -5);
     private final long waitTime = 15 * 1000;
     private final int numExpectedMessages = 7;
 
@@ -32,6 +40,11 @@ public class MultipleIMUtest {
 
     private static boolean setUp = false;
 
+
+    /**
+     * Testing method to test each individual IMU and its ability to receive a single message
+     * Messages are sent one at a time and the response is viewed after every sending of a message
+     */
     @Test
     public void testIndividualIMU() {
         if(!setUp) {
@@ -98,6 +111,11 @@ public class MultipleIMUtest {
         node.freespaceDeviceRemoved(hillcrests[1]);
     }
 
+
+    /**
+     * Tests IMUs to see if messages get mixed up when sending the same messages to multiple IMUs at the same time
+     * 2 IMUs are sent a single message and afterwards the responses from both IMUs are checked.
+     */
     @Test
     public void testMultipleImus() {
         if(!setUp) {
@@ -137,6 +155,11 @@ public class MultipleIMUtest {
         node.freespaceDeviceRemoved(hillcrests[1]);
     }
 
+
+    /**
+     * Tests the ability of a single IMU to handle multiple messages at once.
+     * Sends 2 messages to each IMU, checking responses after each pair of messages is sent
+     */
     @Test
     public void testMultipleMessages() {
         if(!setUp) {
@@ -151,6 +174,12 @@ public class MultipleIMUtest {
         node.freespaceDeviceRemoved(hillcrests[1]);
     }
 
+    /**
+     * After a delay, checks the messages in the message queue for the IMU represented by <code>imuID</code>
+     * @param delayinMS amount of time, in milliseconds to wait before checking the messages
+     * @param messageID an array of integers representing the possible IDs for the messages to be received
+     * @param imuID the ID of the IMU that we are checking messages for
+     */
     public void testMessages (long delayinMS, int[] messageID, int imuID) {
         boolean[] z = new boolean[messageID.length];
 
@@ -175,6 +204,7 @@ public class MultipleIMUtest {
         ArrayList<Message> imuMessage = messages.get(imuID);
 
         System.out.println("Size of Queue is: " + imuMessage.size());
+        System.out.println("Num Expected is : " + numExpectedMessages * messageID.length);
         //assert(imuMessage.size() == numExpectedMessages * messageID.length);
         int i = 0;
         while(!imuMessage.isEmpty()) {
@@ -217,76 +247,118 @@ public class MultipleIMUtest {
         assert imuMessage.size() == 0;
     }
 
+    /**
+     * Tests the validity of a given {@link IMUAccelerationMessage}
+     * @param a the {@link IMUAccelerationMessage} to test
+     * @param z an array of booleans representing the possible IDs of the messages
+     * @param imuID the ID of the IMU that sent the message.
+     */
     public void accelerationTest(IMUAccelerationMessage a, boolean[] z, int imuID) {
         assert a.getImuID() == imuID;
-        assert approxEq(a.getXAccel(), 8, EPS);
-        assert approxEq(a.getYAccel(), 3.36, EPS);
+        assert approxEq(a.getXAccel(), 8, eps);
+        assert approxEq(a.getYAccel(), 3.36, eps);
         for(boolean b : z) {
-            if (approxEq(a.getZAccel(), b ? 40.96 : 5.12, EPS)) {
+            if (approxEq(a.getZAccel(), b ? 40.96 : 5.12, eps)) {
                 return;
             }
         }
         assert false;
     }
 
+    /**
+     * Tests the validity of a given {@link IMULinearAccelerationMessage}
+     * @param a the {@link IMULinearAccelerationMessage} to test
+     * @param z an array of booleans representing the possible IDs of the messages
+     * @param imuID the ID of the IMU that sent the message.
+     */
     public void linAccelerationTest(IMULinearAccelerationMessage a, boolean[] z, int imuID) {
         assert a.getImuID() == imuID;
-        assert approxEq(a.getX(), 3.36, EPS);
-        assert approxEq(a.getY(), 8, EPS);
+        assert approxEq(a.getX(), 3.36, eps);
+        assert approxEq(a.getY(), 8, eps);
         for(boolean b : z) {
-            if (approxEq(a.getZ(), b ? 2.56 : 0, EPS)) {
+            if (approxEq(a.getZ(), b ? 2.56 : 0, eps)) {
                 return;
             }
         }
         assert false;
     }
 
+    /**
+     * Tests the validity of a given {@link IMUAngularVelocityMessage}
+     * @param a the {@link IMUAngularVelocityMessage} to test
+     * @param z an array of booleans representing the possible IDs of the messages
+     * @param imuID the ID of the IMU that sent the message.
+     */
     public void angularVelTest(IMUAngularVelocityMessage a, boolean[] z, int imuID) {
         assert a.getImuID() == imuID;
-        assert approxEq(a.getX(), 8.5, EPS);
-        assert approxEq(a.getY(), 9.5, EPS);
+        assert approxEq(a.getX(), 8.5, eps);
+        assert approxEq(a.getY(), 9.5, eps);
         for(boolean b : z) {
-            if (approxEq(a.getZ(), b ? 63.8 : 115, EPS)) {
+            if (approxEq(a.getZ(), b ? 63.8 : 115, eps)) {
                 return;
             }
         }
         assert false;
     }
 
+    /**
+     * Tests the validity of a given {@link MagneticMeasurement}
+     * @param a the {@link MagneticMeasurement} to test
+     * @param z an array of booleans representing the possible IDs of the messages
+     * @param imuID the ID of the IMU that sent the message.
+     */
     public void magneticTest(MagneticMeasurement a, boolean[] z, int imuID) {
         assert a.getImuID() == imuID;
-        assert approxEq(a.getmagX(), 0.86, EPS);
-        assert approxEq(a.getmagY(), 4.202, EPS);
+        assert approxEq(a.getmagX(), 0.86, eps);
+        assert approxEq(a.getmagY(), 4.202, eps);
         for(boolean b : z) {
-            if (approxEq(a.getmagZ(), b ? 0 : 1.024, EPS)) {
+            if (approxEq(a.getmagZ(), b ? 0 : 1.024, eps)) {
                 return;
             }
         }
         assert false;
     }
 
+    /**
+     * Tests the validity of a given {@link IMUInclinationMessage}
+     * @param a the {@link IMUInclinationMessage} to test
+     * @param z an array of booleans representing the possible IDs of the messages
+     * @param imuID the ID of the IMU that sent the message.
+     */
     public void inclinationTest(IMUInclinationMessage a, boolean[] z, int imuID) {
         assert a.getImuID() == imuID;
-        assert approxEq(a.getXInclination(), 6, EPS);
-        assert approxEq(a.getYInclination(), 5, EPS);
+        assert approxEq(a.getXInclination(), 6, eps);
+        assert approxEq(a.getYInclination(), 5, eps);
         for(boolean b : z) {
-            if (approxEq(a.getZInclination(), b ? 25.6 : 76.8, EPS)) {
+            if (approxEq(a.getZInclination(), b ? 25.6 : 76.8, eps)) {
                 return;
             }
         }
         assert false;
     }
 
+    /**
+     * Tests the validity of a given {@link IMUCompassMessage}
+     * @param a the {@link IMUCompassMessage} to test
+     * @param z an array of booleans representing the possible IDs of the messages
+     * @param imuID the ID of the IMU that sent the message.
+     */
     public void compassTest(IMUCompassMessage a, boolean[] z, int imuID) {
         assert a.getImuID() == imuID;
         for(boolean b : z) {
-            if (approxEq(a.getCompassHeading(), b ? 1692.2 : -151.0, EPS)) {
+            if (approxEq(a.getCompassHeading(), b ? 1692.2 : -151.0, eps)) {
                 return;
             }
         }
         assert false;
     }
 
+    /**
+     * Tests the validity of a given {@link IMUAngularPositionMessage}
+     * @param msg the {@link IMUAngularPositionMessage} to test
+     * @param z an array of booleans representing the possible IDs of the messages
+     * @param imuID the ID of the IMU that sent the message.
+     */
     public void angularPositionTest(IMUAngularPositionMessage msg, boolean[] z, int imuID) {
         assert msg.getImuID() == imuID;
 
@@ -297,21 +369,24 @@ public class MultipleIMUtest {
         assert rot[2].length == 3;
 
         for(boolean b : z) {
-            if (approxEq(rot[0][0], (b ? -1.125 : 0.87451171875), EPS) &&
-                    approxEq(rot[0][1], (b ? -2.75 : 0.203125), EPS) &&
-                    approxEq(rot[0][2], (b ? 1.75 : 0.765625), EPS) &&
-                    approxEq(rot[1][0], (b ? 3.25 : 0.296875), EPS) &&
-                    approxEq(rot[1][1], (b ? -1.5 : 0.49951171875), EPS) &&
-                    approxEq(rot[1][2], (b ? -1.0 : -1.4921875), EPS) &&
-                    approxEq(rot[2][0], (b ? 0.25 : -0.734375), EPS) &&
-                    approxEq(rot[2][1], (b ? 2.0 : 1.5078125), EPS) &&
-                    approxEq(rot[2][2], 0.375, EPS)) {
+            if (approxEq(rot[0][0], (b ? -1.125 : 0.87451171875), eps) &&
+                    approxEq(rot[0][1], (b ? -2.75 : 0.203125), eps) &&
+                    approxEq(rot[0][2], (b ? 1.75 : 0.765625), eps) &&
+                    approxEq(rot[1][0], (b ? 3.25 : 0.296875), eps) &&
+                    approxEq(rot[1][1], (b ? -1.5 : 0.49951171875), eps) &&
+                    approxEq(rot[1][2], (b ? -1.0 : -1.4921875), eps) &&
+                    approxEq(rot[2][0], (b ? 0.25 : -0.734375), eps) &&
+                    approxEq(rot[2][1], (b ? 2.0 : 1.5078125), eps) &&
+                    approxEq(rot[2][2], 0.375, eps)) {
                 return;
             }
         }
         assert false;
     }
 
+    /**
+     * Sets up the testing harness. Needs only to be run once.
+     */
     public static void oneTimeSetup() {
         setUp = true;
 
@@ -384,6 +459,11 @@ public class MultipleIMUtest {
         }
     }
 
+    /**
+     * Generates an {@link HidInMsg} from the given id
+     * @param id a value that determines that data in the created message
+     * @return an {@link HidInMsg} created from the given id
+     */
     private HidInMsg makeMessage(int id) {
 
         boolean a = id == 0;
@@ -455,28 +535,51 @@ public class MultipleIMUtest {
         return msg;
     }
 
-    public static void processMessage(Message m, int IMU) {
-        if(IMU >= messages.size()) {
-            System.out.println("IMU " + IMU + " was not added to the device list");
+    /**
+     * Processes a message and enqueues it in the appropriate queue
+     * @param m the message to enqueue
+     * @param imuID the ID of the IMU that sent the message
+     */
+    public static void processMessage(Message m, int imuID) {
+        if(imuID >= messages.size()) {
+            System.out.println("IMU " + imuID + " was not added to the device list");
             assert(false);
         }
         if(m == null) {
             System.out.println("Message is NULL");
             assert false;
         }
-        messages.get(IMU).add(m);
-        if(messages.get(IMU).get(0) == null) {
-            System.out.println("0th Element is null with size " + messages.get(IMU).size());
+        messages.get(imuID).add(m);
+        if(messages.get(imuID).get(0) == null) {
+            System.out.println("0th Element is null with size " + messages.get(imuID).size());
         }
     }
 
-
+    /**
+     * Checks two numbers to verify equality within a certain margin
+     * @param x the first number to check
+     * @param y the second number to check
+     * @param epsilon the margin of error
+     * @return whether x and y are equal within epsilon margin of error
+     */
     public boolean approxEq(double x, double y, double epsilon) {
         return y - epsilon <= x && x <= y + epsilon;
     }
 
+    /**
+     * Fake Hillcrest IMU that allows testing harness to insert devices without the software being connected to said
+     * devices
+     */
     public static class FakeHillcrest extends Device {
 
+        /**
+         * Creates a new Fake Hillcrest IMU
+         * @param id The ID of the IMU
+         * @param name the name of the IMU
+         * @param vendorId the ID of the vendor
+         * @param productId the product ID of this IMU
+         * @param hVer the Version of the IMUs software
+         */
         public FakeHillcrest(int id, String name, int vendorId, int productId, int hVer) {
             super(id, name, vendorId, productId, hVer);
         }
@@ -492,9 +595,17 @@ public class MultipleIMUtest {
         }
     }
 
+    /**
+     * Fake {@link FreespaceMsgInMotionEngineOutput} that allows testing harness to more easily send messages to the
+     * Hillcrest IMU Node
+     */
     public static class FakeMsg extends FreespaceMsgInMotionEngineOutput {
         private int[] store;
 
+        /**
+         * Creates a new {@link FakeMsg}
+         * @param msg the message that this {@link FakeMsg} should store
+         */
         public FakeMsg(byte[] msg) {
             super(msg, DecoderFactory.HID_MESSAGE_VERSION.FSP2xx);
 
