@@ -31,6 +31,7 @@ public class IMUInclinationMessage extends BaseMessage {
      * @param xInclination x inclination (pitch)
      * @param yInclination y inclination (roll)
      * @param zInclination z inclination (yaw)
+     * @param imuID the ID of the IMU that generated this message
      */
     public IMUInclinationMessage(double xInclination, double yInclination, double zInclination, int imuID) {
         this.xInclination = xInclination;

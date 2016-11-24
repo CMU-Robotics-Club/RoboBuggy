@@ -10,7 +10,7 @@ public class IMULinearAccelerationMessage extends BaseMessage {
 
     public static final String VERSION_ID = "LinearAccelerationV0.0";
 
-    int imuID;
+    private int imuID;
 
     private double x;
     private double y;

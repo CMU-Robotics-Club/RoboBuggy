@@ -33,6 +33,7 @@ public class IMUAccelerationMessage extends BaseMessage {
      * @param xAccel x acceleration
      * @param yAccel y acceleration
      * @param zAccel z acceleration
+     * @param imuID  the ID of the imu this message came from
      */
     public IMUAccelerationMessage(double xAccel, double yAccel, double zAccel, int imuID) {
         this.xAccel = xAccel;
