@@ -39,7 +39,7 @@ public class HighTrustGPSLocalizerTest {
      */
     @After
 
-    public void tearDown() throws Exception {
+    public void tearDown() {
         gpsPub.close();
         encoderPub.close();
     }
