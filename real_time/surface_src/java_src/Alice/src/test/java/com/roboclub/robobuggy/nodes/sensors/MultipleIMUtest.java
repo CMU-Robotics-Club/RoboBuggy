@@ -1,4 +1,4 @@
-package com.roboclub.robobuggy.nodes.localizers;
+package com.roboclub.robobuggy.nodes.sensors;
 
 import com.hcrest.jfreespace.Device;
 import com.hcrest.jfreespace.DeviceListenerInterface;
@@ -8,13 +8,12 @@ import com.hcrest.jfreespace.inreport.FreespaceMsgInMotionEngineOutput;
 import com.hcrest.jfreespace.inreport.HidInMsg;
 import com.hcrest.jfreespace.outreport.HidOutMsg;
 import com.roboclub.robobuggy.messages.IMUAccelerationMessage;
-import com.roboclub.robobuggy.messages.IMUAngularVelocityMessage;
-import com.roboclub.robobuggy.messages.IMULinearAccelerationMessage;
 import com.roboclub.robobuggy.messages.IMUAngularPositionMessage;
+import com.roboclub.robobuggy.messages.IMUAngularVelocityMessage;
 import com.roboclub.robobuggy.messages.IMUCompassMessage;
 import com.roboclub.robobuggy.messages.IMUInclinationMessage;
+import com.roboclub.robobuggy.messages.IMULinearAccelerationMessage;
 import com.roboclub.robobuggy.messages.MagneticMeasurement;
-import com.roboclub.robobuggy.nodes.sensors.HillCrestImuNode;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
