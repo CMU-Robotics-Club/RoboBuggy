@@ -374,10 +374,8 @@ public class HillcrestImuNode extends BuggyDecoratorNode implements DeviceListen
 
     @Override
     public void freespaceDeviceRemoved(Device device) {
-        FreespaceErrorCodes closeResponse = hillcrestImu.close();
-        if (!closeResponse.equals(FreespaceErrorCodes.FREESPACE_SUCCESS)) {
-            new RobobuggyLogicNotification("Error closing IMU device!", RobobuggyMessageLevel.EXCEPTION);
-        }
+        // close doesn't return a status
+        hillcrestImu.close();
         hillcrestImu = null;
     }
 }
