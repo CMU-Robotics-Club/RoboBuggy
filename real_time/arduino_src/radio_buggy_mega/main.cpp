@@ -354,6 +354,7 @@ int8_t steering_center() {
     return 0;
 }
 
+
 void indicator_light_init()
 {
     // set all pins to zero output
@@ -364,31 +365,41 @@ void indicator_light_init()
     RX_STATUS_LIGHT_PORT_RED &= ~_BV(6);
     RX_STATUS_LIGHT_DDR_RED |= _BV(6);
 }
+
+
 void voltage_too_low_light()
 {
     // blue for this light
-    // watch dog failure light on when PE3 is on
     RX_STATUS_LIGHT_PORT |= _BV(RX_STATUS_LIGHT_PINN_BLUE);
 }
+
 
 void auton_timeout_light()
 {
     // red for this light
     RX_STATUS_LIGHT_PORT_RED |= _BV(RX_STATUS_LIGHT_PINN_RED);
 }
+
+
 void rc_timeout_failure_light()
 {
     // green for this light
     RX_STATUS_LIGHT_PORT |= _BV(RX_STATUS_LIGHT_PINN_GREEN);
 }
+
+
 void voltage_too_low_light_reset()
 {
     RX_STATUS_LIGHT_PORT &= ~_BV(RX_STATUS_LIGHT_PINN_BLUE);
 }
+
+
 void auton_timeout_light_reset()
 {
     RX_STATUS_LIGHT_PORT_RED &= ~_BV(RX_STATUS_LIGHT_PINN_RED);
 }
+
+
 void rc_timeout_failure_light_reset()
 {
     RX_STATUS_LIGHT_PORT &= ~_BV(RX_STATUS_LIGHT_PINN_GREEN);
@@ -415,6 +426,7 @@ void brake_drop()
 {
     BRAKE_OUT_PORT &= ~_BV(BRAKE_OUT_PINN);
 }
+
 
 /*
 * Function: watchdog_init
