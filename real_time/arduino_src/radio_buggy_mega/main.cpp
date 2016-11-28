@@ -27,6 +27,7 @@
 #define BAUD 76800
 
 #define CONNECTION_TIMEOUT_US 1000000L // 1000ms
+#define SYSTEM_VOLTAGE_THRESHOLD 12000 //For Buggy battery voltage 
 
 /*
  * These values map the physical input/output (voltage/ms of pwm pulse) to a
@@ -56,6 +57,13 @@
 #define RX_AUTON_PINN PD1 // arduino 20
 #define RX_AUTON_INT  INT1_vect
 #define RX_AUTON_INTN 1
+#define RX_STATUS_LIGHT_PORT PORTE
+#define RX_STATUS_LIGHT_PINN_BLUE PE3
+#define RX_STATUS_LIGHT_DDR DDRE
+#define RX_STATUS_LIGHT_PINN_GREEN PE5
+#define RX_STATUS_LIGHT_PORT_RED PORTH
+#define RX_STATUS_LIGHT_PINN_RED PH6
+#define RX_STATUS_LIGHT_DDR_RED DDRH
 
 #define ENCODER_DDR  DDRD
 #define ENCODER_PORT PORTD
@@ -315,6 +323,56 @@ int8_t steering_center() {
 }
 
 
+void indicator_light_init()
+{
+    // set all pins to zero output
+    RX_STATUS_LIGHT_PORT &= ~_BV(3);
+    RX_STATUS_LIGHT_DDR |= _BV(3);
+    RX_STATUS_LIGHT_PORT &= ~_BV(5);
+    RX_STATUS_LIGHT_DDR |= _BV(5);
+    RX_STATUS_LIGHT_PORT_RED &= ~_BV(6);
+    RX_STATUS_LIGHT_DDR_RED |= _BV(6);
+}
+
+
+void voltage_too_low_light()
+{
+    // blue for this light
+    RX_STATUS_LIGHT_PORT |= _BV(RX_STATUS_LIGHT_PINN_BLUE);
+}
+
+
+void auton_timeout_light()
+{
+    // red for this light
+    RX_STATUS_LIGHT_PORT_RED |= _BV(RX_STATUS_LIGHT_PINN_RED);
+}
+
+
+void rc_timeout_failure_light()
+{
+    // green for this light
+    RX_STATUS_LIGHT_PORT |= _BV(RX_STATUS_LIGHT_PINN_GREEN);
+}
+
+
+void voltage_too_low_light_reset()
+{
+    RX_STATUS_LIGHT_PORT &= ~_BV(RX_STATUS_LIGHT_PINN_BLUE);
+}
+
+
+void auton_timeout_light_reset()
+{
+    RX_STATUS_LIGHT_PORT_RED &= ~_BV(RX_STATUS_LIGHT_PINN_RED);
+}
+
+
+void rc_timeout_failure_light_reset()
+{
+    RX_STATUS_LIGHT_PORT &= ~_BV(RX_STATUS_LIGHT_PINN_GREEN);
+}
+
 void brake_init() 
 {
     BRAKE_OUT_DDR |= _BV(BRAKE_OUT_PINN);
@@ -335,6 +393,7 @@ void brake_drop()
 {
     BRAKE_OUT_PORT &= ~_BV(BRAKE_OUT_PINN);
 }
+
 
 /*
 * Function: watchdog_init
@@ -412,6 +471,7 @@ int main(void)
     servo_init();
     adc_init();
     brake_init();
+    indicator_light_init();
     steering_center(); // this call takes time
 
     // setup rbsm
@@ -498,16 +558,15 @@ int main(void)
         g_is_autonomous = g_auton_rx.GetAngle() > PWM_STATE_THRESHOLD;
 
         // Detect dropped radio conections
-        // note: interrupts must be disabled while checking system clock so that
-        //      timestamps are not updated under our feet.  These
-        //      operations are atomic so we're fine
 
-        cli();
-        unsigned long time_now = micros();
         unsigned long time1 = g_steering_rx.GetLastTimestamp();
         unsigned long time2 = g_brake_rx.GetLastTimestamp();
         unsigned long time3 = g_auton_rx.GetLastTimestamp();
-        sei();
+        //We need to call micros last because if we called it first, 
+        //  time1, time2, or time3 could be greater than time_now if an interrupt
+        //  fires and updates its timestamp and our delta values will underflow
+        unsigned long time_now = micros();
+
 
         //RC time deltas
         unsigned long delta1 = time_now - time1;
@@ -529,6 +588,8 @@ int main(void)
                 // we haven't heard from the RC receiver in too long
                 g_errors |= _BV(RBSM_EID_RC_LOST_SIGNAL);
                 brake_needs_reset = true;
+                rc_timeout_failure_light();
+                dbg_printf("RC Timeout! %lu %lu %lu\n", delta1, delta2, delta3);
             }
             else {
                 g_errors &= ~_BV(RBSM_EID_RC_LOST_SIGNAL);
@@ -538,6 +599,8 @@ int main(void)
             if(auton_timeout) {
                 g_errors |= _BV(RBSM_EID_AUTON_LOST_SIGNAL);
                 brake_needs_reset = true;
+                auton_timeout_light();
+                dbg_printf("Auton Timeout! %lu %lu\n", delta4, delta5);
             }
             else {
                 g_errors &= ~_BV(RBSM_EID_AUTON_LOST_SIGNAL);
@@ -550,13 +613,22 @@ int main(void)
 
             g_errors &= ~_BV(RBSM_EID_RC_LOST_SIGNAL);
             g_errors &= ~_BV(RBSM_EID_AUTON_LOST_SIGNAL);
+            // once the connection is back can turn off lights
+            auton_timeout_light_reset();
+            rc_timeout_failure_light_reset();
         }
 
         // Reading battery voltage from the voltage 24/12 kOhm divider
         g_current_voltage  = adc_read_blocking(BATTERY_ADC);
         g_current_voltage *= BATTERY_ADC_SLOPE;
         g_current_voltage += BATTERY_ADC_OFFSET;
-
+        
+        if (g_current_voltage < SYSTEM_VOLTAGE_THRESHOLD) {
+            voltage_too_low_light();
+        }
+        else {
+            voltage_too_low_light_reset();
+        }
         
         // Set outputs
         if(g_is_autonomous)
