@@ -44,110 +44,110 @@ static unsigned char timer0_fract = 0;
 
 ISR(TIMER0_OVF_vect)
 {
-	// copy these to local variables so they can be stored in registers
-	// (volatile variables must be read from memory on every access)
-	unsigned long m = timer0_millis;
-	unsigned char f = timer0_fract;
+    // copy these to local variables so they can be stored in registers
+    // (volatile variables must be read from memory on every access)
+    unsigned long m = timer0_millis;
+    unsigned char f = timer0_fract;
 
-	m += MILLIS_INC;
-	f += FRACT_INC;
-	if (f >= FRACT_MAX) {
-		f -= FRACT_MAX;
-		m += 1;
-	}
+    m += MILLIS_INC;
+    f += FRACT_INC;
+    if (f >= FRACT_MAX) {
+        f -= FRACT_MAX;
+        m += 1;
+    }
 
-	timer0_fract = f;
-	timer0_millis = m;
-	timer0_overflow_count++;
+    timer0_fract = f;
+    timer0_millis = m;
+    timer0_overflow_count++;
 }
 
 unsigned long millis()
 {
-	unsigned long m;
-	uint8_t oldSREG = SREG;
+    unsigned long m;
+    uint8_t oldSREG = SREG;
 
-	// disable interrupts while we read timer0_millis or we might get an
-	// inconsistent value (e.g. in the middle of a write to timer0_millis)
-	cli();
-	m = timer0_millis;
-	SREG = oldSREG;
+    // disable interrupts while we read timer0_millis or we might get an
+    // inconsistent value (e.g. in the middle of a write to timer0_millis)
+    cli();
+    m = timer0_millis;
+    SREG = oldSREG;
 
-	return m;
+    return m;
 }
 
 unsigned long micros() {
-	unsigned long m;
-	uint8_t oldSREG = SREG, t;
-	
-	cli();
-	m = timer0_overflow_count;
-	t = TCNT0;
+    unsigned long m;
+    uint8_t oldSREG = SREG, t;
+
+    cli();
+    m = timer0_overflow_count;
+    t = TCNT0;
 
     if ((TIFR0 & _BV(TOV0)) && (t < 255))
-		m++;
-	SREG = oldSREG;
-	
-	return ((m << 8) + t) * (64 / clockCyclesPerMicrosecond());
+        m++;
+    SREG = oldSREG;
+
+    return ((m << 8) + t) * (64 / clockCyclesPerMicrosecond());
 }
 
 void delay(unsigned long ms)
 {
-	uint16_t start = (uint16_t)micros();
+    uint16_t start = (uint16_t)micros();
 
-	while (ms > 0) {
-		if (((uint16_t)micros() - start) >= 1000) {
-			ms--;
-			start += 1000;
-		}
-	}
+    while (ms > 0) {
+        if (((uint16_t)micros() - start) >= 1000) {
+            ms--;
+            start += 1000;
+        }
+    }
 }
 
 /* Delay for the given number of microseconds.  Assumes a 8 or 16 MHz clock. */
 void delay_microseconds(unsigned int us)
 {
-	// calling avrlib's delay_us() function with low values (e.g. 1 or
-	// 2 microseconds) gives delays longer than desired.
-	//delay_us(us);
-    
-	// for the 16 MHz clock on most Arduino boards
+    // calling avrlib's delay_us() function with low values (e.g. 1 or
+    // 2 microseconds) gives delays longer than desired.
+    //delay_us(us);
 
-	// for a one-microsecond delay, simply return.  the overhead
-	// of the function call yields a delay of approximately 1 1/8 us.
-	if (--us == 0)
-		return;
+    // for the 16 MHz clock on most Arduino boards
 
-	// the following loop takes a quarter of a microsecond (4 cycles)
-	// per iteration, so execute it four times for each microsecond of
-	// delay requested.
-	us <<= 2;
+    // for a one-microsecond delay, simply return.  the overhead
+    // of the function call yields a delay of approximately 1 1/8 us.
+    if (--us == 0)
+        return;
 
-	// account for the time taken in the preceeding commands.
-	us -= 2;
+    // the following loop takes a quarter of a microsecond (4 cycles)
+    // per iteration, so execute it four times for each microsecond of
+    // delay requested.
+    us <<= 2;
 
-	// busy wait
-	__asm__ __volatile__ (
-		"1: sbiw %0,1" "\n\t" // 2 cycles
-		"brne 1b" : "=w" (us) : "0" (us) // 2 cycles
-	);
+    // account for the time taken in the preceeding commands.
+    us -= 2;
+
+    // busy wait
+    __asm__ __volatile__ (
+            "1: sbiw %0,1" "\n\t" // 2 cycles
+            "brne 1b" : "=w" (us) : "0" (us) // 2 cycles
+            );
 }
 
 void system_clock_init()
 {
-	// this needs to be called before setup() or some functions won't
-	// work there
-	sei();
-	
-	// on the ATmega168, timer 0 is also used for fast hardware pwm
-	// (using phase-correct PWM would mean that timer 0 overflowed half as often
-	// resulting in different millis() behavior on the ATmega8 and ATmega168)
-	sbi(TCCR0A, WGM01);
-	sbi(TCCR0A, WGM00);
+    // this needs to be called before setup() or some functions won't
+    // work there
+    sei();
 
-	// set timer 0 prescale factor to 64
-	// this combination is for the standard 168/328/1280/2560
+    // on the ATmega168, timer 0 is also used for fast hardware pwm
+    // (using phase-correct PWM would mean that timer 0 overflowed half as often
+    // resulting in different millis() behavior on the ATmega8 and ATmega168)
+    sbi(TCCR0A, WGM01);
+    sbi(TCCR0A, WGM00);
+
+    // set timer 0 prescale factor to 64
+    // this combination is for the standard 168/328/1280/2560
     sbi(TCCR0B, CS01);
-	sbi(TCCR0B, CS00);
+    sbi(TCCR0B, CS00);
 
-	// enable timer 0 overflow interrupt
-	sbi(TIMSK0, TOIE0);
+    // enable timer 0 overflow interrupt
+    sbi(TIMSK0, TOIE0);
 }
