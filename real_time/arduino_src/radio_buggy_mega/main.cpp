@@ -34,6 +34,7 @@
 #define SERVO_PORT PORTB
 #define SERVO_PINN PB5 // arduino 11 TODO: this is not used here
 #define CONNECTION_TIMEOUT_US 1000000L // 1000ms
+#define SYSTEM_VOLTAGE_THRESHOLD 12000 //For Buggy battery voltage 
 
 /*
  * These values map the physical input/output (voltage/ms of pwm pulse) to a
@@ -676,7 +677,7 @@ int main(void)
         g_current_voltage *= BATTERY_ADC_SLOPE;
         g_current_voltage += BATTERY_ADC_OFFSET;
         
-        if (g_current_voltage < 12000) {
+        if (g_current_voltage < SYSTEM_VOLTAGE_THRESHOLD) {
             voltage_too_low_light();
         }
         else {
