@@ -121,7 +121,7 @@ Date        Description
  * Enable UARTs per project in the makefile with gcc -D flags.
  * UART0 is always enabled because library does not compile correctly without.
  */
-#define USART0_ENABLED
+// #define USART0_ENABLED
 // #define USART1_ENABLED
 // #define USART2_ENABLED 
 // #define USART3_ENABLED
