@@ -66,7 +66,7 @@ int RBSerialMessages::Read(rb_message_t* read_message)
         if(buffer_in_stream_lock_ == false) 
         {
             printf("%s: searching for lock...\n", __PRETTY_FUNCTION__);
-            if((uint8_t)new_serial_byte == RBSM_FOOTER) 
+            if((uint8_t)new_serial_byte == FOOTER) 
             {
                 printf("%s: got lock!\n", __PRETTY_FUNCTION__);
                 buffer_in_stream_lock_ = true;
@@ -84,7 +84,7 @@ int RBSerialMessages::Read(rb_message_t* read_message)
                 // reset buffer for next packet
                 buffer_in_pos_ = 0;
                 // parse this complete packet
-                if(buffer_in_[5] == RBSM_FOOTER) 
+                if(buffer_in_[5] == FOOTER) 
                 {
                     read_message->message_id = buffer_in_[0];
                     uint8_t *data_bytes = (uint8_t *) &(read_message->data);
@@ -128,7 +128,7 @@ uint8_t RBSerialMessages::AppendMessageToBuffer(uint8_t id,
     buffer_out_[buffer_pos++] = message_lh;
     buffer_out_[buffer_pos++] = message_ll;
 
-    buffer_out_[buffer_pos++] = RBSM_FOOTER;
+    buffer_out_[buffer_pos++] = FOOTER;
 
     // write null terminator just in case. note no increment
     buffer_out_[buffer_pos] = RBSM_NULL_TERM;
