@@ -27,6 +27,9 @@ checkstyle{
 
 repositories {
   mavenCentral()
+  maven {
+        url "http://www.sparetimelabs.com/maven2"
+  }
 }
 
 dependencies {
@@ -46,16 +49,15 @@ dependencies {
     compile 'gov.nist.math:jama:1.0.2'
     compile 'org.eclipse.jetty.aggregate:jetty-all:9.2.7.v20150116'
 
+    compile 'com.sparetimelabs:purejavacomm:1.0.1'
+
 
     // TODO: this is stupid. find a way to use mavencentral repo.
     compile files('library/orsoncharts-1.4-eval-nofx.jar')
 
-
-    compile files('library/purejavacomm.jar')
     compile files('library/jna-4.0.0.jar')
     compile files('library/JMapViewer.jar')
     compile files('library/jfreespace.jar')
-
 
 }
 
