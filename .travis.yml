@@ -5,6 +5,7 @@ jdk:
     - oraclejdk8
 
 # TODO msebek: consolidate this logic into one script, then have both builders call it.
+sudo: required
 install:
     - curl -L https://services.gradle.org/distributions/gradle-2.7-bin.zip -o gradle-2.7-bin.zip
     - unzip gradle-2.7-bin.zip
@@ -23,7 +24,7 @@ script:
     - (cd real_time/surface_src/java_src/Alice && $GRADLE_BIN/gradle build)
     - bash real_time/surface_src/java_src/Alice/travisStyleCheck.sh
     - bash real_time/arduino_src/travisStyleCheck.sh
-    - apt-get install avr-gcc
+    - sudo apt-get install avr-gcc
     - (cd real_time/arduino_src/radio_buggy_mega/ && make)
 
 
