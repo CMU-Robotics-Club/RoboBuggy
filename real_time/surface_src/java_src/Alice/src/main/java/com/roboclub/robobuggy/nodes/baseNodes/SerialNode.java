@@ -71,7 +71,7 @@ public abstract class SerialNode extends BuggyDecoratorNode {
                 }
             }
         } catch (NoSuchPortException | PortInUseException | UnsupportedCommOperationException e) {
-            new RobobuggyLogicNotification("Er  ror: Unable to connect to port" + portName, RobobuggyMessageLevel.EXCEPTION);
+            new RobobuggyLogicNotification("Error: Unable to connect to port" + portName, RobobuggyMessageLevel.EXCEPTION);
 
         }
         return null;
@@ -209,7 +209,6 @@ public abstract class SerialNode extends BuggyDecoratorNode {
             while (running) {
 
                 try {
-
                     numBytes += serialInput.read(buf, start + numBytes, buf.length - numBytes);
 
                     while (true) {
@@ -220,7 +219,6 @@ public abstract class SerialNode extends BuggyDecoratorNode {
                         start += numRead;
                         numBytes -= numRead;
                     }
-
 
                     // Shift the array by the amount that we read.
                     // TODO this is stupid and should be fixed
@@ -234,7 +232,7 @@ public abstract class SerialNode extends BuggyDecoratorNode {
                     } catch (InterruptedException e) {
                         new RobobuggyLogicNotification("sleep .... interrupted?", RobobuggyMessageLevel.EXCEPTION);
                     }
-                } catch (IOException | NullPointerException  | IndexOutOfBoundsException e) {
+                } catch (IOException e) {
                     // TODO handle this error reasonably.
                     sp.close();
                     setNodeState(NodeState.DISCONNECTED);
