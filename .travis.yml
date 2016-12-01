@@ -23,6 +23,7 @@ script:
     - (cd real_time/surface_src/java_src/Alice && $GRADLE_BIN/gradle build)
     - bash real_time/surface_src/java_src/Alice/travisStyleCheck.sh
     - bash real_time/arduino_src/travisStyleCheck.sh
+    - apt-get install avr-gcc
     - (cd real_time/arduino_src/radio_buggy_mega/ && make)
 
 
