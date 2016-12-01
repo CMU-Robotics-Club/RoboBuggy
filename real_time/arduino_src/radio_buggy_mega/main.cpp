@@ -98,7 +98,11 @@
 #define ENCODER_STEERING_B_PINN PB6
 #define ENCODER_STEERING_PCINT  PCINT0_vect
 
-#define BATTERY_ADC 0
+// Constants obtained by measuring the sensor ADC value as function of
+// applied voltage, scanning the full range and then doing a linear regression
+#define BATTERY_ADC 0 // pin to read battery level from (A0)
+#define BATTERY_ADC_SLOPE  14.683 // in mV, obtained from calibration
+#define BATTERY_ADC_OFFSET 44.359
 #define STEERING_POT_ADC 9
 
 #define BRAKE_OUT_DDR  DDRH
@@ -145,7 +149,7 @@
 
 // Global state
 static bool g_is_autonomous;
-static unsigned long g_current_voltage;
+static unsigned long g_current_voltage; // in mV
 static unsigned long g_steering_feedback;
 static int steer_angle;
 static int auto_steering_angle;
@@ -180,24 +184,44 @@ inline long clamp(long input,
 }
 
 
-void adc_init(void) 
+void adc_init(void) // copy-pasted from wiring.c l.353 (Arduino library)
 {
-    // set up adc hardware in non-freerunning mode
-    // prescaler of 128 gives 125kHz sampling
-    // AREF = AVCC
-    // 8 bit return values
-    ADCSRA |= _BV(ADEN) | _BV(ADPS2) | _BV(ADPS1) | _BV(ADPS0);
-    ADMUX |= _BV(REFS0) | _BV(ADLAR);
+    // set a2d prescaler so we are inside the desired 50-200 KHz range.
+    sbi(ADCSRA, ADPS2);
+    sbi(ADCSRA, ADPS1);
+    sbi(ADCSRA, ADPS0);
+    // enable a2d conversions
+    sbi(ADCSRA, ADEN);
 }
 
-uint8_t adc_read_blocking(uint8_t channel) 
+int adc_read_blocking(uint8_t pin) // takes less than 160us, return 0 to 1023
 {
-    // in single ended mode, highest bit of ADC channel is in ADCSRB
-    ADMUX = (ADMUX & 0xE0) | (channel & 0x07);
-    ADCSRB = (ADCSRB & 0xF7) | (channel & 0x08);
-    ADCSRA |= _BV(ADSC);
-    while((ADCSRA & _BV(ADSC)) == 1) {}
-    return ADCH;
+    uint8_t low, high;
+
+    // the MUX5 bit of ADCSRB selects whether we're reading from channels
+    // 0 to 7 (MUX5 low) or 8 to 15 (MUX5 high).
+    ADCSRB = (ADCSRB & ~(1 << MUX5)) | (((pin >> 3) & 0x01) << MUX5);
+
+    // set the analog reference (high two bits of ADMUX) and select the
+    // channel (low 4 bits).  this also sets ADLAR (left-adjust result)
+    // to 0 (the default).
+    ADMUX = (1 << 6) | (pin & 0x07);
+
+    // start the conversion
+    sbi(ADCSRA, ADSC);
+
+    // ADSC is cleared when the conversion finishes
+    while (bit_is_set(ADCSRA, ADSC));
+
+    // we have to read ADCL first; doing so locks both ADCL
+    // and ADCH until ADCH is read.  reading ADCL second would
+    // cause the results of each conversion to be discarded,
+    // as ADCL and ADCH would be locked when it completed.
+    low  = ADCL;
+    high = ADCH;
+
+    // combine the two bytes
+    return (high << 8) | low;
 }
 
 
@@ -531,10 +555,12 @@ int main(void)
         //      timestamps are not updated under our feet.  These
         //      operations are atomic so we're fine
 
+        cli();
         unsigned long time_now = micros();
         unsigned long time1 = g_steering_rx.GetLastTimestamp();
         unsigned long time2 = g_brake_rx.GetLastTimestamp();
         unsigned long time3 = g_auton_rx.GetLastTimestamp();
+        sei();
 
         //RC time deltas
         unsigned long delta1 = time_now - time1;
@@ -581,12 +607,10 @@ int main(void)
             g_errors &= ~_BV(RBSM_EID_AUTON_LOST_SIGNAL);
         }
 
-        // For the old buggy, the voltage divider is 10k ohm on the adc side and
-        // 16k ohm on top.
-        // Calculated map normally set to 13000, but the avcc is 4.86 volts
-        // rather than 5.
-        g_current_voltage = adc_read_blocking(BATTERY_ADC);
-        g_current_voltage = map_signal(g_current_voltage, 0, 255, 0, 12636); // in millivolts
+        // Reading battery voltage from the voltage 24/12 kOhm divider
+        g_current_voltage  = adc_read_blocking(BATTERY_ADC);
+        g_current_voltage *= BATTERY_ADC_SLOPE;
+        g_current_voltage += BATTERY_ADC_OFFSET;
 
         // Read/convert steering pot
         g_steering_feedback = adc_read_blocking(STEERING_POT_ADC);

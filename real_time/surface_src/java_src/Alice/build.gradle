@@ -20,7 +20,6 @@ findbugs {
 
 checkstyle{
   toolVersion = "6.2"
-  sourceSets = [sourceSets.main]
   checkstyleMain.exclude '**/edu/cmu/cs/cs214/hw6/util/*'
   checkstyleMain.exclude '**/edu/cmu/cs/cs214/hw6/plugin/**'
 }
