@@ -1,0 +1,3 @@
+[submodule "real_time/surface_src/java_src/Alice/config/BuggyGui"]
+	path = real_time/surface_src/java_src/Alice/config/BuggyGui
+	url = https://github.com/VasuAgrawal/BuggyGui

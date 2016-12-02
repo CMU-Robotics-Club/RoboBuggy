@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <Match>
+        <Class name="com.roboclub.robobuggy.messages.Message"/>
+    </Match>
+    <Match>
+        <Class name="com.roboclub.robobuggy.messages.Message$DataMessage$Builder"/>
+    </Match>
+    <Match>
+        <Class name="com.roboclub.robobuggy.messages.Message$EncoderMessage$Builder"/>
+    </Match>
+    <Match>
+        <Class name="com.roboclub.robobuggy.messages.Message$GpsMessage$Builder"/>
+    </Match>
+    <Match>
+        <Class name="com.roboclub.robobuggy.messages.Message$ImageMessage$Builder"/>
+    </Match>
+    <Match>
+        <Class name="com.roboclub.robobuggy.messages.Message$ImuMessage$Builder"/>
+    </Match>
+    <Match>
+        <Class name="com.roboclub.robobuggy.messages.Message$LogMessage$Builder"/>
+    </Match>
+    <Match>
+        <Class name="com.roboclub.robobuggy.messages.Message$WheelAngleCommandedMessage$Builder"/>
+    </Match>
+
+</FindBugsFilter>

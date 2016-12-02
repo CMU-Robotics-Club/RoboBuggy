@@ -3,6 +3,7 @@ apply plugin: 'eclipse'
 apply plugin: 'checkstyle'
 apply plugin: 'cobertura'
 apply plugin: 'findbugs'
+apply plugin: 'maven'
 
 
 test.testLogging { exceptionFormat "full"; events "failed", "passed", "skipped" }
@@ -16,12 +17,15 @@ configurations.all {
 
 findbugs {
   toolVersion = "3.0.0"
+    sourceSets = [sourceSets.main]
+    findbugsMain.excludeFilter = new File("config/findbugs/excludeFilter.xml")
 }
 
 checkstyle{
   toolVersion = "6.2"
   checkstyleMain.exclude '**/edu/cmu/cs/cs214/hw6/util/*'
   checkstyleMain.exclude '**/edu/cmu/cs/cs214/hw6/plugin/**'
+   checkstyleMain.exclude '**/com/roboclub/robobuggy/messages/Message**'
 }
 
 repositories {
@@ -45,6 +49,8 @@ dependencies {
     compile 'gov.nist.math:jama:1.0.2'
     compile 'org.eclipse.jetty.aggregate:jetty-all:9.2.7.v20150116'
 
+    compile group: 'com.google.protobuf', name: 'protobuf-java', version: '3.0.0'
+
 
     // TODO: this is stupid. find a way to use mavencentral repo.
     compile files('library/orsoncharts-1.4-eval-nofx.jar')
@@ -53,6 +59,7 @@ dependencies {
     compile files('library/RXTXcomm.jar')
     compile files('library/JMapViewer.jar')
     compile files('library/jfreespace.jar')
+//    compile files('library/protobuf_base.jar')
 
 
 }
