@@ -16,13 +16,14 @@ public class MagneticMeasurement extends BaseMessage {
 
     public static final String VERSION_ID = "magV0.0";
 
+    private int imuID;
 
     private double magX;
     private double magY;
     private double magZ;
 
     /**
-     * Constructs a new {@link MagMeasurement} at time now
+     * Constructs a new {@link MagneticMeasurement} at time now with IMU ID = -1
      *
      * @param magX magX value
      * @param magY magY value
@@ -33,33 +34,57 @@ public class MagneticMeasurement extends BaseMessage {
         this.magX = magX;
         this.magY = magY;
         this.magZ = magZ;
+        this.imuID = -1;
     }
 
     /**
-     * Returns the magX value of the {@link MagMeasurement}
+     * Constructs a new {@link MagneticMeasurement} at time now
      *
-     * @return the magX value of the {@link MagMeasurement}
+     * @param magX magX value
+     * @param magY magY value
+     * @param magZ magZ value
+     * @param imuID the ID of the IMU that generated the data
+     */
+    public MagneticMeasurement(double magX, double magY, double magZ, int imuID) {
+        this.timestamp = new Date().getTime();
+        this.magX = magX;
+        this.magY = magY;
+        this.magZ = magZ;
+        this.imuID = imuID;
+    }
+
+    /**
+     * Returns the magX value of the {@link MagneticMeasurement}
+     *
+     * @return the magX value of the {@link MagneticMeasurement}
      */
     public double getmagX() {
         return magX;
     }
 
     /**
-     * Returns the magY value of the {@link MagMeasurement}
+     * Returns the magY value of the {@link MagneticMeasurement}
      *
-     * @return the magY value of the {@link MagMeasurement}
+     * @return the magY value of the {@link MagneticMeasurement}
      */
     public double getmagY() {
         return magY;
     }
 
     /**
-     * Returns the magZ value of the {@link MagMeasurement}
+     * Returns the magZ value of the {@link MagneticMeasurement}
      *
-     * @return the magZ value of the {@link MagMeasurement}
+     * @return the magZ value of the {@link MagneticMeasurement}
      */
     public double getmagZ() {
         return magZ;
     }
 
+
+    /**
+     * Returns the ID of the IMU for the {@link MagneticMeasurement}
+     *
+     * @return the ID of the IMU for the {@link MagneticMeasurement}
+     */
+    public int getImuID() { return this.imuID; }
 }
