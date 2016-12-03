@@ -1,23 +1,15 @@
 package com.roboclub.robobuggy.nodes.sensors;
 
-import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
-import com.roboclub.robobuggy.nodes.baseNodes.NodeState;
-import com.roboclub.robobuggy.nodes.localizers.LocTuple;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
-import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
-import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.lang.InterruptedException;
-
-import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -31,8 +23,13 @@ import static org.junit.Assert.fail;
 public class GpsNodeTest {
     private static LinkedBlockingQueue<GpsMeasurement> messageList = new LinkedBlockingQueue<>();
 
+    /**
+     * Called before any tests run, and only called once
+     *
+     * Sets up the subscriber catcher into the message list
+     */
     @BeforeClass
-    public static void oneTime() {
+    public static void oneTimeSetup() {
         new Subscriber("gpsLoc", NodeChannel.GPS.getMsgPath(), new MessageListener() {
             @Override
             public void actionPerformed(String topicName, Message m) {
@@ -43,17 +40,23 @@ public class GpsNodeTest {
         });
     }
 
+    /**
+     * Called before each test case runs
+     *
+     * Clears the message list so we don't get any corruption between tests
+     */
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         messageList.clear();
     }
 
+    /**
+     * Called after each test case finishes
+     *
+     * Does nothing at the moment
+     */
     @After
-    public void tearDown() throws Exception {
-
-    }
-
-    public void testName() throws Exception {
+    public void tearDown() {
 
     }
 
@@ -254,7 +257,7 @@ public class GpsNodeTest {
             double output = gpsNode1.convertMinSecToFloatLongitude(input);
             fail("couldn't convert longitude - invalid input");
 
-        } catch (Exception E){
+        } catch (Exception e){
             return;
         }
     }
