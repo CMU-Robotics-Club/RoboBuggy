@@ -152,14 +152,11 @@ microseconds since startup or last overflow.  This operation is atomic
 */
 unsigned long ServoReceiver::GetLastTimestamp() 
 {
-    uint8_t oldSREG;
     unsigned long temp;
-
-    oldSREG = SREG;
+    uint8_t oldSREG = SREG;
 
     cli();
     temp = last_timestamp_;
-
     //Return the register to its original state rather than re-enable interrupts
     SREG = oldSREG;
 
@@ -173,15 +170,11 @@ Return the last read pulse width in microseconds.  This operation is atomic
 */
 unsigned long ServoReceiver::GetPulseWidth() 
 {
-    uint8_t oldSREG;
     unsigned long temp;
-
-    oldSREG = SREG;
+    uint8_t oldSREG = SREG;
 
     cli();
     temp = rc_value_;
-
-    //Return the register to its original state rather than re-enable interrupts
     SREG = oldSREG;
 
     return temp;
@@ -202,13 +195,13 @@ int ServoReceiver::GetAngle()
 
 int ServoReceiver::GetAngleHundredths() 
 {
-  // Scale the received signal into hundredths of a degree
-  int value = (int)map(rc_value_,
+    // Scale the received signal into hundredths of a degree
+    int value = (int)map(rc_value_,
                        k_offset_rc_in,
                        k_scale_rc_in,
                        k_offset_stored_angle,
                        k_scale_stored_angle);
-  return value;
+    return value;
 }
 
 
