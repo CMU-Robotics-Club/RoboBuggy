@@ -18,7 +18,9 @@
 
 // Public //////////////////////////////////////////////////////////////////////
 
-RBSerialMessages::RBSerialMessages() {} //constructor function
+RBSerialMessages::RBSerialMessages() {
+    
+}
 
 
 int RBSerialMessages::Init(UARTFILE *in_file, FILE *out_file) {

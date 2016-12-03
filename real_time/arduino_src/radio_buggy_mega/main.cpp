@@ -336,38 +336,52 @@ void indicator_light_init() {
     RX_STATUS_LIGHT_DDR_RED |= _BV(6);
 }
 
-
+/** @brief turns on blue light to indicate low voltage
+*
+*/
 void voltage_too_low_light() {
-    // blue for this light
     RX_STATUS_LIGHT_PORT |= _BV(RX_STATUS_LIGHT_PINN_BLUE);
 }
 
-
+/** @brief turns on red light to indicate autonomous timeout
+*
+*/
 void auton_timeout_light() {
     // red for this light
     RX_STATUS_LIGHT_PORT_RED |= _BV(RX_STATUS_LIGHT_PINN_RED);
 }
 
 
+/** @brief turns on green light to indicate rc timeout
+*
+*/
 void rc_timeout_failure_light() {
     // green for this light
     RX_STATUS_LIGHT_PORT |= _BV(RX_STATUS_LIGHT_PINN_GREEN);
 }
 
 
+/** @brief turns off blue light
+*
+*/
 void voltage_too_low_light_reset() {
     RX_STATUS_LIGHT_PORT &= ~_BV(RX_STATUS_LIGHT_PINN_BLUE);
 }
 
-
+/** @brief turns off red light
+*
+*/
 void auton_timeout_light_reset() {
     RX_STATUS_LIGHT_PORT_RED &= ~_BV(RX_STATUS_LIGHT_PINN_RED);
 }
 
-
+/** @brief turns off green light
+*
+*/
 void rc_timeout_failure_light_reset() {
     RX_STATUS_LIGHT_PORT &= ~_BV(RX_STATUS_LIGHT_PINN_GREEN);
 }
+
 
 void brake_init() {
     BRAKE_OUT_DDR |= _BV(BRAKE_OUT_PINN);
