@@ -11,7 +11,7 @@ function [trajectory] = controller()
     lat_long = [40.441670, -79.9416362];
     dt = 0.001; % 1000Hz
     m = 50; % 20Hz
-    velocity = 3; % m/s, 6.7mph
+    velocity = 8; % m/s, 17.9mph
 
     [x, y, ~] = ll2utm(lat_long(1), lat_long(2));
 
@@ -26,7 +26,7 @@ function [trajectory] = controller()
     % time = linspace(0, 240, size(trajectory,2));
     time = 0:dt:240;
     u = 0; % steering angle
-    trajectory = [X; lat_long'; u];
+    trajectory = [X; lat_long(1); lat_long(2); u];
 
     for i = 1:size(time, 2)
         t = time(i);
@@ -38,14 +38,13 @@ function [trajectory] = controller()
 
         if(mod(i, m) == 0)
             u = control(desired_traj, X);
-            u = clampAngle(u);
         end
 
         % trajectory = [trajectory, X];
         snapshot = summarize(X, utm_zone, u);
         trajectory = [trajectory, snapshot];
     end
-    
+
     if save_data
         save('controller_v1.mat', 'trajectory');
     end
@@ -58,7 +57,7 @@ end
 
 function snapshot = summarize(x, utm_zone, steeringAngle)
     [lat, lon] = utm2ll(x(1), x(2), utm_zone);
-    snapshot = [x; lat; lon; steeringAngle];
+    snapshot = [x; x(1); x(2); steeringAngle];
 end
 
 function a = clampAngle(a)
@@ -96,13 +95,12 @@ function [u] = control(desired_traj, X)
     possible = find(sum((desired_traj-b).^2, 2) < delta);
     if isempty(possible)
       u = 0;
-    else
+    else 
       target = desired_traj(possible(end), :);
       deltaPath = target - pos;
-      u = atan2(target(2), target(1));
+      u = atan2(deltaPath(2), deltaPath(1))-X(4);
     end
-
-    u = clampSteeringAngle(u);
+    u = clampSteeringAngle(clampAngle(u));
 end
 
 
