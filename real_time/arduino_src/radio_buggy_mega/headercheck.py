@@ -21,7 +21,7 @@ def main():
     try:
         settingsFile = open("../../rbsm_config.txt")
     except:
-        print("Error! Unable to find rbsm_headers.txt\n")
+        print("Error! Unable to find ../../rbsm_config.txt\n")
         sys.exit(1)
  
     file.write("/* rbsm_config.h: A compilation-time created file containing message \n")
