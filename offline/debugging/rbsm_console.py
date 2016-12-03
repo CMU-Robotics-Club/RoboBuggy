@@ -32,25 +32,44 @@ signal.signal(signal.SIGINT, signal.SIG_DFL)
 screenCopy = None
 
 #Create a dictionary of message headers
-#TODO create it from ../../real_time/rbsm_config.txt
-mid_to_str = {
-    0: "ENC_TICKS_LAST",
-    1: "ENC_TICKS_RESET",
-    5: "ENC_RESET_REQUEST",
-    6: "ENC_RESET_CONFIRM",
-    17: "MEGA_TELEOP_BRAKE_COMMAND",
-    18: "MEGA_AUTON_BRAKE_COMMAND",
-    19: "MEGA_STEER_COMMAND",
-    20: "MEGA_STEER_ANGLE",
-    21: "MEGA_BRAKE_STATE",
-    22: "MEGA_AUTON_STATE" ,
-    23: "MEGA_BATTERY_LEVEL",
-    24: "MEGA_STEER_FEEDBACK",
-    30: "COMP_HASH",
-    253: "MEGA_TIMESTAMP",
-    254: "ERROR",
-    255: "DEVICE_ID"
-}
+def createMidToStr():
+    dict = {}
+    settingsFile = None
+    try:
+        settingsFile = open("../../real_time/rbsm_config.txt")
+    except:
+        print("Error! Unable to find rbsm_headers.txt\n")
+        sys.exit()
+    # when the correct headers found
+    headersFound = False
+    # when to stop looking for headers
+    endHeaders = False
+    # go through each line to find the message headers
+    for lineNum, line in enumerate(settingsFile):
+        # to give right name takes out RBSM_MID_ if that is at beginning cause "RBSM_MID_" unneeded
+        if(line[0:9] == "RBSM_MID_"):
+            line = line[9:]
+        # key is in the part after , and value is before
+        if(headersFound):
+            definition = line.split(", ")
+            # if there are not enough values or too many, then line is assumed to be
+            # end of the parts with message headers
+            if(len(definition)!=2):
+                endHeaders = True
+                break
+            # sets the key to equal the message header
+            dict[int(definition[1])] = definition[0]
+        elif(line[0:15]=="// RBSM Headers"):
+            # the string that is found is what symbolizes when message headers begin on
+            # next line
+            headersFound = True
+        # when the headers end do not care about anything else so breaks
+        if(endHeaders):
+            break
+    return dict
+
+mid_to_str = createMidToStr()
+
 
 def redraw(state):
     screen = state["screen"]
@@ -69,9 +88,6 @@ def redraw(state):
                                                                             message_cache[mid]["data"],
                                                                             message_cache[mid]["update_time"])
             screen.addstr(row_id, 2, s)
-
-            # with open('someshit.txt', 'at') as f:
-            #     f.write(s + "\n")
 
             row_id = row_id + 1
 
@@ -152,8 +168,6 @@ def command_worker(state):
         # standard ascii characters
         elif(new_char < 128) and len(state["command_line"]) < INPUTUPPERBOUND:
             state["command_line"] += chr(new_char)
-            with open('someshit.txt', 'at') as f:
-                f.write(state["command_line"])
 
         # redraw(state)
 
