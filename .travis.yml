@@ -20,6 +20,7 @@ script:
     - echo $PATH
     - echo $HOME
     - echo $BUGGY_ROOT
+    - git log --pretty=format:'%h' -n 1
     # for running the build and tests of the high level code
     - (cd real_time/surface_src/java_src/Alice && $GRADLE_BIN/gradle build)
     - bash real_time/surface_src/java_src/Alice/travisStyleCheck.sh
