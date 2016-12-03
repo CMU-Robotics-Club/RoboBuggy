@@ -81,9 +81,8 @@ int RBSerialMessages::Read(rb_message_t* read_message) {
                     data_bytes[2] = buffer_in_[2];
                     data_bytes[3] = buffer_in_[1];
                     return 0;
-                }
                 // skip packet as an error
-                else {
+                } else {
                     buffer_in_stream_lock_ = false;
                     return RBSM_ERROR_INVALID_MESSAGE;
                 }
