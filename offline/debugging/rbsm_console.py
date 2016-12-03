@@ -29,47 +29,50 @@ INPUTUPPERBOUND = 60
 import signal
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
-screenCopy = None
+screen_copy = None
 
 #Create a dictionary of message headers
-def createMidToStr():
+# startOfValues is the comment before start of values for dict
+# takeout is what needs to be taken out from the beginning of the values in dict
+# if it is in the rbsm_config.txt file
+def create_bit_to_str(start_of_values, takeout=""):
     dict = {}
-    settingsFile = None
+    settings_file = None
     try:
-        settingsFile = open("../../real_time/rbsm_config.txt")
+        settings_file = open("../../real_time/rbsm_config.txt")
     except:
         print("Error! Unable to find rbsm_headers.txt\n")
-        sys.exit()
+        sys.exit(1)
     # when the correct headers found
-    headersFound = False
+    headers_found = False
     # when to stop looking for headers
-    endHeaders = False
+    end_headers = False
     # go through each line to find the message headers
-    for lineNum, line in enumerate(settingsFile):
+    for line_num, line in enumerate(settings_file):
         # to give right name takes out RBSM_MID_ if that is at beginning cause "RBSM_MID_" unneeded
-        if(line[0:9] == "RBSM_MID_"):
-            line = line[9:]
+        if(line[0:len(takeout)] == takeout):
+            line = line[len(takeout):]
         # key is in the part after , and value is before
-        if(headersFound):
+        if(headers_found):
             definition = line.split(", ")
             # if there are not enough values or too many, then line is assumed to be
             # end of the parts with message headers
             if(len(definition)!=2):
-                endHeaders = True
+                end_headers = True
                 break
             # sets the key to equal the message header
             dict[int(definition[1])] = definition[0]
-        elif(line[0:15]=="// RBSM Headers"):
+        elif(line[0:len(start_of_values)+3]=="// " + start_of_values):
             # the string that is found is what symbolizes when message headers begin on
             # next line
-            headersFound = True
+            headers_found = True
         # when the headers end do not care about anything else so breaks
-        if(endHeaders):
+        if(end_headers):
             break
     return dict
 
-mid_to_str = createMidToStr()
-
+mid_to_str = create_bit_to_str("RBSM Headers", "RBSM_MID_")
+eid_to_str = create_bit_to_str("Error Message Bits", "RBSM_EID_")
 
 def redraw(state):
     screen = state["screen"]
@@ -90,7 +93,27 @@ def redraw(state):
             screen.addstr(row_id, 2, s)
 
             row_id = row_id + 1
-
+    
+        #adding space and then error
+        screen.addstr(row_id, 2, "")
+        screen.addstr(row_id+1, 2, "ERROR")
+        screen.addstr(row_id+2, 2, "------------------------")
+        row_id = row_id + 3
+        # finds which value is error
+        error = 254
+        for key in mid_to_str.key():
+            if(mid_to_str[key]=="ERROR"):
+                error = key
+        for error_message in message_cache[error]["data"]:
+            # if this error not in eid_to_str then displays this string
+            s = error_message
+            for key in eid_to_str.keys():
+                if(error_message == eid_to_str[key]):
+                    s = error_message + " bit"+str(key)
+            screen.addstr(row_id, 2, s)
+            row_id = row_id + 1
+        # adding -- so that if there is nothing between error and this then no error
+        screen.addstr(row_id, 2, "------------------------")
 
     # update status line
     screen.addstr(max_y-3, 2, "status: {:<15}".format(status_line))
