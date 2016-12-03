@@ -1,10 +1,10 @@
 package com.roboclub.robobuggy.map;
 
 /**
- * Representation of a point on a {@link Map}.
+ * Representation of a point on a Map.
  * For now this value will be stored as a 2d (x,y) pair
  */
-public class Point implements MapObject {
+public class Point {
     private double x;
     private double y;
 
