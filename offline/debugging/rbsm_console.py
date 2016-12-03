@@ -41,7 +41,7 @@ def create_bit_to_str(start_of_values, takeout=""):
     try:
         settings_file = open("../../real_time/rbsm_config.txt")
     except:
-        print("Error! Unable to find rbsm_headers.txt\n")
+        print("Error! Unable to find real_time/rbsm_headers.txt\n")
         sys.exit(1)
     # when the correct headers found
     headers_found = False
@@ -111,14 +111,12 @@ def redraw(state):
             maxBit = max(eid_to_str.keys())
             for bit in xrange(maxBit+1):
                 if(error_message%2==1 and bit in eid_to_str.keys()):
-                    #screen.addstr(row_id, 2, eid_to_str[bit])
                     wipeScreenAndPost(screen, eid_to_str[bit], row_id)
                     row_id = row_id + 1
                 # can eliminate previous bit by diving by 2
                 error_message = error_message/2
         # adding -- so that if there is nothing between error and this then no error
         wipeScreenAndPost(screen, "------------------------", row_id)
-            #screen.addstr(row_id, 2, "------------------------")
         # to make sure row below BottomLine clean:
         wipeScreenAndPost(screen, "", row_id+1)
 
