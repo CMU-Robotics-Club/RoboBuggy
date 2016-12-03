@@ -13,6 +13,7 @@
 import datetime
 import socket #Used for getting hostname
 import subprocess
+import sys
 
 def main():
     print("Now creating fingerprint.h...")
@@ -27,11 +28,18 @@ def main():
     file.write("#define FP_COMPTIME \"%02d:%02d:%02d\" //hour:minute:second\n" %(time.hour, time.minute, time.second))
     file.write("#define FP_HOSTNAME \"%s\"\n" %socket.gethostname().split(".")[0])
 
+    #Gets current branch name
     branch = "unnamed branch"
     try:
         branch = str(subprocess.check_output(["git", "symbolic-ref", "--short", "HEAD"])).replace("\n", "")
     except subprocess.CalledProcessError:
         print("Unable to find branch name!")
+        file.close()
+        sys.exit(1)
+    except:
+        print("Unknown error encountered! Are you using Python 2.7?")
+        file.close()
+        sys.exit(1)
 
     file.write("#define FP_BRANCHNAME \"%s\"\n" %branch)
 
@@ -45,8 +53,20 @@ def main():
         clean = False
     except:
         print("Unknown error encountered! Are you using Python 2.7?")
+        file.close()
+        sys.exit(1)
 
-    hString = str(subprocess.check_output(["git", "log", "-1", "--pretty=format:'%h'"])).rstrip().replace("'", "")
+    hString = ""
+    try:
+        hString = str(subprocess.check_output(["git", "log", "-1", "--pretty=format:'%h'"])).rstrip().replace("'", "")
+    except subprocess.CalledProcessError:
+        print("Failed to retrieve commit hash")
+        file.close()
+        sys.exit(1)
+    except:
+        print("Unknown error encountered! Are you using Python 2.7?")
+        file.close()
+        sys.exit(1)
 
     file.write("#define FP_HEXCOMMITHASH 0x%s \n" %hString)
     file.write("#define FP_STRCOMMITHASH \"%s\"\n" %hString)
