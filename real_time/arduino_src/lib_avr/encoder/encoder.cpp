@@ -1,8 +1,7 @@
 #include "encoder.h"
 
 
-Encoder::Encoder() {
-}
+Encoder::Encoder() {} //constructor function
 
 
 uint8_t Encoder::Init(volatile uint8_t *pin_a_reg,

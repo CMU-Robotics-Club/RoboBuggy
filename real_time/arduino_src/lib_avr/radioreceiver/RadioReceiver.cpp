@@ -1,8 +1,7 @@
 #include "RadioReceiver.h"
 
 
-RadioReceiver::RadioReceiver() {
-}
+RadioReceiver::RadioReceiver() {} //constructor function
 
 
 void RadioReceiver::Init(volatile uint8_t *pin_reg,
