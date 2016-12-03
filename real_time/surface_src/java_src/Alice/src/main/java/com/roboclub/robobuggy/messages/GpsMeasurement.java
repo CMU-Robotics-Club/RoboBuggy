@@ -144,6 +144,14 @@ public class GpsMeasurement extends BaseMessage {
         return north;
     }
 
+    public int getNumSatellites() {return numSatellites; }
+
+    public double getHorizontalDilutionOfPosition() {return horizontalDilutionOfPrecision; }
+
+    public int getQualityValue() {return qualityValue; }
+
+    public double getAntennaAltitude() { return antennaAltitude; }
+
     /**
      * evaluates to a GPSPoseMessage with the same values encoded in this GPSMeasurement
      *
