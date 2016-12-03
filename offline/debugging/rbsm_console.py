@@ -96,24 +96,32 @@ def redraw(state):
     
         #adding space and then error
         screen.addstr(row_id, 2, "")
-        screen.addstr(row_id+1, 2, "ERROR")
-        screen.addstr(row_id+2, 2, "------------------------")
-        row_id = row_id + 3
+        screen.addstr(row_id+1, 2, "--------ERRORS---------")
+        # since last steps went through 2 rows adding 2 to row_id
+        row_id = row_id + 2
         # finds which value is error
         error = 254
-        for key in mid_to_str.key():
+        for key in mid_to_str.keys():
             if(mid_to_str[key]=="ERROR"):
                 error = key
-        for error_message in message_cache[error]["data"]:
-            # if this error not in eid_to_str then displays this string
-            s = error_message
-            for key in eid_to_str.keys():
-                if(error_message == eid_to_str[key]):
-                    s = error_message + " bit"+str(key)
-            screen.addstr(row_id, 2, s)
-            row_id = row_id + 1
+        # check if key is even in message_cache
+        if(error in message_cache.keys()):
+            error_message = message_cache[error]["data"]
+            # max bit that has associated error
+            maxBit = max(eid_to_str.keys())
+            for bit in xrange(maxBit+1):
+                if(error_message%2==1 and bit in eid_to_str.keys()):
+                    #screen.addstr(row_id, 2, eid_to_str[bit])
+                    wipeScreenAndPost(screen, eid_to_str[bit], row_id)
+                    row_id = row_id + 1
+                # can eliminate previous bit by diving by 2
+                error_message = error_message/2
         # adding -- so that if there is nothing between error and this then no error
-        screen.addstr(row_id, 2, "------------------------")
+        wipeScreenAndPost(screen, "------------------------", row_id)
+            #screen.addstr(row_id, 2, "------------------------")
+        # to make sure row below BottomLine clean:
+        wipeScreenAndPost(screen, "", row_id+1)
+
 
     # update status line
     screen.addstr(max_y-3, 2, "status: {:<15}".format(status_line))
@@ -125,6 +133,10 @@ def redraw(state):
 
     screen.refresh()
 
+def wipeScreenAndPost(screen, str, pos):
+    # long empty space to wipe line clean
+    screen.addstr(pos, 2, "                                                       ")
+    screen.addstr(pos, 2, str)
 
 def rbsm_worker(state):
     message_cache = state["message_cache"]
