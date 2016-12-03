@@ -171,7 +171,7 @@ Return the last read pulse width in microseconds.  This operation is atomic
 unsigned long ServoReceiver::GetPulseWidth() 
 {
     unsigned long temp;
-    utin8_t oldSREG = SREG;
+    uint8_t oldSREG = SREG;
 
     cli();
     temp = rc_value_;
