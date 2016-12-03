@@ -232,7 +232,7 @@ public abstract class SerialNode extends BuggyDecoratorNode {
                     } catch (InterruptedException e) {
                         new RobobuggyLogicNotification("sleep .... interrupted?", RobobuggyMessageLevel.EXCEPTION);
                     }
-                } catch (IOException e) {
+                } catch (IOException e) {   //NOTE: Does not handle reconnects
                     // TODO handle this error reasonably.
                     sp.close();
                     setNodeState(NodeState.DISCONNECTED);
