@@ -87,10 +87,9 @@ public class GpsNodeTest {
                 assertEquals(m.getWest(), false);
             }
 
-            //check stuff in LinkedBlockingQueue
         }
-        catch (Exception e){
-                fail("Exception");
+        catch (InterruptedException e){
+                fail("thread interrupted");
         }
 
 
@@ -112,9 +111,8 @@ public class GpsNodeTest {
 
             fail("This shouldn't parse longitude");
 
-            //check stuff in LinkedBlockingQueue
         }
-        catch (Exception e){
+        catch (NumberFormatException e){
             return;
         }
     }
@@ -134,9 +132,8 @@ public class GpsNodeTest {
             gpsNode1.peel(bytes,0,bytes.length);
 
             fail("This shouldn't parse latitude");
-            //check stuff in LinkedBlockingQueue
         }
-        catch (Exception e){
+        catch (NumberFormatException e){
             return;
         }
     }
@@ -156,9 +153,8 @@ public class GpsNodeTest {
             gpsNode1.peel(bytes,0,bytes.length);
 
             fail("This shouldn't parse latitude and longitude");
-            //check stuff in LinkedBlockingQueue
         }
-        catch (Exception e){
+        catch (NumberFormatException e){
             return;
         }
     }
@@ -175,7 +171,6 @@ public class GpsNodeTest {
         assertEquals(d1.getHours(),12);
         assertEquals(d1.getMinutes(),35);
         assertEquals(d1.getSeconds(),19);
-        System.out.println(d1);
         //posDDMMmmmm could correspond to a reading of 41d 24.8963' N
 
     }
@@ -195,8 +190,6 @@ public class GpsNodeTest {
             return;
         }
 
-        //posDDMMmmmm could correspond to a reading of 41d 24.8963' N
-
     }
 
     /**
@@ -208,7 +201,6 @@ public class GpsNodeTest {
         GpsNode gpsNode1 = new GpsNode(NodeChannel.GPS,"buggy");
         String input = "4807.038";
         double output = gpsNode1.convertMinutesSecondsToFloat(input);
-        System.out.println(output);
         assertEquals(output,48.1173,0.001);
     }
 
@@ -223,7 +215,7 @@ public class GpsNodeTest {
         try {
             double output = gpsNode1.convertMinutesSecondsToFloat(input);
             fail("cannot convert given latitude");
-        } catch (Exception e){
+        } catch (NumberFormatException e){
             return;
         }
     }
@@ -239,7 +231,6 @@ public class GpsNodeTest {
         GpsNode gpsNode1 = new GpsNode(NodeChannel.GPS,"buggy");
         String input = "01131.000";
         double output = gpsNode1.convertMinSecToFloatLongitude(input);
-        System.out.println(output);
         assertEquals(output,11.5167,0.001);
     }
 
@@ -257,7 +248,7 @@ public class GpsNodeTest {
             double output = gpsNode1.convertMinSecToFloatLongitude(input);
             fail("couldn't convert longitude - invalid input");
 
-        } catch (Exception e){
+        } catch (NumberFormatException e){
             return;
         }
     }
