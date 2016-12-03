@@ -533,7 +533,7 @@ clean_list :
 	$(REMOVE) $(patsubst %.c,%.d,$(patsubst %.cpp,%.d,$(SRC)))
 	$(REMOVE) .dep/*
 	$(REMOVE) fingerprint.h
-	$(REMOVE) rbsm_config.h
+	$(REMOVE) ../lib_avr/rbserialmessages/rbsm_config.h
 
 
 
