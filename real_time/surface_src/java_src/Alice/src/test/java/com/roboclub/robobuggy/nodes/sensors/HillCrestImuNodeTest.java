@@ -14,7 +14,8 @@ public class HillCrestImuNodeTest {
     private HillCrestImuNode testNode;
 
     /**
-     * setup done before each test
+     * Before each test case, this method is run
+     * This method basically just resets the test node
      */
     @Before
     public void setUp() {
@@ -22,7 +23,8 @@ public class HillCrestImuNodeTest {
     }
 
     /**
-     * work that's done after each test
+     * After each test case, this method runs
+     * Right now this method doesn't do anything specifically
      */
     @After
     public void tearDown() {
