@@ -73,9 +73,9 @@ public final class GpsNode extends SerialNode {
         return BAUD_RATE;
     }
 
-    private Date convertHHMMSStoTime(String timeHHMMSSss) {
+    protected Date convertHHMMSStoTime(String timeHHMMSSss) {
         //todo this may not be correct formatting
-        DateFormat f = new SimpleDateFormat("HHmmssSS");
+        DateFormat f = new SimpleDateFormat("HHmmss");
         try {
             return f.parse(timeHHMMSSss);
         } catch (ParseException e) {
@@ -84,13 +84,13 @@ public final class GpsNode extends SerialNode {
         }
     }
 
-    private double convertMinutesSecondsToFloat(String posDDMMmmmmm) {
+    protected double convertMinutesSecondsToFloat(String posDDMMmmmmm) {
         double posDD = Double.parseDouble(posDDMMmmmmm.substring(0, 2));
         double posMM = Double.parseDouble(posDDMMmmmmm.substring(2));
         return posDD + posMM / 60.0;
     }
 
-    private double convertMinSecToFloatLongitude(String dddmmmmm) {
+    protected double convertMinSecToFloatLongitude(String dddmmmmm) {
         double ddd = Double.parseDouble(dddmmmmm.substring(0, 3));
         double mins = Double.parseDouble(dddmmmmm.substring(3));
         return ddd + mins / 60.0;

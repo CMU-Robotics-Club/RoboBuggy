@@ -57,6 +57,9 @@ public class GpsNodeTest {
 
     }
 
+    /**
+     * tests that message is properly parsed for a legitimate input
+     */
     @Test
     public void testStandardGPSNode()
     {
@@ -156,6 +159,108 @@ public class GpsNodeTest {
             return;
         }
     }
+
+    /**
+     * tests if convertHHMMSStoTime() method works correctly on valid input
+     */
+    @Test
+    public void testConversionDateTime(){
+
+        GpsNode gpsNode1 = new GpsNode(NodeChannel.GPS,"buggy");
+        String input = "123519";
+        Date d1 = gpsNode1.convertHHMMSStoTime(input);
+        assertEquals(d1.getHours(),12);
+        assertEquals(d1.getMinutes(),35);
+        assertEquals(d1.getSeconds(),19);
+        System.out.println(d1);
+        //posDDMMmmmm could correspond to a reading of 41d 24.8963' N
+
+    }
+
+    /**
+     * tests if convertHHMMSStoTime() method works correctly on valid input
+     */
+    @Test
+    public void testBadConversionDateTime(){
+
+        GpsNode gpsNode1 = new GpsNode(NodeChannel.GPS,"buggy");
+        String input = "123L19";
+        try {
+            Date d1 = gpsNode1.convertHHMMSStoTime(input);
+            fail("could not convert the time");
+        } catch (AssertionError e){
+            return;
+        }
+
+        //posDDMMmmmm could correspond to a reading of 41d 24.8963' N
+
+    }
+
+    /**
+     * tests if convertMinutesSecondsToFloat() works correctly on valid input
+     */
+    @Test
+    public void testConversionMinSecToFloat()
+    {
+        GpsNode gpsNode1 = new GpsNode(NodeChannel.GPS,"buggy");
+        String input = "4807.038";
+        double output = gpsNode1.convertMinutesSecondsToFloat(input);
+        System.out.println(output);
+        assertEquals(output,48.1173,0.001);
+    }
+
+    /**
+     * tests for correct failure if convertMinutesSecondsToFloat() is given invalid input
+     */
+    @Test
+    public void testBadConversionMinSecToFloat()
+    {
+        GpsNode gpsNode1 = new GpsNode(NodeChannel.GPS,"buggy");
+        String input = "480O.038";
+        try {
+            double output = gpsNode1.convertMinutesSecondsToFloat(input);
+            fail("cannot convert given latitude");
+        } catch (Exception e){
+            return;
+        }
+    }
+
+
+
+    /**
+     * tests if convertMinSecToFloatLongitude() works correctly on valid input
+     */
+    @Test
+    public void testConversionMinSecToFloatLong()
+    {
+        GpsNode gpsNode1 = new GpsNode(NodeChannel.GPS,"buggy");
+        String input = "01131.000";
+        double output = gpsNode1.convertMinSecToFloatLongitude(input);
+        System.out.println(output);
+        assertEquals(output,11.5167,0.001);
+    }
+
+    /**
+     * tests for correct failure of convertMinSecToFloatLongitude()
+     * if given invalid input
+     */
+    @Test
+    public void testBadConversionMinSecToFloatLong()
+    {
+        GpsNode gpsNode1 = new GpsNode(NodeChannel.GPS,"buggy");
+        String input = "01E31.000";
+        try
+        {
+            double output = gpsNode1.convertMinSecToFloatLongitude(input);
+            fail("couldn't convert longitude - invalid input");
+
+        } catch (Exception E){
+            return;
+        }
+    }
+
+
+
 
 
 
