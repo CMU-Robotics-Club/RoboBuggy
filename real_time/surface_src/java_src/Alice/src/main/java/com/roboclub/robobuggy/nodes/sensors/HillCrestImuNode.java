@@ -90,7 +90,7 @@ public class HillCrestImuNode extends BuggyDecoratorNode implements DeviceListen
         // first check whether the message was the kind we're looking for
         // at this point we are only handling MotionEngineOutput messages
         if (!(message instanceof FreespaceMsgInMotionEngineOutput)) {
-            new RobobuggyLogicNotification("IMU gave us message other than motion engine output!", RobobuggyMessageLevel.NOTE);
+            new RobobuggyLogicNotification("IMU gave us a message other than motion engine output!", RobobuggyMessageLevel.NOTE);
             return;
         }
 
