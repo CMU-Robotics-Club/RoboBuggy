@@ -418,10 +418,13 @@ void watchdog_init()
 
     //This next line must run within 4 clock cycles of the above line.
     //See Section 12.4 of the ATMEGA2560 datasheet for additional details
+    //When WDIE & WDE are both set to 1 it will call the ISR and reset the
+    //system when the watchdog barks
     WDTCSR = 
             (1 << WDIE) //Call ISR on timeout
             | (1 << WDP2) // w/ WDP1 sets timeout to 1 second
-            | (1 << WDP1);
+            | (1 << WDP1)
+            | (1 << WDE); // Reset system on timeout
 
     //Re-enable interrupts
     sei();
@@ -695,11 +698,7 @@ int main(void)
 
 ISR(WDT_INT)
 {
-    cli();
     brake_drop();
-    while(1)
-    {
-    }
 }
 
 ISR(RX_STEERING_INT) 
