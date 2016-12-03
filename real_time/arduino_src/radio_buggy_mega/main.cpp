@@ -165,7 +165,7 @@ inline long clamp(long input,
 }
 
 
-void adc_init(void) {// copy-pasted from wiring.c l.353 (Arduino library)
+void adc_init(void) { // copy-pasted from wiring.c l.353 (Arduino library)
     // set a2d prescaler so we are inside the desired 50-200 KHz range.
     sbi(ADCSRA, ADPS2);
     sbi(ADCSRA, ADPS1);
@@ -509,8 +509,7 @@ int main(void) {
         int read_status;
 
         while((read_status = g_rbsm.Read(&new_command))
-             != RBSM_ERROR_INSUFFICIENT_DATA) {
-
+              != RBSM_ERROR_INSUFFICIENT_DATA) {
             if(read_status == 0) {
                 // clear RBSM errors
                 g_errors &= ~_BV(RBSM_EID_RBSM_LOST_STREAM);
@@ -541,14 +540,12 @@ int main(void) {
                         g_errors |= _BV(RBSM_EID_RBSM_INVALID_MID);
                         break;
                 } //End switch(new_command.message_id)
-            }
-            // report stream losses for tracking
-            else if(read_status == RBSM_ERROR_INVALID_MESSAGE) {
+            } else if(read_status == RBSM_ERROR_INVALID_MESSAGE) {
+                // report stream losses for tracking
                 dbg_printf("RBSM could not parse message.\n");
                 g_errors |= _BV(RBSM_EID_RBSM_LOST_STREAM);
-            }
-            // should not be other faults
-            else {
+            } else {
+                // should not be other faults
                 dbg_printf("Unknown RBSM parse error.\n");
                 g_errors |= _BV(RBSM_EID_RBSM_LOST_STREAM);
             }
@@ -593,8 +590,7 @@ int main(void) {
                 brake_needs_reset = true;
                 rc_timeout_failure_light();
                 dbg_printf("RC Timeout! %lu %lu %lu\n", delta1, delta2, delta3);
-            }
-            else {
+            } else {
                 g_errors &= ~_BV(RBSM_EID_RC_LOST_SIGNAL);
             }
 
@@ -604,12 +600,11 @@ int main(void) {
                 brake_needs_reset = true;
                 auton_timeout_light();
                 dbg_printf("Auton Timeout! %lu %lu\n", delta4, delta5);
-            }
-            else {
+            } else {
                 g_errors &= ~_BV(RBSM_EID_AUTON_LOST_SIGNAL);
             }
-        }
-        else { // or reset the system if connection is back and driver engages brakes
+        // or reset the system if connection is back and driver engages brakes
+        } else { 
             if(brake_cmd_teleop_engaged == true) {
                 brake_needs_reset = false;
             }
@@ -628,8 +623,7 @@ int main(void) {
         
         if (g_current_voltage < SYSTEM_VOLTAGE_THRESHOLD) {
             voltage_too_low_light();
-        }
-        else {
+        } else {
             voltage_too_low_light_reset();
         }
         
@@ -637,8 +631,7 @@ int main(void) {
         if(g_is_autonomous) {
             steering_set(auto_steering_angle);
             g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)(auto_steering_angle));
-        }
-        else {
+        } else {
             steering_set(steer_angle);
             g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
         }
@@ -648,8 +641,7 @@ int main(void) {
            brake_needs_reset == true) {
             brake_drop();
             g_rbsm.Send(RBSM_MID_MEGA_BRAKE_STATE,(long unsigned)true);
-        } 
-        else {
+        } else {
             brake_raise();
             g_rbsm.Send(RBSM_MID_MEGA_BRAKE_STATE,(long unsigned)false);
         }

@@ -49,7 +49,6 @@ struct rb_message_t {
 
 
 class RBSerialMessages {
-
     public:
         RBSerialMessages();
         int Init(UARTFILE *in_file, FILE *out_file);
