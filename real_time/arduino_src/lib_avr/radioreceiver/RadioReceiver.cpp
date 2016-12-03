@@ -2,7 +2,6 @@
 
 
 RadioReceiver::RadioReceiver() {
-
 }
 
 
