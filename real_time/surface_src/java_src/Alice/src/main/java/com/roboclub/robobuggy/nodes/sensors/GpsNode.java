@@ -101,13 +101,6 @@ public final class GpsNode extends SerialNode {
      */
     @Override
     public int peel(byte[] buffer, int start, int bytesAvailable) {
-        // TODO replace 80 with max message length
-        // This lets us avoid handling arcane failure cases about not-enough message.
-        /*if (bytesAvailable < 80) {
-            // Not enough bytes...maybe?
-            return 0;
-        } */
-
         String str;
         try {
             str = new String(buffer, start, bytesAvailable, "UTF-8");
