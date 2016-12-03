@@ -1,4 +1,6 @@
 function [trajectory] = controller()
+% https://www.ri.cmu.edu/pub_files/2009/2/Automatic_Steering_Methods_for_Autonomous_Automobile_Path_Tracking.pdf
+% section 2.2
 
     addpath('../localizer/latlonutm/Codes/matlab');
     global wheel_base
@@ -120,6 +122,4 @@ function [u] = control(desired_traj, X)
     end
     u = clampSteeringAngle(clampAngle(u));
 end
-
-
 
