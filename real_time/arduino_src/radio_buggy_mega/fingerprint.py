@@ -1,7 +1,7 @@
-""" fingerprint.py: 
-* Description: This is a python script to create a header file defining the time 
-*   of compilation and who compiled.  Also details whether tracked files 
-*   have been modified since the last commit.  Information is stored in 
+""" fingerprint.py:
+* Description: This is a python script to create a header file defining the time
+*   of compilation and who compiled.  Also details whether tracked files
+*   have been modified since the last commit.  Information is stored in
 *   fingerprint.h after the "make" command has been called
 *
 *  Note: To run this, the user must have python 2.7
@@ -31,7 +31,7 @@ def main():
     #Gets current branch name
     branch = "unnamed branch"
     try:
-        branch = str(subprocess.check_output(["git", "symbolic-ref", "--short", "HEAD"])).replace("\n", "")
+        branch = str(subprocess.check_output(["git", "log", "--pretty=format:'%h'", "-n", "1"])).replace("\n", "")
     except subprocess.CalledProcessError:
         print("Unable to find branch name!")
         file.close()
@@ -44,7 +44,7 @@ def main():
     file.write("#define FP_BRANCHNAME \"%s\"\n" %branch)
 
     try:
-        #subprocess.check_output throws a CalledProcessError exception on a 
+        #subprocess.check_output throws a CalledProcessError exception on a
         # non-zero return status
         #The git call below should return 0 if clean, 1 if tracked files have changed
         subprocess.check_output(["git", "diff-index", "--quiet", "HEAD"])
@@ -71,7 +71,7 @@ def main():
     file.write("#define FP_HEXCOMMITHASH 0x%s \n" %hString)
     file.write("#define FP_STRCOMMITHASH \"%s\"\n" %hString)
     #convert to lower because python booleans are capitalized
-    file.write("#define FP_CLEANSTATUS %s\n" %str(clean).lower()) 
+    file.write("#define FP_CLEANSTATUS %s\n" %str(clean).lower())
     file.write("\n#endif")
 
     file.close()
