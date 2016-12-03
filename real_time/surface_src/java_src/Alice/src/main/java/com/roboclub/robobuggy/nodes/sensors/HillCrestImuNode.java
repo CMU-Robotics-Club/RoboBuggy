@@ -79,6 +79,9 @@ public class HillCrestImuNode extends BuggyDecoratorNode implements DeviceListen
      * This method parses the IMU data array by using the spec on Pages 22 and 23 of the
      * reference manual
      *
+     * Note that parameters i and l are unknown since this overrides a method given to us in a
+     * library without documentation. We do not use these parameters, and so ignore them.
+     *
      * @param device the IMU in question
      * @param message the message from the IMU
      * @param i [Unknown]
