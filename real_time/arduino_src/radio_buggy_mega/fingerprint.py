@@ -13,6 +13,7 @@
 import datetime
 import socket #Used for getting hostname
 import subprocess
+import sys
 
 def main():
     print("Now creating fingerprint.h...")
