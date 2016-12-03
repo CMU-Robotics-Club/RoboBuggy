@@ -10,7 +10,7 @@ function [trajectory] = controller()
     first_heading = deg2rad(250);
     lat_long = [40.441670, -79.9416362];
     dt = 0.001; % 1000Hz
-    m = 20; % 20Hz
+    m = 50; % 20Hz
     velocity = 3; % m/s, 6.7mph
 
     [x, y, ~] = ll2utm(lat_long(1), lat_long(2));
@@ -70,11 +70,20 @@ function a = clampAngle(a)
     end
 end
 
+function a = clampSteeringAngle(a)
+    if(a < -deg2rad(10))
+        a = -deg2rad(10);
+    end
+    if(a > deg2rad(10))
+        a = deg2rad(10);
+    end
+end
+
 function [A] = model(x, u, dt)
     global wheel_base
 
-    A = [1, 0, dt*cos(x(3)), 0, 0;
-         0, 1, dt*sin(x(3)), 0, 0;
+    A = [1, 0, dt*cos(x(4)), 0, 0;
+         0, 1, dt*sin(x(4)), 0, 0;
          0, 0, 1, 0, 0;
          0, 0, 0, 1, dt;
          0, 0, tan(u)/wheel_base, 0, 0];
@@ -83,15 +92,17 @@ end
 function [u] = control(desired_traj, X) 
     pos = X(1:2)';
     b = repmat(pos, size(desired_traj, 1), 1);
-    delta = 100;
+    delta = 15*15;
     possible = find(sum((desired_traj-b).^2, 2) < delta);
     if isempty(possible)
-      u = pi;
+      u = 0;
     else
       target = desired_traj(possible(end), :);
       deltaPath = target - pos;
       u = atan2(target(2), target(1));
     end
+
+    u = clampSteeringAngle(u);
 end
 
 
