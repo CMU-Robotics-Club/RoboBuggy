@@ -1,4 +1,4 @@
-function [trajectory] = controller()
+function [trajectory] = controller_pure()
 % https://www.ri.cmu.edu/pub_files/2009/2/Automatic_Steering_Methods_for_Autonomous_Automobile_Path_Tracking.pdf
 % section 2.2
 
@@ -15,8 +15,8 @@ function [trajectory] = controller()
     lat_long = [40.441670, -79.9416362];
     dt = 0.001; % 1000Hz
     m = 50; % 20Hz
-    velocity = 8; % m/s, 17.9mph
-    steering_vel = deg2rad(10); 
+    velocity = 8; % m/s, 17.9mph, forward velocity
+    steering_vel = deg2rad(20); % 20deg/s, reaction speed to control cmds
 
     [x, y, ~] = ll2utm(lat_long(1), lat_long(2));
 
