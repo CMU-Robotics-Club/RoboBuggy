@@ -16,7 +16,8 @@ function [trajectory] = controller_pure()
     dt = 0.001; % 1000Hz
     m = 50; % 20Hz
     velocity = 8; % m/s, 17.9mph, forward velocity
-    steering_vel = deg2rad(20); % 20deg/s, reaction speed to control cmds
+    steering_vel = deg2rad(40); % 40deg/s, reaction speed to control cmds
+                                % full range in 0.5s
 
     [x, y, ~] = ll2utm(lat_long(1), lat_long(2));
 
@@ -32,7 +33,7 @@ function [trajectory] = controller_pure()
     time = 0:dt:240;
     u = 0; % commanded steering angle
     steering = u; % steering angle
-    trajectory = [X; lat_long(1); lat_long(2); u];
+    trajectory = [X; lat_long(1); lat_long(2); steering];
 
     for i = 1:size(time, 2)
         t = time(i);
@@ -48,12 +49,12 @@ function [trajectory] = controller_pure()
         end
 
         % trajectory = [trajectory, X];
-        snapshot = summarize(X, utm_zone, u);
+        snapshot = summarize(X, utm_zone, steering);
         trajectory = [trajectory, snapshot];
     end
 
     if save_data
-        save('controller_v1.mat', 'trajectory');
+        save('controller_v2.mat', 'trajectory');
     end
 end
 
@@ -109,6 +110,8 @@ function [A] = model(x, steering)
 end
 
 function [u] = control(desired_traj, X) 
+    global wheel_base
+
     pos = X(1:2)';
     b = repmat(pos, size(desired_traj, 1), 1);
     delta = 15*15;
@@ -118,7 +121,10 @@ function [u] = control(desired_traj, X)
     else 
       target = desired_traj(possible(end), :);
       deltaPath = target - pos;
-      u = atan2(deltaPath(2), deltaPath(1))-X(4);
+      
+      k = 0.8;
+      a = atan2(deltaPath(2), deltaPath(1))-X(4);
+      u = atan2(2*wheel_base*sin(a), k*X(3));
     end
     u = clampSteeringAngle(clampAngle(u));
 end

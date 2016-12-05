@@ -6,7 +6,7 @@ close all;
 addpath('../localizer/latlonutm/Codes/matlab');
 addpath('../localizer/altmany-export_fig');
 
-file = 'controller_v1.mat';
+file = 'controller_v2.mat';
 load(file, 'trajectory');
 save_plot = false;
 show_maps = false;

@@ -14,7 +14,7 @@ function [trajectory] = controller()
     dt = 0.001; % 1000Hz
     m = 50; % 20Hz
     velocity = 8; % m/s, 17.9mph, forward velocity
-    steering_vel = deg2rad(20); % 20deg/s, reaction speed to control cmds
+    steering_vel = deg2rad(40); % 40deg/s, reaction speed to control cmds
 
     [x, y, ~] = ll2utm(lat_long(1), lat_long(2));
 
@@ -30,7 +30,7 @@ function [trajectory] = controller()
     time = 0:dt:240;
     u = 0; % commanded steering angle
     steering = u; % steering angle
-    trajectory = [X; lat_long(1); lat_long(2); u];
+    trajectory = [X; lat_long(1); lat_long(2); steering];
 
     for i = 1:size(time, 2)
         t = time(i);
@@ -46,7 +46,7 @@ function [trajectory] = controller()
         end
 
         % trajectory = [trajectory, X];
-        snapshot = summarize(X, utm_zone, u);
+        snapshot = summarize(X, utm_zone, steering);
         trajectory = [trajectory, snapshot];
     end
 
