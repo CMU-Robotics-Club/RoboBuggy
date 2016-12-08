@@ -31,7 +31,7 @@ def main():
     #Gets current branch name
     branch = "unnamed branch"
     try:
-        branch = str(subprocess.check_output(["git", "log", "--pretty=format:'%h'", "-n", "1"])).replace("\n", "")
+        branch = str(subprocess.check_output(["git", "rev-parse ", "--abbrev-ref", "HEAD"])).replace("\n", "")
     except subprocess.CalledProcessError:
         print("Unable to find branch name!")
         file.close()
