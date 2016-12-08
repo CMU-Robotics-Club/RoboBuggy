@@ -7,7 +7,6 @@
 
 
 class RadioReceiver {
-
     protected:
         volatile uint8_t *receiver_pin_reg_;
         uint8_t receiver_pin_num_;

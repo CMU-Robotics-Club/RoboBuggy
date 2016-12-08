@@ -18,6 +18,7 @@ import java.io.UnsupportedEncodingException;
  * @author Kevin Brennan
  * @author Trevor Decker
  */
+@Deprecated
 public final class ImuNode extends SerialNode {
     /**
      * Baud rate for serial port
