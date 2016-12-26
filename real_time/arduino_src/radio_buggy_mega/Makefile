@@ -71,8 +71,10 @@ SRC += servo.c
 SRC += ../lib_avr/rbserialmessages/rbserialmessages.cpp
 SRC += ../lib_avr/radioreceiver/RadioReceiver.cpp
 SRC += ../lib_avr/radioreceiver/ServoReceiver.cpp
+SRC += ../lib_avr/statuslights/StatusLights.cpp
 SRC += ../lib_avr/uart/uart.c
 SRC += ../lib_avr/encoder/encoder.cpp
+
 #ff.o sd.o diskio.o rtc.o
 
 # List Assembler source files here.
