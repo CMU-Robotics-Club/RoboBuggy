@@ -20,9 +20,9 @@ public class BuggyBaseNode implements BuggyNode {
     private static final long WATCHDOG_PERIOD = 2000;
 
     private Publisher statePub;
-    private NodeState state;
+    protected NodeState state;
     private Long lastUpdate;
-    private Timer timer;
+    protected Timer timer;
 
     /**
      * Construct a new {@link BuggyBaseNode}
