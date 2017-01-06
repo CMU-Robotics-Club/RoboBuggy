@@ -72,6 +72,7 @@ public class BuggyBaseNode implements BuggyNode {
             return;
         }
 
+        // otherwise set new state
         this.state = state;
         lastUpdate = System.currentTimeMillis();
     }
