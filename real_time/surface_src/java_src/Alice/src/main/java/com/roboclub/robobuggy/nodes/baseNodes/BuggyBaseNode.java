@@ -67,6 +67,11 @@ public class BuggyBaseNode implements BuggyNode {
      */
     @Override
     public void setNodeState(NodeState state) {
+        if (state == null) {
+            // don't change the state
+            return;
+        }
+
         this.state = state;
         lastUpdate = System.currentTimeMillis();
     }
