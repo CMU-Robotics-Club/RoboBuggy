@@ -1,4 +1,4 @@
-package com.roboclub.robobuggy.ui;
+package com.roboclub.robobuggy.ui.pathTabGUI;
 
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.messages.GpsMeasurement;

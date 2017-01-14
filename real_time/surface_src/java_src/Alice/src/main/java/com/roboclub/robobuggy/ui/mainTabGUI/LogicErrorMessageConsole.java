@@ -1,4 +1,4 @@
-package com.roboclub.robobuggy.ui;
+package com.roboclub.robobuggy.ui.mainTabGUI;
 
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.messages.RobobuggyLogicNotificationMeasurement;
@@ -6,6 +6,8 @@ import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
+import com.roboclub.robobuggy.ui.Gui;
+import com.roboclub.robobuggy.ui.RobobuggyGUIContainer;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;

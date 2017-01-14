@@ -1,4 +1,4 @@
-package com.roboclub.robobuggy.ui;
+package com.roboclub.robobuggy.ui.misc.GraphGUI;
 
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
@@ -6,6 +6,7 @@ import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
+import com.roboclub.robobuggy.ui.RobobuggyGUIContainer;
 import com.sun.javafx.geom.Vec2d;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;

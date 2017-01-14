@@ -1,4 +1,4 @@
-package com.roboclub.robobuggy.ui;
+package com.roboclub.robobuggy.ui.misc;
 
 import Jama.Matrix;
 import com.roboclub.robobuggy.messages.BatteryLevelMessage;
@@ -8,6 +8,7 @@ import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.IMUAngularPositionMessage;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
+import com.roboclub.robobuggy.ui.RobobuggyGUIContainer;
 
 import javax.imageio.ImageIO;
 import java.awt.Color;

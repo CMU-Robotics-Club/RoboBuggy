@@ -1,8 +1,9 @@
-package com.roboclub.robobuggy.ui;
+package com.roboclub.robobuggy.ui.misc;
 
 import com.roboclub.robobuggy.main.RobobuggyMainFile;
 import com.roboclub.robobuggy.robots.AbstractRobot;
 import com.roboclub.robobuggy.ros.Node;
+import com.roboclub.robobuggy.ui.RobobuggyGUIContainer;
 
 import javax.swing.JButton;
 import java.util.ArrayList;

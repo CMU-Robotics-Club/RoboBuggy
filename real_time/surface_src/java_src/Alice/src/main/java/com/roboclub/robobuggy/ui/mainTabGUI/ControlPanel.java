@@ -1,4 +1,6 @@
-package com.roboclub.robobuggy.ui;
+package com.roboclub.robobuggy.ui.mainTabGUI;
+
+import com.roboclub.robobuggy.ui.RobobuggyGUIContainer;
 
 /**
  * {@link RobobuggyGUIContainer} used to represent a control pattern

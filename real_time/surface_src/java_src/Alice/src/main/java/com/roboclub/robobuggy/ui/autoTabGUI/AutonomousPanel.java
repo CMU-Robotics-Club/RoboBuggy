@@ -1,9 +1,11 @@
-package com.roboclub.robobuggy.ui;
+package com.roboclub.robobuggy.ui.autoTabGUI;
 
 import com.roboclub.robobuggy.messages.DriveControlMessage;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.NodeChannel;
+import com.roboclub.robobuggy.ui.RoboBuggyGraph;
 import com.roboclub.robobuggy.ui.RoboBuggyGraph.GetGraphValues;
+import com.roboclub.robobuggy.ui.RobobuggyGUIContainer;
 
 /**
  * @author Trevor Decker

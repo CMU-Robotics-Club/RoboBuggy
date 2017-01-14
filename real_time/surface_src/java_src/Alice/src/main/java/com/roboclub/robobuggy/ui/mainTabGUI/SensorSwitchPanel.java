@@ -1,6 +1,7 @@
-package com.roboclub.robobuggy.ui;
+package com.roboclub.robobuggy.ui.mainTabGUI;
 
 import com.roboclub.robobuggy.ros.NodeChannel;
+import com.roboclub.robobuggy.ui.RobobuggyGUIContainer;
 
 /**
  * Switches to toggle individual sensors

@@ -1,4 +1,8 @@
-package com.roboclub.robobuggy.ui;
+package com.roboclub.robobuggy.ui.mainTabGUI;
+
+import com.roboclub.robobuggy.ui.RobobuggyGUIContainer;
+import com.roboclub.robobuggy.ui.mainTabGUI.AnalyticsPanel;
+import com.roboclub.robobuggy.ui.mainTabGUI.ControlPanel;
 
 /**
  * @author Trevor Decker

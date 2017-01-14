@@ -1,4 +1,7 @@
-package com.roboclub.robobuggy.ui;
+package com.roboclub.robobuggy.ui.misc.GraphGUI;
+
+import com.roboclub.robobuggy.ui.Gui;
+import com.roboclub.robobuggy.ui.RobobuggyGUIContainer;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;

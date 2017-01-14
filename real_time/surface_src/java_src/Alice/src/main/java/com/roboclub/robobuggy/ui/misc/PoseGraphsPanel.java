@@ -1,9 +1,12 @@
-package com.roboclub.robobuggy.ui;
+package com.roboclub.robobuggy.ui.misc;
 
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.NodeChannel;
+import com.roboclub.robobuggy.ui.simulationTabGUI.PoseViewer;
+import com.roboclub.robobuggy.ui.RoboBuggyGraph;
+import com.roboclub.robobuggy.ui.RobobuggyGUIContainer;
 
 /**
  * graphs for the pose
