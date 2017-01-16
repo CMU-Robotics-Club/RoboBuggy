@@ -6,7 +6,9 @@ Encoder::Encoder() {
 
 
 uint8_t Encoder::Init(volatile uint8_t *pin_a_reg,
-                      uint8_t pin_a_num) {
+                      uint8_t pin_a_num,
+                      volatile uint8_t *port_reg,
+                      volatile uint8_t *ddr_reg) {
     // save configuration info
     pin_a_reg_ = pin_a_reg;
     pin_a_num_ = pin_a_num;
@@ -15,6 +17,17 @@ uint8_t Encoder::Init(volatile uint8_t *pin_a_reg,
     ticks_ = 0;
     errors_ = 0;
 
+    // setup encoder pin with pullups and interrupt
+    *port_reg |= _BV(pin_a_num);
+    *ddr_reg &= ~_BV(pin_a_num);
+
+    //TODO: Too hard coded?  Maybe turn into input arguments?
+    //External interrupt mask register. Enables external interrupt on pin PD2
+    EIMSK |= _BV(INT2);
+    //External interrupt control register A.  Configures interrupt to be triggered on any edge
+    EICRA |= _BV(ISC20);
+    EICRA &= ~_BV(ISC21);
+
     return errors_;
 }
 
@@ -22,7 +35,11 @@ uint8_t Encoder::Init(volatile uint8_t *pin_a_reg,
 uint8_t Encoder::InitQuad(volatile uint8_t *pin_a_reg,
                           uint8_t pin_a_num,
                           volatile uint8_t *pin_b_reg,
-                          uint8_t pin_b_num) {
+                          uint8_t pin_b_num,
+                          volatile uint8_t *port_a_reg,
+                          volatile uint8_t *ddr_a_reg,
+                          volatile uint8_t *port_b_reg,
+                          volatile uint8_t *ddr_b_reg) {
     // save configuration info
     pin_a_reg_ = pin_a_reg;
     pin_a_num_ = pin_a_num;
@@ -34,8 +51,17 @@ uint8_t Encoder::InitQuad(volatile uint8_t *pin_a_reg,
     bool pin_b = (*pin_b_reg_) & _BV(pin_b_num_);
     pin_state_last_ = ((uint8_t)pin_a << 1) | ((uint8_t)pin_b);
     errors_ = 0;
-    // set required pins as inputs
-    // TODO
+
+    // setup steering encoder on pcint 0 with pullups off
+    *port_a_reg &= ~_BV(pin_a_num);
+    *ddr_a_reg &= ~_BV(pin_a_num);
+    *port_b_reg &= ~_BV(pin_b_num);
+    *ddr_b_reg &= ~_BV(pin_b_num);
+
+    //Pin change mask register
+    PCMSK0 |= _BV(PCINT4) | _BV(PCINT6);
+    //Pin change interrupt control register
+    PCICR |= _BV(PCIE0);
 
     return errors_;
 }

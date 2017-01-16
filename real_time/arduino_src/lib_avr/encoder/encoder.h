@@ -43,12 +43,18 @@ class Encoder {
 
         /** @brief initialize a single wire encoder */
         uint8_t Init(volatile uint8_t *pin_a_reg,
-                     uint8_t pin_a_num);
+                     uint8_t pin_a_num,
+                     volatile uint8_t *port_addr,
+                     volatile uint8_t *ddr_addr);
         /** @brief initialize a quadrature encoder with 1 or 2 interrupts */
         uint8_t InitQuad(volatile uint8_t *pin_a_reg,
                          uint8_t pin_a_num,
                          volatile uint8_t *pin_b_reg,
-                         uint8_t pin_b_num);
+                         uint8_t pin_b_num,
+                         volatile uint8_t *port_a_reg,
+                         volatile uint8_t *ddr_a_reg,
+                         volatile uint8_t *port_b_reg,
+                         volatile uint8_t *ddr_b_reg);
         /** @brief to be called on interrupt of single wire encoder signal */
         void OnInterrupt();
         /** @brief to be called by 1 or both interrupts of quadrature encoder */

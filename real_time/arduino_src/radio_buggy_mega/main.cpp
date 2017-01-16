@@ -147,15 +147,15 @@ rb_message_t g_new_rbsm;
 ServoReceiver g_steering_rx;
 RadioReceiver g_brake_rx;
 RadioReceiver g_auton_rx;
-StatusLights lights_battery(STATUS_LIGHT_PINN_BLUE, 
-                            &STATUS_LIGHT_PORT_BLUE, 
-                            &STATUS_LIGHT_DDR_BLUE);
 StatusLights lights_rc(STATUS_LIGHT_PINN_GREEN, 
-                            &STATUS_LIGHT_PORT_GREEN, 
-                            &STATUS_LIGHT_DDR_GREEN);
+                       &STATUS_LIGHT_PORT_GREEN, 
+                       &STATUS_LIGHT_DDR_GREEN);
 StatusLights lights_auton(STATUS_LIGHT_PINN_RED, 
                           &STATUS_LIGHT_PORT_RED, 
                           &STATUS_LIGHT_DDR_RED);
+StatusLights lights_battery(STATUS_LIGHT_PINN_BLUE, 
+                            &STATUS_LIGHT_PORT_BLUE, 
+                            &STATUS_LIGHT_DDR_BLUE);
 Encoder g_encoder_distance;
 Encoder g_encoder_steering;
 
@@ -395,25 +395,16 @@ int main(void) {
     unsigned long auton_brake_last = time_start;
     unsigned long auton_steer_last = time_start;
 
-    // setup encoder pin with pullups and interrupt
-    ENCODER_PORT |= _BV(ENCODER_PINN);
-    ENCODER_DDR &= ~_BV(ENCODER_PINN);
-    g_encoder_distance.Init(&ENCODER_PIN, ENCODER_PINN);
-    EIMSK |= _BV(INT2);
-    EICRA |= _BV(ISC20);
-    EICRA &= ~_BV(ISC21);
+    g_encoder_distance.Init(&ENCODER_PIN, ENCODER_PINN, &ENCODER_PORT, &ENCODER_DDR);
 
-    // setup steering encoder on pcint 0 with pullups off
-    ENCODER_STEERING_A_PORT &= ~_BV(ENCODER_STEERING_A_PINN);
-    ENCODER_STEERING_A_DDR &= ~_BV(ENCODER_STEERING_A_PINN);
-    ENCODER_STEERING_B_PORT &= ~_BV(ENCODER_STEERING_B_PINN);
-    ENCODER_STEERING_B_DDR &= ~_BV(ENCODER_STEERING_B_PINN);
     g_encoder_steering.InitQuad(&ENCODER_STEERING_A_PIN,
                                 ENCODER_STEERING_A_PINN,
                                 &ENCODER_STEERING_B_PIN,
-                                ENCODER_STEERING_B_PINN);
-    PCMSK0 |= _BV(PCINT4) | _BV(PCINT6);
-    PCICR |= _BV(PCIE0);
+                                ENCODER_STEERING_B_PINN,
+                                &ENCODER_STEERING_A_PORT,
+                                &ENCODER_STEERING_A_DDR,
+                                &ENCODER_STEERING_B_PORT,
+                                &ENCODER_STEERING_B_DDR);
 
     // prepare uart0 (onboard usb) for rbsm
     uart0_init(UART_BAUD_SELECT(BAUD, F_CPU));

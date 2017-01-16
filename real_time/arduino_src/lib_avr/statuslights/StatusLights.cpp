@@ -9,19 +9,18 @@ StatusLights::StatusLights(uint8_t reg_offset, volatile uint8_t *port, volatile 
     register_offset = reg_offset;
     *light_port &= ~_BV(reg_offset);
     *ddr |= _BV(register_offset);
-
-    // RX_STATUS_LIGHT_PORT &= ~_BV(3);
-    // RX_STATUS_LIGHT_DDR |= _BV(3);
-    // RX_STATUS_LIGHT_PORT &= ~_BV(5);
-    // RX_STATUS_LIGHT_DDR |= _BV(5);
-    // RX_STATUS_LIGHT_PORT_RED &= ~_BV(6);
-    // RX_STATUS_LIGHT_DDR_RED |= _BV(6);
 }
 
+/** @brief Turns on the light
+ *
+ */
 void StatusLights::Enable(void) {
     *light_port |= _BV(register_offset);
 }
 
+/** @brief Turns off the light
+ *
+ */
 void StatusLights::Disable(void) {
     *light_port &= ~_BV(register_offset);
 }

@@ -2,7 +2,6 @@
 #define _LIB_AVR_STATUSLIGHTS_H_
 
 #include <avr/io.h>
-#include <stdio.h>
 #include "../../radio_buggy_mega/system_clock.h"
 
 
