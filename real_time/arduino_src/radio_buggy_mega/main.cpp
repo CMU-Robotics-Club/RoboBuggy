@@ -143,7 +143,6 @@ static int auto_steering_angle;
 static unsigned long g_errors;
 
 RBSerialMessages g_rbsm;
-rb_message_t g_new_rbsm;
 ServoReceiver g_steering_rx;
 RadioReceiver g_brake_rx;
 RadioReceiver g_auton_rx;
