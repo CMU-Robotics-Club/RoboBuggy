@@ -11,6 +11,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 /**
  * Created by davidneiman on 9/2/16.
  */
@@ -21,7 +25,7 @@ public class RobobuggyConfigFileTest {
      *  @throws Exception
      */
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         //Runs before each test case, denoted "@Test" before the method
 
         //Grabbed the initial code from my standard test and just copy-pasted it here
@@ -42,16 +46,16 @@ public class RobobuggyConfigFileTest {
      * @throws Exception
      */
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         //Runs after each test case
     }
 
     /**
-     * Creates a config file, setting the ROBOT field to the given input
-     * @param s: String to be used as the robot type
-     * @throws IOException
+     * Creates a config file with the specified robot name
+     * @param robotName name of the robot to create (e.g. "TransistorAuton", "SimRobot")
+     * @throws IOException if we couldn't create the config file
      */
-    public void createConfigFileWithRobot(String s) throws IOException{
+    public void createConfigFileWithRobot(String robotName) throws IOException {
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("config.config")), "UTF-8"));
 
         writer.write("{" +
@@ -63,7 +67,7 @@ public class RobobuggyConfigFileTest {
                 "\"PLAY_BACK_SOURCE_FILE\":\"NOT_SET\"," +
                 "\"VIDEO_FILE\":\"NOT_SET\"," +
                 "\"ROBOT_TYPE\":\"");
-        writer.write(s);
+        writer.write(robotName);
         writer.write("\"}");
         writer.close();
     }
@@ -71,9 +75,10 @@ public class RobobuggyConfigFileTest {
     /**
      * Creates a config file without a ROBOT field
      * Use only for testing; it's supposed to lead to null-pointer exceptions
-     * @throws IOException
+     *
+     * @throws IOException if we couldn't create the config file
      */
-    public void createConfigFileWithoutRobot() throws IOException{
+    public void createConfigFileWithoutRobot() throws IOException {
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("config.config")), "UTF-8"));
 
         writer.write("{" +
@@ -95,7 +100,7 @@ public class RobobuggyConfigFileTest {
      * Doesn't actually create any robots
      */
     @Test
-    public void testGetSet() {
+    public void testRetention() {
 
         //Create a new config file with a reasonable robot type
         try {
@@ -107,54 +112,53 @@ public class RobobuggyConfigFileTest {
         }
 
         //Test getRobotType
-        assert(RobobuggyConfigFile.getRobotType().equals("TransistorAuton"));
+        assertEquals(RobobuggyConfigFile.getRobotType(), "TransistorAuton");
 
         //Test other stuff
         RobobuggyConfigFile.setImuEnabled(false);
-        assert(!RobobuggyConfigFile.isImuEnabled());
+        assertFalse(RobobuggyConfigFile.isImuEnabled());
         RobobuggyConfigFile.setImuEnabled(true);
-        assert(RobobuggyConfigFile.isImuEnabled());
-
-        //isDataPlayback? How do I test this?
+        assertTrue(RobobuggyConfigFile.isImuEnabled());
 
         RobobuggyConfigFile.setComPortImu("SafetyDuck!");
-        assert(RobobuggyConfigFile.getComPortImu().equals("SafetyDuck!"));
+        assertEquals(RobobuggyConfigFile.getComPortImu(), "SafetyDuck!");
 
-        RobobuggyConfigFile.setConfigFile("SafetyDuck!!");
-        assert(RobobuggyConfigFile.getConfigFile().equals("SafetyDuck!"));
+        RobobuggyConfigFile.setConfigFile("config.config");
+        assertEquals(RobobuggyConfigFile.getConfigFile(), "config.config");
 
         RobobuggyConfigFile.setWayPointSourceLogFile("safetyDuck!");
-        assert(RobobuggyConfigFile.getWaypointSourceLogFile().equals("safetyDuck!"));
+        assertEquals(RobobuggyConfigFile.getWaypointSourceLogFile(), "safetyDuck!");
 
         RobobuggyConfigFile.setPlayBackSourceFile("SSafetyDuck!");
-        assert(RobobuggyConfigFile.getPlayBackSourceFile().equals("SSafetyDuck!"));
+        assertEquals(RobobuggyConfigFile.getPlayBackSourceFile(), "SSafetyDuck!");
 
         RobobuggyConfigFile.setComPortGps("SSSafetyDuck!");
-        assert(RobobuggyConfigFile.getComPortGPS().equals("SSSafetyDuck!"));
+        assertEquals(RobobuggyConfigFile.getComPortGPS(), "SSSafetyDuck!");
 
         RobobuggyConfigFile.setComPortRBSM("SSSSafetyDuck!");
-        assert(RobobuggyConfigFile.getComPortRBSM().equals("SSSSafetyDuck!"));
+        assertEquals(RobobuggyConfigFile.getComPortRBSM(), "SSSSafetyDuck!");
 
         RobobuggyConfigFile.setGpsEnabled(false);
-        assert(!RobobuggyConfigFile.isGpsEnabled());
+        assertFalse(RobobuggyConfigFile.isGpsEnabled());
         RobobuggyConfigFile.setGpsEnabled(true);
-        assert(RobobuggyConfigFile.isGpsEnabled());
+        assertTrue(RobobuggyConfigFile.isGpsEnabled());
 
         RobobuggyConfigFile.setEncoderEnabled(false);
-        assert(!RobobuggyConfigFile.isEncoderEnabled());
+        assertFalse(RobobuggyConfigFile.isEncoderEnabled());
         RobobuggyConfigFile.setEncoderEnabled(true);
-        assert(RobobuggyConfigFile.isEncoderEnabled());
+        assertTrue(RobobuggyConfigFile.isEncoderEnabled());
 
         RobobuggyConfigFile.setPortVision("SSSSSafetyDuck!");
-        assert(RobobuggyConfigFile.getPortVision().equals("SSSSSafetyDuck!"));
+        assertEquals(RobobuggyConfigFile.getPortVision(), "SSSSSafetyDuck!");
 
         RobobuggyConfigFile.setVisionSystemEnabled(false);
-        assert(!RobobuggyConfigFile.isVisionSystemEnabled());
+        assertFalse(RobobuggyConfigFile.isVisionSystemEnabled());
         RobobuggyConfigFile.setVisionSystemEnabled(true);
-        assert(RobobuggyConfigFile.isVisionSystemEnabled());
+        assertTrue(RobobuggyConfigFile.isVisionSystemEnabled());
 
-        RobobuggyConfigFile.setPlayBackSpeed(3.1415);
-        assert(RobobuggyConfigFile.getPlayBackSpeed() == 3.1415);
+        double playbackSpeed = Math.PI;
+        RobobuggyConfigFile.setPlayBackSpeed(playbackSpeed);
+        assertEquals(RobobuggyConfigFile.getPlayBackSpeed(), playbackSpeed, 0.0);
     }
 
     /**
@@ -167,10 +171,7 @@ public class RobobuggyConfigFileTest {
             try {
                 createConfigFileWithRobot(robots[x]);
                 RobobuggyConfigFile.loadConfigFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-                Assert.fail();
-            } catch (IllegalArgumentException e) {
+            } catch (IOException | IllegalArgumentException e) {
                 e.printStackTrace();
                 Assert.fail();
             }
@@ -247,10 +248,7 @@ public class RobobuggyConfigFileTest {
             createConfigFileWithoutRobot();
             RobobuggyConfigFile.loadConfigFile();
             Assert.fail();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Assert.fail();
-        }catch (IllegalArgumentException e) {
+        } catch (IOException | IllegalArgumentException e) {
             e.printStackTrace();
             Assert.fail();
         } catch (NullPointerException e) {

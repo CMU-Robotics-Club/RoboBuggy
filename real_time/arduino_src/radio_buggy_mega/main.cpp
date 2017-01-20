@@ -34,6 +34,7 @@
 #define SERVO_PORT PORTB
 #define SERVO_PINN PB5 // arduino 11 TODO: this is not used here
 #define CONNECTION_TIMEOUT_US 1000000L // 1000ms
+#define SYSTEM_VOLTAGE_THRESHOLD 12000 //For Buggy battery voltage 
 
 /*
  * These values map the physical input/output (voltage/ms of pwm pulse) to a
@@ -79,6 +80,13 @@
 #define RX_AUTON_PINN PD1 // arduino 20
 #define RX_AUTON_INT  INT1_vect
 #define RX_AUTON_INTN 1
+#define RX_STATUS_LIGHT_PORT PORTE
+#define RX_STATUS_LIGHT_PINN_BLUE PE3
+#define RX_STATUS_LIGHT_DDR DDRE
+#define RX_STATUS_LIGHT_PINN_GREEN PE5
+#define RX_STATUS_LIGHT_PORT_RED PORTH
+#define RX_STATUS_LIGHT_PINN_RED PH6
+#define RX_STATUS_LIGHT_DDR_RED DDRH
 
 #define ENCODER_DDR  DDRD
 #define ENCODER_PORT PORTD
@@ -98,7 +106,11 @@
 #define ENCODER_STEERING_B_PINN PB6
 #define ENCODER_STEERING_PCINT  PCINT0_vect
 
-#define BATTERY_ADC 0
+// Constants obtained by measuring the sensor ADC value as function of
+// applied voltage, scanning the full range and then doing a linear regression
+#define BATTERY_ADC 0 // pin to read battery level from (A0)
+#define BATTERY_ADC_SLOPE  14.683 // in mV, obtained from calibration
+#define BATTERY_ADC_OFFSET 44.359
 #define STEERING_POT_ADC 9
 
 #define BRAKE_OUT_DDR  DDRH
@@ -145,7 +157,7 @@
 
 // Global state
 static bool g_is_autonomous;
-static unsigned long g_current_voltage;
+static unsigned long g_current_voltage; // in mV
 static unsigned long g_steering_feedback;
 static int steer_angle;
 static int auto_steering_angle;
@@ -180,24 +192,44 @@ inline long clamp(long input,
 }
 
 
-void adc_init(void) 
+void adc_init(void) // copy-pasted from wiring.c l.353 (Arduino library)
 {
-    // set up adc hardware in non-freerunning mode
-    // prescaler of 128 gives 125kHz sampling
-    // AREF = AVCC
-    // 8 bit return values
-    ADCSRA |= _BV(ADEN) | _BV(ADPS2) | _BV(ADPS1) | _BV(ADPS0);
-    ADMUX |= _BV(REFS0) | _BV(ADLAR);
+    // set a2d prescaler so we are inside the desired 50-200 KHz range.
+    sbi(ADCSRA, ADPS2);
+    sbi(ADCSRA, ADPS1);
+    sbi(ADCSRA, ADPS0);
+    // enable a2d conversions
+    sbi(ADCSRA, ADEN);
 }
 
-uint8_t adc_read_blocking(uint8_t channel) 
+int adc_read_blocking(uint8_t pin) // takes less than 160us, return 0 to 1023
 {
-    // in single ended mode, highest bit of ADC channel is in ADCSRB
-    ADMUX = (ADMUX & 0xE0) | (channel & 0x07);
-    ADCSRB = (ADCSRB & 0xF7) | (channel & 0x08);
-    ADCSRA |= _BV(ADSC);
-    while((ADCSRA & _BV(ADSC)) == 1) {}
-    return ADCH;
+    uint8_t low, high;
+
+    // the MUX5 bit of ADCSRB selects whether we're reading from channels
+    // 0 to 7 (MUX5 low) or 8 to 15 (MUX5 high).
+    ADCSRB = (ADCSRB & ~(1 << MUX5)) | (((pin >> 3) & 0x01) << MUX5);
+
+    // set the analog reference (high two bits of ADMUX) and select the
+    // channel (low 4 bits).  this also sets ADLAR (left-adjust result)
+    // to 0 (the default).
+    ADMUX = (1 << 6) | (pin & 0x07);
+
+    // start the conversion
+    sbi(ADCSRA, ADSC);
+
+    // ADSC is cleared when the conversion finishes
+    while (bit_is_set(ADCSRA, ADSC));
+
+    // we have to read ADCL first; doing so locks both ADCL
+    // and ADCH until ADCH is read.  reading ADCL second would
+    // cause the results of each conversion to be discarded,
+    // as ADCL and ADCH would be locked when it completed.
+    low  = ADCL;
+    high = ADCH;
+
+    // combine the two bytes
+    return (high << 8) | low;
 }
 
 
@@ -324,6 +356,56 @@ int8_t steering_center() {
 }
 
 
+void indicator_light_init()
+{
+    // set all pins to zero output
+    RX_STATUS_LIGHT_PORT &= ~_BV(3);
+    RX_STATUS_LIGHT_DDR |= _BV(3);
+    RX_STATUS_LIGHT_PORT &= ~_BV(5);
+    RX_STATUS_LIGHT_DDR |= _BV(5);
+    RX_STATUS_LIGHT_PORT_RED &= ~_BV(6);
+    RX_STATUS_LIGHT_DDR_RED |= _BV(6);
+}
+
+
+void voltage_too_low_light()
+{
+    // blue for this light
+    RX_STATUS_LIGHT_PORT |= _BV(RX_STATUS_LIGHT_PINN_BLUE);
+}
+
+
+void auton_timeout_light()
+{
+    // red for this light
+    RX_STATUS_LIGHT_PORT_RED |= _BV(RX_STATUS_LIGHT_PINN_RED);
+}
+
+
+void rc_timeout_failure_light()
+{
+    // green for this light
+    RX_STATUS_LIGHT_PORT |= _BV(RX_STATUS_LIGHT_PINN_GREEN);
+}
+
+
+void voltage_too_low_light_reset()
+{
+    RX_STATUS_LIGHT_PORT &= ~_BV(RX_STATUS_LIGHT_PINN_BLUE);
+}
+
+
+void auton_timeout_light_reset()
+{
+    RX_STATUS_LIGHT_PORT_RED &= ~_BV(RX_STATUS_LIGHT_PINN_RED);
+}
+
+
+void rc_timeout_failure_light_reset()
+{
+    RX_STATUS_LIGHT_PORT &= ~_BV(RX_STATUS_LIGHT_PINN_GREEN);
+}
+
 void brake_init() 
 {
     BRAKE_OUT_DDR |= _BV(BRAKE_OUT_PINN);
@@ -336,7 +418,6 @@ void brake_init()
 void brake_raise() 
 {
     BRAKE_OUT_PORT |= _BV(BRAKE_OUT_PINN);
-    BRAKE_INDICATOR_PORT &= ~_BV(BRAKE_INDICATOR_PINN);
 }
 
 
@@ -345,8 +426,8 @@ void brake_raise()
 void brake_drop() 
 {
     BRAKE_OUT_PORT &= ~_BV(BRAKE_OUT_PINN);
-    BRAKE_INDICATOR_PORT |= _BV(BRAKE_INDICATOR_PINN);
 }
+
 
 /*
 * Function: watchdog_init
@@ -429,7 +510,9 @@ int main(void)
     servo_init();
     adc_init();
     brake_init();
+    indicator_light_init();
     steering_center(); // this call takes time
+
 
     // servo power control starts outputting low
     // PBH4 = Arduino 7
@@ -527,14 +610,15 @@ int main(void)
         g_is_autonomous = g_auton_rx.GetAngle() > PWM_STATE_THRESHOLD;
 
         // Detect dropped radio conections
-        // note: interrupts must be disabled while checking system clock so that
-        //      timestamps are not updated under our feet.  These
-        //      operations are atomic so we're fine
 
-        unsigned long time_now = micros();
         unsigned long time1 = g_steering_rx.GetLastTimestamp();
         unsigned long time2 = g_brake_rx.GetLastTimestamp();
         unsigned long time3 = g_auton_rx.GetLastTimestamp();
+        //We need to call micros last because if we called it first, 
+        //  time1, time2, or time3 could be greater than time_now if an interrupt
+        //  fires and updates its timestamp and our delta values will underflow
+        unsigned long time_now = micros();
+
 
         //RC time deltas
         unsigned long delta1 = time_now - time1;
@@ -556,6 +640,8 @@ int main(void)
                 // we haven't heard from the RC receiver in too long
                 g_errors |= _BV(RBSM_EID_RC_LOST_SIGNAL);
                 brake_needs_reset = true;
+                rc_timeout_failure_light();
+                dbg_printf("RC Timeout! %lu %lu %lu\n", delta1, delta2, delta3);
             }
             else {
                 g_errors &= ~_BV(RBSM_EID_RC_LOST_SIGNAL);
@@ -565,6 +651,8 @@ int main(void)
             if(auton_timeout) {
                 g_errors |= _BV(RBSM_EID_AUTON_LOST_SIGNAL);
                 brake_needs_reset = true;
+                auton_timeout_light();
+                dbg_printf("Auton Timeout! %lu %lu\n", delta4, delta5);
             }
             else {
                 g_errors &= ~_BV(RBSM_EID_AUTON_LOST_SIGNAL);
@@ -579,15 +667,23 @@ int main(void)
 
             g_errors &= ~_BV(RBSM_EID_RC_LOST_SIGNAL);
             g_errors &= ~_BV(RBSM_EID_AUTON_LOST_SIGNAL);
+            // once the connection is back can turn off lights
+            auton_timeout_light_reset();
+            rc_timeout_failure_light_reset();
         }
 
-        // For the old buggy, the voltage divider is 10k ohm on the adc side and
-        // 16k ohm on top.
-        // Calculated map normally set to 13000, but the avcc is 4.86 volts
-        // rather than 5.
-        g_current_voltage = adc_read_blocking(BATTERY_ADC);
-        g_current_voltage = map_signal(g_current_voltage, 0, 255, 0, 12636); // in millivolts
-
+        // Reading battery voltage from the voltage 24/12 kOhm divider
+        g_current_voltage  = adc_read_blocking(BATTERY_ADC);
+        g_current_voltage *= BATTERY_ADC_SLOPE;
+        g_current_voltage += BATTERY_ADC_OFFSET;
+        
+        if (g_current_voltage < SYSTEM_VOLTAGE_THRESHOLD) {
+            voltage_too_low_light();
+        }
+        else {
+            voltage_too_low_light_reset();
+        }
+        
         // Read/convert steering pot
         g_steering_feedback = adc_read_blocking(STEERING_POT_ADC);
         g_steering_feedback = map_signal(g_steering_feedback,

@@ -38,8 +38,8 @@ public final class SimRobot extends AbstractRobot {
         return instance;
     }
 
-    private SimRobot() {
-        super();
+    @Override
+    protected void addNodesToRobot() {
         nodeList.add(new HighTrustGPSLocalizer());
         //	nodeList.add(new KfLocalizer(100));
         nodeList.add(new SimulatedImuNode(100));
@@ -65,7 +65,9 @@ public final class SimRobot extends AbstractRobot {
                 NodeChannel.getLoggingChannels()));
         //simBuggy.setDth(1);
         //	simBuggy.setDth(0.10);
+    }
 
-
+    private SimRobot() {
+        super();
     }
 }
