@@ -23,6 +23,18 @@ public class RobobuggyConfigFileTest {
     @Before
     public void setUp() throws Exception {
         //Runs before each test case, denoted "@Test" before the method
+
+        //Grabbed the initial code from my standard test and just copy-pasted it here
+        //This should reset the configuration state between tests
+
+        //Create a new config file with a reasonable robot type
+        try {
+            createConfigFileWithRobot("TransistorAuton");
+            RobobuggyConfigFile.loadConfigFile();
+        } catch (IOException|IllegalArgumentException e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
     }
 
     /**
