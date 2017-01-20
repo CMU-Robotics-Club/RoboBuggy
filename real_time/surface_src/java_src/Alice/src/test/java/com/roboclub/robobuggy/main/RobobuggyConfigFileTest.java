@@ -111,6 +111,17 @@ public class RobobuggyConfigFileTest {
             Assert.fail();
         }
 
+        //Create a bunch of test strings
+        String[] teststring = new String[6];
+        for(int x = 0; x < 6; x++){
+            String temp = "";
+            for(int y = 0; y < x; y++){
+                temp += "S";
+            }
+            temp += "afetyDuck!";
+            teststring[x] = temp;
+        }
+
         //Test getRobotType
         assertEquals(RobobuggyConfigFile.getRobotType(), "TransistorAuton");
 
@@ -120,23 +131,23 @@ public class RobobuggyConfigFileTest {
         RobobuggyConfigFile.setImuEnabled(true);
         assertTrue(RobobuggyConfigFile.isImuEnabled());
 
-        RobobuggyConfigFile.setComPortImu("SafetyDuck!");
-        assertEquals(RobobuggyConfigFile.getComPortImu(), "SafetyDuck!");
+        RobobuggyConfigFile.setComPortImu(teststring[0]);
+        assertEquals(RobobuggyConfigFile.getComPortImu(), teststring[0]);
 
         RobobuggyConfigFile.setConfigFile("config.config");
         assertEquals(RobobuggyConfigFile.getConfigFile(), "config.config");
 
-        RobobuggyConfigFile.setWayPointSourceLogFile("safetyDuck!");
-        assertEquals(RobobuggyConfigFile.getWaypointSourceLogFile(), "safetyDuck!");
+        RobobuggyConfigFile.setWayPointSourceLogFile(teststring[1]);
+        assertEquals(RobobuggyConfigFile.getWaypointSourceLogFile(), teststring[1]);
 
-        RobobuggyConfigFile.setPlayBackSourceFile("SSafetyDuck!");
-        assertEquals(RobobuggyConfigFile.getPlayBackSourceFile(), "SSafetyDuck!");
+        RobobuggyConfigFile.setPlayBackSourceFile(teststring[2]);
+        assertEquals(RobobuggyConfigFile.getPlayBackSourceFile(), teststring[2]);
 
-        RobobuggyConfigFile.setComPortGps("SSSafetyDuck!");
-        assertEquals(RobobuggyConfigFile.getComPortGPS(), "SSSafetyDuck!");
+        RobobuggyConfigFile.setComPortGps(teststring[3]);
+        assertEquals(RobobuggyConfigFile.getComPortGPS(), teststring[3]);
 
-        RobobuggyConfigFile.setComPortRBSM("SSSSafetyDuck!");
-        assertEquals(RobobuggyConfigFile.getComPortRBSM(), "SSSSafetyDuck!");
+        RobobuggyConfigFile.setComPortRBSM(teststring[4]);
+        assertEquals(RobobuggyConfigFile.getComPortRBSM(), teststring[4]);
 
         RobobuggyConfigFile.setGpsEnabled(false);
         assertFalse(RobobuggyConfigFile.isGpsEnabled());
@@ -148,8 +159,8 @@ public class RobobuggyConfigFileTest {
         RobobuggyConfigFile.setEncoderEnabled(true);
         assertTrue(RobobuggyConfigFile.isEncoderEnabled());
 
-        RobobuggyConfigFile.setPortVision("SSSSSafetyDuck!");
-        assertEquals(RobobuggyConfigFile.getPortVision(), "SSSSSafetyDuck!");
+        RobobuggyConfigFile.setPortVision(teststring[5]);
+        assertEquals(RobobuggyConfigFile.getPortVision(), teststring[5]);
 
         RobobuggyConfigFile.setVisionSystemEnabled(false);
         assertFalse(RobobuggyConfigFile.isVisionSystemEnabled());
