@@ -28,7 +28,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
     private static final int HEADING_GLOBAL_ROW = 3;
     private static final int HEADING_VEL_ROW = 4;
 
-    private static final double WHEELBASE_IN_METERS = 1.13; // meters
+    public static final double WHEELBASE_IN_METERS = 1.13; // meters
     private static final int UTMZONE = 17;
     private final UTMTuple initialLocationGPS; // new LocTuple(40.441670, -79.9416362));
     private static final double INITIAL_HEADING_IN_RADS = 4.36; // rad
@@ -54,6 +54,10 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
     private double lastEncoder;         // deadreckoning value
     private long lastEncoderTime;       // the most recent time of the encoder reading, used for getting buggy velocity
     private double steeringAngle = 0;   // current steering angle of the buggy
+
+    public Matrix getCurrentState() {
+        return x;
+    }
 
     /**
      * Create a new {@link PeriodicNode} decorator
@@ -192,7 +196,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
                 x_predict.get(Y_GLOBAL_ROW, 0));
         LocTuple latLon = LocalizerUtil.utm2Deg(utm);
         posePub.publish(new GPSPoseMessage(new Date(), latLon.getLatitude(),
-                latLon.getLongitude(), x_predict.get(HEADING_GLOBAL_ROW, 0)));
+                latLon.getLongitude(), x_predict.get(HEADING_GLOBAL_ROW, 0), x));
     }
 
     // Kalman filter step 0: Generate the motion model for the buggy
