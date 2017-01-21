@@ -12,6 +12,7 @@ import java.util.Date;
  *          <p>
  *          DESCRIPTION: TODO
  */
+@Deprecated
 public class ImuMeasurement extends BaseMessage {
 
     public static final String VERSION_ID = "imuV0.0";

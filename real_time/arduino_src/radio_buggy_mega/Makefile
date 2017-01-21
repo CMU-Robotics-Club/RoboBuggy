@@ -1,6 +1,6 @@
 # Hey Emacs, this is a -*- makefile -*-
 #----------------------------------------------------------------------------
-# WinAVR Makefile Template written by Eric B. Weddington, Jörg Wunsch, et al.
+# WinAVR Makefile Template written by Eric B. Weddington, JÃ¶rg Wunsch, et al.
 #
 # Released to the Public Domain
 #
@@ -69,7 +69,8 @@ SRC = $(TARGET).c
 SRC += system_clock.c
 SRC += servo.c
 SRC += ../lib_avr/rbserialmessages/rbserialmessages.cpp
-SRC += ../lib_avr/servoreceiver/servoreceiver.cpp
+SRC += ../lib_avr/radioreceiver/RadioReceiver.cpp
+SRC += ../lib_avr/radioreceiver/ServoReceiver.cpp
 SRC += ../lib_avr/uart/uart.c
 SRC += ../lib_avr/encoder/encoder.cpp
 #ff.o sd.o diskio.o rtc.o
@@ -532,7 +533,7 @@ clean_list :
 	$(REMOVE) $(patsubst %.c,%.d,$(patsubst %.cpp,%.d,$(SRC)))
 	$(REMOVE) .dep/*
 	$(REMOVE) fingerprint.h
-	$(REMOVE) rbsm_config.h
+	$(REMOVE) ../lib_avr/rbserialmessages/rbsm_config.h
 
 
 

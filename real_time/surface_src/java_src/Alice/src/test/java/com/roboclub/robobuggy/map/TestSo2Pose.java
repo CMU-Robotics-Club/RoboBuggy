@@ -1,4 +1,5 @@
-import com.roboclub.robobuggy.map.So2Pose;
+package com.roboclub.robobuggy.map;
+
 import org.junit.Test;
 
 import static org.junit.Assert.fail;
