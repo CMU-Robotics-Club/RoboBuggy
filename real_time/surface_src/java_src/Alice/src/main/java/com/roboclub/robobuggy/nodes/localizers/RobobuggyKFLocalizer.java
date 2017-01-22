@@ -66,7 +66,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
      * @param name the name of the node
      * @param initialPosition the initial position of the localizer
      */
-    protected RobobuggyKFLocalizer(int period, String name, LocTuple initialPosition) {
+    public RobobuggyKFLocalizer(int period, String name, LocTuple initialPosition) {
         super(new BuggyBaseNode(NodeChannel.POSE), period, name);
         posePub = new Publisher(NodeChannel.POSE.getMsgPath());
 
