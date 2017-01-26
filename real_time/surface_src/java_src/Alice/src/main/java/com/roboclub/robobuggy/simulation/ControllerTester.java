@@ -2,13 +2,18 @@ package com.roboclub.robobuggy.simulation;
 
 import Jama.Matrix;
 import com.roboclub.robobuggy.messages.DriveControlMessage;
+import com.roboclub.robobuggy.messages.GPSPoseMessage;
+import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
 import com.roboclub.robobuggy.nodes.localizers.LocTuple;
 import com.roboclub.robobuggy.nodes.localizers.LocalizerUtil;
+import com.roboclub.robobuggy.nodes.localizers.UTMTuple;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
+
+import java.util.Date;
 
 /**
  * Created by vivaanbahl on 1/25/17.
@@ -18,7 +23,7 @@ import com.roboclub.robobuggy.ros.Subscriber;
 public class ControllerTester extends PeriodicNode {
 
     // run every 10 ms
-    private static final int PERIOD = 1000;
+    private static final int PERIOD = 10;
     // wheelbase in meters
     private static final double WHEELBASE = 1.13;
     // assume a velocity of 8 m/s
@@ -29,7 +34,7 @@ public class ControllerTester extends PeriodicNode {
     private static final int INITIAL_HEADING_DEG = 250;
 
     private long previousTimeMillis;
-    private long timeDiffMillis;
+    private double timeDiffMillis;
 
     private int heading = INITIAL_HEADING_DEG;
     private LocTuple firstPosition = INITIAL_POSITION_LL;
@@ -37,6 +42,7 @@ public class ControllerTester extends PeriodicNode {
     private Matrix A;
     private double commandedSteeringAngle = 0;
     private Publisher simulatedPosePub;
+    private Publisher gpspub;
 
     /**
      * Create a new {@link PeriodicNode} decorator
@@ -59,9 +65,11 @@ public class ControllerTester extends PeriodicNode {
 
         new Subscriber("controller tester", NodeChannel.DRIVE_CTRL.getMsgPath(), ((topicName, m) -> {
             commandedSteeringAngle = ((DriveControlMessage) m).getAngleDouble();
+            heading += commandedSteeringAngle;
         }));
 
         simulatedPosePub = new Publisher(NodeChannel.POSE.getMsgPath());
+        gpspub = new Publisher(NodeChannel.GPS.getMsgPath());
     }
 
     @Override
@@ -70,18 +78,28 @@ public class ControllerTester extends PeriodicNode {
         timeDiffMillis -= previousTimeMillis;
         previousTimeMillis = System.currentTimeMillis();
 
-        A = getNewModel(X, heading);
+        A = getNewModel(X);
 
+        // update simulated position
+        X = A.times(X);
+
+        UTMTuple t = new UTMTuple(17, 'T', X.get(0, 0), X.get(1, 0));
+        LocTuple lt = LocalizerUtil.utm2Deg(t);
+
+        // if it's time to run the controller, update the controller's understanding of where we are
+        simulatedPosePub.publish(new GPSPoseMessage(new Date(), lt.getLatitude(), lt.getLongitude(), heading, X));
+        gpspub.publish(new GpsMeasurement(lt.getLatitude(), lt.getLongitude()));
 
     }
 
-    private Matrix getNewModel(Matrix x, int heading) {
+    private Matrix getNewModel(Matrix x) {
+        timeDiffMillis = 1.0/PERIOD;
         double[][] matrixAsDoubleArr = {
                 { 1, 0, timeDiffMillis * Math.cos(x.get(3, 0)), 0, 0 },
                 { 0, 1, timeDiffMillis * Math.sin(x.get(3, 0)), 0, 0 },
                 { 0, 0, 1, 0, 0 },
                 { 0, 0, 0, 1, timeDiffMillis },
-                { 0, 0, Math.tan(heading)/WHEELBASE, 0, 0 }
+                { 0, 0, Math.tan(commandedSteeringAngle)/WHEELBASE, 0, 0 }
         };
         return new Matrix(matrixAsDoubleArr);
     }
