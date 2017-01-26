@@ -4,6 +4,7 @@ import com.roboclub.robobuggy.main.Util;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.nodes.localizers.LocalizerUtil;
+import com.roboclub.robobuggy.nodes.localizers.RobobuggyKFLocalizer;
 import com.roboclub.robobuggy.ros.NodeChannel;
 
 import java.util.ArrayList;
@@ -82,8 +83,10 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         double poseHeading = Util.normalizeAngleDeg(Math.toDegrees(pose.getHeading()));
 
         //find the angle we need to reach that point
-        return Util.normalizeAngleDeg(desiredHeading - poseHeading);
+        double deltaHeading = Util.normalizeAngleDeg(desiredHeading - poseHeading);
 
+        // literally magic, dont ask (yet)
+        return Math.atan2(2 * RobobuggyKFLocalizer.WHEELBASE_IN_METERS * Math.sin(deltaHeading), 0.8 * pose.getCurrentState().get(2, 0));
     }
 
     @Override
