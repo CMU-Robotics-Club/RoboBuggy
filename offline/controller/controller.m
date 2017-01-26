@@ -51,7 +51,7 @@ function [trajectory] = controller()
     end
 
     if save_data
-        save('controller_v1.mat', 'trajectory');
+        save('controller_v2.mat', 'trajectory');
     end
 end
 
