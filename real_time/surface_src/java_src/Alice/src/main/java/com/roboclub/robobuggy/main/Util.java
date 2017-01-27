@@ -73,7 +73,7 @@ public final class Util {
 
 
     /**
-     * Normalizes an an input angle in degrees to be between -180 and 180
+     * Clamp an an input angle in degrees to be between -180 and 180
      *
      * @param degrees input angle in degrees
      * @return normalized angle in degrees
@@ -92,7 +92,7 @@ public final class Util {
     }
 
     /**
-     * Normalizes an an input angle in degrees to be between -pi and pi
+     * Clamp an an input angle in degrees to be between -pi and pi
      *
      * @param radians input angle in radians
      * @return normalized angle in radians

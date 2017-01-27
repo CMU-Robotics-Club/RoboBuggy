@@ -89,8 +89,9 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         double deltaHeading = desiredHeading - poseHeading;
 
 //        return Util.normalizeAngleRad(deltaHeading);
-        // literally magic, dont ask (yet)
-        return Math.atan2(2 * RobobuggyKFLocalizer.WHEELBASE_IN_METERS * Math.sin(deltaHeading), 0.8 * pose.getCurrentState().get(2, 0));
+        // Pure Pursuit steering controller
+        deltaHeading = Math.atan2(2 * RobobuggyKFLocalizer.WHEELBASE_IN_METERS * Math.sin(deltaHeading), 0.8 * pose.getCurrentState().get(2, 0));
+        return Util.normalizeAngleRad(deltaHeading);
     }
 
     @Override
