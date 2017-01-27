@@ -27,7 +27,7 @@ public class LocalizerTester extends BuggyDecoratorNode {
     private Timer odomTimer;
     private LocTuple currentPosition = new LocTuple(40.441670, -79.9416362);
     private double heading = Math.toRadians(90);
-    private double noise; // todo insert noise
+    private double noise;
 
     private Publisher gpsPub = new Publisher(NodeChannel.GPS.getMsgPath());
     private Publisher odomPub = new Publisher(NodeChannel.ENCODER.getMsgPath());
@@ -57,39 +57,33 @@ public class LocalizerTester extends BuggyDecoratorNode {
         return waypoints.get(targetWaypointIndex);
     }
 
+    private void updateSimulatedPosition() {
+        GpsMeasurement targetWaypoint = getTargetWaypoint();
+        double dlat = currentPosition.getLatitude() - targetWaypoint.getLatitude();
+        double dlon = currentPosition.getLongitude() - targetWaypoint.getLongitude();
+        heading = Math.atan2(dlat, -dlon) + Math.toRadians(90);
+
+        double updateLat = LocalizerUtil.convertMetersToLat(POSITION_UPDATE_M) * Math.cos(heading + Math.random() * noise);
+        double updateLon = LocalizerUtil.convertMetersToLat(POSITION_UPDATE_M) * Math.sin(heading + Math.random() * noise);
+        double newLat = currentPosition.getLatitude() + updateLat;
+        double newLon = currentPosition.getLongitude() + updateLon;
+        currentPosition = new LocTuple(newLat, newLon);
+        gpsPub.publish(new GpsMeasurement(newLat, newLon));
+    }
+
     @Override
     protected boolean startDecoratorNode() {
         gpsTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                GpsMeasurement targetWaypoint = getTargetWaypoint();
-                double dlat = currentPosition.getLatitude() - targetWaypoint.getLatitude();
-                double dlon = currentPosition.getLongitude() - targetWaypoint.getLongitude();
-                heading = Math.atan2(dlat, -dlon) + Math.toRadians(90);
-
-                double updateLat = LocalizerUtil.convertMetersToLat(POSITION_UPDATE_M) * Math.cos(heading + Math.random() * noise);
-                double updateLon = LocalizerUtil.convertMetersToLat(POSITION_UPDATE_M) * Math.sin(heading + Math.random() * noise);
-                double newLat = currentPosition.getLatitude() + updateLat;
-                double newLon = currentPosition.getLongitude() + updateLon;
-                currentPosition = new LocTuple(newLat, newLon);
-                gpsPub.publish(new GpsMeasurement(newLat, newLon));
+                updateSimulatedPosition();
             }
         }, 0, GPS_UPDATE_PERIOD);
 
         odomTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                GpsMeasurement targetWaypoint = getTargetWaypoint();
-                double dlat = currentPosition.getLatitude() - targetWaypoint.getLatitude();
-                double dlon = currentPosition.getLongitude() - targetWaypoint.getLongitude();
-                heading = Math.atan2(dlat, -dlon) + Math.toRadians(90);
-
-                double updateLat = LocalizerUtil.convertMetersToLat(POSITION_UPDATE_M) * Math.cos(heading + Math.random() * noise);
-                double updateLon = LocalizerUtil.convertMetersToLat(POSITION_UPDATE_M) * Math.sin(heading + Math.random() * noise);
-                double newLat = currentPosition.getLatitude() + updateLat;
-                double newLon = currentPosition.getLongitude() + updateLon;
-                currentPosition = new LocTuple(newLat, newLon);
-                gpsPub.publish(new GpsMeasurement(newLat, newLon));
+                updateSimulatedPosition();
             }
         }, 0, ODOM_UPDATE_PERIOD);
 
