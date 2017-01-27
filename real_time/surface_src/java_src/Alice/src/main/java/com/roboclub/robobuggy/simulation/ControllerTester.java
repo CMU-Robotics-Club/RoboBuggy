@@ -1,6 +1,8 @@
 package com.roboclub.robobuggy.simulation;
 
 import Jama.Matrix;
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.messages.DriveControlMessage;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
@@ -23,26 +25,26 @@ import java.util.Date;
 public class ControllerTester extends PeriodicNode {
 
     // run every 10 ms
-    private static final int PERIOD = 10;
+    private static final int SIM_PERIOD = 10;
+    // controller runs every 10 iterations
+    private static final int CONTROLLER_PERIOD = 1;
     // wheelbase in meters
     private static final double WHEELBASE = 1.13;
     // assume a velocity of 8 m/s
-    private static final double VELOCITY = 8;
+    private static final double VELOCITY = 2;
     // assume we start from the base of the track
     private static final LocTuple INITIAL_POSITION_LL = new LocTuple(40.441670, -79.9416362);
     // assume we are facing up hill 1
-    private static final int INITIAL_HEADING_DEG = 250;
+    private static final double INITIAL_HEADING_RAD = Math.toRadians(250);
 
-    private long previousTimeMillis;
-    private double timeDiffMillis;
-
-    private int heading = INITIAL_HEADING_DEG;
-    private LocTuple firstPosition = INITIAL_POSITION_LL;
+    private double heading = INITIAL_HEADING_RAD;
     private Matrix X;
     private Matrix A;
     private double commandedSteeringAngle = 0;
     private Publisher simulatedPosePub;
     private Publisher gpspub;
+    private int simCounter;
+    private double targetHeading = INITIAL_HEADING_RAD;
 
     /**
      * Create a new {@link PeriodicNode} decorator
@@ -50,8 +52,9 @@ public class ControllerTester extends PeriodicNode {
      * @param name
      */
     public ControllerTester(String name) {
-        super(new BuggyBaseNode(NodeChannel.AUTO), PERIOD, name);
+        super(new BuggyBaseNode(NodeChannel.AUTO), SIM_PERIOD, name);
 
+        LocTuple firstPosition = INITIAL_POSITION_LL;
         double[][] XAsDoubleArr = {
                 { LocalizerUtil.deg2UTM(firstPosition).getEasting() },
                 { LocalizerUtil.deg2UTM(firstPosition).getNorthing() },
@@ -61,11 +64,11 @@ public class ControllerTester extends PeriodicNode {
         };
 
         X = new Matrix(XAsDoubleArr);
-        previousTimeMillis = System.currentTimeMillis();
 
         new Subscriber("controller tester", NodeChannel.DRIVE_CTRL.getMsgPath(), ((topicName, m) -> {
             commandedSteeringAngle = ((DriveControlMessage) m).getAngleDouble();
-            heading += commandedSteeringAngle;
+            new RobobuggyLogicNotification("Steering angle = " + Math.toDegrees(commandedSteeringAngle), RobobuggyMessageLevel.EXCEPTION);
+            targetHeading = heading + commandedSteeringAngle;
         }));
 
         simulatedPosePub = new Publisher(NodeChannel.POSE.getMsgPath());
@@ -74,31 +77,40 @@ public class ControllerTester extends PeriodicNode {
 
     @Override
     protected void update() {
-        timeDiffMillis = System.currentTimeMillis();
-        timeDiffMillis -= previousTimeMillis;
-        previousTimeMillis = System.currentTimeMillis();
+        simCounter++;
 
         A = getNewModel(X);
 
         // update simulated position
         X = A.times(X);
 
+        double steeringIncrement = Math.toRadians(0.5);
+        if (heading > targetHeading) {
+            heading -= steeringIncrement;
+        }
+        else if (heading < targetHeading) {
+            heading += steeringIncrement;
+        }
+
         UTMTuple t = new UTMTuple(17, 'T', X.get(0, 0), X.get(1, 0));
         LocTuple lt = LocalizerUtil.utm2Deg(t);
 
         // if it's time to run the controller, update the controller's understanding of where we are
-        simulatedPosePub.publish(new GPSPoseMessage(new Date(), lt.getLatitude(), lt.getLongitude(), heading, X));
-        gpspub.publish(new GpsMeasurement(lt.getLatitude(), lt.getLongitude()));
+        if (simCounter == CONTROLLER_PERIOD) {
+            simulatedPosePub.publish(new GPSPoseMessage(new Date(), lt.getLatitude(), lt.getLongitude(), heading, X));
+            gpspub.publish(new GpsMeasurement(lt.getLatitude(), lt.getLongitude()));
+            simCounter = 0;
+        }
 
     }
 
     private Matrix getNewModel(Matrix x) {
-        timeDiffMillis = 1.0/PERIOD;
+        double dt = 1.0/SIM_PERIOD;
         double[][] matrixAsDoubleArr = {
-                { 1, 0, timeDiffMillis * Math.cos(x.get(3, 0)), 0, 0 },
-                { 0, 1, timeDiffMillis * Math.sin(x.get(3, 0)), 0, 0 },
+                { 1, 0, dt * Math.cos((x.get(3, 0))), 0, 0 },
+                { 0, 1, dt * Math.sin((x.get(3, 0))), 0, 0 },
                 { 0, 0, 1, 0, 0 },
-                { 0, 0, 0, 1, timeDiffMillis },
+                { 0, 0, 0, 1, dt },
                 { 0, 0, Math.tan(commandedSteeringAngle)/WHEELBASE, 0, 0 }
         };
         return new Matrix(matrixAsDoubleArr);

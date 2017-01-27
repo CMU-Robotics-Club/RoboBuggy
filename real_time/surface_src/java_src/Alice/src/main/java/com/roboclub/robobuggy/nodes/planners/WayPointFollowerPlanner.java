@@ -1,6 +1,7 @@
 package com.roboclub.robobuggy.nodes.planners;
 
-import com.roboclub.robobuggy.main.Util;
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.nodes.localizers.LocalizerUtil;
@@ -52,6 +53,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
     public double getCommandedSteeringAngle() {
         int closestIndex = getClosestIndex(wayPoints, pose);
         if (closestIndex == -1) {
+            new RobobuggyLogicNotification("HELP no closest index", RobobuggyMessageLevel.EXCEPTION);
             return 17433504; //A dummy value that we can never get
         }
 
@@ -66,6 +68,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
 
         //if we are out of points then just go straight
         if (targetIndex >= wayPoints.size()) {
+            new RobobuggyLogicNotification("HELP out of points", RobobuggyMessageLevel.EXCEPTION);
             return 0;
         }
 
@@ -75,16 +78,17 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         //find a path from our current location to that point
         double dLon = targetPoint.getLongitude() - pose.getLongitude();
         double dLat = targetPoint.getLatitude() - pose.getLatitude();
-        double desiredHeading = Math.toDegrees(Math.atan2(LocalizerUtil.convertLatToMeters(dLat), LocalizerUtil.convertLonToMeters(dLon)));
+        double desiredHeading = Math.atan2(LocalizerUtil.convertLatToMeters(dLat), LocalizerUtil.convertLonToMeters(dLon));
 
         // basically we want all of our angles to be in the same range, so that we don't
         // have weird wraparound
-        desiredHeading = Util.normalizeAngleDeg(desiredHeading);
-        double poseHeading = Util.normalizeAngleDeg(Math.toDegrees(pose.getHeading()));
+//        desiredHeading = Util.normalizeAngleDeg(desiredHeading);
+        double poseHeading = pose.getHeading();
 
         //find the angle we need to reach that point
-        double deltaHeading = Util.normalizeAngleDeg(desiredHeading - poseHeading);
+        double deltaHeading = desiredHeading - poseHeading;
 
+//        return Util.normalizeAngleRad(deltaHeading);
         // literally magic, dont ask (yet)
         return Math.atan2(2 * RobobuggyKFLocalizer.WHEELBASE_IN_METERS * Math.sin(deltaHeading), 0.8 * pose.getCurrentState().get(2, 0));
     }
