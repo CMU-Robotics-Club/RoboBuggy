@@ -1,5 +1,6 @@
 package com.roboclub.robobuggy.simulation;
 
+import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyDecoratorNode;
@@ -18,7 +19,7 @@ import java.util.TimerTask;
 public class LocalizerTester extends BuggyDecoratorNode {
 
     private static final int GPS_UPDATE_PERIOD = 500;
-    private static final int ODOM_UPDATE_PERIOD = 50;
+    private static final int ODOM_UPDATE_PERIOD = 10;
     private static final double POSITION_UPDATE_M = 1; // move this many meters every tick
 
     private int targetWaypointIndex = 0;
@@ -27,7 +28,7 @@ public class LocalizerTester extends BuggyDecoratorNode {
     private Timer odomTimer;
     private LocTuple currentPosition = new LocTuple(40.441670, -79.9416362);
     private double heading = Math.toRadians(90);
-    private double noise;
+    private double noise; // todo insert noise
 
     private Publisher gpsPub = new Publisher(NodeChannel.GPS.getMsgPath());
     private Publisher odomPub = new Publisher(NodeChannel.ENCODER.getMsgPath());
@@ -57,7 +58,7 @@ public class LocalizerTester extends BuggyDecoratorNode {
         return waypoints.get(targetWaypointIndex);
     }
 
-    private void updateSimulatedPosition() {
+    private GpsMeasurement updateSimulatedPosition() {
         GpsMeasurement targetWaypoint = getTargetWaypoint();
         double dlat = currentPosition.getLatitude() - targetWaypoint.getLatitude();
         double dlon = currentPosition.getLongitude() - targetWaypoint.getLongitude();
@@ -68,7 +69,7 @@ public class LocalizerTester extends BuggyDecoratorNode {
         double newLat = currentPosition.getLatitude() + updateLat;
         double newLon = currentPosition.getLongitude() + updateLon;
         currentPosition = new LocTuple(newLat, newLon);
-        gpsPub.publish(new GpsMeasurement(newLat, newLon));
+        return new GpsMeasurement(newLat, newLon);
     }
 
     @Override
@@ -76,14 +77,14 @@ public class LocalizerTester extends BuggyDecoratorNode {
         gpsTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                updateSimulatedPosition();
+                gpsPub.publish(updateSimulatedPosition());
             }
         }, 0, GPS_UPDATE_PERIOD);
 
         odomTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                updateSimulatedPosition();
+                odomPub.publish(new EncoderMeasurement(0.01, 8));
             }
         }, 0, ODOM_UPDATE_PERIOD);
 

@@ -74,6 +74,7 @@ public class Map extends JPanel {
             GpsMeasurement gps = ((GpsMeasurement) m);
             addPointsToMapTree(Color.BLACK, new LocTuple(gps.getLatitude(), gps.getLongitude()));
         }));
+
     }
 
 
