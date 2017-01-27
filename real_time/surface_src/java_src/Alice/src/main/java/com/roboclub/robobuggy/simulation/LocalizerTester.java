@@ -67,8 +67,8 @@ public class LocalizerTester extends BuggyDecoratorNode {
                 double dlon = currentPosition.getLongitude() - targetWaypoint.getLongitude();
                 heading = Math.atan2(dlat, -dlon) + Math.toRadians(90);
 
-                double updateLat = LocalizerUtil.convertMetersToLat(POSITION_UPDATE_M) * Math.cos(heading);
-                double updateLon = LocalizerUtil.convertMetersToLat(POSITION_UPDATE_M) * Math.sin(heading);
+                double updateLat = LocalizerUtil.convertMetersToLat(POSITION_UPDATE_M) * Math.cos(heading + Math.random() * noise);
+                double updateLon = LocalizerUtil.convertMetersToLat(POSITION_UPDATE_M) * Math.sin(heading + Math.random() * noise);
                 double newLat = currentPosition.getLatitude() + updateLat;
                 double newLon = currentPosition.getLongitude() + updateLon;
                 currentPosition = new LocTuple(newLat, newLon);
@@ -76,12 +76,22 @@ public class LocalizerTester extends BuggyDecoratorNode {
             }
         }, 0, GPS_UPDATE_PERIOD);
 
-//        odomTimer.scheduleAtFixedRate(new TimerTask() {
-//            @Override
-//            public void run() {
-//                // todo update sim odom
-//            }
-//        }, 0, ODOM_UPDATE_PERIOD);
+        odomTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                GpsMeasurement targetWaypoint = getTargetWaypoint();
+                double dlat = currentPosition.getLatitude() - targetWaypoint.getLatitude();
+                double dlon = currentPosition.getLongitude() - targetWaypoint.getLongitude();
+                heading = Math.atan2(dlat, -dlon) + Math.toRadians(90);
+
+                double updateLat = LocalizerUtil.convertMetersToLat(POSITION_UPDATE_M) * Math.cos(heading + Math.random() * noise);
+                double updateLon = LocalizerUtil.convertMetersToLat(POSITION_UPDATE_M) * Math.sin(heading + Math.random() * noise);
+                double newLat = currentPosition.getLatitude() + updateLat;
+                double newLon = currentPosition.getLongitude() + updateLon;
+                currentPosition = new LocTuple(newLat, newLon);
+                gpsPub.publish(new GpsMeasurement(newLat, newLon));
+            }
+        }, 0, ODOM_UPDATE_PERIOD);
 
         return true;
     }

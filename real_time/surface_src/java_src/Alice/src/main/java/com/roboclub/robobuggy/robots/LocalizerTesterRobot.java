@@ -33,7 +33,7 @@ public class LocalizerTesterRobot extends AbstractRobot {
             e.printStackTrace();
         }
 
-        nodeList.add(new LocalizerTester("localizer tester", waypoints, 0));
+        nodeList.add(new LocalizerTester("localizer tester", waypoints, 1));
         nodeList.add(new RobobuggyKFLocalizer(10, "localizer", new LocTuple(40.441670, -79.9416362)));
 
         //setup the gui

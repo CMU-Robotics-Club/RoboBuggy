@@ -3,6 +3,7 @@ package com.roboclub.robobuggy.ui;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
+import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.nodes.localizers.LocTuple;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
@@ -68,6 +69,11 @@ public class Map extends JPanel {
                 addPointsToMapTree(Color.RED, new LocTuple(gpsM.getLatitude(), gpsM.getLongitude()));
             }
         });
+
+        new Subscriber("map", NodeChannel.GPS.getMsgPath(), ((topicName, m) -> {
+            GpsMeasurement gps = ((GpsMeasurement) m);
+            addPointsToMapTree(Color.BLACK, new LocTuple(gps.getLatitude(), gps.getLongitude()));
+        }));
     }
 
 
