@@ -34,7 +34,7 @@ public class LocalizerTesterRobot extends AbstractRobot {
         }
 
         nodeList.add(new LocalizerTester("localizer tester", waypoints, 0));
-        nodeList.add(new RobobuggyKFLocalizer(10, "localizer", new LocTuple(0, 0)));
+        nodeList.add(new RobobuggyKFLocalizer(10, "localizer", new LocTuple(40.441670, -79.9416362)));
 
         //setup the gui
         RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow", 1.0, 1.0);

@@ -120,6 +120,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         setupGPSSubscriber();
         setupEncoderSubscriber();
         setupWheelSubscriber();
+        resume();
     }
 
     private void setupEncoderSubscriber() {

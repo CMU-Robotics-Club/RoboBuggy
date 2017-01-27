@@ -4,6 +4,7 @@ import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyDecoratorNode;
 import com.roboclub.robobuggy.nodes.localizers.LocTuple;
+import com.roboclub.robobuggy.nodes.localizers.LocalizerUtil;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 
@@ -18,7 +19,7 @@ public class LocalizerTester extends BuggyDecoratorNode {
 
     private static final int GPS_UPDATE_PERIOD = 500;
     private static final int ODOM_UPDATE_PERIOD = 50;
-    private static final double POSITION_UPDATE_M = 0.5; // move this many meters every tick
+    private static final double POSITION_UPDATE_M = 1; // move this many meters every tick
 
     private int targetWaypointIndex = 0;
     private ArrayList<GpsMeasurement> waypoints;
@@ -32,7 +33,7 @@ public class LocalizerTester extends BuggyDecoratorNode {
     private Publisher odomPub = new Publisher(NodeChannel.ENCODER.getMsgPath());
 
     /**
-     * Creates a new decorator for the given {@link Node}
+     * Creates a new decorator for the given Node
      *
      * @param name the name we want for this node to store so that it can be referenced later
      */
@@ -47,8 +48,10 @@ public class LocalizerTester extends BuggyDecoratorNode {
 
     public GpsMeasurement getTargetWaypoint() {
         GpsMeasurement currentTarget = waypoints.get(targetWaypointIndex);
-        double distInM = GpsMeasurement.getDistance(currentTarget, new GpsMeasurement(currentPosition.getLatitude(), currentPosition.getLongitude()));
-        if (distInM < 10) {
+        double distInM = (GpsMeasurement.getDistance(currentTarget, new GpsMeasurement(currentPosition.getLatitude(),
+                currentPosition
+                .getLongitude())));
+        if (distInM < 5) {
             targetWaypointIndex++;
         }
         return waypoints.get(targetWaypointIndex);
@@ -59,18 +62,26 @@ public class LocalizerTester extends BuggyDecoratorNode {
         gpsTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                double newLat = currentPosition.getLatitude() + POSITION_UPDATE_M * Math.cos(heading);
-                double newLon = currentPosition.getLongitude() + POSITION_UPDATE_M * Math.sin(heading);
+                GpsMeasurement targetWaypoint = getTargetWaypoint();
+                double dlat = currentPosition.getLatitude() - targetWaypoint.getLatitude();
+                double dlon = currentPosition.getLongitude() - targetWaypoint.getLongitude();
+                heading = Math.atan2(dlat, -dlon) + Math.toRadians(90);
+
+                double updateLat = LocalizerUtil.convertMetersToLat(POSITION_UPDATE_M) * Math.cos(heading);
+                double updateLon = LocalizerUtil.convertMetersToLat(POSITION_UPDATE_M) * Math.sin(heading);
+                double newLat = currentPosition.getLatitude() + updateLat;
+                double newLon = currentPosition.getLongitude() + updateLon;
+                currentPosition = new LocTuple(newLat, newLon);
                 gpsPub.publish(new GpsMeasurement(newLat, newLon));
             }
         }, 0, GPS_UPDATE_PERIOD);
 
-        odomTimer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                // todo update sim odom
-            }
-        }, 0, ODOM_UPDATE_PERIOD);
+//        odomTimer.scheduleAtFixedRate(new TimerTask() {
+//            @Override
+//            public void run() {
+//                // todo update sim odom
+//            }
+//        }, 0, ODOM_UPDATE_PERIOD);
 
         return true;
     }
