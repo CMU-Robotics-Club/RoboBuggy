@@ -1,8 +1,6 @@
 package com.roboclub.robobuggy.simulation;
 
 import Jama.Matrix;
-import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
-import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.messages.DriveControlMessage;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
@@ -27,7 +25,7 @@ public class ControllerTester extends PeriodicNode {
     // run every 10 ms
     private static final int SIM_PERIOD = 10;
     // controller runs every 10 iterations
-    private static final int CONTROLLER_PERIOD = 1;
+    private static final int CONTROLLER_PERIOD = 5;
     // wheelbase in meters
     private static final double WHEELBASE = 1.13;
     // assume a velocity of 8 m/s
@@ -37,7 +35,6 @@ public class ControllerTester extends PeriodicNode {
     // assume we are facing up hill 1
     private static final double INITIAL_HEADING_RAD = Math.toRadians(250);
 
-    private double heading = INITIAL_HEADING_RAD;
     private Matrix X;
     private Matrix A;
     private double commandedSteeringAngle = 0;
@@ -59,7 +56,7 @@ public class ControllerTester extends PeriodicNode {
                 { LocalizerUtil.deg2UTM(firstPosition).getEasting() },
                 { LocalizerUtil.deg2UTM(firstPosition).getNorthing() },
                 { VELOCITY },
-                { heading },
+                { INITIAL_HEADING_RAD },
                 { 0 }
         };
 
@@ -67,8 +64,7 @@ public class ControllerTester extends PeriodicNode {
 
         new Subscriber("controller tester", NodeChannel.DRIVE_CTRL.getMsgPath(), ((topicName, m) -> {
             commandedSteeringAngle = ((DriveControlMessage) m).getAngleDouble();
-            new RobobuggyLogicNotification("Steering angle = " + Math.toDegrees(commandedSteeringAngle), RobobuggyMessageLevel.EXCEPTION);
-            targetHeading = heading + commandedSteeringAngle;
+            targetHeading = X.get(3, 0) + commandedSteeringAngle;
         }));
 
         simulatedPosePub = new Publisher(NodeChannel.POSE.getMsgPath());
@@ -85,11 +81,12 @@ public class ControllerTester extends PeriodicNode {
         X = A.times(X);
 
         double steeringIncrement = Math.toRadians(0.5);
+        double heading = X.get(3, 0);
         if (heading > targetHeading) {
-            heading -= steeringIncrement;
+            X.set(3, 0, heading - steeringIncrement);
         }
         else if (heading < targetHeading) {
-            heading += steeringIncrement;
+            X.set(3, 0, heading + steeringIncrement);
         }
 
         UTMTuple t = new UTMTuple(17, 'T', X.get(0, 0), X.get(1, 0));
