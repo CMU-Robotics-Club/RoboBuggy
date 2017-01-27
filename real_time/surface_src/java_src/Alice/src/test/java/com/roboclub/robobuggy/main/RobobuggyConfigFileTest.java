@@ -114,11 +114,11 @@ public class RobobuggyConfigFileTest {
         //Create a bunch of test strings
         String[] teststring = new String[6];
         for(int x = 0; x < 6; x++){
-            String temp = "";
+            StringBuffer buf = new StringBuffer();
             for(int y = 0; y < x; y++){
-                temp += "S";
+                buf.append("S");
             }
-            temp += "afetyDuck!";
+            String temp = buf.toString() + "afetyDuck!";
             teststring[x] = temp;
         }
 
