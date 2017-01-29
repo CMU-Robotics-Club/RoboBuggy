@@ -78,7 +78,7 @@ public abstract class PathPlannerNode extends BuggyDecoratorNode {
      * Returns the steering angle to which the {@link PathPlanner} thinks the
      * buggy's steering should be commanded to follow the desired path.
      *
-     * @return desired commanded steering angle
+     * @return desired commanded steering angle IN RADIANS
      */
     protected abstract double getCommandedSteeringAngle();
 

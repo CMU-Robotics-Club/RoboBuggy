@@ -292,14 +292,14 @@ public class RBSMNode extends SerialNode {
          */
         @Override
         protected void update() {
-            int outputAngle = commandedAngle;//allows for commandedAngle to be read only in this function
-            if (outputAngle > 1000) {
-                outputAngle = 1000;
-            } else if (outputAngle < -1000) {
-                outputAngle = -1000;
+            int outputAngleHundredthsDegrees = (int) (Math.toDegrees(commandedAngle) * 100);//allows for commandedAngle to be read only in this function
+            if (outputAngleHundredthsDegrees > 1000) {
+                outputAngleHundredthsDegrees = 1000;
+            } else if (outputAngleHundredthsDegrees < -1000) {
+                outputAngleHundredthsDegrees = -1000;
             }
 
-            RBSMSteeringMessage msgSteer = new RBSMSteeringMessage(outputAngle);
+            RBSMSteeringMessage msgSteer = new RBSMSteeringMessage(outputAngleHundredthsDegrees);
             send(msgSteer.getMessageBytes());
             RBSMBrakeMessage msgBrake = new RBSMBrakeMessage(commandedBrakeEngaged);
             send(msgBrake.getMessageBytes());
