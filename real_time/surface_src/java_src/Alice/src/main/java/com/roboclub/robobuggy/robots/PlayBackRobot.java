@@ -38,7 +38,6 @@ public final class PlayBackRobot extends AbstractRobot {
         new LineByLineSensorPlayer(RobobuggyConfigFile.getPlayBackSourceFile(), 1);
 //		new SensorPlayer(RobobuggyConfigFile.getPlayBackSourceFile(), 1);
 //		new HighTrustGPSLocalizer();
-        new KfLocalizer(10);
         RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow", 1.0, 1.0);
         Gui.getInstance().addWindow(mainWindow);
         RobobuggyGUITabs tabs = new RobobuggyGUITabs();

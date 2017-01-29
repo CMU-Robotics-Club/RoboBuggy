@@ -9,6 +9,9 @@ public class DriveControlMessage extends BaseMessage {
 
     public static final String VERSION_ID = "drive_control_message";
 
+    /**
+     *  Angle is supposed to be in radians
+     */
     private final double angle;
 
     /**
