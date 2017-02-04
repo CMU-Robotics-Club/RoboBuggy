@@ -41,7 +41,8 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
 
         int closestIndex = -1;
         for (int i = 0; i < wayPoints.size(); i++) {
-            double d = GPSPoseMessage.getDistance(currentLocation, wayPoints.get(i).toGpsPoseMessage(0));
+            GPSPoseMessage gpsPoseMessage = wayPoints.get(i).toGpsPoseMessage(0);
+            double d = GPSPoseMessage.getDistance(currentLocation, gpsPoseMessage);
             if (d < min) {
                 min = d;
                 closestIndex = i;
@@ -64,7 +65,8 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         //pick the first point that is at least delta away
         //pick the point to follow
         int targetIndex = closestIndex;
-        while (targetIndex < wayPoints.size() && GPSPoseMessage.getDistance(pose, wayPoints.get(targetIndex).toGpsPoseMessage(0)) < delta) {
+        double distanceFromMessage = GPSPoseMessage.getDistance(pose, wayPoints.get(targetIndex).toGpsPoseMessage(0));
+        while (targetIndex < wayPoints.size() && distanceFromMessage < delta) {
             targetIndex = targetIndex + 1;
         }
 
