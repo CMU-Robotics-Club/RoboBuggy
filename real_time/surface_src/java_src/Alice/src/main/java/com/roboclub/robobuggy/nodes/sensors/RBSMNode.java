@@ -275,6 +275,8 @@ public class RBSMNode extends SerialNode {
         private double commandedAngle = 0;
         private boolean commandedBrakeEngaged = true;
 
+        private static final int MAX_STEERING_ANGLE_HUNDREDTHS_DEG = 1500;
+
         /**
          * Create a new {@link RBSMPeriodicNode} object
          *
@@ -293,10 +295,10 @@ public class RBSMNode extends SerialNode {
         @Override
         protected void update() {
             int outputAngleHundredthsDegrees = (int) (Math.toDegrees(commandedAngle) * 100);//allows for commandedAngle to be read only in this function
-            if (outputAngleHundredthsDegrees > 1000) {
-                outputAngleHundredthsDegrees = 1000;
-            } else if (outputAngleHundredthsDegrees < -1000) {
-                outputAngleHundredthsDegrees = -1000;
+            if (outputAngleHundredthsDegrees > MAX_STEERING_ANGLE_HUNDREDTHS_DEG) {
+                outputAngleHundredthsDegrees = MAX_STEERING_ANGLE_HUNDREDTHS_DEG;
+            } else if (outputAngleHundredthsDegrees < -MAX_STEERING_ANGLE_HUNDREDTHS_DEG) {
+                outputAngleHundredthsDegrees = -MAX_STEERING_ANGLE_HUNDREDTHS_DEG;
             }
 
             RBSMSteeringMessage msgSteer = new RBSMSteeringMessage(outputAngleHundredthsDegrees);
