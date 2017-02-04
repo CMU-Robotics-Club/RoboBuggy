@@ -19,6 +19,21 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
     private ArrayList<GpsMeasurement> wayPoints;
     private GPSPoseMessage pose; //TODO change this to a reasonable type
 
+
+    // PID controller values/variables
+
+    private double Kp = 0.4;
+    private double Ki = 0.1;
+    private double Kd = 0.05;
+
+    private double previousHeadingError;
+    private double totalHeadingError;
+
+    private long previousTimeMillis;
+
+    // end PID controller values/variables
+
+
     /**
      * @param wayPoints the list of waypoints to follow
      */
@@ -86,22 +101,35 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         double deltaLongMeters = LocalizerUtil.convertLonToMeters(deltaLong);
         double desiredHeading = Math.atan2(deltaLatMeters, deltaLongMeters);
 
-        // basically we want all of our angles to be in the same range, so that we don't
-        // have weird wraparound
-//        desiredHeading = Util.normalizeAngleDeg(desiredHeading);
         double poseHeading = pose.getHeading();
 
         //find the angle we need to reach that point
         double deltaHeading = desiredHeading - poseHeading;
 
-//        return Util.normalizeAngleRad(deltaHeading);
         // Pure Pursuit steering controller
-
         double param1 = 2 * RobobuggyKFLocalizer.WHEELBASE_IN_METERS * Math.sin(deltaHeading);
         double param2 = 0.8 * pose.getCurrentState().get(2, 0);
         deltaHeading = Math.atan2(param1, param2);
 
-        return Util.normalizeAngleRad(deltaHeading);
+
+        // begin PID control
+        // calculate P
+        double currentHeadingError = deltaHeading;
+
+        // calculate I
+        totalHeadingError += deltaHeading;
+
+        // calculate D
+        long currentTimeMillis = System.currentTimeMillis();
+        long dt = currentTimeMillis - previousTimeMillis;
+        double deltaError = (1.0 * (currentHeadingError - previousHeadingError)) / dt;
+        previousHeadingError = currentHeadingError;
+        previousTimeMillis = currentTimeMillis;
+
+        // put it all together
+        double pidError = Kp * currentHeadingError + Ki * totalHeadingError + Kd * deltaError;
+
+        return Util.normalizeAngleRad(pidError);
     }
 
     @Override
