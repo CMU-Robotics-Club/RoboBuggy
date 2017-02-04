@@ -52,6 +52,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
 
     @Override
     public double getCommandedSteeringAngle() {
+        // determines the angle at which to move every 50 milliseconds
         int closestIndex = getClosestIndex(wayPoints, pose);
         if (closestIndex == -1) {
             new RobobuggyLogicNotification("HELP no closest index", RobobuggyMessageLevel.EXCEPTION);
@@ -77,9 +78,11 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         GpsMeasurement targetPoint = wayPoints.get(targetIndex);
 
         //find a path from our current location to that point
-        double dLon = targetPoint.getLongitude() - pose.getLongitude();
-        double dLat = targetPoint.getLatitude() - pose.getLatitude();
-        double desiredHeading = Math.atan2(LocalizerUtil.convertLatToMeters(dLat), LocalizerUtil.convertLonToMeters(dLon));
+        double deltaLong = targetPoint.getLongitude() - pose.getLongitude();
+        double deltaLat = targetPoint.getLatitude() - pose.getLatitude();
+        double deltaLatMeters = LocalizerUtil.convertLatToMeters(deltaLat);
+        double deltaLongMeters = LocalizerUtil.convertLonToMeters(deltaLong);
+        double desiredHeading = Math.atan2(deltaLatMeters, deltaLongMeters);
 
         // basically we want all of our angles to be in the same range, so that we don't
         // have weird wraparound
@@ -91,26 +94,18 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
 
 //        return Util.normalizeAngleRad(deltaHeading);
         // Pure Pursuit steering controller
-        deltaHeading = Math.atan2(2 * RobobuggyKFLocalizer.WHEELBASE_IN_METERS * Math.sin(deltaHeading), 0.8 * pose.getCurrentState().get(2, 0));
+
+        double param1 = 2 * RobobuggyKFLocalizer.WHEELBASE_IN_METERS * Math.sin(deltaHeading);
+        double param2 = 0.8 * pose.getCurrentState().get(2, 0);
+        deltaHeading = Math.atan2(param1, param2);
 
         return Util.normalizeAngleRad(deltaHeading);
     }
 
     @Override
     protected boolean getDeployBrakeValue() {
+        // need to brake when 15 m off course
         return false;
-        /*
-		  int closestIndex = getClosestIndex(wayPoints,pose);
-
-		if(closestIndex == -1){
-			return true;
-		}
-
-		// if closest point is too far away throw breaks
-
-		boolean shouldBrake =  GPSPoseMessage.getDistance(pose, wayPoints.get(closestIndex).toGpsPoseMessage(0)) >= 5.0;
-		return shouldBrake;
-		*/
     }
 
 
