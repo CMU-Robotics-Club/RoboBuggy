@@ -99,7 +99,7 @@ public class PoseViewer extends RobobuggyGUIContainer {
         new Subscriber("uiDriveAngle", NodeChannel.DRIVE_CTRL.getMsgPath(), new MessageListener() {
             @Override
             public void actionPerformed(String topicName, Message m) {
-                commtheta = ((DriveControlMessage) m).getAngleInt();
+                commtheta = (int) Math.toDegrees(((DriveControlMessage) m).getAngleDouble());
             }
         });
 

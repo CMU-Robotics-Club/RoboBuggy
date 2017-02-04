@@ -34,13 +34,4 @@ public class DriveControlMessage extends BaseMessage {
         return angle;
     }
 
-    /**
-     * Returns the commanded angle of the steering as an int (in hundredths of degrees)
-     *
-     * @return the commanded angle of the steering as an int (in hundredths of degrees)
-     */
-    public int getAngleInt() {
-        return (int) (angle * 100.0);
-    }
-
 }
