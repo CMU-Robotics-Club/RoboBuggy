@@ -29,7 +29,7 @@ public class ControllerTester extends PeriodicNode {
     // wheelbase in meters
     private static final double WHEELBASE = 1.13;
     // assume a velocity of 8 m/s
-    private static final double VELOCITY = 2;
+    private static final double VELOCITY = 1;
     // assume we start from the base of the track
     private static final LocTuple INITIAL_POSITION_LL = new LocTuple(40.441670, -79.9416362);
     // assume we are facing up hill 1

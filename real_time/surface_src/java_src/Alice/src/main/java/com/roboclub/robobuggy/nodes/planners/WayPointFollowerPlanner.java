@@ -23,7 +23,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
     // PID controller values/variables
 
     private double Kp = 0.4;
-    private double Ki = 0.1;
+    private double Ki = 0.3;
     private double Kd = 0.05;
 
     private double previousHeadingError;
@@ -79,11 +79,11 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         double delta = 10; //meters
         //pick the first point that is at least delta away
         //pick the point to follow
-        int targetIndex = closestIndex;
+        int targetIndex = closestIndex + 1;
         double distanceFromMessage = GPSPoseMessage.getDistance(pose, wayPoints.get(targetIndex).toGpsPoseMessage(0));
-        while (targetIndex < wayPoints.size() && distanceFromMessage < delta) {
-            targetIndex = targetIndex + 1;
-        }
+//        while (targetIndex < wayPoints.size() && distanceFromMessage < delta) {
+//            targetIndex = targetIndex + 1;
+//        }
 
         //if we are out of points then just go straight
         if (targetIndex >= wayPoints.size()) {
@@ -121,7 +121,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
 
         // calculate D
         long currentTimeMillis = System.currentTimeMillis();
-        long dt = currentTimeMillis - previousTimeMillis;
+        double dt = currentTimeMillis - previousTimeMillis;
         double deltaError = (1.0 * (currentHeadingError - previousHeadingError)) / dt;
         previousHeadingError = currentHeadingError;
         previousTimeMillis = currentTimeMillis;
