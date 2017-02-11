@@ -6,9 +6,8 @@ import scipy.io
 
 combined = True
 d = None
-# file = '../rolls_logs/sample.txt'
 # file = '../../../rolls_logs/sensors_2016-10-09-06-17-15.txt'
-file = '../../../rolls_logs/sensors_2016-10-15-06-26-53.txt'
+file = '/Users/babraham/Desktop/sensors_2017-01-28-19-19-04.txt'
 with open(file) as json_data:
     d = json.load(json_data)
 

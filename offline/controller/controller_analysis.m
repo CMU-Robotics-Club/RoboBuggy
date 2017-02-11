@@ -6,12 +6,12 @@ close all;
 addpath('../localizer/latlonutm/Codes/matlab');
 addpath('../localizer/altmany-export_fig');
 
-file = 'controller_v2.mat';
+file = 'controller_tri_v1.mat';
 load(file, 'trajectory');
 save_plot = false;
 show_maps = false;
 
-load('./waypoints.mat');
+load('./waypoints_tri.mat');
 [x, y, zone] = ll2utm(logs);
 desired = [x y];
 

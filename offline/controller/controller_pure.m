@@ -12,10 +12,10 @@ function [trajectory] = controller_pure()
     wheel_base = 1.13;
     utm_zone = 17;
     first_heading = deg2rad(250);
-    lat_long = [40.441670, -79.9416362];
+    lat_long = [40.442867, -79.9427395]; % [40.441670, -79.9416362];
     dt = 0.001; % 1000Hz
     m = 50; % 20Hz
-    velocity = 8; % m/s, 17.9mph, forward velocity
+    velocity = 4; % 8; % m/s, 17.9mph, forward velocity
     steering_vel = deg2rad(40); % 40deg/s, reaction speed to control cmds
                                 % full range in 0.5s
 
@@ -27,10 +27,10 @@ function [trajectory] = controller_pure()
          first_heading; % heading, rad, world frame
          0];  % d_heading, rad/s
 
-    load('./waypoints.mat');
+    load('./waypoints_tri.mat');
     desired_traj = processWaypoints(logs);
     % time = linspace(0, 240, size(trajectory,2));
-    time = 0:dt:240;
+    time = 0:dt:60; % 240;
     u = 0; % commanded steering angle
     steering = u; % steering angle
     trajectory = [X; lat_long(1); lat_long(2); steering];
@@ -54,7 +54,7 @@ function [trajectory] = controller_pure()
     end
 
     if save_data
-        save('controller_v2.mat', 'trajectory');
+        save('controller_tri_v1.mat', 'trajectory');
     end
 end
 
@@ -113,9 +113,15 @@ function [u] = control(desired_traj, X)
     global wheel_base
 
     pos = X(1:2)';
-    b = repmat(pos, size(desired_traj, 1), 1);
-    delta = 15*15;
-    possible = find(sum((desired_traj-b).^2, 2) < delta);
+    pos_b = repmat(pos, size(desired_traj, 1), 1);
+    delta = 5;
+    cutoff = 100;
+    delta = delta * delta;
+
+    distances = sum((desired_traj - pos_b).^2, 2);
+    [~, closest_idx] = min(distances);
+    last_idx = min([length(distances), closest_idx + cutoff]); 
+    possible = find(distances(1:last_idx) < delta);
     if isempty(possible)
       u = 0;
     else 
