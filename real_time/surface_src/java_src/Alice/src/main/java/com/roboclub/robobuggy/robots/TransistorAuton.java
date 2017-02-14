@@ -70,8 +70,8 @@ public final class TransistorAuton extends AbstractRobot {
 //        nodeList.add(new HillCrestImuNode());
 
         try {
-//            ArrayList<GpsMeasurement> wayPoints = WayPointUtil.createWayPointsFromWaypointList(RobobuggyConfigFile.getWaypointSourceLogFile());
-            ArrayList<GpsMeasurement> wayPoints = WayPointUtil.createWaypointsFromOdomLocalizerLog(RobobuggyConfigFile.getWaypointSourceLogFile());
+          ArrayList<GpsMeasurement> wayPoints = WayPointUtil.createWayPointsFromWaypointList(RobobuggyConfigFile.getWaypointSourceLogFile());
+            //ArrayList<GpsMeasurement> wayPoints = WayPointUtil.createWaypointsFromOdomLocalizerLog(RobobuggyConfigFile.getWaypointSourceLogFile());
             nodeList.add(new WayPointFollowerPlanner(wayPoints));
         } catch (IOException e) {
             // TODO Auto-generated catch block

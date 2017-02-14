@@ -3,6 +3,8 @@ package com.roboclub.robobuggy.robots;
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
+import com.roboclub.robobuggy.nodes.localizers.LocTuple;
+import com.roboclub.robobuggy.nodes.localizers.RobobuggyKFLocalizer;
 import com.roboclub.robobuggy.nodes.sensors.CameraNode;
 import com.roboclub.robobuggy.nodes.sensors.GpsNode;
 import com.roboclub.robobuggy.nodes.sensors.HillCrestImuNode;
@@ -57,6 +59,8 @@ public final class TransistorDataCollection extends AbstractRobot {
                 RobobuggyConfigFile.RBSM_COMMAND_PERIOD));
         nodeList.add(new CameraNode(NodeChannel.PUSHBAR_CAMERA, 100));
         nodeList.add(new HillCrestImuNode());
+        nodeList.add(new RobobuggyKFLocalizer(10, "Robobuggy KF Localizer", new LocTuple(0, 0)));
+
 
         //setup the gui
         RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow", 1.0, 1.0);
