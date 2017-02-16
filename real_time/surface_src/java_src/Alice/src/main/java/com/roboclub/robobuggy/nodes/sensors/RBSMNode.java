@@ -97,7 +97,7 @@ public class RBSMNode extends SerialNode {
      * Error codes from the low level system
      * Original definitions are in the rbsm_config.txt
      */
-    private enum RBSMErrorCodes {
+    protected enum RBSMErrorCodes {
         UNKNOWN_CODE(0, "Unknown RBSM Error!"),
         WATCHDOG_TIMER(1, "Watchdog Timer fired"),
         RBSM_LOST_STREAM(2, "RBSM Lost Stream"),
@@ -123,11 +123,11 @@ public class RBSMNode extends SerialNode {
             return UNKNOWN_CODE;
         }
 
-        private int getErrorCode() {
+        protected int getErrorCode() {
             return errorCode;
         }
 
-        private String getErrorMessage() {
+        protected String getErrorMessage() {
             return errorMessage;
         }
 
