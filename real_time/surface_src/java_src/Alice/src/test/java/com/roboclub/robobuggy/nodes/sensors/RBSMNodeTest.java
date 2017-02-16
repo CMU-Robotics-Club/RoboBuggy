@@ -23,6 +23,9 @@ public class RBSMNodeTest {
 
     private static final byte RBSM_MESSAGE_FOOTER = 0xA;
 
+    /**
+     * Runs setup for the test class
+     */
     @BeforeClass
     public static void oneTimeSetup() {
         messages = new LinkedBlockingQueue<>();
@@ -31,12 +34,25 @@ public class RBSMNodeTest {
         });
     }
 
+    /**
+     * Runs setup for each test case
+     */
     @Before
     public void setUp() {
         // get a dummy RBSMNode each time
         testNode = new RBSMNode(NodeChannel.STEERING, NodeChannel.STEERING, null, 100);
     }
 
+    /**
+     * Tests the RBSM MID error translation from the bit representation to the
+     * error message
+     *
+     * Iterates through each known low-level error and calls peel() with a faked message
+     *
+     * Compares the output of peel() with the expected RBSMErrorCodes message format
+     *
+     * No errors expected
+     */
     @Test
     public void testRbsmMidErrorTranslation() {
         byte rbsmMidErrorHeader = (byte) 254;
@@ -63,11 +79,16 @@ public class RBSMNodeTest {
             // make sure that we received a message
             Message top = messages.poll();
             assertNotNull(top);
-            assertEquals(((RobobuggyLogicNotificationMeasurement) top).getMessage(), "RBSM_MID_ERROR:" + errorCode.getErrorCode() + ": " + errorCode.getErrorMessage());
+            assertEquals(((RobobuggyLogicNotificationMeasurement) top).getMessage(),
+                    "RBSM_MID_ERROR:" + errorCode.getErrorCode() + ": " + errorCode.getErrorMessage());
         }
 
     }
 
+    /**
+     * Unfortunately we can't trigger continuation very easily, so we instead just wait
+     * for 100 ms for peel() to finish
+     */
     private void waitForMessagePropagation() {
         try {
             Thread.sleep(100);
