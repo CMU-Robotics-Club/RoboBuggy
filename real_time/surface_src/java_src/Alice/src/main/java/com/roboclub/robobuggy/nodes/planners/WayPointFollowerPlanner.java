@@ -81,9 +81,9 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         //pick the point to follow
         int targetIndex = closestIndex + 1;
         double distanceFromMessage = GPSPoseMessage.getDistance(pose, wayPoints.get(targetIndex).toGpsPoseMessage(0));
-//        while (targetIndex < wayPoints.size() && distanceFromMessage < delta) {
-//            targetIndex = targetIndex + 1;
-//        }
+        while (targetIndex < wayPoints.size() && distanceFromMessage < delta) {
+            targetIndex = targetIndex + 1;
+        }
 
         //if we are out of points then just go straight
         if (targetIndex >= wayPoints.size()) {
@@ -106,6 +106,8 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         //find the angle we need to reach that point
         double deltaHeading = desiredHeading - poseHeading;
 
+        /*
+        @vivaanbahl 2/17/17 put PID on hold in order to test the original waypoint planner
         // Pure Pursuit steering controller
         double param1 = 2 * RobobuggyKFLocalizer.WHEELBASE_IN_METERS * Math.sin(deltaHeading);
         double param2 = 0.8 * pose.getCurrentState().get(2, 0);
@@ -128,8 +130,9 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
 
         // put it all together
         double pidError = Kp * currentHeadingError + Ki * totalHeadingError + Kd * deltaError;
+        */
 
-        return Util.normalizeAngleRad(pidError);
+        return Util.normalizeAngleRad(deltaHeading);
     }
 
     @Override
