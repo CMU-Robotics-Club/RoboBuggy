@@ -19,21 +19,6 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
     private ArrayList<GpsMeasurement> wayPoints;
     private GPSPoseMessage pose; //TODO change this to a reasonable type
 
-
-    // PID controller values/variables
-
-    private double Kp = 0.4;
-    private double Ki = 0.3;
-    private double Kd = 0.05;
-
-    private double previousHeadingError;
-    private double totalHeadingError;
-
-    private long previousTimeMillis;
-
-    // end PID controller values/variables
-
-
     /**
      * @param wayPoints the list of waypoints to follow
      */
@@ -50,7 +35,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
     }
 
     //find the closest way point
-    //TODO turn into a binary search
+    //TODO turn into a binary kdtree search
     private static int getClosestIndex(ArrayList<GpsMeasurement> wayPoints, GPSPoseMessage currentLocation) {
         double min = Double.MAX_VALUE; //note that the brakes will definitely deploy at this
 
@@ -75,22 +60,20 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
             return 17433504; //A dummy value that we can never get
         }
 
-
-        double delta = 10; //meters
-        //pick the first point that is at least delta away
-        //pick the point to follow
-        int targetIndex = closestIndex + 1;
-        double distanceFromMessage = GPSPoseMessage.getDistance(pose, wayPoints.get(targetIndex).toGpsPoseMessage(0));
-//        while (targetIndex < wayPoints.size() && distanceFromMessage < delta) {
-//            targetIndex = targetIndex + 1;
-//        }
+        double lookahead = 15; //meters
+        //pick the first point that is at least lookahead away, then point buggy toward it
+        int targetIndex = closestIndex;
+        double distanceFromMessage = 0;
+        do {
+            targetIndex++;
+            distanceFromMessage = GPSPoseMessage.getDistance(pose, wayPoints.get(targetIndex).toGpsPoseMessage(0));
+        } while (targetIndex < wayPoints.size() && distanceFromMessage < lookahead);
 
         //if we are out of points then just go straight
         if (targetIndex >= wayPoints.size()) {
             new RobobuggyLogicNotification("HELP out of points", RobobuggyMessageLevel.EXCEPTION);
             return 0;
         }
-
 
         GpsMeasurement targetPoint = wayPoints.get(targetIndex);
 
@@ -101,35 +84,17 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         double deltaLongMeters = LocalizerUtil.convertLonToMeters(deltaLong);
         double desiredHeading = Math.atan2(deltaLatMeters, deltaLongMeters);
 
-        double poseHeading = pose.getHeading();
-
         //find the angle we need to reach that point
+        double poseHeading = pose.getHeading();
         double deltaHeading = desiredHeading - poseHeading;
 
-        // Pure Pursuit steering controller
+        //Pure Pursuit steering controller
         double param1 = 2 * RobobuggyKFLocalizer.WHEELBASE_IN_METERS * Math.sin(deltaHeading);
         double param2 = 0.8 * pose.getCurrentState().get(2, 0);
         deltaHeading = Math.atan2(param1, param2);
 
-
-        // begin PID control
-        // calculate P
-        double currentHeadingError = deltaHeading;
-
-        // calculate I
-        totalHeadingError += deltaHeading;
-
-        // calculate D
-        long currentTimeMillis = System.currentTimeMillis();
-        double dt = currentTimeMillis - previousTimeMillis;
-        double deltaError = (1.0 * (currentHeadingError - previousHeadingError)) / dt;
-        previousHeadingError = currentHeadingError;
-        previousTimeMillis = currentTimeMillis;
-
-        // put it all together
-        double pidError = Kp * currentHeadingError + Ki * totalHeadingError + Kd * deltaError;
-
-        return Util.normalizeAngleRad(pidError);
+        //PD control of DC steering motor handled by low level 
+        return Util.normalizeAngleRad(deltaHeading);
     }
 
     @Override

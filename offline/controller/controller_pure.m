@@ -15,7 +15,7 @@ function [trajectory] = controller_pure()
     lat_long = [40.442867, -79.9427395]; % [40.441670, -79.9416362];
     dt = 0.001; % 1000Hz
     m = 50; % 20Hz
-    velocity = 4; % 8; % m/s, 17.9mph, forward velocity
+    velocity = 8; % m/s, 17.9mph, forward velocity
     steering_vel = deg2rad(40); % 40deg/s, reaction speed to control cmds
                                 % full range in 0.5s
 
@@ -114,7 +114,7 @@ function [u] = control(desired_traj, X)
 
     pos = X(1:2)';
     pos_b = repmat(pos, size(desired_traj, 1), 1);
-    delta = 5;
+    delta = 15;
     cutoff = 100;
     delta = delta * delta;
 
