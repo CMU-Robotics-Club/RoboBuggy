@@ -20,6 +20,12 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
     private GPSPoseMessage pose; //TODO change this to a reasonable type
 
     /**
+     * @vivaanbahl TESTING CODE ONLY
+     * REMOVE FOR PROD PUSH
+     */
+    public static GpsMeasurement currentWaypoint = new GpsMeasurement(0, 0);
+
+    /**
      * @param wayPoints the list of waypoints to follow
      */
     public WayPointFollowerPlanner(ArrayList<GpsMeasurement> wayPoints) {
@@ -76,6 +82,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         }
 
         GpsMeasurement targetPoint = wayPoints.get(targetIndex);
+        currentWaypoint = targetPoint;
 
         //find a path from our current location to that point
         double deltaLong = targetPoint.getLongitude() - pose.getLongitude();

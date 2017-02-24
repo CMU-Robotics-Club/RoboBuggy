@@ -5,6 +5,7 @@ import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.nodes.localizers.LocTuple;
+import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
@@ -49,6 +50,8 @@ public class Map extends JPanel {
     private double mapDragY = -1;
     private static final int MAX_POINT_BUF_SIZE = 3000;
 
+    private MapMarkerDot currentWaypoint = new MapMarkerDot(0, 0);
+
     /**
      * initializes a new Map with cache loaded
      */
@@ -56,6 +59,9 @@ public class Map extends JPanel {
         initMapTree();
         addCacheToTree();
         this.add(getMapTree());
+
+        currentWaypoint.setColor(Color.BLUE);
+        getMapTree().getViewer().addMapMarker(currentWaypoint);
 
         //adds track buggy  
         new Subscriber("Map", NodeChannel.POSE.getMsgPath(), new MessageListener() {
@@ -67,6 +73,12 @@ public class Map extends JPanel {
                 getMapTree().getViewer().setDisplayPosition(new Coordinate(gpsM.getLatitude(),
                         gpsM.getLongitude()), zoomLevel);
                 addPointsToMapTree(Color.RED, new LocTuple(gpsM.getLatitude(), gpsM.getLongitude()));
+
+                getMapTree().getViewer().removeMapMarker(currentWaypoint);
+                currentWaypoint.setLat(WayPointFollowerPlanner.currentWaypoint.getLatitude());
+                currentWaypoint.setLon(WayPointFollowerPlanner.currentWaypoint.getLongitude());
+                getMapTree().getViewer().addMapMarker(currentWaypoint);
+
             }
         });
 
