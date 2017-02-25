@@ -24,6 +24,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
      * REMOVE FOR PROD PUSH
      */
     public static GpsMeasurement currentWaypoint = new GpsMeasurement(0, 0);
+    public static double currentCommandedAngle = 0.0;
 
     /**
      * @param wayPoints the list of waypoints to follow
@@ -100,8 +101,10 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         double param2 = 0.8 * pose.getCurrentState().get(2, 0);
         deltaHeading = Math.atan2(param1, param2);
 
-        //PD control of DC steering motor handled by low level 
-        return Util.normalizeAngleRad(deltaHeading);
+        //PD control of DC steering motor handled by low level
+        double commandedAngle = Util.normalizeAngleRad(deltaHeading);
+        currentCommandedAngle = commandedAngle;
+        return commandedAngle;
     }
 
     @Override

@@ -51,6 +51,7 @@ public class Map extends JPanel {
     private static final int MAX_POINT_BUF_SIZE = 3000;
 
     private MapMarkerDot currentWaypoint = new MapMarkerDot(0, 0);
+    private MapPolygonImpl currentHeading = new MapPolygonImpl();
 
     /**
      * initializes a new Map with cache loaded
@@ -62,6 +63,7 @@ public class Map extends JPanel {
 
         currentWaypoint.setColor(Color.BLUE);
         getMapTree().getViewer().addMapMarker(currentWaypoint);
+        getMapTree().getViewer().addMapPolygon(currentHeading);
 
         //adds track buggy  
         new Subscriber("Map", NodeChannel.POSE.getMsgPath(), new MessageListener() {
@@ -78,6 +80,16 @@ public class Map extends JPanel {
                 currentWaypoint.setLat(WayPointFollowerPlanner.currentWaypoint.getLatitude());
                 currentWaypoint.setLon(WayPointFollowerPlanner.currentWaypoint.getLongitude());
                 getMapTree().getViewer().addMapMarker(currentWaypoint);
+
+                getMapTree().getViewer().removeMapPolygon(currentHeading);
+                currentHeading = new MapPolygonImpl(
+                        new Coordinate(WayPointFollowerPlanner.currentWaypoint.getLatitude(), WayPointFollowerPlanner.currentWaypoint.getLongitude()),
+                        new Coordinate(WayPointFollowerPlanner.currentWaypoint.getLatitude() + 0.001 * Math.sin(WayPointFollowerPlanner
+                                .currentCommandedAngle), WayPointFollowerPlanner.currentWaypoint.getLongitude() + 0.001 * Math.cos(WayPointFollowerPlanner
+                                .currentCommandedAngle)),
+                        new Coordinate(WayPointFollowerPlanner.currentWaypoint.getLatitude(), WayPointFollowerPlanner.currentWaypoint.getLongitude())
+                );
+                getMapTree().getViewer().addMapPolygon(currentHeading);
 
             }
         });
