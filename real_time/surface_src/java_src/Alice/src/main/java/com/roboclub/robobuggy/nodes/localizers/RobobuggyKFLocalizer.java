@@ -75,6 +75,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         lastTime = new Date().getTime();
         lastEncoder = 0;
         lastEncoderTime = lastTime;
+        lastGPS = initialLocationGPS;
 
         double[][] x2D = {
                 { initialLocationGPS.getEasting() },
@@ -92,20 +93,22 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         P = arrayToMatrix(pArray);
 
         double[][] qGPS2D = {
-                {4, 0},
-                {0, 4},
+                {4, 0, 0},
+                {0, 4, 0},
+                {0, 0, 0.02},
         };
         Q_gps = new Matrix(qGPS2D);
 
         double[][] qEncoder2D = {{0.25}};
         Q_encoder = new Matrix(qEncoder2D);
 
-        double[][] qImu2D = {{0.008}};
+        double[][] qImu2D = {{ 0 }};
         Q_imu = new Matrix(qImu2D);
 
         double[][] cGPS2D = {
                 {1, 0, 0, 0, 0},
                 {0, 1, 0, 0, 0},
+                {0, 0, 0, 1, 0},
         };
         C_gps = new Matrix(cGPS2D);
 
@@ -115,7 +118,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         C_encoder = new Matrix(cEncoder2D);
 
         double[][] cImu2D = {
-                {0, 0, 0, 1, 0},
+                { 0, 0, 0, 1, 0 },
         };
         C_imu = new Matrix(cImu2D);
 
@@ -169,14 +172,31 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
             GpsMeasurement gpsLoc = (GpsMeasurement) m;
             LocTuple loc = new LocTuple(gpsLoc.getLatitude(), gpsLoc.getLongitude());
             UTMTuple gps = LocalizerUtil.deg2UTM(loc);
+            double dx = gps.getEasting() - lastGPS.getEasting();
+            double dy = gps.getNorthing() - lastGPS.getNorthing();
+            lastGPS = gps;
+
+            // don't update angle if we did not move a lot
+            double heading = Math.atan2(dy, dx);
+            if ((dx * dx + dy * dy) < 0.25) {
+                heading = x.get(HEADING_GLOBAL_ROW, 0);
+            }
+            // close the loop, lock initial angle
+            if (Math.abs(gps.getEasting() - initialLocationGPS.getEasting())
+                    + Math.abs(gps.getNorthing() - initialLocationGPS.getNorthing()) < 10.0) {
+                // todo should this be previous heading?
+                heading = INITIAL_HEADING_IN_RADS;
+            }
 
             // measurement
             double[][] z2D = {
                     { gps.getEasting() },
                     { gps.getNorthing() },
+                    { heading },
             };
 
             Matrix z = new Matrix(z2D);
+
             kalmanFilter(C_gps, Q_gps, z);
         }));
     }
