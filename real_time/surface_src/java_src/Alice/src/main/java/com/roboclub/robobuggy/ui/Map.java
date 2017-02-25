@@ -51,7 +51,7 @@ public class Map extends JPanel {
     private static final int MAX_POINT_BUF_SIZE = 3000;
 
     private MapMarkerDot currentWaypoint = new MapMarkerDot(0, 0);
-    private MapPolygonImpl currentHeading = new MapPolygonImpl();
+    private MapPolygonImpl currentHeadingMapObj = new MapPolygonImpl();
 
     /**
      * initializes a new Map with cache loaded
@@ -63,7 +63,7 @@ public class Map extends JPanel {
 
         currentWaypoint.setColor(Color.BLUE);
         getMapTree().getViewer().addMapMarker(currentWaypoint);
-        getMapTree().getViewer().addMapPolygon(currentHeading);
+        getMapTree().getViewer().addMapPolygon(currentHeadingMapObj);
 
         //adds track buggy  
         new Subscriber("Map", NodeChannel.POSE.getMsgPath(), new MessageListener() {
@@ -81,15 +81,16 @@ public class Map extends JPanel {
                 currentWaypoint.setLon(WayPointFollowerPlanner.currentWaypoint.getLongitude());
                 getMapTree().getViewer().addMapMarker(currentWaypoint);
 
-                getMapTree().getViewer().removeMapPolygon(currentHeading);
-                currentHeading = new MapPolygonImpl(
-                        new Coordinate(WayPointFollowerPlanner.currentWaypoint.getLatitude(), WayPointFollowerPlanner.currentWaypoint.getLongitude()),
-                        new Coordinate(WayPointFollowerPlanner.currentWaypoint.getLatitude() + 0.001 * Math.sin(WayPointFollowerPlanner
-                                .currentCommandedAngle), WayPointFollowerPlanner.currentWaypoint.getLongitude() + 0.001 * Math.cos(WayPointFollowerPlanner
-                                .currentCommandedAngle)),
-                        new Coordinate(WayPointFollowerPlanner.currentWaypoint.getLatitude(), WayPointFollowerPlanner.currentWaypoint.getLongitude())
+                double currentHeading = gpsM.getCurrentState().get(3, 0);
+                getMapTree().getViewer().removeMapPolygon(currentHeadingMapObj);
+                currentHeadingMapObj = new MapPolygonImpl(
+                        new Coordinate(gpsM.getLatitude(), gpsM.getLongitude()),
+                        new Coordinate(gpsM.getLatitude() + 0.0001 * Math.sin(WayPointFollowerPlanner
+                                .currentCommandedAngle + currentHeading), gpsM.getLongitude() + 0.0001 * Math.cos(WayPointFollowerPlanner
+                                .currentCommandedAngle + currentHeading)),
+                        new Coordinate(gpsM.getLatitude(), gpsM.getLongitude())
                 );
-                getMapTree().getViewer().addMapPolygon(currentHeading);
+                getMapTree().getViewer().addMapPolygon(currentHeadingMapObj);
 
             }
         });
