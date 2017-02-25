@@ -12,7 +12,6 @@ import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
 import com.roboclub.robobuggy.messages.IMUAngularPositionMessage;
-import com.roboclub.robobuggy.messages.IMUCompassMessage;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
 import com.roboclub.robobuggy.messages.MagneticMeasurement;
 import com.roboclub.robobuggy.messages.RemoteWheelAngleRequest;
@@ -44,7 +43,6 @@ public final class PlayBackUtil {
     private Publisher loggingButtonPub;
     private Publisher logicNotificationPub;
     private Publisher posePub;
-    private Publisher compassPub;
 
 
     /**
@@ -73,7 +71,6 @@ public final class PlayBackUtil {
         loggingButtonPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
         logicNotificationPub = new Publisher(NodeChannel.LOGIC_NOTIFICATION.getMsgPath());
         posePub = new Publisher(NodeChannel.POSE.getMsgPath());
-        compassPub = new Publisher(NodeChannel.IMU_COMPASS.getMsgPath());
     }
 
     /**
@@ -168,10 +165,6 @@ public final class PlayBackUtil {
                 break;
             case IMUAngularPositionMessage.VERSION_ID:
                 transmitMessage = translator.fromJson(sensorDataJson, IMUAngularPositionMessage.class);
-                break;
-            case IMUCompassMessage.VERSION_ID:
-                transmitMessage = translator.fromJson(sensorDataJson, IMUCompassMessage.class);
-                getPrivateInstance().compassPub.publish(transmitMessage);
                 break;
             case ResetMessage.VERSION_ID:
                 transmitMessage = translator.fromJson(sensorDataJson, ResetMessage.class);

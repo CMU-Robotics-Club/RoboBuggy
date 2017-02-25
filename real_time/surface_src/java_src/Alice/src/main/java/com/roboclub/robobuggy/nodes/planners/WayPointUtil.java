@@ -108,9 +108,9 @@ public class WayPointUtil {
      * @return waypoint list
      * @throws IOException we couldn't find the file or folder
      */
-    public static ArrayList<GpsMeasurement> createWayPointsFromLog(String folder, String filename) throws IOException {
+    public static ArrayList createWayPointsFromLog(String folder, String filename) throws IOException {
 
-        ArrayList<GpsMeasurement> messages = new ArrayList<>();
+        ArrayList messages = new ArrayList();
         File outputFile = new File(folder + "/waypoints.txt");
         if (!outputFile.createNewFile()) {
             new RobobuggyLogicNotification("couldn't create file", RobobuggyMessageLevel.EXCEPTION);
@@ -139,7 +139,7 @@ public class WayPointUtil {
 
                 switch (versionID) {
                     case GpsMeasurement.VERSION_ID:
-                        GpsMeasurement transmitMessage = translator.fromJson(sensorDataJson, GpsMeasurement.class);
+                        Message transmitMessage = translator.fromJson(sensorDataJson, GpsMeasurement.class);
                         messages.add(transmitMessage);
                         writer.write(sensorDataJson.toString() + "\n");
                         break;
