@@ -133,7 +133,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
 
     private void setupIMUSubscriber() {
         new Subscriber("KF Localizer", NodeChannel.IMU_COMPASS.getMsgPath(), (topicName, m) -> {
-            double heading = Math.toRadians(((IMUCompassMessage) m).getCompassHeading());
+            double heading = ((IMUCompassMessage) m).getCompassHeading();
 
             double[][] z2D = {{ heading }};
             Matrix z = new Matrix(z2D);
