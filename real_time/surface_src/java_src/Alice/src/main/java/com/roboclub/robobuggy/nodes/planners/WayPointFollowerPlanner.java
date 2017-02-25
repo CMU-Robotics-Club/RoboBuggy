@@ -6,7 +6,6 @@ import com.roboclub.robobuggy.main.Util;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.nodes.localizers.LocalizerUtil;
-import com.roboclub.robobuggy.nodes.localizers.RobobuggyKFLocalizer;
 import com.roboclub.robobuggy.ros.NodeChannel;
 
 import java.util.ArrayList;
@@ -25,6 +24,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
      */
     public static GpsMeasurement currentWaypoint = new GpsMeasurement(0, 0);
     public static double currentCommandedAngle = 0.0;
+    public static double currentDesiredHeading = 0.0;
 
     /**
      * @param wayPoints the list of waypoints to follow
@@ -91,15 +91,16 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         double deltaLatMeters = LocalizerUtil.convertLatToMeters(deltaLat);
         double deltaLongMeters = LocalizerUtil.convertLonToMeters(deltaLong);
         double desiredHeading = Math.atan2(deltaLatMeters, deltaLongMeters);
+        currentDesiredHeading = desiredHeading;
 
         //find the angle we need to reach that point
         double poseHeading = pose.getHeading();
         double deltaHeading = desiredHeading - poseHeading;
 
         //Pure Pursuit steering controller
-        double param1 = 2 * RobobuggyKFLocalizer.WHEELBASE_IN_METERS * Math.sin(deltaHeading);
-        double param2 = 0.8 * pose.getCurrentState().get(2, 0);
-        deltaHeading = Math.atan2(param1, param2);
+//        double param1 = 2 * RobobuggyKFLocalizer.WHEELBASE_IN_METERS * Math.sin(deltaHeading);
+//        double param2 = 0.8 * pose.getCurrentState().get(2, 0);
+//        deltaHeading = Math.atan2(param1, param2);
 
         //PD control of DC steering motor handled by low level
         double commandedAngle = Util.normalizeAngleRad(deltaHeading);

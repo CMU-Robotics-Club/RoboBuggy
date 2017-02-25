@@ -51,7 +51,9 @@ public class Map extends JPanel {
     private static final int MAX_POINT_BUF_SIZE = 3000;
 
     private MapMarkerDot currentWaypoint = new MapMarkerDot(0, 0);
+    private MapPolygonImpl currentSteeringCommandMapObj = new MapPolygonImpl();
     private MapPolygonImpl currentHeadingMapObj = new MapPolygonImpl();
+    private MapPolygonImpl desiredHeadingMapObj = new MapPolygonImpl();
 
     /**
      * initializes a new Map with cache loaded
@@ -63,7 +65,9 @@ public class Map extends JPanel {
 
         currentWaypoint.setColor(Color.BLUE);
         getMapTree().getViewer().addMapMarker(currentWaypoint);
+        getMapTree().getViewer().addMapPolygon(currentSteeringCommandMapObj);
         getMapTree().getViewer().addMapPolygon(currentHeadingMapObj);
+        getMapTree().getViewer().addMapPolygon(desiredHeadingMapObj);
 
         //adds track buggy  
         new Subscriber("Map", NodeChannel.POSE.getMsgPath(), new MessageListener() {
@@ -81,16 +85,36 @@ public class Map extends JPanel {
                 currentWaypoint.setLon(WayPointFollowerPlanner.currentWaypoint.getLongitude());
                 getMapTree().getViewer().addMapMarker(currentWaypoint);
 
+                getMapTree().getViewer().removeMapPolygon(desiredHeadingMapObj);
+                desiredHeadingMapObj = new MapPolygonImpl(
+                        new Coordinate(gpsM.getLatitude(), gpsM.getLongitude()),
+                        new Coordinate(gpsM.getLatitude() + 0.0001 * Math.sin(WayPointFollowerPlanner.currentDesiredHeading), gpsM.getLongitude() + 0.0001 *
+                                Math.cos(WayPointFollowerPlanner.currentDesiredHeading)),
+                        new Coordinate(gpsM.getLatitude(), gpsM.getLongitude())
+                );
+                desiredHeadingMapObj.setColor(Color.GREEN);
+                getMapTree().getViewer().addMapPolygon(desiredHeadingMapObj);
+
                 double currentHeading = gpsM.getCurrentState().get(3, 0);
                 getMapTree().getViewer().removeMapPolygon(currentHeadingMapObj);
                 currentHeadingMapObj = new MapPolygonImpl(
+                        new Coordinate(gpsM.getLatitude(), gpsM.getLongitude()),
+                        new Coordinate(gpsM.getLatitude() + 0.0001 * Math.sin(currentHeading), gpsM.getLongitude() + 0.0001 * Math.cos(currentHeading)),
+                        new Coordinate(gpsM.getLatitude(), gpsM.getLongitude())
+                );
+                currentHeadingMapObj.setColor(Color.RED);
+                getMapTree().getViewer().addMapPolygon(currentHeadingMapObj);
+
+                getMapTree().getViewer().removeMapPolygon(currentSteeringCommandMapObj);
+                currentSteeringCommandMapObj = new MapPolygonImpl(
                         new Coordinate(gpsM.getLatitude(), gpsM.getLongitude()),
                         new Coordinate(gpsM.getLatitude() + 0.0001 * Math.sin(WayPointFollowerPlanner
                                 .currentCommandedAngle + currentHeading), gpsM.getLongitude() + 0.0001 * Math.cos(WayPointFollowerPlanner
                                 .currentCommandedAngle + currentHeading)),
                         new Coordinate(gpsM.getLatitude(), gpsM.getLongitude())
                 );
-                getMapTree().getViewer().addMapPolygon(currentHeadingMapObj);
+                currentSteeringCommandMapObj.setColor(Color.BLUE);
+                getMapTree().getViewer().addMapPolygon(currentSteeringCommandMapObj);
 
             }
         });
