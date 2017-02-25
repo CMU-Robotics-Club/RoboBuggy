@@ -66,7 +66,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
             return 17433504; //A dummy value that we can never get
         }
 
-        double lookahead = 5; //meters
+        double lookahead = 15; //meters
         //pick the first point that is at least lookahead away, then point buggy toward it
         int targetIndex = closestIndex;
         double distanceFromMessage = 0;
