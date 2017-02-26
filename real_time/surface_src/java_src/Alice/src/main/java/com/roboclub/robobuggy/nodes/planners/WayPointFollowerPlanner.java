@@ -6,7 +6,6 @@ import com.roboclub.robobuggy.main.Util;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.nodes.localizers.LocalizerUtil;
-import com.roboclub.robobuggy.nodes.localizers.RobobuggyKFLocalizer;
 import com.roboclub.robobuggy.ros.NodeChannel;
 
 import java.util.ArrayList;
@@ -24,6 +23,8 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
      * REMOVE FOR PROD PUSH
      */
     public static GpsMeasurement currentWaypoint = new GpsMeasurement(0, 0);
+    public static double currentCommandedAngle = 0.0;
+    public static double currentDesiredHeading = 0.0;
 
     /**
      * @param wayPoints the list of waypoints to follow
@@ -66,7 +67,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
             return 17433504; //A dummy value that we can never get
         }
 
-        double lookahead = 5; //meters
+        double lookahead = 15; //meters
         //pick the first point that is at least lookahead away, then point buggy toward it
         int targetIndex = closestIndex;
         double distanceFromMessage = 0;
@@ -90,18 +91,21 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         double deltaLatMeters = LocalizerUtil.convertLatToMeters(deltaLat);
         double deltaLongMeters = LocalizerUtil.convertLonToMeters(deltaLong);
         double desiredHeading = Math.atan2(deltaLatMeters, deltaLongMeters);
+        currentDesiredHeading = desiredHeading;
 
         //find the angle we need to reach that point
         double poseHeading = pose.getHeading();
         double deltaHeading = desiredHeading - poseHeading;
 
         //Pure Pursuit steering controller
-        double param1 = 2 * RobobuggyKFLocalizer.WHEELBASE_IN_METERS * Math.sin(deltaHeading);
-        double param2 = 0.8 * pose.getCurrentState().get(2, 0);
-        deltaHeading = Math.atan2(param1, param2);
+//        double param1 = 2 * RobobuggyKFLocalizer.WHEELBASE_IN_METERS * Math.sin(deltaHeading);
+//        double param2 = 0.8 * pose.getCurrentState().get(2, 0);
+//        deltaHeading = Math.atan2(param1, param2);
 
-        //PD control of DC steering motor handled by low level 
-        return Util.normalizeAngleRad(deltaHeading);
+        //PD control of DC steering motor handled by low level
+        double commandedAngle = Util.normalizeAngleRad(deltaHeading);
+        currentCommandedAngle = commandedAngle;
+        return commandedAngle;
     }
 
     @Override

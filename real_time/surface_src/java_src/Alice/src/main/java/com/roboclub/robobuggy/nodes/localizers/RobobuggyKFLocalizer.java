@@ -4,7 +4,6 @@ import Jama.Matrix;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
-import com.roboclub.robobuggy.messages.IMUCompassMessage;
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
@@ -45,18 +44,20 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
     private Matrix P;                   // covariance matrix
     private Matrix Q_gps;               // model noise covariance matrix
     private Matrix Q_encoder;
-    private Matrix Q_imu;
 
     // output matrices
     private Matrix C_gps;               // a description of how the GPS impacts x
     private Matrix C_encoder;           // how the encoder affects x
-    private Matrix C_imu;
 
     private long lastTime;              // the last time we updated the current position estimate
     private UTMTuple lastGPS;           // the most recent value of the GPS coordinates, expressed as a UTM measurement
     private double lastEncoder;         // deadreckoning value
     private long lastEncoderTime;       // the most recent time of the encoder reading, used for getting buggy velocity
     private double steeringAngle = 0;   // current steering angle of the buggy
+
+    public Matrix getCurrentState() {
+        return x;
+    }
 
     /**
      * Create a new {@link PeriodicNode} decorator
@@ -75,6 +76,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         lastTime = new Date().getTime();
         lastEncoder = 0;
         lastEncoderTime = lastTime;
+        lastGPS = initialLocationGPS;
 
         double[][] x2D = {
                 { initialLocationGPS.getEasting() },
@@ -92,20 +94,19 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         P = arrayToMatrix(pArray);
 
         double[][] qGPS2D = {
-                {4, 0},
-                {0, 4},
+                {4, 0, 0},
+                {0, 4, 0},
+                {0, 0, 0.02},
         };
         Q_gps = new Matrix(qGPS2D);
 
         double[][] qEncoder2D = {{0.25}};
         Q_encoder = new Matrix(qEncoder2D);
 
-        double[][] qImu2D = {{0.008}};
-        Q_imu = new Matrix(qImu2D);
-
         double[][] cGPS2D = {
                 {1, 0, 0, 0, 0},
                 {0, 1, 0, 0, 0},
+                {0, 0, 0, 1, 0},
         };
         C_gps = new Matrix(cGPS2D);
 
@@ -114,29 +115,12 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         };
         C_encoder = new Matrix(cEncoder2D);
 
-        double[][] cImu2D = {
-                {0, 0, 0, 1, 0},
-        };
-        C_imu = new Matrix(cImu2D);
-
         // add all our subscribers for our current state update stream
         // Every time we get a new sensor update, trigger the new kalman update
         setupGPSSubscriber();
         setupEncoderSubscriber();
         setupWheelSubscriber();
-        setupIMUSubscriber();
         resume();
-    }
-
-    private void setupIMUSubscriber() {
-        new Subscriber("KF Localizer", NodeChannel.IMU_COMPASS.getMsgPath(), (topicName, m) -> {
-            double heading = Math.toRadians(((IMUCompassMessage) m).getCompassHeading());
-
-            double[][] z2D = {{ heading }};
-            Matrix z = new Matrix(z2D);
-
-            kalmanFilter(C_imu, Q_imu, z);
-        });
     }
 
     private void setupEncoderSubscriber() {
@@ -169,14 +153,31 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
             GpsMeasurement gpsLoc = (GpsMeasurement) m;
             LocTuple loc = new LocTuple(gpsLoc.getLatitude(), gpsLoc.getLongitude());
             UTMTuple gps = LocalizerUtil.deg2UTM(loc);
+            double dx = gps.getEasting() - lastGPS.getEasting();
+            double dy = gps.getNorthing() - lastGPS.getNorthing();
+            lastGPS = gps;
+
+            // don't update angle if we did not move a lot
+            double heading = Math.atan2(dy, dx);
+            if ((dx * dx + dy * dy) < 0.25) {
+                heading = x.get(HEADING_GLOBAL_ROW, 0);
+            }
+            // close the loop, lock initial angle
+            if (Math.abs(gps.getEasting() - initialLocationGPS.getEasting())
+                    + Math.abs(gps.getNorthing() - initialLocationGPS.getNorthing()) < 10.0) {
+                // todo should this be previous heading?
+                heading = INITIAL_HEADING_IN_RADS;
+            }
 
             // measurement
             double[][] z2D = {
                     { gps.getEasting() },
                     { gps.getNorthing() },
+                    { heading },
             };
 
             Matrix z = new Matrix(z2D);
+
             kalmanFilter(C_gps, Q_gps, z);
         }));
     }
