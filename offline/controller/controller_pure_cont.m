@@ -7,17 +7,19 @@ function [trajectory] = controller_pure()
     global velocity
     global steering_vel
     global dt
+    global last_closest_idx
 
     save_data = true;
     wheel_base = 1.13;
     utm_zone = 17;
     first_heading = deg2rad(250);
-    lat_long = [40.442867, -79.9427395]; % [40.441670, -79.9416362];
+    lat_long = [40.441670, -79.9416362]; % tri [40.442867, -79.9427395];
     dt = 0.001; % 1000Hz
     m = 50; % 20Hz
-    velocity = 8; % m/s, 17.9mph, forward velocity
+    velocity = 3.6; % m/s, 8mph, forward velocity
     steering_vel = deg2rad(40); % 40deg/s, reaction speed to control cmds
                                 % full range in 0.5s
+    last_closest_idx = 1;
 
     [x, y, ~] = ll2utm(lat_long(1), lat_long(2));
 
@@ -27,10 +29,10 @@ function [trajectory] = controller_pure()
          first_heading; % heading, rad, world frame
          0];  % d_heading, rad/s
 
-    load('./waypoints_tri.mat');
+    load('./waypoints_course_v2.mat');
     desired_traj = processWaypoints(logs);
     % time = linspace(0, 240, size(trajectory,2));
-    time = 0:dt:60; % 240;
+    time = 0:dt:240;
     u = 0; % commanded steering angle
     steering = u; % steering angle
     trajectory = [X; lat_long(1); lat_long(2); steering];
@@ -54,7 +56,7 @@ function [trajectory] = controller_pure()
     end
 
     if save_data
-        save('controller_tri_v1.mat', 'trajectory');
+        save('controller_v3.mat', 'trajectory');
     end
 end
 
@@ -90,11 +92,11 @@ function b = updateSteering(b, u)
 end
 
 function a = clampSteeringAngle(a)
-    if(a < -deg2rad(10))
-        a = -deg2rad(10);
-    end
-    if(a > deg2rad(10))
-        a = deg2rad(10);
+    b = deg2rad(10);
+    if(a < -b)
+        a = -b;
+    elseif(a > b)
+        a = b;
     end
 end
 
@@ -111,27 +113,70 @@ end
 
 function [u] = control(desired_traj, X) 
     global wheel_base
+    global last_closest_idx
 
+    k = 3;
+    vel = X(3);
     pos = X(1:2)';
-    pos_b = repmat(pos, size(desired_traj, 1), 1);
-    delta = 15;
-    cutoff = 100;
-    delta = delta * delta;
+    lookahead_bounds = [3 25];
+    lookahead = k * vel;
+    if(lookahead < lookahead_bounds(1))
+        lookahead = lookahead_bounds(1);
+    elseif(lookahead > lookahead_bounds(2))
+        lookahead = lookahead_bounds(1);
+    end 
 
-    distances = sum((desired_traj - pos_b).^2, 2);
-    [~, closest_idx] = min(distances);
-    last_idx = min([length(distances), closest_idx + cutoff]); 
-    possible = find(distances(1:last_idx) < delta);
-    if isempty(possible)
-      u = 0;
-    else 
-      target = desired_traj(possible(end), :);
-      deltaPath = target - pos;
-      
-      k = 0.8;
-      a = atan2(deltaPath(2), deltaPath(1))-X(4);
-      u = atan2(2*wheel_base*sin(a), k*X(3));
+    % closest_idx = last_closest_idx;
+    % min_dist = 100000;
+    % for k=last_closest_idx:(length(desired_mid) - 1)
+    %     distp = norm(desired_mid(k,:) - X);
+    %     if(distp < min_dist)
+    %         min_dist = distp;
+    %         closest_idx = k;
+    %     end
+    %     % cut off search somehow
+    % end
+
+    % ptA = [0 0];
+    % if(closest_idx == 1)
+    %     ptA = X;
+    % else
+    %     ptA = desired_traj(closest_idx, :);
+    % end
+    % ptB = desired_traj(closest_idx+1, :);
+    % crosstrack_error = abs(det([ptB - ptA; X - ptA])) / norm(ptB - ptA);
+
+    closest_idx = last_closest_idx;
+    min_dist = 100000;
+    for k=last_closest_idx:length(desired_traj)
+        distp = norm(desired_traj(k,:) - X);
+        if(distp < min_dist)
+            min_dist = distp;
+            closest_idx = k;
+        end
+        % cut off search somehow
     end
-    u = clampSteeringAngle(clampAngle(u));
+
+    lookahead_idx = 0;
+    for k=closest_idx:length(desired_traj)
+        distp = norm(desired_traj(k,:) - X);
+        if(distp > lookahead)
+            lookahead_idx = k;
+            break;
+        end
+    end
+
+    if(lookahead_idx == 0)
+        u = 0;
+    else
+        deltaPath = desired_traj(lookahead_idx,:) - pos;
+        a = atan2(deltaPath(2), deltaPath(1)) - (pi/2);
+        u = atan2(2 * wheel_base * sin(a), lookahead);
+    end
+
+    % maybe consider deadband region
+
+    last_closest_idx = closest_idx;
+    u = clampSteeringAngle(u);
 end
 

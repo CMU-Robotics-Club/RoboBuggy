@@ -6,7 +6,7 @@ import scipy.io
 
 combined = True
 d = None
-file = 'waypoints_tri.txt'
+file = 'waypoints_course_v2.txt'
 logs = []
 with open(file) as json_data:
     for line in json_data:
@@ -19,4 +19,4 @@ with open(file) as json_data:
 logs = np.array(logs)
 print(logs.shape)
 vars_map = {'logs': logs}
-scipy.io.savemat('./waypoints_tri.mat', mdict=vars_map)
+scipy.io.savemat('./waypoints_course_v2.mat', mdict=vars_map)

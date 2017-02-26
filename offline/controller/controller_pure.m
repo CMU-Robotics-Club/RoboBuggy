@@ -129,7 +129,7 @@ function [u] = control(desired_traj, X)
       deltaPath = target - pos;
       
       k = 0.8;
-      a = atan2(deltaPath(2), deltaPath(1))-X(4);
+      a = atan2(deltaPath(2), deltaPath(1))-X(4); % incorrect
       u = atan2(2*wheel_base*sin(a), k*X(3));
     end
     u = clampSteeringAngle(clampAngle(u));
