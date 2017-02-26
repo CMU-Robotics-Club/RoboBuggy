@@ -6,15 +6,15 @@ close all;
 addpath('../localizer/latlonutm/Codes/matlab');
 addpath('../localizer/altmany-export_fig');
 
-file = 'controller_tri_v1.mat';
+file = 'controller_v2.mat';
 load(file, 'trajectory');
 save_plot = false;
-show_maps = false;
+show_maps = true;
 
-load('./waypoints_tri.mat');
+load('./waypoints_course_v2.mat');
 [x, y, zone] = ll2utm(logs);
 desired = [x y];
-
+desired = desired(112:(end-50), :);
 
 k = 1000;
 if show_maps
@@ -28,6 +28,12 @@ plot(trajectory(1,1:k:end), trajectory(2,1:k:end))
 quiver(trajectory(1,1:k:end), trajectory(2,1:k:end), cos(heading), sin(heading))
 plot(desired(:,1), desired(:,2), 'g')
 hold off;
+title(['Map ', file]);
+
+headingd = rad2deg(heading);
+figure();
+hold on;
+plot(1:length(headingd), headingd)
 title(['Heading ', file]);
 
 figure();

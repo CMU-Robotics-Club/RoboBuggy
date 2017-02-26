@@ -1,4 +1,4 @@
-function [trajectory] = controller_pure()
+function [trajectory] = controller_pure_cont()
 % https://www.ri.cmu.edu/pub_files/2009/2/Automatic_Steering_Methods_for_Autonomous_Automobile_Path_Tracking.pdf
 % section 2.2
 
@@ -8,6 +8,7 @@ function [trajectory] = controller_pure()
     global steering_vel
     global dt
     global last_closest_idx
+    global last_u
 
     save_data = true;
     wheel_base = 1.13;
@@ -20,6 +21,8 @@ function [trajectory] = controller_pure()
     steering_vel = deg2rad(40); % 40deg/s, reaction speed to control cmds
                                 % full range in 0.5s
     last_closest_idx = 1;
+    last_u = 0;
+    total_time = 6; % min
 
     [x, y, ~] = ll2utm(lat_long(1), lat_long(2));
 
@@ -31,8 +34,7 @@ function [trajectory] = controller_pure()
 
     load('./waypoints_course_v2.mat');
     desired_traj = processWaypoints(logs);
-    % time = linspace(0, 240, size(trajectory,2));
-    time = 0:dt:240;
+    time = 0:dt:(total_time*60);
     u = 0; % commanded steering angle
     steering = u; % steering angle
     trajectory = [X; lat_long(1); lat_long(2); steering];
@@ -50,7 +52,6 @@ function [trajectory] = controller_pure()
             u = control(desired_traj, X);
         end
 
-        % trajectory = [trajectory, X];
         snapshot = summarize(X, utm_zone, steering);
         trajectory = [trajectory, snapshot];
     end
@@ -67,7 +68,7 @@ end
 
 function snapshot = summarize(x, utm_zone, steeringAngle)
     [lat, lon] = utm2ll(x(1), x(2), utm_zone);
-    snapshot = [x; x(1); x(2); steeringAngle];
+    snapshot = [x; lat; lon; steeringAngle];
 end
 
 function a = clampAngle(a)
@@ -114,42 +115,23 @@ end
 function [u] = control(desired_traj, X) 
     global wheel_base
     global last_closest_idx
+    global last_u
 
-    k = 3;
+    K = 4;
     vel = X(3);
     pos = X(1:2)';
     lookahead_bounds = [3 25];
-    lookahead = k * vel;
+    lookahead = K * vel;
     if(lookahead < lookahead_bounds(1))
         lookahead = lookahead_bounds(1);
     elseif(lookahead > lookahead_bounds(2))
         lookahead = lookahead_bounds(1);
     end 
 
-    % closest_idx = last_closest_idx;
-    % min_dist = 100000;
-    % for k=last_closest_idx:(length(desired_mid) - 1)
-    %     distp = norm(desired_mid(k,:) - X);
-    %     if(distp < min_dist)
-    %         min_dist = distp;
-    %         closest_idx = k;
-    %     end
-    %     % cut off search somehow
-    % end
-
-    % ptA = [0 0];
-    % if(closest_idx == 1)
-    %     ptA = X;
-    % else
-    %     ptA = desired_traj(closest_idx, :);
-    % end
-    % ptB = desired_traj(closest_idx+1, :);
-    % crosstrack_error = abs(det([ptB - ptA; X - ptA])) / norm(ptB - ptA);
-
     closest_idx = last_closest_idx;
     min_dist = 100000;
     for k=last_closest_idx:length(desired_traj)
-        distp = norm(desired_traj(k,:) - X);
+        distp = norm(desired_traj(k,:) - pos);
         if(distp < min_dist)
             min_dist = distp;
             closest_idx = k;
@@ -159,7 +141,7 @@ function [u] = control(desired_traj, X)
 
     lookahead_idx = 0;
     for k=closest_idx:length(desired_traj)
-        distp = norm(desired_traj(k,:) - X);
+        distp = norm(desired_traj(k,:) - pos);
         if(distp > lookahead)
             lookahead_idx = k;
             break;
@@ -170,13 +152,16 @@ function [u] = control(desired_traj, X)
         u = 0;
     else
         deltaPath = desired_traj(lookahead_idx,:) - pos;
-        a = atan2(deltaPath(2), deltaPath(1)) - (pi/2);
+        a = atan2(deltaPath(2), deltaPath(1)) - X(4);
         u = atan2(2 * wheel_base * sin(a), lookahead);
     end
 
-    % maybe consider deadband region
+    % try moving average
+    % temp_u = u;
+    % u = (last_u + u) / 2;
+    % last_u = temp_u;
 
-    last_closest_idx = closest_idx;
     u = clampSteeringAngle(u);
+    last_closest_idx = closest_idx;
 end
 

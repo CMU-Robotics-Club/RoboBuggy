@@ -17,6 +17,7 @@ import java.util.Date;
 public class WayPointFollowerPlanner extends PathPlannerNode {
     private ArrayList<GpsMeasurement> wayPoints;
     private GPSPoseMessage pose; //TODO change this to a reasonable type
+    private int lastClosestIndex = 0;
 
     /**
      * @vivaanbahl TESTING CODE ONLY
@@ -42,69 +43,110 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
     }
 
     //find the closest way point
-    //TODO turn into a binary kdtree search
-    private static int getClosestIndex(ArrayList<GpsMeasurement> wayPoints, GPSPoseMessage currentLocation) {
+    private int getClosestIndex(ArrayList<GpsMeasurement> wayPoints, GPSPoseMessage currentLocation) {
         double min = Double.MAX_VALUE; //note that the brakes will definitely deploy at this
 
-        int closestIndex = -1;
-        for (int i = 0; i < wayPoints.size(); i++) {
+        int closestIndex = lastClosestIndex;
+        for (int i = lastClosestIndex; i < wayPoints.size(); i++) {
             GPSPoseMessage gpsPoseMessage = wayPoints.get(i).toGpsPoseMessage(0);
             double d = GPSPoseMessage.getDistance(currentLocation, gpsPoseMessage);
             if (d < min) {
                 min = d;
                 closestIndex = i;
             }
+            // eventually cut off search somehow
         }
+        lastClosestIndex = closestIndex;
         return closestIndex;
     }
 
     @Override
     public double getCommandedSteeringAngle() {
         // determines the angle at which to move every 50 milliseconds
+        //PD control of DC steering motor handled by low level
+        
+        double commandedAngle = purePursuitController();
+        // double commandedAngle = stanleyMethodController();
+        
+        currentCommandedAngle = commandedAngle;
+        currentDesiredHeading = commandedAngle; // purpose?
+        return commandedAngle;
+    }
+
+    private double purePursuitController() {
+        // https://www.ri.cmu.edu/pub_files/2009/2/Automatic_Steering_Methods_for_Autonomous_Automobile_Path_Tracking.pdf
+        // section 2.2
+
         int closestIndex = getClosestIndex(wayPoints, pose);
-        if (closestIndex == -1) {
-            new RobobuggyLogicNotification("HELP no closest index", RobobuggyMessageLevel.EXCEPTION);
-            return 17433504; //A dummy value that we can never get
+
+        double K = 4.0;
+        double velocity = pose.getCurrentState().get(2, 0);
+        double lookaheadLowerBound = 3.0;
+        double lookaheadUpperBound = 25.0;
+        double lookahead = K * velocity;
+        if(lookahead < lookaheadLowerBound) {
+            lookahead = lookaheadLowerBound;
+        }
+        else if(lookahead > lookaheadUpperBound) {
+            lookahead = lookaheadUpperBound;
         }
 
-        double lookahead = 15; //meters
         //pick the first point that is at least lookahead away, then point buggy toward it
-        int targetIndex = closestIndex;
-        double distanceFromMessage = 0;
-        do {
-            targetIndex++;
-            distanceFromMessage = GPSPoseMessage.getDistance(pose, wayPoints.get(targetIndex).toGpsPoseMessage(0));
-        } while (targetIndex < wayPoints.size() && distanceFromMessage < lookahead);
+        int lookaheadIndex = 0;
+        for(lookaheadIndex = closestIndex; lookaheadIndex < wayPoints.size(); lookaheadIndex++) {
+            if(GPSPoseMessage.getDistance(pose, wayPoints.get(lookaheadIndex).toGpsPoseMessage(0)) > lookahead) {
+                break;
+            }
+        }
 
         //if we are out of points then just go straight
-        if (targetIndex >= wayPoints.size()) {
+        if (lookaheadIndex >= wayPoints.size()) {
             new RobobuggyLogicNotification("HELP out of points", RobobuggyMessageLevel.EXCEPTION);
             return 0;
         }
 
-        GpsMeasurement targetPoint = wayPoints.get(targetIndex);
-        currentWaypoint = targetPoint;
-
         //find a path from our current location to that point
-        double deltaLong = targetPoint.getLongitude() - pose.getLongitude();
-        double deltaLat = targetPoint.getLatitude() - pose.getLatitude();
-        double deltaLatMeters = LocalizerUtil.convertLatToMeters(deltaLat);
-        double deltaLongMeters = LocalizerUtil.convertLonToMeters(deltaLong);
-        double desiredHeading = Math.atan2(deltaLatMeters, deltaLongMeters);
-        currentDesiredHeading = desiredHeading;
-
-        //find the angle we need to reach that point
-        double poseHeading = pose.getHeading();
-        double deltaHeading = desiredHeading - poseHeading;
+        GpsMeasurement target = wayPoints.get(lookaheadIndex);
+        double dx = LocalizerUtil.convertLonToMeters(target.getLongitude()) - LocalizerUtil.convertLonToMeters(pose.getLongitude());
+        double dy = LocalizerUtil.convertLatToMeters(target.getLatitude()) - LocalizerUtil.convertLatToMeters(pose.getLatitude());
+        double deltaHeading = Math.atan2(dy, dx) - pose.getHeading();
 
         //Pure Pursuit steering controller
-//        double param1 = 2 * RobobuggyKFLocalizer.WHEELBASE_IN_METERS * Math.sin(deltaHeading);
-//        double param2 = 0.8 * pose.getCurrentState().get(2, 0);
-//        deltaHeading = Math.atan2(param1, param2);
+        double commandedAngle = Math.atan2(2 * RobobuggyKFLocalizer.WHEELBASE_IN_METERS * Math.sin(deltaHeading), lookahead);
+        commandedAngle = Util.normalizeAngleRad(commandedAngle);
+        return commandedAngle;
+    }
 
-        //PD control of DC steering motor handled by low level
-        double commandedAngle = Util.normalizeAngleRad(deltaHeading);
-        currentCommandedAngle = commandedAngle;
+    private double stanleyMethodController() {
+        // https://www.ri.cmu.edu/pub_files/2009/2/Automatic_Steering_Methods_for_Autonomous_Automobile_Path_Tracking.pdf
+        // section 2.3
+        
+        int closestIndex = getClosestIndex(wayPoints, pose);
+
+        double K = 0.1;
+        double velocity = pose.getCurrentState().get(2, 0);
+
+        //if we are out of points then just go straight
+        if (closestIndex >= (wayPoints.size() - 1)) {
+            new RobobuggyLogicNotification("HELP out of points", RobobuggyMessageLevel.EXCEPTION);
+            return 0;
+        }
+
+        GpsMeasurement ptA = wayPoints.get(closestIndex);
+        GpsMeasurement ptB = wayPoints.get(closestIndex + 1);
+        double pathx = LocalizerUtil.convertLonToMeters(ptB.getLongitude()) - LocalizerUtil.convertLonToMeters(ptA.getLongitude());
+        double pathy = LocalizerUtil.convertLatToMeters(ptB.getLatitude()) - LocalizerUtil.convertLatToMeters(ptA.getLatitude());
+        double dx = LocalizerUtil.convertLonToMeters(pose.getLongitude()) - LocalizerUtil.convertLonToMeters(ptA.getLongitude());
+        double dy = LocalizerUtil.convertLatToMeters(pose.getLatitude()) - LocalizerUtil.convertLatToMeters(ptA.getLatitude());
+
+        double pathHeading = Math.atan2(pathy, pathx);
+        double headingError = Util.normalizeAngleRad(pathHeading) - Util.normalizeAngleRad(pose.getHeading());
+        double determinant = (pathx * dy) - (pathy - dx);
+        double crosstrackError = - determinant / Math.sqrt(pathx*pathx + pathy*pathy);
+
+        //Stanley steering controller
+        double commandedAngle = headingError + Math.atan2(K * crosstrackError, velocity);
+        commandedAngle = Util.normalizeAngleRad(commandedAngle);
         return commandedAngle;
     }
 
