@@ -6,6 +6,7 @@ import com.roboclub.robobuggy.main.Util;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.nodes.localizers.LocalizerUtil;
+import com.roboclub.robobuggy.nodes.localizers.RobobuggyKFLocalizer;
 import com.roboclub.robobuggy.ros.NodeChannel;
 
 import java.util.ArrayList;
@@ -18,6 +19,9 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
     private ArrayList<GpsMeasurement> wayPoints;
     private GPSPoseMessage pose; //TODO change this to a reasonable type
     private int lastClosestIndex = 0;
+
+    // we only want to look at the next 10 waypoints as possible candidates
+    private final static int WAYPOINT_LOOKAHEAD_MAX = 10;
 
     /**
      * @vivaanbahl TESTING CODE ONLY
@@ -47,7 +51,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         double min = Double.MAX_VALUE; //note that the brakes will definitely deploy at this
 
         int closestIndex = lastClosestIndex;
-        for (int i = lastClosestIndex; i < wayPoints.size(); i++) {
+        for (int i = lastClosestIndex; i < lastClosestIndex + WAYPOINT_LOOKAHEAD_MAX; i++) {
             GPSPoseMessage gpsPoseMessage = wayPoints.get(i).toGpsPoseMessage(0);
             double d = GPSPoseMessage.getDistance(currentLocation, gpsPoseMessage);
             if (d < min) {
@@ -66,7 +70,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         //PD control of DC steering motor handled by low level
         
         double commandedAngle = purePursuitController();
-        // double commandedAngle = stanleyMethodController();
+//        double commandedAngle = stanleyMethodController();
         
         currentCommandedAngle = commandedAngle;
         currentDesiredHeading = commandedAngle; // purpose?
@@ -75,7 +79,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
 
     private double purePursuitController() {
         // https://www.ri.cmu.edu/pub_files/2009/2/Automatic_Steering_Methods_for_Autonomous_Automobile_Path_Tracking.pdf
-        // section 2.2
+        // section 2.sssasdf
 
         int closestIndex = getClosestIndex(wayPoints, pose);
 
@@ -107,6 +111,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
 
         //find a path from our current location to that point
         GpsMeasurement target = wayPoints.get(lookaheadIndex);
+        currentWaypoint = target;
         double dx = LocalizerUtil.convertLonToMeters(target.getLongitude()) - LocalizerUtil.convertLonToMeters(pose.getLongitude());
         double dy = LocalizerUtil.convertLatToMeters(target.getLatitude()) - LocalizerUtil.convertLatToMeters(pose.getLatitude());
         double deltaHeading = Math.atan2(dy, dx) - pose.getHeading();
