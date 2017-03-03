@@ -51,7 +51,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         double min = Double.MAX_VALUE; //note that the brakes will definitely deploy at this
 
         int closestIndex = lastClosestIndex;
-        for (int i = lastClosestIndex; i < lastClosestIndex + WAYPOINT_LOOKAHEAD_MAX; i++) {
+        for (int i = lastClosestIndex; i < lastClosestIndex + WAYPOINT_LOOKAHEAD_MAX && i < wayPoints.size(); i++) {
             GPSPoseMessage gpsPoseMessage = wayPoints.get(i).toGpsPoseMessage(0);
             double d = GPSPoseMessage.getDistance(currentLocation, gpsPoseMessage);
             if (d < min) {

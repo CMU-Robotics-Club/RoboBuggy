@@ -30,8 +30,6 @@ public class ControllerTester extends PeriodicNode {
     private static final double WHEELBASE = 1.13;
     // assume a velocity of 8 m/s
     private static final double VELOCITY = 1;
-    // assume we start from the base of the track
-    private static final LocTuple INITIAL_POSITION_LL = new LocTuple(40.441670, -79.9416362);
     // assume we are facing up hill 1
     private static final double INITIAL_HEADING_RAD = Math.toRadians(250);
 
@@ -48,10 +46,10 @@ public class ControllerTester extends PeriodicNode {
      *
      * @param name
      */
-    public ControllerTester(String name) {
+    public ControllerTester(String name, LocTuple initialPosition) {
         super(new BuggyBaseNode(NodeChannel.AUTO), SIM_PERIOD, name);
 
-        LocTuple firstPosition = INITIAL_POSITION_LL;
+        LocTuple firstPosition = initialPosition;
         double[][] XAsDoubleArr = {
                 { LocalizerUtil.deg2UTM(firstPosition).getEasting() },
                 { LocalizerUtil.deg2UTM(firstPosition).getNorthing() },

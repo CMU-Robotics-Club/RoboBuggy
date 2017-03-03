@@ -2,6 +2,7 @@ package com.roboclub.robobuggy.robots;
 
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
+import com.roboclub.robobuggy.nodes.localizers.LocTuple;
 import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
 import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
 import com.roboclub.robobuggy.simulation.ControllerTester;
@@ -31,14 +32,15 @@ public class ControllerTesterRobot extends AbstractRobot {
     private ControllerTesterRobot() {
         super();
 
-        nodeList.add(new ControllerTester("Testing the controller"));
+        ArrayList<GpsMeasurement> wayPoints = null;
         try {
-            ArrayList<GpsMeasurement> wayPoints = WayPointUtil.createWayPointsFromWaypointList(RobobuggyConfigFile.getWaypointSourceLogFile());
+            wayPoints = WayPointUtil.createWayPointsFromWaypointList(RobobuggyConfigFile.getWaypointSourceLogFile());
             nodeList.add(new WayPointFollowerPlanner(wayPoints));
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        nodeList.add(new ControllerTester("Testing the controller", new LocTuple(wayPoints.get(0).getLatitude(), wayPoints.get(0).getLongitude())));
 
         //setup the gui
         RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow", 1.0, 1.0);
