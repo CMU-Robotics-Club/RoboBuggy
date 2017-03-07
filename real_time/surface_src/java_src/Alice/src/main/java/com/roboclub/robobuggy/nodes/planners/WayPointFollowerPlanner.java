@@ -51,7 +51,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         double min = Double.MAX_VALUE; //note that the brakes will definitely deploy at this
 
         int closestIndex = lastClosestIndex;
-        for (int i = lastClosestIndex; i < lastClosestIndex + WAYPOINT_LOOKAHEAD_MAX && i < wayPoints.size(); i++) {
+        for (int i = lastClosestIndex; i < (lastClosestIndex + WAYPOINT_LOOKAHEAD_MAX) && i < wayPoints.size(); i++) {
             GPSPoseMessage gpsPoseMessage = wayPoints.get(i).toGpsPoseMessage(0);
             double d = GPSPoseMessage.getDistance(currentLocation, gpsPoseMessage);
             if (d < min) {
@@ -79,7 +79,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
 
     private double purePursuitController() {
         // https://www.ri.cmu.edu/pub_files/2009/2/Automatic_Steering_Methods_for_Autonomous_Automobile_Path_Tracking.pdf
-        // section 2.sssasdf
+        // section 2.2
 
         int closestIndex = getClosestIndex(wayPoints, pose);
 
