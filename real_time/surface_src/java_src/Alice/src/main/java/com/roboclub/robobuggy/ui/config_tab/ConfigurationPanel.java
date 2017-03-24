@@ -1,4 +1,4 @@
-package com.roboclub.robobuggy.ui.configTabGUI;
+package com.roboclub.robobuggy.ui.config_tab;
 
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;

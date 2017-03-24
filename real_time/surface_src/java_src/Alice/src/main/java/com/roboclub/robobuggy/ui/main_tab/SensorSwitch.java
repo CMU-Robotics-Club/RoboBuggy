@@ -1,4 +1,4 @@
-package com.roboclub.robobuggy.ui.mainTabGUI;
+package com.roboclub.robobuggy.ui.main_tab;
 
 import com.roboclub.robobuggy.messages.ResetMessage;
 import com.roboclub.robobuggy.messages.StateMessage;

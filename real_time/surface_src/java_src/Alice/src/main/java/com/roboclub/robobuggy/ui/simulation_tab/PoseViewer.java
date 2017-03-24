@@ -1,4 +1,4 @@
-package com.roboclub.robobuggy.ui.simulationTabGUI;
+package com.roboclub.robobuggy.ui.simulation_tab;
 
 import Jama.Matrix;
 import com.roboclub.robobuggy.messages.DriveControlMessage;

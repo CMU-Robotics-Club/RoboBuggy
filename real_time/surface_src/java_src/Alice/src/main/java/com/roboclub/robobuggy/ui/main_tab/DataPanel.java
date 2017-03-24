@@ -1,28 +1,40 @@
-package com.roboclub.robobuggy.ui.mainTabGUI;
+package com.roboclub.robobuggy.ui.main_tab;
 
-import com.roboclub.robobuggy.messages.*;
+import com.roboclub.robobuggy.messages.BrakeControlMessage;
+import com.roboclub.robobuggy.messages.EncoderMeasurement;
+import com.roboclub.robobuggy.messages.GpsMeasurement;
+import com.roboclub.robobuggy.messages.ImuMeasurement;
+import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
-import com.roboclub.robobuggy.ui.misc.GraphGUI.GraphPanel;
 import com.roboclub.robobuggy.ui.Gui;
 import com.roboclub.robobuggy.ui.RobobuggyGUIContainer;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import java.awt.Color;
+import java.awt.GridLayout;
+//import com.roboclub.robobuggy.ui.GpsPanel.LocTuple;
 
 /**
- * {@link RobobuggyGUIContainer} used to display a {@link DataPanel} and a
- * {@link GraphPanel}
+ * {@link RobobuggyGUIContainer} used for displaying sensor data
+ *
+ * @author Trevor Decker
+ * @author Kevin Brennan
+ * @version 0.5
+ *          <p>
+ *          CHANGELOG: NONE
+ *          <p>
+ *          DESCRIPTION: TODO
  */
-public final class AnalyticsPanel extends RobobuggyGUIContainer {
+public class DataPanel extends RobobuggyGUIContainer {
 
-    private static final long serialVersionUID = 7017667286491619492L;
+    private static final long serialVersionUID = 3950373392222628865L;
     private static final int MAX_LENGTH = 10;
 
-    private JPanel dataPanel;
-    private static AnalyticsPanel instance;
 
     /* Data Fields */
     private JLabel aX, aY, aZ;
@@ -37,41 +49,10 @@ public final class AnalyticsPanel extends RobobuggyGUIContainer {
     private JLabel latitude, longitude;
 
     /**
-     * @return a reference to the analytics panel
+     * Construct a new {@link DataPanel}
      */
-    public static synchronized AnalyticsPanel getInstance() {
-        if (instance == null) {
-            instance = new AnalyticsPanel();
-        }
-        return instance;
-
-    }
-
-    /**
-     * Construct a new {@link AnalyticsPanel}
-     */
-    private AnalyticsPanel() {
-        name = "analytics";
-        dataPanel = createDataPanel();
-        this.addComponent(dataPanel, 0, 0, 1, 1);
-
-    }
-
-    /**
-     * Returns data values from the {@link DataPanel}
-     *
-     * @return data values from the {@link DataPanel}
-     */
-    public String valuesFromData() {
-        return getValues();
-    }
-
-
-    /**
-     * @return the data panel
-     */
-    public JPanel getDataPanel() {
-        return dataPanel;
+    public DataPanel() {
+        this.addComponent(createDataPanel(), 0, .8, 1, .2);
     }
 
     private JPanel createDataPanel() {
@@ -267,4 +248,5 @@ public final class AnalyticsPanel extends RobobuggyGUIContainer {
 
         return values;
     }
+
 }

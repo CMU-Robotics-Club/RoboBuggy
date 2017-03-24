@@ -12,10 +12,10 @@ import com.roboclub.robobuggy.nodes.sensors.HillCrestImuNode;
 import com.roboclub.robobuggy.nodes.sensors.LoggingNode;
 import com.roboclub.robobuggy.nodes.sensors.RBSMNode;
 import com.roboclub.robobuggy.ros.NodeChannel;
-import com.roboclub.robobuggy.ui.configTabGUI.ConfigurationPanel;
+import com.roboclub.robobuggy.ui.config_tab.ConfigurationPanel;
 import com.roboclub.robobuggy.ui.Gui;
-import com.roboclub.robobuggy.ui.mainTabGUI.MainGuiWindow;
-import com.roboclub.robobuggy.ui.pathTabGUI.PathPanel;
+import com.roboclub.robobuggy.ui.main_tab.MainGuiWindow;
+import com.roboclub.robobuggy.ui.path_tab.PathPanel;
 import com.roboclub.robobuggy.ui.RobobuggyGUITabs;
 import com.roboclub.robobuggy.ui.RobobuggyJFrame;
 

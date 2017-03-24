@@ -3,11 +3,11 @@ package com.roboclub.robobuggy.robots;
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.nodes.localizers.KfLocalizer;
 import com.roboclub.robobuggy.simulation.LineByLineSensorPlayer;
-import com.roboclub.robobuggy.ui.autoTabGUI.AutonomousPanel;
-import com.roboclub.robobuggy.ui.configTabGUI.ConfigurationPanel;
+import com.roboclub.robobuggy.ui.auto_tab.AutonomousPanel;
+import com.roboclub.robobuggy.ui.config_tab.ConfigurationPanel;
 import com.roboclub.robobuggy.ui.Gui;
-import com.roboclub.robobuggy.ui.mainTabGUI.MainGuiWindow;
-import com.roboclub.robobuggy.ui.pathTabGUI.PathPanel;
+import com.roboclub.robobuggy.ui.main_tab.MainGuiWindow;
+import com.roboclub.robobuggy.ui.path_tab.PathPanel;
 import com.roboclub.robobuggy.ui.RobobuggyGUITabs;
 import com.roboclub.robobuggy.ui.RobobuggyJFrame;
 

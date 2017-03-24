@@ -1,4 +1,4 @@
-package com.roboclub.robobuggy.ui.simulationTabGUI;
+package com.roboclub.robobuggy.ui.simulation_tab;
 
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ui.RobobuggyGUIContainer;

@@ -1,4 +1,4 @@
-package com.roboclub.robobuggy.ui.autoTabGUI;
+package com.roboclub.robobuggy.ui.auto_tab;
 
 import com.roboclub.robobuggy.messages.DriveControlMessage;
 import com.roboclub.robobuggy.ros.Message;

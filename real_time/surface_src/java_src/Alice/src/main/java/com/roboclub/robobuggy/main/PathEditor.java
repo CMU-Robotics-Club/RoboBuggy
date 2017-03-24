@@ -5,7 +5,7 @@ import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.nodes.localizers.LocTuple;
 import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
 import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
-import com.roboclub.robobuggy.ui.pathTabGUI.Map;
+import com.roboclub.robobuggy.ui.path_tab.Map;
 
 import javax.swing.JFrame;
 import java.awt.Color;
