@@ -1,6 +1,10 @@
 package com.roboclub.robobuggy.ui.main_tab;
 
-import com.roboclub.robobuggy.messages.*;
+import com.roboclub.robobuggy.messages.BrakeControlMessage;
+import com.roboclub.robobuggy.messages.EncoderMeasurement;
+import com.roboclub.robobuggy.messages.GpsMeasurement;
+import com.roboclub.robobuggy.messages.ImuMeasurement;
+import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
@@ -9,8 +13,12 @@ import com.roboclub.robobuggy.ui.misc.GraphGUI.GraphPanel;
 import com.roboclub.robobuggy.ui.Gui;
 import com.roboclub.robobuggy.ui.RobobuggyGUIContainer;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import java.awt.Color;
+import java.awt.GridLayout;
 
 /**
  * {@link RobobuggyGUIContainer} used to display a {@link DataPanel} and a
