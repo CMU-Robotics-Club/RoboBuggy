@@ -67,6 +67,27 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         return closestIndex;
     }
 
+    private int getLookAheadIndex(int closestIndex) {
+        double velocity = pose.getCurrentState().get(2, 0);
+        double lookahead = K * velocity;
+
+        if(lookahead < LOOKAHEAD_LOWER_BOUND) {
+            lookahead = LOOKAHEAD_LOWER_BOUND;
+        }
+        else if(lookahead > LOOKAHEAD_UPPER_BOUND) {
+            lookahead = LOOKAHEAD_UPPER_BOUND;
+        }
+
+        //pick the first point that is at least lookahead away, then point buggy toward it
+        int lookaheadIndex = 0;
+        for(lookaheadIndex = closestIndex; lookaheadIndex < wayPoints.size(); lookaheadIndex++) {
+            if(GPSPoseMessage.getDistance(pose, wayPoints.get(lookaheadIndex).toGpsPoseMessage(0)) > lookahead) {
+                break;
+            }
+        }
+        return lookaheadIndex;
+    }
+
     @Override
     public double getCommandedSteeringAngle() {
         // determines the angle at which to move every 50 milliseconds
@@ -86,23 +107,8 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
 
         int closestIndex = getClosestIndex(wayPoints, pose);
 
-        double velocity = pose.getCurrentState().get(2, 0);
-        double lookahead = K * velocity;
-
-        if(lookahead < LOOKAHEAD_LOWER_BOUND) {
-            lookahead = LOOKAHEAD_LOWER_BOUND;
-        }
-        else if(lookahead > LOOKAHEAD_UPPER_BOUND) {
-            lookahead = LOOKAHEAD_UPPER_BOUND;
-        }
-
         //pick the first point that is at least lookahead away, then point buggy toward it
-        int lookaheadIndex = 0;
-        for(lookaheadIndex = closestIndex; lookaheadIndex < wayPoints.size(); lookaheadIndex++) {
-            if(GPSPoseMessage.getDistance(pose, wayPoints.get(lookaheadIndex).toGpsPoseMessage(0)) > lookahead) {
-                break;
-            }
-        }
+        int lookaheadIndex = getLookAheadIndex(closestIndex);
 
         //if we are out of points then just go straight
         if (lookaheadIndex >= wayPoints.size()) {
@@ -166,23 +172,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         }
 
         // Check if we have run out of waypoints
-        double velocity = pose.getCurrentState().get(2, 0);
-        double lookahead = K * velocity;
-
-        if(lookahead < LOOKAHEAD_LOWER_BOUND) {
-            lookahead = LOOKAHEAD_LOWER_BOUND;
-        }
-        else if(lookahead > LOOKAHEAD_UPPER_BOUND) {
-            lookahead = LOOKAHEAD_UPPER_BOUND;
-        }
-
-        //pick the first point that is at least lookahead away, then point buggy toward it
-        int lookaheadIndex = 0;
-        for(lookaheadIndex = closestIndex; lookaheadIndex < wayPoints.size(); lookaheadIndex++) {
-            if(GPSPoseMessage.getDistance(pose, wayPoints.get(lookaheadIndex).toGpsPoseMessage(0)) > lookahead) {
-                break;
-            }
-        }
+        int lookaheadIndex = getLookAheadIndex(closestIndex);
 
         // if we are out of points then brake
         return lookaheadIndex >= wayPoints.size();
