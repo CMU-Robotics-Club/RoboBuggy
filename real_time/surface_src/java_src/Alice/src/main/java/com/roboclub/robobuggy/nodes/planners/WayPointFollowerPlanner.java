@@ -30,6 +30,9 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
     public static GpsMeasurement currentWaypoint = new GpsMeasurement(0, 0);
     public static double currentCommandedAngle = 0.0;
     public static double currentDesiredHeading = 0.0;
+    public static final double LOOKAHEAD_LOWER_BOUND = 3.0;
+    public static final double LOOKAHEAD_UPPER_BOUND = 25.0;
+    public static final double K = 4.0;
 
     /**
      * @param wayPoints the list of waypoints to follow
@@ -83,16 +86,14 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
 
         int closestIndex = getClosestIndex(wayPoints, pose);
 
-        double K = 4.0;
         double velocity = pose.getCurrentState().get(2, 0);
-        double lookaheadLowerBound = 3.0;
-        double lookaheadUpperBound = 25.0;
         double lookahead = K * velocity;
-        if(lookahead < lookaheadLowerBound) {
-            lookahead = lookaheadLowerBound;
+
+        if(lookahead < LOOKAHEAD_LOWER_BOUND) {
+            lookahead = LOOKAHEAD_LOWER_BOUND;
         }
-        else if(lookahead > lookaheadUpperBound) {
-            lookahead = lookaheadUpperBound;
+        else if(lookahead > LOOKAHEAD_UPPER_BOUND) {
+            lookahead = LOOKAHEAD_UPPER_BOUND;
         }
 
         //pick the first point that is at least lookahead away, then point buggy toward it
@@ -157,8 +158,34 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
 
     @Override
     protected boolean getDeployBrakeValue() {
-        // need to brake when 15 m off course
-        return false;
+
+        // Check if we are more than 15 m away from closest waypoint
+        int closestIndex = getClosestIndex(wayPoints, pose);
+        if(GPSPoseMessage.getDistance(pose, wayPoints.get(closestIndex).toGpsPoseMessage(0)) >= 15.0) {
+            return true;
+        }
+
+        // Check if we have run out of waypoints
+        double velocity = pose.getCurrentState().get(2, 0);
+        double lookahead = K * velocity;
+
+        if(lookahead < LOOKAHEAD_LOWER_BOUND) {
+            lookahead = LOOKAHEAD_LOWER_BOUND;
+        }
+        else if(lookahead > LOOKAHEAD_UPPER_BOUND) {
+            lookahead = LOOKAHEAD_UPPER_BOUND;
+        }
+
+        //pick the first point that is at least lookahead away, then point buggy toward it
+        int lookaheadIndex = 0;
+        for(lookaheadIndex = closestIndex; lookaheadIndex < wayPoints.size(); lookaheadIndex++) {
+            if(GPSPoseMessage.getDistance(pose, wayPoints.get(lookaheadIndex).toGpsPoseMessage(0)) > lookahead) {
+                break;
+            }
+        }
+
+        // if we are out of points then brake
+        return lookaheadIndex >= wayPoints.size();
     }
 
 
