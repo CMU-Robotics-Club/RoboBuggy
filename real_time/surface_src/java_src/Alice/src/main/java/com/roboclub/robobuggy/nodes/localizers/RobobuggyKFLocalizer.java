@@ -20,6 +20,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
 
     // our transmitter for position estimate messages
     private Publisher posePub;
+    private boolean gpsMessagesReceived;
 
     // constants we use throughout the file
     private static final int X_GLOBAL_ROW = 0;
@@ -150,6 +151,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
 
     private void setupGPSSubscriber() {
         new Subscriber("KF Localizer", NodeChannel.GPS.getMsgPath(), ((topicName, m) -> {
+            gpsMessagesReceived = true;
             GpsMeasurement gpsLoc = (GpsMeasurement) m;
             LocTuple loc = new LocTuple(gpsLoc.getLatitude(), gpsLoc.getLongitude());
             UTMTuple gps = LocalizerUtil.deg2UTM(loc);
@@ -196,8 +198,10 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         UTMTuple utm = new UTMTuple(UTMZONE, 'T', x_predict.get(X_GLOBAL_ROW, 0),
                 x_predict.get(Y_GLOBAL_ROW, 0));
         LocTuple latLon = LocalizerUtil.utm2Deg(utm);
-        posePub.publish(new GPSPoseMessage(new Date(), latLon.getLatitude(),
-                latLon.getLongitude(), x_predict.get(HEADING_GLOBAL_ROW, 0), x));
+        if (gpsMessagesReceived) {
+            posePub.publish(new GPSPoseMessage(new Date(), latLon.getLatitude(),
+                    latLon.getLongitude(), x_predict.get(HEADING_GLOBAL_ROW, 0), x));
+        }
     }
 
     // Kalman filter step 0: Generate the motion model for the buggy
