@@ -101,7 +101,10 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         };
         Q_gps = new Matrix(qGPS2D);
 
-        double[][] qEncoder2D = {{0.25}};
+        double[][] qEncoder2D = {
+                {0.25, 0},
+                {0, 1},
+        };
         Q_encoder = new Matrix(qEncoder2D);
 
         double[][] cGPS2D = {
@@ -113,6 +116,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
 
         double[][] cEncoder2D = {
                 {0, 0, 1, 0, 0},
+                {0, 0, 0, 1, 0},
         };
         C_encoder = new Matrix(cEncoder2D);
 
@@ -120,7 +124,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         // Every time we get a new sensor update, trigger the new kalman update
         setupGPSSubscriber();
         setupEncoderSubscriber();
-        setupWheelSubscriber();
+        setupSteeringSubscriber();
         resume();
     }
 
@@ -141,8 +145,15 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
             lastEncoderTime = currentTime;
             lastEncoder = currentEncoder;
 
+            double arcRadius = WHEELBASE_IN_METERS / Math.sin(steeringAngle);
+            double arcLength = dx;
+            double headingChange = arcLength / arcRadius;
+
             // measurement
-            double[][] z2D = {{ bodySpeed }};
+            double[][] z2D = {
+                    { bodySpeed },
+                    { headingChange },
+            };
             Matrix z = new Matrix(z2D);
 
             kalmanFilter(C_encoder, Q_encoder, z);
@@ -184,7 +195,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         }));
     }
 
-    private void setupWheelSubscriber() {
+    private void setupSteeringSubscriber() {
         new Subscriber("htGpsLoc", NodeChannel.STEERING.getMsgPath(), ((topicName, m) -> {
             SteeringMeasurement steerM = (SteeringMeasurement) m;
             steeringAngle = Math.toRadians(steerM.getAngle());
