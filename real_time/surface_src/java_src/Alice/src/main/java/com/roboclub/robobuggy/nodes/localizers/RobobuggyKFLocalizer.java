@@ -103,7 +103,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
 
         double[][] qEncoder2D = {
                 {0.25, 0},
-                {0, 1},
+                {0, 0.1},
         };
         Q_encoder = new Matrix(qEncoder2D);
 
@@ -116,7 +116,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
 
         double[][] cEncoder2D = {
                 {0, 0, 1, 0, 0},
-                {0, 0, 0, 1, 0},
+                {0, 0, 0, 0, 1},
         };
         C_encoder = new Matrix(cEncoder2D);
 
@@ -146,8 +146,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
             lastEncoder = currentEncoder;
 
             double arcRadius = WHEELBASE_IN_METERS / Math.sin(steeringAngle);
-            double arcLength = dx;
-            double headingChange = arcLength / arcRadius;
+            double headingChange = dx / arcRadius;
 
             // measurement
             double[][] z2D = {
