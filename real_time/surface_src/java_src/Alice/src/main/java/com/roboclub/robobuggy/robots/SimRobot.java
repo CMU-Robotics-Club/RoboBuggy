@@ -3,11 +3,13 @@ package com.roboclub.robobuggy.robots;
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.nodes.localizers.HighTrustGPSLocalizer;
+import com.roboclub.robobuggy.nodes.localizers.LocTuple;
 import com.roboclub.robobuggy.nodes.localizers.LocalizerUtil;
 import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
 import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
 import com.roboclub.robobuggy.nodes.sensors.LoggingNode;
 import com.roboclub.robobuggy.ros.NodeChannel;
+import com.roboclub.robobuggy.simulation.FullSimRunner;
 import com.roboclub.robobuggy.simulation.SimulatedBuggy;
 import com.roboclub.robobuggy.simulation.SimulatedGPSNode;
 import com.roboclub.robobuggy.simulation.SimulatedImuNode;
@@ -49,32 +51,7 @@ public final class SimRobot extends AbstractRobot {
     private SimRobot() {
         super();
 
-        nodeList.add(new HighTrustGPSLocalizer());
-        //	nodeList.add(new KfLocalizer(100));
-        nodeList.add(new SimulatedImuNode(100));
-        nodeList.add(new SimulatedGPSNode(500));
-        nodeList.add(new SimulatedRBSMNode());
-
-        try {
-            ArrayList<GpsMeasurement> wayPoints =
-                    WayPointUtil.createWayPointsFromWaypointList(RobobuggyConfigFile.getWaypointSourceLogFile());
-            nodeList.add(new WayPointFollowerPlanner(wayPoints));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        SimulatedBuggy simBuggy = SimulatedBuggy.getInstance();
-        simBuggy.setY(LocalizerUtil.convertLatToMeters(40.441705));
-        simBuggy.setX(LocalizerUtil.convertLonToMeters(-79.941585));
-        simBuggy.setTh(-110);
-        simBuggy.setDx(10);
-
-
-        nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION,
-                NodeChannel.getLoggingChannels()));
-        //simBuggy.setDth(1);
-        //	simBuggy.setDth(0.10);
-
+        nodeList.add(new FullSimRunner("Full Sim Toolbox", new LocTuple(40.441670, -79.9416362)));
 
         //setup the gui
         RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow", 1.0, 1.0);
@@ -82,13 +59,8 @@ public final class SimRobot extends AbstractRobot {
         RobobuggyGUITabs tabs = new RobobuggyGUITabs();
         mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
         tabs.addTab(new MainGuiWindow(), "Home");
-        //	tabs.addTab(new PoseGraphsPanel(),"poses");
-        //	tabs.addTab(new ImuPanel(),"IMU");
-        tabs.addTab(new AutonomousPanel(), "Autonomous");
-        tabs.addTab(new SimulationPanel(), "Simulation");
-        tabs.addTab(new PathPanel(), "Path Panel");
+        tabs.add(new PathPanel(), "Path Visualizer");
         tabs.addTab(new ConfigurationPanel(), "Configuration");
-
 
     }
 }

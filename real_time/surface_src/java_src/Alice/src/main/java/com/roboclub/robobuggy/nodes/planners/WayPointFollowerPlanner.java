@@ -73,7 +73,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
 //        double commandedAngle = stanleyMethodController();
         
         currentCommandedAngle = commandedAngle;
-        currentDesiredHeading = commandedAngle; // purpose?
+        currentDesiredHeading = pose.getHeading() + commandedAngle;
         return commandedAngle;
     }
 
