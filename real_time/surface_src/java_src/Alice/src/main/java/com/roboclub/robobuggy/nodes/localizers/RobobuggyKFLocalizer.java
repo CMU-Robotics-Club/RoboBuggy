@@ -46,6 +46,14 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
     private Matrix Q_gps;               // model noise covariance matrix
     private Matrix Q_encoder;
 
+    // Q is variance of new measurements
+    // P is variance of old measurements
+    // C is observation matrix
+    // Rk = covariance of measurements
+    // S-1 models confidence of new measurements
+    // if Rk is 0, that means kalman gain is high, means you weight measurement more than model
+    // if Rk is large, kalman gain low, weight model more than measurements
+
     // output matrices
     private Matrix C_gps;               // a description of how the GPS impacts x
     private Matrix C_encoder;           // how the encoder affects x
@@ -95,15 +103,15 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         P = arrayToMatrix(pArray);
 
         double[][] qGPS2D = {
-                {1, 0, 0},
-                {0, 1, 0},
-                {0, 0, 0},
+                {4, 0, 0},
+                {0, 4, 0},
+                {0, 0, 0.1},
         };
         Q_gps = new Matrix(qGPS2D);
 
         double[][] qEncoder2D = {
                 {0.25, 0},
-                {0, 1},
+                {0, 0.1},
         };
         Q_encoder = new Matrix(qEncoder2D);
 
