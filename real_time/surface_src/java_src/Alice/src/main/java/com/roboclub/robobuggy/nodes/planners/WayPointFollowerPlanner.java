@@ -83,7 +83,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
 
         int closestIndex = getClosestIndex(wayPoints, pose);
 
-        double K = 4.0;
+        double K = 2.0;
         double velocity = pose.getCurrentState().get(2, 0);
         double lookaheadLowerBound = 3.0;
         double lookaheadUpperBound = 25.0;

@@ -95,15 +95,15 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         P = arrayToMatrix(pArray);
 
         double[][] qGPS2D = {
-                {4, 0, 0},
-                {0, 4, 0},
-                {0, 0, 0.02},
+                {1, 0, 0},
+                {0, 1, 0},
+                {0, 0, 0},
         };
         Q_gps = new Matrix(qGPS2D);
 
         double[][] qEncoder2D = {
                 {0.25, 0},
-                {0, 0.1},
+                {0, 1},
         };
         Q_encoder = new Matrix(qEncoder2D);
 
@@ -145,8 +145,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
             lastEncoderTime = currentTime;
             lastEncoder = currentEncoder;
 
-            double arcRadius = WHEELBASE_IN_METERS / Math.sin(steeringAngle);
-            double headingChange = dx / arcRadius;
+            double headingChange = Math.tan(steeringAngle) / WHEELBASE_IN_METERS;
 
             // measurement
             double[][] z2D = {
