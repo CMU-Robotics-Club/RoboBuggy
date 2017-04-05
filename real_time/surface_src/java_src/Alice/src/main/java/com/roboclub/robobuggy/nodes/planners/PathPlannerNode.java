@@ -12,6 +12,7 @@ import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
 
+import java.time.temporal.WeekFields;
 import java.util.Date;
 
 /**
@@ -48,7 +49,7 @@ public abstract class PathPlannerNode extends BuggyDecoratorNode {
             public void actionPerformed(String topicName, Message m) {
                 updatePositionEstimate((GPSPoseMessage) m);
                 steeringCommandPub.publish(new DriveControlMessage(new Date(),
-                        getCommandedSteeringAngle()));
+                        getCommandedSteeringAngle(), WayPointFollowerPlanner.currentWaypoint));
                 brakingCommandPub.publish(new BrakeControlMessage(new Date(),
                         getDeployBrakeValue()));
             }
