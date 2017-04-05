@@ -21,7 +21,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
     private int lastClosestIndex = 0;
 
     // we only want to look at the next 10 waypoints as possible candidates
-    private final static int WAYPOINT_LOOKAHEAD_MAX = 10;
+    private final static int WAYPOINT_LOOKAHEAD_MAX = 50;
 
     /**
      * @vivaanbahl TESTING CODE ONLY
@@ -83,7 +83,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
 
         int closestIndex = getClosestIndex(wayPoints, pose);
 
-        double K = 2.0;
+        double K = 3.0;
         double velocity = pose.getCurrentState().get(2, 0);
         double lookaheadLowerBound = 3.0;
         double lookaheadUpperBound = 25.0;

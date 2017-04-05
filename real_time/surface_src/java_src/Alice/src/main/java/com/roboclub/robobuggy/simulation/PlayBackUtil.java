@@ -23,6 +23,7 @@ import com.roboclub.robobuggy.messages.WheelAngleCommandMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
+import com.sun.org.apache.xml.internal.resolver.helpers.PublicId;
 
 /**
  * utilities for playback
@@ -43,7 +44,7 @@ public final class PlayBackUtil {
     private Publisher loggingButtonPub;
     private Publisher logicNotificationPub;
     private Publisher posePub;
-
+    private Publisher driveCtrlPub;
 
     /**
      * Gets the PlaybackUtil instance
@@ -71,6 +72,7 @@ public final class PlayBackUtil {
         loggingButtonPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
         logicNotificationPub = new Publisher(NodeChannel.LOGIC_NOTIFICATION.getMsgPath());
         posePub = new Publisher(NodeChannel.POSE.getMsgPath());
+        driveCtrlPub = new Publisher(NodeChannel.DRIVE_CTRL.getMsgPath());
     }
 
     /**
@@ -136,6 +138,7 @@ public final class PlayBackUtil {
                 break;
             case DriveControlMessage.VERSION_ID:
                 transmitMessage = translator.fromJson(sensorDataJson, DriveControlMessage.class);
+                getPrivateInstance().driveCtrlPub.publish(transmitMessage);
                 break;
             case EncoderMeasurement.VERSION_ID:
                 transmitMessage = translator.fromJson(sensorDataJson, EncoderMeasurement.class);

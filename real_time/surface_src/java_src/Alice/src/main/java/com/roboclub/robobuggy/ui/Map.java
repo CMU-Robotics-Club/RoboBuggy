@@ -2,6 +2,7 @@ package com.roboclub.robobuggy.ui;
 
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
+import com.roboclub.robobuggy.messages.DriveControlMessage;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.nodes.localizers.LocTuple;
@@ -81,8 +82,8 @@ public class Map extends JPanel {
                 addPointsToMapTree(Color.RED, new LocTuple(gpsM.getLatitude(), gpsM.getLongitude()));
 
                 getMapTree().getViewer().removeMapMarker(currentWaypoint);
-                currentWaypoint.setLat(WayPointFollowerPlanner.currentWaypoint.getLatitude());
-                currentWaypoint.setLon(WayPointFollowerPlanner.currentWaypoint.getLongitude());
+//                currentWaypoint.setLat(WayPointFollowerPlanner.currentWaypoint.getLatitude());
+//                currentWaypoint.setLon(WayPointFollowerPlanner.currentWaypoint.getLongitude());
                 getMapTree().getViewer().addMapMarker(currentWaypoint);
 
                 getMapTree().getViewer().removeMapPolygon(desiredHeadingMapObj);
@@ -123,6 +124,11 @@ public class Map extends JPanel {
             GpsMeasurement gps = ((GpsMeasurement) m);
             addPointsToMapTree(Color.BLACK, new LocTuple(gps.getLatitude(), gps.getLongitude()));
         }));
+        new Subscriber("map", NodeChannel.DRIVE_CTRL.getMsgPath(), (topicName, m) -> {
+            DriveControlMessage dcm = ((DriveControlMessage) m);
+            currentWaypoint.setLat(dcm.getWaypoint().getLatitude());
+            currentWaypoint.setLon(dcm.getWaypoint().getLongitude());
+        });
 
     }
 

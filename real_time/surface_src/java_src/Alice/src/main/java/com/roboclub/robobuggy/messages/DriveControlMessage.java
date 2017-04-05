@@ -41,4 +41,7 @@ public class DriveControlMessage extends BaseMessage {
         return angle;
     }
 
+    public GpsMeasurement getWaypoint() {
+        return currentWaypoint;
+    }
 }

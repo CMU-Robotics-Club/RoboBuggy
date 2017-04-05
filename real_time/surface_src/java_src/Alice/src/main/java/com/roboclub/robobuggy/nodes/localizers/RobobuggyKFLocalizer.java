@@ -110,8 +110,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         Q_gps = new Matrix(qGPS2D);
 
         double[][] qEncoder2D = {
-                {0.25, 0},
-                {0, 0.1},
+                {0.25},
         };
         Q_encoder = new Matrix(qEncoder2D);
 
@@ -124,7 +123,6 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
 
         double[][] cEncoder2D = {
                 {0, 0, 1, 0, 0},
-                {0, 0, 0, 0, 1},
         };
         C_encoder = new Matrix(cEncoder2D);
 
@@ -158,7 +156,6 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
             // measurement
             double[][] z2D = {
                     { bodySpeed },
-                    { headingChange },
             };
             Matrix z = new Matrix(z2D);
 
