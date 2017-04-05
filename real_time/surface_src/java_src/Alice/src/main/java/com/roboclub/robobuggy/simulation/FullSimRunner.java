@@ -33,7 +33,7 @@ public class FullSimRunner extends BuggyBaseNode {
     private static final int VELOCITY = 4;
     private static final double INITIAL_HEADING_IN_RADS = 4.36; // rad
     private static final int LOCALIZER_UPDATE_PERIOD = 10;
-    private static final int GPS_UPDATE_PERIOD = 2000;
+    private static final int GPS_UPDATE_PERIOD = 500;
     private static final int ENC_UPDATE_PERIOD = 100;
     private static final int SIM_UPDATE_PERIOD = 100;
 
