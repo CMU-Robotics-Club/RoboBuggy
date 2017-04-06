@@ -63,10 +63,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
     private double lastEncoder;         // deadreckoning value
     private long lastEncoderTime;       // the most recent time of the encoder reading, used for getting buggy velocity
     private double steeringAngle = 0;   // current steering angle of the buggy
-
-    public Matrix getCurrentState() {
-        return x;
-    }
+    private int prevNumSatellites = 0;
 
     /**
      * Create a new {@link PeriodicNode} decorator
@@ -193,6 +190,30 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
             };
 
             Matrix z = new Matrix(z2D);
+
+
+            // very crude dynamic covariance
+            if (prevNumSatellites == 0) {
+                prevNumSatellites = gpsLoc.getNumSatellites();
+            }
+            else {
+                if (prevNumSatellites < gpsLoc.getNumSatellites()) {
+                    // want to trust the GPS more, since we have better lock
+                    double pos_covariance = Q_gps.get(0, 0);
+                    double orient_covariance = Q_gps.get(2, 2);
+                    Q_gps.set(0, 0, pos_covariance * 0.75);
+                    Q_gps.set(1, 1, pos_covariance * 0.75);
+                    Q_gps.set(2, 2, orient_covariance * 0.75);
+                }
+                else if (prevNumSatellites > gpsLoc.getNumSatellites()) {
+                    // want to trust the GPS less, since we have worse lock
+                    double pos_covariance = Q_gps.get(0, 0);
+                    double orient_covariance = Q_gps.get(2, 2);
+                    Q_gps.set(0, 0, pos_covariance * 1/0.75);
+                    Q_gps.set(1, 1, pos_covariance * 1/0.75);
+                    Q_gps.set(2, 2, orient_covariance * 1/0.75);
+                }
+            }
 
             kalmanFilter(C_gps, Q_gps, z);
         }));

@@ -168,4 +168,8 @@ public class GpsMeasurement extends BaseMessage {
         double dy = LocalizerUtil.convertLatToMeters(a.getLatitude() - b.getLatitude());
         return Math.sqrt(dx * dx + dy * dy);
     }
+
+    public int getNumSatellites() {
+        return numSatellites;
+    }
 }
