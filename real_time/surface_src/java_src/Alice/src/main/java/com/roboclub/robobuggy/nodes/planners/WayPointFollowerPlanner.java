@@ -69,8 +69,8 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         // determines the angle at which to move every 50 milliseconds
         //PD control of DC steering motor handled by low level
         
-        double commandedAngle = purePursuitController();
-//        double commandedAngle = stanleyMethodController();
+//        double commandedAngle = purePursuitController();
+        double commandedAngle = stanleyMethodController();
         
         currentCommandedAngle = commandedAngle;
         currentDesiredHeading = pose.getHeading() + commandedAngle;

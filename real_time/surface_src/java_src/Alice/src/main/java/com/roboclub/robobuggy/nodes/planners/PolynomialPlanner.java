@@ -16,8 +16,6 @@ public class PolynomialPlanner extends PathPlannerNode {
     /**
      * Construct a new {@link PathPlannerNode}
      *
-     * @param channel {@link NodeChannel} on which to broadcast status
-     *                information about the node
      */
     public PolynomialPlanner(ArrayList<GpsMeasurement> waypoints) {
         super(NodeChannel.PATH_PLANNER);
