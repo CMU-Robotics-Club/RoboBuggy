@@ -192,24 +192,24 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
 
 
             // very crude dynamic covariance
-                if (gpsLoc.getNumSatellites() > 11) {
-                    // want to trust the GPS more, since we have better lock
-                    double[][] qGPS2D = {
-                            {4, 0, 0},
-                            {0, 4, 0},
-                            {0, 0, 0.1},
-                    };
-                    Q_gps = new Matrix(qGPS2D);
-                }
-                else if (gpsLoc.getNumSatellites() <= 11) {
-                    // want to trust the GPS less, since we have worse lock
-                    double[][] qGPS2D = {
-                            {5, 0, 0},
-                            {0, 5, 0},
-                            {0, 0, 0.5},
-                    };
-                    Q_gps = new Matrix(qGPS2D);
-                }
+            if (gpsLoc.getNumSatellites() > 11) {
+                // want to trust the GPS more, since we have better lock
+                double[][] qGPS2D = {
+                        {4, 0, 0},
+                        {0, 4, 0},
+                        {0, 0, 0.1},
+                };
+                Q_gps = new Matrix(qGPS2D);
+            }
+            else if (gpsLoc.getNumSatellites() <= 11) {
+            // want to trust the GPS less, since we have worse lock
+                double[][] qGPS2D = {
+                        {5, 0, 0},
+                        {0, 5, 0},
+                        {0, 0, 0.5},
+                };
+                Q_gps = new Matrix(qGPS2D);
+            }
 
             kalmanFilter(C_gps, Q_gps, z);
         }));

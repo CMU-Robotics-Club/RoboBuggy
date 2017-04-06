@@ -19,9 +19,11 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
     private ArrayList<GpsMeasurement> wayPoints;
     private GPSPoseMessage pose; //TODO change this to a reasonable type
     private int lastClosestIndex = 0;
+    private double previousSteeringAngle = 0;
 
     // we only want to look at the next 10 waypoints as possible candidates
     private final static int WAYPOINT_LOOKAHEAD_MAX = 50;
+    private final static double MAX_ORIENTATION_ERROR = Math.toRadians(45);
 
     /**
      * @vivaanbahl TESTING CODE ONLY
@@ -74,6 +76,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         
         currentCommandedAngle = commandedAngle;
         currentDesiredHeading = pose.getHeading() + commandedAngle;
+        previousSteeringAngle = commandedAngle;
         return commandedAngle;
     }
 
@@ -146,12 +149,20 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
 
         double pathHeading = Math.atan2(pathy, pathx);
         double headingError = Util.normalizeAngleRad(pathHeading) - Util.normalizeAngleRad(pose.getHeading());
-        double determinant = (pathx * dy) - (pathy - dx);
-        double crosstrackError = - determinant / Math.sqrt(pathx*pathx + pathy*pathy);
+        double commandedAngle;
 
-        //Stanley steering controller
-        double commandedAngle = headingError + Math.atan2(K * crosstrackError, velocity);
-        commandedAngle = Util.normalizeAngleRad(commandedAngle);
+        if (Math.abs(headingError) > MAX_ORIENTATION_ERROR) {
+            commandedAngle = previousSteeringAngle;
+        }
+        else {
+
+            double determinant = (pathx * dy) - (pathy - dx);
+            double crosstrackError = -determinant / Math.sqrt(pathx * pathx + pathy * pathy);
+
+            //Stanley steering controller
+            commandedAngle = headingError + Math.atan2(K * crosstrackError, velocity);
+            commandedAngle = Util.normalizeAngleRad(commandedAngle);
+        }
         return commandedAngle;
     }
 
