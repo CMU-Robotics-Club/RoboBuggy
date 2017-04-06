@@ -63,7 +63,6 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
     private double lastEncoder;         // deadreckoning value
     private long lastEncoderTime;       // the most recent time of the encoder reading, used for getting buggy velocity
     private double steeringAngle = 0;   // current steering angle of the buggy
-    private int prevNumSatellites = 0;
 
     /**
      * Create a new {@link PeriodicNode} decorator
@@ -193,11 +192,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
 
 
             // very crude dynamic covariance
-            if (prevNumSatellites == 0) {
-                prevNumSatellites = gpsLoc.getNumSatellites();
-            }
-            else {
-                if (prevNumSatellites <= 11) {
+                if (gpsLoc.getNumSatellites() > 11) {
                     // want to trust the GPS more, since we have better lock
                     double[][] qGPS2D = {
                             {4, 0, 0},
@@ -206,7 +201,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
                     };
                     Q_gps = new Matrix(qGPS2D);
                 }
-                else if (prevNumSatellites > 11) {
+                else if (gpsLoc.getNumSatellites() <= 11) {
                     // want to trust the GPS less, since we have worse lock
                     double[][] qGPS2D = {
                             {5, 0, 0},
@@ -215,7 +210,6 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
                     };
                     Q_gps = new Matrix(qGPS2D);
                 }
-            }
 
             kalmanFilter(C_gps, Q_gps, z);
         }));
