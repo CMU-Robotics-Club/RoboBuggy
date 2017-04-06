@@ -197,21 +197,23 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
                 prevNumSatellites = gpsLoc.getNumSatellites();
             }
             else {
-                if (prevNumSatellites < gpsLoc.getNumSatellites()) {
+                if (prevNumSatellites <= 11) {
                     // want to trust the GPS more, since we have better lock
-                    double pos_covariance = Q_gps.get(0, 0);
-                    double orient_covariance = Q_gps.get(2, 2);
-                    Q_gps.set(0, 0, pos_covariance * 0.75);
-                    Q_gps.set(1, 1, pos_covariance * 0.75);
-                    Q_gps.set(2, 2, orient_covariance * 0.75);
+                    double[][] qGPS2D = {
+                            {4, 0, 0},
+                            {0, 4, 0},
+                            {0, 0, 0.1},
+                    };
+                    Q_gps = new Matrix(qGPS2D);
                 }
-                else if (prevNumSatellites > gpsLoc.getNumSatellites()) {
+                else if (prevNumSatellites > 11) {
                     // want to trust the GPS less, since we have worse lock
-                    double pos_covariance = Q_gps.get(0, 0);
-                    double orient_covariance = Q_gps.get(2, 2);
-                    Q_gps.set(0, 0, pos_covariance * 1/0.75);
-                    Q_gps.set(1, 1, pos_covariance * 1/0.75);
-                    Q_gps.set(2, 2, orient_covariance * 1/0.75);
+                    double[][] qGPS2D = {
+                            {5, 0, 0},
+                            {0, 5, 0},
+                            {0, 0, 0.5},
+                    };
+                    Q_gps = new Matrix(qGPS2D);
                 }
             }
 
