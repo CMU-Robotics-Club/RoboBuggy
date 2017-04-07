@@ -53,7 +53,7 @@ public abstract class SerialNode extends BuggyDecoratorNode {
         this.threadName = threadName;
 
         // need to accept a vaild port name
-        if (portName.equals("")) {
+        if (portName == null || portName.equals("")) {
             return;
         }
 

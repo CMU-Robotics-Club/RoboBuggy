@@ -93,6 +93,46 @@ public class RBSMNode extends SerialNode {
 
     private Publisher messagePubFp; //Fingerprint for low level hash
 
+    /**
+     * Error codes from the low level system
+     * Original definitions are in the rbsm_config.txt
+     */
+    protected enum RBSMErrorCodes {
+        UNKNOWN_CODE(0, "Unknown RBSM Error!"),
+        WATCHDOG_TIMER(1, "Watchdog Timer fired"),
+        RBSM_LOST_STREAM(2, "RBSM Lost Stream"),
+        RBSM_INVALID_MID(4, "RBSM got an invalid Message ID!"),
+        RBSM_RC_LOST_SIGNAL(8, "RC Controller disconnected!"),
+        RBSM_AUTON_LOST_SIGNAL(16, "Auton signal lost!"),
+        ;
+
+        private int errorCode;
+        private String errorMessage;
+
+        RBSMErrorCodes(int errorCode, String errorMsg) {
+            this.errorCode = errorCode;
+            this.errorMessage = errorMsg;
+        }
+
+        public static RBSMErrorCodes getErrorCodeForDataWord(int encoderDataWord) {
+            for (RBSMErrorCodes code : RBSMErrorCodes.values()) {
+                if (code.errorCode == encoderDataWord) {
+                    return code;
+                }
+            }
+            return UNKNOWN_CODE;
+        }
+
+        protected int getErrorCode() {
+            return errorCode;
+        }
+
+        protected String getErrorMessage() {
+            return errorMessage;
+        }
+
+    }
+
 
     /**
      * Construct a new RBSMNode object
@@ -216,9 +256,10 @@ public class RBSMNode extends SerialNode {
             messagePubEnc.publish(estimateVelocity(message.getDataWord()));
         } else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_ERROR")) {
             // don't want to publish the status ok messages
-            // TODO change this to an enum
             if (message.getDataWord() != 0) {
-                new RobobuggyLogicNotification("RBSM_MID_ERROR:" + message.getDataWord(), RobobuggyMessageLevel.EXCEPTION);
+                RBSMErrorCodes errorCode = RBSMErrorCodes.getErrorCodeForDataWord(message.getDataWord());
+                new RobobuggyLogicNotification("RBSM_MID_ERROR:" + errorCode.getErrorCode() + ": " + errorCode.getErrorMessage(),
+                        RobobuggyMessageLevel.EXCEPTION);
             }
         } else if (headerNumber == RBSerialMessage.getHeaderByte("RBSM_MID_ENC_RESET_CONFIRM")) {
             new RobobuggyLogicNotification("Encoder Reset Confirmed by Zoe", RobobuggyMessageLevel.NOTE);
