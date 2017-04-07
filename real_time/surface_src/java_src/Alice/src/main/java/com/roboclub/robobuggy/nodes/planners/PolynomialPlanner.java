@@ -32,7 +32,7 @@ public class PolynomialPlanner extends PathPlannerNode {
     // we want our points 2m away from each other (laterally)
     private static final double CHECKIN_POINT_SAMPLE_DISTANCE = LocalizerUtil.convertMetersToLon(2);
     // quadratic interpolation, need 3 terms (including x^0)
-    private static final int POLYNOMIAL_NUMBER_OF_TERMS = 5;
+    private static final int POLYNOMIAL_NUMBER_OF_TERMS = 3;
 
     /**
      * Construct a new {@link PathPlannerNode}
@@ -110,6 +110,7 @@ public class PolynomialPlanner extends PathPlannerNode {
         }
 
         // otherwise we still should be following this curve, get the closest checkin point
+        target = checkInPoints.get(0);
         double minDistance = Double.MAX_VALUE;
         for (GpsMeasurement candidate: checkInPoints) {
             GPSPoseMessage candidatePose = candidate.toGpsPoseMessage(0);

@@ -82,8 +82,8 @@ public class Map extends JPanel {
                 addPointsToMapTree(Color.RED, new LocTuple(gpsM.getLatitude(), gpsM.getLongitude()));
 
                 getMapTree().getViewer().removeMapMarker(currentWaypoint);
-//                currentWaypoint.setLat(WayPointFollowerPlanner.currentWaypoint.getLatitude());
-//                currentWaypoint.setLon(WayPointFollowerPlanner.currentWaypoint.getLongitude());
+                currentWaypoint.setLat(WayPointFollowerPlanner.currentWaypoint.getLatitude());
+                currentWaypoint.setLon(WayPointFollowerPlanner.currentWaypoint.getLongitude());
                 getMapTree().getViewer().addMapMarker(currentWaypoint);
 
                 getMapTree().getViewer().removeMapPolygon(desiredHeadingMapObj);
