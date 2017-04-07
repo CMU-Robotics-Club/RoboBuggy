@@ -35,7 +35,6 @@ public class ControllerTesterRobot extends AbstractRobot {
         ArrayList<GpsMeasurement> wayPoints = null;
         try {
             wayPoints = WayPointUtil.createWayPointsFromWaypointList(RobobuggyConfigFile.getWaypointSourceLogFile());
-//            nodeList.add(new PolynomialPlanner(wayPoints));
             nodeList.add(new WayPointFollowerPlanner(wayPoints));
         } catch (IOException e) {
             // TODO Auto-generated catch block
