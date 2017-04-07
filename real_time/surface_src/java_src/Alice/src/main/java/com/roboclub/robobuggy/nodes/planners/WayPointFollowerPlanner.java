@@ -128,7 +128,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         
         int closestIndex = getClosestIndex(wayPoints, pose);
 
-        double K = 0.1;
+        double K = 0.01;
         double velocity = pose.getCurrentState().get(2, 0);
 
         //if we are out of points then just go straight
@@ -149,8 +149,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         double headingError = Util.normalizeAngleRad(pathHeading) - Util.normalizeAngleRad(pose.getHeading());
         double commandedAngle;
 
-        double determinant = (pathx * dy) - (pathy - dx);
-        double crosstrackError = -determinant / Math.sqrt(pathx * pathx + pathy * pathy);
+        double crosstrackError = GPSPoseMessage.getDistance(currentWaypoint.toGpsPoseMessage(0), pose);
 
         //Stanley steering controller
         commandedAngle = headingError + Math.atan2(K * crosstrackError, velocity);
