@@ -9,7 +9,7 @@ import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
-import com.roboclub.robobuggy.ui.misc.GraphGUI.GraphPanel;
+import com.roboclub.robobuggy.ui.misc.graph.GraphPanel;
 import com.roboclub.robobuggy.ui.Gui;
 import com.roboclub.robobuggy.ui.RobobuggyGUIContainer;
 

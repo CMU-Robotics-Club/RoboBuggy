@@ -1,4 +1,4 @@
-package com.roboclub.robobuggy.ui.misc.GraphGUI;
+package com.roboclub.robobuggy.ui.misc.graph;
 
 import com.roboclub.robobuggy.ui.Gui;
 import com.roboclub.robobuggy.ui.RobobuggyGUIContainer;

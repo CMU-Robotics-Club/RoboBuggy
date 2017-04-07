@@ -1,4 +1,4 @@
-package com.roboclub.robobuggy.ui.misc.GraphGUI;
+package com.roboclub.robobuggy.ui.misc.graph;
 
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.ros.Message;
