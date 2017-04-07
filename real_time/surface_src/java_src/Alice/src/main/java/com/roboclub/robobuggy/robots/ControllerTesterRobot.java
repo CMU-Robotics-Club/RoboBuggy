@@ -3,7 +3,7 @@ package com.roboclub.robobuggy.robots;
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.nodes.localizers.LocTuple;
-import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
+import com.roboclub.robobuggy.nodes.planners.PolynomialPlanner;
 import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
 import com.roboclub.robobuggy.simulation.ControllerTester;
 import com.roboclub.robobuggy.ui.ConfigurationPanel;
@@ -35,7 +35,8 @@ public class ControllerTesterRobot extends AbstractRobot {
         ArrayList<GpsMeasurement> wayPoints = null;
         try {
             wayPoints = WayPointUtil.createWayPointsFromWaypointList(RobobuggyConfigFile.getWaypointSourceLogFile());
-            nodeList.add(new WayPointFollowerPlanner(wayPoints));
+            nodeList.add(new PolynomialPlanner(wayPoints));
+//            nodeList.add(new WayPointFollowerPlanner(wayPoints));
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
