@@ -69,8 +69,8 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         // determines the angle at which to move every 50 milliseconds
         //PD control of DC steering motor handled by low level
         
-//        double commandedAngle = purePursuitController();
-        double commandedAngle = stanleyMethodController();
+        double commandedAngle = purePursuitController();
+//        double commandedAngle = stanleyMethodController();
         
         currentCommandedAngle = commandedAngle;
         currentDesiredHeading = pose.getHeading() + commandedAngle;
@@ -83,7 +83,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
 
         int closestIndex = getClosestIndex(wayPoints, pose);
 
-        double K = 3.0;
+        double K = 2.5;
         double velocity = pose.getCurrentState().get(2, 0);
         double lookaheadLowerBound = 3.0;
         double lookaheadUpperBound = 25.0;
@@ -128,7 +128,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         
         int closestIndex = getClosestIndex(wayPoints, pose);
 
-        double K = 0.01;
+        double K = 0.03;
         double velocity = pose.getCurrentState().get(2, 0);
 
         //if we are out of points then just go straight

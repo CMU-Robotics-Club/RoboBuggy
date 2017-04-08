@@ -60,7 +60,6 @@ public final class TransistorAuton extends AbstractRobot {
         // Initialize Nodes
 
         nodeList.add(new RobobuggyKFLocalizer(10, "Robobuggy KF Localizer", new LocTuple(40.441670, -79.9416362)));
-
         nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.getComPortGPS()));
         nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION,
                 NodeChannel.getLoggingChannels()));
@@ -70,6 +69,7 @@ public final class TransistorAuton extends AbstractRobot {
 //        nodeList.add(new HillCrestImuNode());
 
         try {
+//            ArrayList<GpsMeasurement> wayPoints = WayPointUtil.createWayPointsFromLog("logs/", "2017-04-07-18-15-27/sensors_2017-04-07-18-15-27.txt");
           ArrayList<GpsMeasurement> wayPoints = WayPointUtil.createWayPointsFromWaypointList(RobobuggyConfigFile.getWaypointSourceLogFile());
             //ArrayList<GpsMeasurement> wayPoints = WayPointUtil.createWaypointsFromOdomLocalizerLog(RobobuggyConfigFile.getWaypointSourceLogFile());
             nodeList.add(new WayPointFollowerPlanner(wayPoints));
