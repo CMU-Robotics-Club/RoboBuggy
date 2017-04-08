@@ -148,8 +148,20 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         double pathHeading = Math.atan2(pathy, pathx);
         double headingError = Util.normalizeAngleRad(pathHeading) - Util.normalizeAngleRad(pose.getHeading());
         double commandedAngle;
+        double L = GPSPoseMessage.getDistance(pose, ptA.toGpsPoseMessage(0));
+        double theta = Math.atan2(dy, dx);
 
-        double crosstrackError = GPSPoseMessage.getDistance(currentWaypoint.toGpsPoseMessage(0), pose);
+        double crosstrackError = L * Math.sin(theta);
+        int direction;
+        if (headingError > 0) {
+            // steer left
+            direction = 1;
+        }
+        else {
+            // steer right
+            direction = -1;
+        }
+        crosstrackError = crosstrackError * direction;
 
         //Stanley steering controller
         commandedAngle = headingError + Math.atan2(K * crosstrackError, velocity);

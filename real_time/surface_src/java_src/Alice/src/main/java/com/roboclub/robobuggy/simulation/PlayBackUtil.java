@@ -23,7 +23,6 @@ import com.roboclub.robobuggy.messages.WheelAngleCommandMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
-import com.sun.org.apache.xml.internal.resolver.helpers.PublicId;
 
 /**
  * utilities for playback
