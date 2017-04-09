@@ -1,9 +1,13 @@
 package com.roboclub.robobuggy.main;
 
 import com.roboclub.robobuggy.robots.AbstractRobot;
+<<<<<<< Updated upstream
 import com.roboclub.robobuggy.robots.ControllerTesterRobot;
 import com.roboclub.robobuggy.robots.PlayBackRobot;
 import com.roboclub.robobuggy.robots.TransistorAuton;
+=======
+import com.roboclub.robobuggy.robots.ConfigRobot;
+>>>>>>> Stashed changes
 import com.roboclub.robobuggy.ui.Gui;
 import com.roboclub.robobuggy.utilities.JNISetup;
 
