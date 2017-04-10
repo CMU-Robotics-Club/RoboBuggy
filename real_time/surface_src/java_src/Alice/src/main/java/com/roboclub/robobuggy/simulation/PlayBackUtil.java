@@ -160,7 +160,7 @@ public final class PlayBackUtil {
                 break;
             case GPSPoseMessage.VERSION_ID:
                 transmitMessage = translator.fromJson(sensorDataJson, GPSPoseMessage.class);
-                getPrivateInstance().posePub.publish(transmitMessage);
+//                getPrivateInstance().posePub.publish(transmitMessage);
                 break;
             case RemoteWheelAngleRequest.VERSION_ID:
                 transmitMessage = translator.fromJson(sensorDataJson, RemoteWheelAngleRequest.class);
