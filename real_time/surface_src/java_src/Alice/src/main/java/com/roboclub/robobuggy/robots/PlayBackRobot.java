@@ -3,6 +3,8 @@ package com.roboclub.robobuggy.robots;
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.nodes.localizers.LocTuple;
 import com.roboclub.robobuggy.nodes.localizers.RobobuggyKFLocalizer;
+import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
+import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
 import com.roboclub.robobuggy.simulation.LineByLineSensorPlayer;
 import com.roboclub.robobuggy.ui.AutonomousPanel;
 import com.roboclub.robobuggy.ui.ConfigurationPanel;
@@ -11,6 +13,8 @@ import com.roboclub.robobuggy.ui.MainGuiWindow;
 import com.roboclub.robobuggy.ui.PathPanel;
 import com.roboclub.robobuggy.ui.RobobuggyGUITabs;
 import com.roboclub.robobuggy.ui.RobobuggyJFrame;
+
+import java.io.FileNotFoundException;
 
 /**
  * Runs playback
@@ -37,7 +41,12 @@ public final class PlayBackRobot extends AbstractRobot {
     private PlayBackRobot() {
         super();
         new LineByLineSensorPlayer(RobobuggyConfigFile.getPlayBackSourceFile(), 1);
-        nodeList.add(new RobobuggyKFLocalizer(10, "Robobuggy KF Localizer", new LocTuple(40.441670, -79.9416362)));
+        try {
+            nodeList.add(new RobobuggyKFLocalizer(10, "Robobuggy KF Localizer", new LocTuple(40.441670, -79.9416362)));
+            nodeList.add(new WayPointFollowerPlanner(WayPointUtil.createWayPointsFromWaypointList(RobobuggyConfigFile.getWaypointSourceLogFile())));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 //		new SensorPlayer(RobobuggyConfigFile.getPlayBackSourceFile(), 1);
 //		new HighTrustGPSLocalizer();
         RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow", 1.0, 1.0);

@@ -19,6 +19,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
     private ArrayList<GpsMeasurement> wayPoints;
     private GPSPoseMessage pose; //TODO change this to a reasonable type
     private int lastClosestIndex = 0;
+    private GpsMeasurement target;
 
     // we only want to look at the next 10 waypoints as possible candidates
     private final static int WAYPOINT_LOOKAHEAD_MAX = 50;
@@ -37,6 +38,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
     public WayPointFollowerPlanner(ArrayList<GpsMeasurement> wayPoints) {
         super(NodeChannel.PATH_PLANNER);
         this.wayPoints = wayPoints;
+        target = wayPoints.get(0);
         pose = new GPSPoseMessage(new Date(0), 0, 0, 0);// temp measurment
     }
 
@@ -69,12 +71,74 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         // determines the angle at which to move every 50 milliseconds
         //PD control of DC steering motor handled by low level
         
-        double commandedAngle = purePursuitController();
-//        double commandedAngle = stanleyMethodController();
+        double commandedAngle;
+        commandedAngle = purePursuitController();
+//        commandedAngle = stanleyMethodController();
+//        commandedAngle = purePursuitV2();
+
         
         currentCommandedAngle = commandedAngle;
         currentDesiredHeading = pose.getHeading() + commandedAngle;
         return commandedAngle;
+    }
+
+    private double purePursuitV2() {
+
+        // check if we should get a new waypoint
+        boolean newWaypoint = false;
+        // if we don't have a target then we need one
+        if (target == wayPoints.get(0)) {
+            newWaypoint = true;
+        }
+        else {
+            double waypointDist = GPSPoseMessage.getDistance(pose, target.toGpsPoseMessage(0));
+            // 3m is too close, pick a new one
+            if (waypointDist < 3) {
+                newWaypoint = true;
+            }
+
+            double currentOrientation = pose.getCurrentState().get(3, 0);
+            double dx = LocalizerUtil.convertLonToMeters(target.getLongitude()) - LocalizerUtil.convertLonToMeters(pose.getLongitude());
+            double dy = LocalizerUtil.convertLatToMeters(target.getLatitude()) - LocalizerUtil.convertLatToMeters(pose.getLatitude());
+            double desiredHeading = Math.atan2(dy, dx);
+
+            if (Math.abs(currentOrientation - desiredHeading) > Math.toRadians(45)){
+                newWaypoint = true;
+            }
+        }
+
+        // if we do, pick one which is 3 seconds away
+        if (newWaypoint) {
+            double lookaheadTime = 3.0;
+            // pick a point between 3 & 10m
+            double lookaheadLB = 3.0;
+            double lookaheadUB = 10.0;
+            double lookahead = pose.getCurrentState().get(2, 0) * lookaheadTime;
+            if (lookahead < lookaheadLB) { lookahead = lookaheadLB; }
+            if (lookahead > lookaheadUB) { lookahead = lookaheadUB; }
+
+            int closestIndex = getClosestIndex(wayPoints, pose);
+            for (int i = closestIndex; i < closestIndex + WAYPOINT_LOOKAHEAD_MAX; i++) {
+                // pick the first point that is at least lookahead away
+                if (GPSPoseMessage.getDistance(pose, wayPoints.get(i).toGpsPoseMessage(0)) > lookahead) {
+                    target = wayPoints.get(i);
+                    currentWaypoint = target;
+                    break;
+                }
+            }
+        }
+
+        // steer towards it
+        double currentOrientation = pose.getCurrentState().get(3, 0);
+        double dx = LocalizerUtil.convertLonToMeters(target.getLongitude()) - LocalizerUtil.convertLonToMeters(pose.getLongitude());
+        double dy = LocalizerUtil.convertLatToMeters(target.getLatitude()) - LocalizerUtil.convertLatToMeters(pose.getLatitude());
+        double desiredHeading = Math.atan2(dy, dx);
+        desiredHeading = Util.normalizeAngleRad(desiredHeading);
+
+        double alpha = desiredHeading - currentOrientation;
+        double L = RobobuggyKFLocalizer.WHEELBASE_IN_METERS;
+        double ld = GPSPoseMessage.getDistance(target.toGpsPoseMessage(0), pose) + L / 2;
+        return Math.atan2(2*L*Math.sin(alpha), ld);
     }
 
     private double purePursuitController() {
