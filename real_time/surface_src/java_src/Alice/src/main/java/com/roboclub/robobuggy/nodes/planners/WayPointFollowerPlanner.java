@@ -72,11 +72,10 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         //PD control of DC steering motor handled by low level
         
         double commandedAngle;
-        commandedAngle = purePursuitController();
-//        commandedAngle = stanleyMethodController();
+//        commandedAngle = purePursuitController();
+        commandedAngle = stanleyMethodController();
 //        commandedAngle = purePursuitV2();
 
-        
         currentCommandedAngle = commandedAngle;
         currentDesiredHeading = pose.getHeading() + commandedAngle;
         return commandedAngle;
@@ -192,7 +191,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         
         int closestIndex = getClosestIndex(wayPoints, pose);
 
-        double K = 0.03;
+        double K = 0.1;
         double velocity = pose.getCurrentState().get(2, 0);
 
         //if we are out of points then just go straight
@@ -201,13 +200,13 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
             return 0;
         }
 
-        GpsMeasurement ptA = wayPoints.get(closestIndex);
+        GpsMeasurement ptA = wayPoints.get(closestIndex - 1);
         GpsMeasurement ptB = wayPoints.get(closestIndex + 1);
         double pathx = LocalizerUtil.convertLonToMeters(ptB.getLongitude()) - LocalizerUtil.convertLonToMeters(ptA.getLongitude());
         double pathy = LocalizerUtil.convertLatToMeters(ptB.getLatitude()) - LocalizerUtil.convertLatToMeters(ptA.getLatitude());
         double dx = LocalizerUtil.convertLonToMeters(pose.getLongitude()) - LocalizerUtil.convertLonToMeters(ptA.getLongitude());
         double dy = LocalizerUtil.convertLatToMeters(pose.getLatitude()) - LocalizerUtil.convertLatToMeters(ptA.getLatitude());
-        currentWaypoint = ptA;
+        currentWaypoint = wayPoints.get(closestIndex);
 
         double pathHeading = Math.atan2(pathy, pathx);
         double headingError = Util.normalizeAngleRad(pathHeading) - Util.normalizeAngleRad(pose.getHeading());
@@ -216,16 +215,6 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         double theta = Math.atan2(dy, dx);
 
         double crosstrackError = L * Math.sin(theta);
-        int direction;
-        if (headingError > 0) {
-            // steer left
-            direction = 1;
-        }
-        else {
-            // steer right
-            direction = -1;
-        }
-        crosstrackError = crosstrackError * direction;
 
         //Stanley steering controller
         commandedAngle = headingError + Math.atan2(K * crosstrackError, velocity);
