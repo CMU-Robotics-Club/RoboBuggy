@@ -92,7 +92,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         };
         x = new Matrix(x2D);
 
-        double[] rArray = {4, 4, 0.25, 0.01, 0.01};
+        double[] rArray = {4, 4, 0.25, 0.07, 0.01};
         double[] pArray = {25, 25, 0.25, 2.46, 2.46};
 
         R = arrayToMatrix(rArray);
@@ -101,7 +101,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         double[][] qGPS2D = {
                 {4, 0, 0},
                 {0, 4, 0},
-                {0, 0, 0.1},
+                {0, 0, 0.07},
         };
         Q_gps = new Matrix(qGPS2D);
 
@@ -135,7 +135,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
             long currentTime = new Date().getTime();
             long dt = currentTime - lastEncoderTime;
             // to remove numeric instability, limit rate to 10ms, 100Hz
-            if (dt < 10) {
+            if (dt < 100) {
                 return;
             }
 
@@ -286,7 +286,23 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         K = K.plus(Q);
         K = P_pre.times(C.transpose()).times(K.inverse());
 
+        double prev_heading = x.get(HEADING_GLOBAL_ROW, 0);
         x = x_pre.plus(K.times(residual));
+        double new_heading = x.get(HEADING_GLOBAL_ROW, 0);
+
+//        if (Math.abs(prev_heading - new_heading) > Math.toRadians(45)) {
+//            if (x.get(2, 0) > 0.5) {
+//                if (new_heading > prev_heading) {
+//                    x.set(HEADING_GLOBAL_ROW, 0, prev_heading - Math.toRadians(10));
+//                } else {
+//                    x.set(HEADING_GLOBAL_ROW, 0, prev_heading + Math.toRadians(10));
+//                }
+//            }
+//            else {
+//                x.set(HEADING_GLOBAL_ROW, 0, prev_heading);
+//            }
+//        }
+
         P = Matrix.identity(5, 5).minus(K.times(C));
         P = P.times(P_pre);
 

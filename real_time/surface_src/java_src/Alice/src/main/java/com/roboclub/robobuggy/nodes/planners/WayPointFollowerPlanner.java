@@ -73,8 +73,8 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         
         double commandedAngle;
 //        commandedAngle = purePursuitController();
-        commandedAngle = stanleyMethodController();
-//        commandedAngle = purePursuitV2();
+//        commandedAngle = stanleyMethodController();
+        commandedAngle = purePursuitV2();
 
         currentCommandedAngle = commandedAngle;
         currentDesiredHeading = pose.getHeading() + commandedAngle;
@@ -191,7 +191,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         
         int closestIndex = getClosestIndex(wayPoints, pose);
 
-        double K = 0.1;
+        double K = 0.3;
         double velocity = pose.getCurrentState().get(2, 0);
 
         //if we are out of points then just go straight
@@ -204,14 +204,14 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         GpsMeasurement ptB = wayPoints.get(closestIndex + 1);
         double pathx = LocalizerUtil.convertLonToMeters(ptB.getLongitude()) - LocalizerUtil.convertLonToMeters(ptA.getLongitude());
         double pathy = LocalizerUtil.convertLatToMeters(ptB.getLatitude()) - LocalizerUtil.convertLatToMeters(ptA.getLatitude());
-        double dx = LocalizerUtil.convertLonToMeters(pose.getLongitude()) - LocalizerUtil.convertLonToMeters(ptA.getLongitude());
-        double dy = LocalizerUtil.convertLatToMeters(pose.getLatitude()) - LocalizerUtil.convertLatToMeters(ptA.getLatitude());
+        double dx = LocalizerUtil.convertLonToMeters(pose.getLongitude()) - LocalizerUtil.convertLonToMeters(ptB.getLongitude());
+        double dy = LocalizerUtil.convertLatToMeters(pose.getLatitude()) - LocalizerUtil.convertLatToMeters(ptB.getLatitude());
         currentWaypoint = wayPoints.get(closestIndex);
 
         double pathHeading = Math.atan2(pathy, pathx);
         double headingError = Util.normalizeAngleRad(pathHeading) - Util.normalizeAngleRad(pose.getHeading());
         double commandedAngle;
-        double L = GPSPoseMessage.getDistance(pose, ptA.toGpsPoseMessage(0));
+        double L = GPSPoseMessage.getDistance(pose, ptB.toGpsPoseMessage(0));
         double theta = Math.atan2(dy, dx);
 
         double crosstrackError = L * Math.sin(theta);
