@@ -101,7 +101,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         double[][] qGPS2D = {
                 {1, 0, 0},
                 {0, 1, 0},
-                {0, 0, 0.01},
+                {0, 0, 0.0001},
         };
         Q_gps = new Matrix(qGPS2D);
 
