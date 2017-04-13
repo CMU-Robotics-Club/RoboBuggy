@@ -118,15 +118,17 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
 
             int closestIndex = getClosestIndex(wayPoints, pose);
             for (int i = closestIndex; i < closestIndex + WAYPOINT_LOOKAHEAD_MAX; i++) {
-                double dx = LocalizerUtil.convertLonToMeters(wayPoints.get(i).toGpsPoseMessage(0).getLongitude()) - LocalizerUtil.convertLonToMeters(pose.getLongitude());
-                double dy = LocalizerUtil.convertLatToMeters(wayPoints.get(i).toGpsPoseMessage(0).getLatitude()) - LocalizerUtil.convertLatToMeters(pose.getLatitude());
+                double dx = LocalizerUtil.convertLonToMeters(wayPoints.get(i).toGpsPoseMessage(0).getLongitude()) - LocalizerUtil.convertLonToMeters
+                        (wayPoints.get(closestIndex).getLongitude());
+                double dy = LocalizerUtil.convertLatToMeters(wayPoints.get(i).toGpsPoseMessage(0).getLatitude()) - LocalizerUtil.convertLatToMeters
+                        (wayPoints.get(closestIndex).getLatitude());
 
                 double ch = pose.getCurrentState().get(3, 0);
                 double dh = Math.atan2(dy, dx);
 
                 double theta = dh-ch;
                 // pick the first point that is at least lookahead away
-                if (GPSPoseMessage.getDistance(pose, wayPoints.get(i).toGpsPoseMessage(0)) * Math.cos(theta) > lookahead/2) {
+                if (GPSPoseMessage.getDistance(pose, wayPoints.get(i).toGpsPoseMessage(0)) * Math.cos(theta) > lookahead) {
                     target = wayPoints.get(i);
                     currentWaypoint = target;
                     break;
