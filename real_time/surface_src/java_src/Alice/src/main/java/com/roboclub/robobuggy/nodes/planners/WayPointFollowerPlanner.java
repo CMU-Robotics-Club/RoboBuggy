@@ -91,7 +91,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         }
         else {
             double waypointDist = GPSPoseMessage.getDistance(pose, target.toGpsPoseMessage(0));
-            // 3m is too close, pick a new one
+            // 5m is too close, pick a new one
             if (waypointDist < 3) {
                 newWaypoint = true;
             }
@@ -118,8 +118,15 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
 
             int closestIndex = getClosestIndex(wayPoints, pose);
             for (int i = closestIndex; i < closestIndex + WAYPOINT_LOOKAHEAD_MAX; i++) {
+                double dx = LocalizerUtil.convertLonToMeters(wayPoints.get(i).toGpsPoseMessage(0).getLongitude()) - LocalizerUtil.convertLonToMeters(pose.getLongitude());
+                double dy = LocalizerUtil.convertLatToMeters(wayPoints.get(i).toGpsPoseMessage(0).getLatitude()) - LocalizerUtil.convertLatToMeters(pose.getLatitude());
+
+                double ch = pose.getCurrentState().get(3, 0);
+                double dh = Math.atan2(dy, dx);
+
+                double theta = dh-ch;
                 // pick the first point that is at least lookahead away
-                if (GPSPoseMessage.getDistance(pose, wayPoints.get(i).toGpsPoseMessage(0)) > lookahead) {
+                if (GPSPoseMessage.getDistance(pose, wayPoints.get(i).toGpsPoseMessage(0)) * Math.cos(theta) > lookahead/2) {
                     target = wayPoints.get(i);
                     currentWaypoint = target;
                     break;
@@ -137,7 +144,8 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         double alpha = desiredHeading - currentOrientation;
         double L = RobobuggyKFLocalizer.WHEELBASE_IN_METERS;
         double ld = GPSPoseMessage.getDistance(target.toGpsPoseMessage(0), pose) + L / 2;
-        return Math.atan2(2*L*Math.sin(alpha), ld);
+//        return Math.atan2(2*L*Math.sin(alpha), ld);
+        return alpha;
     }
 
     private double purePursuitController() {

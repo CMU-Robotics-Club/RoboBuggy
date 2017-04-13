@@ -92,16 +92,16 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         };
         x = new Matrix(x2D);
 
-        double[] rArray = {4, 4, 0.25, 0.07, 0.01};
+        double[] rArray = {4, 4, 0.25, 0.01, 0.01};
         double[] pArray = {25, 25, 0.25, 2.46, 2.46};
 
         R = arrayToMatrix(rArray);
         P = arrayToMatrix(pArray);
 
         double[][] qGPS2D = {
-                {4, 0, 0},
-                {0, 4, 0},
-                {0, 0, 0.07},
+                {1, 0, 0},
+                {0, 1, 0},
+                {0, 0, 0.01},
         };
         Q_gps = new Matrix(qGPS2D);
 
@@ -135,7 +135,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
             long currentTime = new Date().getTime();
             long dt = currentTime - lastEncoderTime;
             // to remove numeric instability, limit rate to 10ms, 100Hz
-            if (dt < 100) {
+            if (dt < 50) {
                 return;
             }
 
