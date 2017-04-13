@@ -146,8 +146,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         double alpha = desiredHeading - currentOrientation;
         double L = RobobuggyKFLocalizer.WHEELBASE_IN_METERS;
         double ld = GPSPoseMessage.getDistance(target.toGpsPoseMessage(0), pose) + L / 2;
-//        return Math.atan2(2*L*Math.sin(alpha), ld);
-        return alpha;
+        return Math.atan2(2*L*Math.sin(alpha), ld);
     }
 
     private double purePursuitController() {
