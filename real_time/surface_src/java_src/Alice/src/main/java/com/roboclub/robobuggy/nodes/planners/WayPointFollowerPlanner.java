@@ -188,6 +188,18 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         double dy = LocalizerUtil.convertLatToMeters(target.getLatitude()) - LocalizerUtil.convertLatToMeters(pose.getLatitude());
         double deltaHeading = Math.atan2(dy, dx) - pose.getHeading();
 
+        double closestWaypointDist = GPSPoseMessage.getDistance(pose, wayPoints.get(closestIndex).toGpsPoseMessage(0));
+        if (closestWaypointDist > 3) {
+            // orientation is probably wacked, have path correction take over instead
+            double dpathx = LocalizerUtil.convertLonToMeters(wayPoints.get(closestIndex + 1).getLongitude()) - LocalizerUtil.convertLonToMeters(wayPoints.get
+                    (closestIndex).getLongitude());
+            double dpathy = LocalizerUtil.convertLatToMeters(wayPoints.get(closestIndex + 1).getLatitude()) - LocalizerUtil.convertLatToMeters(wayPoints.get
+                    (closestIndex).getLatitude());
+
+            double pathHeading = Math.atan2(dpathy, dpathx);
+            deltaHeading = Math.atan2(dy, dx) - pathHeading;
+        }
+
         //Pure Pursuit steering controller
         double commandedAngle = Math.atan2(2 * RobobuggyKFLocalizer.WHEELBASE_IN_METERS * Math.sin(deltaHeading), lookahead);
         commandedAngle = Util.normalizeAngleRad(commandedAngle);
