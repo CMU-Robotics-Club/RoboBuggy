@@ -128,6 +128,7 @@ public class Map extends JPanel {
             DriveControlMessage dcm = ((DriveControlMessage) m);
             currentWaypoint.setLat(dcm.getWaypoint().getLatitude());
             currentWaypoint.setLon(dcm.getWaypoint().getLongitude());
+            WayPointFollowerPlanner.currentCommandedAngle = dcm.getAngleDouble();
         });
 
     }

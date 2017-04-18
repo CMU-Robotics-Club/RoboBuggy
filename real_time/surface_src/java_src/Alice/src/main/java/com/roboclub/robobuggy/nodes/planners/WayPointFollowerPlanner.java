@@ -72,9 +72,9 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         //PD control of DC steering motor handled by low level
         
         double commandedAngle;
-//        commandedAngle = purePursuitController();
+        commandedAngle = purePursuitController();
 //        commandedAngle = stanleyMethodController();
-        commandedAngle = purePursuitV2();
+//        commandedAngle = purePursuitV2();
 
         currentCommandedAngle = commandedAngle;
         currentDesiredHeading = pose.getHeading() + commandedAngle;
@@ -92,7 +92,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         else {
             double waypointDist = GPSPoseMessage.getDistance(pose, target.toGpsPoseMessage(0));
             // 5m is too close, pick a new one
-            if (waypointDist < 3) {
+            if (waypointDist < 5) {
                 newWaypoint = true;
             }
 
@@ -101,7 +101,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
             double dy = LocalizerUtil.convertLatToMeters(target.getLatitude()) - LocalizerUtil.convertLatToMeters(pose.getLatitude());
             double desiredHeading = Math.atan2(dy, dx);
 
-            if (Math.abs(currentOrientation - desiredHeading) > Math.toRadians(45)){
+            if (Math.abs(currentOrientation - desiredHeading) > Math.toRadians(40)){
                 newWaypoint = true;
             }
         }
@@ -155,9 +155,9 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
 
         int closestIndex = getClosestIndex(wayPoints, pose);
 
-        double K = 2.5;
+        double K = 3.0;
         double velocity = pose.getCurrentState().get(2, 0);
-        double lookaheadLowerBound = 3.0;
+        double lookaheadLowerBound = 5.0;
         double lookaheadUpperBound = 25.0;
         double lookahead = K * velocity;
         if(lookahead < lookaheadLowerBound) {

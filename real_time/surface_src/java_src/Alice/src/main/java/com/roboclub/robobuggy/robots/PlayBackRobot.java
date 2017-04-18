@@ -41,12 +41,12 @@ public final class PlayBackRobot extends AbstractRobot {
     private PlayBackRobot() {
         super();
         new LineByLineSensorPlayer(RobobuggyConfigFile.getPlayBackSourceFile(), 1);
-        try {
-            nodeList.add(new RobobuggyKFLocalizer(10, "Robobuggy KF Localizer", new LocTuple(40.441670, -79.9416362)));
-            nodeList.add(new WayPointFollowerPlanner(WayPointUtil.createWayPointsFromWaypointList(RobobuggyConfigFile.getWaypointSourceLogFile())));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            nodeList.add(new RobobuggyKFLocalizer(10, "Robobuggy KF Localizer", new LocTuple(40.441670, -79.9416362)));
+//            nodeList.add(new WayPointFollowerPlanner(WayPointUtil.createWayPointsFromWaypointList(RobobuggyConfigFile.getWaypointSourceLogFile())));
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
 //		new SensorPlayer(RobobuggyConfigFile.getPlayBackSourceFile(), 1);
 //		new HighTrustGPSLocalizer();
         RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow", 1.0, 1.0);
