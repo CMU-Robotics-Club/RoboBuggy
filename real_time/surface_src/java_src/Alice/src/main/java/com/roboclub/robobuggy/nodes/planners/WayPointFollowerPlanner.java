@@ -189,7 +189,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         double deltaHeading = Math.atan2(dy, dx) - pose.getHeading();
 
         double closestWaypointDist = GPSPoseMessage.getDistance(pose, wayPoints.get(closestIndex).toGpsPoseMessage(0));
-        if (closestWaypointDist > 3) {
+        if (closestWaypointDist > 2) {
             // orientation is probably wacked, have path correction take over instead
             double dpathx = LocalizerUtil.convertLonToMeters(wayPoints.get(closestIndex + 1).getLongitude()) - LocalizerUtil.convertLonToMeters(wayPoints.get
                     (closestIndex).getLongitude());

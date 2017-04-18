@@ -137,7 +137,7 @@ public final class PlayBackUtil {
                 break;
             case DriveControlMessage.VERSION_ID:
                 transmitMessage = translator.fromJson(sensorDataJson, DriveControlMessage.class);
-                getPrivateInstance().driveCtrlPub.publish(transmitMessage);
+//                getPrivateInstance().driveCtrlPub.publish(transmitMessage);
                 break;
             case EncoderMeasurement.VERSION_ID:
                 transmitMessage = translator.fromJson(sensorDataJson, EncoderMeasurement.class);
