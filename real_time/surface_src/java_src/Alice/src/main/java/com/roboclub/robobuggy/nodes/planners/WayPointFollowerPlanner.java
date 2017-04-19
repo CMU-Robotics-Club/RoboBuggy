@@ -155,7 +155,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
 
         int closestIndex = getClosestIndex(wayPoints, pose);
 
-        double K = 3.0;
+        double K = 2.5;
         double velocity = pose.getCurrentState().get(2, 0);
         double lookaheadLowerBound = 5.0;
         double lookaheadUpperBound = 25.0;
@@ -192,21 +192,22 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         GpsMeasurement A = wayPoints.get(closestIndex + 1);
         GPSPoseMessage P = pose;
 
-        double padx = LocalizerUtil.convertLonToMeters(P.getLongitude()) - LocalizerUtil.convertLonToMeters(A.getLongitude());
-        double pady = LocalizerUtil.convertLatToMeters(P.getLatitude()) - LocalizerUtil.convertLatToMeters(A.getLatitude());
+        double padx = LocalizerUtil.convertLonToMeters(A.getLongitude()) - LocalizerUtil.convertLonToMeters(P.getLongitude());
+        double pady = LocalizerUtil.convertLatToMeters(A.getLatitude()) - LocalizerUtil.convertLatToMeters(P.getLatitude());
         double phi = Math.atan2(pady, padx);
 
-        double badx = LocalizerUtil.convertLonToMeters(B.getLongitude()) - LocalizerUtil.convertLonToMeters(A.getLongitude());
-        double bady = LocalizerUtil.convertLatToMeters(B.getLatitude()) - LocalizerUtil.convertLatToMeters(A.getLatitude());
+        double badx = LocalizerUtil.convertLonToMeters(A.getLongitude()) - LocalizerUtil.convertLonToMeters(B.getLongitude());
+        double bady = LocalizerUtil.convertLatToMeters(A.getLatitude()) - LocalizerUtil.convertLatToMeters(B.getLatitude());
         double psi = Math.atan2(bady, badx);
 
         double theta = phi - psi;
 
-        double L = GPSPoseMessage.getDistance(P, A.toGpsPoseMessage(0));
+        double L = GPSPoseMessage.getDistance(P, B.toGpsPoseMessage(0));
         double E = L * Math.sin(theta);
 
-        double thetaDelta = psi - Math.atan2(dy, dx);
-        thetaDelta *= E;
+        double thetaDelta = phi - psi;
+        thetaDelta *= E/10.0;
+
 
         deltaHeading += thetaDelta;
 

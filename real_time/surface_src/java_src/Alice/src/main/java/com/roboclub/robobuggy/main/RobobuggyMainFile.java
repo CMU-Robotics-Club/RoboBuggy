@@ -30,8 +30,8 @@ public class RobobuggyMainFile {
 
         new RobobuggyLogicNotification("Initializing Robot", RobobuggyMessageLevel.NOTE);
 //        robot = ConfigRobot.getInstance();
-//        robot = PlayBackRobot.getInstance();
-        robot = TransistorAuton.getInstance();
+        robot = PlayBackRobot.getInstance();
+//        robot = TransistorAuton.getInstance();
 
         new RobobuggyLogicNotification("Initializing GUI", RobobuggyMessageLevel.NOTE);
         Gui.getInstance();
