@@ -188,17 +188,27 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         double dy = LocalizerUtil.convertLatToMeters(target.getLatitude()) - LocalizerUtil.convertLatToMeters(pose.getLatitude());
         double deltaHeading = Math.atan2(dy, dx) - pose.getHeading();
 
-        double closestWaypointDist = GPSPoseMessage.getDistance(pose, wayPoints.get(closestIndex).toGpsPoseMessage(0));
-        if (closestWaypointDist > 3) {
-            // orientation is probably wacked, have path correction take over instead
-            double dpathx = LocalizerUtil.convertLonToMeters(wayPoints.get(closestIndex + 1).getLongitude()) - LocalizerUtil.convertLonToMeters(wayPoints.get
-                    (closestIndex).getLongitude());
-            double dpathy = LocalizerUtil.convertLatToMeters(wayPoints.get(closestIndex + 1).getLatitude()) - LocalizerUtil.convertLatToMeters(wayPoints.get
-                    (closestIndex).getLatitude());
+        GpsMeasurement B = wayPoints.get(closestIndex);
+        GpsMeasurement A = wayPoints.get(closestIndex + 1);
+        GPSPoseMessage P = pose;
 
-            double pathHeading = Math.atan2(dpathy, dpathx);
-            deltaHeading = Math.atan2(dy, dx) - pathHeading;
-        }
+        double padx = LocalizerUtil.convertLonToMeters(P.getLongitude()) - LocalizerUtil.convertLonToMeters(A.getLongitude());
+        double pady = LocalizerUtil.convertLatToMeters(P.getLatitude()) - LocalizerUtil.convertLatToMeters(A.getLatitude());
+        double phi = Math.atan2(pady, padx);
+
+        double badx = LocalizerUtil.convertLonToMeters(B.getLongitude()) - LocalizerUtil.convertLonToMeters(A.getLongitude());
+        double bady = LocalizerUtil.convertLatToMeters(B.getLatitude()) - LocalizerUtil.convertLatToMeters(A.getLatitude());
+        double psi = Math.atan2(bady, badx);
+
+        double theta = phi - psi;
+
+        double L = GPSPoseMessage.getDistance(P, A.toGpsPoseMessage(0));
+        double E = L * Math.sin(theta);
+
+        double thetaDelta = psi - Math.atan2(dy, dx);
+        thetaDelta *= E;
+
+        deltaHeading += thetaDelta;
 
         //Pure Pursuit steering controller
         double commandedAngle = Math.atan2(2 * RobobuggyKFLocalizer.WHEELBASE_IN_METERS * Math.sin(deltaHeading), lookahead);
