@@ -45,6 +45,9 @@ public class HillCrestImuNode extends BuggyDecoratorNode implements DeviceListen
     private Publisher compassHeadingPub;
     private Publisher angularPositionPub;
 
+
+    // Modifications! Excitement!
+
     /**
      * Creates a new Hillcrest IMU node
      */
