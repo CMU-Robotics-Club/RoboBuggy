@@ -1,4 +1,5 @@
-import com.roboclub.robobuggy.messages.ImuMeasurement;
+package com.roboclub.robobuggy.messages;
+
 import org.junit.Test;
 
 import static org.junit.Assert.fail;
