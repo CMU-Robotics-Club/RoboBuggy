@@ -4,165 +4,250 @@ import com.hcrest.jfreespace.Device;
 import com.hcrest.jfreespace.DeviceListenerInterface;
 import com.hcrest.jfreespace.Discovery;
 import com.hcrest.jfreespace.DiscoveryListenerInterface;
+import com.hcrest.jfreespace.FreespaceErrorCodes;
 import com.hcrest.jfreespace.inreport.FreespaceMsgInMotionEngineOutput;
 import com.hcrest.jfreespace.inreport.HidInMsg;
 import com.hcrest.jfreespace.outreport.FreespaceMsgOutDataModeControlV2Request;
 import com.hcrest.jfreespace.outreport.HidOutMsg;
+import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
+import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.messages.IMUAccelerationMessage;
 import com.roboclub.robobuggy.messages.IMUAngularPositionMessage;
 import com.roboclub.robobuggy.messages.IMUAngularVelocityMessage;
+import com.roboclub.robobuggy.messages.IMUCompassMessage;
 import com.roboclub.robobuggy.messages.IMUInclinationMessage;
 import com.roboclub.robobuggy.messages.IMULinearAccelerationMessage;
-import com.roboclub.robobuggy.messages.IMUCompassMessage;
 import com.roboclub.robobuggy.messages.MagneticMeasurement;
+import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
+import com.roboclub.robobuggy.nodes.baseNodes.BuggyDecoratorNode;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 
 /**
- * Driver for the Hillcrest IMUs
+ * A node to communicate with the Hillcrest Freespace 9DOF IMU
  *
- * @author Trevor Decker
- * @author Sean Buckley
+ * Comments will make callbacks to page numbers on the datasheet/reference manual, which can be found here:
+ * http://hillcrestlabs.com/resources/download-materials/download-info/hcomm-reference-manual/
  */
-public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListenerInterface, com.roboclub.robobuggy.ros.Node {
-    private Device thisDevice;
+public class HillCrestImuNode extends BuggyDecoratorNode implements DeviceListenerInterface, DiscoveryListenerInterface {
 
-    private Publisher accelPub = new Publisher(NodeChannel.IMU_ACCELERATION.getMsgPath());
-    private Publisher linearAccPub = new Publisher(NodeChannel.IMU_LINEAR_ACC.getMsgPath());
-    private Publisher inclinationPub = new Publisher(NodeChannel.IMU_INCLINATION.getMsgPath());
-    private Publisher angVelPub = new Publisher(NodeChannel.IMU_ANG_VEL.getMsgPath());
-    private Publisher magPub = new Publisher(NodeChannel.IMU_MAGNETIC.getMsgPath());
-    private Publisher compassPub = new Publisher(NodeChannel.IMU_COMPASS.getMsgPath());
-    private Publisher angPosPub = new Publisher(NodeChannel.IMU_ANG_POS.getMsgPath());
+    private Device hillcrestImu;
+
+    // Constants
+    private static final int IMU_FORMAT_MODE = 1; // Mode 1 - page 21
+
+    // Publishers for the different messages
+    private Publisher accelerationPub;
+    private Publisher linearAccelerationPub;
+    private Publisher angularVelocityPub;
+    private Publisher magnetometerPub;
+    private Publisher inclinationPub;
+    private Publisher compassHeadingPub;
+    private Publisher angularPositionPub;
 
     /**
-     * Constructor for the hillcrest imu
+     * Creates a new Hillcrest IMU node
      */
     public HillCrestImuNode() {
-        super();
-        Discovery discover = Discovery.getInstance();
-        discover.addListener(this);
+        super(new BuggyBaseNode(NodeChannel.IMU), "Hillcrest IMU");
 
+        // initialize the publishers
+        accelerationPub = new Publisher(NodeChannel.IMU_ACCELERATION.getMsgPath());
+        linearAccelerationPub = new Publisher(NodeChannel.IMU_LINEAR_ACC.getMsgPath());
+        angularVelocityPub = new Publisher(NodeChannel.IMU_ANG_VEL.getMsgPath());
+        magnetometerPub = new Publisher(NodeChannel.IMU_MAGNETIC.getMsgPath());
+        inclinationPub = new Publisher(NodeChannel.IMU_INCLINATION.getMsgPath());
+        compassHeadingPub = new Publisher(NodeChannel.IMU_COMPASS.getMsgPath());
+        angularPositionPub = new Publisher(NodeChannel.IMU_ANG_POS.getMsgPath());
     }
 
+    @Override
+    protected boolean startDecoratorNode() {
+        // look for an IMU, and add this as a listener
+        Discovery.getInstance().addListener(this);
+
+        return true;
+    }
 
     @Override
-    public void handleRead(Device arg0, HidInMsg arg1, int arg2, long arg3) {
-        //TODO handle other kinds of messages
-        if (!(arg1 instanceof FreespaceMsgInMotionEngineOutput)) {
+    protected boolean shutdownDecoratorNode() {
+        Discovery.getInstance().removeListener(this);
+        return true;
+    }
+
+    /**
+     * This method parses the IMU data array by using the spec on Pages 22 and 23 of the
+     * reference manual
+     *
+     * Note that parameters i and l are unknown since this overrides a method given to us in a
+     * library without documentation. We do not use these parameters, and so ignore them.
+     *
+     * @param device the IMU in question
+     * @param message the message from the IMU
+     * @param i [Unknown]
+     * @param l [Unknown]
+     */
+    @Override
+    public void handleRead(Device device, HidInMsg message, int i, long l) {
+
+        // first check whether the message was the kind we're looking for
+        // at this point we are only handling MotionEngineOutput messages
+        if (!(message instanceof FreespaceMsgInMotionEngineOutput)) {
+            new RobobuggyLogicNotification("IMU gave us a message other than motion engine output!", RobobuggyMessageLevel.NOTE);
             return;
         }
 
-        FreespaceMsgInMotionEngineOutput m = (FreespaceMsgInMotionEngineOutput) arg1;
+        FreespaceMsgInMotionEngineOutput imuMotionEngineOutput = ((FreespaceMsgInMotionEngineOutput) message);
 
-        // we can only parse format 1 for now
-        if (m.getFormatSelect() != 1) {
+        // check whether we are in the correct mode
+        if (imuMotionEngineOutput.getFormatSelect() != IMU_FORMAT_MODE) {
+            new RobobuggyLogicNotification("IMU is in an unexpected mode!", RobobuggyMessageLevel.EXCEPTION);
             return;
         }
 
-        int[] data = m.getMeData();
-        int offsetInBytes = 0;
+        // get the data array, and start our tracker
+        int[] imuDataArray = imuMotionEngineOutput.getMeData();
+        int dataArrayOffset = 0;
 
-        // FF0 is acceleration for Format 1
+        // FF0 measures acceleration in the x, y, z coordinates (outlined on the device)
+        //  x positive is to the right
+        //  y positive is forward
+        //  z positive is up
         // reported in units of 0.01g
-        if (m.getFf0()) {
-            int xAccelInHundredths = extractHalfWordFromDataArray(data, offsetInBytes);
+        if (imuMotionEngineOutput.getFf0()) {
+
+            int xAccelInHundredths = extractHalfWordFromDataArray(imuDataArray, dataArrayOffset);
             double xAccel = xAccelInHundredths / 100.0;
-            offsetInBytes += 2;
+            dataArrayOffset += 2;
 
-            int yAccelInHundredths = extractHalfWordFromDataArray(data, offsetInBytes);
+            int yAccelInHundredths = extractHalfWordFromDataArray(imuDataArray, dataArrayOffset);
             double yAccel = yAccelInHundredths / 100.0;
-            offsetInBytes += 2;
+            dataArrayOffset += 2;
 
-            int zAccelInHundredths = extractHalfWordFromDataArray(data, offsetInBytes);
+            int zAccelInHundredths = extractHalfWordFromDataArray(imuDataArray, dataArrayOffset);
             double zAccel = zAccelInHundredths / 100.0;
-            offsetInBytes += 2;
+            dataArrayOffset += 2;
 
-            accelPub.publish(new IMUAccelerationMessage(xAccel, yAccel, zAccel));
+            accelerationPub.publish(new IMUAccelerationMessage(xAccel, yAccel, zAccel));
 
         }
-        //ff1 is linear acceleration for Format 1
+
+        // FF1 measures linear acceleration in the xyz plane (outlined on the device)
+        //  x positive is right
+        //  y positive is forward
+        //  z positive is up
         // reported in units of 0.01g
-        if (m.getFf1()) {
-            int xAccelInHundredths = extractHalfWordFromDataArray(data, offsetInBytes);
+        if (imuMotionEngineOutput.getFf1()) {
+
+            int xAccelInHundredths = extractHalfWordFromDataArray(imuDataArray, dataArrayOffset);
             double xAccel = xAccelInHundredths / 100.0;
-            offsetInBytes += 2;
+            dataArrayOffset += 2;
 
-            int yAccelInHundredths = extractHalfWordFromDataArray(data, offsetInBytes);
+            int yAccelInHundredths = extractHalfWordFromDataArray(imuDataArray, dataArrayOffset);
             double yAccel = yAccelInHundredths / 100.0;
-            offsetInBytes += 2;
+            dataArrayOffset += 2;
 
-            int zAccelInHundredths = extractHalfWordFromDataArray(data, offsetInBytes);
+            int zAccelInHundredths = extractHalfWordFromDataArray(imuDataArray, dataArrayOffset);
             double zAccel = zAccelInHundredths / 100.0;
-            offsetInBytes += 2;
+            dataArrayOffset += 2;
 
-            linearAccPub.publish(new IMULinearAccelerationMessage(xAccel, yAccel, zAccel));
+            linearAccelerationPub.publish(new IMULinearAccelerationMessage(xAccel, yAccel, zAccel));
+
         }
-        //ff2 is angular velocity for Format 1
-        // reported in units of 0.1 deg/sec
-        if (m.getFf2()) {
-            int xAngularVelocityInTenths = extractHalfWordFromDataArray(data, offsetInBytes);
+
+        // FF2 measures angular velocity
+        //  +x is tilt up (pitch)
+        //  +y is tilt right (roll)
+        //  +z is turn left (yaw)
+        // reported in units of 0.1 degrees/sec
+        if (imuMotionEngineOutput.getFf2()) {
+
+            int xAngularVelocityInTenths = extractHalfWordFromDataArray(imuDataArray, dataArrayOffset);
             double xAngularVel = xAngularVelocityInTenths / 10.0;
-            offsetInBytes += 2;
+            dataArrayOffset += 2;
 
-            int yAngularVelocityInTenths = extractHalfWordFromDataArray(data, offsetInBytes);
+            int yAngularVelocityInTenths = extractHalfWordFromDataArray(imuDataArray, dataArrayOffset);
             double yAngularVel = yAngularVelocityInTenths / 10.0;
-            offsetInBytes += 2;
+            dataArrayOffset += 2;
 
-            int zAngularVelocityInTenths = extractHalfWordFromDataArray(data, offsetInBytes);
+            int zAngularVelocityInTenths = extractHalfWordFromDataArray(imuDataArray, dataArrayOffset);
             double zAngularVel = zAngularVelocityInTenths / 10.0;
-            offsetInBytes += 2;
+            dataArrayOffset += 2;
 
-            angVelPub.publish(new IMUAngularVelocityMessage(xAngularVel, yAngularVel, zAngularVel));
+            angularVelocityPub.publish(new IMUAngularVelocityMessage(xAngularVel, yAngularVel, zAngularVel));
+
         }
-        //ff3 is magnetometer for Format 1
+
+        // FF3 measures the magnetometer with respect to the device frame of reference
+        //  +x is forward
+        //  +y is to the right
+        //  +z is down
         // reported in units of 0.001 gauss
-        if (m.getFf3()) {
-            int xMagInThousandths = extractHalfWordFromDataArray(data, offsetInBytes);
+        if (imuMotionEngineOutput.getFf3()) {
+
+            int xMagInThousandths = extractHalfWordFromDataArray(imuDataArray, dataArrayOffset);
             double xMag = xMagInThousandths / 1000.0;
-            offsetInBytes += 2;
+            dataArrayOffset += 2;
 
-            int yMagInThousandths = extractHalfWordFromDataArray(data, offsetInBytes);
+            int yMagInThousandths = extractHalfWordFromDataArray(imuDataArray, dataArrayOffset);
             double yMag = yMagInThousandths / 1000.0;
-            offsetInBytes += 2;
+            dataArrayOffset += 2;
 
-            int zMagInThousandths = extractHalfWordFromDataArray(data, offsetInBytes);
+            int zMagInThousandths = extractHalfWordFromDataArray(imuDataArray, dataArrayOffset);
             double zMag = zMagInThousandths / 1000.0;
-            offsetInBytes += 2;
+            dataArrayOffset += 2;
 
-            magPub.publish(new MagneticMeasurement(xMag, yMag, zMag));
+            magnetometerPub.publish(new MagneticMeasurement(xMag, yMag, zMag));
+
         }
-        //ff4 is inclination
+
+        // FF4 measures the inclination
+        //  +x is tilt up (pitch)
+        //  +y is tilt right (roll)
+        //  +z is turn left (yaw)
         // reported in units of 0.1 degrees
-        if (m.getFf4()) {
-            int xInclinationInTenths = extractHalfWordFromDataArray(data, offsetInBytes);
+        if (imuMotionEngineOutput.getFf4()) {
+
+            int xInclinationInTenths = extractHalfWordFromDataArray(imuDataArray, dataArrayOffset);
             double xInclination = xInclinationInTenths / 10.0;
-            offsetInBytes += 2;
+            dataArrayOffset += 2;
 
-            int yInclinationInTenths = extractHalfWordFromDataArray(data, offsetInBytes);
+            int yInclinationInTenths = extractHalfWordFromDataArray(imuDataArray, dataArrayOffset);
             double yInclination = yInclinationInTenths / 10.0;
-            offsetInBytes += 2;
+            dataArrayOffset += 2;
 
-            int zInclinationInTenths = extractHalfWordFromDataArray(data, offsetInBytes);
+            int zInclinationInTenths = extractHalfWordFromDataArray(imuDataArray, dataArrayOffset);
             double zInclination = zInclinationInTenths / 10.0;
-            offsetInBytes += 2;
+            dataArrayOffset += 2;
 
             inclinationPub.publish(new IMUInclinationMessage(xInclination, yInclination, zInclination));
-        }
-        //ff5 is compass for format 1
-        if (m.getFf5()) {
-            int degreesInTenths = extractHalfWordFromDataArray(data, offsetInBytes);
-            double degrees = degreesInTenths/10.0;
-            offsetInBytes += 2;
 
-            compassPub.publish(new IMUCompassMessage(degrees));
         }
-        //ff6 is angular position
-        if (m.getFf6()) {
-            double w = convertQNToDouble((byte) data[offsetInBytes + 0], (byte) data[offsetInBytes + 1], 14);
-            double x = convertQNToDouble((byte) data[offsetInBytes + 2], (byte) data[offsetInBytes + 3], 14);
-            double y = convertQNToDouble((byte) data[offsetInBytes + 4], (byte) data[offsetInBytes + 5], 14);
-            double z = convertQNToDouble((byte) data[offsetInBytes + 6], (byte) data[offsetInBytes + 7], 14);
+
+        // FF5 measures the compass heading
+        // reported in units of 0.1 degrees
+        if (imuMotionEngineOutput.getFf5()) {
+
+            int degreesInTenths = extractHalfWordFromDataArray(imuDataArray, dataArrayOffset);
+            double degrees = degreesInTenths/10.0;
+            dataArrayOffset += 2;
+
+            compassHeadingPub.publish(new IMUCompassMessage(degrees));
+
+        }
+
+        // FF6 measures angular position
+        //  Gives 4 quaternions (dimensionless) that are expressed as Q14 decimals
+        if (imuMotionEngineOutput.getFf6()) {
+
+            double w = convertQNToDouble(extractHalfWordFromDataArray(imuDataArray, dataArrayOffset), 14);
+            dataArrayOffset += 2;
+            double x = convertQNToDouble(extractHalfWordFromDataArray(imuDataArray, dataArrayOffset), 14);
+            dataArrayOffset += 2;
+            double y = convertQNToDouble(extractHalfWordFromDataArray(imuDataArray, dataArrayOffset), 14);
+            dataArrayOffset += 2;
+            double z = convertQNToDouble(extractHalfWordFromDataArray(imuDataArray, dataArrayOffset), 14);
+            dataArrayOffset += 2;
 
             double r11 = 1 - 2 * y * y - 2 * z * z;
             double r12 = 2 * x * y - 2 * z * w;
@@ -182,99 +267,9 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
                     { r31, r32, r33 }
             };
 
-            angPosPub.publish(new IMUAngularPositionMessage(rot));
-            offsetInBytes += 8;
+            angularPositionPub.publish(new IMUAngularPositionMessage(rot));
+
         }
-
-    }
-
-    @Override
-    public void handleSend(Device arg0, HidOutMsg arg1, int arg2) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void notifyRemoved(Device arg0) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void freespaceDeviceInserted(Device arg0) {
-        // TODO Auto-generated method stub
-        thisDevice = arg0;
-        thisDevice.open(this);
-
-        FreespaceMsgOutDataModeControlV2Request msg = new FreespaceMsgOutDataModeControlV2Request();
-        msg.setPacketSelect(8);  //
-        msg.setModeAndStatus(8);
-        //Set to 0 for gyro, accel, temp, mag, ang data.  Set to 1 for compass
-        msg.setFormatSelect(1);
-        //we really don't know what the format is so we are just going to log everything for now
-        msg.setFf2(true); //linear Acceleration without Gravity
-        msg.setFf3(true); //Angular Velocity
-        msg.setFf4(true); //Magnetometer
-        msg.setFf5(true); //Tempeature
-        msg.setFf6(true); //Angular position
-
-        thisDevice.sendMessageAsync(msg);
-    }
-
-    @Override
-    public void freespaceDeviceRemoved(Device arg0) {
-        // TODO Auto-generated method stub
-        thisDevice = null;
-
-    }
-
-    @Override
-    public boolean startNode() {
-        // TODO Auto-generated method stub
-        return true;
-    }
-
-    @Override
-    public boolean shutdown() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public void setName(String newName) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public String getName() {
-        // TODO Auto-generated method stub
-        return "hillcrestImu";
-    }
-
-    /**
-     * Func: Converts from fixed point to floating point
-     *
-     * @param lsb least significant byte
-     * @param msb most significant byte
-     * @param qn  number of fraction bits
-     * @return Converted floating point val
-     */
-    public double convertQNToDouble(byte lsb, byte msb, int qn) {
-        // converting Qn fixed point
-
-        int msbAsInt = ((int) msb) & 0xFF;
-        int lsbAsInt = ((int) lsb & 0xFF);
-
-        int squashedTogether = ((msbAsInt << 8) | lsbAsInt);
-        Integer sT = Integer.valueOf(squashedTogether);
-
-        if (sT >= 1 << 15) {
-            sT = sT - (1 << 17 - 1);
-        }
-
-        double d = sT.doubleValue();
-        return Math.pow(2, -1 * qn) * d;
 
     }
 
@@ -285,11 +280,105 @@ public class HillCrestImuNode implements DiscoveryListenerInterface, DeviceListe
      *                      NOT get increased, you will need to keep track of an offset externally
      * @return the halfword extracted
      */
-    private int extractHalfWordFromDataArray(int[] data, int offsetInBytes) {
+    protected int extractHalfWordFromDataArray(int[] data, int offsetInBytes) {
 
         int lsb = data[offsetInBytes];
         int msb = data[offsetInBytes + 1];
         return ((msb << 8) | lsb);
+
     }
 
+
+    /**
+     * Converts from fixed point to floating point
+     *
+     * Some of the imu data is expressed as fixed point numbers, with the format of Q{N},
+     * where Q represents 'fixed point', and N represents the point. Q10 represents a
+     * fixed point number with 1 sign bit, 5 integer bits and 10 fractional bits
+     *
+     * More info is found on Page 18
+     *
+     * The algorithm is as follows on Wikipedia:
+     * https://en.wikipedia.org/wiki/Q_(number_format)#Q_to_float
+     *
+     * @param q the 16-bit fixed-point number
+     * @param n the location of the point
+     * @return Converted floating point val
+     */
+    protected double convertQNToDouble(int q, int n) {
+
+        // convert it to a double
+        double qDouble = (double) q;
+
+        // get the sign bit
+        int signBit = (q >> 15) & 0x1;
+        int sign = 0;
+        if (signBit == 0) {
+            sign = 1;
+        }
+        else {
+            sign = -1;
+        }
+
+        // multiply it by 2^(-n)
+        return sign * qDouble * Math.pow(2, -1 * n);
+
+    }
+
+
+    @Override
+    public void handleSend(Device device, HidOutMsg hidOutMsg, int i) {
+
+    }
+
+    @Override
+    public void notifyRemoved(Device device) {
+
+    }
+
+    @Override
+    public void freespaceDeviceInserted(Device device) {
+        hillcrestImu = device;
+
+        // open the device
+        FreespaceErrorCodes openResponse = hillcrestImu.open(this);
+        if (!openResponse.equals(FreespaceErrorCodes.FREESPACE_SUCCESS)) {
+            new RobobuggyLogicNotification("Error opening IMU!", RobobuggyMessageLevel.EXCEPTION);
+            return;
+        }
+
+        int modeAndStatus = 8;               // bit 3 set gives Full Motion On mode - page 41
+        int packetSelect  = 8;               // 8 = MotionEngineOutput              - page 41
+        int formatSelect  = IMU_FORMAT_MODE; // Mode 1                              - page 21
+
+        FreespaceMsgOutDataModeControlV2Request configMsg = new FreespaceMsgOutDataModeControlV2Request();
+
+        configMsg.setModeAndStatus(modeAndStatus);
+        configMsg.setPacketSelect(packetSelect);
+        configMsg.setFormatSelect(formatSelect);
+
+        // we want to make sure that we get all the packets
+        // the Format Flags are basically a way to enable each individual sensor - page 41
+        configMsg.setFf0(true);
+        configMsg.setFf1(true);
+        configMsg.setFf2(true);
+        configMsg.setFf3(true);
+        configMsg.setFf4(true);
+        configMsg.setFf5(true);
+        configMsg.setFf6(true);
+        configMsg.setFf7(true);
+
+        // send down the config info, and get the response
+        FreespaceErrorCodes configResponse = hillcrestImu.sendMessage(configMsg);
+        if (!configResponse.equals(FreespaceErrorCodes.FREESPACE_SUCCESS)) {
+            new RobobuggyLogicNotification("Error configuring IMU!", RobobuggyMessageLevel.EXCEPTION);
+        }
+    }
+
+    @Override
+    public void freespaceDeviceRemoved(Device device) {
+        // close doesn't return a status
+        hillcrestImu.close();
+        hillcrestImu = null;
+    }
 }

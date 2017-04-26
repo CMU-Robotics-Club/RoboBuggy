@@ -3,7 +3,6 @@ package com.roboclub.robobuggy.main;
 import com.roboclub.robobuggy.robots.*;
 import com.roboclub.robobuggy.simulation.FullSimRunner;
 import com.roboclub.robobuggy.ui.Gui;
-import com.roboclub.robobuggy.utilities.JNISetup;
 
 
 /**

@@ -29,22 +29,50 @@ INPUTUPPERBOUND = 60
 import signal
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
-screenCopy = None
+screen_copy = None
 
 #Create a dictionary of message headers
-mid_to_str = {
-    0: "ENC_TICKS_LAST",
-    1: "ENC_TICKS_RESET",
-    2: "ENC_TIMESTAMP",
-    20: "MEGA_STEER_ANGLE",
-    21: "MEGA_BRAKE_STATE",
-    22: "MEGA_AUTON_STATE",
-    23: "MEGA_BATTERY_LEVEL",
-    24: "MEGA_STEER_FEEDBACK",
-    252: "RESERVED",
-    254: "ERROR",
-    255: "DEVICE_ID"
-}
+# startOfValues is the comment before start of values for dict
+# takeout is what needs to be taken out from the beginning of the values in dict
+# if it is in the rbsm_config.txt file
+def create_bit_to_str(start_of_values, takeout=""):
+    dict = {}
+    settings_file = None
+    try:
+        settings_file = open("../../real_time/rbsm_config.txt")
+    except:
+        print("Error! Unable to find real_time/rbsm_headers.txt\n")
+        sys.exit(1)
+    # when the correct headers found
+    headers_found = False
+    # when to stop looking for headers
+    end_headers = False
+    # go through each line to find the message headers
+    for line_num, line in enumerate(settings_file):
+        # to give right name takes out RBSM_MID_ if that is at beginning cause "RBSM_MID_" unneeded
+        if(line[0:len(takeout)] == takeout):
+            line = line[len(takeout):]
+        # key is in the part after , and value is before
+        if(headers_found):
+            definition = line.split(", ")
+            # if there are not enough values or too many, then line is assumed to be
+            # end of the parts with message headers
+            if(len(definition)!=2):
+                end_headers = True
+                break
+            # sets the key to equal the message header
+            dict[int(definition[1])] = definition[0]
+        elif(line[0:len(start_of_values)+3]=="// " + start_of_values):
+            # the string that is found is what symbolizes when message headers begin on
+            # next line
+            headers_found = True
+        # when the headers end do not care about anything else so breaks
+        if(end_headers):
+            break
+    return dict
+
+mid_to_str = create_bit_to_str("RBSM Headers", "RBSM_MID_")
+eid_to_str = create_bit_to_str("Error Message Bits", "RBSM_EID_")
 
 def redraw(state):
     screen = state["screen"]
@@ -64,10 +92,33 @@ def redraw(state):
                                                                             message_cache[mid]["update_time"])
             screen.addstr(row_id, 2, s)
 
-            # with open('someshit.txt', 'at') as f:
-            #     f.write(s + "\n")
-
             row_id = row_id + 1
+    
+        #adding space and then error
+        screen.addstr(row_id, 2, "")
+        screen.addstr(row_id+1, 2, "--------ERRORS---------")
+        # since last steps went through 2 rows adding 2 to row_id
+        row_id = row_id + 2
+        # finds which value is error
+        error = 254
+        for key in mid_to_str.keys():
+            if(mid_to_str[key]=="ERROR"):
+                error = key
+        # check if key is even in message_cache
+        if(error in message_cache.keys()):
+            error_message = message_cache[error]["data"]
+            # max bit that has associated error
+            maxBit = max(eid_to_str.keys())
+            for bit in xrange(maxBit+1):
+                if(error_message%2==1 and bit in eid_to_str.keys()):
+                    wipeScreenAndPost(screen, eid_to_str[bit], row_id)
+                    row_id = row_id + 1
+                # can eliminate previous bit by diving by 2
+                error_message = error_message/2
+        # adding -- so that if there is nothing between error and this then no error
+        wipeScreenAndPost(screen, "------------------------", row_id)
+        # to make sure row below BottomLine clean:
+        wipeScreenAndPost(screen, "", row_id+1)
 
 
     # update status line
@@ -80,6 +131,10 @@ def redraw(state):
 
     screen.refresh()
 
+def wipeScreenAndPost(screen, str, pos):
+    # long empty space to wipe line clean
+    screen.addstr(pos, 2, "                                                       ")
+    screen.addstr(pos, 2, str)
 
 def rbsm_worker(state):
     message_cache = state["message_cache"]
@@ -146,8 +201,6 @@ def command_worker(state):
         # standard ascii characters
         elif(new_char < 128) and len(state["command_line"]) < INPUTUPPERBOUND:
             state["command_line"] += chr(new_char)
-            with open('someshit.txt', 'at') as f:
-                f.write(state["command_line"])
 
         # redraw(state)
 
