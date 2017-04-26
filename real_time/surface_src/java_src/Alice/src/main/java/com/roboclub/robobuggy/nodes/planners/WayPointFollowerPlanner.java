@@ -206,10 +206,14 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         double E = L * Math.sin(theta);
 
         double thetaDelta = phi - psi;
+
+        if (Math.signum(thetaDelta) != Math.signum(thetaDelta*E/10.0)){
+            E=1;
+        }
+
         thetaDelta *= E/10.0;
-
-
-        deltaHeading += thetaDelta;
+        
+//        deltaHeading += thetaDelta;
 
         //Pure Pursuit steering controller
         double commandedAngle = Math.atan2(2 * RobobuggyKFLocalizer.WHEELBASE_IN_METERS * Math.sin(deltaHeading), lookahead);

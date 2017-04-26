@@ -1,6 +1,7 @@
 package com.roboclub.robobuggy.main;
 
 import com.roboclub.robobuggy.robots.*;
+import com.roboclub.robobuggy.simulation.FullSimRunner;
 import com.roboclub.robobuggy.ui.Gui;
 import com.roboclub.robobuggy.utilities.JNISetup;
 
@@ -30,8 +31,9 @@ public class RobobuggyMainFile {
 
         new RobobuggyLogicNotification("Initializing Robot", RobobuggyMessageLevel.NOTE);
 //        robot = ConfigRobot.getInstance();
-        robot = PlayBackRobot.getInstance();
-//        robot = TransistorAuton.getInstance();
+//        robot = PlayBackRobot.getInstance();
+        robot = TransistorAuton.getInstance();
+//        robot = CommTestRobot.getInstance();
 
         new RobobuggyLogicNotification("Initializing GUI", RobobuggyMessageLevel.NOTE);
         Gui.getInstance();
