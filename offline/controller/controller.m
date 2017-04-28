@@ -107,7 +107,7 @@ function [A] = model(x, steering)
 end
 
 function [u] = control(desired_traj, X) 
-    pos = X(1:2)';
+    pos = X(1:2);
     b = repmat(pos, size(desired_traj, 1), 1);
     delta = 15*15;
     possible = find(sum((desired_traj-b).^2, 2) < delta);
