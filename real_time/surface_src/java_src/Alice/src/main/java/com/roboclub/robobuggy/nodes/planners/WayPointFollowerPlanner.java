@@ -96,7 +96,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
                 newWaypoint = true;
             }
 
-            double currentOrientation = pose.getCurrentState().get(3, 0);
+            double currentOrientation = pose.getHeading();
             double dx = LocalizerUtil.convertLonToMeters(target.getLongitude()) - LocalizerUtil.convertLonToMeters(pose.getLongitude());
             double dy = LocalizerUtil.convertLatToMeters(target.getLatitude()) - LocalizerUtil.convertLatToMeters(pose.getLatitude());
             double desiredHeading = Math.atan2(dy, dx);
@@ -112,7 +112,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
             // pick a point between 3 & 10m
             double lookaheadLB = 3.0;
             double lookaheadUB = 10.0;
-            double lookahead = pose.getCurrentState().get(2, 0) * lookaheadTime;
+            double lookahead = pose.getVelocity() * lookaheadTime;
             if (lookahead < lookaheadLB) { lookahead = lookaheadLB; }
             if (lookahead > lookaheadUB) { lookahead = lookaheadUB; }
 
@@ -123,7 +123,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
                 double dy = LocalizerUtil.convertLatToMeters(wayPoints.get(i).toGpsPoseMessage(0).getLatitude()) - LocalizerUtil.convertLatToMeters
                         (wayPoints.get(closestIndex).getLatitude());
 
-                double ch = pose.getCurrentState().get(3, 0);
+                double ch = pose.getHeading();
                 double dh = Math.atan2(dy, dx);
 
                 double theta = dh-ch;
@@ -137,7 +137,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         }
 
         // steer towards it
-        double currentOrientation = pose.getCurrentState().get(3, 0);
+        double currentOrientation = pose.getHeading();
         double dx = LocalizerUtil.convertLonToMeters(target.getLongitude()) - LocalizerUtil.convertLonToMeters(pose.getLongitude());
         double dy = LocalizerUtil.convertLatToMeters(target.getLatitude()) - LocalizerUtil.convertLatToMeters(pose.getLatitude());
         double desiredHeading = Math.atan2(dy, dx);
@@ -156,7 +156,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         int closestIndex = getClosestIndex(wayPoints, pose);
 
         double K = 2.5;
-        double velocity = pose.getCurrentState().get(2, 0);
+        double velocity = pose.getVelocity();
         double lookaheadLowerBound = 5.0;
         double lookaheadUpperBound = 25.0;
         double lookahead = K * velocity;
@@ -228,7 +228,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         int closestIndex = getClosestIndex(wayPoints, pose);
 
         double K = 0.3;
-        double velocity = pose.getCurrentState().get(2, 0);
+        double velocity = pose.getVelocity();
 
         //if we are out of points then just go straight
         if (closestIndex >= (wayPoints.size() - 1)) {

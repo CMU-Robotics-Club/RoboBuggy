@@ -82,7 +82,7 @@ public class ControllerTester extends PeriodicNode {
 
         // if it's time to run the controller, update the controller's understanding of where we are
         if (simCounter == CONTROLLER_PERIOD) {
-            simulatedPosePub.publish(new GPSPoseMessage(new Date(), lt.getLatitude(), lt.getLongitude(), X.get(3, 0), X));
+            simulatedPosePub.publish(new GPSPoseMessage(new Date(), lt.getLatitude(), lt.getLongitude(), X.get(3, 0), X.get(2, 0)));
             simCounter = 0;
         }
 

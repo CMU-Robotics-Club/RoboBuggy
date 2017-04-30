@@ -25,7 +25,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
     // constants we use throughout the file
     private static final int X_GLOBAL_ROW = 0;
     private static final int Y_GLOBAL_ROW = 1;
-    private static final int Y_BODY_ROW = 2;
+    private static final int VELOCITY_ROW = 2;
     private static final int HEADING_GLOBAL_ROW = 3;
     private static final int HEADING_VEL_ROW = 4;
 
@@ -208,7 +208,7 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         LocTuple latLon = LocalizerUtil.utm2Deg(utm);
         if (gpsMessagesReceived) {
             posePub.publish(new GPSPoseMessage(new Date(), latLon.getLatitude(),
-                    latLon.getLongitude(), x_predict.get(HEADING_GLOBAL_ROW, 0), x));
+                    latLon.getLongitude(), x_predict.get(HEADING_GLOBAL_ROW, 0), x_predict.get(VELOCITY_ROW, 0)));
         }
     }
 
