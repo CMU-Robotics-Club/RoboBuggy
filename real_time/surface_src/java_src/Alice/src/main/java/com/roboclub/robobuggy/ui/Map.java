@@ -96,7 +96,7 @@ public class Map extends JPanel {
                 desiredHeadingMapObj.setColor(Color.GREEN);
                 getMapTree().getViewer().addMapPolygon(desiredHeadingMapObj);
 
-                double currentHeading = gpsM.getCurrentState().get(3, 0);
+                double currentHeading = gpsM.getHeading();
                 getMapTree().getViewer().removeMapPolygon(currentHeadingMapObj);
                 currentHeadingMapObj = new MapPolygonImpl(
                         new Coordinate(gpsM.getLatitude(), gpsM.getLongitude()),
