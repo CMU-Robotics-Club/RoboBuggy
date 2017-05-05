@@ -46,17 +46,17 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
     private Matrix Q_gps;               // model noise covariance matrix
     private Matrix Q_encoder;
 
-    // Q is variance of new measurements
-    // P is variance of old measurements
-    // C is observation matrix
-    // Rk = covariance of measurements
-    // S-1 models confidence of new measurements
-    // if Rk is 0, that means kalman gain is high, means you weight measurement more than model
-    // if Rk is large, kalman gain low, weight model more than measurements
-
     // output matrices
     private Matrix C_gps;               // a description of how the GPS impacts x
     private Matrix C_encoder;           // how the encoder affects x
+
+    // Q is the variance of new measurements
+    // P is the variance of old measurements
+    // C is the observation matrix - what variables can we measure, since we can't directly measure everything
+    // in the state
+    // R = covariance of measurements
+    // if R is small, that means the "kalman gain" is high, means you weight measurement more than model
+    // if R is large, kalman gain low, weight model more than measurements
 
     private long lastTime;              // the last time we updated the current position estimate
     private UTMTuple lastGPS;           // the most recent value of the GPS coordinates, expressed as a UTM measurement
