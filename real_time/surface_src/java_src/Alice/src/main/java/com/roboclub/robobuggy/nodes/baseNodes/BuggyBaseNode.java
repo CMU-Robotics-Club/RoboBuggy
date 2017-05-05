@@ -20,9 +20,9 @@ public class BuggyBaseNode implements BuggyNode {
     private static final long WATCHDOG_PERIOD = 2000;
 
     private Publisher statePub;
-    private NodeState state;
+    protected NodeState state;
     private Long lastUpdate;
-    private Timer timer;
+    protected Timer timer;
 
     /**
      * Construct a new {@link BuggyBaseNode}
@@ -33,9 +33,7 @@ public class BuggyBaseNode implements BuggyNode {
         statePub = new Publisher(nodeChannel.getStatePath());
         state = NodeState.NOT_IN_USE;
         lastUpdate = 0L;
-        TimerTask timerTask = new UpdateTask();
         timer = new Timer(true);
-        timer.scheduleAtFixedRate(timerTask, 0, WATCHDOG_PERIOD);
     }
 
     /**
@@ -46,6 +44,8 @@ public class BuggyBaseNode implements BuggyNode {
         //Set the state to be on and record the time
         state = NodeState.ON;
         lastUpdate = System.currentTimeMillis();
+        TimerTask timerTask = new UpdateTask();
+        timer.scheduleAtFixedRate(timerTask, 0, WATCHDOG_PERIOD);
         //Return true as the base node can always be started
         return true;
     }
@@ -67,6 +67,12 @@ public class BuggyBaseNode implements BuggyNode {
      */
     @Override
     public void setNodeState(NodeState state) {
+        if (state == null) {
+            // don't change the state
+            return;
+        }
+
+        // otherwise set new state
         this.state = state;
         lastUpdate = System.currentTimeMillis();
     }
