@@ -290,19 +290,6 @@ public class RobobuggyKFLocalizer extends PeriodicNode {
         x = x_pre.plus(K.times(residual));
         double new_heading = x.get(HEADING_GLOBAL_ROW, 0);
 
-//        if (Math.abs(prev_heading - new_heading) > Math.toRadians(45)) {
-//            if (x.get(2, 0) > 0.5) {
-//                if (new_heading > prev_heading) {
-//                    x.set(HEADING_GLOBAL_ROW, 0, prev_heading - Math.toRadians(10));
-//                } else {
-//                    x.set(HEADING_GLOBAL_ROW, 0, prev_heading + Math.toRadians(10));
-//                }
-//            }
-//            else {
-//                x.set(HEADING_GLOBAL_ROW, 0, prev_heading);
-//            }
-//        }
-
         P = Matrix.identity(5, 5).minus(K.times(C));
         P = P.times(P_pre);
 
