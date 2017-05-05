@@ -1,10 +1,12 @@
-package com.roboclub.robobuggy.ui;
+package com.roboclub.robobuggy.ui.misc.graph;
 
 import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
+import com.roboclub.robobuggy.ui.Gui;
+import com.roboclub.robobuggy.ui.RobobuggyGUIContainer;
 
 /**
  * {@link RobobuggyGUIContainer} used to represent a graph

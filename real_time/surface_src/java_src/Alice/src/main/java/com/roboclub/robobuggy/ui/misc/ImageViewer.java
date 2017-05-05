@@ -1,9 +1,10 @@
-package com.roboclub.robobuggy.ui;
+package com.roboclub.robobuggy.ui.misc;
 
 import com.roboclub.robobuggy.messages.ImageMessage;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.Subscriber;
+import com.roboclub.robobuggy.ui.RobobuggyGUIContainer;
 
 import javax.imageio.ImageIO;
 import java.awt.Color;

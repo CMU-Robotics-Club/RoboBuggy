@@ -1,4 +1,4 @@
-package com.roboclub.robobuggy.ui;
+package com.roboclub.robobuggy.ui.main_tab;
 
 import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
@@ -7,6 +7,8 @@ import com.roboclub.robobuggy.messages.EncoderResetMessage;
 import com.roboclub.robobuggy.messages.GuiLoggingButtonMessage;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
+import com.roboclub.robobuggy.ui.Gui;
+import com.roboclub.robobuggy.ui.RobobuggyGUIContainer;
 
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;

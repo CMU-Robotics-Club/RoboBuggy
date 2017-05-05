@@ -1,4 +1,6 @@
-package com.roboclub.robobuggy.ui;
+package com.roboclub.robobuggy.ui.main_tab;
+
+import com.roboclub.robobuggy.ui.RobobuggyGUIContainer;
 
 /**
  * @author Trevor Decker

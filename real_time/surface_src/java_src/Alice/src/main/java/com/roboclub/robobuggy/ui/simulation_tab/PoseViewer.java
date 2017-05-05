@@ -1,4 +1,4 @@
-package com.roboclub.robobuggy.ui;
+package com.roboclub.robobuggy.ui.simulation_tab;
 
 import Jama.Matrix;
 import com.roboclub.robobuggy.messages.DriveControlMessage;
@@ -8,6 +8,7 @@ import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Subscriber;
+import com.roboclub.robobuggy.ui.RobobuggyGUIContainer;
 import com.sun.javafx.geom.Vec2d;
 
 import javax.swing.JButton;

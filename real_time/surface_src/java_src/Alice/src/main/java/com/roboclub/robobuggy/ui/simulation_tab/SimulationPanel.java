@@ -1,6 +1,7 @@
-package com.roboclub.robobuggy.ui;
+package com.roboclub.robobuggy.ui.simulation_tab;
 
 import com.roboclub.robobuggy.ros.NodeChannel;
+import com.roboclub.robobuggy.ui.RobobuggyGUIContainer;
 
 /**
  * This class is for providing information about what the simulator actual state is and what the

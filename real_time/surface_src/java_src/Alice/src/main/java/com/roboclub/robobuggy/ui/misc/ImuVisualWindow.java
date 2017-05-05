@@ -1,4 +1,6 @@
-package com.roboclub.robobuggy.ui;
+package com.roboclub.robobuggy.ui.misc;
+
+import com.roboclub.robobuggy.ui.RobobuggyGUIContainer;
 
 /**
  * Creates a window to display the IMU visualization
