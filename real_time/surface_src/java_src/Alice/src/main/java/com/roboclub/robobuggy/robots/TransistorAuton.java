@@ -57,21 +57,16 @@ public final class TransistorAuton extends AbstractRobot {
             shutDown();
         }
         new RobobuggyLogicNotification("Logic Exception Setup properly", RobobuggyMessageLevel.NOTE);
-        // Initialize Nodes
 
+        // Initialize Nodes
         nodeList.add(new RobobuggyKFLocalizer(10, "Robobuggy KF Localizer", new LocTuple(40.441670, -79.9416362)));
         nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.getComPortGPS()));
         nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION,
                 NodeChannel.getLoggingChannels()));
         nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING, RobobuggyConfigFile.getComPortRBSM(),
                 RobobuggyConfigFile.RBSM_COMMAND_PERIOD));
-//		nodeList.add(new CameraNode(NodeChannel.PUSHBAR_CAMERA, 100));
-//        nodeList.add(new HillCrestImuNode());
-
         try {
-//            ArrayList<GpsMeasurement> wayPoints = WayPointUtil.createWayPointsFromLog("logs/", "2017-04-07-18-15-27/sensors_2017-04-07-18-15-27.txt");
-          ArrayList<GpsMeasurement> wayPoints = WayPointUtil.createWayPointsFromWaypointList(RobobuggyConfigFile.getWaypointSourceLogFile());
-            //ArrayList<GpsMeasurement> wayPoints = WayPointUtil.createWaypointsFromOdomLocalizerLog(RobobuggyConfigFile.getWaypointSourceLogFile());
+            ArrayList<GpsMeasurement> wayPoints = WayPointUtil.createWayPointsFromWaypointList(RobobuggyConfigFile.getWaypointSourceLogFile());
             nodeList.add(new WayPointFollowerPlanner(wayPoints));
         } catch (IOException e) {
             // TODO Auto-generated catch block
@@ -84,8 +79,6 @@ public final class TransistorAuton extends AbstractRobot {
         RobobuggyGUITabs tabs = new RobobuggyGUITabs();
         mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
         tabs.addTab(new MainGuiWindow(), "Home");
-        //	tabs.addTab(new PoseGraphsPanel(),"poses");
-        //	tabs.addTab(new  AutonomousPanel(),"Autonomous");
         tabs.add(new PathPanel(), "Path Visualizer");
         tabs.addTab(new ConfigurationPanel(), "Configuration");
 

@@ -11,6 +11,7 @@ import com.roboclub.robobuggy.ui.*;
  */
 public class CommTestRobot extends AbstractRobot {
     private static CommTestRobot instance;
+    private static final int ARDUINO_BOOTLOADER_TIMEOUT_MS = 2000;
 
     public static CommTestRobot getInstance() {
         if (instance == null) {
@@ -22,7 +23,7 @@ public class CommTestRobot extends AbstractRobot {
     private CommTestRobot() {
         super();
         try {
-            Thread.sleep(2000);
+            Thread.sleep(ARDUINO_BOOTLOADER_TIMEOUT_MS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -37,10 +38,6 @@ public class CommTestRobot extends AbstractRobot {
         RobobuggyGUITabs tabs = new RobobuggyGUITabs();
         mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
         tabs.addTab(new MainGuiWindow(), "Home");
-        //	tabs.addTab(new PoseGraphsPanel(),"poses");
-        //	tabs.addTab(new  AutonomousPanel(),"Autonomous");
-        tabs.add(new PathPanel(), "Path Visualizer");
-        tabs.addTab(new ConfigurationPanel(), "Configuration");
 
     }
 

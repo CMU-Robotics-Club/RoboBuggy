@@ -75,7 +75,6 @@ public class SweepNode extends PathPlannerNode {
 
     @Override
     protected double getCommandedSteeringAngle() {
-        System.out.println("requested steering angle");
         return currentCommandedSteeringAngle;
     }
 
