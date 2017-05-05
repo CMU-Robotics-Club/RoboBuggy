@@ -6,7 +6,6 @@ import com.roboclub.robobuggy.messages.DriveControlMessage;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.nodes.localizers.LocTuple;
-import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
 import com.roboclub.robobuggy.ros.NodeChannel;
@@ -54,7 +53,7 @@ public class Map extends JPanel {
     private MapMarkerDot currentWaypoint = new MapMarkerDot(0, 0);
     private MapPolygonImpl currentSteeringCommandMapObj = new MapPolygonImpl();
     private MapPolygonImpl currentHeadingMapObj = new MapPolygonImpl();
-    private MapPolygonImpl desiredHeadingMapObj = new MapPolygonImpl();
+    private double currentCommandedAngle;
 
     /**
      * initializes a new Map with cache loaded
@@ -68,7 +67,6 @@ public class Map extends JPanel {
         getMapTree().getViewer().addMapMarker(currentWaypoint);
         getMapTree().getViewer().addMapPolygon(currentSteeringCommandMapObj);
         getMapTree().getViewer().addMapPolygon(currentHeadingMapObj);
-        getMapTree().getViewer().addMapPolygon(desiredHeadingMapObj);
 
         //adds track buggy  
         new Subscriber("Map", NodeChannel.POSE.getMsgPath(), new MessageListener() {
@@ -82,19 +80,7 @@ public class Map extends JPanel {
                 addPointsToMapTree(Color.RED, new LocTuple(gpsM.getLatitude(), gpsM.getLongitude()));
 
                 getMapTree().getViewer().removeMapMarker(currentWaypoint);
-                currentWaypoint.setLat(WayPointFollowerPlanner.currentWaypoint.getLatitude());
-                currentWaypoint.setLon(WayPointFollowerPlanner.currentWaypoint.getLongitude());
                 getMapTree().getViewer().addMapMarker(currentWaypoint);
-
-                getMapTree().getViewer().removeMapPolygon(desiredHeadingMapObj);
-                desiredHeadingMapObj = new MapPolygonImpl(
-                        new Coordinate(gpsM.getLatitude(), gpsM.getLongitude()),
-                        new Coordinate(gpsM.getLatitude() + 0.0001 * Math.sin(WayPointFollowerPlanner.currentDesiredHeading), gpsM.getLongitude() + 0.0001 *
-                                Math.cos(WayPointFollowerPlanner.currentDesiredHeading)),
-                        new Coordinate(gpsM.getLatitude(), gpsM.getLongitude())
-                );
-                desiredHeadingMapObj.setColor(Color.GREEN);
-                getMapTree().getViewer().addMapPolygon(desiredHeadingMapObj);
 
                 double currentHeading = gpsM.getHeading();
                 getMapTree().getViewer().removeMapPolygon(currentHeadingMapObj);
@@ -109,9 +95,8 @@ public class Map extends JPanel {
                 getMapTree().getViewer().removeMapPolygon(currentSteeringCommandMapObj);
                 currentSteeringCommandMapObj = new MapPolygonImpl(
                         new Coordinate(gpsM.getLatitude(), gpsM.getLongitude()),
-                        new Coordinate(gpsM.getLatitude() + 0.0001 * Math.sin(WayPointFollowerPlanner
-                                .currentCommandedAngle + currentHeading), gpsM.getLongitude() + 0.0001 * Math.cos(WayPointFollowerPlanner
-                                .currentCommandedAngle + currentHeading)),
+                        new Coordinate(gpsM.getLatitude() + 0.0001 * Math.sin(currentCommandedAngle + currentHeading),
+                                gpsM.getLongitude() + 0.0001 * Math.cos(currentCommandedAngle + currentHeading)),
                         new Coordinate(gpsM.getLatitude(), gpsM.getLongitude())
                 );
                 currentSteeringCommandMapObj.setColor(Color.BLUE);
@@ -128,7 +113,7 @@ public class Map extends JPanel {
             DriveControlMessage dcm = ((DriveControlMessage) m);
             currentWaypoint.setLat(dcm.getWaypoint().getLatitude());
             currentWaypoint.setLon(dcm.getWaypoint().getLongitude());
-            WayPointFollowerPlanner.currentCommandedAngle = dcm.getAngleDouble();
+            currentCommandedAngle = dcm.getAngleDouble();
         });
 
     }

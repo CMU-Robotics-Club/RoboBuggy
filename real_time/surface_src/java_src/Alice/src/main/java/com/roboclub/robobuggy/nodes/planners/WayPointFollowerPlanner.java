@@ -25,14 +25,6 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
     private final static int WAYPOINT_LOOKAHEAD_MAX = 50;
 
     /**
-     * @vivaanbahl TESTING CODE ONLY
-     * REMOVE FOR PROD PUSH
-     */
-    public static GpsMeasurement currentWaypoint = new GpsMeasurement(0, 0);
-    public static double currentCommandedAngle = 0.0;
-    public static double currentDesiredHeading = 0.0;
-
-    /**
      * @param wayPoints the list of waypoints to follow
      */
     public WayPointFollowerPlanner(ArrayList<GpsMeasurement> wayPoints) {
@@ -46,6 +38,11 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
     public void updatePositionEstimate(GPSPoseMessage m) {
         pose = m;
 
+    }
+
+    @Override
+    protected GpsMeasurement getTargetWaypoint() {
+        return target;
     }
 
     //find the closest way point
@@ -76,8 +73,6 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
 //        commandedAngle = stanleyMethodController();
 //        commandedAngle = purePursuitV2();
 
-        currentCommandedAngle = commandedAngle;
-        currentDesiredHeading = pose.getHeading() + commandedAngle;
         return commandedAngle;
     }
 
@@ -130,7 +125,6 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
                 // pick the first point that is at least lookahead away
                 if (GPSPoseMessage.getDistance(pose, wayPoints.get(i).toGpsPoseMessage(0)) * Math.cos(theta) > lookahead) {
                     target = wayPoints.get(i);
-                    currentWaypoint = target;
                     break;
                 }
             }
@@ -183,7 +177,6 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
 
         //find a path from our current location to that point
         GpsMeasurement target = wayPoints.get(lookaheadIndex);
-        currentWaypoint = target;
         double dx = LocalizerUtil.convertLonToMeters(target.getLongitude()) - LocalizerUtil.convertLonToMeters(pose.getLongitude());
         double dy = LocalizerUtil.convertLatToMeters(target.getLatitude()) - LocalizerUtil.convertLatToMeters(pose.getLatitude());
         double deltaHeading = Math.atan2(dy, dx) - pose.getHeading();
@@ -242,7 +235,6 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         double pathy = LocalizerUtil.convertLatToMeters(ptB.getLatitude()) - LocalizerUtil.convertLatToMeters(ptA.getLatitude());
         double dx = LocalizerUtil.convertLonToMeters(pose.getLongitude()) - LocalizerUtil.convertLonToMeters(ptB.getLongitude());
         double dy = LocalizerUtil.convertLatToMeters(pose.getLatitude()) - LocalizerUtil.convertLatToMeters(ptB.getLatitude());
-        currentWaypoint = wayPoints.get(closestIndex);
 
         double pathHeading = Math.atan2(pathy, pathx);
         double headingError = Util.normalizeAngleRad(pathHeading) - Util.normalizeAngleRad(pose.getHeading());
