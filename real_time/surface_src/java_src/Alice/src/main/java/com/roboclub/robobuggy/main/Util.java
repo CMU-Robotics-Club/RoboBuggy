@@ -6,7 +6,11 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import purejavacomm.CommPortIdentifier;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
