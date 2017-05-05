@@ -12,16 +12,9 @@ import com.roboclub.robobuggy.nodes.sensors.HillCrestImuNode;
 import com.roboclub.robobuggy.nodes.sensors.LoggingNode;
 import com.roboclub.robobuggy.nodes.sensors.RBSMNode;
 import com.roboclub.robobuggy.ros.NodeChannel;
-import com.roboclub.robobuggy.ui.ConfigurationPanel;
-import com.roboclub.robobuggy.ui.Gui;
-import com.roboclub.robobuggy.ui.MainGuiWindow;
-import com.roboclub.robobuggy.ui.PathPanel;
-import com.roboclub.robobuggy.ui.RobobuggyGUITabs;
-import com.roboclub.robobuggy.ui.RobobuggyJFrame;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
 
 /**
  * A robot class for having transistor drive itself
@@ -45,11 +38,9 @@ public final class TransistorAuton extends AbstractRobot {
         return instance;
     }
 
-    /**
-     * Constructor for TransistorAuton robot class
-     */
-    private TransistorAuton() {
-        super();
+    @Override
+    protected void addNodesToRobot() {
+
         try {
             Thread.sleep(ARDUINO_BOOTLOADER_TIMEOUT);
         } catch (InterruptedException e) {
@@ -76,18 +67,12 @@ public final class TransistorAuton extends AbstractRobot {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
 
-        //setup the gui
-        RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow", 1.0, 1.0);
-        Gui.getInstance().addWindow(mainWindow);
-        RobobuggyGUITabs tabs = new RobobuggyGUITabs();
-        mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
-        tabs.addTab(new MainGuiWindow(), "Home");
-        //	tabs.addTab(new PoseGraphsPanel(),"poses");
-        //	tabs.addTab(new  AutonomousPanel(),"Autonomous");
-        tabs.add(new PathPanel(), "Path Visualizer");
-        tabs.addTab(new ConfigurationPanel(), "Configuration");
-
-
+    /**
+     * Constructor for TransistorAuton robot class
+     */
+    private TransistorAuton() {
+        super();
     }
 }

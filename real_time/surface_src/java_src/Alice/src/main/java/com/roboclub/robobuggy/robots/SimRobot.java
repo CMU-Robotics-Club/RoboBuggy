@@ -12,14 +12,6 @@ import com.roboclub.robobuggy.simulation.SimulatedBuggy;
 import com.roboclub.robobuggy.simulation.SimulatedGPSNode;
 import com.roboclub.robobuggy.simulation.SimulatedImuNode;
 import com.roboclub.robobuggy.simulation.SimulatedRBSMNode;
-import com.roboclub.robobuggy.ui.AutonomousPanel;
-import com.roboclub.robobuggy.ui.ConfigurationPanel;
-import com.roboclub.robobuggy.ui.Gui;
-import com.roboclub.robobuggy.ui.MainGuiWindow;
-import com.roboclub.robobuggy.ui.PathPanel;
-import com.roboclub.robobuggy.ui.RobobuggyGUITabs;
-import com.roboclub.robobuggy.ui.RobobuggyJFrame;
-import com.roboclub.robobuggy.ui.SimulationPanel;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -46,9 +38,8 @@ public final class SimRobot extends AbstractRobot {
         return instance;
     }
 
-    private SimRobot() {
-        super();
-
+    @Override
+    protected void addNodesToRobot() {
         nodeList.add(new HighTrustGPSLocalizer());
         //	nodeList.add(new KfLocalizer(100));
         nodeList.add(new SimulatedImuNode(100));
@@ -74,21 +65,9 @@ public final class SimRobot extends AbstractRobot {
                 NodeChannel.getLoggingChannels()));
         //simBuggy.setDth(1);
         //	simBuggy.setDth(0.10);
+    }
 
-
-        //setup the gui
-        RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow", 1.0, 1.0);
-        Gui.getInstance().addWindow(mainWindow);
-        RobobuggyGUITabs tabs = new RobobuggyGUITabs();
-        mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
-        tabs.addTab(new MainGuiWindow(), "Home");
-        //	tabs.addTab(new PoseGraphsPanel(),"poses");
-        //	tabs.addTab(new ImuPanel(),"IMU");
-        tabs.addTab(new AutonomousPanel(), "Autonomous");
-        tabs.addTab(new SimulationPanel(), "Simulation");
-        tabs.addTab(new PathPanel(), "Path Panel");
-        tabs.addTab(new ConfigurationPanel(), "Configuration");
-
-
+    private SimRobot() {
+        super();
     }
 }

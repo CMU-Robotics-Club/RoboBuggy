@@ -133,6 +133,9 @@ public class ConfigurationPanel extends RobobuggyGUIContainer {
                 }
             }
         });
+        
+        addComponent(new JLabel("Current Robot:"), 0, .3, .1, .1);
+        addComponent(new JLabel(RobobuggyConfigFile.getRobotType()), .1, .3, .5, .1);
 
 
         String[] portOptions = getPortOptions();

@@ -1,13 +1,16 @@
 package com.roboclub.robobuggy.nodes.sensors;
 
 import com.github.sarxos.webcam.Webcam;
+import com.github.sarxos.webcam.WebcamException;
 import com.github.sarxos.webcam.WebcamResolution;
 import com.google.gson.JsonObject;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.messages.ImageMessage;
 import com.roboclub.robobuggy.messages.NodeStatusMessage;
+import com.roboclub.robobuggy.messages.StateMessage;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
+import com.roboclub.robobuggy.nodes.baseNodes.NodeState;
 import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
 import com.roboclub.robobuggy.ros.Message;
 import com.roboclub.robobuggy.ros.MessageListener;
@@ -33,6 +36,7 @@ public class CameraNode extends PeriodicNode {
     private Publisher imagePublisher;
     private int count = 0;
     private SequenceEncoder videoEncoder;
+    private Publisher statePub;
 
     static {
         Webcam.setHandleTermSignal(true);
@@ -45,9 +49,18 @@ public class CameraNode extends PeriodicNode {
     public CameraNode(NodeChannel channel, int period) {
         super(new BuggyBaseNode(channel), period, "Camera_Node");
 
+        statePub = new Publisher(channel.getStatePath());
 
         //setup the webcam
-        List<Webcam> webcams = Webcam.getWebcams();
+        List<Webcam> webcams;
+        try {
+            webcams = Webcam.getWebcams();
+        } catch (WebcamException e) {
+            e.printStackTrace();
+            new RobobuggyLogicNotification("Couldn't load webcams!", RobobuggyMessageLevel.EXCEPTION);
+            statePub.publish(new StateMessage(NodeState.ERROR));
+            return;
+        }
 
         //TODO figure out a better way to select
         for (Webcam webcam : webcams) {

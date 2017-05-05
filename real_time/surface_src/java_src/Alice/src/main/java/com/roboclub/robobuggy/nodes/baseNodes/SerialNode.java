@@ -78,7 +78,8 @@ public abstract class SerialNode extends BuggyDecoratorNode {
             }
         } catch (NoSuchPortException | PortInUseException | UnsupportedCommOperationException e) {
             new RobobuggyLogicNotification("Error: Unable to connect to port" + portName, RobobuggyMessageLevel.EXCEPTION);
-
+        } catch (UnsatisfiedLinkError | NoClassDefFoundError e) {
+            new RobobuggyLogicNotification("Error: Couldn't find rxtx native library!", RobobuggyMessageLevel.EXCEPTION);
         }
         return null;
     }

@@ -1,6 +1,11 @@
 package com.roboclub.robobuggy.main;
 
 import com.google.gson.JsonObject;
+import com.roboclub.robobuggy.robots.AbstractRobot;
+import com.roboclub.robobuggy.robots.PlayBackRobot;
+import com.roboclub.robobuggy.robots.SimRobot;
+import com.roboclub.robobuggy.robots.TransistorAuton;
+import com.roboclub.robobuggy.robots.TransistorDataCollection;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -60,6 +65,10 @@ public final class RobobuggyConfigFile {
 
     //is where values from this file are saved so that they can be updated between runs
     private static String configFile = "config.config";
+    
+    //Values relating to the type of robot being run
+    private static String robotType = "UNKNOWN";
+    private static AbstractRobot robot;
 
     /**
      * creates a .config file that stores as json the current configuration settings
@@ -73,6 +82,7 @@ public final class RobobuggyConfigFile {
         settings.addProperty("COM_PORT_GPS", getComPortGPS());
         settings.addProperty("WAYPOINT_SOURCE_LOG_FILE", getWaypointSourceLogFile());
         settings.addProperty("PLAY_BACK_SOURCE_FILE", getPlayBackSourceFile());
+        settings.addProperty("ROBOT_TYPE", getRobotType());
         try {
             File file = new File(getConfigFile());
             Writer w = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
@@ -92,6 +102,7 @@ public final class RobobuggyConfigFile {
      * If the configuration file cannot be read then the old values will be used
      */
     public static void loadConfigFile() {
+    	
         try {
             JsonObject configJson = Util.readJSONFile(getConfigFile());
             setComPortImu(configJson.get("COM_PORT_IMU").getAsString());
@@ -100,6 +111,24 @@ public final class RobobuggyConfigFile {
             setPortVision(configJson.get("PORT_VISION").getAsString());
             setWayPointSourceLogFile(configJson.get("WAYPOINT_SOURCE_LOG_FILE").getAsString());
             setPlayBackSourceFile(configJson.get("PLAY_BACK_SOURCE_FILE").getAsString());
+            RobobuggyConfigFile.robotType = configJson.get("ROBOT_TYPE").getAsString();
+            switch(robotType){
+                case "PlayBackRobot":
+                    robot = PlayBackRobot.getInstance();
+                    break;
+                case "SimRobot":
+                    robot = SimRobot.getInstance();
+                    break;
+                case "TransistorDataCollection":
+                    robot = TransistorDataCollection.getInstance();
+                    break;
+                case "TransistorAuton":
+                    robot = TransistorAuton.getInstance();
+                    break;
+                default:
+                    new RobobuggyLogicNotification("Unknown robot type: " + robotType, RobobuggyMessageLevel.EXCEPTION);
+                    throw new IllegalArgumentException("Unknown robot type: " + robotType);
+            }
 
 
         } catch (UnsupportedEncodingException | FileNotFoundException e) {
@@ -326,6 +355,20 @@ public final class RobobuggyConfigFile {
      */
     public static void setPlayBackSpeed(double playBackSpeed) {
         RobobuggyConfigFile.playBackSpeed = playBackSpeed;
+    }
+    
+    /**
+     * @return the robottype (whatever's in the config file)
+     */
+    public static String getRobotType() {
+        return robotType;
+    }
+    
+    /**
+     * @return the robot
+     */
+    public static AbstractRobot getRobot() {
+        return robot;
     }
 
 }
