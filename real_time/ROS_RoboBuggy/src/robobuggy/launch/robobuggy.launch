@@ -1,0 +1,3 @@
+<launch>
+    <node name="Controller" pkg="robobuggy" type="Controller" />
+</launch>
