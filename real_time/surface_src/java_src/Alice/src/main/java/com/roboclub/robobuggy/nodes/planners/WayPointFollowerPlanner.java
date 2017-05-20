@@ -87,7 +87,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         double velocity = pose.getCurrentState().get(2, 0);
         double lookaheadLowerBound = 3.0;
         double lookaheadUpperBound = 25.0;
-        double lookahead = K * velocity;
+        double lookahead = (K * velocity)/2;
         if(lookahead < lookaheadLowerBound) {
             lookahead = lookaheadLowerBound;
         }
