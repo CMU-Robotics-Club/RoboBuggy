@@ -34,6 +34,8 @@ import java.util.ArrayList;
  */
 public final class SimRobot extends AbstractRobot {
     private static SimRobot instance;
+    private static double INIT_LATITUDE = 40.441670;
+    private static double INIT_LONGITUDE = -79.9416362;
 
     /**
      * Returns a reference to the one instance of the {@link Robot} object.
@@ -51,7 +53,7 @@ public final class SimRobot extends AbstractRobot {
     private SimRobot() {
         super();
 
-        nodeList.add(new FullSimRunner("Full Sim Toolbox", new LocTuple(40.441670, -79.9416362)));
+        nodeList.add(new FullSimRunner("Full Sim Toolbox", new LocTuple(INIT_LATITUDE, INIT_LONGITUDE)));
 
         //setup the gui
         RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow", 1.0, 1.0);
