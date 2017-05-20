@@ -13,6 +13,7 @@ public class DriveControlMessage extends BaseMessage {
      *  Angle is supposed to be in radians
      */
     private final double angle;
+    private GpsMeasurement currentWaypoint;
 
     /**
      * Construct a new DriveControlMessage
@@ -25,6 +26,12 @@ public class DriveControlMessage extends BaseMessage {
         this.timestamp = new Date(timestamp.getTime()).getTime();
     }
 
+    public DriveControlMessage(Date timestamp, double angle, GpsMeasurement currentWaypoint) {
+        this.angle = angle;
+        this.timestamp = new Date(timestamp.getTime()).getTime();
+        this.currentWaypoint = currentWaypoint;
+    }
+
     /**
      * Returns the commanded angle of the steering as a double (in degrees)
      *
@@ -34,4 +41,7 @@ public class DriveControlMessage extends BaseMessage {
         return angle;
     }
 
+    public GpsMeasurement getWaypoint() {
+        return currentWaypoint;
+    }
 }

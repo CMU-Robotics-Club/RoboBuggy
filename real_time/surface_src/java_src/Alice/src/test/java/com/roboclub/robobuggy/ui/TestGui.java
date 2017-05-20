@@ -1,5 +1,5 @@
-import com.roboclub.robobuggy.ui.Gui;
-import com.roboclub.robobuggy.ui.RobobuggyJFrame;
+package com.roboclub.robobuggy.ui;
+
 import org.junit.Test;
 
 import static org.junit.Assert.fail;

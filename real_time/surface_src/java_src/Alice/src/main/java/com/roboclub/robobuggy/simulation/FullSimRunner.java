@@ -5,6 +5,7 @@ import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.messages.DriveControlMessage;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
+import com.roboclub.robobuggy.messages.SteeringMeasurement;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
 import com.roboclub.robobuggy.nodes.localizers.LocTuple;
@@ -25,11 +26,11 @@ import java.util.TimerTask;
 /**
  * Created by vivaanbahl on 4/2/17.
  */
-public class FullSimRunner extends PeriodicNode {
+public class FullSimRunner extends BuggyBaseNode {
 
     private static final double WHEELBASE_IN_METERS = 1.13; // meters
     private static final int UTMZONE = 17;
-    private static final int VELOCITY = 3;
+    private static final int VELOCITY = 4;
     private static final double INITIAL_HEADING_IN_RADS = 4.36; // rad
     private static final int LOCALIZER_UPDATE_PERIOD = 10;
     private static final int GPS_UPDATE_PERIOD = 500;
@@ -42,6 +43,7 @@ public class FullSimRunner extends PeriodicNode {
 
     private Publisher gpsPub;
     private Publisher encPub;
+    private Publisher steerPub;
     private Subscriber steerSub;
 
     private RobobuggyKFLocalizer localizer;
@@ -56,7 +58,7 @@ public class FullSimRunner extends PeriodicNode {
      * @param name
      */
     public FullSimRunner(String name, LocTuple initialPos) {
-        super(new BuggyBaseNode(NodeChannel.SIMULATION), SIM_UPDATE_PERIOD, name);
+        super(NodeChannel.SIMULATION);
 
         // initialized to the identity matrix except for dHeading (goes nowhere)
         double[][] motionModelArr = {
@@ -80,8 +82,10 @@ public class FullSimRunner extends PeriodicNode {
 
         gpsPub = new Publisher(NodeChannel.GPS.getMsgPath());
         encPub = new Publisher(NodeChannel.ENCODER.getMsgPath());
+        steerPub = new Publisher(NodeChannel.STEERING.getMsgPath());
         steerSub = new Subscriber("Full Sim Toolbox", NodeChannel.DRIVE_CTRL.getMsgPath(), (topicName, m) -> {
             updateMotionModel(((DriveControlMessage) m).getAngleDouble());
+            steerPub.publish(new SteeringMeasurement(Math.toDegrees(((DriveControlMessage) m).getAngleDouble())));
         });
         updateMotionModel(0);
 
@@ -100,6 +104,8 @@ public class FullSimRunner extends PeriodicNode {
             public void run() {
                 Matrix nextStep = generateNextStep();
                 UTMTuple nextLocUTM = new UTMTuple(UTMZONE, 'T', state.get(0, 0), state.get(1, 0));
+                nextLocUTM.setEasting(nextLocUTM.getEasting());
+                nextLocUTM.setNorthing(nextLocUTM.getNorthing());
                 LocTuple nextLocLL = LocalizerUtil.utm2Deg(nextLocUTM);
                 gpsPub.publish(new GpsMeasurement(new Date(), nextLocLL.getLatitude(), true, nextLocLL.getLongitude(), true, 0, 0, 0, 0, 0, 0));
                 state = nextStep;
@@ -133,18 +139,4 @@ public class FullSimRunner extends PeriodicNode {
         return motionModel.times(state);
     }
 
-    @Override
-    protected void update() {
-
-    }
-
-    @Override
-    protected boolean startDecoratorNode() {
-        return false;
-    }
-
-    @Override
-    protected boolean shutdownDecoratorNode() {
-        return false;
-    }
 }

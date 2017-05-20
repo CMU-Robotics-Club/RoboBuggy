@@ -1,6 +1,5 @@
 package com.roboclub.robobuggy.messages;
 
-import Jama.Matrix;
 import com.roboclub.robobuggy.nodes.localizers.LocalizerUtil;
 import com.roboclub.robobuggy.ros.Message;
 
@@ -17,11 +16,11 @@ public class GPSPoseMessage extends BaseMessage {
 
     private final double latitude;
     private final double longitude;
+    private final double velocity;
     private final double heading;
-    private final Matrix currentState;
 
     public GPSPoseMessage(Date timestamp, double latitude, double longitude, double heading) {
-        this(timestamp, latitude, longitude, heading, null);
+        this(timestamp, latitude, longitude, heading, 0.0);
     }
 
     /**
@@ -32,12 +31,12 @@ public class GPSPoseMessage extends BaseMessage {
      * @param longitude of the buggy (negative is West)
      * @param heading   of the buggy (in degrees from North)
      */
-    public GPSPoseMessage(Date timestamp, double latitude, double longitude, double heading, Matrix currentState) {
+    public GPSPoseMessage(Date timestamp, double latitude, double longitude, double heading, double velocity) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.heading = heading;
         this.timestamp = new Date(timestamp.getTime()).getTime();
-        this.currentState = currentState;
+        this.velocity = velocity;
     }
 
     /**
@@ -67,8 +66,11 @@ public class GPSPoseMessage extends BaseMessage {
         return heading;
     }
 
-    public Matrix getCurrentState() {
-        return currentState;
+    /**
+     * @return the current estimated velocity (m/s)
+     */
+    public double getVelocity() {
+        return velocity;
     }
 
     /**

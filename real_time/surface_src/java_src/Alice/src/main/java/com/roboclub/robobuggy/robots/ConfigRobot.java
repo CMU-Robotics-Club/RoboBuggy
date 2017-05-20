@@ -1,29 +1,19 @@
 package com.roboclub.robobuggy.robots;
 
-import com.roboclub.robobuggy.main.RobobuggyConfigFile;
-import com.roboclub.robobuggy.nodes.localizers.LocTuple;
-import com.roboclub.robobuggy.nodes.localizers.RobobuggyKFLocalizer;
-import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
-import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
-import com.roboclub.robobuggy.simulation.LineByLineSensorPlayer;
-import com.roboclub.robobuggy.ui.AutonomousPanel;
 import com.roboclub.robobuggy.ui.ConfigurationPanel;
 import com.roboclub.robobuggy.ui.Gui;
-import com.roboclub.robobuggy.ui.MainGuiWindow;
 import com.roboclub.robobuggy.ui.PathPanel;
 import com.roboclub.robobuggy.ui.RobobuggyGUITabs;
 import com.roboclub.robobuggy.ui.RobobuggyJFrame;
-
-import java.io.FileNotFoundException;
 
 /**
  * Runs playback
  *
  * @author Trevor Decker
  */
-public final class PlayBackRobot extends AbstractRobot {
+public final class ConfigRobot extends AbstractRobot {
 
-    private static PlayBackRobot instance;
+    private static ConfigRobot instance;
 
     /**
      * Returns a reference to the one instance of the {@link Robot} object.
@@ -33,22 +23,21 @@ public final class PlayBackRobot extends AbstractRobot {
      */
     public static AbstractRobot getInstance() {
         if (instance == null) {
-            instance = new PlayBackRobot();
+            instance = new ConfigRobot();
         }
         return instance;
     }
 
-    private PlayBackRobot() {
+    private ConfigRobot() {
         super();
-        new LineByLineSensorPlayer(RobobuggyConfigFile.getPlayBackSourceFile(), 1);
 
         RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow", 1.0, 1.0);
         Gui.getInstance().addWindow(mainWindow);
         RobobuggyGUITabs tabs = new RobobuggyGUITabs();
-        mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
-        tabs.addTab(new MainGuiWindow(), "Home");
-        tabs.add(new PathPanel(), "Path Visualizer");
         tabs.addTab(new ConfigurationPanel(), "Configuration");
+        tabs.addTab(new PathPanel(), "Path Visualizer");
+        mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
+        Gui.getInstance().fixPaint();
     }
 }	
 

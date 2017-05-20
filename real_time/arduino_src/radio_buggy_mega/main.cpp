@@ -16,10 +16,10 @@
 
 #include "../lib_avr/encoder/encoder.h"
 #include "../lib_avr/rbserialmessages/rbserialmessages.h"
-#include "../lib_avr/servoreceiver/servoreceiver.h"
+#include "../lib_avr/radioreceiver/RadioReceiver.h"
+#include "../lib_avr/radioreceiver/ServoReceiver.h"
 #include "../lib_avr/uart/uart_extra.h"
 #include "servo.h"
-// #include "uart.h"
 #include "system_clock.h"
 #include "fingerprint.h"
 
@@ -27,66 +27,52 @@
 // ATMega 2560 datasheet Table 22-12.
 #define BAUD 76800
 
-#define DEBUG_DDR  DDRB
-#define DEBUG_PORT PORTB
-#define DEBUG_PINN PB7 // arduino 13
-#define SERVO_DDR  DDRB
-#define SERVO_PORT PORTB
-#define SERVO_PINN PB5 // arduino 11 TODO: this is not used here
 #define CONNECTION_TIMEOUT_US 1000000L // 1000ms
+#define SYSTEM_VOLTAGE_THRESHOLD 12000 //For Buggy battery voltage 
 
 /*
  * These values map the physical input/output (voltage/ms of pwm pulse) to a
  * fixed physical angle. When software commands a steering angle of 10 deg
- * (1000 hundredths), the PWM_SCALE_STEERING_OUT and POT_SCALE_STEERING_IN
+ * (1000 hundredths), the PWM_SCALE_STEERING_OUT
  * should be adjusted until a 10 deg input/output is seen/observed.
  */
-#if BUGGY == transistor 
-    #define PWM_OFFSET_STEERING_OUT 1905
-    #define PWM_SCALE_STEERING_OUT -220
-    #define PWM_OFFSET_STORED_ANGLE 0
-    #define PWM_SCALE_STORED_ANGLE 1000 // in hundredths of a degree for precision
-    #define POT_OFFSET_STEERING_IN 121
-    #define POT_SCALE_STEERING_IN -10
-    #define STEERING_LIMIT_LEFT -1500   //steering_set assumes that left is less than right.
-    #define STEERING_LIMIT_RIGHT 1500
-#elif BUGGY == nixie
-    #define PWM_OFFSET_STEERING_OUT 1789
-    #define PWM_SCALE_STEERING_OUT -150
-    #define PWM_OFFSET_STORED_ANGLE 0
-    #define PWM_SCALE_STORED_ANGLE 1000 // in hundredths of a degree for precision
-#else
-    #error "must compile with BUGGY_TRANSISTOR or BUGGY_NIXI flag"
-#endif
+#define PWM_OFFSET_STORED_ANGLE 0
+#define PWM_SCALE_STORED_ANGLE 1000 // in hundredths of a degree for precision
 
-#define PWM_STATE_THRESHOLD 120
+#define STEERING_LIMIT_LEFT -1500   //steering_set assumes that left is less than right.
+#define STEERING_LIMIT_RIGHT 1500
 
-#define RX_STEERING_DDR  DDRE
-#define RX_STEERING_PORT PORTE
+//Off/down state is 1500 +- 20 microseconds, on/up state is 2000 +- 20, 
+//  so 1750 serves as a fair threshold value to deliminate the two
+#define PWM_STATE_THRESHOLD 1750
+
 #define RX_STEERING_PIN  PINE
 #define RX_STEERING_PINN PE4 // arduino 2
 #define RX_STEERING_INT  INT4_vect
 #define RX_STEERING_INTN 4
-#define RX_BRAKE_DDR  DDRD
-#define RX_BRAKE_PORT PORTD
+
 #define RX_BRAKE_PIN  PIND
 #define RX_BRAKE_PINN PD0 // arduino 21
 #define RX_BRAKE_INT  INT0_vect
 #define RX_BRAKE_INTN 0
-#define RX_AUTON_DDR  DDRD
-#define RX_AUTON_PORT PORTD
+
 #define RX_AUTON_PIN  PIND
 #define RX_AUTON_PINN PD1 // arduino 20
 #define RX_AUTON_INT  INT1_vect
 #define RX_AUTON_INTN 1
+#define RX_STATUS_LIGHT_PORT PORTE
+#define RX_STATUS_LIGHT_PINN_BLUE PE3
+#define RX_STATUS_LIGHT_DDR DDRE
+#define RX_STATUS_LIGHT_PINN_GREEN PE5
+#define RX_STATUS_LIGHT_PORT_RED PORTH
+#define RX_STATUS_LIGHT_PINN_RED PH6
+#define RX_STATUS_LIGHT_DDR_RED DDRH
 
 #define ENCODER_DDR  DDRD
 #define ENCODER_PORT PORTD
 #define ENCODER_PIN  PIND
 #define ENCODER_PINN PD2 // arduino 19
 #define ENCODER_INT  INT2_vect
-#define ENCODER_INTN 2
-#define ENCODER_TIMEOUT_US 500 // 50mph w/ 6" wheel = 280 ticks/sec; 4000us/tick
 
 #define ENCODER_STEERING_A_DDR  DDRB
 #define ENCODER_STEERING_A_PORT PORTB
@@ -103,16 +89,10 @@
 #define BATTERY_ADC 0 // pin to read battery level from (A0)
 #define BATTERY_ADC_SLOPE  14.683 // in mV, obtained from calibration
 #define BATTERY_ADC_OFFSET 44.359
-#define STEERING_POT_ADC 9
 
 #define BRAKE_OUT_DDR  DDRH
 #define BRAKE_OUT_PORT PORTH
 #define BRAKE_OUT_PINN PH5 // arduino 8
-#define BRAKE_INDICATOR_DDR  DDRE
-#define BRAKE_INDICATOR_PORT PORTE
-#define BRAKE_INDICATOR_PINN PE3 // arduino 5
-
-
 
 #define STEERING_LOOP_TIME_US 10000L
 #define MICROSECONDS_PER_SECOND 1000000L
@@ -120,11 +100,15 @@
 #define STEERING_KP_DEMONENATOR 1L
 #define STEERING_KD_NUMERATOR 0L
 #define STEERING_KD_DENOMENATOR 100L
-#define STEERING_MAX_SPEED 32000L //limited by 16-bit signed? 400 degress per second - 50% cpu usage from encoder interrupts
+//limited by 16-bit signed? 400 degress per second - 50% cpu usage from encoder interrupts
+#define STEERING_MAX_SPEED 32000L 
 #define STEERING_KV_NUMERATOR 3L
 #define STEERING_KV_DENOMENATOR 1000L
 #define STEERING_PWM_CENTER_US 1500L //The PWM value that gives no movement.
+#define STEERING_MAX_PWM 150 // max PWM value to add on top of the center_us
 #define MOTOR_ENCODER_TICKS_PER_REV 36864 // 4096 * 9 = 12-bit * 1:9 gearbox
+#define MOTOR_FEED_FORWARD 200
+#define STEERING_ERROR_THRESHOLD 5
 #define DEGREE_HUNDREDTHS_PER_REV 36000
 #define STEERING_CENTER_DDR  DDRH
 #define STEERING_CENTER_PORT PORTH
@@ -140,7 +124,7 @@
 #ifdef DEBUG
     #define dbg_printf(...) printf(__VA_ARGS__)
 #else
-    #define dbg_printf 
+    #define dbg_printf(...)
 #endif
 
 #define min(X,Y) ((X < Y) ? (X) : (Y))
@@ -150,7 +134,6 @@
 // Global state
 static bool g_is_autonomous;
 static unsigned long g_current_voltage; // in mV
-static unsigned long g_steering_feedback;
 static int steer_angle;
 static int auto_steering_angle;
 static unsigned long g_errors;
@@ -158,8 +141,8 @@ static unsigned long g_errors;
 RBSerialMessages g_rbsm;
 rb_message_t g_new_rbsm;
 ServoReceiver g_steering_rx;
-ServoReceiver g_brake_rx;
-ServoReceiver g_auton_rx;
+RadioReceiver g_brake_rx;
+RadioReceiver g_auton_rx;
 Encoder g_encoder_distance;
 Encoder g_encoder_steering;
 
@@ -171,21 +154,18 @@ inline long map_signal(long x,
                        long in_offset,
                        long in_scale,
                        long out_offset,
-                       long out_scale) 
-{
+                       long out_scale) {
     return ((x - in_offset) * out_scale / in_scale) + out_offset;
 }
 
 inline long clamp(long input,
                   long upper,
-                  long lower)
-{
+                  long lower) {
     return (max(min(input, upper), lower));
 }
 
 
-void adc_init(void) // copy-pasted from wiring.c l.353 (Arduino library)
-{
+void adc_init(void) { // copy-pasted from wiring.c l.353 (Arduino library)
     // set a2d prescaler so we are inside the desired 50-200 KHz range.
     sbi(ADCSRA, ADPS2);
     sbi(ADCSRA, ADPS1);
@@ -194,8 +174,7 @@ void adc_init(void) // copy-pasted from wiring.c l.353 (Arduino library)
     sbi(ADCSRA, ADEN);
 }
 
-int adc_read_blocking(uint8_t pin) // takes less than 160us, return 0 to 1023
-{
+int adc_read_blocking(uint8_t pin) { // takes less than 160us, return 0 to 1023
     uint8_t low, high;
 
     // the MUX5 bit of ADCSRB selects whether we're reading from channels
@@ -225,67 +204,64 @@ int adc_read_blocking(uint8_t pin) // takes less than 160us, return 0 to 1023
 }
 
 
-long steer_set_prev_ticks = 0;
-long steer_set_prev_velocity = 0;
 /** @brief sets the velocity of the steering motor to target_velocity
  *
  *  @param target_velocity is in hundredths of a degree per second. values > 0
  *      drive to the right
  */
 void steer_set_velocity(long target_velocity) {
-	target_velocity = clamp(target_velocity, STEERING_MAX_SPEED, -(STEERING_MAX_SPEED));
-	
-	long current_ticks = g_encoder_steering.GetTicks();
-	long change_in_ticks = current_ticks - steer_set_prev_ticks;
-	long change_in_angle = (change_in_ticks * DEGREE_HUNDREDTHS_PER_REV) / DEGREE_HUNDREDTHS_PER_REV;
-	//angle * us/s * us = angle per second
-	long actual_velocity = (change_in_angle * MICROSECONDS_PER_SECOND) / STEERING_LOOP_TIME_US;
-	
-	long error = target_velocity - actual_velocity;
-	
-	long output_us = 0;
-	long output_p = error * STEERING_KV_NUMERATOR / STEERING_KV_DENOMENATOR;
+    static long steer_set_prev_ticks = 0;
+    static long steer_set_prev_velocity = 0;
+
+    target_velocity = clamp(target_velocity, STEERING_MAX_SPEED, -(STEERING_MAX_SPEED));
+    
+    long current_ticks = g_encoder_steering.GetTicks();
+    long change_in_ticks = current_ticks - steer_set_prev_ticks;
+    long change_in_angle = (change_in_ticks * DEGREE_HUNDREDTHS_PER_REV) / DEGREE_HUNDREDTHS_PER_REV;
+    //angle * us/s * us = angle per second
+    long actual_velocity = (change_in_angle * MICROSECONDS_PER_SECOND) / STEERING_LOOP_TIME_US;
+    
+    long error = target_velocity - actual_velocity;
+    
+    long output_us = 0;
+    long output_p = error * STEERING_KV_NUMERATOR / STEERING_KV_DENOMENATOR;
     output_us = output_p;
     long output_int_us = steer_set_prev_velocity + output_us;
-    output_int_us = clamp(output_int_us, 150, -150);
-		
-	// dbg_printf("target: %ld, current: %ld, error: %ld, correction: %ld, output: %ld\n", target_velocity, actual_velocity, error, output_us, output_int_us);
-	
-	//Send command to the motor
+    output_int_us = clamp(output_int_us, STEERING_MAX_PWM, -STEERING_MAX_PWM);
+        
+    // dbg_printf("target: %ld, current: %ld, error: %ld, correction: %ld, output: %ld\n",
+    // target_velocity, actual_velocity, error, output_us, output_int_us);
+    
+    //Send command to the motor
     servo_set_us(output_int_us + STEERING_PWM_CENTER_US);
-	
-	steer_set_prev_ticks = current_ticks;
+    
+    steer_set_prev_ticks = current_ticks;
     steer_set_prev_velocity = output_int_us;
 }
 
-
-long steer_set_error_prev = 0; //This is used to find the d term for position.
 
 /** @brief sets the steering angle using PID feedback
  *
  *  @param angle set point in hundredths of a degree
  */
-void steering_set(int angle) //TODO: should angle be an int or a long?
+void steering_set(int angle)
 {
-	//TODO: delete short circuiting code for testing velocity measure
-	// steer_set_velocity(angle);
-	// return;
-	
-	angle = clamp(angle, STEERING_LIMIT_RIGHT, STEERING_LIMIT_LEFT);
-	
+    static long steer_set_error_prev = 0; //This is used to find the d term for position.
+
+    angle = clamp(angle, STEERING_LIMIT_RIGHT, STEERING_LIMIT_LEFT);
+    
     //For the DC motor
-    long feed_forward = 200;
     long actual = map_signal(g_encoder_steering.GetTicks(),
                              0,
                              MOTOR_ENCODER_TICKS_PER_REV,
                              0,
                              DEGREE_HUNDREDTHS_PER_REV);
-	
+    
     long error = angle - actual;
     long output_vel = 0;
-    if(labs(error) > 5) { //0.1 degree deadband
+    if(labs(error) > STEERING_ERROR_THRESHOLD) { //0.1 degree deadband
         long output_p = (STEERING_KP_NUMERATOR * error) / STEERING_KP_DEMONENATOR;
-        long output_ff = (error > 0) ? feed_forward : -feed_forward;
+        long output_ff = (error > 0) ? MOTOR_FEED_FORWARD : -MOTOR_FEED_FORWARD;
         long d =  (error - steer_set_error_prev); //not dividing by time
         long output_d = (STEERING_KD_NUMERATOR * d) / STEERING_KD_DENOMENATOR;
         output_vel = output_p + output_ff + output_d;
@@ -347,11 +323,68 @@ int8_t steering_center() {
     return 0;
 }
 
+/** @brief Sets up the appropriate pins for the indicator lights
+ *
+ */
+void indicator_light_init() {
+    // set all pins to zero output
+    RX_STATUS_LIGHT_PORT &= ~_BV(3);
+    RX_STATUS_LIGHT_DDR |= _BV(3);
+    RX_STATUS_LIGHT_PORT &= ~_BV(5);
+    RX_STATUS_LIGHT_DDR |= _BV(5);
+    RX_STATUS_LIGHT_PORT_RED &= ~_BV(6);
+    RX_STATUS_LIGHT_DDR_RED |= _BV(6);
+}
 
-void brake_init() 
-{
+/** @brief turns on blue light to indicate low voltage
+*
+*/
+void voltage_too_low_light() {
+    RX_STATUS_LIGHT_PORT |= _BV(RX_STATUS_LIGHT_PINN_BLUE);
+}
+
+/** @brief turns on red light to indicate autonomous timeout
+*
+*/
+void auton_timeout_light() {
+    // red for this light
+    RX_STATUS_LIGHT_PORT_RED |= _BV(RX_STATUS_LIGHT_PINN_RED);
+}
+
+
+/** @brief turns on green light to indicate rc timeout
+*
+*/
+void rc_timeout_failure_light() {
+    // green for this light
+    RX_STATUS_LIGHT_PORT |= _BV(RX_STATUS_LIGHT_PINN_GREEN);
+}
+
+
+/** @brief turns off blue light
+*
+*/
+void voltage_too_low_light_reset() {
+    RX_STATUS_LIGHT_PORT &= ~_BV(RX_STATUS_LIGHT_PINN_BLUE);
+}
+
+/** @brief turns off red light
+*
+*/
+void auton_timeout_light_reset() {
+    RX_STATUS_LIGHT_PORT_RED &= ~_BV(RX_STATUS_LIGHT_PINN_RED);
+}
+
+/** @brief turns off green light
+*
+*/
+void rc_timeout_failure_light_reset() {
+    RX_STATUS_LIGHT_PORT &= ~_BV(RX_STATUS_LIGHT_PINN_GREEN);
+}
+
+
+void brake_init() {
     BRAKE_OUT_DDR |= _BV(BRAKE_OUT_PINN);
-    BRAKE_INDICATOR_DDR |= _BV(BRAKE_INDICATOR_PINN);
 }
 
 
@@ -360,17 +393,15 @@ void brake_init()
 void brake_raise() 
 {
     BRAKE_OUT_PORT |= _BV(BRAKE_OUT_PINN);
-    BRAKE_INDICATOR_PORT &= ~_BV(BRAKE_INDICATOR_PINN);
 }
 
 
 // Drops the brake
 // Do not call before brake_init
-void brake_drop() 
-{
+void brake_drop() {
     BRAKE_OUT_PORT &= ~_BV(BRAKE_OUT_PINN);
-    BRAKE_INDICATOR_PORT |= _BV(BRAKE_INDICATOR_PINN);
 }
+
 
 /*
 * Function: watchdog_init
@@ -379,8 +410,7 @@ void brake_drop()
 *   Sets the system to "bark" after 1 second without resets.  Has an 
 *   independent clock and will check for timeout regardless of main code.
 */
-void watchdog_init()
-{
+void watchdog_init() {
     //Disable interrupts because setup is time sensitive
     cli();
 
@@ -402,8 +432,7 @@ void watchdog_init()
 }
 
 
-int main(void) 
-{
+int main(void) {
     // state variables
     bool brake_needs_reset = true; // 0 = nominal, !0 = needs reset
     bool brake_cmd_teleop_engaged = false;
@@ -411,11 +440,6 @@ int main(void)
     unsigned long time_start = micros();
     unsigned long auton_brake_last = time_start;
     unsigned long auton_steer_last = time_start;
-
-    // turn the ledPin on
-    // DEBUG_PORT |= _BV(DEBUG_PINN);
-    DEBUG_PORT &= ~_BV(DEBUG_PINN);
-    DEBUG_DDR |= _BV(DEBUG_PINN);
 
     // setup encoder pin with pullups and interrupt
     ENCODER_PORT |= _BV(ENCODER_PINN);
@@ -453,12 +477,8 @@ int main(void)
     servo_init();
     adc_init();
     brake_init();
+    indicator_light_init();
     steering_center(); // this call takes time
-
-    // servo power control starts outputting low
-    // PBH4 = Arduino 7
-    PORTH &= ~_BV(4);
-    DDRH |= _BV(4);
 
     // setup rbsm
     g_rbsm.Init(&g_uart_rbsm, &g_uart_rbsm);
@@ -480,33 +500,22 @@ int main(void)
     watchdog_init();
 
     // loop forever
-    while(1) 
-    {
+    while(1) {
         // prepare to time the main loop
         unsigned long time_next_loop = micros() + STEERING_LOOP_TIME_US;
-        DEBUG_PORT &= ~_BV(DEBUG_PINN);
-
-        // enable servo power after timeout
-        if(millis() > 200) 
-        {
-            PORTH |= _BV(4);
-        }
 
         // Check for incomming serial messages
         rb_message_t new_command;
         int read_status;
 
         while((read_status = g_rbsm.Read(&new_command))
-             != RBSM_ERROR_INSUFFICIENT_DATA) 
-        {
-            if(read_status == 0) 
-            {
+              != RBSM_ERROR_INSUFFICIENT_DATA) {
+            if(read_status == 0) {
                 // clear RBSM errors
                 g_errors &= ~_BV(RBSM_EID_RBSM_LOST_STREAM);
                 g_errors &= ~_BV(RBSM_EID_RBSM_INVALID_MID);
                 // dipatch complete message
-                switch(new_command.message_id)
-                {
+                switch(new_command.message_id) {
                     case RBSM_MID_ENC_RESET_REQUEST:
                         g_encoder_distance.Reset();
                         //Let high level know that the request went through
@@ -531,15 +540,12 @@ int main(void)
                         g_errors |= _BV(RBSM_EID_RBSM_INVALID_MID);
                         break;
                 } //End switch(new_command.message_id)
-            }
-            // report stream losses for tracking
-            else if(read_status == RBSM_ERROR_INVALID_MESSAGE) 
-            {
+            } else if(read_status == RBSM_ERROR_INVALID_MESSAGE) {
+                // report stream losses for tracking
                 dbg_printf("RBSM could not parse message.\n");
                 g_errors |= _BV(RBSM_EID_RBSM_LOST_STREAM);
-            }
-            // should not be other faults
-            else {
+            } else {
+                // should not be other faults
                 dbg_printf("Unknown RBSM parse error.\n");
                 g_errors |= _BV(RBSM_EID_RBSM_LOST_STREAM);
             }
@@ -547,20 +553,19 @@ int main(void)
 
         // Check for RC commands
         steer_angle = g_steering_rx.GetAngleHundredths();
-        brake_cmd_teleop_engaged = g_brake_rx.GetAngle() > PWM_STATE_THRESHOLD;
-        g_is_autonomous = g_auton_rx.GetAngle() > PWM_STATE_THRESHOLD;
+        brake_cmd_teleop_engaged = g_brake_rx.GetPulseWidth() > PWM_STATE_THRESHOLD;
+        g_is_autonomous = g_auton_rx.GetPulseWidth() > PWM_STATE_THRESHOLD;
 
         // Detect dropped radio conections
-        // note: interrupts must be disabled while checking system clock so that
-        //      timestamps are not updated under our feet.  These
-        //      operations are atomic so we're fine
 
-        cli();
-        unsigned long time_now = micros();
         unsigned long time1 = g_steering_rx.GetLastTimestamp();
         unsigned long time2 = g_brake_rx.GetLastTimestamp();
         unsigned long time3 = g_auton_rx.GetLastTimestamp();
-        sei();
+        //We need to call micros last because if we called it first, 
+        //  time1, time2, or time3 could be greater than time_now if an interrupt
+        //  fires and updates its timestamp and our delta values will underflow
+        unsigned long time_now = micros();
+
 
         //RC time deltas
         unsigned long delta1 = time_now - time1;
@@ -576,14 +581,16 @@ int main(void)
         bool auton_timeout = (g_is_autonomous == true) &&
                              (delta4 > CONNECTION_TIMEOUT_US ||
                               delta5 > CONNECTION_TIMEOUT_US);
+
         if(rc_timeout || auton_timeout) {
             // check for RC timout first
             if(rc_timeout) {
                 // we haven't heard from the RC receiver in too long
                 g_errors |= _BV(RBSM_EID_RC_LOST_SIGNAL);
                 brake_needs_reset = true;
-            }
-            else {
+                rc_timeout_failure_light();
+                dbg_printf("RC Timeout! %lu %lu %lu\n", delta1, delta2, delta3);
+            } else {
                 g_errors &= ~_BV(RBSM_EID_RC_LOST_SIGNAL);
             }
 
@@ -591,56 +598,50 @@ int main(void)
             if(auton_timeout) {
                 g_errors |= _BV(RBSM_EID_AUTON_LOST_SIGNAL);
                 brake_needs_reset = true;
-            }
-            else {
+                auton_timeout_light();
+                dbg_printf("Auton Timeout! %lu %lu\n", delta4, delta5);
+            } else {
                 g_errors &= ~_BV(RBSM_EID_AUTON_LOST_SIGNAL);
             }
-        }
-
         // or reset the system if connection is back and driver engages brakes
-        else {
+        } else { 
             if(brake_cmd_teleop_engaged == true) {
                 brake_needs_reset = false;
             }
 
             g_errors &= ~_BV(RBSM_EID_RC_LOST_SIGNAL);
             g_errors &= ~_BV(RBSM_EID_AUTON_LOST_SIGNAL);
+            // once the connection is back can turn off lights
+            auton_timeout_light_reset();
+            rc_timeout_failure_light_reset();
         }
 
         // Reading battery voltage from the voltage 24/12 kOhm divider
         g_current_voltage  = adc_read_blocking(BATTERY_ADC);
         g_current_voltage *= BATTERY_ADC_SLOPE;
         g_current_voltage += BATTERY_ADC_OFFSET;
-
-        // Read/convert steering pot
-        g_steering_feedback = adc_read_blocking(STEERING_POT_ADC);
-        g_steering_feedback = map_signal(g_steering_feedback,
-                                         POT_OFFSET_STEERING_IN,
-                                         POT_SCALE_STEERING_IN,
-                                         PWM_OFFSET_STORED_ANGLE,
-                                         PWM_SCALE_STORED_ANGLE);
-
+        
+        if (g_current_voltage < SYSTEM_VOLTAGE_THRESHOLD) {
+            voltage_too_low_light();
+        } else {
+            voltage_too_low_light_reset();
+        }
+        
         // Set outputs
-        if(g_is_autonomous)
-        {
+        if(g_is_autonomous) {
             steering_set(auto_steering_angle);
             g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)(auto_steering_angle));
-        }
-        else
-        {
+        } else {
             steering_set(steer_angle);
             g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
         }
         
         if(brake_cmd_teleop_engaged == true ||
            (g_is_autonomous == true && brake_cmd_auton_engaged == true) ||
-           brake_needs_reset == true)
-        {
+           brake_needs_reset == true) {
             brake_drop();
             g_rbsm.Send(RBSM_MID_MEGA_BRAKE_STATE,(long unsigned)true);
-        } 
-        else 
-        {
+        } else {
             brake_raise();
             g_rbsm.Send(RBSM_MID_MEGA_BRAKE_STATE,(long unsigned)false);
         }
@@ -652,7 +653,7 @@ int main(void)
                              DEGREE_HUNDREDTHS_PER_REV);
 
         // Send the rest of the telemetry messages
-        g_rbsm.Send(RBSM_MID_DEVICE_ID, RBSM_DID_MEGA);
+        g_rbsm.Send(DEVICE_ID, RBSM_DID_MEGA);
         g_rbsm.Send(RBSM_MID_MEGA_TELEOP_BRAKE_COMMAND, (long unsigned)brake_cmd_teleop_engaged);
         g_rbsm.Send(RBSM_MID_MEGA_AUTON_BRAKE_COMMAND, (long unsigned)brake_cmd_auton_engaged);
         g_rbsm.Send(RBSM_MID_MEGA_AUTON_STATE, (long unsigned)g_is_autonomous);
@@ -663,7 +664,6 @@ int main(void)
         g_rbsm.Send(RBSM_MID_COMP_HASH, (long unsigned)(FP_HEXCOMMITHASH));
         g_rbsm.Send(RBSM_MID_ERROR, g_errors);
 
-        DEBUG_PORT |= _BV(DEBUG_PINN);
         // wait for the next regular loop time in a tight loop
         // note: this is before the watchdog reset so it can catch us if
         // something goes wrong
@@ -681,8 +681,7 @@ int main(void)
 }
 
 
-ISR(WDT_INT)
-{
+ISR(WDT_INT) {
     cli();
     brake_drop();
     while(1)
@@ -690,25 +689,21 @@ ISR(WDT_INT)
     }
 }
 
-ISR(RX_STEERING_INT) 
-{
+ISR(RX_STEERING_INT) {
     g_steering_rx.OnInterruptReceiver();
 }
 
 
-ISR(RX_BRAKE_INT) 
-{
+ISR(RX_BRAKE_INT) {
     g_brake_rx.OnInterruptReceiver();
 }
 
 
-ISR(RX_AUTON_INT) 
-{
+ISR(RX_AUTON_INT) {
     g_auton_rx.OnInterruptReceiver();
 }
 
-ISR(ENCODER_INT) 
-{
+ISR(ENCODER_INT) {
     g_encoder_distance.OnInterrupt();
 }
 

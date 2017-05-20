@@ -28,7 +28,7 @@ public class LocalizerTester extends BuggyDecoratorNode {
     private Timer odomTimer;
     private LocTuple currentPosition = new LocTuple(40.441670, -79.9416362);
     private double heading = Math.toRadians(90);
-    private double noise; // todo insert noise
+    // TODO simulate noise using Gaussians and actual covariances
 
     private Publisher gpsPub = new Publisher(NodeChannel.GPS.getMsgPath());
     private Publisher odomPub = new Publisher(NodeChannel.ENCODER.getMsgPath());
@@ -38,12 +38,11 @@ public class LocalizerTester extends BuggyDecoratorNode {
      *
      * @param name the name we want for this node to store so that it can be referenced later
      */
-    public LocalizerTester(String name, ArrayList<GpsMeasurement> waypoints, double noise) {
+    public LocalizerTester(String name, ArrayList<GpsMeasurement> waypoints) {
         super(new BuggyBaseNode(NodeChannel.POSE), name);
 
         gpsTimer = new Timer("GPS");
         odomTimer = new Timer("odom");
-        this.noise = noise;
         this.waypoints = waypoints;
     }
 
@@ -64,8 +63,8 @@ public class LocalizerTester extends BuggyDecoratorNode {
         double dlon = currentPosition.getLongitude() - targetWaypoint.getLongitude();
         heading = Math.atan2(dlat, -dlon) + Math.toRadians(90);
 
-        double updateLat = LocalizerUtil.convertMetersToLat(POSITION_UPDATE_M) * Math.cos(heading + Math.random() * noise);
-        double updateLon = LocalizerUtil.convertMetersToLat(POSITION_UPDATE_M) * Math.sin(heading + Math.random() * noise);
+        double updateLat = LocalizerUtil.convertMetersToLat(POSITION_UPDATE_M) * Math.cos(heading + Math.random());
+        double updateLon = LocalizerUtil.convertMetersToLat(POSITION_UPDATE_M) * Math.sin(heading + Math.random());
         double newLat = currentPosition.getLatitude() + updateLat;
         double newLon = currentPosition.getLongitude() + updateLon;
         currentPosition = new LocTuple(newLat, newLon);

@@ -3,7 +3,6 @@ package com.roboclub.robobuggy.simulation;
 import Jama.Matrix;
 import com.roboclub.robobuggy.messages.DriveControlMessage;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
-import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.PeriodicNode;
 import com.roboclub.robobuggy.nodes.localizers.LocTuple;
@@ -25,7 +24,7 @@ public class ControllerTester extends PeriodicNode {
     // run every 10 ms
     private static final int SIM_PERIOD = 10;
     // controller runs every 10 iterations
-    private static final int CONTROLLER_PERIOD = 5;
+    private static final int CONTROLLER_PERIOD = 1;
     // wheelbase in meters
     private static final double WHEELBASE = 1.13;
     // assume a velocity of 8 m/s
@@ -62,7 +61,7 @@ public class ControllerTester extends PeriodicNode {
 
         new Subscriber("controller tester", NodeChannel.DRIVE_CTRL.getMsgPath(), ((topicName, m) -> {
             commandedSteeringAngle = ((DriveControlMessage) m).getAngleDouble();
-            targetHeading = X.get(3, 0) + commandedSteeringAngle;
+//            targetHeading = X.get(3, 0) + commandedSteeringAngle;
         }));
 
         simulatedPosePub = new Publisher(NodeChannel.POSE.getMsgPath());
@@ -78,22 +77,12 @@ public class ControllerTester extends PeriodicNode {
         // update simulated position
         X = A.times(X);
 
-        double steeringIncrement = Math.toRadians(0.5);
-        double heading = X.get(3, 0);
-        if (heading > targetHeading) {
-            X.set(3, 0, heading - steeringIncrement);
-        }
-        else if (heading < targetHeading) {
-            X.set(3, 0, heading + steeringIncrement);
-        }
-
         UTMTuple t = new UTMTuple(17, 'T', X.get(0, 0), X.get(1, 0));
         LocTuple lt = LocalizerUtil.utm2Deg(t);
 
         // if it's time to run the controller, update the controller's understanding of where we are
         if (simCounter == CONTROLLER_PERIOD) {
-            simulatedPosePub.publish(new GPSPoseMessage(new Date(), lt.getLatitude(), lt.getLongitude(), heading, X));
-            gpspub.publish(new GpsMeasurement(lt.getLatitude(), lt.getLongitude()));
+            simulatedPosePub.publish(new GPSPoseMessage(new Date(), lt.getLatitude(), lt.getLongitude(), X.get(3, 0), X.get(2, 0)));
             simCounter = 0;
         }
 

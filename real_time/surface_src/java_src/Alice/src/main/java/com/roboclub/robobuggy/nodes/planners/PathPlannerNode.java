@@ -3,6 +3,7 @@ package com.roboclub.robobuggy.nodes.planners;
 import com.roboclub.robobuggy.messages.BrakeControlMessage;
 import com.roboclub.robobuggy.messages.DriveControlMessage;
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
+import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyDecoratorNode;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyNode;
@@ -12,6 +13,7 @@ import com.roboclub.robobuggy.ros.NodeChannel;
 import com.roboclub.robobuggy.ros.Publisher;
 import com.roboclub.robobuggy.ros.Subscriber;
 
+import java.time.temporal.WeekFields;
 import java.util.Date;
 
 /**
@@ -48,7 +50,7 @@ public abstract class PathPlannerNode extends BuggyDecoratorNode {
             public void actionPerformed(String topicName, Message m) {
                 updatePositionEstimate((GPSPoseMessage) m);
                 steeringCommandPub.publish(new DriveControlMessage(new Date(),
-                        getCommandedSteeringAngle()));
+                        getCommandedSteeringAngle(), getTargetWaypoint()));
                 brakingCommandPub.publish(new BrakeControlMessage(new Date(),
                         getDeployBrakeValue()));
             }
@@ -89,4 +91,8 @@ public abstract class PathPlannerNode extends BuggyDecoratorNode {
      * @return desired commanded brake value (true is deployed)
      */
     protected abstract boolean getDeployBrakeValue();
+
+    protected GpsMeasurement getTargetWaypoint() {
+        return null;
+    }
 }
