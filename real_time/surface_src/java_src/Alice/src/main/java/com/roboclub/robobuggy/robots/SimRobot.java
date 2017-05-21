@@ -26,6 +26,9 @@ import com.roboclub.robobuggy.ui.SimulationPanel;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
+import static com.roboclub.robobuggy.main.RobobuggyConfigFile.LATITUDE;
+import static com.roboclub.robobuggy.main.RobobuggyConfigFile.LONGITUDE;
+
 
 /**
  * A robot file for a simulated robot that can be used for internal testing of nodes along simulated paths
@@ -34,8 +37,6 @@ import java.util.ArrayList;
  */
 public final class SimRobot extends AbstractRobot {
     private static SimRobot instance;
-    private static double INIT_LATITUDE = 40.441670;
-    private static double INIT_LONGITUDE = -79.9416362;
 
     /**
      * Returns a reference to the one instance of the {@link Robot} object.
@@ -53,7 +54,7 @@ public final class SimRobot extends AbstractRobot {
     private SimRobot() {
         super();
 
-        nodeList.add(new FullSimRunner("Full Sim Toolbox", new LocTuple(INIT_LATITUDE, INIT_LONGITUDE)));
+        nodeList.add(new FullSimRunner("Full Sim Toolbox", new LocTuple(LATITUDE, LONGITUDE)));
 
         //setup the gui
         RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow", 1.0, 1.0);
