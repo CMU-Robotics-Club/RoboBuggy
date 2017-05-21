@@ -22,7 +22,7 @@ import com.roboclub.robobuggy.ui.RobobuggyJFrame;
 import java.io.IOException;
 import java.util.ArrayList;
 
-
+import static com.roboclub.robobuggy.main.RobobuggyConfigFile.*;
 /**
  * A robot class for having transistor drive itself
  *
@@ -59,7 +59,7 @@ public final class TransistorAuton extends AbstractRobot {
         new RobobuggyLogicNotification("Logic Exception Setup properly", RobobuggyMessageLevel.NOTE);
 
         // Initialize Nodes
-        nodeList.add(new RobobuggyKFLocalizer(10, "Robobuggy KF Localizer", new LocTuple(40.441670, -79.9416362)));
+        nodeList.add(new RobobuggyKFLocalizer(10, "Robobuggy KF Localizer", new LocTuple(INITIAL_POS_LAT, INITIAL_POS_LON)));
         nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.getComPortGPS()));
         nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION,
                 NodeChannel.getLoggingChannels()));
