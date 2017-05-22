@@ -1,6 +1,7 @@
 package com.roboclub.robobuggy.simulation;
 
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
+import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyBaseNode;
 import com.roboclub.robobuggy.nodes.baseNodes.BuggyDecoratorNode;
@@ -48,9 +49,12 @@ public class LocalizerTester extends BuggyDecoratorNode {
 
     public GpsMeasurement getTargetWaypoint() {
         GpsMeasurement currentTarget = waypoints.get(targetWaypointIndex);
-        double distInM = (GpsMeasurement.getDistance(currentTarget, new GpsMeasurement(currentPosition.getLatitude(),
-                currentPosition
-                .getLongitude())));
+        GpsMeasurement currentPositionMeas = new GpsMeasurement(currentPosition.getLatitude(), currentPosition
+                        .getLongitude());
+        GPSPoseMessage currentTargetPM = currentTarget.toGpsPoseMessage(0);
+        GPSPoseMessage currentPositionPM = currentPositionMeas.toGpsPoseMessage(0);
+
+        double distInM = (GPSPoseMessage.getDistance(currentTargetPM, currentPositionPM ));
         if (distInM < 5) {
             targetWaypointIndex++;
         }
