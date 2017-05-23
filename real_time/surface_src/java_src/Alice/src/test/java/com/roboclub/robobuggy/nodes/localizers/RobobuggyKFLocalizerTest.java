@@ -19,20 +19,22 @@ public class RobobuggyKFLocalizerTest {
 
     private static LinkedBlockingQueue<GPSPoseMessage> poseMessages;
 
-    @BeforeClass
+
     /**
     * creates a subscriber for testing the localizer
     */
+    @BeforeClass
     public static void oneTimeSetup() {
         new Subscriber("localizerTest", NodeChannel.POSE.getMsgPath(), ((topicName, m) -> {
             poseMessages.add(((GPSPoseMessage) m));
         }));
     }
 
-    @Before
+
     /**
      * initializes the linked blocking queue of pose messages
      */
+    @Before
     public void setUp() {
         poseMessages = new LinkedBlockingQueue<>();
     }
