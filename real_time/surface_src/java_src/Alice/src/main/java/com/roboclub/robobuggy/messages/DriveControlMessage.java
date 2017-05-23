@@ -26,6 +26,13 @@ public class DriveControlMessage extends BaseMessage {
         this.timestamp = new Date(timestamp.getTime()).getTime();
     }
 
+    /**
+     * Construct a new DriveControlMessage
+     *
+     * @param timestamp {@link Date} representing the creation time
+     * @param angle     the commanded angle of the front wheel
+     * @param currentWaypoint  gps measurement representing the current waypoint
+     */
     public DriveControlMessage(Date timestamp, double angle, GpsMeasurement currentWaypoint) {
         this.angle = angle;
         this.timestamp = new Date(timestamp.getTime()).getTime();
@@ -41,6 +48,13 @@ public class DriveControlMessage extends BaseMessage {
         return angle;
     }
 
+    /**
+     * Returns the GpsMeasurement representing the current waypoint
+     * from this DriveControlMessage
+     *
+     * @return the GpsMeasurement representing the current waypoint
+     * from this DriveControlMessage
+     */
     public GpsMeasurement getWaypoint() {
         return currentWaypoint;
     }

@@ -32,8 +32,8 @@ public class ControllerTester extends PeriodicNode {
     // assume we are facing up hill 1
     private static final double INITIAL_HEADING_RAD = Math.toRadians(250);
 
-    private Matrix X;
-    private Matrix A;
+    private Matrix matX;
+    private Matrix matA;
     private double commandedSteeringAngle = 0;
     private Publisher simulatedPosePub;
     private Publisher gpspub;
@@ -43,13 +43,14 @@ public class ControllerTester extends PeriodicNode {
     /**
      * Create a new {@link PeriodicNode} decorator
      *
-     * @param name
+     * @param name - name of tester
+     * @param initialPosition - represents initial position of tester
      */
     public ControllerTester(String name, LocTuple initialPosition) {
         super(new BuggyBaseNode(NodeChannel.AUTO), SIM_PERIOD, name);
 
         LocTuple firstPosition = initialPosition;
-        double[][] XAsDoubleArr = {
+        double[][] xAsDoubleArr = {
                 { LocalizerUtil.deg2UTM(firstPosition).getEasting() },
                 { LocalizerUtil.deg2UTM(firstPosition).getNorthing() },
                 { VELOCITY },
@@ -57,7 +58,7 @@ public class ControllerTester extends PeriodicNode {
                 { 0 }
         };
 
-        X = new Matrix(XAsDoubleArr);
+        matX = new Matrix(xAsDoubleArr);
 
         new Subscriber("controller tester", NodeChannel.DRIVE_CTRL.getMsgPath(), ((topicName, m) -> {
             commandedSteeringAngle = ((DriveControlMessage) m).getAngleDouble();
@@ -72,17 +73,17 @@ public class ControllerTester extends PeriodicNode {
     protected void update() {
         simCounter++;
 
-        A = getNewModel(X);
+        matA = getNewModel(matX);
 
         // update simulated position
-        X = A.times(X);
+        matX = matA.times(matX);
 
-        UTMTuple t = new UTMTuple(17, 'T', X.get(0, 0), X.get(1, 0));
+        UTMTuple t = new UTMTuple(17, 'T', matX.get(0, 0), matX.get(1, 0));
         LocTuple lt = LocalizerUtil.utm2Deg(t);
 
         // if it's time to run the controller, update the controller's understanding of where we are
         if (simCounter == CONTROLLER_PERIOD) {
-            simulatedPosePub.publish(new GPSPoseMessage(new Date(), lt.getLatitude(), lt.getLongitude(), X.get(3, 0), X.get(2, 0)));
+            simulatedPosePub.publish(new GPSPoseMessage(new Date(), lt.getLatitude(), lt.getLongitude(), matX.get(3, 0), matX.get(2, 0)));
             simCounter = 0;
         }
 

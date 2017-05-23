@@ -55,7 +55,8 @@ public class FullSimRunner extends BuggyBaseNode {
     /**
      * Create a new {@link PeriodicNode} decorator
      *
-     * @param name
+     * @param name - name of full simulation runner
+     * @param initialPos - initial position of full simulation runner
      */
     public FullSimRunner(String name, LocTuple initialPos) {
         super(NodeChannel.SIMULATION);

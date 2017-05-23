@@ -19,6 +19,14 @@ public class GPSPoseMessage extends BaseMessage {
     private final double velocity;
     private final double heading;
 
+    /**
+     * Constructs a new {@link GPSPoseMessage}
+     *
+     * @param timestamp {@link Date} representing the creation time
+     * @param latitude  of the buggy (negative is South)
+     * @param longitude of the buggy (negative is West)
+     * @param heading   of the buggy (in degrees from North)
+     */
     public GPSPoseMessage(Date timestamp, double latitude, double longitude, double heading) {
         this(timestamp, latitude, longitude, heading, 0.0);
     }
@@ -30,6 +38,7 @@ public class GPSPoseMessage extends BaseMessage {
      * @param latitude  of the buggy (negative is South)
      * @param longitude of the buggy (negative is West)
      * @param heading   of the buggy (in degrees from North)
+     * @param velocity of the buggy
      */
     public GPSPoseMessage(Date timestamp, double latitude, double longitude, double heading, double velocity) {
         this.latitude = latitude;

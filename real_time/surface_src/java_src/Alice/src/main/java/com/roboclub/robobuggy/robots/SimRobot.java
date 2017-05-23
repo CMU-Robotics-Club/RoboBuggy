@@ -26,7 +26,8 @@ import com.roboclub.robobuggy.ui.SimulationPanel;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
-import static com.roboclub.robobuggy.main.RobobuggyConfigFile.*;
+import static com.roboclub.robobuggy.main.RobobuggyConfigFile.INITIAL_POS_LAT;
+import static com.roboclub.robobuggy.main.RobobuggyConfigFile.INITIAL_POS_LON;
 
 
 /**

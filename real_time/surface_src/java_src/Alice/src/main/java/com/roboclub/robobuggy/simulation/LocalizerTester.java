@@ -38,6 +38,7 @@ public class LocalizerTester extends BuggyDecoratorNode {
      * Creates a new decorator for the given Node
      *
      * @param name the name we want for this node to store so that it can be referenced later
+     * @param waypoints the array list of GpsMeasurements representing the waypoints on the map
      */
     public LocalizerTester(String name, ArrayList<GpsMeasurement> waypoints) {
         super(new BuggyBaseNode(NodeChannel.POSE), name);
@@ -47,6 +48,10 @@ public class LocalizerTester extends BuggyDecoratorNode {
         this.waypoints = waypoints;
     }
 
+    /**
+     * returns the target waypoint
+     * @return a GpsMeasurement representing the waypoint
+     */
     public GpsMeasurement getTargetWaypoint() {
         GpsMeasurement currentTarget = waypoints.get(targetWaypointIndex);
         GpsMeasurement currentPositionMeas = new GpsMeasurement(currentPosition.getLatitude(), currentPosition

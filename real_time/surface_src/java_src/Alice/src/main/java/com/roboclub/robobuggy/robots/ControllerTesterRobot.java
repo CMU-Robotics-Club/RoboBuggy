@@ -19,9 +19,15 @@ import java.util.ArrayList;
 /**
  * Created by vivaanbahl on 1/26/17.
  */
-public class ControllerTesterRobot extends AbstractRobot {
+public final class ControllerTesterRobot extends AbstractRobot {
     private static ControllerTesterRobot instance;
 
+    /**
+     * Returns a reference to the one instance of the {@link Robot} object.
+     * If no instance exists, a new one is created.
+     *
+     * @return a reference to the one instance of the {@link Robot} object
+     */
     public static ControllerTesterRobot getInstance() {
         if (instance == null) {
             instance = new ControllerTesterRobot();

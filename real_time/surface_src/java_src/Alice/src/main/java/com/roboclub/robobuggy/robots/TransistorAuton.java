@@ -22,7 +22,8 @@ import com.roboclub.robobuggy.ui.RobobuggyJFrame;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static com.roboclub.robobuggy.main.RobobuggyConfigFile.*;
+import static com.roboclub.robobuggy.main.RobobuggyConfigFile.INITIAL_POS_LAT;
+import static com.roboclub.robobuggy.main.RobobuggyConfigFile.INITIAL_POS_LON;
 /**
  * A robot class for having transistor drive itself
  *

@@ -23,6 +23,11 @@ public class LocalizerTesterRobot extends AbstractRobot {
 
     private static LocalizerTesterRobot instance;
 
+    /**
+     * Returns a reference to the one instance of the {@link Robot} object.
+     *
+     * @return a reference to the one instance of the {@link Robot} object
+     */
     protected LocalizerTesterRobot() {
         super();
 
@@ -46,6 +51,11 @@ public class LocalizerTesterRobot extends AbstractRobot {
         tabs.addTab(new ConfigurationPanel(), "Configuration");
     }
 
+    /**
+     * Returns a reference to the one instance of the {@link Robot} object.
+     *
+     * @return a reference to the one instance of the {@link Robot} object
+     */
     public static LocalizerTesterRobot getInstance() {
         if (instance == null) {
             instance = new LocalizerTesterRobot();
