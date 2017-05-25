@@ -42,7 +42,7 @@ dependencies {
     compile 'org.jcodec:jcodec-javase:0.1.9'	
     
     compile project (':BuggyRos')
-    //for jason object extraction from strings 
+    //for json object extraction from strings 
     
     compile group: 'com.google.code.gson', name: 'gson', version: '2.2.+'
     compile 'jfreechart:jfreechart:1.0.0'
