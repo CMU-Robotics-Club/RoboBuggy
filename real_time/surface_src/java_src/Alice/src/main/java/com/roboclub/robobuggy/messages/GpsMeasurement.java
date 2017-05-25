@@ -163,21 +163,4 @@ public class GpsMeasurement extends BaseMessage {
     public GPSPoseMessage toGpsPoseMessage(double heading) {
         return new GPSPoseMessage(gpsTimestamp, latitude, longitude, heading);
     }
-
-    /**
-     * evaluates to the distance between two gps points based on an L2 metric
-     *
-     * @param a the first gps point
-     * @param b the second gps point
-     * @return the distance in meters
-     */
-    public static double getDistance(GpsMeasurement a, GpsMeasurement b) {
-        double dx = LocalizerUtil.convertLonToMeters(a.getLongitude() - b.getLongitude());
-        double dy = LocalizerUtil.convertLatToMeters(a.getLatitude() - b.getLatitude());
-        return Math.sqrt(dx * dx + dy * dy);
-    }
-
-    public int getNumSatellites() {
-        return numSatellites;
-    }
 }

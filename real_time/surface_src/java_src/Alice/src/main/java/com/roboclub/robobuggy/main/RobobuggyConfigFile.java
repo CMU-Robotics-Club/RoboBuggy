@@ -32,6 +32,8 @@ public final class RobobuggyConfigFile {
     public static final boolean LOGGING = true;
     public static final String LOG_FILE_LOCATION = "logs";
     public static final String LOG_FILE_NAME = "sensors";
+    public static final double INITIAL_POS_LAT = 40.441670;
+    public static final double INITIAL_POS_LON = -79.9416362;
 
     //Autonomous controls
     public static final int RBSM_COMMAND_PERIOD = 50;

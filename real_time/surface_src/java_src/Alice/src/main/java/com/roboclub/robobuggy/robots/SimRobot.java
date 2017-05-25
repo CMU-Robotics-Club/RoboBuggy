@@ -26,6 +26,9 @@ import com.roboclub.robobuggy.ui.SimulationPanel;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
+import static com.roboclub.robobuggy.main.RobobuggyConfigFile.INITIAL_POS_LAT;
+import static com.roboclub.robobuggy.main.RobobuggyConfigFile.INITIAL_POS_LON;
+
 
 /**
  * A robot file for a simulated robot that can be used for internal testing of nodes along simulated paths
@@ -51,7 +54,7 @@ public final class SimRobot extends AbstractRobot {
     private SimRobot() {
         super();
 
-        nodeList.add(new FullSimRunner("Full Sim Toolbox", new LocTuple(40.441670, -79.9416362)));
+        nodeList.add(new FullSimRunner("Full Sim Toolbox", new LocTuple(INITIAL_POS_LAT, INITIAL_POS_LON)));
 
         //setup the gui
         RobobuggyJFrame mainWindow = new RobobuggyJFrame("MainWindow", 1.0, 1.0);

@@ -17,6 +17,10 @@ public class RobobuggyKFLocalizerTest {
 
     private static LinkedBlockingQueue<GPSPoseMessage> poseMessages;
 
+
+    /**
+    * creates a subscriber for testing the localizer
+    */
     @BeforeClass
     public static void oneTimeSetup() {
         new Subscriber("localizerTest", NodeChannel.POSE.getMsgPath(), ((topicName, m) -> {
@@ -24,6 +28,10 @@ public class RobobuggyKFLocalizerTest {
         }));
     }
 
+
+    /**
+     * initializes the linked blocking queue of pose messages
+     */
     @Before
     public void setUp() {
         poseMessages = new LinkedBlockingQueue<>();
@@ -31,10 +39,10 @@ public class RobobuggyKFLocalizerTest {
 
     /**
      * NOTE THIS IS NOT YET A VALID TEST CASE
-     * @throws InterruptedException
+     * @throws InterruptedException - need this here
      */
     @Test
-    public void test_singleIteration() throws InterruptedException {
+    public void testSingleIteration() throws InterruptedException {
         RobobuggyKFLocalizer localizer = new RobobuggyKFLocalizer(10000, "testLocalizer", new LocTuple(40.441670, -79.9416362));
         new Publisher(NodeChannel.GPS.getMsgPath()).publish(new GpsMeasurement(40.441670, -79.9512463));
         Thread.sleep(3000);

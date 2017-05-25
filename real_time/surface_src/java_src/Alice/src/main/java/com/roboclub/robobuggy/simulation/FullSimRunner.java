@@ -55,7 +55,8 @@ public class FullSimRunner extends BuggyBaseNode {
     /**
      * Create a new {@link PeriodicNode} decorator
      *
-     * @param name
+     * @param name - name of full simulation runner
+     * @param initialPos - initial position of full simulation runner
      */
     public FullSimRunner(String name, LocTuple initialPos) {
         super(NodeChannel.SIMULATION);
@@ -102,14 +103,10 @@ public class FullSimRunner extends BuggyBaseNode {
         gpsTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                // 50-50 shot that we get noise on the left or right
-//                double noise = Math.random() > 0.5? 0.5 : -0.5;
-                double noise = 0;
-
                 Matrix nextStep = generateNextStep();
                 UTMTuple nextLocUTM = new UTMTuple(UTMZONE, 'T', state.get(0, 0), state.get(1, 0));
-                nextLocUTM.setEasting(nextLocUTM.getEasting() + Math.random() * noise);
-                nextLocUTM.setNorthing(nextLocUTM.getNorthing() + Math.random() * noise);
+                nextLocUTM.setEasting(nextLocUTM.getEasting());
+                nextLocUTM.setNorthing(nextLocUTM.getNorthing());
                 LocTuple nextLocLL = LocalizerUtil.utm2Deg(nextLocUTM);
                 gpsPub.publish(new GpsMeasurement(new Date(), nextLocLL.getLatitude(), true, nextLocLL.getLongitude(), true, 0, 0, 0, 0, 0, 0));
                 state = nextStep;

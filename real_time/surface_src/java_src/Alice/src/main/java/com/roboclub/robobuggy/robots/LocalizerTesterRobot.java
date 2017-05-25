@@ -23,6 +23,11 @@ public class LocalizerTesterRobot extends AbstractRobot {
 
     private static LocalizerTesterRobot instance;
 
+    /**
+     * Returns a reference to the one instance of the {@link Robot} object.
+     *
+     * @return a reference to the one instance of the {@link Robot} object
+     */
     protected LocalizerTesterRobot() {
         super();
 
@@ -33,7 +38,7 @@ public class LocalizerTesterRobot extends AbstractRobot {
             e.printStackTrace();
         }
 
-        nodeList.add(new LocalizerTester("localizer tester", waypoints, 1));
+        nodeList.add(new LocalizerTester("localizer tester", waypoints));
         nodeList.add(new RobobuggyKFLocalizer(10, "localizer", new LocTuple(40.441670, -79.9416362)));
 
         //setup the gui
@@ -42,12 +47,15 @@ public class LocalizerTesterRobot extends AbstractRobot {
         RobobuggyGUITabs tabs = new RobobuggyGUITabs();
         mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
         tabs.addTab(new MainGuiWindow(), "Home");
-        //	tabs.addTab(new PoseGraphsPanel(),"poses");
-        //	tabs.addTab(new  AutonomousPanel(),"Autonomous");
         tabs.add(new PathPanel(), "Path Visualizer");
         tabs.addTab(new ConfigurationPanel(), "Configuration");
     }
 
+    /**
+     * Returns a reference to the one instance of the {@link Robot} object.
+     *
+     * @return a reference to the one instance of the {@link Robot} object
+     */
     public static LocalizerTesterRobot getInstance() {
         if (instance == null) {
             instance = new LocalizerTesterRobot();
