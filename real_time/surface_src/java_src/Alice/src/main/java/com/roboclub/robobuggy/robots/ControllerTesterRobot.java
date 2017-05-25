@@ -54,8 +54,6 @@ public final class ControllerTesterRobot extends AbstractRobot {
         RobobuggyGUITabs tabs = new RobobuggyGUITabs();
         mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
         tabs.addTab(new MainGuiWindow(), "Home");
-        //	tabs.addTab(new PoseGraphsPanel(),"poses");
-        //	tabs.addTab(new  AutonomousPanel(),"Autonomous");
         tabs.add(new PathPanel(), "Path Visualizer");
         tabs.addTab(new ConfigurationPanel(), "Configuration");
     }

@@ -43,7 +43,7 @@ dependencies {
     
     compile project (':BuggyRos')
     //for jason object extraction from strings 
-//    compile 'com.google.code.gson:gson:2.2.+'
+    
     compile group: 'com.google.code.gson', name: 'gson', version: '2.2.+'
     compile 'jfreechart:jfreechart:1.0.0'
     compile 'gov.nist.math:jama:1.0.2'

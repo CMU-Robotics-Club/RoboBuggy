@@ -135,48 +135,6 @@ public class KfLocalizer extends PeriodicNode {
                 }
             });
 
-		/*
-        new Subscriber(
-			"HighTrustGpsLoc",
-			NodeChannel.IMU_ANG_POS.getMsgPath(),
-			((topicName, m) -> {
-
-				IMUAngularPositionMessage mes = ((IMUAngularPositionMessage) m);
-				// double y = mes.getRot()[0][1];
-				// double x = mes.getRot()[0][0];
-				double[][] xVar = { { 1 }, { 0 }, { 0 } };
-				double[][] yVar = { { 0 }, { 1 }, { 0 } };
-				Matrix xMat = new Matrix(xVar);
-				Matrix yMat = new Matrix(yVar);
-				Matrix rot = new Matrix(mes.getRot());
-				double x = rot.times(xMat).get(0, 0);
-				double y = rot.times(yMat).get(0, 0);
-				double th = -(Math.toDegrees(Math.atan2(y, x)) - 90);
-				double[][] observationModel = { { 0, 0, 0, 0, 0, 0, 0 }, // x
-						{ 0, 0, 0, 0, 0, 0, 0 }, // y
-						{ 0, 0, 0, 0, 0, 0, 0 }, // x_dot_b
-						{ 0, 0, 0, 0, 0, 0, 0 }, // y_dot_b
-						{ 0, 0, 0, 0, 1, 0, 0 }, // th
-						{ 0, 0, 0, 0, 0, 0, 0 }, // th_dot
-						{ 0, 0, 0, 0, 0, 0, 0 } // Heading
-				};
-
-				double[][] meassurement = { { 0 }, { 0 }, { 0 }, { 0 },
-						{ th }, { 0 }, { 0 } };
-				double[][] updateCovariance = { { 1, 0, 0, 0, 0, 0, 0 }, // x
-						{ 0, 1, 0, 0, 0, 0, 0 }, // y
-						{ 0, 0, 1, 0, 0, 0, 0 }, // x_dot
-						{ 0, 0, 0, 1, 0, 0, 0 }, // y_dot
-						{ 0, 0, 0, 0, 1, 0, 0 }, // th
-						{ 0, 0, 0, 0, 0, 1, 0 }, // th_dot
-						{ 0, 0, 0, 0, 0, 0, 1 } // heading
-				};
-				// updateStep(new Matrix(observationModel),new
-				// Matrix(meassurement),new Matrix(updateCovariance));
-
-			}));
-			*/
-
         // TODO note that we will probably run into precision errors since the
         // changes are so small
         // would be good to batch up the encoder updates until we get a margin
