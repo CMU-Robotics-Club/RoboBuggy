@@ -1,5 +1,3 @@
-package com.roboclub.robobuggy.nodes.localizers;
-
 import com.roboclub.robobuggy.messages.GPSPoseMessage;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.ros.NodeChannel;
