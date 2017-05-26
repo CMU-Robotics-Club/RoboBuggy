@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Alice/Alice.iml" filepath="$PROJECT_DIR$/.idea/modules/Alice/Alice.iml" group="Alice" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Alice/Alice_main.iml" filepath="$PROJECT_DIR$/.idea/modules/Alice/Alice_main.iml" group="Alice" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Alice/Alice_test.iml" filepath="$PROJECT_DIR$/.idea/modules/Alice/Alice_test.iml" group="Alice" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/BuggyRos/BuggyRos.iml" filepath="$PROJECT_DIR$/.idea/modules/BuggyRos/BuggyRos.iml" group="BuggyRos" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/BuggyRos/BuggyRos_main.iml" filepath="$PROJECT_DIR$/.idea/modules/BuggyRos/BuggyRos_main.iml" group="BuggyRos" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/BuggyRos/BuggyRos_test.iml" filepath="$PROJECT_DIR$/.idea/modules/BuggyRos/BuggyRos_test.iml" group="BuggyRos" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Tutorial/Tutorial.iml" filepath="$PROJECT_DIR$/.idea/modules/Tutorial/Tutorial.iml" group="Tutorial" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Tutorial/Tutorial_main.iml" filepath="$PROJECT_DIR$/.idea/modules/Tutorial/Tutorial_main.iml" group="Tutorial" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Tutorial/Tutorial_test.iml" filepath="$PROJECT_DIR$/.idea/modules/Tutorial/Tutorial_test.iml" group="Tutorial" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java_src.iml" filepath="$PROJECT_DIR$/.idea/modules/java_src.iml" />
+    </modules>
+  </component>
+</project>

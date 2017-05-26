@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: gov.nist.math:jama:1.0.2">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/gov.nist.math/jama/1.0.2/3fa44a5491e483b875e60e9a69ffda7fd2b72627/jama-1.0.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/gov.nist.math/jama/1.0.2/ce6298803a68690c799ccbe02cdab1d2b5e8d63c/jama-1.0.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
