@@ -1,5 +1,7 @@
 package com.roboclub.robobuggy.ui;
 
+import java.awt.Color;
+
 /**
  * {@link RobobuggyGUIContainer} used to display a {@link DataPanel} and a
  * {@link GraphPanel}
@@ -10,6 +12,7 @@ public final class AnalyticsPanel extends RobobuggyGUIContainer {
 
     private DataPanel dataPanel;
     private static AnalyticsPanel instance;
+    private Map map;
 
     /**
      * @return a reference to the analytics panel
@@ -28,7 +31,10 @@ public final class AnalyticsPanel extends RobobuggyGUIContainer {
     private AnalyticsPanel() {
         name = "analytics";
         dataPanel = new DataPanel();
+        map = new Map();
+        this.addComponent(map, 0, 0, 1, 0.75);
         this.addComponent(dataPanel, 0, 0, 1, 1);
+        this.setBackground(Color.RED);
 
     }
 

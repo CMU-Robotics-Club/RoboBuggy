@@ -9,7 +9,11 @@ public class DriveControlMessage extends BaseMessage {
 
     public static final String VERSION_ID = "drive_control_message";
 
+    /**
+     *  Angle is supposed to be in radians
+     */
     private final double angle;
+    private GpsMeasurement currentWaypoint;
 
     /**
      * Construct a new DriveControlMessage
@@ -23,6 +27,19 @@ public class DriveControlMessage extends BaseMessage {
     }
 
     /**
+     * Construct a new DriveControlMessage
+     *
+     * @param timestamp {@link Date} representing the creation time
+     * @param angle     the commanded angle of the front wheel
+     * @param currentWaypoint  gps measurement representing the current waypoint
+     */
+    public DriveControlMessage(Date timestamp, double angle, GpsMeasurement currentWaypoint) {
+        this.angle = angle;
+        this.timestamp = new Date(timestamp.getTime()).getTime();
+        this.currentWaypoint = currentWaypoint;
+    }
+
+    /**
      * Returns the commanded angle of the steering as a double (in degrees)
      *
      * @return the commanded angle of the steering as a double (in degrees)
@@ -32,12 +49,13 @@ public class DriveControlMessage extends BaseMessage {
     }
 
     /**
-     * Returns the commanded angle of the steering as an int (in hundredths of degrees)
+     * Returns the GpsMeasurement representing the current waypoint
+     * from this DriveControlMessage
      *
-     * @return the commanded angle of the steering as an int (in hundredths of degrees)
+     * @return the GpsMeasurement representing the current waypoint
+     * from this DriveControlMessage
      */
-    public int getAngleInt() {
-        return (int) (angle * 100.0);
+    public GpsMeasurement getWaypoint() {
+        return currentWaypoint;
     }
-
 }

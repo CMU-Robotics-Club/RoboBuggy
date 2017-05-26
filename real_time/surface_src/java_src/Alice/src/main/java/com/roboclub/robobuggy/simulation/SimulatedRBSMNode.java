@@ -29,7 +29,7 @@ public class SimulatedRBSMNode extends PeriodicNode {
     private Publisher messagePubControllerSteering;
     private Publisher messagePubBrakeState;
     private Publisher messagePubSteering;
-    private int commandedAngle = 0;
+    private double commandedAngle = 0;
     private boolean commandedBrakeEngaged = true;
 
 
@@ -53,7 +53,7 @@ public class SimulatedRBSMNode extends PeriodicNode {
                 new MessageListener() {
                     @Override
                     public void actionPerformed(String topicName, Message m) {
-                        commandedAngle = ((DriveControlMessage) m).getAngleInt();
+                        commandedAngle = ((DriveControlMessage) m).getAngleDouble();
                     }
                 });
 
@@ -96,7 +96,7 @@ public class SimulatedRBSMNode extends PeriodicNode {
         messagePubControllerSteering.publish(new SteeringMeasurement(potAngle));
         messagePubSteering.publish(new SteeringMeasurement(potAngle));
 
-        int outputAngle = commandedAngle;
+        int outputAngle = (int) commandedAngle;
         //update the commanded angle
         if (outputAngle > 1000) {
             outputAngle = 1000;

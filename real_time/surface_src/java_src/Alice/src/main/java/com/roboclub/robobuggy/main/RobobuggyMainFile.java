@@ -1,7 +1,8 @@
 package com.roboclub.robobuggy.main;
 
 import com.roboclub.robobuggy.robots.AbstractRobot;
-import com.roboclub.robobuggy.robots.TransistorDataCollection;
+import com.roboclub.robobuggy.robots.SimRobot;
+import com.roboclub.robobuggy.robots.TransistorAuton;
 import com.roboclub.robobuggy.ui.Gui;
 
 
@@ -29,7 +30,7 @@ public class RobobuggyMainFile {
         RobobuggyConfigFile.loadConfigFile(); //TODO make sure that logic Notification is setup before this point
 
         new RobobuggyLogicNotification("Initializing Robot", RobobuggyMessageLevel.NOTE);
-        robot = TransistorDataCollection.getInstance();
+        robot = TransistorAuton.getInstance();
 
         new RobobuggyLogicNotification("Initializing GUI", RobobuggyMessageLevel.NOTE);
         Gui.getInstance();
@@ -58,11 +59,6 @@ public class RobobuggyMainFile {
      */
     public static void resetSystem() {
         robot.shutDown();
-        //   	Gui.close();
-        //   	Gui.getInstance();
-//    	robot.getInstance();
-        //TODO make this work for real
-
     }
 
 

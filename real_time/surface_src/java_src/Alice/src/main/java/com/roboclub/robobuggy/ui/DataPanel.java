@@ -1,6 +1,7 @@
 package com.roboclub.robobuggy.ui;
 
 import com.roboclub.robobuggy.messages.BrakeControlMessage;
+import com.roboclub.robobuggy.messages.DriveControlMessage;
 import com.roboclub.robobuggy.messages.EncoderMeasurement;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
 import com.roboclub.robobuggy.messages.ImuMeasurement;
@@ -195,10 +196,10 @@ public class DataPanel extends RobobuggyGUIContainer {
         panel.add(commandAng);
 
         // Subscriber for drive control updates
-        new Subscriber("uiDataPan", NodeChannel.STEERING_COMMANDED.getMsgPath(), new MessageListener() {
+        new Subscriber("uiDataPan", NodeChannel.DRIVE_CTRL.getMsgPath(), new MessageListener() {
             @Override
             public void actionPerformed(String topicName, Message m) {
-                commandAng.setText(Double.toString(((SteeringMeasurement) m).getAngle()));
+                commandAng.setText(Double.toString(Math.toDegrees(((DriveControlMessage) m).getAngleDouble())));
                 Gui.getInstance().fixPaint();
             }
         });

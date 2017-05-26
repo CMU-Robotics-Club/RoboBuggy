@@ -16,6 +16,7 @@ public class GPSPoseMessage extends BaseMessage {
 
     private final double latitude;
     private final double longitude;
+    private final double velocity;
     private final double heading;
 
     /**
@@ -27,10 +28,24 @@ public class GPSPoseMessage extends BaseMessage {
      * @param heading   of the buggy (in degrees from North)
      */
     public GPSPoseMessage(Date timestamp, double latitude, double longitude, double heading) {
+        this(timestamp, latitude, longitude, heading, 0.0);
+    }
+
+    /**
+     * Constructs a new {@link GPSPoseMessage}
+     *
+     * @param timestamp {@link Date} representing the creation time
+     * @param latitude  of the buggy (negative is South)
+     * @param longitude of the buggy (negative is West)
+     * @param heading   of the buggy (in degrees from North)
+     * @param velocity of the buggy
+     */
+    public GPSPoseMessage(Date timestamp, double latitude, double longitude, double heading, double velocity) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.heading = heading;
         this.timestamp = new Date(timestamp.getTime()).getTime();
+        this.velocity = velocity;
     }
 
     /**
@@ -52,12 +67,19 @@ public class GPSPoseMessage extends BaseMessage {
     }
 
     /**
-     * Returns the heading of the {@link GPSPoseMessage} (in degrees from North)
+     * Returns the heading of the {@link GPSPoseMessage} (in RADIANS from North)
      *
-     * @return the heading of the {@link GPSPoseMessage} (in degrees from North)
+     * @return the heading of the {@link GPSPoseMessage} (in RADIANS from North)
      */
     public double getHeading() {
         return heading;
+    }
+
+    /**
+     * @return the current estimated velocity (m/s)
+     */
+    public double getVelocity() {
+        return velocity;
     }
 
     /**

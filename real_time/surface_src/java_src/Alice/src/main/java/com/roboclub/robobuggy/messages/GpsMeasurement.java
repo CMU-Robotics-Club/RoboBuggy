@@ -1,5 +1,7 @@
 package com.roboclub.robobuggy.messages;
 
+import com.roboclub.robobuggy.nodes.localizers.LocalizerUtil;
+
 import java.util.Date;
 
 /**
@@ -161,5 +163,4 @@ public class GpsMeasurement extends BaseMessage {
     public GPSPoseMessage toGpsPoseMessage(double heading) {
         return new GPSPoseMessage(gpsTimestamp, latitude, longitude, heading);
     }
-
 }

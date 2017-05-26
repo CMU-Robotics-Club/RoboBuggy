@@ -42,7 +42,8 @@ public final class PlayBackUtil {
     private Publisher steeringCommandPub;
     private Publisher loggingButtonPub;
     private Publisher logicNotificationPub;
-
+    private Publisher posePub;
+    private Publisher driveCtrlPub;
 
     /**
      * Gets the PlaybackUtil instance
@@ -69,6 +70,8 @@ public final class PlayBackUtil {
         steeringCommandPub = new Publisher(NodeChannel.STEERING_COMMANDED.getMsgPath());
         loggingButtonPub = new Publisher(NodeChannel.GUI_LOGGING_BUTTON.getMsgPath());
         logicNotificationPub = new Publisher(NodeChannel.LOGIC_NOTIFICATION.getMsgPath());
+        posePub = new Publisher(NodeChannel.POSE.getMsgPath());
+        driveCtrlPub = new Publisher(NodeChannel.DRIVE_CTRL.getMsgPath());
     }
 
     /**
@@ -113,7 +116,7 @@ public final class PlayBackUtil {
         long sensorTime = sensorDataJson.get("timestamp").getAsLong();
         long sensorDt = (sensorTime - sensorStartTime);
         long dt = (long) (sensorDt / playBackSpeed) - playBacktime;
-        if (dt > 10) { //Milliseconds
+        if (dt > 10) { // Milliseconds
             Thread.sleep(dt);
         }
 
@@ -134,6 +137,7 @@ public final class PlayBackUtil {
                 break;
             case DriveControlMessage.VERSION_ID:
                 transmitMessage = translator.fromJson(sensorDataJson, DriveControlMessage.class);
+                getPrivateInstance().driveCtrlPub.publish(transmitMessage);
                 break;
             case EncoderMeasurement.VERSION_ID:
                 transmitMessage = translator.fromJson(sensorDataJson, EncoderMeasurement.class);
@@ -156,6 +160,7 @@ public final class PlayBackUtil {
                 break;
             case GPSPoseMessage.VERSION_ID:
                 transmitMessage = translator.fromJson(sensorDataJson, GPSPoseMessage.class);
+                getPrivateInstance().posePub.publish(transmitMessage);
                 break;
             case RemoteWheelAngleRequest.VERSION_ID:
                 transmitMessage = translator.fromJson(sensorDataJson, RemoteWheelAngleRequest.class);

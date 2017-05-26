@@ -313,8 +313,10 @@ public class RBSMNode extends SerialNode {
     private final class RBSMPeriodicNode extends PeriodicNode {
 
         //Stored commanded values
-        private int commandedAngle = 0;
+        private double commandedAngle = 0;
         private boolean commandedBrakeEngaged = true;
+
+        private static final int MAX_STEERING_ANGLE_HUNDREDTHS_DEG = 1500;
 
         /**
          * Create a new {@link RBSMPeriodicNode} object
@@ -333,14 +335,14 @@ public class RBSMNode extends SerialNode {
          */
         @Override
         protected void update() {
-            int outputAngle = commandedAngle;//allows for commandedAngle to be read only in this function
-            if (outputAngle > 1000) {
-                outputAngle = 1000;
-            } else if (outputAngle < -1000) {
-                outputAngle = -1000;
+            int outputAngleHundredthsDegrees = (int) (Math.toDegrees(commandedAngle) * 100);//allows for commandedAngle to be read only in this function
+            if (outputAngleHundredthsDegrees > MAX_STEERING_ANGLE_HUNDREDTHS_DEG) {
+                outputAngleHundredthsDegrees = MAX_STEERING_ANGLE_HUNDREDTHS_DEG;
+            } else if (outputAngleHundredthsDegrees < -MAX_STEERING_ANGLE_HUNDREDTHS_DEG) {
+                outputAngleHundredthsDegrees = -MAX_STEERING_ANGLE_HUNDREDTHS_DEG;
             }
 
-            RBSMSteeringMessage msgSteer = new RBSMSteeringMessage(outputAngle);
+            RBSMSteeringMessage msgSteer = new RBSMSteeringMessage(outputAngleHundredthsDegrees);
             send(msgSteer.getMessageBytes());
             RBSMBrakeMessage msgBrake = new RBSMBrakeMessage(commandedBrakeEngaged);
             send(msgBrake.getMessageBytes());
@@ -356,7 +358,7 @@ public class RBSMNode extends SerialNode {
                     new MessageListener() {
                         @Override
                         public void actionPerformed(String topicName, Message m) {
-                            commandedAngle = -((DriveControlMessage) m).getAngleInt();
+                            commandedAngle = -((DriveControlMessage) m).getAngleDouble();
                         }
                     });
             new Subscriber("rbsm", NodeChannel.BRAKE_CTRL.getMsgPath(),

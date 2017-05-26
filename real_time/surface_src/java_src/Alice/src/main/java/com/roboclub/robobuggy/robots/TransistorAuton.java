@@ -4,11 +4,11 @@ import com.roboclub.robobuggy.main.RobobuggyConfigFile;
 import com.roboclub.robobuggy.main.RobobuggyLogicNotification;
 import com.roboclub.robobuggy.main.RobobuggyMessageLevel;
 import com.roboclub.robobuggy.messages.GpsMeasurement;
-import com.roboclub.robobuggy.nodes.localizers.KfLocalizer;
+import com.roboclub.robobuggy.nodes.localizers.LocTuple;
+import com.roboclub.robobuggy.nodes.localizers.RobobuggyKFLocalizer;
 import com.roboclub.robobuggy.nodes.planners.WayPointFollowerPlanner;
 import com.roboclub.robobuggy.nodes.planners.WayPointUtil;
 import com.roboclub.robobuggy.nodes.sensors.GpsNode;
-import com.roboclub.robobuggy.nodes.sensors.HillCrestImuNode;
 import com.roboclub.robobuggy.nodes.sensors.LoggingNode;
 import com.roboclub.robobuggy.nodes.sensors.RBSMNode;
 import com.roboclub.robobuggy.ros.NodeChannel;
@@ -22,7 +22,8 @@ import com.roboclub.robobuggy.ui.RobobuggyJFrame;
 import java.io.IOException;
 import java.util.ArrayList;
 
-
+import static com.roboclub.robobuggy.main.RobobuggyConfigFile.INITIAL_POS_LAT;
+import static com.roboclub.robobuggy.main.RobobuggyConfigFile.INITIAL_POS_LON;
 /**
  * A robot class for having transistor drive itself
  *
@@ -57,18 +58,14 @@ public final class TransistorAuton extends AbstractRobot {
             shutDown();
         }
         new RobobuggyLogicNotification("Logic Exception Setup properly", RobobuggyMessageLevel.NOTE);
+
         // Initialize Nodes
-
-        nodeList.add(new KfLocalizer(10));
-
+        nodeList.add(new RobobuggyKFLocalizer(10, "Robobuggy KF Localizer", new LocTuple(INITIAL_POS_LAT, INITIAL_POS_LON)));
         nodeList.add(new GpsNode(NodeChannel.GPS, RobobuggyConfigFile.getComPortGPS()));
         nodeList.add(new LoggingNode(NodeChannel.GUI_LOGGING_BUTTON, RobobuggyConfigFile.LOG_FILE_LOCATION,
                 NodeChannel.getLoggingChannels()));
         nodeList.add(new RBSMNode(NodeChannel.ENCODER, NodeChannel.STEERING, RobobuggyConfigFile.getComPortRBSM(),
                 RobobuggyConfigFile.RBSM_COMMAND_PERIOD));
-//		nodeList.add(new CameraNode(NodeChannel.PUSHBAR_CAMERA, 100));
-        nodeList.add(new HillCrestImuNode());
-
         try {
             ArrayList<GpsMeasurement> wayPoints = WayPointUtil.createWayPointsFromWaypointList(RobobuggyConfigFile.getWaypointSourceLogFile());
             nodeList.add(new WayPointFollowerPlanner(wayPoints));
@@ -83,8 +80,6 @@ public final class TransistorAuton extends AbstractRobot {
         RobobuggyGUITabs tabs = new RobobuggyGUITabs();
         mainWindow.addComponent(tabs, 0.0, 0.0, 1.0, 1.0);
         tabs.addTab(new MainGuiWindow(), "Home");
-        //	tabs.addTab(new PoseGraphsPanel(),"poses");
-        //	tabs.addTab(new  AutonomousPanel(),"Autonomous");
         tabs.add(new PathPanel(), "Path Visualizer");
         tabs.addTab(new ConfigurationPanel(), "Configuration");
 
