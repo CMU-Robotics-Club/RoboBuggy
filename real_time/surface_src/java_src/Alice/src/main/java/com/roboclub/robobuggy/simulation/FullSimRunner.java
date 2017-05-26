@@ -44,7 +44,6 @@ public class FullSimRunner extends BuggyBaseNode {
     private Publisher gpsPub;
     private Publisher encPub;
     private Publisher steerPub;
-    private Subscriber steerSub;
 
     private RobobuggyKFLocalizer localizer;
     private WayPointFollowerPlanner controller;
@@ -84,7 +83,7 @@ public class FullSimRunner extends BuggyBaseNode {
         gpsPub = new Publisher(NodeChannel.GPS.getMsgPath());
         encPub = new Publisher(NodeChannel.ENCODER.getMsgPath());
         steerPub = new Publisher(NodeChannel.STEERING.getMsgPath());
-        steerSub = new Subscriber("Full Sim Toolbox", NodeChannel.DRIVE_CTRL.getMsgPath(), (topicName, m) -> {
+        new Subscriber("Full Sim Toolbox", NodeChannel.DRIVE_CTRL.getMsgPath(), (topicName, m) -> {
             updateMotionModel(((DriveControlMessage) m).getAngleDouble());
             steerPub.publish(new SteeringMeasurement(Math.toDegrees(((DriveControlMessage) m).getAngleDouble())));
         });

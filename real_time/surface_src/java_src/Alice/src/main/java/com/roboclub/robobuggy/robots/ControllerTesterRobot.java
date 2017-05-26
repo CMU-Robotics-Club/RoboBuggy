@@ -38,7 +38,7 @@ public final class ControllerTesterRobot extends AbstractRobot {
     private ControllerTesterRobot() {
         super();
 
-        ArrayList<GpsMeasurement> wayPoints = null;
+        ArrayList<GpsMeasurement> wayPoints = new ArrayList<>();
         try {
             wayPoints = WayPointUtil.createWayPointsFromWaypointList(RobobuggyConfigFile.getWaypointSourceLogFile());
             nodeList.add(new WayPointFollowerPlanner(wayPoints));

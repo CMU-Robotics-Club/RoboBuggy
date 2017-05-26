@@ -35,9 +35,7 @@ public class ControllerTester extends PeriodicNode {
     private Matrix x;
     private double commandedSteeringAngle = 0;
     private Publisher simulatedPosePub;
-    private Publisher gpspub;
     private int simCounter;
-    private double targetHeading = INITIAL_HEADING_RAD;
 
     /**
      * Create a new {@link PeriodicNode} decorator
@@ -63,7 +61,7 @@ public class ControllerTester extends PeriodicNode {
         }));
 
         simulatedPosePub = new Publisher(NodeChannel.POSE.getMsgPath());
-        gpspub = new Publisher(NodeChannel.GPS.getMsgPath());
+        new Publisher(NodeChannel.GPS.getMsgPath());
     }
 
     @Override

@@ -22,7 +22,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
     private GpsMeasurement target;
 
     // we only want to look at the next 10 waypoints as possible candidates
-    private final int wayPointLOOKAHEADMAX = 50;
+    private static final int WAY_POINT_LOOKAHEAD_MAX = 50;
 
     /**
      * @param wayPoints the list of waypoints to follow
@@ -50,7 +50,7 @@ public class WayPointFollowerPlanner extends PathPlannerNode {
         double min = Double.MAX_VALUE; //note that the brakes will definitely deploy at this
 
         int closestIndex = lastClosestIndex;
-        for (int i = lastClosestIndex; i < (lastClosestIndex + wayPointLOOKAHEADMAX) && i < wayPoints.size(); i++) {
+        for (int i = lastClosestIndex; i < (lastClosestIndex + WAY_POINT_LOOKAHEAD_MAX) && i < wayPoints.size(); i++) {
             GPSPoseMessage gpsPoseMessage = wayPoints.get(i).toGpsPoseMessage(0);
             double d = GPSPoseMessage.getDistance(currentLocation, gpsPoseMessage);
             if (d < min) {
