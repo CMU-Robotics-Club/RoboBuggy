@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.boofcv:geo:0.21">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.boofcv/geo/0.21/e8fed7ed88b31988d190b02dbb65de7567ce6199/geo-0.21.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.boofcv/geo/0.21/ab14804992faac33e7fc0f1474bef9617a1d70e5/geo-0.21-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

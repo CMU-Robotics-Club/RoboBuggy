@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.jcodec:jcodec-javase:0.1.9">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jcodec/jcodec-javase/0.1.9/8daaa1f9f1bc5a255e0729c4694e9a3247f224de/jcodec-javase-0.1.9.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jcodec/jcodec-javase/0.1.9/4e3dec5ad8f36b14a537fc738f921bb23c7317d2/jcodec-javase-0.1.9-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

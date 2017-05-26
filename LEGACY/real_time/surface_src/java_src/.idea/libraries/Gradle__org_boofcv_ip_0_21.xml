@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.boofcv:ip:0.21">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.boofcv/ip/0.21/7d9e8dfcafc8cd9159c8a4676419cbc31c1aeeb3/ip-0.21.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.boofcv/ip/0.21/20916643dbc97f4689c2fef3e770bb0fabc46c17/ip-0.21-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
