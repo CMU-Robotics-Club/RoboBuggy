@@ -478,7 +478,9 @@ int main(void) {
     adc_init();
     brake_init();
     indicator_light_init();
-    steering_center(); // this call takes time
+
+    //steering_center(); // this call takes time
+    g_encoder_steering.Reset(); // bypass sterring center
 
     // setup rbsm
     g_rbsm.Init(&g_uart_rbsm, &g_uart_rbsm);
