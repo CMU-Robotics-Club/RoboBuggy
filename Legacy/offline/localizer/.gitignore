@@ -1,0 +1,5 @@
+*.mat
+*.jpg
+*.png
+.DS_Store
+*.pyc
