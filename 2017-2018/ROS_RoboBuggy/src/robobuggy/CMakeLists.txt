@@ -10,6 +10,7 @@ project(robobuggy)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
+  message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -46,11 +47,11 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+add_message_files(
+  FILES
+  IMU.msg
+  GPS.msg
+)
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -67,10 +68,10 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs
-# )
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -102,10 +103,10 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES robobuggy
-#  CATKIN_DEPENDS roscpp std_msgs
-#  DEPENDS system_lib
+  INCLUDE_DIRS include
+  LIBRARIES robobuggy
+  CATKIN_DEPENDS roscpp std_msgs
+  DEPENDS system_lib
 )
 
 ###########
@@ -134,6 +135,8 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/robobuggy_node.cpp)
 add_executable(${PROJECT_NAME}_Controller src/Controller.cpp)
+add_executable(${PROJECT_NAME}_IMU_Broadcaster src/IMU_Broadcaster.cpp)
+add_executable(${PROJECT_NAME}_GPS_Broadcaster src/GPS_Broadcaster.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -141,15 +144,23 @@ add_executable(${PROJECT_NAME}_Controller src/Controller.cpp)
 ## e.g. "rosrun someones_pkg node" instead of "rosrun someones_pkg someones_pkg_node"
 # set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME node PREFIX "")
 set_target_properties(${PROJECT_NAME}_Controller PROPERTIES OUTPUT_NAME Controller PREFIX "")
+set_target_properties(${PROJECT_NAME}_IMU_Broadcaster PROPERTIES OUTPUT_NAME IMU_Broadcaster PREFIX "")
+set_target_properties(${PROJECT_NAME}_GPS_Broadcaster PROPERTIES OUTPUT_NAME GPS_Broadcaster PREFIX "")
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(${PROJECT_NAME}_node
-#   ${catkin_LIBRARIES}
-# )
+target_link_libraries(${PROJECT_NAME}_Controller
+  ${catkin_LIBRARIES}
+)
+target_link_libraries(${PROJECT_NAME}_IMU_Broadcaster
+  ${catkin_LIBRARIES}
+)
+target_link_libraries(${PROJECT_NAME}_GPS_Broadcaster
+  ${catkin_LIBRARIES}
+)
 
 #############
 ## Install ##
