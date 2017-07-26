@@ -1,4 +1,4 @@
-#include "Encoder.h"
+#include "Rotary.h"
 
 
 Rotary::Rotary() {
@@ -33,7 +33,9 @@ uint8_t Rotary::Init(volatile uint8_t *pin_a_reg,
 }
 
 
+/*
 void Rotary::OnInterrupt() {
     ticks_++;
     return;
 }
+*/

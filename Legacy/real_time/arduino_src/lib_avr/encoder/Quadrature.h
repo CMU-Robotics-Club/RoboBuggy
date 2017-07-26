@@ -7,8 +7,6 @@ class Quadrature : public Encoder {
 
     private:
         uint8_t config_;
-        volatile uint8_t *pin_a_reg_;
-        uint8_t pin_a_num_;
         volatile uint8_t *pin_b_reg_;
         uint8_t pin_b_num_;
         volatile uint8_t pin_state_last_;
@@ -30,7 +28,7 @@ class Quadrature : public Encoder {
         void OnInterrupt() override;
         /** @brief reset ticks and error counters */
         //TODO: Maybe also reset the state of the quad
-        void Reset();
+        //void Reset(); // Defined in encoder class
         void PrintDebugInfo(FILE *out_stream);
 };
 

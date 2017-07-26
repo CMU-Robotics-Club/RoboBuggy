@@ -131,9 +131,3 @@ void Quadrature::OnInterrupt()
     pin_state_last_ = pin_state;
     return;
 }
-
-void Encoder::PrintDebugInfo(FILE *out_stream) 
-{
-    fprintf(out_stream, "last: %x\r\n", pin_state_last_);
-    return;
-}

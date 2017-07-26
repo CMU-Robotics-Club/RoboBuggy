@@ -32,6 +32,8 @@ class Encoder {
     protected:
         volatile uint8_t errors_;
         volatile long ticks_;
+        volatile uint8_t *pin_a_reg_;
+        uint8_t pin_a_num_;
 
     public:
         Encoder();

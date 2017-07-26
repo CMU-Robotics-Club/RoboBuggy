@@ -15,6 +15,7 @@
 #include <avr/wdt.h>
 
 #include "../lib_avr/encoder/Encoder.h"
+#include "../lib_avr/encoder/Rotary.h"
 #include "../lib_avr/encoder/Quadrature.h"
 #include "../lib_avr/rbserialmessages/rbserialmessages.h"
 #include "../lib_avr/statuslights/StatusLights.h"
@@ -156,7 +157,7 @@ StatusLights lights_auton(STATUS_LIGHT_PINN_RED,
 StatusLights lights_battery(STATUS_LIGHT_PINN_BLUE, 
                             &STATUS_LIGHT_PORT_BLUE, 
                             &STATUS_LIGHT_DDR_BLUE);
-Encoder g_encoder_distance;
+Rotary g_encoder_distance;
 Quadrature g_encoder_steering;
 
 UARTFILE g_uart_rbsm;
@@ -395,7 +396,7 @@ int main(void) {
     unsigned long auton_brake_last = time_start;
     unsigned long auton_steer_last = time_start;
 
-    g_encoder_distance.Init(&ENCODER_PIN, ENCODER_PINN);
+    g_encoder_distance.Init(&ENCODER_PIN, ENCODER_PINN, &ENCODER_PORT, &ENCODER_DDR);
     
     g_encoder_steering.InitQuad(&ENCODER_STEERING_A_PIN,
                                 ENCODER_STEERING_A_PINN,
