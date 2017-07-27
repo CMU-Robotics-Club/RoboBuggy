@@ -64,7 +64,7 @@ FORMAT = ihex
 TARGET = main
 
 # List C source files here. (C dependencies are automatically generated.)
-SRC = $(TARGET).c
+SRC = $(TARGET).cpp
 # SRC += uart.c
 SRC += system_clock.c
 SRC += servo.c
@@ -74,6 +74,10 @@ SRC += ../lib_avr/radioreceiver/ServoReceiver.cpp
 SRC += ../lib_avr/uart/uart.c
 SRC += ../lib_avr/encoder/encoder.cpp
 #ff.o sd.o diskio.o rtc.o
+
+RBSM_CONFIG = ../../rbsm_config.txt
+RBSM_HEADER = ../lib_avr/rbserialmessages/rbsm_config.h
+
 
 # List Assembler source files here.
 #     Make them always end in a capital .S.  Files ending in a lowercase .s
@@ -341,7 +345,18 @@ ALL_ASFLAGS = -mmcu=$(MCU) -I. -x assembler-with-cpp $(ASFLAGS)
 # Default target.
 all: begin gccversion sizebefore build sizeafter end
 
-build: elf hex eep lss sym
+build: scripts elf hex eep lss sym
+
+scripts: fingerprint headercheck
+
+# Run script that records compilation time
+fingerprint:
+	$(PYTHON) fingerprint.py
+
+# Run script that check the rbsm_config.txt shared with high level
+headercheck: $(RBSM_HEADER)
+$(RBSM_HEADER) : $(RBSM_CONFIG)
+	$(PYTHON) headercheck.py
 
 elf: $(TARGET).elf
 hex: $(TARGET).hex
@@ -535,7 +550,7 @@ clean_list :
 	$(REMOVE) $(patsubst %.c,%.d,$(patsubst %.cpp,%.d,$(SRC)))
 	$(REMOVE) .dep/*
 	$(REMOVE) fingerprint.h
-	$(REMOVE) ../lib_avr/rbserialmessages/rbsm_config.h
+	$(REMOVE) $(RBSM_HEADER)
 
 
 
