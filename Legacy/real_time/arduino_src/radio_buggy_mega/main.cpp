@@ -150,6 +150,36 @@ UARTFILE g_uart_rbsm;
 UARTFILE g_uart_debug;
 
 
+
+// Functions declarations
+// ADC
+void adc_init(void);
+int adc_read_blocking(uint8_t pin);
+
+// Steering
+void steer_set_velocity(long target_velocity);
+void steering_set(int angle);
+int8_t steering_center();
+
+// Lights
+void indicator_light_init();
+void voltage_too_low_light();
+void auton_timeout_light();
+void rc_timeout_failure_light();
+void voltage_too_low_light_reset();
+void auton_timeout_light_reset();
+void rc_timeout_failure_light_reset();
+
+// Brakes
+void brake_init();
+void brake_raise();
+void brake_drop();
+
+// Watchdog
+void watchdog_init();
+
+
+
 inline long map_signal(long x,
                        long in_offset,
                        long in_scale,
