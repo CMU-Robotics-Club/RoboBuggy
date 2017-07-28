@@ -26,6 +26,7 @@ class Rotary : public Encoder {
     volatile uint8_t errors_;
 
     public:
+        //Note: the super class's constructor is also called
         Rotary();
 
         /** @brief initialize a single wire encoder */
@@ -34,14 +35,7 @@ class Rotary : public Encoder {
                      volatile uint8_t *port_addr,
                      volatile uint8_t *ddr_addr);
         /** @brief to be called on interrupt of single wire encoder signal */
-        //void OnInterrupt();
-        /** @brief get ticks seen since last reset. disables interrupts to read */
-        //long GetTicks(); // Defined in encoder class
-        /** @brief get errors seen since last reset. disables interrupts to read */
-        //uint8_t GetErrors(); // Defined in encoder class
-        /** @brief reset ticks and error counters */
-        //void Reset(); // Defined in encoder class
-        void PrintDebugInfo(FILE *out_stream);
+        void OnInterrupt() override;
 };
 
 #endif /* _LIB_AVR_ROTARYENCODER_H_ */

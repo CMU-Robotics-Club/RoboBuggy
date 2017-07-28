@@ -1,9 +1,7 @@
 #include "Rotary.h"
 
 
-Rotary::Rotary() {
-}
-
+Rotary::Rotary() {}
 
 uint8_t Rotary::Init(volatile uint8_t *pin_a_reg,
                       uint8_t pin_a_num,
@@ -32,10 +30,9 @@ uint8_t Rotary::Init(volatile uint8_t *pin_a_reg,
     return errors_;
 }
 
-
-/*
-void Rotary::OnInterrupt() {
+void Rotary::OnInterrupt()
+{
+    cli();
     ticks_++;
-    return;
+    sei();
 }
-*/

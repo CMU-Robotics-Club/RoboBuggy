@@ -7,16 +7,6 @@ Encoder::Encoder()
     errors_ = 0;
 }
 
-uint8_t Encoder::Init(volatile uint8_t *pin_a_reg,
-                      uint8_t pin_a_num) 
-{
-    // save configuration info
-    pin_a_reg_ = pin_a_reg;
-    pin_a_num_ = pin_a_num;
-
-    return errors_;
-}
-
 long Encoder::GetTicks() 
 {
     cli();
@@ -43,9 +33,3 @@ void Encoder::Reset()
     sei();
 }
 
-void Encoder::OnInterrupt()
-{
-    cli();
-    ticks_++;
-    sei();
-}
