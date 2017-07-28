@@ -64,7 +64,7 @@ FORMAT = ihex
 TARGET = main
 
 # List C source files here. (C dependencies are automatically generated.)
-SRC = $(TARGET).c
+SRC = $(TARGET).cpp
 # SRC += uart.c
 SRC += system_clock.c
 SRC += servo.c
@@ -77,6 +77,10 @@ SRC += ../lib_avr/encoder/Encoder.cpp
 SRC += ../lib_avr/encoder/Quadrature.cpp
 SRC += ../lib_avr/encoder/Rotary.cpp
 #ff.o sd.o diskio.o rtc.o
+
+RBSM_CONFIG = ../../rbsm_config.txt
+RBSM_HEADER = ../lib_avr/rbserialmessages/rbsm_config.h
+
 
 # List Assembler source files here.
 #     Make them always end in a capital .S.  Files ending in a lowercase .s
@@ -112,7 +116,8 @@ EXTRAINCDIRS =
 #     gnu89 = c89 plus GCC extensions
 #     c99   = ISO C99 standard (not yet fully implemented)
 #     gnu99 = c99 plus GCC extensions
-CSTANDARD = -std=gnu99
+CSTANDARD = -std=iso9899:1999
+CPPSTANDARD = -std=c++11
 
 
 # Place -D or -U options here
@@ -131,16 +136,21 @@ BUGGY = no_buggy
 #  -Wall...:     warning level
 #  -Wa,...:      tell GCC to pass this to the assembler.
 #    -adhlns...: create assembler listing
-CFLAGS = -g$(DEBUG)
-CFLAGS += $(CDEFS) $(CINCS)
-CFLAGS += -O$(OPT)
-CFLAGS += -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums
-CFLAGS += -Wall -Wstrict-prototypes
-CFLAGS += -Wa,-adhlns=$(patsubst %.c,%.lst,$(patsubst %.cpp,%.lst,$(<)))
-CFLAGS += $(patsubst %,-I%,$(EXTRAINCDIRS))
+GCCFLAGS = -g$(DEBUG)
+GCCFLAGS += $(CDEFS) $(CINCS)
+GCCFLAGS += -O$(OPT)
+GCCFLAGS += -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums
+GCCFLAGS += -Wa,-adhlns=$(patsubst %.c,%.lst,$(patsubst %.cpp,%.lst,$(<)))
+GCCFLAGS += $(patsubst %,-I%,$(EXTRAINCDIRS))
+GCCFLAGS += -Wall -pedantic -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align #-Wconversion -Wtraditional
+GCCFLAGS += -DBUGGY=$(BUGGY)
+#GCCFLAGS += -DDEBUG
+
+CFLAGS = $(GCCFLAGS) -Wstrict-prototypes -Wmissing-prototypes
 CFLAGS += $(CSTANDARD)
-CFLAGS += -DBUGGY=$(BUGGY)
-#CFLAGS += -DDEBUG
+
+CPPFLAGS = $(GCCFLAGS) -Wmissing-declarations
+CPPFLAGS += $(CPPSTANDARD)
 
 #---------------- Assembler Options ----------------
 #  -Wa,...:   tell GCC to pass this to the assembler.
@@ -330,6 +340,7 @@ GENDEPFLAGS = -MD -MP -MF .dep/$(@F).d
 # Combine all necessary flags and optional flags.
 # Add target processor to flags.
 ALL_CFLAGS = -mmcu=$(MCU) -I. $(CFLAGS) $(GENDEPFLAGS)
+ALL_CPPFLAGS = -mmcu=$(MCU) -I. $(CPPFLAGS) $(GENDEPFLAGS)
 ALL_ASFLAGS = -mmcu=$(MCU) -I. -x assembler-with-cpp $(ASFLAGS)
 
 
@@ -337,7 +348,18 @@ ALL_ASFLAGS = -mmcu=$(MCU) -I. -x assembler-with-cpp $(ASFLAGS)
 # Default target.
 all: begin gccversion sizebefore build sizeafter end
 
-build: elf hex eep lss sym
+build: scripts elf hex eep lss sym
+
+scripts: fingerprint headercheck
+
+# Run script that records compilation time
+fingerprint:
+	$(PYTHON) fingerprint.py
+
+# Run script that check the rbsm_config.txt shared with high level
+headercheck: $(RBSM_HEADER)
+$(RBSM_HEADER) : $(RBSM_CONFIG)
+	$(PYTHON) headercheck.py
 
 elf: $(TARGET).elf
 hex: $(TARGET).hex
@@ -470,51 +492,46 @@ extcoff: $(TARGET).elf
 
 
 # Link: create ELF output file from object files.
-.SECONDARY : $(TARGET).elf
 .PRECIOUS : $(OBJ)
 %.elf: $(OBJ)
 	@echo
 	@echo $(MSG_LINKING) $@
 	$(CC) $(ALL_CFLAGS) $^ --output $@ $(LDFLAGS)
 
-fingerprint:
-	$(PYTHON) fingerprint.py
-
-headercheck:
-	$(PYTHON) headercheck.py
 
 
 # Compile: create object files from C source files.
-%.o : %.c fingerprint headercheck
+main.o : main.cpp
+%.o : %.c
 	@echo
 	@echo $(MSG_COMPILING) $<
-	$(CC) -c $(ALL_CFLAGS) $< -o $@ 
+	$(CC) -c $(ALL_CFLAGS) $< -o $@
 
-%.o : %.cpp fingerprint headercheck
+%.o : %.cpp
 	@echo
 	@echo $(MSG_COMPILING) $<
-	$(CC) -c $(ALL_CFLAGS) $< -o $@ 
+	$(CC) -c $(ALL_CPPFLAGS) $< -o $@
 
 # Compile: create assembler files from C source files.
-%.s : %.c fingerprint headercheck
+%.s : %.c
 	$(CC) -S $(ALL_CFLAGS) $< -o $@
 
-%.s : %.cpp fingerprint headercheck
-	$(CC) -S $(ALL_CFLAGS) $< -o $@
+%.s : %.cpp
+	$(CC) -S $(ALL_CPPFLAGS) $< -o $@
 
 
 # Assemble: create object files from assembler source files.
-%.o : %.S fingerprint headercheck
+%.o : %.S
 	@echo
 	@echo $(MSG_ASSEMBLING) $<
 	$(CC) -c $(ALL_ASFLAGS) $< -o $@
 
 # Create preprocessed source for use in sending a bug report.
-%.i : %.c fingerprint headercheck
-	$(CC) -E -mmcu=$(MCU) -I. $(CFLAGS) $< -o $@ 
+%.i : %.c
+	$(CC) -E -mmcu=$(MCU) -I. $(CFLAGS) $< -o $@
 
-%.i : %.cpp fingerprint headercheck
-	$(CC) -E -mmcu=$(MCU) -I. $(CFLAGS) $< -o $@ 
+%.i : %.cpp
+	$(CC) -E -mmcu=$(MCU) -I. $(CPPFLAGS) $< -o $@
 
 
 # Target: clean project.
@@ -536,7 +553,7 @@ clean_list :
 	$(REMOVE) $(patsubst %.c,%.d,$(patsubst %.cpp,%.d,$(SRC)))
 	$(REMOVE) .dep/*
 	$(REMOVE) fingerprint.h
-	$(REMOVE) ../lib_avr/rbserialmessages/rbsm_config.h
+	$(REMOVE) $(RBSM_HEADER)
 
 
 
