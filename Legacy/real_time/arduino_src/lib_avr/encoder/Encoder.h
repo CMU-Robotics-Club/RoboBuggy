@@ -37,14 +37,15 @@ class Encoder {
 
     public:
         Encoder();
+
         /** @brief to be called on interrupt of single wire encoder signal */
-        virtual void OnInterrupt() = 0;
+        virtual void OnInterrupt();
         /** @brief get ticks seen since last reset. disables interrupts to read */
         long GetTicks();
         /** @brief get errors seen since last reset. disables interrupts to read */
         uint8_t GetErrors();
         /** @brief reset ticks and error counters */
-        virtual void Reset();
+        void Reset();
 };
 
 #endif /* _LIB_AVR_ENCODER_H_ */

@@ -35,6 +35,7 @@ class Rotary : public Encoder {
                      volatile uint8_t *port_addr,
                      volatile uint8_t *ddr_addr);
         /** @brief to be called on interrupt of single wire encoder signal */
+        //void OnInterrupt();
         void OnInterrupt() override;
 };
 

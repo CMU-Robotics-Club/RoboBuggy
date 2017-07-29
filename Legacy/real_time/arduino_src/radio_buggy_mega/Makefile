@@ -73,9 +73,9 @@ SRC += ../lib_avr/radioreceiver/RadioReceiver.cpp
 SRC += ../lib_avr/radioreceiver/ServoReceiver.cpp
 SRC += ../lib_avr/statuslights/StatusLights.cpp
 SRC += ../lib_avr/uart/uart.c
-SRC += ../lib_avr/encoder/Encoder.cpp
 SRC += ../lib_avr/encoder/Quadrature.cpp
 SRC += ../lib_avr/encoder/Rotary.cpp
+SRC += ../lib_avr/encoder/Encoder.cpp
 #ff.o sd.o diskio.o rtc.o
 
 RBSM_CONFIG = ../../rbsm_config.txt

@@ -26,6 +26,8 @@ class Quadrature : public Encoder {
                           volatile uint8_t *ddr_b_reg);
         /** @brief to be called on interrupt of single wire encoder signal */
         void OnInterrupt() override;
+        //void OnInterrupt();
+
 };
 
 #endif /* _LIB_AVR_QUAD_H_ */

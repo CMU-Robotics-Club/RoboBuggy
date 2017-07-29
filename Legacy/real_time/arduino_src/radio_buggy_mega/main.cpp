@@ -14,7 +14,6 @@
 #include <stdlib.h>
 #include <avr/wdt.h>
 
-#include "../lib_avr/encoder/Encoder.h"
 #include "../lib_avr/encoder/Rotary.h"
 #include "../lib_avr/encoder/Quadrature.h"
 #include "../lib_avr/rbserialmessages/rbserialmessages.h"
