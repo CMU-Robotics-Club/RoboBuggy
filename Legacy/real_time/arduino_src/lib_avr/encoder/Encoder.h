@@ -28,6 +28,8 @@
  */
 #define ENCODER_ALLOW_SINGLE_INT
 
+extern "C" void __cxa_pure_virtual();
+
 class Encoder {
     protected:
         volatile uint8_t errors_;
@@ -39,7 +41,7 @@ class Encoder {
         Encoder();
 
         /** @brief to be called on interrupt of single wire encoder signal */
-        virtual void OnInterrupt();
+        virtual void OnInterrupt() = 0;
         /** @brief get ticks seen since last reset. disables interrupts to read */
         long GetTicks();
         /** @brief get errors seen since last reset. disables interrupts to read */

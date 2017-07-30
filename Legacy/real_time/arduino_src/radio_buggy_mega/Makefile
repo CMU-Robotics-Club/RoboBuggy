@@ -144,6 +144,7 @@ GCCFLAGS += -Wa,-adhlns=$(patsubst %.c,%.lst,$(patsubst %.cpp,%.lst,$(<)))
 GCCFLAGS += $(patsubst %,-I%,$(EXTRAINCDIRS))
 GCCFLAGS += -Wall -pedantic -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align #-Wconversion -Wtraditional
 GCCFLAGS += -DBUGGY=$(BUGGY)
+GCCFLAGS += -ffunction-sections -fdata-sections
 #GCCFLAGS += -DDEBUG
 
 CFLAGS = $(GCCFLAGS) -Wstrict-prototypes -Wmissing-prototypes
@@ -212,6 +213,7 @@ EXTMEMOPTS =
 LDFLAGS = -Wl,-Map=$(TARGET).map,--cref
 LDFLAGS += $(EXTMEMOPTS)
 LDFLAGS += $(PRINTF_LIB) $(SCANF_LIB) $(MATH_LIB)
+LDFLAGS += -Wl,--gc-sections
 
 #---------------- Programming Options (avrdude) ----------------
 
