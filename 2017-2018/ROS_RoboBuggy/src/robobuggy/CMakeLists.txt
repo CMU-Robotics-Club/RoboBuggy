@@ -138,6 +138,10 @@ add_executable(${PROJECT_NAME}_Controller src/Controller.cpp)
 add_executable(${PROJECT_NAME}_IMU_Broadcaster src/IMU_Broadcaster.cpp)
 add_executable(${PROJECT_NAME}_GPS_Broadcaster src/GPS_Broadcaster.cpp)
 
+add_dependencies(${PROJECT_NAME}_Controller robobuggy_generate_messages_cpp)
+add_dependencies(${PROJECT_NAME}_IMU_Broadcaster robobuggy_generate_messages_cpp)
+add_dependencies(${PROJECT_NAME}_GPS_Broadcaster robobuggy_generate_messages_cpp)
+
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
