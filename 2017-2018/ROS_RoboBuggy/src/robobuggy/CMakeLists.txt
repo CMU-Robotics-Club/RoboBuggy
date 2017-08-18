@@ -51,6 +51,7 @@ add_message_files(
   FILES
   IMU.msg
   GPS.msg
+  ENC.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -137,10 +138,12 @@ include_directories(
 add_executable(${PROJECT_NAME}_Controller src/Controller.cpp)
 add_executable(${PROJECT_NAME}_IMU_Broadcaster src/IMU_Broadcaster.cpp)
 add_executable(${PROJECT_NAME}_GPS_Broadcaster src/GPS_Broadcaster.cpp)
+add_executable(${PROJECT_NAME}_ENC_Broadcaster src/ENC_Broadcaster.cpp)
 
 add_dependencies(${PROJECT_NAME}_Controller robobuggy_generate_messages_cpp)
 add_dependencies(${PROJECT_NAME}_IMU_Broadcaster robobuggy_generate_messages_cpp)
 add_dependencies(${PROJECT_NAME}_GPS_Broadcaster robobuggy_generate_messages_cpp)
+add_dependencies(${PROJECT_NAME}_ENC_Broadcaster robobuggy_generate_messages_cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -150,6 +153,7 @@ add_dependencies(${PROJECT_NAME}_GPS_Broadcaster robobuggy_generate_messages_cpp
 set_target_properties(${PROJECT_NAME}_Controller PROPERTIES OUTPUT_NAME Controller PREFIX "")
 set_target_properties(${PROJECT_NAME}_IMU_Broadcaster PROPERTIES OUTPUT_NAME IMU_Broadcaster PREFIX "")
 set_target_properties(${PROJECT_NAME}_GPS_Broadcaster PROPERTIES OUTPUT_NAME GPS_Broadcaster PREFIX "")
+set_target_properties(${PROJECT_NAME}_ENC_Broadcaster PROPERTIES OUTPUT_NAME ENC_Broadcaster PREFIX "")
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -163,6 +167,9 @@ target_link_libraries(${PROJECT_NAME}_IMU_Broadcaster
   ${catkin_LIBRARIES}
 )
 target_link_libraries(${PROJECT_NAME}_GPS_Broadcaster
+  ${catkin_LIBRARIES}
+)
+target_link_libraries(${PROJECT_NAME}_ENC_Broadcaster
   ${catkin_LIBRARIES}
 )
 
