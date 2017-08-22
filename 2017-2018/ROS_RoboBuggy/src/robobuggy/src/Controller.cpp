@@ -2,6 +2,8 @@
 #include "ros/ros.h"
 #include "robobuggy/IMU.h"
 #include "robobuggy/GPS.h"
+#include "std_msgs/String.h"
+#include <string>
 
 void IMU_Callback(const robobuggy::IMU::ConstPtr& msg)
 {

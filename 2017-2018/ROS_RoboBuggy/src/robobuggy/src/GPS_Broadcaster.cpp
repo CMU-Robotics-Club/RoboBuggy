@@ -13,13 +13,21 @@ int main(int argc, char **argv)
 
     ros::Rate loop_rate(10);
 
+    double start_lat = 40.442808;
+    double start_lon = -79.943013;
+    double increment = 0.00001;
+
     // Infinitely spin sending dummy GPS messages
     while(ros::ok()) 
     {
         robobuggy::GPS msg;
 
-        msg.Lat_m = 5.0;
-        msg.Long_m = 15.0;
+        int random = rand() % 10;
+        double new_lat = start_lat + increment * random;
+        double new_lon = start_lon + increment * random;
+
+        msg.Lat_deg = new_lat;
+        msg.Long_deg = new_lon;
 
         gps_pub.publish(msg);
 
