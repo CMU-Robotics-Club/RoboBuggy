@@ -1,3 +1,39 @@
 <launch>
-    <node name="Controller" pkg="robobuggy" type="Controller" />
+    <node name="Controller" pkg="robobuggy" type="Controller" required="true">
+
+        <!--update frequency in hz-->
+        <param name="update_frequency" type="int" value="10.0"/>
+
+    </node>
+
+    <!--node that translates messages from the GPS module into messages the ROS system can understand-->
+    <node name="GPS_Broadcaster" pkg="robobuggy" type="GPS_Broadcaster">
+
+        <!--approximate latitude the robot starts at-->
+        <param name="start_latitude" type="double" value="40.1337"/>
+
+        <!--approximate longitude the robot starts at-->
+        <param name="start_longitude" type="double" value="-79.92"/>
+
+        <!--frequency in hz that the node gets data from the GPS module-->
+        <param name="poll_frequency" type="double" value="5.0"/>
+
+    </node>
+
+    <!--node that translates messages from the IMU module into messages the ROS system can understand-->
+    <node name="IMU_Broadcaster" pkg="robobuggy" type="IMU_Broadcaster">
+
+    </node>
+
+    <!--node that translates messages from the Encodeer module into messages the ROS system can understand-->
+    <node name="ENC_Broadcaster" pkg="robobuggy" type="ENC_Broadcaster">
+
+        <!--Conversion for the amount of ticks it takes for the front wheel to make a single revolution-->
+        <param name="ticks_per_wheel_rev" type="double" value="1.6"/>
+
+        <!--Conversion for one revolution to distance travelled-->
+        <param name="meters_per_wheel_rev" type="double" value="1.3"/>
+
+    </node>
+
 </launch>

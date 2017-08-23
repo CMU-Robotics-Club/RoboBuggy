@@ -12,7 +12,7 @@ void IMU_Callback(const robobuggy::IMU::ConstPtr& msg)
 
 void GPS_Callback(const robobuggy::GPS::ConstPtr& msg)
 {
-    ROS_INFO("Received GPS message with coordinates: (%fm, %fm)", msg->Lat_m, msg->Long_m);
+    ROS_INFO("Received GPS message with coordinates: (%fm, %fm) / (%fm, %fm)", msg->Lat_m, msg->Long_m, msg->Lat_deg, msg->Long_deg);
 }
 
 void ENC_Callback(const robobuggy::ENC::ConstPtr& msg)
