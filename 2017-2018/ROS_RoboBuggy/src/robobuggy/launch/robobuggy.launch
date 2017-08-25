@@ -2,7 +2,7 @@
     <node name="Controller" pkg="robobuggy" type="Controller" required="true">
 
         <!--update frequency in hz-->
-        <param name="update_frequency" type="int" value="10.0"/>
+        <param name="update_frequency" type="double" value="10.0"/>
 
     </node>
 

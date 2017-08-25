@@ -1,19 +1,31 @@
 #include "ros/ros.h"
 #include "robobuggy/GPS.h"
 
+std::string NODE_NAME = "GPS_Broadcaster";
+
 int main(int argc, char **argv)
 {
-    ros::init(argc, argv, "GPS_Broadcaster");
+    ros::init(argc, argv, NODE_NAME);
 
     ros::NodeHandle nh;
 
     ros::Publisher gps_pub = nh.advertise<robobuggy::GPS>("GPS", 1000);
 
-    ros::Rate loop_rate(10);
+    float start_lat = 0.0;
+    float start_lon = 0.0;
+    float increment = 0.00001;
 
-    double start_lat = 40.442808;
-    double start_lon = -79.943013;
-    double increment = 0.00001;
+    // Get parameters start lat and start lon
+    if (!nh.getParam(NODE_NAME + "/start_latitude", start_lat))
+    {
+        ROS_ERROR("Couldn't retrieve start latitude parameter from parameter server");
+    }
+    if (!nh.getParam(NODE_NAME + "/start_longitude", start_lon))
+    {
+        ROS_ERROR("Couldn't retrieve start longitude parameter from parameter server");
+    }
+
+    ros::Rate loop_rate(10);
 
     // Infinitely spin sending dummy GPS messages
     while(ros::ok()) 
@@ -21,8 +33,8 @@ int main(int argc, char **argv)
         robobuggy::GPS msg;
 
         int random = rand() % 10;
-        double new_lat = start_lat + increment * random;
-        double new_lon = start_lon + increment * random;
+        float new_lat = start_lat + increment * random;
+        float new_lon = start_lon + increment * random;
 
         msg.Lat_deg = new_lat;
         msg.Long_deg = new_lon;
