@@ -214,7 +214,7 @@ target_link_libraries(${PROJECT_NAME}_ENC_Broadcaster_Runner
 ## Testing ##
 #############
 
-catkin_add_gtest(${PROJECT_NAME}-imu-spoof-test test/IMU_Spoof_test.cpp src/imu/IMU_Broadcaster.cpp)
+catkin_add_gtest(${PROJECT_NAME}-imu-spoof-test test/imu/IMU_Spoof_test.cpp src/imu/IMU_Broadcaster.cpp)
 if(TARGET ${PROJECT_NAME}-imu-spoof-test)
   target_link_libraries(${PROJECT_NAME}-imu-spoof-test ${catkin_LIBRARIES})
 endif()
