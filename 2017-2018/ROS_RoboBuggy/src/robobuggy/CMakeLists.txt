@@ -137,12 +137,12 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/robobuggy_node.cpp)
-add_executable(${PROJECT_NAME}_Controller src/Controller.cpp)
-add_executable(${PROJECT_NAME}_IMU_Broadcaster_Runner src/IMU_Broadcaster_Runner.cpp src/IMU_Broadcaster.cpp)
-add_executable(${PROJECT_NAME}_GPS_Broadcaster src/GPS_Broadcaster.cpp)
-add_executable(${PROJECT_NAME}_ENC_Broadcaster src/ENC_Broadcaster.cpp)
+add_executable(${PROJECT_NAME}_Controller_Runner src/controller/Controller_Runner.cpp src/controller/Controller.cpp)
+add_executable(${PROJECT_NAME}_IMU_Broadcaster_Runner src/imu/IMU_Broadcaster_Runner.cpp src/imu/IMU_Broadcaster.cpp)
+add_executable(${PROJECT_NAME}_GPS_Broadcaster src/gps/GPS_Broadcaster.cpp)
+add_executable(${PROJECT_NAME}_ENC_Broadcaster src/encoder/ENC_Broadcaster.cpp)
 
-add_dependencies(${PROJECT_NAME}_Controller robobuggy_generate_messages_cpp)
+add_dependencies(${PROJECT_NAME}_Controller_Runner robobuggy_generate_messages_cpp)
 add_dependencies(${PROJECT_NAME}_IMU_Broadcaster_Runner robobuggy_generate_messages_cpp)
 add_dependencies(${PROJECT_NAME}_GPS_Broadcaster robobuggy_generate_messages_cpp)
 add_dependencies(${PROJECT_NAME}_ENC_Broadcaster robobuggy_generate_messages_cpp)
@@ -152,7 +152,7 @@ add_dependencies(${PROJECT_NAME}_ENC_Broadcaster robobuggy_generate_messages_cpp
 ## target back to the shorter version for ease of user use
 ## e.g. "rosrun someones_pkg node" instead of "rosrun someones_pkg someones_pkg_node"
 # set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME node PREFIX "")
-set_target_properties(${PROJECT_NAME}_Controller PROPERTIES OUTPUT_NAME Controller PREFIX "")
+set_target_properties(${PROJECT_NAME}_Controller_Runner PROPERTIES OUTPUT_NAME Controller_Runner PREFIX "")
 set_target_properties(${PROJECT_NAME}_IMU_Broadcaster_Runner PROPERTIES OUTPUT_NAME IMU_Broadcaster_Runner PREFIX "")
 set_target_properties(${PROJECT_NAME}_GPS_Broadcaster PROPERTIES OUTPUT_NAME GPS_Broadcaster PREFIX "")
 set_target_properties(${PROJECT_NAME}_ENC_Broadcaster PROPERTIES OUTPUT_NAME ENC_Broadcaster PREFIX "")
@@ -162,7 +162,7 @@ set_target_properties(${PROJECT_NAME}_ENC_Broadcaster PROPERTIES OUTPUT_NAME ENC
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(${PROJECT_NAME}_Controller
+target_link_libraries(${PROJECT_NAME}_Controller_Runner
   ${catkin_LIBRARIES}
 )
 target_link_libraries(${PROJECT_NAME}_IMU_Broadcaster_Runner
@@ -214,7 +214,7 @@ target_link_libraries(${PROJECT_NAME}_ENC_Broadcaster
 ## Testing ##
 #############
 
-catkin_add_gtest(${PROJECT_NAME}-imu-spoof-test test/IMU_Spoof_test.cpp src/IMU_Broadcaster.cpp)
+catkin_add_gtest(${PROJECT_NAME}-imu-spoof-test test/IMU_Spoof_test.cpp src/imu/IMU_Broadcaster.cpp)
 if(TARGET ${PROJECT_NAME}-imu-spoof-test)
   target_link_libraries(${PROJECT_NAME}-imu-spoof-test ${catkin_LIBRARIES})
 endif()
