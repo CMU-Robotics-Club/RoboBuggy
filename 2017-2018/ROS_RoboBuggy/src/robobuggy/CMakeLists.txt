@@ -141,11 +141,13 @@ add_executable(${PROJECT_NAME}_Controller src/Controller.cpp)
 add_executable(${PROJECT_NAME}_IMU_Broadcaster_Runner src/IMU_Broadcaster_Runner.cpp src/IMU_Broadcaster.cpp)
 add_executable(${PROJECT_NAME}_GPS_Broadcaster src/GPS_Broadcaster.cpp)
 add_executable(${PROJECT_NAME}_ENC_Broadcaster src/ENC_Broadcaster.cpp)
+add_executable(${PROJECT_NAME}_Transistor_LL_Broadcaster src/Transistor_LL_Broadcaster.cpp)
 
 add_dependencies(${PROJECT_NAME}_Controller robobuggy_generate_messages_cpp)
 add_dependencies(${PROJECT_NAME}_IMU_Broadcaster_Runner robobuggy_generate_messages_cpp)
 add_dependencies(${PROJECT_NAME}_GPS_Broadcaster robobuggy_generate_messages_cpp)
 add_dependencies(${PROJECT_NAME}_ENC_Broadcaster robobuggy_generate_messages_cpp)
+add_dependencies(${PROJECT_NAME}_Transistor_LL_Broadcaster src/Transistor_LL_Broadcaster.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -156,6 +158,7 @@ set_target_properties(${PROJECT_NAME}_Controller PROPERTIES OUTPUT_NAME Controll
 set_target_properties(${PROJECT_NAME}_IMU_Broadcaster_Runner PROPERTIES OUTPUT_NAME IMU_Broadcaster_Runner PREFIX "")
 set_target_properties(${PROJECT_NAME}_GPS_Broadcaster PROPERTIES OUTPUT_NAME GPS_Broadcaster PREFIX "")
 set_target_properties(${PROJECT_NAME}_ENC_Broadcaster PROPERTIES OUTPUT_NAME ENC_Broadcaster PREFIX "")
+set_target_properties(${PROJECT_NAME}_Transistor_LL_Broadcaster PROPERTIES OUTPUT_NAME Transistor_LL_Broadcaster PREFIX "")
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -172,6 +175,9 @@ target_link_libraries(${PROJECT_NAME}_GPS_Broadcaster
   ${catkin_LIBRARIES}
 )
 target_link_libraries(${PROJECT_NAME}_ENC_Broadcaster
+  ${catkin_LIBRARIES}
+)
+target_link_libraries(${PROJECT_NAME}_Transistor_LL_Broadcaster
   ${catkin_LIBRARIES}
 )
 
