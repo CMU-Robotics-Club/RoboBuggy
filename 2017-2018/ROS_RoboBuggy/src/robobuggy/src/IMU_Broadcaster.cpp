@@ -1,33 +1,31 @@
-#include "ros/ros.h"
-#include "robobuggy/IMU.h"
+#include "IMU_Broadcaster.h"
 
-#include <stdio.h>
-
-int main(int argc, char **argv)
+float IMU_Broadcaster::get_spoofed_x_accel()
 {
-    ros::init(argc, argv, "IMU_Broadcaster");
-
-    ros::NodeHandle nh;
-
-    ros::Publisher imu_pub = nh.advertise<robobuggy::IMU>("IMU", 1000);
-
-    ros::Rate loop_rate(10);
-
-    // Infinitely spin sending dummy IMU messages
-    while(ros::ok())
-    {
-        robobuggy::IMU msg;
-
-        msg.X_Accel = 1.5;
-        msg.Y_Accel = 2.5;
-        msg.Z_Accel = 1.5;
-
-        imu_pub.publish(msg);
-
-        ros::spinOnce();
-
-        loop_rate.sleep();
-    }
-
-    return 0;
+    return 1.5;
 }
+float IMU_Broadcaster::get_spoofed_y_accel()
+{
+    return 2.5;
+}
+float IMU_Broadcaster::get_spoofed_z_accel()
+{
+    return 1.5;
+}
+
+IMU_Broadcaster::IMU_Broadcaster()
+{
+    imu_pub = nh.advertise<robobuggy::IMU>("IMU", 1000);
+}
+
+void IMU_Broadcaster::publish_new_spoofed_message()
+{
+    robobuggy::IMU msg;
+
+    msg.X_Accel = get_spoofed_x_accel();
+    msg.Y_Accel = get_spoofed_y_accel();
+    msg.Z_Accel = get_spoofed_z_accel();
+
+    imu_pub.publish(msg);
+}
+

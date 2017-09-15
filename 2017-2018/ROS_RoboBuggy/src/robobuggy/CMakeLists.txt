@@ -120,6 +120,7 @@ catkin_package(
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
+  include
 )
 
 ## Declare a C++ library
@@ -137,12 +138,12 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/robobuggy_node.cpp)
 add_executable(${PROJECT_NAME}_Controller src/Controller.cpp)
-add_executable(${PROJECT_NAME}_IMU_Broadcaster src/IMU_Broadcaster.cpp)
+add_executable(${PROJECT_NAME}_IMU_Broadcaster_Runner src/IMU_Broadcaster_Runner.cpp src/IMU_Broadcaster.cpp)
 add_executable(${PROJECT_NAME}_GPS_Broadcaster src/GPS_Broadcaster.cpp)
 add_executable(${PROJECT_NAME}_ENC_Broadcaster src/ENC_Broadcaster.cpp)
 
 add_dependencies(${PROJECT_NAME}_Controller robobuggy_generate_messages_cpp)
-add_dependencies(${PROJECT_NAME}_IMU_Broadcaster robobuggy_generate_messages_cpp)
+add_dependencies(${PROJECT_NAME}_IMU_Broadcaster_Runner robobuggy_generate_messages_cpp)
 add_dependencies(${PROJECT_NAME}_GPS_Broadcaster robobuggy_generate_messages_cpp)
 add_dependencies(${PROJECT_NAME}_ENC_Broadcaster robobuggy_generate_messages_cpp)
 
@@ -152,7 +153,7 @@ add_dependencies(${PROJECT_NAME}_ENC_Broadcaster robobuggy_generate_messages_cpp
 ## e.g. "rosrun someones_pkg node" instead of "rosrun someones_pkg someones_pkg_node"
 # set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME node PREFIX "")
 set_target_properties(${PROJECT_NAME}_Controller PROPERTIES OUTPUT_NAME Controller PREFIX "")
-set_target_properties(${PROJECT_NAME}_IMU_Broadcaster PROPERTIES OUTPUT_NAME IMU_Broadcaster PREFIX "")
+set_target_properties(${PROJECT_NAME}_IMU_Broadcaster_Runner PROPERTIES OUTPUT_NAME IMU_Broadcaster_Runner PREFIX "")
 set_target_properties(${PROJECT_NAME}_GPS_Broadcaster PROPERTIES OUTPUT_NAME GPS_Broadcaster PREFIX "")
 set_target_properties(${PROJECT_NAME}_ENC_Broadcaster PROPERTIES OUTPUT_NAME ENC_Broadcaster PREFIX "")
 
@@ -164,7 +165,7 @@ set_target_properties(${PROJECT_NAME}_ENC_Broadcaster PROPERTIES OUTPUT_NAME ENC
 target_link_libraries(${PROJECT_NAME}_Controller
   ${catkin_LIBRARIES}
 )
-target_link_libraries(${PROJECT_NAME}_IMU_Broadcaster
+target_link_libraries(${PROJECT_NAME}_IMU_Broadcaster_Runner
   ${catkin_LIBRARIES}
 )
 target_link_libraries(${PROJECT_NAME}_GPS_Broadcaster
@@ -212,6 +213,11 @@ target_link_libraries(${PROJECT_NAME}_ENC_Broadcaster
 #############
 ## Testing ##
 #############
+
+catkin_add_gtest(${PROJECT_NAME}-imu-spoof-test test/IMU_Spoof_test.cpp src/IMU_Broadcaster.cpp)
+if(TARGET ${PROJECT_NAME}-imu-spoof-test)
+  target_link_libraries(${PROJECT_NAME}-imu-spoof-test ${catkin_LIBRARIES})
+endif()
 
 ## Add gtest based cpp test target and link libraries
 # catkin_add_gtest(${PROJECT_NAME}-test test/test_robobuggy.cpp)
