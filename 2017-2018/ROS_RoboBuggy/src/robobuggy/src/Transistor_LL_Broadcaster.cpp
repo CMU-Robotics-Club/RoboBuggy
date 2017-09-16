@@ -42,7 +42,7 @@ int main(int argc, char **argv)
             rb_serial_buffer = rb_serial.read(rb_serial.available());
 
             // First byte is serial buffer
-            switch(rb_serial_buffer[0]) {
+            switch((unsigned char)rb_serial_buffer[0]) {
                 case RBSM_MID_ENC_RESET_CONFIRM:
                     // Confirmation of encoder reset request received
                     break;
@@ -55,6 +55,18 @@ int main(int argc, char **argv)
                 case DEVICE_ID:
                     break;
                 case RBSM_MID_MEGA_TELEOP_BRAKE_COMMAND:
+                    break;
+                case RBSM_MID_MEGA_AUTON_BRAKE_COMMAND:
+                    break;
+                case RBSM_MID_MEGA_AUTON_STATE:
+                    break;
+                case RBSM_MID_MEGA_BATTERY_LEVEL:
+                    break;
+                case RBSM_MID_MEGA_STEER_FEEDBACK:
+                    break;
+                case RSBM_MID_ENC_TICKS_RESET:
+                    break;
+                case RBSM_MID_:wqa
                     break;
                 default:
                     break;
