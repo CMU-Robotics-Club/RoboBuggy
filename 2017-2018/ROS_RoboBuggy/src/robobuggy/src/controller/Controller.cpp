@@ -17,7 +17,9 @@ void Controller::ENC_Callback(const robobuggy::ENC::ConstPtr& msg)
 
 Controller::Controller()
 {
-    ros::Subscriber imu_sub = nh.subscribe<robobuggy::IMU>("IMU", 1000, IMU_Callback);
-    ros::Subscriber gps_sub = nh.subscribe<robobuggy::GPS>("GPS", 1000, GPS_Callback);
-    ros::Subscriber enc_sub = nh.subscribe<robobuggy::ENC>("ENC", 1000, ENC_Callback);
+    imu_sub = nh.subscribe<robobuggy::IMU>("IMU", 1000, IMU_Callback);
+    gps_sub = nh.subscribe<robobuggy::GPS>("GPS", 1000, GPS_Callback);
+    enc_sub = nh.subscribe<robobuggy::ENC>("ENC", 1000, ENC_Callback);
+
+    ROS_INFO("Finished setting up subscribers\n");
 }

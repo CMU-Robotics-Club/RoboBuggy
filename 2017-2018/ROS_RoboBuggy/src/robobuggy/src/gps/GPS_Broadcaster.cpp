@@ -1,8 +1,12 @@
 #include "gps/GPS_Broadcaster.h"
 
-GPS_Broadcaster::GPS_Broadcaster()
+const std::string GPS_Broadcaster::NODE_NAME = "GPS_Broadcaster";
+GPS_Broadcaster::GPS_Broadcaster() : increment(0.00001)
 {
     gps_pub = nh.advertise<robobuggy::GPS>("GPS", 1000);
+
+    start_lat = 0.0;
+    start_lon = 0.0;
 
     // Get parameters start lat and start lon
     if (!nh.getParam(NODE_NAME + "/start_latitude", start_lat))

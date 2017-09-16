@@ -14,11 +14,15 @@
 class Controller
 {
 public:
-    void IMU_Callback(const robobuggy::IMU::ConstPtr& msg);
-    void GPS_Callback(const robobuggy::GPS::ConstPtr& msg);
-    void ENC_Callback(const robobuggy::ENC::ConstPtr& msg);
+    static void IMU_Callback(const robobuggy::IMU::ConstPtr& msg);
+    static void GPS_Callback(const robobuggy::GPS::ConstPtr& msg);
+    static void ENC_Callback(const robobuggy::ENC::ConstPtr& msg);
     Controller();
     ros::NodeHandle nh;
+private:
+    ros::Subscriber imu_sub;
+    ros::Subscriber enc_sub;
+    ros::Subscriber gps_sub;
 };
 
 #endif //ROS_ROBOBUGGY_CONTROLLER_H

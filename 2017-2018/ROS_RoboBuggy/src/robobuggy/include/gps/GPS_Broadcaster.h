@@ -13,13 +13,13 @@ class GPS_Broadcaster
 public:
     GPS_Broadcaster();
     void publish_spoof_message();
-    static const std::string NODE_NAME = "GPS_Broadcaster";
+    static const std::string NODE_NAME;
 private:
     ros::NodeHandle nh;
     ros::Publisher gps_pub;
-    float start_lat = 0.0;
-    float start_lon = 0.0;
-    const float increment = 0.00001;
+    float start_lat;
+    float start_lon;
+    const float increment;
 };
 
 #endif //ROS_ROBOBUGGY_GPS_BROADCASTER_H

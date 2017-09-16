@@ -139,12 +139,12 @@ include_directories(
 # add_executable(${PROJECT_NAME}_node src/robobuggy_node.cpp)
 add_executable(${PROJECT_NAME}_Controller_Runner src/controller/Controller_Runner.cpp src/controller/Controller.cpp)
 add_executable(${PROJECT_NAME}_IMU_Broadcaster_Runner src/imu/IMU_Broadcaster_Runner.cpp src/imu/IMU_Broadcaster.cpp)
-add_executable(${PROJECT_NAME}_GPS_Broadcaster src/gps/GPS_Broadcaster.cpp)
+add_executable(${PROJECT_NAME}_GPS_Broadcaster_Runner src/gps/GPS_Broadcaster_Runner.cpp src/gps/GPS_Broadcaster.cpp)
 add_executable(${PROJECT_NAME}_ENC_Broadcaster_Runner src/encoder/ENC_Broadcaster_Runner.cpp src/encoder/ENC_Broadcaster.cpp)
 
 add_dependencies(${PROJECT_NAME}_Controller_Runner robobuggy_generate_messages_cpp)
 add_dependencies(${PROJECT_NAME}_IMU_Broadcaster_Runner robobuggy_generate_messages_cpp)
-add_dependencies(${PROJECT_NAME}_GPS_Broadcaster robobuggy_generate_messages_cpp)
+add_dependencies(${PROJECT_NAME}_GPS_Broadcaster_Runner robobuggy_generate_messages_cpp)
 add_dependencies(${PROJECT_NAME}_ENC_Broadcaster_Runner robobuggy_generate_messages_cpp)
 
 ## Rename C++ executable without prefix
@@ -154,7 +154,7 @@ add_dependencies(${PROJECT_NAME}_ENC_Broadcaster_Runner robobuggy_generate_messa
 # set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME node PREFIX "")
 set_target_properties(${PROJECT_NAME}_Controller_Runner PROPERTIES OUTPUT_NAME Controller_Runner PREFIX "")
 set_target_properties(${PROJECT_NAME}_IMU_Broadcaster_Runner PROPERTIES OUTPUT_NAME IMU_Broadcaster_Runner PREFIX "")
-set_target_properties(${PROJECT_NAME}_GPS_Broadcaster PROPERTIES OUTPUT_NAME GPS_Broadcaster PREFIX "")
+set_target_properties(${PROJECT_NAME}_GPS_Broadcaster_Runner PROPERTIES OUTPUT_NAME GPS_Broadcaster_Runner PREFIX "")
 set_target_properties(${PROJECT_NAME}_ENC_Broadcaster_Runner PROPERTIES OUTPUT_NAME ENC_Broadcaster_Runner PREFIX "")
 
 ## Add cmake target dependencies of the executable
@@ -168,7 +168,7 @@ target_link_libraries(${PROJECT_NAME}_Controller_Runner
 target_link_libraries(${PROJECT_NAME}_IMU_Broadcaster_Runner
   ${catkin_LIBRARIES}
 )
-target_link_libraries(${PROJECT_NAME}_GPS_Broadcaster
+target_link_libraries(${PROJECT_NAME}_GPS_Broadcaster_Runner
   ${catkin_LIBRARIES}
 )
 target_link_libraries(${PROJECT_NAME}_ENC_Broadcaster_Runner
