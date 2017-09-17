@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "IMU_Broadcaster.h"
+#include "imu/IMU_Broadcaster.h"
 
 // Declare a test
 TEST(TestSuite, testCase1)
