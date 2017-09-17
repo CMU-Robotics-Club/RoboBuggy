@@ -54,6 +54,9 @@ add_message_files(
   IMU.msg
   GPS.msg
   ENC.msg
+  Steering.msg
+  Brake.msg
+  Diagnostics.msg
 )
 
 ## Generate services in the 'srv' folder
