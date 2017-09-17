@@ -13,12 +13,8 @@ void ENC_Broadcaster::publish_spoof_message()
 {
     robobuggy::ENC msg;
 
-    msg.distance_m = spoof_distance;
-    msg.velocity_ms = 1;
-    msg.acceleration_mss = 0;
-    msg.raw_data_word = 1337;
-
-    spoof_distance += 0.1;
+    msg.ticks = spoof_ticks;
+    spoof_ticks++;
 
     enc_pub.publish(msg);
 }

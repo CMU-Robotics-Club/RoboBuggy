@@ -12,7 +12,7 @@ void Controller::GPS_Callback(const robobuggy::GPS::ConstPtr& msg)
 
 void Controller::ENC_Callback(const robobuggy::ENC::ConstPtr& msg)
 {
-    ROS_INFO("Received ENC message with coordinates: (%fm, %fm, %fm, %fm)", msg->distance_m, msg->velocity_ms, msg->acceleration_mss, msg->raw_data_word);
+    ROS_INFO("Received ENC message with ticks: %d", msg->ticks);
 }
 
 Controller::Controller()
