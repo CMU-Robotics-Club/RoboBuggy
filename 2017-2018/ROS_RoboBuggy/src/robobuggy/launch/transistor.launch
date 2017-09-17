@@ -1,0 +1,14 @@
+<launch>
+    <node name="Controller" pkg="robobuggy" type="Controller" required="true">
+        <!-- Update frequency in Hz -->
+        <param name="update_frequency" type="double" value="10.0"/>
+    </node>
+
+    <!-- Node that translates messages from low-level into ROS messages -->
+    <node name="Transistor_LL_Broadcaster" pkg="robobuggy" type="Transistor_LL_Broadcaster" required="true">
+        <!-- Serial port on device for the Arduino Mega - TODO: udev rule? -->
+        <param name="serial_port" type="string" value="/dev/ttyACM0"/>
+        <!-- Baud rate for communicating with low level -->
+        <param name="serial_baud" type="int" value="115200"/>
+    </node>
+</launch>

@@ -1,10 +1,6 @@
 #ifndef _TRANSISTOR_SERIAL_MESSAGES_H_
 #define _TRANSISTOR_SERIAL_MESSAGES_H_
 
-// Port and baud rate
-#define RBSM_SERIAL_PORT "/dev/ttyACM0"
-#define RBSM_SERIAL_BAUD 115200
-
 // Protocol constants
 #define RBSM_FOOTER     0x0A // \n
 #define RBSM_IN_LENGTH  6

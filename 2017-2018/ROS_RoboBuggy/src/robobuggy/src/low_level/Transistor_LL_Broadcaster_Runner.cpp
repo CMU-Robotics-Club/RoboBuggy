@@ -18,11 +18,23 @@ int main(int argc, char **argv)
     robobuggy::Diagnostics diagnostics_msg;
     robobuggy::ENC encoder_msg;
 
+    // Read serial parameters from parameter server
+    std::string serial_port;
+    int serial_baud;
+    if (!nh.getParam("serial_port", serial_port)) {
+        ROS_INFO_STREAM("Serial port parameter not found, using default");
+        serial_port = "/dev/ttyACM0"; // Default value
+    }
+    if (!nh.getParam("serial_baud", serial_baud)) {
+        ROS_INFO_STREAM("Serial baud rate parameter not found, using default");
+        serial_baud = 115200; // Default value
+    }
+
     // Initialize serial communication
     serial::Serial rb_serial;
     try {
-        rb_serial.setPort(RBSM_SERIAL_PORT);
-        rb_serial.setBaudrate(RBSM_SERIAL_BAUD);
+        rb_serial.setPort(serial_port);
+        rb_serial.setBaudrate(serial_baud);
         serial::Timeout to = serial::Timeout::simpleTimeout(1000);
         rb_serial.setTimeout(to);
         rb_serial.open();
@@ -38,6 +50,8 @@ int main(int argc, char **argv)
     else {
         return -1;
     }
+
+    //@TODO: Restructure this into the class file, instead of runner?
 
     // Constantly read messages from low level
     while(ros::ok()) {
@@ -65,10 +79,6 @@ int main(int argc, char **argv)
 
             // First byte is serial buffer
             switch((unsigned char)rb_serial_buffer[0]) {
-                case RBSM_MID_ENC_RESET_CONFIRM:
-                    // Confirmation of encoder reset request received
-                    // High level doesn't do anything with this message
-                    break;
                 case RBSM_MID_MEGA_STEER_ANGLE:
                     // Steering angle
                     steering_msg.steer_angle = (int32_t)data;
