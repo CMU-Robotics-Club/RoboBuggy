@@ -1,28 +1,16 @@
-#include "ros/ros.h"
-
-#include "robobuggy/Brake.h"
-#include "robobuggy/Steering.h"
-#include "robobuggy/Diagnostics.h"
-#include "robobuggy/ENC.h"
-
 #include "transistor_serial_messages.h"
 #include "serial/serial.h"
 
-std::string NODE_NAME = "Transistor Low-Level Broadcaster";
+#include "low_level/Transistor_LL_Broadcaster.h"
 
 std::string rb_serial_buffer;
 
 int main(int argc, char **argv)
 {
-    ros::init(argc, argv, NODE_NAME);
-
+    ros::init(argc, argv, "Transistor_LL_Broadcaster");
     ros::NodeHandle nh;
 
-    // Create publishers for low-level data
-    ros::Publisher brake_pub = nh.advertise<robobuggy::Brake>("Brake", 1000);
-    ros::Publisher steering_pub = nh.advertise<robobuggy::Steering>("Steering", 1000);
-    ros::Publisher diagnostics_pub = nh.advertise<robobuggy::Diagnostics>("Diagnostics", 1000);
-    ros::Publisher encoder_pub = nh.advertise<robobuggy::ENC>("Encoder", 1000);
+    Transistor_LL_Broadcaster broadcaster;
 
     // Messages
     robobuggy::Brake brake_msg;
@@ -125,14 +113,11 @@ int main(int argc, char **argv)
             encoder_msg.header.stamp = timestamp;
 
             // Publish messages
-            brake_pub.publish(brake_msg);
-            steering_pub.publish(steering_msg);
-            diagnostics_pub.publish(diagnostics_msg);
-            encoder_pub.publish(encoder_msg);
+            broadcaster.publish_brake_msg(brake_msg);
+            broadcaster.publish_steering_msg(steering_msg);
+            broadcaster.publish_diagnostics_msg(diagnostics_msg);
+            broadcaster.publish_encoder_msg(encoder_msg);
         }
-
         ros::spinOnce();
     }
-
-    return 0;
 }
