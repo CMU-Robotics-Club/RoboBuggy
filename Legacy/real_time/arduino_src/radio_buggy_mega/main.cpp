@@ -25,9 +25,10 @@
 #include "system_clock.h"
 #include "fingerprint.h"
 
-// Use 76800 or 250k. 115200 does not work well with 16MHz clock.
+// Use 57600 so that the jetson and linux can recognize it because they need standard baudrate
+// and since 115200 is too high for the 16 Mhz clock
 // ATMega 2560 datasheet Table 22-12.
-#define BAUD 57600// change this back 76800
+#define BAUD 57600
 
 #define CONNECTION_TIMEOUT_US 1000000L // 1000ms
 #define SYSTEM_VOLTAGE_THRESHOLD 12000 //For Buggy battery voltage 
