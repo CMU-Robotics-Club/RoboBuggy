@@ -23,11 +23,11 @@ int main(int argc, char **argv)
     int serial_baud;
     if (!nh.getParam("serial_port", serial_port)) {
         ROS_INFO_STREAM("Serial port parameter not found, using default");
-        serial_port = "/dev/ttyACM0"; // Default value
+        serial_port = "/dev/ttyACM1"; // Default value
     }
     if (!nh.getParam("serial_baud", serial_baud)) {
         ROS_INFO_STREAM("Serial baud rate parameter not found, using default");
-        serial_baud = 115200; // Default value
+        serial_baud = 57600; // Default value
     }
 
     // Initialize serial communication
@@ -40,7 +40,8 @@ int main(int argc, char **argv)
         rb_serial.open();
     }
     catch (serial::IOException& e) {
-        ROS_ERROR_STREAM("Unable to open port ");
+        ROS_ERROR_STREAM("Unable to open port");
+        ROS_ERROR_STREAM(serial_port);
         return -1;
     }
 
@@ -57,7 +58,7 @@ int main(int argc, char **argv)
     while(ros::ok()) {
         if (rb_serial.available()) {
             // Read from the serial port
-            ROS_INFO_STREAM("Reading messages from low level");
+            //ROS_INFO_STREAM("Reading messages from low level");
             
             rb_serial_buffer = rb_serial.read(rb_serial.available());
             
