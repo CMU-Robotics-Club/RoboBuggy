@@ -27,7 +27,7 @@
 
 // Use 76800 or 250k. 115200 does not work well with 16MHz clock.
 // ATMega 2560 datasheet Table 22-12.
-#define BAUD 76800
+#define BAUD 57600// change this back 76800
 
 #define CONNECTION_TIMEOUT_US 1000000L // 1000ms
 #define SYSTEM_VOLTAGE_THRESHOLD 12000 //For Buggy battery voltage 
