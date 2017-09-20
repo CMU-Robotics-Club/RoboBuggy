@@ -405,12 +405,12 @@ gccversion :
 
 
 # Program the device.  
-program: $(TARGET).hex $(TARGET).eep
+program: scripts $(TARGET).hex $(TARGET).eep
 	$(AVRDUDE) $(AVRDUDE_FLAGS) $(AVRDUDE_WRITE_FLASH) $(AVRDUDE_WRITE_EEPROM)
 
 
 # Program the device without an ISP by using the bootloader
-aprogram: $(TARGET).hex $(TARGET).eep
+aprogram: scripts $(TARGET).hex $(TARGET).eep
 	$(PYTHON) ./arduinoReset.py $(AVRDUDE_A_PORT)
 	$(AVRDUDE) $(AVRDUDE_A_FLAGS) $(AVRDUDE_WRITE_FLASH)
 
