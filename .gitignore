@@ -44,3 +44,11 @@ Legacy/real_time/surface_src/java_src/libs/JavaHamcrest/.idea
 Legacy/real_time/surface_src/java_src/libs/JavaHamcrest/hamcrest-core/src/main/java/org/hamcrest
 Legacy/real_time/surface_src/java_src/libs/JavaHamcrest/hamcrest-core/src/test/java/org/hamcrest
 Legacy/real_time/surface_src/java_src/libs/JavaHamcrest
+2017-2018/ROS_RoboBuggy/.idea/misc.xml
+.idea/
+.vscode/
+cmake-build-debug/
+gradlew
+gradlew.bat
+gradle-wrapper.jar
+*.properties
