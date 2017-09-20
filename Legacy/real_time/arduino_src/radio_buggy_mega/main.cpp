@@ -14,8 +14,10 @@
 #include <stdlib.h>
 #include <avr/wdt.h>
 
-#include "../lib_avr/encoder/encoder.h"
+#include "../lib_avr/encoder/Rotary.h"
+#include "../lib_avr/encoder/Quadrature.h"
 #include "../lib_avr/rbserialmessages/rbserialmessages.h"
+#include "../lib_avr/statuslights/StatusLights.h"
 #include "../lib_avr/radioreceiver/RadioReceiver.h"
 #include "../lib_avr/radioreceiver/ServoReceiver.h"
 #include "../lib_avr/uart/uart_extra.h"
@@ -23,9 +25,10 @@
 #include "system_clock.h"
 #include "fingerprint.h"
 
-// Use 76800 or 250k. 115200 does not work well with 16MHz clock.
+// Use 57600 so that the jetson and linux can recognize it because they need standard baudrate
+// and since 115200 is too high for the 16 Mhz clock
 // ATMega 2560 datasheet Table 22-12.
-#define BAUD 76800
+#define BAUD 57600
 
 #define CONNECTION_TIMEOUT_US 1000000L // 1000ms
 #define SYSTEM_VOLTAGE_THRESHOLD 12000 //For Buggy battery voltage 
@@ -60,13 +63,16 @@
 #define RX_AUTON_PINN PD1 // arduino 20
 #define RX_AUTON_INT  INT1_vect
 #define RX_AUTON_INTN 1
-#define RX_STATUS_LIGHT_PORT PORTE
-#define RX_STATUS_LIGHT_PINN_BLUE PE3
-#define RX_STATUS_LIGHT_DDR DDRE
-#define RX_STATUS_LIGHT_PINN_GREEN PE5
-#define RX_STATUS_LIGHT_PORT_RED PORTH
-#define RX_STATUS_LIGHT_PINN_RED PH6
-#define RX_STATUS_LIGHT_DDR_RED DDRH
+
+#define STATUS_LIGHT_PORT_BLUE PORTE
+#define STATUS_LIGHT_PINN_BLUE PE3
+#define STATUS_LIGHT_DDR_BLUE DDRE
+#define STATUS_LIGHT_PORT_GREEN PORTE
+#define STATUS_LIGHT_PINN_GREEN PE5
+#define STATUS_LIGHT_DDR_GREEN DDRE
+#define STATUS_LIGHT_PORT_RED PORTH
+#define STATUS_LIGHT_PINN_RED PH6
+#define STATUS_LIGHT_DDR_RED DDRH
 
 #define ENCODER_DDR  DDRD
 #define ENCODER_PORT PORTD
@@ -139,15 +145,53 @@ static int auto_steering_angle;
 static unsigned long g_errors;
 
 RBSerialMessages g_rbsm;
-rb_message_t g_new_rbsm;
 ServoReceiver g_steering_rx;
 RadioReceiver g_brake_rx;
 RadioReceiver g_auton_rx;
-Encoder g_encoder_distance;
-Encoder g_encoder_steering;
+StatusLights lights_rc(STATUS_LIGHT_PINN_GREEN, 
+                       &STATUS_LIGHT_PORT_GREEN, 
+                       &STATUS_LIGHT_DDR_GREEN);
+StatusLights lights_auton(STATUS_LIGHT_PINN_RED, 
+                          &STATUS_LIGHT_PORT_RED, 
+                          &STATUS_LIGHT_DDR_RED);
+StatusLights lights_battery(STATUS_LIGHT_PINN_BLUE, 
+                            &STATUS_LIGHT_PORT_BLUE, 
+                            &STATUS_LIGHT_DDR_BLUE);
+Rotary g_encoder_distance;
+Quadrature g_encoder_steering;
 
 UARTFILE g_uart_rbsm;
 UARTFILE g_uart_debug;
+
+
+
+// Functions declarations
+// ADC
+void adc_init(void);
+int adc_read_blocking(uint8_t pin);
+
+// Steering
+void steer_set_velocity(long target_velocity);
+void steering_set(int angle);
+int8_t steering_center();
+
+// Lights
+void indicator_light_init();
+void voltage_too_low_light();
+void auton_timeout_light();
+void rc_timeout_failure_light();
+void voltage_too_low_light_reset();
+void auton_timeout_light_reset();
+void rc_timeout_failure_light_reset();
+
+// Brakes
+void brake_init();
+void brake_raise();
+void brake_drop();
+
+// Watchdog
+void watchdog_init();
+
 
 
 inline long map_signal(long x,
@@ -323,65 +367,6 @@ int8_t steering_center() {
     return 0;
 }
 
-/** @brief Sets up the appropriate pins for the indicator lights
- *
- */
-void indicator_light_init() {
-    // set all pins to zero output
-    RX_STATUS_LIGHT_PORT &= ~_BV(3);
-    RX_STATUS_LIGHT_DDR |= _BV(3);
-    RX_STATUS_LIGHT_PORT &= ~_BV(5);
-    RX_STATUS_LIGHT_DDR |= _BV(5);
-    RX_STATUS_LIGHT_PORT_RED &= ~_BV(6);
-    RX_STATUS_LIGHT_DDR_RED |= _BV(6);
-}
-
-/** @brief turns on blue light to indicate low voltage
-*
-*/
-void voltage_too_low_light() {
-    RX_STATUS_LIGHT_PORT |= _BV(RX_STATUS_LIGHT_PINN_BLUE);
-}
-
-/** @brief turns on red light to indicate autonomous timeout
-*
-*/
-void auton_timeout_light() {
-    // red for this light
-    RX_STATUS_LIGHT_PORT_RED |= _BV(RX_STATUS_LIGHT_PINN_RED);
-}
-
-
-/** @brief turns on green light to indicate rc timeout
-*
-*/
-void rc_timeout_failure_light() {
-    // green for this light
-    RX_STATUS_LIGHT_PORT |= _BV(RX_STATUS_LIGHT_PINN_GREEN);
-}
-
-
-/** @brief turns off blue light
-*
-*/
-void voltage_too_low_light_reset() {
-    RX_STATUS_LIGHT_PORT &= ~_BV(RX_STATUS_LIGHT_PINN_BLUE);
-}
-
-/** @brief turns off red light
-*
-*/
-void auton_timeout_light_reset() {
-    RX_STATUS_LIGHT_PORT_RED &= ~_BV(RX_STATUS_LIGHT_PINN_RED);
-}
-
-/** @brief turns off green light
-*
-*/
-void rc_timeout_failure_light_reset() {
-    RX_STATUS_LIGHT_PORT &= ~_BV(RX_STATUS_LIGHT_PINN_GREEN);
-}
-
 
 void brake_init() {
     BRAKE_OUT_DDR |= _BV(BRAKE_OUT_PINN);
@@ -441,25 +426,16 @@ int main(void) {
     unsigned long auton_brake_last = time_start;
     unsigned long auton_steer_last = time_start;
 
-    // setup encoder pin with pullups and interrupt
-    ENCODER_PORT |= _BV(ENCODER_PINN);
-    ENCODER_DDR &= ~_BV(ENCODER_PINN);
-    g_encoder_distance.Init(&ENCODER_PIN, ENCODER_PINN);
-    EIMSK |= _BV(INT2);
-    EICRA |= _BV(ISC20);
-    EICRA &= ~_BV(ISC21);
-
-    // setup steering encoder on pcint 0 with pullups off
-    ENCODER_STEERING_A_PORT &= ~_BV(ENCODER_STEERING_A_PINN);
-    ENCODER_STEERING_A_DDR &= ~_BV(ENCODER_STEERING_A_PINN);
-    ENCODER_STEERING_B_PORT &= ~_BV(ENCODER_STEERING_B_PINN);
-    ENCODER_STEERING_B_DDR &= ~_BV(ENCODER_STEERING_B_PINN);
+    g_encoder_distance.Init(&ENCODER_PIN, ENCODER_PINN, &ENCODER_PORT, &ENCODER_DDR);
+    
     g_encoder_steering.InitQuad(&ENCODER_STEERING_A_PIN,
                                 ENCODER_STEERING_A_PINN,
                                 &ENCODER_STEERING_B_PIN,
-                                ENCODER_STEERING_B_PINN);
-    PCMSK0 |= _BV(PCINT4) | _BV(PCINT6);
-    PCICR |= _BV(PCIE0);
+                                ENCODER_STEERING_B_PINN,
+                                &ENCODER_STEERING_A_PORT,
+                                &ENCODER_STEERING_A_DDR,
+                                &ENCODER_STEERING_B_PORT,
+                                &ENCODER_STEERING_B_DDR);
 
     // prepare uart0 (onboard usb) for rbsm
     uart0_init(UART_BAUD_SELECT(BAUD, F_CPU));
@@ -477,7 +453,6 @@ int main(void) {
     servo_init();
     adc_init();
     brake_init();
-    indicator_light_init();
     steering_center(); // this call takes time
 
     // setup rbsm
@@ -588,7 +563,7 @@ int main(void) {
                 // we haven't heard from the RC receiver in too long
                 g_errors |= _BV(RBSM_EID_RC_LOST_SIGNAL);
                 brake_needs_reset = true;
-                rc_timeout_failure_light();
+                lights_rc.Enable();
                 dbg_printf("RC Timeout! %lu %lu %lu\n", delta1, delta2, delta3);
             } else {
                 g_errors &= ~_BV(RBSM_EID_RC_LOST_SIGNAL);
@@ -598,7 +573,7 @@ int main(void) {
             if(auton_timeout) {
                 g_errors |= _BV(RBSM_EID_AUTON_LOST_SIGNAL);
                 brake_needs_reset = true;
-                auton_timeout_light();
+                lights_auton.Enable();
                 dbg_printf("Auton Timeout! %lu %lu\n", delta4, delta5);
             } else {
                 g_errors &= ~_BV(RBSM_EID_AUTON_LOST_SIGNAL);
@@ -612,8 +587,8 @@ int main(void) {
             g_errors &= ~_BV(RBSM_EID_RC_LOST_SIGNAL);
             g_errors &= ~_BV(RBSM_EID_AUTON_LOST_SIGNAL);
             // once the connection is back can turn off lights
-            auton_timeout_light_reset();
-            rc_timeout_failure_light_reset();
+            lights_auton.Disable();
+            lights_rc.Disable();
         }
 
         // Reading battery voltage from the voltage 24/12 kOhm divider
@@ -622,9 +597,9 @@ int main(void) {
         g_current_voltage += BATTERY_ADC_OFFSET;
         
         if (g_current_voltage < SYSTEM_VOLTAGE_THRESHOLD) {
-            voltage_too_low_light();
+            lights_battery.Enable();
         } else {
-            voltage_too_low_light_reset();
+            lights_battery.Disable();
         }
         
         // Set outputs
@@ -708,6 +683,6 @@ ISR(ENCODER_INT) {
 }
 
 ISR(ENCODER_STEERING_PCINT) {
-    g_encoder_steering.OnInterruptQuad();
+    g_encoder_steering.OnInterrupt();
 }
 
