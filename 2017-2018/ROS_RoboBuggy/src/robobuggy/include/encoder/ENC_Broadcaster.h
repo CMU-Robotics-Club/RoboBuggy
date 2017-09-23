@@ -18,7 +18,7 @@ public:
 private:
     ros::Publisher enc_pub;
     ros::NodeHandle nh;
-    float spoof_distance = 0.0;
+    unsigned int spoof_ticks = 0;
 };
 
 #endif //ROS_ROBOBUGGY_ENC_BROADCASTER_H
