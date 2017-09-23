@@ -28,38 +28,26 @@
  */
 #define ENCODER_ALLOW_SINGLE_INT
 
+extern "C" void __cxa_pure_virtual();
+
 class Encoder {
-    uint8_t config_;
-    volatile uint8_t *pin_a_reg_;
-    uint8_t pin_a_num_;
-    volatile uint8_t *pin_b_reg_;
-    uint8_t pin_b_num_;
-    volatile long ticks_;
-    volatile uint8_t pin_state_last_;
-    volatile uint8_t errors_;
+    protected:
+        volatile uint8_t errors_;
+        volatile long ticks_;
+        volatile uint8_t *pin_a_reg_;
+        uint8_t pin_a_num_;
 
     public:
         Encoder();
 
-        /** @brief initialize a single wire encoder */
-        uint8_t Init(volatile uint8_t *pin_a_reg,
-                     uint8_t pin_a_num);
-        /** @brief initialize a quadrature encoder with 1 or 2 interrupts */
-        uint8_t InitQuad(volatile uint8_t *pin_a_reg,
-                         uint8_t pin_a_num,
-                         volatile uint8_t *pin_b_reg,
-                         uint8_t pin_b_num);
         /** @brief to be called on interrupt of single wire encoder signal */
-        void OnInterrupt();
-        /** @brief to be called by 1 or both interrupts of quadrature encoder */
-        void OnInterruptQuad();
+        virtual void OnInterrupt() = 0;
         /** @brief get ticks seen since last reset. disables interrupts to read */
         long GetTicks();
         /** @brief get errors seen since last reset. disables interrupts to read */
         uint8_t GetErrors();
         /** @brief reset ticks and error counters */
         void Reset();
-        void PrintDebugInfo(FILE *out_stream);
 };
 
 #endif /* _LIB_AVR_ENCODER_H_ */

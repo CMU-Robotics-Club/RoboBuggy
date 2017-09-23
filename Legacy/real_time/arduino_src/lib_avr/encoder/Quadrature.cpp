@@ -1,53 +1,44 @@
-#include "encoder.h"
+#include "Quadrature.h"
 
 
-Encoder::Encoder() {
-}
+Quadrature::Quadrature() {}
 
-
-uint8_t Encoder::Init(volatile uint8_t *pin_a_reg,
-                      uint8_t pin_a_num) {
-    // save configuration info
-    pin_a_reg_ = pin_a_reg;
-    pin_a_num_ = pin_a_num;
-
-    // reset state
-    ticks_ = 0;
-    errors_ = 0;
-
-    return errors_;
-}
-
-
-uint8_t Encoder::InitQuad(volatile uint8_t *pin_a_reg,
+uint8_t Quadrature::InitQuad(volatile uint8_t *pin_a_reg,
                           uint8_t pin_a_num,
                           volatile uint8_t *pin_b_reg,
-                          uint8_t pin_b_num) {
+                          uint8_t pin_b_num,
+                          volatile uint8_t *port_a_reg,
+                          volatile uint8_t *ddr_a_reg,
+                          volatile uint8_t *port_b_reg,
+                          volatile uint8_t *ddr_b_reg) 
+{
     // save configuration info
     pin_a_reg_ = pin_a_reg;
     pin_a_num_ = pin_a_num;
     pin_b_reg_ = pin_b_reg;
     pin_b_num_ = pin_b_num;
-    // reset state
-    ticks_ = 0;
+
     bool pin_a = (*pin_a_reg_) & _BV(pin_a_num_);
     bool pin_b = (*pin_b_reg_) & _BV(pin_b_num_);
     pin_state_last_ = ((uint8_t)pin_a << 1) | ((uint8_t)pin_b);
-    errors_ = 0;
-    // set required pins as inputs
-    // TODO
+
+    // setup steering encoder on pcint 0 with pullups off
+    *port_a_reg &= ~_BV(pin_a_num);
+    *ddr_a_reg &= ~_BV(pin_a_num);
+    *port_b_reg &= ~_BV(pin_b_num);
+    *ddr_b_reg &= ~_BV(pin_b_num);
+
+    //Pin change mask register
+    PCMSK0 |= _BV(PCINT4) | _BV(PCINT6);
+    //Pin change interrupt control register
+    PCICR |= _BV(PCIE0);
 
     return errors_;
 }
 
 
-void Encoder::OnInterrupt() {
-    ticks_++;
-    return;
-}
-
-
-void Encoder::OnInterruptQuad() {
+void Quadrature::OnInterrupt() 
+{
     // read in new pin values
     bool pin_a_new = (*pin_a_reg_) & _BV(pin_a_num_);
     bool pin_b_new = (*pin_b_reg_) & _BV(pin_b_num_);
@@ -56,7 +47,8 @@ void Encoder::OnInterruptQuad() {
     uint8_t pin_state = ((pin_state_last_ << 2)
                          | ((uint8_t)pin_a_new << 1) | ((uint8_t)pin_b_new))
                         & 0x0F;
-    switch(pin_state) {
+    switch(pin_state) 
+    {
         /*
                                   _______         _______
                       PinA ______|       |_______|       |______ PinA
@@ -137,34 +129,5 @@ void Encoder::OnInterruptQuad() {
 
     // non-error ticks need to save state for next cycle
     pin_state_last_ = pin_state;
-    return;
-}
-
-
-long Encoder::GetTicks() {
-    cli();
-    long tick_to_return = ticks_;
-    sei();
-    return tick_to_return;
-}
-
-
-uint8_t Encoder::GetErrors() {
-    cli();
-    uint8_t errors_to_return = errors_;
-    sei();
-    return errors_to_return;
-}
-
-
-void Encoder::Reset() {
-    cli();
-    ticks_ = 0;
-    sei();
-}
-
-
-void Encoder::PrintDebugInfo(FILE *out_stream) {
-    fprintf(out_stream, "last: %x\r\n", pin_state_last_);
     return;
 }
