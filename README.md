@@ -10,12 +10,12 @@ Buggy (also called Sweepstakes) is a race held annually since 1920 at Carnegie M
 
 Borrowed from the [CMU Buggy Alumni Association](http://cmubuggy.org/reference/What_is_buggy%3F). Visit them to find out more.
 
-In the robotics club we seek to ~~help out robot overlords~~ automate everyone and everything, so we're trying hard to replace a traditional buggy driver with our AI. Alice (the AI) isn't quite ready to take command of Singularity or Transistor, but we still take her out for training during morning practice rolls. Keep on reading to find out more, or just enjoy these team pictures.
+In the robotics club we seek to ~~help out robot overlords~~ automate everyone and everything, so we're trying hard to replace a traditional buggy driver with our AI. Alice (the AI) successfully rolled on Raceday for the first time during Carnival 2017!
 
-![Team picture from Raceday 2015](readme_team.JPG)
+![Team picture from Raceday 2015](Media/readme_team.JPG)
 _Team picture from Raceday 2015._
 
-![Trevor pushing RoboBuggy at Fall rolls](readme_rolls.JPG)
+![Trevor pushing RoboBuggy at Fall rolls](Media/readme_rolls.JPG)
 _Trevor pushing Singularity on Hill 4 during early morning rolls._
 
 ## The Buggies 
@@ -29,8 +29,8 @@ _Trevor pushing Singularity on Hill 4 during early morning rolls._
 </thead>
 <tbody>
 <tr>
-<td align="center"><img src="readme_singularity.jpg" alt="Singularity the Buggy with Alice the AI" style="max-width:100%;"></td>
-<td align="center"><img src="readme_transistor.jpg" alt="Transistor the Buggy" style="max-width:100%;"></td>
+<td align="center"><img src="Media/readme_singularity.jpg" alt="Singularity the Buggy with Alice the AI" style="max-width:100%;"></td>
+<td align="center"><img src="Media/readme_transistor.jpg" alt="Transistor the Buggy" style="max-width:100%;"></td>
 </tr>
 <tr>
 <td align="center">Inherited from a past incarnation of this project, Singularity has been rolling since 1999. She features a bolted aluminum frame that was originally built around a desktop computer. These days, she features a stylish mount for a Surface on top with the control electronics inside.</td>
@@ -53,7 +53,7 @@ Looking for more technical docs? [Check out the wiki!](https://github.com/CMU-Ro
          ||
          \/
 +------------------+   +-------------------------+
-|  Radio Receiver  |   |  Alice (AI on Surface)  |
+|  Radio Receiver  |   |       Alice (AI)        |
 +------------------+   +-------------------------+
          ||                        /\
          ||                        ||
@@ -88,8 +88,8 @@ Our system architecture keeps a human in the loop all the time, even just to hit
 ## File Structure 
 
 The software system is separated into two main directories (sections):
-* offline -> where code which is not executed in realtime on the buggy is stored
-* real_time -> where code which is being run in realtime on the buggy is stored 
+* Software -> code executed in real-time on the buggy at a high level, as well as offline and other tools
+* Electrical -> code executing on the low-level systems of the buggy, as well as electrical specifications and eCAD
 
 This folder also contains: 
 * Pictures for this readme file
@@ -101,7 +101,7 @@ We have a [contributions guide](CONTRIBUTING.md) to get you started.
 
 ## Sponsors
 
-Special thanks to Microsoft for providing Alice a host interface on a Surface Pro 3!
+Special thanks to NVidia for providing Jetsons for us to host Alice on!
 
 Think this project is cool? Please support the [Robotics Club at CMU](https://roboticsclub.org/sponsors/)!
 
