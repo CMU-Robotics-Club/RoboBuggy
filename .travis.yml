@@ -22,4 +22,4 @@ script:
     # for running the build and tests of the high level code
     - (cd Legacy/real_time/surface_src/java_src/Alice && $GRADLE_BIN/gradle build)
     - bash Legacy/real_time/surface_src/java_src/Alice/travisStyleCheck.sh
-    - bash Legacy/real_time/arduino_src/travisStyleCheck.sh
+    - bash Electrical/Transistor/code/travisStyleCheck.sh
