@@ -78,7 +78,7 @@ SRC += ../lib_avr/encoder/Rotary.cpp
 SRC += ../lib_avr/encoder/Encoder.cpp
 #ff.o sd.o diskio.o rtc.o
 
-RBSM_CONFIG = ../../rbsm_config.txt
+RBSM_CONFIG = ../../../../Common/rbsm_config.txt
 RBSM_HEADER = ../lib_avr/rbserialmessages/rbsm_config.h
 
 
@@ -359,8 +359,7 @@ fingerprint:
 	$(PYTHON) fingerprint.py
 
 # Run script that check the rbsm_config.txt shared with high level
-headercheck: $(RBSM_HEADER)
-$(RBSM_HEADER) : $(RBSM_CONFIG)
+headercheck:
 	$(PYTHON) headercheck.py
 
 elf: $(TARGET).elf

@@ -16,10 +16,15 @@ def main():
     print("Now creating rbsm_config.h...")
 
     #If rbsmheaders.h already exists, it will be overwritten
-    file = open("../lib_avr/rbserialmessages/rbsm_config.h", 'w')
+    try:
+        file = open("../lib_avr/rbserialmessages/rbsm_config.h", 'w')
+    except:
+        print("Error! Unable to create ../lib_avr/rbserialmessages/rbsm_config.h")
+        sys.exit(1)
+
     settingsFile = None
     try:
-        settingsFile = open("../../rbsm_config.txt")
+        settingsFile = open("../../../../Common/rbsm_config.txt")
     except:
         print("Error! Unable to find ../../rbsm_config.txt\n")
         sys.exit(1)
