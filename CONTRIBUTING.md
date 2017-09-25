@@ -31,9 +31,8 @@ The goal of our branches/pull request policy is to keep ownership of the code wi
 
 ## Area Leads
 
-* High Level (`real_time/surface_src`): Trevor
-* Low Level (`real_time/arduino_src`): Ian
-* Tools (`offline`): Not as controlled. Anyone can check off.
+* High Level (`Software`): Vivaan Bahl
+* Low Level (`Electrical`): Sean Buckley
 
 ## Notes
 

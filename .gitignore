@@ -7,7 +7,6 @@ out/
 
 # arduino build files
 build-*
-surface_src/java_src/Alice/src/com/roboclub/robobuggy/main/config.java
 
 # avr makefile build files
 *.eep
@@ -22,9 +21,9 @@ surface_src/java_src/Alice/src/com/roboclub/robobuggy/main/config.java
 .dep
 
 #Files generated at compilation
-real_time/arduino_src/radio_buggy_mega/fingerprint.h
+Electrical/Transistor/code/radio_buggy_mega/fingerprint.h
 #rbsm headers
-real_time/arduino_src/lib_avr/rbserialmessages/rbsm_config.h
+Electrical/Transistor/code/lib_avr/rbserialmessages/rbsm_config.h
 
 #eclipse's nonsense
 real_time/surface_src/java_src/.recommenders/
