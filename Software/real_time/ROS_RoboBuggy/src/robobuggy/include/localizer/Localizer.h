@@ -4,10 +4,14 @@
 #include <robobuggy/IMU.h>
 #include <robobuggy/GPS.h>
 #include <robobuggy/ENC.h>
+#include <robobuggy/Pose.h>
+#include <geodesy/utm.h>
+#include <string>
+#include <iostream>
 
 #include <eigen3/Eigen/Dense>
 
-using Eigen::MatrixXd;
+using Eigen::Matrix;
 
 class Localizer
 {
@@ -29,13 +33,23 @@ private:
     ros::Subscriber imu_sub;
     ros::Subscriber enc_sub;
 
-    MatrixXd motion_model;
-    MatrixXd R;
-    MatrixXd P;
-    MatrixXd Q_GPS;
-    MatrixXd Q_Encoder;
-    MatrixXd C_GPS;
-    MatrixXd C_Encoder;
+    Matrix<double, 5, 5> A;
+    Matrix<double, 5, 1> x;
+    Matrix<double, 5, 5> R;
+    Matrix<double, 5, 5> P;
+    Matrix<double, 3, 3> Q_GPS;
+    Matrix<double, 1, 1> Q_Encoder;
+    Matrix<double, 3, 5> C_GPS;
+    Matrix<double, 1, 5> C_Encoder;
 
     void update_position_estimate();
+    void update_motion_model();
+
+    void init_R();
+    void init_P();
+    void init_Q_GPS();
+    void init_Q_Encoder();
+    void init_C_GPS();
+    void init_C_Encoder();
+    void init_x();
 };

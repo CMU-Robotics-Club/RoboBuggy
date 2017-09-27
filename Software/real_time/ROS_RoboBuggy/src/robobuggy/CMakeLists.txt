@@ -13,6 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   message_generation
   serial
+  geodesy
 )
 
 ## System dependencies are found with CMake's conventions
@@ -57,6 +58,7 @@ add_message_files(
   Steering.msg
   Brake.msg
   Diagnostics.msg
+  Pose.msg
 )
 
 ## Generate services in the 'srv' folder
