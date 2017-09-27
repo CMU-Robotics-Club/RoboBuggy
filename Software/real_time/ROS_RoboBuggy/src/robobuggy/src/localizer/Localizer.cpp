@@ -125,9 +125,10 @@ Localizer::Localizer()
     init_C_GPS();
     init_C_Encoder();
     init_x();
-    update_motion_model();
+    update_motion_model(0);
 
-    imu_sub = nh.subscribe<robobuggy::IMU>("IMU", 1000, IMU_Callback);
+    // TODO Work IMU into KF
+//    imu_sub = nh.subscribe<robobuggy::IMU>("IMU", 1000, IMU_Callback);
     gps_sub = nh.subscribe<robobuggy::GPS>("GPS", 1000, GPS_Callback);
     enc_sub = nh.subscribe<robobuggy::ENC>("ENC", 1000, ENC_Callback);
     pose_pub = nh.advertise<robobuggy::Pose>("Pose", 1000);
@@ -139,9 +140,31 @@ void Localizer::update_position_estimate()
 
 }
 
-void Localizer::update_motion_model()
+void Localizer::update_motion_model(double dt)
 {
 
+    A <<
+      1, 0, dt * cos(x(3, 0)), 0, 0,
+      0, 1, dt * sin(x(3, 0)), 0, 0,
+      0, 0, 1, 0, 0,
+      0, 0, 0, 1, dt,
+      0, 0, tan(current_steering_angle) / WHEELBASE_M, 0, 0
+    ;
+
+}
+
+double Localizer::clamp_angle(double theta)
+{
+    while (theta < -M_PI)
+    {
+        theta += 2*M_PI;
+    }
+    while (theta > M_PI)
+    {
+        theta -= 2*M_PI;
+    }
+
+    return theta;
 }
 
 // TODO create runner file once we've filled the rest of this out

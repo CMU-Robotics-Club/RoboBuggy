@@ -1,15 +1,16 @@
 #include "ros/ros.h"
 
-#include <stdio.h>
+#include <geodesy/utm.h>
+#include <string>
+#include <iostream>
+#include <math.h>
+
+#include <eigen3/Eigen/Dense>
+
 #include <robobuggy/IMU.h>
 #include <robobuggy/GPS.h>
 #include <robobuggy/ENC.h>
 #include <robobuggy/Pose.h>
-#include <geodesy/utm.h>
-#include <string>
-#include <iostream>
-
-#include <eigen3/Eigen/Dense>
 
 using Eigen::Matrix;
 
@@ -21,11 +22,12 @@ public:
     static void GPS_Callback(const robobuggy::GPS::ConstPtr& msg);
     static void ENC_Callback(const robobuggy::ENC::ConstPtr& msg);
 private:
-    double current_gps_lat;
-    double current_gps_lon;
+    geodesy::UTMPoint current_position_utm;
     double current_encoder_ticks;
     double prev_encoder_ticks;
-    double current_imu_heading;
+    double current_heading;
+    double current_steering_angle;
+    double WHEELBASE_M;
 
     ros::NodeHandle nh;
     ros::Publisher pose_pub;
@@ -43,7 +45,8 @@ private:
     Matrix<double, 1, 5> C_Encoder;
 
     void update_position_estimate();
-    void update_motion_model();
+    void update_motion_model(double dt);
+    double clamp_angle(double theta);
 
     void init_R();
     void init_P();
