@@ -6,6 +6,11 @@
 #define ROS_ROBOBUGGY_TRANSISTOR_GPS_BROADCASTER_H
 
 #include "ros/ros.h"
+#include "serial/serial.h"
+
+#include <sstream>
+
+#include <robobuggy/GPS.h>
 
 class Transistor_GPS_Broadcaster
 {
@@ -15,6 +20,10 @@ public:
     int handle_serial_messages();
 private:
     ros::Publisher gps_pub;
+    ros::NodeHandle nh;
+    std::string serial_port;
+    int serial_baud;
+    std::string gps_serial_buffer;
 };
 
 #endif //ROS_ROBOBUGGY_TRANSISTOR_GPS_BROADCASTER_H

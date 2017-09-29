@@ -149,6 +149,7 @@ add_executable(${PROJECT_NAME}_IMU_Broadcaster_Runner src/imu/IMU_Broadcaster_Ru
 add_executable(${PROJECT_NAME}_GPS_Broadcaster_Runner src/gps/GPS_Broadcaster_Runner.cpp src/gps/GPS_Broadcaster.cpp)
 add_executable(${PROJECT_NAME}_ENC_Broadcaster_Runner src/encoder/ENC_Broadcaster_Runner.cpp src/encoder/ENC_Broadcaster.cpp)
 add_executable(${PROJECT_NAME}_Transistor_LL_Broadcaster_Runner src/low_level/Transistor_LL_Broadcaster_Runner.cpp src/low_level/Transistor_LL_Broadcaster.cpp)
+add_executable(${PROJECT_NAME}_Transistor_GPS_Broadcaster_Runner src/gps/Transistor_GPS_Broadcaster_Runner.cpp src/gps/Transistor_GPS_Broadcaster.cpp)
 add_executable(${PROJECT_NAME}_Transistor_Localizer_Runner src/localizer/Localizer.cpp)
 
 add_dependencies(${PROJECT_NAME}_Controller_Runner robobuggy_generate_messages_cpp)
@@ -156,6 +157,7 @@ add_dependencies(${PROJECT_NAME}_IMU_Broadcaster_Runner robobuggy_generate_messa
 add_dependencies(${PROJECT_NAME}_GPS_Broadcaster_Runner robobuggy_generate_messages_cpp)
 add_dependencies(${PROJECT_NAME}_ENC_Broadcaster_Runner robobuggy_generate_messages_cpp)
 add_dependencies(${PROJECT_NAME}_Transistor_LL_Broadcaster_Runner robobuggy_generate_messages_cpp)
+add_dependencies(${PROJECT_NAME}_Transistor_GPS_Broadcaster_Runner robobuggy_generate_messages_cpp)
 add_dependencies(${PROJECT_NAME}_Transistor_Localizer_Runner robobuggy_generate_messages_cpp)
 
 ## Rename C++ executable without prefix
@@ -168,6 +170,7 @@ set_target_properties(${PROJECT_NAME}_IMU_Broadcaster_Runner PROPERTIES OUTPUT_N
 set_target_properties(${PROJECT_NAME}_GPS_Broadcaster_Runner PROPERTIES OUTPUT_NAME GPS_Broadcaster PREFIX "")
 set_target_properties(${PROJECT_NAME}_ENC_Broadcaster_Runner PROPERTIES OUTPUT_NAME ENC_Broadcaster PREFIX "")
 set_target_properties(${PROJECT_NAME}_Transistor_LL_Broadcaster_Runner PROPERTIES OUTPUT_NAME Transistor_LL_Broadcaster PREFIX "")
+set_target_properties(${PROJECT_NAME}_Transistor_GPS_Broadcaster_Runner PROPERTIES OUTPUT_NAME Transistor_GPS_Broadcaster PREFIX "")
 set_target_properties(${PROJECT_NAME}_Transistor_Localizer_Runner PROPERTIES OUTPUT_NAME Transistor_Localizer PREFIX "")
 
 ## Add cmake target dependencies of the executable
@@ -188,6 +191,9 @@ target_link_libraries(${PROJECT_NAME}_ENC_Broadcaster_Runner
   ${catkin_LIBRARIES}
 )
 target_link_libraries(${PROJECT_NAME}_Transistor_LL_Broadcaster_Runner
+  ${catkin_LIBRARIES}
+)
+target_link_libraries(${PROJECT_NAME}_Transistor_GPS_Broadcaster_Runner
   ${catkin_LIBRARIES}
 )
 target_link_libraries(${PROJECT_NAME}_Transistor_Localizer_Runner
