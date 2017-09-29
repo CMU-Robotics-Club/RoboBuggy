@@ -3,7 +3,7 @@
 #include "serial/serial.h"
 
 std::string rb_serial_buffer;
-const std::string Transistor_LL_Broadcaster::NODE_NAME = "Transistor_LowLevel_Broadcaster"; 
+const std::string Transistor_LL_Broadcaster::NODE_NAME = "Transistor_LL_Broadcaster";
 Transistor_LL_Broadcaster::Transistor_LL_Broadcaster()
 {
     brake_pub = nh.advertise<robobuggy::Brake>("Brake", 1000);
@@ -33,11 +33,11 @@ int Transistor_LL_Broadcaster::handle_serial_messages() {
     // Initialize serial communication
     std::string serial_port;
     int serial_baud;
-    if (!nh.getParam("serial_port", serial_port)) {
+    if (!nh.getParam(NODE_NAME + "/serial_port", serial_port)) {
         ROS_INFO_STREAM("Serial port parameter not found, using default");
-        serial_port = "/dev/ttyACM0"; // Default value
+        serial_port = "/dev/ttyACM1"; // Default value
     }
-    if (!nh.getParam("serial_baud", serial_baud)) {
+    if (!nh.getParam(NODE_NAME + "/serial_baud", serial_baud)) {
         ROS_INFO_STREAM("Serial baud rate parameter not found, using default");
         serial_baud = 57600; // Default value
     }

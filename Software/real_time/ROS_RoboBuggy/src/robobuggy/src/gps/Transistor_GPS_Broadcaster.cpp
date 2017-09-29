@@ -11,12 +11,12 @@ Transistor_GPS_Broadcaster::Transistor_GPS_Broadcaster()
 {
     gps_pub = nh.advertise<robobuggy::GPS>("GPS", 1000);
 
-    if (!nh.getParam("serial_port", serial_port))
+    if (!nh.getParam(NODE_NAME + "/serial_port", serial_port))
     {
         ROS_INFO_STREAM("Serial Port Parameter not found, using default");
         serial_port = "/dev/ttyACM0";
     }
-    if (!nh.getParam("serial_baud", serial_baud))
+    if (!nh.getParam(NODE_NAME + "/serial_baud", serial_baud))
     {
         ROS_INFO_STREAM("Serial Baud parameter not found, using default");
         serial_baud = 9600;
