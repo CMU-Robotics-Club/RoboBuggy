@@ -175,6 +175,9 @@ target_link_libraries(${PROJECT_NAME}_Controller_Runner
 target_link_libraries(${PROJECT_NAME}_IMU_Broadcaster_Runner
   ${catkin_LIBRARIES}
 )
+target_link_libraries(${PROJECT_NAME}_IMU_Broadcaster_Runner
+  freespace
+)
 target_link_libraries(${PROJECT_NAME}_GPS_Broadcaster_Runner
   ${catkin_LIBRARIES}
 )

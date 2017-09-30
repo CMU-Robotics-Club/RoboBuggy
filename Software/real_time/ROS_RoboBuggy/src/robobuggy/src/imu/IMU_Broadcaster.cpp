@@ -10,7 +10,7 @@ int IMU_Broadcaster::init_IMU()
     int err;
     err = freespace_init();
     if (err != FREESPACE_SUCCESS) {
-        ROS_ERROR_STREAM("libfreespace initialization error %d\n", err);
+        ROS_ERROR_STREAM("libfreespace initialization error\n");
         return err;
     }
 
