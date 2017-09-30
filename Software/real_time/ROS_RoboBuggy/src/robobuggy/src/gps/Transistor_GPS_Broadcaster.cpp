@@ -71,8 +71,8 @@ int Transistor_GPS_Broadcaster::handle_serial_messages()
                 }
                 else
                 {
-                    double latitude_deg = atof(tokens[2].c_str());
-                    double longitude_deg = atof(tokens[4].c_str());
+                    double latitude_deg = convert_to_latitude(tokens[2]);
+                    double longitude_deg = convert_to_longitude(tokens[4]);
 
                     if (tokens[5] == "W")
                     {
@@ -108,4 +108,20 @@ int Transistor_GPS_Broadcaster::handle_serial_messages()
     }
 
     return 0;
+}
+
+double Transistor_GPS_Broadcaster::convert_to_latitude(std::string str)
+{
+    double degrees = atof(str.substr(0, 2));
+    double minutes = atof(str.substr(2));
+
+    return degrees + minutes /  60.0;
+}
+
+double Transistor_GPS_Broadcaster::convert_to_longitude(std::string str)
+{
+    double degrees = atof(str.substr(0, 3));
+    double minutes = atof(str.substr(3));
+
+    return degrees + minutes / 60.0;
 }

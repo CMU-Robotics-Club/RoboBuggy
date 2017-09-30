@@ -24,6 +24,10 @@ private:
     std::string serial_port;
     int serial_baud;
     std::string gps_serial_buffer;
+
+    double convert_to_latitude(std::string str);
+
+    double convert_to_longitude(std::string str);
 };
 
 #endif //ROS_ROBOBUGGY_TRANSISTOR_GPS_BROADCASTER_H
