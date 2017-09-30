@@ -78,6 +78,42 @@ void IMU_Broadcaster::publish_IMU_message()
             msg.Y_Accel = reading.y;
             msg.Z_Accel = reading.z;
         }
+
+        // Read acceleration no gravity data
+        err = freespace_util_getAccNoGravity(&message.motionEngineOutput, &reading);
+        if (err == 0) {
+            // Load our IMU message with the data
+            msg.X_Accel_noG = reading.x;
+            msg.Y_Accel_noG = reading.y;
+            msg.Z_Accel_noG = reading.z;
+        }
+
+        // Read angular velocity data
+        err = freespace_util_getAngularVelocity(&message.motionEngineOutput, &reading);
+        if (err == 0) {
+            // Load our IMU message with the data
+            msg.X_AngVel = reading.x;
+            msg.Y_AngVel = reading.y;
+            msg.Z_AngVel = reading.z;
+        }
+
+        // Read magnetometer data
+        err = freespace_util_getMagnetometer(&message.motionEngineOutput, &reading);
+        if (err == 0) {
+            // Load our IMU message with the data
+            msg.X_Mag = reading.x;
+            msg.Y_Mag = reading.y;
+            msg.Z_Mag = reading.z;
+        }
+
+        // Read angular position data
+        err = freespace_util_getAngPos(&message.motionEngineOutput, &reading);
+        if (err == 0) {
+            // Load our IMU message with the data
+            msg.X_AngPos = reading.x;
+            msg.Y_AngPos = reading.y;
+            msg.Z_AngPos = reading.z;
+        }
     }
 
     ros::Time tiestamp = ros::Time::now();
