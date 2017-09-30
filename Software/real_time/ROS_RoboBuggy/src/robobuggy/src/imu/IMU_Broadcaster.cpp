@@ -34,7 +34,21 @@ void IMU_Broadcaster::init_IMU()
 
     // Configure device for motion outputs
     message.messageType = FREESPACE_MESSAGE_DATAMODECONTROLV2REQUEST;
-    
+    message.dataModeControlV2Request.packetSelect = 8;  // MotionEngine Outout
+    message.dataModeControlV2Request.mode = 0;          // Set full motion
+    message.dataModeControlV2Request.formatSelect = 0;  // MEOut format 0
+    message.dataModeControlV2Request.ff0 = 1;           // Pointer fields
+	message.dataModeControlV2Request.ff1 = 1;           // Linear Acceleration
+	message.dataModeControlV2Request.ff2 = 1;           // Linear Acce no gravity
+    message.dataModeControlV2Request.ff3 = 1;           // Angular velocity fields
+	message.dataModeControlV2Request.ff4 = 1;           // Magnetometer
+	message.dataModeControlV2Request.ff6 = 1;           // Angular position
+
+    err = freespace_sendMessage(device, &message);
+    if( err != FREESPACE_SUCCESS) {
+        ROS_ERROR_STREAM("Could not send message\n");
+        return err;
+    }
 }
 
 void IMU_Broadcaster::publish_IMU_messages()
