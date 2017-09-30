@@ -49,6 +49,8 @@ int IMU_Broadcaster::init_IMU()
         ROS_ERROR_STREAM("Could not send message\n");
         return err;
     }
+
+    return 0;
 }
 
 void IMU_Broadcaster::publish_IMU_message()
@@ -58,12 +60,13 @@ void IMU_Broadcaster::publish_IMU_message()
     
     err = freespace_readMessage(device, &message, 100);
 
-    if ((err == FREESPACE_ERROR_TIMEOUT) || (err == FREESPACE_ERR_INTERRUPTED)) {
+    if ((err == FREESPACE_ERROR_TIMEOUT) || (err == FREESPACE_ERROR_INTERRUPTED)) {
         return;
     }
     if (err != FREESPACE_SUCCESS) {
         //@TODO: This doesn't actually terminate the loop
-        ROS_ERROR_STREAM("Error reading message\n");
+        ROS_ERROR_STREAM("Error reading message");
+        ROS_ERROR_STREAM(err);
         return;
     }
 
@@ -116,7 +119,7 @@ void IMU_Broadcaster::publish_IMU_message()
         }
     }
 
-    ros::Time tiestamp = ros::Time::now();
+    ros::Time timestamp = ros::Time::now();
     msg.header.stamp = timestamp;
 
     imu_pub.publish(msg);
