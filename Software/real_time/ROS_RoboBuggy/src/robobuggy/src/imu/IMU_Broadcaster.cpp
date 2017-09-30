@@ -5,7 +5,7 @@ IMU_Broadcaster::IMU_Broadcaster()
     imu_pub = nh.advertise<robobuggy::IMU>("IMU", 1000);
 }
 
-void IMU_Broadcaster::init_IMU()
+int IMU_Broadcaster::init_IMU()
 {
     int err;
     err = freespace_init();
@@ -51,13 +51,37 @@ void IMU_Broadcaster::init_IMU()
     }
 }
 
-void IMU_Broadcaster::publish_IMU_messages()
+void IMU_Broadcaster::publish_IMU_message()
 {
     robobuggy::IMU msg;
+    int err;
+    
+    err = freespace_readMessage(device, &message, 100);
 
-    msg.X_Accel = get_spoofed_x_accel();
-    msg.Y_Accel = get_spoofed_y_accel();
-    msg.Z_Accel = get_spoofed_z_accel();
+    if ((err == FREESPACE_ERROR_TIMEOUT) || (err == FREESPACE_ERR_INTERRUPTED)) {
+        return;
+    }
+    if (err != FREESPACE_SUCCESS) {
+        //@TODO: This doesn't actually terminate the loop
+        ROS_ERROR_STREAM("Error reading message\n");
+        return;
+    }
+
+    if (message.messageType == FREESPACE_MESSAGE_MOTIONENGINEOUTPUT) {
+        struct MultiAxisSensor reading;
+
+        // Read acceleration data
+        err = freespace_util_getAcceleration(&message.motionEngineOutput, &reading);
+        if (err == 0) {
+            // Load our IMU message with the data
+            msg.X_Accel = reading.x;
+            msg.Y_Accel = reading.y;
+            msg.Z_Accel = reading.z;
+        }
+    }
+
+    ros::Time tiestamp = ros::Time::now();
+    msg.header.stamp = timestamp;
 
     imu_pub.publish(msg);
 }

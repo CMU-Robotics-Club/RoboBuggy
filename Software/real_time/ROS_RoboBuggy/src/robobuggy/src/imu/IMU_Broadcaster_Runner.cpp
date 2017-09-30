@@ -8,10 +8,12 @@ int main(int argc, char **argv)
 
     IMU_Broadcaster broadcaster;
 
+    broadcaster.init_IMU();
+
     // Infinitely spin sending dummy IMU messages
     while (ros::ok())
     {
-        broadcaster.publish_new_spoofed_message();
+        broadcaster.publish_IMU_message();
 
         ros::spinOnce();
         loop_rate.sleep();

@@ -11,7 +11,7 @@ class IMU_Broadcaster
 {
 public:
     IMU_Broadcaster();
-    void init_IMU();
+    int init_IMU();
     void publish_IMU_messages();
 private:
     ros::NodeHandle nh;
