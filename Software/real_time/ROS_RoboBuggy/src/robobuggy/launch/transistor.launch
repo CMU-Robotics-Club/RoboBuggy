@@ -5,7 +5,7 @@
     <!-- Node that translates messages from low-level into ROS messages -->
     <node name="Transistor_LL_Broadcaster" pkg="robobuggy" type="Transistor_LL_Broadcaster" required="true">
         <!-- Serial port on device for the Arduino Mega - TODO: udev rule? -->
-        <param name="serial_port" type="string" value="/dev/ttyACM1"/>
+        <param name="serial_port" type="string" value="/dev/buggyarduino"/>
         <!-- Baud rate for communicating with low level -->
         <param name="serial_baud" type="int" value="115200"/>
     </node>
@@ -13,7 +13,7 @@
     <!-- Node that translates messages from the GPS into ROS messages -->
     <node name="Transistor_GPS_Broadcaster" pkg="robobuggy" type="Transistor_GPS_Broadcaster" required="true">
         <!-- Serial port on device for the UBLOX gps- TODO: udev rule? -->
-        <param name="serial_port" type="string" value="/dev/ttyACM0"/>
+        <param name="serial_port" type="string" value="/dev/buggygps"/>
         <!-- Baud rate for communicating with low level -->
         <param name="serial_baud" type="int" value="9600"/>
     </node>
