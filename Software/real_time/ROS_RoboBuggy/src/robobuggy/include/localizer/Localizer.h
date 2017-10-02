@@ -25,6 +25,7 @@ public:
     void GPS_Callback(const robobuggy::GPS::ConstPtr& msg);
     void ENC_Callback(const robobuggy::ENC::ConstPtr& msg);
     void Steering_Callback(const robobuggy::Steering::ConstPtr& msg);
+    void update_position_estimate();
 private:
     geodesy::UTMPoint prev_position_utm;
     double prev_encoder_ticks;
@@ -58,7 +59,6 @@ private:
     void init_C_Encoder();
     void init_x();
 
-    void update_position_estimate();
     void update_motion_model(double dt);
     double clamp_angle(double theta);
     void propagate();
