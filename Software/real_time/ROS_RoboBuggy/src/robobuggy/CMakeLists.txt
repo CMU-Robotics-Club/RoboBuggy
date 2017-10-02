@@ -145,7 +145,7 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/robobuggy_node.cpp)
 add_executable(${PROJECT_NAME}_Controller_Runner src/controller/Controller_Runner.cpp src/controller/Controller.cpp)
-#add_executable(${PROJECT_NAME}_IMU_Broadcaster_Runner src/imu/IMU_Broadcaster_Runner.cpp src/imu/IMU_Broadcaster.cpp)
+add_executable(${PROJECT_NAME}_IMU_Broadcaster_Runner src/imu/IMU_Broadcaster_Runner.cpp src/imu/IMU_Broadcaster.cpp)
 #add_executable(${PROJECT_NAME}_GPS_Broadcaster_Runner src/gps/GPS_Broadcaster_Runner.cpp src/gps/GPS_Broadcaster.cpp)
 #add_executable(${PROJECT_NAME}_ENC_Broadcaster_Runner src/encoder/ENC_Broadcaster_Runner.cpp src/encoder/ENC_Broadcaster.cpp)
 add_executable(${PROJECT_NAME}_Transistor_LL_Broadcaster_Runner src/low_level/Transistor_LL_Broadcaster_Runner.cpp src/low_level/Transistor_LL_Broadcaster.cpp)
@@ -153,7 +153,7 @@ add_executable(${PROJECT_NAME}_Transistor_GPS_Broadcaster_Runner src/gps/Transis
 add_executable(${PROJECT_NAME}_Transistor_Localizer_Runner src/localizer/Localizer_Runner.cpp src/localizer/Localizer.cpp)
 
 add_dependencies(${PROJECT_NAME}_Controller_Runner robobuggy_generate_messages_cpp)
-#add_dependencies(${PROJECT_NAME}_IMU_Broadcaster_Runner robobuggy_generate_messages_cpp)
+add_dependencies(${PROJECT_NAME}_IMU_Broadcaster_Runner robobuggy_generate_messages_cpp)
 #add_dependencies(${PROJECT_NAME}_GPS_Broadcaster_Runner robobuggy_generate_messages_cpp)
 #add_dependencies(${PROJECT_NAME}_ENC_Broadcaster_Runner robobuggy_generate_messages_cpp)
 add_dependencies(${PROJECT_NAME}_Transistor_LL_Broadcaster_Runner robobuggy_generate_messages_cpp)
@@ -166,7 +166,7 @@ add_dependencies(${PROJECT_NAME}_Transistor_Localizer_Runner robobuggy_generate_
 ## e.g. "rosrun someones_pkg node" instead of "rosrun someones_pkg someones_pkg_node"
 # set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME node PREFIX "")
 set_target_properties(${PROJECT_NAME}_Controller_Runner PROPERTIES OUTPUT_NAME Controller PREFIX "")
-#set_target_properties(${PROJECT_NAME}_IMU_Broadcaster_Runner PROPERTIES OUTPUT_NAME IMU_Broadcaster PREFIX "")
+set_target_properties(${PROJECT_NAME}_IMU_Broadcaster_Runner PROPERTIES OUTPUT_NAME IMU_Broadcaster PREFIX "")
 #set_target_properties(${PROJECT_NAME}_GPS_Broadcaster_Runner PROPERTIES OUTPUT_NAME GPS_Broadcaster PREFIX "")
 #set_target_properties(${PROJECT_NAME}_ENC_Broadcaster_Runner PROPERTIES OUTPUT_NAME ENC_Broadcaster PREFIX "")
 set_target_properties(${PROJECT_NAME}_Transistor_LL_Broadcaster_Runner PROPERTIES OUTPUT_NAME Transistor_LL_Broadcaster PREFIX "")
@@ -187,12 +187,12 @@ target_link_libraries(${PROJECT_NAME}_IMU_Broadcaster_Runner
 target_link_libraries(${PROJECT_NAME}_IMU_Broadcaster_Runner
   freespace
 )
-target_link_libraries(${PROJECT_NAME}_GPS_Broadcaster_Runner
-  ${catkin_LIBRARIES}
-)
-target_link_libraries(${PROJECT_NAME}_ENC_Broadcaster_Runner
-  ${catkin_LIBRARIES}
-)
+#target_link_libraries(${PROJECT_NAME}_GPS_Broadcaster_Runner
+#  ${catkin_LIBRARIES}
+#)
+#target_link_libraries(${PROJECT_NAME}_ENC_Broadcaster_Runner
+#  ${catkin_LIBRARIES}
+#)
 target_link_libraries(${PROJECT_NAME}_Transistor_LL_Broadcaster_Runner
   ${catkin_LIBRARIES}
 )
