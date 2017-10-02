@@ -18,7 +18,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
-
+link_directories(/usr/local/lib)
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -181,15 +181,18 @@ set_target_properties(${PROJECT_NAME}_Transistor_Localizer_Runner PROPERTIES OUT
 target_link_libraries(${PROJECT_NAME}_Controller_Runner
   ${catkin_LIBRARIES}
 )
-#target_link_libraries(${PROJECT_NAME}_IMU_Broadcaster_Runner
-#  ${catkin_LIBRARIES}
-#)
-#target_link_libraries(${PROJECT_NAME}_GPS_Broadcaster_Runner
-#  ${catkin_LIBRARIES}
-#)
-#target_link_libraries(${PROJECT_NAME}_ENC_Broadcaster_Runner
-#  ${catkin_LIBRARIES}
-#)
+target_link_libraries(${PROJECT_NAME}_IMU_Broadcaster_Runner
+  ${catkin_LIBRARIES}
+)
+target_link_libraries(${PROJECT_NAME}_IMU_Broadcaster_Runner
+  freespace
+)
+target_link_libraries(${PROJECT_NAME}_GPS_Broadcaster_Runner
+  ${catkin_LIBRARIES}
+)
+target_link_libraries(${PROJECT_NAME}_ENC_Broadcaster_Runner
+  ${catkin_LIBRARIES}
+)
 target_link_libraries(${PROJECT_NAME}_Transistor_LL_Broadcaster_Runner
   ${catkin_LIBRARIES}
 )
