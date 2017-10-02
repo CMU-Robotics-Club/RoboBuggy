@@ -41,8 +41,9 @@ int IMU_Broadcaster::init_IMU()
 	message.dataModeControlV2Request.ff1 = 1;           // Linear Acceleration
 	message.dataModeControlV2Request.ff2 = 1;           // Linear Acce no gravity
     message.dataModeControlV2Request.ff3 = 1;           // Angular velocity fields
-	message.dataModeControlV2Request.ff4 = 1;           // Magnetometer
-	message.dataModeControlV2Request.ff6 = 1;           // Angular position
+    message.dataModeControlV2Request.ff4 = 1;           // Magnetometer
+    message.dataModeControlV2Request.ff5 = 0;
+    message.dataModeControlV2Request.ff6 = 1;           // Angular position
 
     err = freespace_sendMessage(device, &message);
     if( err != FREESPACE_SUCCESS) {
@@ -80,6 +81,8 @@ void IMU_Broadcaster::publish_IMU_message()
             msg.X_Accel = reading.x;
             msg.Y_Accel = reading.y;
             msg.Z_Accel = reading.z;
+        } else {
+            ROS_ERROR_STREAM("Error receiving IMU acceleration");
         }
 
         // Read acceleration no gravity data
@@ -89,6 +92,8 @@ void IMU_Broadcaster::publish_IMU_message()
             msg.X_Accel_noG = reading.x;
             msg.Y_Accel_noG = reading.y;
             msg.Z_Accel_noG = reading.z;
+        } else {
+            ROS_ERROR_STREAM("Error receiving IMU acceleration without gravity");
         }
 
         // Read angular velocity data
@@ -98,6 +103,8 @@ void IMU_Broadcaster::publish_IMU_message()
             msg.X_AngVel = reading.x;
             msg.Y_AngVel = reading.y;
             msg.Z_AngVel = reading.z;
+        } else {
+            ROS_ERROR_STREAM("Error receiving IMU velocity");
         }
 
         // Read magnetometer data
@@ -107,6 +114,8 @@ void IMU_Broadcaster::publish_IMU_message()
             msg.X_Mag = reading.x;
             msg.Y_Mag = reading.y;
             msg.Z_Mag = reading.z;
+        } else {
+            ROS_ERROR_STREAM("Error receiving IMU magnetometer");
         }
 
         // Read angular position data
@@ -116,6 +125,8 @@ void IMU_Broadcaster::publish_IMU_message()
             msg.X_AngPos = reading.x;
             msg.Y_AngPos = reading.y;
             msg.Z_AngPos = reading.z;
+        } else {
+            ROS_ERROR_STREAM("Error receiving angular position data");
         }
     }
 
