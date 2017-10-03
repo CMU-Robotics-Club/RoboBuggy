@@ -29,7 +29,7 @@ Electrical/Transistor/code/lib_avr/rbserialmessages/rbsm_config.h
 real_time/surface_src/java_src/.recommenders/
 real_time/surface_src/java_src/Alice/.classpath
 
-# intellij's nonsense
+# IDE-specific files
 *.eml
 setuptools-19.4.zip
 real_time/surface_src/java_src/.idea
@@ -51,3 +51,4 @@ gradlew
 gradlew.bat
 gradle-wrapper.jar
 *.properties
+*.swp
