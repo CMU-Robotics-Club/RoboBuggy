@@ -90,6 +90,10 @@ int Transistor_GPS_Broadcaster::handle_serial_messages()
                     gps_message.Long_deg = static_cast<float>(longitude_deg);
                     gps_message.Lat_m = static_cast<float>(utm_point.northing);
                     gps_message.Long_m = static_cast<float>(utm_point.easting);
+
+		    ros::Time timestamp = ros::Time::now();
+		    gps_message.header.stamp = timestamp;
+
                     gps_pub.publish(gps_message);
                 }
 
