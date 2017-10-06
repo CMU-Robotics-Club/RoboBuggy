@@ -125,7 +125,7 @@ double Transistor_GPS_Broadcaster::convert_to_latitude(std::string str)
     double degrees = atof(str.substr(0, 2).c_str());
     double minutes = atof(str.substr(2).c_str());
 
-    return degrees + minutes /  60.0;
+    return degrees + (minutes /  60.0);
 }
 
 double Transistor_GPS_Broadcaster::convert_to_longitude(std::string str)

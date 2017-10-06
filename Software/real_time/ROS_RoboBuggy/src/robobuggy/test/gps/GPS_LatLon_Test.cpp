@@ -4,34 +4,20 @@
 
 TEST(GPS_Test_Suite, gps_test_lat_normal)
 {
-}
-
-TEST(GPS_Test_Suite, gps_test_lat_null)
-{
     Transistor_GPS_Broadcaster broadcaster;
-    broadcaster.convert_to_latitude(NULL);
+    ASSERT_NEAR(broadcaster.convert_to_latitude("4124.8963"), 41.414938, 0.000001);
 }
 
 TEST(GPS_Test_Suite, gps_test_lat_emptystr)
 {
     Transistor_GPS_Broadcaster broadcaster;
-    broadcaster.convert_to_latitude("");
-}
-
-TEST(GPS_Test_Suite, gps_test_lat_outofworld)
-{
-
+    ASSERT_EQ(broadcaster.convert_to_latitude(""), 0);
 }
 
 TEST(GPS_Test_Suite, gps_test_lon_normal)
 {
-
-}
-
-TEST(GPS_Test_Suite, gps_test_lon_null)
-{
     Transistor_GPS_Broadcaster broadcaster;
-    broadcaster.convert_to_longitude(NULL);
+    ASSERT_NEAR(broadcaster.convert_to_longitude("08151.6838"), 81.86139667, 0.00000001);
 }
 
 TEST(GPS_Test_Suite, gps_test_lon_emptystr)
@@ -40,14 +26,9 @@ TEST(GPS_Test_Suite, gps_test_lon_emptystr)
     broadcaster.convert_to_longitude("");
 }
 
-TEST(GPS_Test_Suite, gps_test_lon_outofworld)
-{
-
-}
-
 int main(int argc, char **argv)
 {
     testing::InitGoogleTest(&argc, argv);
-    ros::init(argc, argv, "GPS_Tester");
+    ros::init(argc, argv, "GPS_Latitude_Tester");
     return RUN_ALL_TESTS();
 }

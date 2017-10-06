@@ -30,16 +30,11 @@ private:
     double convert_to_latitude(std::string str);
     double convert_to_longitude(std::string str);
 
-    // test cases that use private
+    // test cases that use private methods
     FRIEND_TEST(GPS_Test_Suite, gps_test_lat_normal);
-    FRIEND_TEST(GPS_Test_Suite, gps_test_lat_null);
     FRIEND_TEST(GPS_Test_Suite, gps_test_lat_emptystr);
-    FRIEND_TEST(GPS_Test_Suite, gps_test_lat_outofworld);
-
     FRIEND_TEST(GPS_Test_Suite, gps_test_lon_normal);
-    FRIEND_TEST(GPS_Test_Suite, gps_test_lon_null);
     FRIEND_TEST(GPS_Test_Suite, gps_test_lon_emptystr);
-    FRIEND_TEST(GPS_Test_Suite, gps_test_lon_outofworld);
 };
 
 #endif //ROS_ROBOBUGGY_TRANSISTOR_GPS_BROADCASTER_H
