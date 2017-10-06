@@ -6,6 +6,18 @@
 #include <geographic_msgs/GeoPoint.h>
 #include <geodesy/utm.h>
 
+std::string* parse_gps_string(std::string gps_serial_buffer)
+{
+    std::istringstream ss(gps_serial_buffer);
+    std::string tokens[10];
+
+    for (int i = 0; i < 10; i++)
+    {
+        std::getline(ss, tokens[i], ',');
+    }
+    return tokens;
+
+}
 const std::string Transistor_GPS_Broadcaster::NODE_NAME = "Transistor_GPS_Broadcaster";
 Transistor_GPS_Broadcaster::Transistor_GPS_Broadcaster()
 {
@@ -41,73 +53,63 @@ int Transistor_GPS_Broadcaster::handle_serial_messages()
         return -1;
     }
 
-    while (ros::ok())
+    while(gps_serial.available())
     {
-        if (gps_serial.available())
+        
+        gps_serial_buffer += gps_serial.read(gps_serial.available());
+        std::string* tokens;
+
+        size_t gpgga_pos = 0;
+        if ((gpgga_pos = gps_serial_buffer.find("$GPGGA")) != std::string::npos)
         {
-            gps_serial_buffer += gps_serial.read(gps_serial.available());
-
-            size_t gpgga_pos = 0;
-            if ((gpgga_pos = gps_serial_buffer.find("$GPGGA")) != std::string::npos)
-            {
                 gps_serial_buffer = gps_serial_buffer.substr(gpgga_pos);
+                tokens = parse_gps_string(gps_serial_buffer);
+        }
+        if (tokens[0] != "$GPGGA")
+        {
+            ROS_ERROR_STREAM("read a GPGGA when it wasn't!");
+            return -1;
+        }
+        else if (atoi(tokens[6].c_str()) == 0)
+        {
+            ROS_ERROR_STREAM("Not locked yet!");
+        }
+        else
+        {
+            double latitude_deg = convert_to_latitude(tokens[2]);
+            double longitude_deg = convert_to_longitude(tokens[4]);
 
-                std::istringstream ss(gps_serial_buffer);
-                std::string tokens[10];
+            if (tokens[5] == "W")
+            {
+                longitude_deg = -1*longitude_deg;
+            }
 
-                for (int i = 0; i < 10; i++)
-                {
-                    std::getline(ss, tokens[i], ',');
-                }
+            geographic_msgs::GeoPoint gps_point;
+            gps_point.latitude = latitude_deg;
+            gps_point.longitude = longitude_deg;
 
-                if (tokens[0] != "$GPGGA")
-                {
-                    ROS_ERROR_STREAM("read a GPGGA when it wasn't!");
-                    return -1;
-                }
-                else if (atoi(tokens[6].c_str()) == 0)
-                {
-                    ROS_ERROR_STREAM("Not locked yet!");
-                }
-                else
-                {
-                    double latitude_deg = convert_to_latitude(tokens[2]);
-                    double longitude_deg = convert_to_longitude(tokens[4]);
+            geodesy::UTMPoint utm_point(gps_point);
 
-                    if (tokens[5] == "W")
-                    {
-                        longitude_deg = -1*longitude_deg;
-                    }
+            robobuggy::GPS gps_message;
+            gps_message.Lat_deg = static_cast<float>(latitude_deg);
+            gps_message.Long_deg = static_cast<float>(longitude_deg);
+            gps_message.Lat_m = static_cast<float>(utm_point.northing);
+            gps_message.Long_m = static_cast<float>(utm_point.easting);
 
-                    geographic_msgs::GeoPoint gps_point;
-                    gps_point.latitude = latitude_deg;
-                    gps_point.longitude = longitude_deg;
-
-                    geodesy::UTMPoint utm_point(gps_point);
-
-                    robobuggy::GPS gps_message;
-                    gps_message.Lat_deg = static_cast<float>(latitude_deg);
-                    gps_message.Long_deg = static_cast<float>(longitude_deg);
-                    gps_message.Lat_m = static_cast<float>(utm_point.northing);
-                    gps_message.Long_m = static_cast<float>(utm_point.easting);
-
-		    ros::Time timestamp = ros::Time::now();
+            ros::Time timestamp = ros::Time::now();
 		    gps_message.header.stamp = timestamp;
 
-                    gps_pub.publish(gps_message);
-                }
+            gps_pub.publish(gps_message);
+        }
 
-                size_t total_bytes_read = tokens->length();
-                if (gps_serial_buffer.length() > total_bytes_read)
-                {
-                    gps_serial_buffer = gps_serial_buffer.substr(total_bytes_read);
-                }
-                else
-                {
-                    gps_serial_buffer = "";
-                }
-
-            }
+        size_t total_bytes_read = tokens->length();
+        if (gps_serial_buffer.length() > total_bytes_read)
+        {
+            gps_serial_buffer = gps_serial_buffer.substr(total_bytes_read);
+        }
+        else
+        {
+            gps_serial_buffer = "";
         }
     }
 
