@@ -127,10 +127,12 @@ int Transistor_LL_Broadcaster::handle_serial_messages() {
         return -1;
     }
 
-    while(ros::ok()) {   
+    rb_serial.flush();
+
+    while(ros::ok()) {
         if (rb_serial.available()) {
             // Read from the serial port
-            
+           
             rb_serial_buffer = rb_serial.read(rb_serial.available());
             
             int msg_len = 6;
@@ -142,7 +144,7 @@ int Transistor_LL_Broadcaster::handle_serial_messages() {
                         // There is a full message in the buffer, read it
                         // Otherwise, drop it
                         std::string current_msg = rb_serial_buffer.substr(i+1, msg_len);
-
+                        
                         parse_serial_msg(current_msg);
                     }
                 }

@@ -51,3 +51,6 @@ gradlew
 gradlew.bat
 gradle-wrapper.jar
 *.properties
+
+# Rolls logs
+Software/logs
