@@ -82,7 +82,6 @@
 <dimension x1="66.04" y1="57.15" x2="85.09" y2="57.15" x3="85.09" y3="57.15" textsize="1.778" layer="1" dtype="diameter" unit="inch"/>
 <dimension x1="65.29" y1="58.42" x2="66.79" y2="58.42" x3="66.04" y3="66.04" textsize="1.778" layer="1" dtype="diameter" unit="inch"/>
 <dimension x1="123.19" y1="46.99" x2="123.19" y2="39.37" x3="134.62" y3="43.18" textsize="1.778" layer="1" dtype="diameter" unit="inch"/>
-<text x="125.73" y="57.15" size="1.778" layer="1">&lt;---Strain Relief Holes</text>
 <dimension x1="104.14" y1="29.21" x2="186.69" y2="29.21" x3="145.415" y3="19.05" textsize="1.778" layer="1" unit="inch"/>
 <dimension x1="64.77" y1="58.42" x2="64.77" y2="63.5" x3="52.07" y3="60.96" textsize="1.778" layer="1" unit="inch"/>
 <dimension x1="124.46" y1="39.37" x2="124.46" y2="31.75" x3="134.62" y3="35.56" textsize="1.778" layer="1" unit="inch"/>
@@ -93,6 +92,11 @@
 <dimension x1="85.09" y1="59.69" x2="104.14" y2="59.69" x3="94.615" y3="69.85" textsize="1.778" layer="1" unit="inch"/>
 <dimension x1="104.14" y1="59.69" x2="123.19" y2="59.69" x3="113.665" y3="69.85" textsize="1.778" layer="1" unit="inch"/>
 <dimension x1="21.59" y1="63.5" x2="21.59" y2="24.13" x3="13.97" y3="43.815" textsize="1.778" layer="1" unit="inch"/>
+<text x="81.28" y="26.67" size="1.778" layer="1">BATTERY</text>
+<text x="115.57" y="26.67" size="1.778" layer="1">REMOTE CONTROL</text>
+<text x="95.25" y="26.67" size="1.778" layer="1">AUTONOMOUS</text>
+<text x="24.13" y="55.88" size="1.778" layer="1">EXTERNAL INDICATOR LIGHT
+BOARD, REV. 1</text>
 </plain>
 <libraries>
 <library name="eagle-ltspice" urn="urn:adsk.eagle:library:217">
@@ -1515,6 +1519,10 @@ design rules under a new name.</description>
 </board>
 </drawing>
 <compatibility>
+<note version="6.3" minversion="6.2.2" severity="warning">
+Since Version 6.2.2 text objects can contain more than one line,
+which will not be processed correctly with this version.
+</note>
 <note version="8.2" severity="warning">
 Since Version 8.2, EAGLE supports online libraries. The ids
 of those online libraries will not be understood (or retained)
