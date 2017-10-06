@@ -27,6 +27,7 @@ private:
     int serial_baud;
     std::string gps_serial_buffer;
     
+    int parse_gps_string(std::string gps_serial_buffer); 
     double convert_to_latitude(std::string str);
     double convert_to_longitude(std::string str);
 
