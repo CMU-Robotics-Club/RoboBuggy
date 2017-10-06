@@ -289,17 +289,3 @@ void Localizer::kalman_filter(MatrixXd c, MatrixXd q, MatrixXd z)
     x(2, 0) = clamp_angle(x(2, 0));
     x(4, 0) = clamp_angle(x(4, 0));
 }
-
-
-// TODO create runner file once we've filled the rest of this out
-int main(int argc, char **argv)
-{
-    ros::init(argc, argv, "Localizer");
-    ros::NodeHandle nh;
-    Localizer l;
-
-    ros::spin();
-
-    return 0;
-
-}

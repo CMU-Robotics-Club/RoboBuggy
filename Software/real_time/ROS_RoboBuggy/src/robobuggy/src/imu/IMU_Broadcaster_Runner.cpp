@@ -8,10 +8,18 @@ int main(int argc, char **argv)
 
     IMU_Broadcaster broadcaster;
 
+    int err = broadcaster.init_IMU();
+
+    if (err != 0) {
+        ROS_ERROR_STREAM("Failed to initialize IMU");
+        ROS_ERROR_STREAM(err);
+        return err;
+    }
+
     // Infinitely spin sending dummy IMU messages
     while (ros::ok())
     {
-        broadcaster.publish_new_spoofed_message();
+        broadcaster.publish_IMU_message();
 
         ros::spinOnce();
         loop_rate.sleep();

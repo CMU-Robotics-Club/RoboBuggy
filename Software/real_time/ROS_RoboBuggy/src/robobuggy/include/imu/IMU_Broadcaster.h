@@ -2,16 +2,24 @@
 #include "robobuggy/IMU.h"
 #include <stdio.h>
 
+#include <freespace/freespace.h>
+#include <freespace/freespace_util.h>
+#include <freespace/freespace_printers.h>
+
+
 class IMU_Broadcaster
 {
 public:
     IMU_Broadcaster();
-    float get_spoofed_x_accel();
-    float get_spoofed_y_accel();
-    float get_spoofed_z_accel();
-    void publish_new_spoofed_message();
+    int init_IMU();
+    void publish_IMU_message();
 private:
     ros::NodeHandle nh;
     ros::Publisher imu_pub;
+
+    FreespaceDeviceId device;
+    int numIds;
+
+    struct freespace_message message;
 }
 ;
