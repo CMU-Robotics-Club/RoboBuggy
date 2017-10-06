@@ -3,11 +3,11 @@
     </node>
 
     <!-- Node that translates messages from low-level into ROS messages -->
-    <node name="Transistor_LL_Broadcaster" pkg="robobuggy" type="Transistor_LL_Broadcaster" required="true">
+    <node name="Transistor_LL_Broadcaster" pkg="robobuggy" type="Transistor_LL_Broadcaster" required="true" output="screen">
         <!-- Serial port on device for the Arduino Mega - TODO: udev rule? -->
         <param name="serial_port" type="string" value="/dev/buggyarduino"/>
         <!-- Baud rate for communicating with low level -->
-        <param name="serial_baud" type="int" value="115200"/>
+        <param name="serial_baud" type="int" value="57600"/>
     </node>
 
     <!-- Node that translates messages from the GPS into ROS messages -->
