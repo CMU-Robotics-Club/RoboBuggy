@@ -54,8 +54,7 @@ int Transistor_GPS_Broadcaster::handle_serial_messages()
     }
 
     while(gps_serial.available())
-    {
-        
+    { 
         gps_serial_buffer += gps_serial.read(gps_serial.available());
         std::string* tokens;
 
@@ -88,28 +87,56 @@ int Transistor_GPS_Broadcaster::handle_serial_messages()
             gps_point.latitude = latitude_deg;
             gps_point.longitude = longitude_deg;
 
-            geodesy::UTMPoint utm_point(gps_point);
+            std::istringstream ss(gps_serial_buffer);
+            std::string tokens[10];
 
-            robobuggy::GPS gps_message;
-            gps_message.Lat_deg = static_cast<float>(latitude_deg);
-            gps_message.Long_deg = static_cast<float>(longitude_deg);
-            gps_message.Lat_m = static_cast<float>(utm_point.northing);
-            gps_message.Long_m = static_cast<float>(utm_point.easting);
+            for (int i = 0; i < 10; i++)
+            {
+                std::getline(ss, tokens[i], ',');
+            }
 
-            ros::Time timestamp = ros::Time::now();
-		    gps_message.header.stamp = timestamp;
+            if (tokens[0] != "$GPGGA")
+            {
+                ROS_ERROR_STREAM("read a GPGGA when it wasn't!");
+                return -1;
+            }
+            else if (atoi(tokens[6].c_str()) == 0)
+            {
+                ROS_ERROR_STREAM("Not locked yet!");
+            }
+            else
+            {
+                double latitude_deg = convert_to_latitude(tokens[2]);
+                double longitude_deg = convert_to_longitude(tokens[4]);
 
-            gps_pub.publish(gps_message);
-        }
+                if (tokens[5] == "W")
+                {
+                    longitude_deg = -1*longitude_deg;
+                }
 
-        size_t total_bytes_read = tokens->length();
-        if (gps_serial_buffer.length() > total_bytes_read)
-        {
-            gps_serial_buffer = gps_serial_buffer.substr(total_bytes_read);
-        }
-        else
-        {
-            gps_serial_buffer = "";
+                geodesy::UTMPoint utm_point(gps_point);
+
+                robobuggy::GPS gps_message;
+                gps_message.Lat_deg = static_cast<float>(latitude_deg);
+                gps_message.Long_deg = static_cast<float>(longitude_deg);
+                gps_message.Lat_m = static_cast<float>(utm_point.northing);
+                gps_message.Long_m = static_cast<float>(utm_point.easting);
+
+                ros::Time timestamp = ros::Time::now();
+                gps_message.header.stamp = timestamp;
+
+                gps_pub.publish(gps_message);
+            }
+
+            size_t total_bytes_read = tokens->length();
+            if (gps_serial_buffer.length() > total_bytes_read)
+            {
+                gps_serial_buffer = gps_serial_buffer.substr(total_bytes_read);
+            }
+            else
+            {
+                gps_serial_buffer = "";
+            }
         }
     }
 
@@ -118,14 +145,25 @@ int Transistor_GPS_Broadcaster::handle_serial_messages()
 
 double Transistor_GPS_Broadcaster::convert_to_latitude(std::string str)
 {
+    if (str.length() == 0)
+    {
+        ROS_ERROR_STREAM("Tried to convert empty latitude string");
+        return 0;
+    }
+
     double degrees = atof(str.substr(0, 2).c_str());
     double minutes = atof(str.substr(2).c_str());
 
-    return degrees + minutes /  60.0;
+    return degrees + (minutes /  60.0);
 }
 
 double Transistor_GPS_Broadcaster::convert_to_longitude(std::string str)
 {
+    if (str.length() == 0)
+    {
+        ROS_ERROR_STREAM("Tried to convert empty longitude string");
+        return 0;
+    }
     double degrees = atof(str.substr(0, 3).c_str());
     double minutes = atof(str.substr(3).c_str());
 
