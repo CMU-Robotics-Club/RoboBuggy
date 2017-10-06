@@ -8,7 +8,8 @@ TEST(GPS_Test_Suite, gps_test_lat_normal)
 
 TEST(GPS_Test_Suite, gps_test_lat_null)
 {
-
+    Transistor_GPS_Broadcaster broadcaster;
+    broadcaster.convert_to_latitude(NULL);
 }
 
 TEST(GPS_Test_Suite, gps_test_lat_emptystr)
@@ -22,11 +23,6 @@ TEST(GPS_Test_Suite, gps_test_lat_outofworld)
 
 }
 
-TEST(GPS_Test_Suite, gps_test_lat_notnum)
-{
-
-}
-
 TEST(GPS_Test_Suite, gps_test_lon_normal)
 {
 
@@ -34,7 +30,8 @@ TEST(GPS_Test_Suite, gps_test_lon_normal)
 
 TEST(GPS_Test_Suite, gps_test_lon_null)
 {
-
+    Transistor_GPS_Broadcaster broadcaster;
+    broadcaster.convert_to_longitude(NULL);
 }
 
 TEST(GPS_Test_Suite, gps_test_lon_emptystr)
@@ -44,11 +41,6 @@ TEST(GPS_Test_Suite, gps_test_lon_emptystr)
 }
 
 TEST(GPS_Test_Suite, gps_test_lon_outofworld)
-{
-
-}
-
-TEST(GPS_Test_Suite, gps_test_lon_notnum)
 {
 
 }

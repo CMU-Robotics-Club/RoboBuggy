@@ -35,13 +35,11 @@ private:
     FRIEND_TEST(GPS_Test_Suite, gps_test_lat_null);
     FRIEND_TEST(GPS_Test_Suite, gps_test_lat_emptystr);
     FRIEND_TEST(GPS_Test_Suite, gps_test_lat_outofworld);
-    FRIEND_TEST(GPS_Test_Suite, gps_test_lat_notnum);
 
     FRIEND_TEST(GPS_Test_Suite, gps_test_lon_normal);
     FRIEND_TEST(GPS_Test_Suite, gps_test_lon_null);
     FRIEND_TEST(GPS_Test_Suite, gps_test_lon_emptystr);
     FRIEND_TEST(GPS_Test_Suite, gps_test_lon_outofworld);
-    FRIEND_TEST(GPS_Test_Suite, gps_test_lon_notnum);
 };
 
 #endif //ROS_ROBOBUGGY_TRANSISTOR_GPS_BROADCASTER_H
