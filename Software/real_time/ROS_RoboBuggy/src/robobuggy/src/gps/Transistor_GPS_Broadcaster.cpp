@@ -116,6 +116,12 @@ int Transistor_GPS_Broadcaster::handle_serial_messages()
 
 double Transistor_GPS_Broadcaster::convert_to_latitude(std::string str)
 {
+    if (str.length() == 0)
+    {
+        ROS_ERROR_STREAM("Tried to convert empty latitude string");
+        return 0;
+    }
+
     double degrees = atof(str.substr(0, 2).c_str());
     double minutes = atof(str.substr(2).c_str());
 
@@ -124,6 +130,11 @@ double Transistor_GPS_Broadcaster::convert_to_latitude(std::string str)
 
 double Transistor_GPS_Broadcaster::convert_to_longitude(std::string str)
 {
+    if (str.length() == 0)
+    {
+        ROS_ERROR_STREAM("Tried to convert empty longitude string");
+        return 0;
+    }
     double degrees = atof(str.substr(0, 3).c_str());
     double minutes = atof(str.substr(3).c_str());
 
