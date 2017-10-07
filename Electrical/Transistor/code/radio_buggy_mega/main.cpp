@@ -74,10 +74,6 @@
 #define STATUS_LIGHT_PINN_RED PH6
 #define STATUS_LIGHT_DDR_RED DDRH
 
-#define ENCODER_DDR  DDRD
-#define ENCODER_PORT PORTD
-#define ENCODER_PIN  PIND
-#define ENCODER_PINN PD2 // arduino 19
 #define ENCODER_INT  INT2_vect
 
 #define ENCODER_STEERING_A_DDR  DDRB
@@ -417,8 +413,8 @@ int main(void) {
     unsigned long auton_brake_last = time_start;
     unsigned long auton_steer_last = time_start;
 
-    g_encoder_distance.Init(&ENCODER_PIN, ENCODER_PINN, &ENCODER_PORT, &ENCODER_DDR);
-    
+    g_encoder_distance.Init();
+
     g_encoder_steering.InitQuad(&ENCODER_STEERING_A_PIN,
                                 ENCODER_STEERING_A_PINN,
                                 &ENCODER_STEERING_B_PIN,

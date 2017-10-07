@@ -18,24 +18,14 @@
 #define ENCODER_ALLOW_SINGLE_INT
 
 class Rotary : public Encoder {
-    uint8_t config_;
-    volatile uint8_t *pin_b_reg_;
-    uint8_t pin_b_num_;
-    volatile long ticks_;
-    volatile uint8_t pin_state_last_;
-    volatile uint8_t errors_;
 
     public:
         //Note: the super class's constructor is also called
         Rotary();
 
         /** @brief initialize a single wire encoder */
-        uint8_t Init(volatile uint8_t *pin_a_reg,
-                     uint8_t pin_a_num,
-                     volatile uint8_t *port_addr,
-                     volatile uint8_t *ddr_addr);
+        uint8_t Init();
         /** @brief to be called on interrupt of single wire encoder signal */
-        //void OnInterrupt();
         void OnInterrupt() override;
 };
 

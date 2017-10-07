@@ -33,9 +33,9 @@ extern "C" void __cxa_pure_virtual();
 class Encoder {
     protected:
         volatile uint8_t errors_;
-        volatile long ticks_;
         volatile uint8_t *pin_a_reg_;
         uint8_t pin_a_num_;
+        volatile long ticks_;
 
     public:
         Encoder();
