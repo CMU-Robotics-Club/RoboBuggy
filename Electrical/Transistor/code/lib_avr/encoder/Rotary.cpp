@@ -6,7 +6,7 @@
 
 Rotary::Rotary() {}
 
-uint8_t Rotary::Init() {
+void Rotary::Init() {
     ENCODER_PORT |= _BV(ENCODER_PINN);
     ENCODER_DDR &= ~_BV(ENCODER_PINN);
     EIMSK |= _BV(INT2);

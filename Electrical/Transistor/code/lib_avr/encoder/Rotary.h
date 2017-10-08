@@ -24,7 +24,7 @@ class Rotary : public Encoder {
         Rotary();
 
         /** @brief initialize a single wire encoder */
-        uint8_t Init();
+        void Init();
         /** @brief to be called on interrupt of single wire encoder signal */
         void OnInterrupt() override;
 };
