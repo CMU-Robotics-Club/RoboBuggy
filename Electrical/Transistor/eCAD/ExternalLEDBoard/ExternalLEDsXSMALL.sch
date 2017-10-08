@@ -5467,7 +5467,7 @@ CONN_04
 <pinref part="LED3" gate="G$1" pin="A"/>
 </segment>
 </net>
-<net name="N$7" class="0">
+<net name="GND" class="0">
 <segment>
 <pinref part="LED1" gate="G$1" pin="C"/>
 <wire x1="22.86" y1="50.8" x2="25.4" y2="50.8" width="0.1524" layer="91"/>
