@@ -1,5 +1,6 @@
 #include "transistor/imu/IMU_Broadcaster.h"
 
+const std::string IMU_Broadcaster::NODE_NAME = "IMU_Broadcaster";
 IMU_Broadcaster::IMU_Broadcaster()
 {
     imu_pub = nh.advertise<robobuggy::IMU>("IMU", 1000);

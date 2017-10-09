@@ -15,6 +15,7 @@ void Controller::ENC_Callback(const robobuggy::ENC::ConstPtr& msg)
     ROS_INFO("Received ENC message with ticks: %d", msg->ticks);
 }
 
+const std::string Controller::NODE_NAME = "Controller";
 Controller::Controller()
 {
     imu_sub = nh.subscribe<robobuggy::IMU>("IMU", 1000, IMU_Callback);

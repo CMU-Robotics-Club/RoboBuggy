@@ -16,10 +16,14 @@ class GPS_Broadcaster
 public:
     GPS_Broadcaster();
     static const std::string NODE_NAME;
+    
     int handle_serial_messages();
+
 private:
     ros::NodeHandle nh;
+    
     ros::Publisher gps_pub;
+    
     std::string serial_port;
     int serial_baud;
     std::string gps_serial_buffer;

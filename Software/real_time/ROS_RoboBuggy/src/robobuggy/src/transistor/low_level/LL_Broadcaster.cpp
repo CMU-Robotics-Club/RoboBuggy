@@ -2,29 +2,18 @@
 #include "transistor/transistor_serial_messages.h"
 #include "serial/serial.h"
 
-std::string rb_serial_buffer;
-const std::string LL_Broadcaster::NODE_NAME = "Transistor_LL_Broadcaster";
-LL_Broadcaster::LL_Broadcaster() {
+const std::string LL_Broadcaster::NODE_NAME = "LL_Broadcaster";
+
+LL_Broadcaster::LL_Broadcaster() 
+{
     brake_pub = nh.advertise<robobuggy::Brake>("Brake", 1000);
     steering_pub = nh.advertise<robobuggy::Steering>("Steering", 1000);
     diagnostics_pub = nh.advertise<robobuggy::Diagnostics>("Diagnostics", 1000);
     encoder_pub = nh.advertise<robobuggy::ENC>("Encoder", 1000);
 }
 
-void LL_Broadcaster::publish_brake_msg(robobuggy::Brake msg) {
-    brake_pub.publish(msg);
-}
-void LL_Broadcaster::publish_steering_msg(robobuggy::Steering msg) {
-    steering_pub.publish(msg);
-}
-void LL_Broadcaster::publish_diagnostics_msg(robobuggy::Diagnostics msg) {
-    diagnostics_pub.publish(msg);
-}
-void LL_Broadcaster::publish_encoder_msg(robobuggy::ENC msg) {
-    encoder_pub.publish(msg);
-}
-
-void LL_Broadcaster::parse_serial_msg(std::string serial_msg) {
+void LL_Broadcaster::parse_serial_msg(std::string serial_msg) 
+{
     uint32_t data = 0;
     data |= (serial_msg[1] & 0xFF);
     data <<= 8;
@@ -80,23 +69,23 @@ void LL_Broadcaster::parse_serial_msg(std::string serial_msg) {
     encoder_msg.header.stamp = timestamp;
 
     // Publish messages
-    publish_brake_msg(brake_msg);
-    publish_steering_msg(steering_msg);
-    publish_diagnostics_msg(diagnostics_msg);
-    publish_encoder_msg(encoder_msg);
-
+    // TODO: This currently sends messages even if we haven't received one of 
+    // a given type. Do we want to change this?
+    brake_pub.publish(brake_msg);
+    steering_pub.publish(steering_msg);
+    diagnostics_pub.publish(diagnostics_msg);
+    encoder_pub.publish(encoder_msg);
 }
 
-int LL_Broadcaster::handle_serial_messages() {
-    // Initialize serial communication
-    std::string serial_port;
-    int serial_baud;
+int LL_Broadcaster::handle_serial_messages() 
+{
+    // Get serial communication parameters
     if (!nh.getParam(NODE_NAME + "/serial_port", serial_port)) {
-        ROS_INFO_STREAM("Serial port parameter not found, using default");
+        ROS_INFO("Serial port parameter not found, using default");
         serial_port = "/dev/ttyACM1"; // Default value
     }
     if (!nh.getParam(NODE_NAME + "/serial_baud", serial_baud)) {
-        ROS_INFO_STREAM("Serial baud rate parameter not found, using default");
+        ROS_INFO("Serial baud rate parameter not found, using default");
         serial_baud = 57600; // Default value
     }
 
@@ -122,23 +111,25 @@ int LL_Broadcaster::handle_serial_messages() {
         return -1;
     }
 
+    // Clear the serial buffer
     rb_serial.flush();
+
+    //TODO: Ring buffer
 
     while(ros::ok()) {
         if (rb_serial.available()) {
             // Read from the serial port
-           
-            rb_serial_buffer = rb_serial.read(rb_serial.available());
+            ll_serial_buffer = rb_serial.read(rb_serial.available());
             
             int msg_len = 6;
 
-            for (int i = 0; i < rb_serial_buffer.length(); i++) {
-                if (rb_serial_buffer[i] == RBSM_FOOTER) {
+            for (int i = 0; i < ll_serial_buffer.length(); i++) {
+                if (ll_serial_buffer[i] == RBSM_FOOTER) {
                     // We've found the end of a message from low level
-                    if ((i+msg_len) < rb_serial_buffer.length()) {
+                    if ((i+msg_len) < ll_serial_buffer.length()) {
                         // There is a full message in the buffer, read it
                         // Otherwise, drop it
-                        std::string current_msg = rb_serial_buffer.substr(i+1, msg_len);
+                        std::string current_msg = ll_serial_buffer.substr(i+1, msg_len);
                         
                         parse_serial_msg(current_msg);
                     }

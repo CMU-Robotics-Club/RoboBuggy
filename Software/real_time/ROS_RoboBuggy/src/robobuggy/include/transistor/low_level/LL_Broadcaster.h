@@ -9,15 +9,17 @@
 #include <robobuggy/Diagnostics.h>
 #include <robobuggy/ENC.h>
 
-class LL_Broadcaster {
+class LL_Broadcaster 
+{
 public:
     LL_Broadcaster();
-
     static const std::string NODE_NAME;
     
     int handle_serial_messages();
 
 private:
+    ros::NodeHandle nh;
+    
     ros::Publisher steering_pub;
     ros::Publisher brake_pub;
     ros::Publisher diagnostics_pub;
@@ -27,15 +29,12 @@ private:
     robobuggy::Steering steering_msg;
     robobuggy::Diagnostics diagnostics_msg;
     robobuggy::ENC encoder_msg;
-
-    ros::NodeHandle nh;
-
+    
     serial::Serial rb_serial;
- 
-    void publish_brake_msg(robobuggy::Brake msg);
-    void publish_steering_msg(robobuggy::Steering msg);
-    void publish_diagnostics_msg(robobuggy::Diagnostics msg);
-    void publish_encoder_msg(robobuggy::ENC msg);
+    std::string serial_port;
+    int serial_baud;
+    std::string ll_serial_buffer;
+
     void parse_serial_msg(std::string serial_msg);
 };
 

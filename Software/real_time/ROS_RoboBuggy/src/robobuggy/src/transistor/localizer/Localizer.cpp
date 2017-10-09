@@ -180,6 +180,7 @@ void Localizer::init_x()
     ROS_INFO("Initialized x Matrix to : \n%s", s.str().c_str());
 }
 
+const std::string Localizer::NODE_NAME = "Localizer";
 Localizer::Localizer()
 {
     init_R();

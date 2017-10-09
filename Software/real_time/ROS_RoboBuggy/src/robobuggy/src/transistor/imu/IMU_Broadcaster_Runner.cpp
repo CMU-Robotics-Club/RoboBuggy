@@ -2,7 +2,7 @@
 
 int main(int argc, char **argv)
 {
-    ros::init(argc, argv, "IMU_Broadcaster_Runner");
+    ros::init(argc, argv, IMU_Broadcaster::NODE_NAME);
     ros::NodeHandle nh;
     ros::Rate loop_rate(10);
 
