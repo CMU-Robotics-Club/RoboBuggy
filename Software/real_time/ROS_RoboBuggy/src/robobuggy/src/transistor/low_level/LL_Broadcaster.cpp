@@ -1,35 +1,30 @@
-#include "low_level/Transistor_LL_Broadcaster.h"
-#include "transistor_serial_messages.h"
+#include "transistor/low_level/LL_Broadcaster.h"
+#include "transistor/transistor_serial_messages.h"
 #include "serial/serial.h"
 
 std::string rb_serial_buffer;
-const std::string Transistor_LL_Broadcaster::NODE_NAME = "Transistor_LL_Broadcaster";
-Transistor_LL_Broadcaster::Transistor_LL_Broadcaster()
-{
+const std::string LL_Broadcaster::NODE_NAME = "Transistor_LL_Broadcaster";
+LL_Broadcaster::LL_Broadcaster() {
     brake_pub = nh.advertise<robobuggy::Brake>("Brake", 1000);
     steering_pub = nh.advertise<robobuggy::Steering>("Steering", 1000);
     diagnostics_pub = nh.advertise<robobuggy::Diagnostics>("Diagnostics", 1000);
     encoder_pub = nh.advertise<robobuggy::ENC>("Encoder", 1000);
 }
 
-void Transistor_LL_Broadcaster::publish_brake_msg(robobuggy::Brake msg)
-{
+void LL_Broadcaster::publish_brake_msg(robobuggy::Brake msg) {
     brake_pub.publish(msg);
 }
-void Transistor_LL_Broadcaster::publish_steering_msg(robobuggy::Steering msg)
-{
+void LL_Broadcaster::publish_steering_msg(robobuggy::Steering msg) {
     steering_pub.publish(msg);
 }
-void Transistor_LL_Broadcaster::publish_diagnostics_msg(robobuggy::Diagnostics msg)
-{
+void LL_Broadcaster::publish_diagnostics_msg(robobuggy::Diagnostics msg) {
     diagnostics_pub.publish(msg);
 }
-void Transistor_LL_Broadcaster::publish_encoder_msg(robobuggy::ENC msg)
-{
+void LL_Broadcaster::publish_encoder_msg(robobuggy::ENC msg) {
     encoder_pub.publish(msg);
 }
 
-void Transistor_LL_Broadcaster::parse_serial_msg(std::string serial_msg) {
+void LL_Broadcaster::parse_serial_msg(std::string serial_msg) {
     uint32_t data = 0;
     data |= (serial_msg[1] & 0xFF);
     data <<= 8;
@@ -92,7 +87,7 @@ void Transistor_LL_Broadcaster::parse_serial_msg(std::string serial_msg) {
 
 }
 
-int Transistor_LL_Broadcaster::handle_serial_messages() {
+int LL_Broadcaster::handle_serial_messages() {
     // Initialize serial communication
     std::string serial_port;
     int serial_baud;

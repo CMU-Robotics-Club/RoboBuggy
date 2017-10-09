@@ -11,6 +11,7 @@
 #include "robobuggy/GPS.h"
 #include "std_msgs/String.h"
 #include <string>
+
 class Controller
 {
 public:

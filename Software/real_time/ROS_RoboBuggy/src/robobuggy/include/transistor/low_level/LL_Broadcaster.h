@@ -9,10 +9,9 @@
 #include <robobuggy/Diagnostics.h>
 #include <robobuggy/ENC.h>
 
-class Transistor_LL_Broadcaster
-{
+class LL_Broadcaster {
 public:
-    Transistor_LL_Broadcaster();
+    LL_Broadcaster();
 
     static const std::string NODE_NAME;
     

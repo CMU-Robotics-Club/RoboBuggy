@@ -6,7 +6,6 @@
 #include <freespace/freespace_util.h>
 #include <freespace/freespace_printers.h>
 
-
 class IMU_Broadcaster
 {
 public:
@@ -21,5 +20,4 @@ private:
     int numIds;
 
     struct freespace_message message;
-}
-;
+};

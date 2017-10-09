@@ -1,4 +1,4 @@
-#include "imu/IMU_Broadcaster.h"
+#include "transistor/imu/IMU_Broadcaster.h"
 
 IMU_Broadcaster::IMU_Broadcaster()
 {
@@ -65,7 +65,6 @@ void IMU_Broadcaster::publish_IMU_message()
         return;
     }
     if (err != FREESPACE_SUCCESS) {
-        //@TODO: This doesn't actually terminate the loop
         ROS_ERROR_STREAM("Error reading message");
         ROS_ERROR_STREAM(err);
         return;
