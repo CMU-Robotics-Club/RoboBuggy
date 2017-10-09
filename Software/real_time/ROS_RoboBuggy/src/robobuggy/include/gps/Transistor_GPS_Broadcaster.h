@@ -13,6 +13,8 @@
 
 #include <robobuggy/GPS.h>
 
+#include <geodesy/utm.h>
+
 class Transistor_GPS_Broadcaster
 {
 public:
@@ -26,10 +28,17 @@ private:
     std::string serial_port;
     int serial_baud;
     std::string gps_serial_buffer;
-    
-    int parse_gps_string(std::string gps_serial_buffer); 
+
+    bool gpgga_valid(std::string tokens[]);
+    bool gps_locked(std::string tokens[]);
+
     double convert_to_latitude(std::string str);
     double convert_to_longitude(std::string str);
+
+    geodesy::UTMPoint gps_get_location(double latitude_deg, double longitude_deg);
+    robobuggy::GPS gps_gen_message(double latitude_deg, double longitude_deg, geodesy::UTMPoint utm_point);
+
+    bool parse_gps_string(std::string gps_serial_buffer);
 
     // test cases that use private methods
     FRIEND_TEST(GPS_Test_Suite, gps_test_lat_normal);
