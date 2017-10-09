@@ -12,7 +12,7 @@ var users = require('./routes/users');
 var app = express();
 
 //Set up mongoose connection
-var mongoDB = process.env.MONGODB_URI || "mongodb://varunCMU:robobuggy@ds111565.mlab.com:11565/robobuggy-server-db";
+var mongoDB = process.env.MONGODB_URI || "mongodb://*****:*****@ds111565.mlab.com:11565/robobuggy-server-db";
 mongoose.connect(mongoDB, {
   useMongoClient: true
 });
