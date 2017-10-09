@@ -10,7 +10,7 @@
 
 #include <robobuggy/IMU.h>
 #include <robobuggy/GPS.h>
-#include <robobuggy/ENC.h>
+#include <robobuggy/Encoder.h>
 #include <robobuggy/Pose.h>
 #include <robobuggy/Steering.h>
 
@@ -60,7 +60,7 @@ private:
 
     void IMU_Callback(const robobuggy::IMU::ConstPtr& msg);
     void GPS_Callback(const robobuggy::GPS::ConstPtr& msg);
-    void ENC_Callback(const robobuggy::ENC::ConstPtr& msg);
+    void Encoder_Callback(const robobuggy::Encoder::ConstPtr& msg);
     void Steering_Callback(const robobuggy::Steering::ConstPtr& msg);
  
     void update_motion_model(double dt);

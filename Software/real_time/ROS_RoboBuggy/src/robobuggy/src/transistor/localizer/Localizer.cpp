@@ -1,6 +1,6 @@
 #include "transistor/localizer/Localizer.h"
 
-void Localizer::ENC_Callback(const robobuggy::ENC::ConstPtr &msg)
+void Localizer::Encoder_Callback(const robobuggy::Encoder::ConstPtr &msg)
 {
     long int current_time = get_current_time_millis();
     long int dt = current_time - prev_encoder_time;
@@ -200,7 +200,7 @@ Localizer::Localizer()
     // TODO Work IMU into KF
 //    imu_sub = nh.subscribe<robobuggy::IMU>("IMU", 1000, IMU_Callback);
     gps_sub = nh.subscribe<robobuggy::GPS>("GPS", 1000, &Localizer::GPS_Callback, this);
-    enc_sub = nh.subscribe<robobuggy::ENC>("ENC", 1000, &Localizer::ENC_Callback, this);
+    enc_sub = nh.subscribe<robobuggy::Encoder>("Encoder", 1000, &Localizer::Encoder_Callback, this);
     steering_sub = nh.subscribe<robobuggy::Steering>("Steering", 1000, &Localizer::Steering_Callback, this);
     pose_pub = nh.advertise<robobuggy::Pose>("Pose", 1000);
 

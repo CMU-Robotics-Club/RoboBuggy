@@ -7,7 +7,7 @@
 #include <robobuggy/Steering.h>
 #include <robobuggy/Brake.h>
 #include <robobuggy/Diagnostics.h>
-#include <robobuggy/ENC.h>
+#include <robobuggy/Encoder.h>
 
 class LL_Broadcaster 
 {
@@ -28,7 +28,7 @@ private:
     robobuggy::Brake brake_msg;
     robobuggy::Steering steering_msg;
     robobuggy::Diagnostics diagnostics_msg;
-    robobuggy::ENC encoder_msg;
+    robobuggy::Encoder encoder_msg;
     
     serial::Serial rb_serial;
     std::string serial_port;

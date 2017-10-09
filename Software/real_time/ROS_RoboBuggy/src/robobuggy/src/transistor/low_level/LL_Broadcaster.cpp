@@ -9,7 +9,7 @@ LL_Broadcaster::LL_Broadcaster()
     brake_pub = nh.advertise<robobuggy::Brake>("Brake", 1000);
     steering_pub = nh.advertise<robobuggy::Steering>("Steering", 1000);
     diagnostics_pub = nh.advertise<robobuggy::Diagnostics>("Diagnostics", 1000);
-    encoder_pub = nh.advertise<robobuggy::ENC>("Encoder", 1000);
+    encoder_pub = nh.advertise<robobuggy::Encoder>("Encoder", 1000);
 }
 
 void LL_Broadcaster::parse_serial_msg(std::string serial_msg) 
