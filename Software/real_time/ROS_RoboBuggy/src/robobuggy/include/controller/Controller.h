@@ -25,6 +25,7 @@ private:
     robobuggy::Pose current_pose_estimate;
     robobuggy::GPS target_waypoint;
     std::vector<robobuggy::GPS> waypoint_list;
+    int last_closest_index;
 
     int get_closest_waypoint_index();
     double pure_pursuit_controller();
