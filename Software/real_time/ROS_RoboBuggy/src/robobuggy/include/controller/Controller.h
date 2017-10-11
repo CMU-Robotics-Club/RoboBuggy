@@ -14,15 +14,21 @@
 class Controller
 {
 public:
-    static void IMU_Callback(const robobuggy::IMU::ConstPtr& msg);
-    static void GPS_Callback(const robobuggy::GPS::ConstPtr& msg);
-    static void ENC_Callback(const robobuggy::ENC::ConstPtr& msg);
+    static void Pose_Callback(const robobuggy::Pose::ConstPtr& msg);
     Controller();
     ros::NodeHandle nh;
+    void update_steering_estimate();
 private:
-    ros::Subscriber imu_sub;
-    ros::Subscriber enc_sub;
-    ros::Subscriber gps_sub;
+    ros::Subscriber pose_sub;
+    ros::Publisher steering_pub;
+
+    robobuggy::Pose current_pose_estimate;
+    robobuggy::GPS target_waypoint;
+    std::vector<robobuggy::GPS> waypoint_list;
+
+    int get_closest_waypoint_index();
+    double pure_pursuit_controller();
+    bool get_deploy_brake_value();
 };
 
 #endif //ROS_ROBOBUGGY_CONTROLLER_H

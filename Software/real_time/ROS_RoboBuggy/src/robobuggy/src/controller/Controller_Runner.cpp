@@ -8,10 +8,17 @@ int main(int argc, char **argv)
 {
     ros::init(argc, argv, "Controller");
     ros::NodeHandle nh;
+    ros::Rate loop_rate(10);
 
     Controller controller;
 
-    ros::spin();
+    while (ros::ok())
+    {
+        controller.update_steering_estimate();
+
+        ros::spinOnce();
+        loop_rate.sleep();
+    }
 
     return 0;
 }
