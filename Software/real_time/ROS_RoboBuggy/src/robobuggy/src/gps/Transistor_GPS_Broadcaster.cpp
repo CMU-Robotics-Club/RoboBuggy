@@ -8,8 +8,6 @@
 const std::string Transistor_GPS_Broadcaster::NODE_NAME = "Transistor_GPS_Broadcaster";
 Transistor_GPS_Broadcaster::Transistor_GPS_Broadcaster()
 {
-    gps_pub = nh.advertise<robobuggy::GPS>("GPS", 1000);
-
     if (!nh.getParam(NODE_NAME + "/serial_port", serial_port))
     {
         ROS_INFO_STREAM("Serial Port Parameter not found, using default");
@@ -75,10 +73,10 @@ bool Transistor_GPS_Broadcaster::parse_gps_string(std::string gps_serial_buffer)
     }
     else
     {
-        double latitude_deg = convert_to_latitude(tokens[2]);
-        double longitude_deg = convert_to_longitude(tokens[4]);
+        double latitude_deg = 41.414938;//convert_to_latitude(tokens[2]);
+        double longitude_deg = 81.86139667;//convert_to_longitude(tokens[4]);
 
-        if(tokens[5] == "W") longitude_deg *= -1;
+        //if(tokens[5] == "W") longitude_deg *= -1;
 
         geodesy::UTMPoint utm_point = gps_get_location(latitude_deg, longitude_deg);
 
