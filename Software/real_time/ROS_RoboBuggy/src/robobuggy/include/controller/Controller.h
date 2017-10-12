@@ -9,6 +9,7 @@
 #include "ros/ros.h"
 #include "robobuggy/IMU.h"
 #include "robobuggy/GPS.h"
+#include "robobuggy/Pose.h"
 #include "std_msgs/String.h"
 #include <string>
 class Controller
@@ -26,6 +27,7 @@ private:
     robobuggy::GPS target_waypoint;
     std::vector<robobuggy::GPS> waypoint_list;
     int last_closest_index;
+    const static int WAY_POINT_LOOKAHEAD_MAX = 50;
 
     int get_closest_waypoint_index();
     double pure_pursuit_controller();
