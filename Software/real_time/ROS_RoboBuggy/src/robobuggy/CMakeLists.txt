@@ -59,6 +59,7 @@ add_message_files(
   Brake.msg
   Diagnostics.msg
   Pose.msg
+  SteeringCommand.msg
 )
 
 ## Generate services in the 'srv' folder

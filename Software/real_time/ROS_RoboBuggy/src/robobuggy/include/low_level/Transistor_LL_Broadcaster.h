@@ -8,6 +8,7 @@
 #include <robobuggy/Brake.h>
 #include <robobuggy/Diagnostics.h>
 #include <robobuggy/ENC.h>
+#include <robobuggy/SteeringCommand.h>
 
 class Transistor_LL_Broadcaster
 {
@@ -17,12 +18,15 @@ public:
     static const std::string NODE_NAME;
     
     int handle_serial_messages();
+    static void send_steering_command(const robobuggy::SteeringCommand::ConstPtr& msg);
 
 private:
     ros::Publisher steering_pub;
     ros::Publisher brake_pub;
     ros::Publisher diagnostics_pub;
     ros::Publisher encoder_pub;
+
+    ros::Subscriber steering_sub;
 
     robobuggy::Brake brake_msg;
     robobuggy::Steering steering_msg;

@@ -6,10 +6,14 @@ std::string rb_serial_buffer;
 const std::string Transistor_LL_Broadcaster::NODE_NAME = "Transistor_LL_Broadcaster";
 Transistor_LL_Broadcaster::Transistor_LL_Broadcaster()
 {
+    // Register publishers
     brake_pub = nh.advertise<robobuggy::Brake>("Brake", 1000);
     steering_pub = nh.advertise<robobuggy::Steering>("Steering", 1000);
     diagnostics_pub = nh.advertise<robobuggy::Diagnostics>("Diagnostics", 1000);
     encoder_pub = nh.advertise<robobuggy::ENC>("Encoder", 1000);
+
+    // Register callback for serial command
+    steering_sub = nh.subscribe<robobuggy::SteeringCommand>("SteeringCommand", 1000, send_steering_command);
 }
 
 void Transistor_LL_Broadcaster::publish_brake_msg(robobuggy::Brake msg)
@@ -90,6 +94,21 @@ void Transistor_LL_Broadcaster::parse_serial_msg(std::string serial_msg) {
     publish_diagnostics_msg(diagnostics_msg);
     publish_encoder_msg(encoder_msg);
 
+}
+
+void Transistor_LL_Broadcaster::send_steering_command(const robobuggy::SteeringCommand::ConstPtr& msg) {
+    // Construct the steering command LL message
+    char serial_msg[6];
+    int data = msg->steer_angle;
+
+    serial_msg[0] = 0; // Low-level doesn't care about message ID @TODO VERIFY THIS
+    serial_msg[1] = (data >> 24) & 0xFF;
+    serial_msg[2] = (data >> 16) & 0xFF;
+    serial_msg[3] = (data >> 8) & 0xFF;
+    serial_msg[4] = data & 0xFF;
+    serial_msg[5] == RBSM_FOOTER; // Footer for end of message
+
+    rb_serial.write(serial_msg);
 }
 
 int Transistor_LL_Broadcaster::handle_serial_messages() {
