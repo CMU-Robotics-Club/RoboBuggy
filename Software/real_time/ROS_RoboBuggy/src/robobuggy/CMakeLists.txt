@@ -55,8 +55,10 @@ add_message_files(
   IMU.msg
   GPS.msg
   ENC.msg
-  Steering.msg
-  Brake.msg
+  Command.msg
+  Feedback.msg
+  #Steering.msg
+  #Brake.msg
   Diagnostics.msg
   Pose.msg
   SteeringCommand.msg
