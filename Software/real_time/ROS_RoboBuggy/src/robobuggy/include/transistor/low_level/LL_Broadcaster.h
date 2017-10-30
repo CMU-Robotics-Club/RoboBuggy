@@ -4,10 +4,10 @@
 #include <ros/ros.h>
 #include <serial/serial.h>
 
-#include <robobuggy/Steering.h>
-#include <robobuggy/Brake.h>
+#include <robobuggy/Feedback.h>
 #include <robobuggy/Diagnostics.h>
 #include <robobuggy/Encoder.h>
+#include <robobuggy/Command.h>
 
 class LL_Broadcaster 
 {
@@ -16,17 +16,18 @@ public:
     static const std::string NODE_NAME;
     
     int handle_serial_messages();
+    void send_command(const robobuggy::Command::ConstPtr& msg);
 
 private:
     ros::NodeHandle nh;
     
-    ros::Publisher steering_pub;
-    ros::Publisher brake_pub;
+    ros::Publisher feedback_pub;
     ros::Publisher diagnostics_pub;
     ros::Publisher encoder_pub;
 
-    robobuggy::Brake brake_msg;
-    robobuggy::Steering steering_msg;
+    ros::Subscriber command_sub;
+
+    robobuggy::Feedback feedback_msg;
     robobuggy::Diagnostics diagnostics_msg;
     robobuggy::Encoder encoder_msg;
     
@@ -35,6 +36,9 @@ private:
     int serial_baud;
     std::string ll_serial_buffer;
 
+    void publish_feedback_msg(robobuggy::Feedback msg);
+    void publish_diagnostics_msg(robobuggy::Diagnostics msg);
+    void publish_encoder_msg(robobuggy::Encoder msg);
     void parse_serial_msg(std::string serial_msg);
 };
 

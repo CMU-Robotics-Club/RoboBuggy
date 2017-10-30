@@ -6,10 +6,26 @@ const std::string LL_Broadcaster::NODE_NAME = "LL_Broadcaster";
 
 LL_Broadcaster::LL_Broadcaster() 
 {
-    brake_pub = nh.advertise<robobuggy::Brake>("Brake", 1000);
-    steering_pub = nh.advertise<robobuggy::Steering>("Steering", 1000);
+    // Register publishers
+    feedback_pub = nh.advertise<robobuggy::Feedback>("Feedback", 1000);
     diagnostics_pub = nh.advertise<robobuggy::Diagnostics>("Diagnostics", 1000);
     encoder_pub = nh.advertise<robobuggy::Encoder>("Encoder", 1000);
+
+    // Register callback for serial command
+    command_sub = nh.subscribe<robobuggy::Command>("Command", 1000, &LL_Broadcaster::send_command, this);
+}
+
+void LL_Broadcaster::publish_feedback_msg(robobuggy::Feedback msg)
+{
+    feedback_pub.publish(msg);
+}
+void LL_Broadcaster::publish_diagnostics_msg(robobuggy::Diagnostics msg)
+{
+    diagnostics_pub.publish(msg);
+}
+void LL_Broadcaster::publish_encoder_msg(robobuggy::Encoder msg)
+{
+    encoder_pub.publish(msg);
 }
 
 void LL_Broadcaster::parse_serial_msg(std::string serial_msg) 
@@ -25,31 +41,22 @@ void LL_Broadcaster::parse_serial_msg(std::string serial_msg)
 
     // First byte is serial buffer
     switch((unsigned char)serial_msg[0]) {
-        case RBSM_MID_MEGA_STEER_ANGLE:
-            // Steering angle
-            steering_msg.steer_angle = (int32_t)data;
+        case RBSM_MID_MEGA_STEER_FEEDBACK:
+            // Steering feedback
+            feedback_msg.steer_angle = (int32_t)data;
             break;
         case RBSM_MID_MEGA_BRAKE_STATE:
-            // Brake state
-            brake_msg.brake_state = (bool)data;
+            // Brake feedback
+            feedback_msg.brake_state = (bool)data;
             break;
         case DEVICE_ID:
             diagnostics_msg.device_id = data;
-            break;
-        case RBSM_MID_MEGA_TELEOP_BRAKE_COMMAND:
-            brake_msg.brake_cmd_teleop = (bool)data;
-            break;
-        case RBSM_MID_MEGA_AUTON_BRAKE_COMMAND:
-            brake_msg.brake_cmd_auton = (bool)data;
             break;
         case RBSM_MID_MEGA_AUTON_STATE:
             diagnostics_msg.auton_state = (bool)data;
             break;
         case RBSM_MID_MEGA_BATTERY_LEVEL:
             diagnostics_msg.battery_level = data;
-            break;
-        case RBSM_MID_MEGA_STEER_FEEDBACK:
-            steering_msg.steer_feedback = (int32_t)data;
             break;
         case RBSM_MID_ENC_TICKS_RESET:
             encoder_msg.ticks = data;
@@ -63,23 +70,49 @@ void LL_Broadcaster::parse_serial_msg(std::string serial_msg)
 
     // Add timestamps to messages
     ros::Time timestamp = ros::Time::now();
-    brake_msg.header.stamp = timestamp;
-    steering_msg.header.stamp = timestamp;
+    feedback_msg.header.stamp = timestamp;
     diagnostics_msg.header.stamp = timestamp;
     encoder_msg.header.stamp = timestamp;
 
     // Publish messages
-    // TODO: This currently sends messages even if we haven't received one of 
-    // a given type. Do we want to change this?
-    brake_pub.publish(brake_msg);
-    steering_pub.publish(steering_msg);
-    diagnostics_pub.publish(diagnostics_msg);
-    encoder_pub.publish(encoder_msg);
+    publish_feedback_msg(feedback_msg);
+    publish_diagnostics_msg(diagnostics_msg);
+    publish_encoder_msg(encoder_msg);
+
 }
 
-int LL_Broadcaster::handle_serial_messages() 
-{
-    // Get serial communication parameters
+void LL_Broadcaster::send_command(const robobuggy::Command::ConstPtr& msg) {
+    // Construct and send the steering command
+    char serial_msg[6];
+    int data = msg->steer_cmd;
+
+    serial_msg[0] = RBSM_MID_MEGA_STEER_COMMAND;
+    serial_msg[1] = (data >> 24) & 0xFF;
+    serial_msg[2] = (data >> 16) & 0xFF;
+    serial_msg[3] = (data >> 8) & 0xFF;
+    serial_msg[4] = data & 0xFF;
+    serial_msg[5] == RBSM_FOOTER;
+
+    rb_serial.write(serial_msg);
+
+    // Construct and send the brake command
+    data = msg->brake_cmd;
+
+    serial_msg[0] = RBSM_MID_MEGA_AUTON_BRAKE_COMMAND;
+    serial_msg[1] = (data >> 24) & 0xFF;
+    serial_msg[2] = (data >> 16) & 0xFF;
+    serial_msg[3] = (data >> 8) & 0xFF;
+    serial_msg[4] = data & 0xFF;
+    serial_msg[5] == RBSM_FOOTER;
+
+    rb_serial.write(serial_msg);   
+}
+
+int LL_Broadcaster::handle_serial_messages() {
+    // Initialize serial communication
+    std::string serial_port;
+    int serial_baud;
+    
     if (!nh.getParam(NODE_NAME + "/serial_port", serial_port)) {
         ROS_INFO("Serial port parameter not found, using default");
         serial_port = "/dev/ttyACM1"; // Default value
