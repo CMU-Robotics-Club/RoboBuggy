@@ -6,7 +6,7 @@ from robobuggy.msg import Command
 def sweep_steering():
     pub = rospy.Publisher('Command', Command, queue_size=1000)
     rospy.init_node('steering_sweep', anonymous=True)
-    rate = rospy.Rate(1) # 1Hz
+    rate = rospy.Rate(20) # 1Hz
 
     steering_pos = -1500
     steering_change = 100

@@ -83,17 +83,20 @@ void LL_Broadcaster::parse_serial_msg(std::string serial_msg)
 
 void LL_Broadcaster::send_command(const robobuggy::Command::ConstPtr& msg) {
     // Construct and send the steering command
-    char serial_msg[6];
+    uint8_t serial_msg[6];
     int data = msg->steer_cmd;
 
+    ROS_INFO("Steering command: %d\n", data);
     serial_msg[0] = RBSM_MID_MEGA_STEER_COMMAND;
     serial_msg[1] = (data >> 24) & 0xFF;
     serial_msg[2] = (data >> 16) & 0xFF;
     serial_msg[3] = (data >> 8) & 0xFF;
     serial_msg[4] = data & 0xFF;
-    serial_msg[5] == RBSM_FOOTER;
+    serial_msg[5] = RBSM_FOOTER;
 
-    rb_serial.write(serial_msg);
+    if (rb_serial.isOpen()) {
+        rb_serial.write(serial_msg, 6);
+    }
 
     // Construct and send the brake command
     data = msg->brake_cmd;
@@ -103,9 +106,11 @@ void LL_Broadcaster::send_command(const robobuggy::Command::ConstPtr& msg) {
     serial_msg[2] = (data >> 16) & 0xFF;
     serial_msg[3] = (data >> 8) & 0xFF;
     serial_msg[4] = data & 0xFF;
-    serial_msg[5] == RBSM_FOOTER;
+    serial_msg[5] = RBSM_FOOTER;
 
-    rb_serial.write(serial_msg);   
+    if (rb_serial.isOpen()) {
+        rb_serial.write(serial_msg, 6);
+    }
 }
 
 int LL_Broadcaster::handle_serial_messages() {
@@ -123,7 +128,7 @@ int LL_Broadcaster::handle_serial_messages() {
     }
 
     // Initialize serial communication
-    serial::Serial rb_serial;
+    //serial::Serial rb_serial;
     try {
         rb_serial.setPort(serial_port);
         rb_serial.setBaudrate(serial_baud);
