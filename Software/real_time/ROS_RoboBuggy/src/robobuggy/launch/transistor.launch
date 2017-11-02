@@ -1,9 +1,9 @@
 <launch>
-    <node name="Transistor_Localizer" pkg="robobuggy" type="Transistor_Localizer" required="true">
+    <node name="Transistor_Localizer" pkg="robobuggy" type="Transistor_Localizer" required="false">
     </node>
 
     <!-- Node that translates messages from low-level into ROS messages -->
-    <node name="Transistor_LL_Broadcaster" pkg="robobuggy" type="Transistor_LL_Broadcaster" required="true" output="screen">
+    <node name="Transistor_LL_Broadcaster" pkg="robobuggy" type="Transistor_LL_Broadcaster" required="false" output="screen">
         <!-- Serial port on device for the Arduino Mega - TODO: udev rule? -->
         <param name="serial_port" type="string" value="/dev/buggyarduino"/>
         <!-- Baud rate for communicating with low level -->
@@ -11,11 +11,14 @@
     </node>
 
     <!-- Node that translates messages from the GPS into ROS messages -->
-    <node name="Transistor_GPS_Broadcaster" pkg="robobuggy" type="Transistor_GPS_Broadcaster" required="true">
+    <node name="Transistor_GPS_Broadcaster" pkg="robobuggy" type="Transistor_GPS_Broadcaster" required="false">
         <!-- Serial port on device for the UBLOX gps- TODO: udev rule? -->
         <param name="serial_port" type="string" value="/dev/buggygps"/>
         <!-- Baud rate for communicating with low level -->
         <param name="serial_baud" type="int" value="9600"/>
+    </node>
+
+    <node name="json_publisher" pkg="robobuggy" type="json_publisher.py" required="true">
     </node>
 
 </launch>
