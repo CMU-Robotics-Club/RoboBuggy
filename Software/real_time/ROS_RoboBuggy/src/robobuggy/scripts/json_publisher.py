@@ -6,20 +6,23 @@ from robobuggy.msg import ENC, GPS, Diagnostics
 import time
 import requests
 
-gps_json_dict = { "batteryLevel" : -1 }
+diag_json_dict = { "batteryLevel" : -1 }
 enc_json_dict = { "ticks" : -1 }
-diag_json_dict = { "latitude" : -1, "longitude" : -1 }
+gps_json_dict = { "latitude" : -1, "longitude" : -1 }
 
 def subscriber_callback_Diagnostics(data):
+    global diag_json_dict
     battery_level = data.battery_level
     diag_json_dict = {"batteryLevel" : battery_level}
     pass
 def subscriber_callback_ENC(data):
+    global enc_json_dict
     tick = data.ticks
     enc_json_dict = {"ticks" : tick}
     pass
 
 def subscriber_callback_GPS(data):
+    global gps_json_dict
     gps_json_dict = {"latitude" : data.Lat_deg, "longitude" : data.Long_deg}
     pass
 
