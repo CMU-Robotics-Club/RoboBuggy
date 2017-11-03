@@ -5,23 +5,22 @@ import json
 from robobuggy.msg import ENC, GPS, Diagnostics
 import time
 import requests
+
+gps_json_dict = { "batteryLevel" : -1 }
+enc_json_dict = { "ticks" : -1 }
+diag_json_dict = { "latitude" : -1, "longitude" : -1 }
+
 def subscriber_callback_Diagnostics(data):
     battery_level = data.battery_level
-    json_dict = {"batteryLevel" : battery_level}
-    request = requests.post('https://robobuggy-web-server.herokuapp.com/diagnosticsData', json = json_dict)
-    print("Published to Diagnostics")
+    diag_json_dict = {"batteryLevel" : battery_level}
     pass
 def subscriber_callback_ENC(data):
     tick = data.ticks
-    json_dict = {"ticks" : tick}
-    request = requests.post('https://robobuggy-web-server.herokuapp.com/encoderData', json = json_dict)
-    print("Published to Encoder")
+    enc_json_dict = {"ticks" : tick}
     pass
 
 def subscriber_callback_GPS(data):
-    json_dict = {"latitude" : data.Lat_deg, "longitude" : data.Long_deg}
-    request = requests.post('https://robobuggy-web-server.herokuapp.com/gpsData', json = json_dict)
-    print("Published to GPS")
+    gps_json_dict = {"latitude" : data.Lat_deg, "longitude" : data.Long_deg}
     pass
 
 def start_subscriber_spin():
@@ -29,8 +28,17 @@ def start_subscriber_spin():
     rospy.Subscriber("Encoder", ENC, subscriber_callback_ENC)
     rospy.Subscriber("GPS", GPS, subscriber_callback_GPS)
     rospy.Subscriber("Diagnostics", Diagnostics, subscriber_callback_Diagnostics)
+
+    rate = rospy.Rate(0.5)
+    while not rospy.is_shutdown():
+        request = requests.post('https://robobuggy-web-server.herokuapp.com/gpsData', json = gps_json_dict)
+        request = requests.post('https://robobuggy-web-server.herokuapp.com/encoderData', json = enc_json_dict)
+        request = requests.post('https://robobuggy-web-server.herokuapp.com/diagnosticsData', json = diag_json_dict)
+
+        rate.sleep()
+
+
     print("Success!")
-    rospy.spin()
     pass
 
 if __name__ == "__main__":
