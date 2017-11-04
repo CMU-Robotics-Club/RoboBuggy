@@ -8,8 +8,9 @@ void Controller::Pose_Callback(const robobuggy::Pose::ConstPtr& msg)
 }
 
 
-Controller::Controller()
+Controller::Controller(std::vector<robobuggy::GPS> initial_waypoint_list)
 {
+    this->waypoint_list = initial_waypoint_list;
     steering_pub = nh.advertise<robobuggy::Steering>("Steering_Command", 1000);
     pose_sub = nh.subscribe<robobuggy::Pose>("Pose", 1000, &Controller::Pose_Callback, this);
 }

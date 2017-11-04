@@ -16,10 +16,10 @@
 class Controller
 {
 public:
+    Controller(std::vector<robobuggy::GPS> initial_waypoint_list);
     void Pose_Callback(const robobuggy::Pose::ConstPtr& msg);
-    Controller();
-    ros::NodeHandle nh;
     void update_steering_estimate();
+    ros::NodeHandle nh;
 private:
     ros::Subscriber pose_sub;
     ros::Publisher steering_pub;
@@ -33,9 +33,8 @@ private:
     int get_closest_waypoint_index();
     double pure_pursuit_controller();
     bool get_deploy_brake_value();
-    double normalize_angle_rad();
-    double get_distance_from_pose(robobuggy::Pose pose_msg);
     double normalize_angle_rad(double radians);
+    double get_distance_from_pose(robobuggy::Pose pose_msg);
 };
 
 #endif //ROS_ROBOBUGGY_CONTROLLER_H

@@ -3,6 +3,7 @@
 //
 
 #include "controller/Controller.h"
+#include <json/json.h>
 
 int main(int argc, char **argv)
 {
@@ -10,7 +11,11 @@ int main(int argc, char **argv)
     ros::NodeHandle nh;
     ros::Rate loop_rate(10);
 
-    Controller controller;
+    std::vector<robobuggy::GPS> waypoints;
+
+    
+
+    Controller controller(waypoints);
 
     while (ros::ok())
     {
