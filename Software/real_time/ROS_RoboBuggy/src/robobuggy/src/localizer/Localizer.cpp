@@ -199,7 +199,7 @@ Localizer::Localizer()
     // TODO Work IMU into KF
 //    imu_sub = nh.subscribe<robobuggy::IMU>("IMU", 1000, IMU_Callback);
     gps_sub = nh.subscribe<robobuggy::GPS>("GPS", 1000, &Localizer::GPS_Callback, this);
-    enc_sub = nh.subscribe<robobuggy::ENC>("ENC", 1000, &Localizer::ENC_Callback, this);
+    enc_sub = nh.subscribe<robobuggy::ENC>("Encoder", 1000, &Localizer::ENC_Callback, this);
     steering_sub = nh.subscribe<robobuggy::Steering>("Steering", 1000, &Localizer::Steering_Callback, this);
     pose_pub = nh.advertise<robobuggy::Pose>("Pose", 1000);
 
@@ -214,6 +214,8 @@ void Localizer::update_position_estimate()
     double heading = x_hat(3, 0);
 
     robobuggy::Pose p;
+    ros::Time time_now = ros::Time::now();
+    p.header.stamp = time_now;
     p.heading_rad = heading;
     p.latitude_deg = gps_point.latitude;
     p.longitude_deg = gps_point.longitude;
