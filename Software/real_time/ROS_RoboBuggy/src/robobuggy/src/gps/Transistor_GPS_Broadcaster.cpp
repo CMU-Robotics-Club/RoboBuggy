@@ -145,8 +145,8 @@ robobuggy::GPS Transistor_GPS_Broadcaster::gps_gen_message(double latitude_deg, 
     robobuggy::GPS gps_message;
     gps_message.Lat_deg = latitude_deg;
     gps_message.Long_deg = longitude_deg;
-    gps_message.Lat_m = utm_point.northing;
-    gps_message.Long_m = utm_point.easting;
+    gps_message.Lat_m = static_cast<float>(utm_point.northing);
+    gps_message.Long_m = static_cast<float>(utm_point.easting);
 
     ros::Time timestamp = ros::Time::now();
     gps_message.header.stamp = timestamp;
