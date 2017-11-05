@@ -73,10 +73,10 @@ bool Transistor_GPS_Broadcaster::parse_gps_string(std::string gps_serial_buffer)
     }
     else
     {
-        double latitude_deg = 41.414938;//convert_to_latitude(tokens[2]);
-        double longitude_deg = 81.86139667;//convert_to_longitude(tokens[4]);
+        double latitude_deg = convert_to_latitude(tokens[2]);
+        double longitude_deg = convert_to_longitude(tokens[4]);
 
-        //if(tokens[5] == "W") longitude_deg *= -1;
+        if(tokens[5] == "W") longitude_deg *= -1;
 
         geodesy::UTMPoint utm_point = gps_get_location(latitude_deg, longitude_deg);
 
@@ -143,10 +143,10 @@ geodesy::UTMPoint Transistor_GPS_Broadcaster::gps_get_location(double latitude_d
 
 robobuggy::GPS Transistor_GPS_Broadcaster::gps_gen_message(double latitude_deg, double longitude_deg, geodesy::UTMPoint utm_point) {
     robobuggy::GPS gps_message;
-    gps_message.Lat_deg = static_cast<float>(latitude_deg);
-    gps_message.Long_deg = static_cast<float>(longitude_deg);
-    gps_message.Lat_m = static_cast<float>(utm_point.northing);
-    gps_message.Long_m = static_cast<float>(utm_point.easting);
+    gps_message.Lat_deg = latitude_deg;
+    gps_message.Long_deg = longitude_deg;
+    gps_message.Lat_m = utm_point.northing;
+    gps_message.Long_m = utm_point.easting;
 
     ros::Time timestamp = ros::Time::now();
     gps_message.header.stamp = timestamp;
