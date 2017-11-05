@@ -144,7 +144,7 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/robobuggy_node.cpp)
-add_executable(${PROJECT_NAME}_Controller_Runner src/controller/Controller_Runner.cpp src/controller/Controller.cpp)
+add_executable(${PROJECT_NAME}_Controller_Runner include/json/jsoncpp.cpp src/controller/Controller_Runner.cpp src/controller/Controller.cpp)
 add_executable(${PROJECT_NAME}_IMU_Broadcaster_Runner src/imu/IMU_Broadcaster_Runner.cpp src/imu/IMU_Broadcaster.cpp)
 add_executable(${PROJECT_NAME}_Transistor_LL_Broadcaster_Runner src/low_level/Transistor_LL_Broadcaster_Runner.cpp src/low_level/Transistor_LL_Broadcaster.cpp)
 add_executable(${PROJECT_NAME}_Transistor_GPS_Broadcaster_Runner src/gps/Transistor_GPS_Broadcaster_Runner.cpp src/gps/Transistor_GPS_Broadcaster.cpp)
