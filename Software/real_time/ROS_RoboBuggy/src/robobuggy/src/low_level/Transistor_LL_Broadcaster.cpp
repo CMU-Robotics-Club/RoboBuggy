@@ -29,6 +29,69 @@ void Transistor_LL_Broadcaster::publish_encoder_msg(robobuggy::ENC msg)
     encoder_pub.publish(msg);
 }
 
+void Transistor_LL_Broadcaster::parse_serial_msg(std::string serial_msg) {
+    uint32_t data = 0;
+    data |= (serial_msg[1] & 0xFF);
+    data <<= 8;
+    data |= (serial_msg[2] & 0xFF);
+    data <<= 8;
+    data |= (serial_msg[3] & 0xFF);
+    data <<= 8;
+    data |= (serial_msg[4] & 0xFF);
+
+    // First byte is serial buffer
+    switch((unsigned char)serial_msg[0]) {
+        case RBSM_MID_MEGA_STEER_ANGLE:
+            // Steering angle
+            steering_msg.steer_angle = (int32_t)data;
+            break;
+        case RBSM_MID_MEGA_BRAKE_STATE:
+            // Brake state
+            brake_msg.brake_state = (bool)data;
+            break;
+        case DEVICE_ID:
+            diagnostics_msg.device_id = data;
+            break;
+        case RBSM_MID_MEGA_TELEOP_BRAKE_COMMAND:
+            brake_msg.brake_cmd_teleop = (bool)data;
+            break;
+        case RBSM_MID_MEGA_AUTON_BRAKE_COMMAND:
+            brake_msg.brake_cmd_auton = (bool)data;
+            break;
+        case RBSM_MID_MEGA_AUTON_STATE:
+            diagnostics_msg.auton_state = (bool)data;
+            break;
+        case RBSM_MID_MEGA_BATTERY_LEVEL:
+            diagnostics_msg.battery_level = data;
+            break;
+        case RBSM_MID_MEGA_STEER_FEEDBACK:
+            steering_msg.steer_feedback = (int32_t)data;
+            break;
+        case RBSM_MID_ENC_TICKS_RESET:
+            encoder_msg.ticks = data;
+            break;
+        case RBSM_MID_ERROR:
+            diagnostics_msg.error = data;
+            break;
+        default:
+            break;
+    }
+
+    // Add timestamps to messages
+    ros::Time timestamp = ros::Time::now();
+    brake_msg.header.stamp = timestamp;
+    steering_msg.header.stamp = timestamp;
+    diagnostics_msg.header.stamp = timestamp;
+    encoder_msg.header.stamp = timestamp;
+
+    // Publish messages
+    publish_brake_msg(brake_msg);
+    publish_steering_msg(steering_msg);
+    publish_diagnostics_msg(diagnostics_msg);
+    publish_encoder_msg(encoder_msg);
+
+}
+
 int Transistor_LL_Broadcaster::handle_serial_messages() {
     // Initialize serial communication
     std::string serial_port;
@@ -64,78 +127,28 @@ int Transistor_LL_Broadcaster::handle_serial_messages() {
         return -1;
     }
 
-    while(ros::ok()) {   
+    rb_serial.flush();
+
+    while(ros::ok()) {
         if (rb_serial.available()) {
             // Read from the serial port
-            
+           
             rb_serial_buffer = rb_serial.read(rb_serial.available());
             
-            // Validate complete message
-            if (rb_serial_buffer[5] != RBSM_FOOTER) {
-                // Skip invalid message
-                continue;
+            int msg_len = 6;
+
+            for (int i = 0; i < rb_serial_buffer.length(); i++) {
+                if (rb_serial_buffer[i] == RBSM_FOOTER) {
+                    // We've found the end of a message from low level
+                    if ((i+msg_len) < rb_serial_buffer.length()) {
+                        // There is a full message in the buffer, read it
+                        // Otherwise, drop it
+                        std::string current_msg = rb_serial_buffer.substr(i+1, msg_len);
+                        
+                        parse_serial_msg(current_msg);
+                    }
+                }
             }
-
-            // Extract data word from serial message
-            uint32_t data = 0;
-            data |= (rb_serial_buffer[1] & 0xFF);
-            data <<= 8;
-            data |= (rb_serial_buffer[2] & 0xFF);
-            data <<= 8;
-            data |= (rb_serial_buffer[3] & 0xFF);
-            data <<= 8;
-            data |= (rb_serial_buffer[4] & 0xFF);
-
-            // First byte is serial buffer
-            switch((unsigned char)rb_serial_buffer[0]) {
-                case RBSM_MID_MEGA_STEER_ANGLE:
-                    // Steering angle
-                    steering_msg.steer_angle = (int32_t)data;
-                    break;
-                case RBSM_MID_MEGA_BRAKE_STATE:
-                    // Brake state
-                    brake_msg.brake_state = (bool)data;
-                    break;
-                case DEVICE_ID:
-                    diagnostics_msg.device_id = data;
-                    break;
-                case RBSM_MID_MEGA_TELEOP_BRAKE_COMMAND:
-                    brake_msg.brake_cmd_teleop = (bool)data;
-                    break;
-                case RBSM_MID_MEGA_AUTON_BRAKE_COMMAND:
-                    brake_msg.brake_cmd_auton = (bool)data;
-                    break;
-                case RBSM_MID_MEGA_AUTON_STATE:
-                    diagnostics_msg.auton_state = (bool)data;
-                    break;
-                case RBSM_MID_MEGA_BATTERY_LEVEL:
-                    diagnostics_msg.battery_level = data;
-                    break;
-                case RBSM_MID_MEGA_STEER_FEEDBACK:
-                    steering_msg.steer_feedback = (int32_t)data;
-                    break;
-                case RBSM_MID_ENC_TICKS_RESET:
-                    encoder_msg.ticks = data;
-                    break;
-                case RBSM_MID_ERROR:
-                    diagnostics_msg.error = data;
-                    break;
-                default:
-                    break;
-            }
-
-            // Add timestamps to messages
-            ros::Time timestamp = ros::Time::now();
-            brake_msg.header.stamp = timestamp;
-            steering_msg.header.stamp = timestamp;
-            diagnostics_msg.header.stamp = timestamp;
-            encoder_msg.header.stamp = timestamp;
-
-            // Publish messages
-            publish_brake_msg(brake_msg);
-            publish_steering_msg(steering_msg);
-            publish_diagnostics_msg(diagnostics_msg);
-            publish_encoder_msg(encoder_msg);
         }
         ros::spinOnce();
     }

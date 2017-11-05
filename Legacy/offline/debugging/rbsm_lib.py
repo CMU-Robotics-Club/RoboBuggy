@@ -7,7 +7,7 @@ class RBSerialMessage:
 
     def __init__(self, device_path):
         self.RBSM_FOOTER = "\n" # 0x0A
-        self.RBSM_BAUD_RATE = 76800
+        self.RBSM_BAUD_RATE = 57600
         self.RBSM_PACKET_LENGTH = 6
         # packet format: unsigned byte, big-endian signed int, char
         self.RBSM_PACKET_FORMAT = ">Bic"

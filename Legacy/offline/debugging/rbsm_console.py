@@ -39,9 +39,9 @@ def create_bit_to_str(start_of_values, takeout=""):
     dict = {}
     settings_file = None
     try:
-        settings_file = open("../../real_time/rbsm_config.txt")
+        settings_file = open("../../../Common/rbsm_config.txt")
     except:
-        print("Error! Unable to find real_time/rbsm_headers.txt\n")
+        print("Error! Unable to find Common/rbsm_config.txt\n")
         sys.exit(1)
     # when the correct headers found
     headers_found = False

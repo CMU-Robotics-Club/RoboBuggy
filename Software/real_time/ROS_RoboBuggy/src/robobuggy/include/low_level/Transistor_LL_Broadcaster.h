@@ -37,6 +37,7 @@ private:
     void publish_steering_msg(robobuggy::Steering msg);
     void publish_diagnostics_msg(robobuggy::Diagnostics msg);
     void publish_encoder_msg(robobuggy::ENC msg);
+    void parse_serial_msg(std::string serial_msg);
 };
 
 #endif /* _TRANSISTOR_LL_BROADCASTER_H_ */
