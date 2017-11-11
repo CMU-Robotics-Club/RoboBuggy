@@ -1,5 +1,5 @@
 <launch>
-    <node name="Transistor_Localizer" pkg="robobuggy" type="Transistor_Localizer" required="true">
+    <node name="Transistor_Localizer" pkg="robobuggy" type="Transistor_Localizer" required="true" output="screen">
     </node>
 
     <!-- Node that translates messages from low-level into ROS messages -->

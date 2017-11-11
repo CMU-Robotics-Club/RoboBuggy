@@ -2,6 +2,12 @@
 
 void Localizer::ENC_Callback(const robobuggy::ENC::ConstPtr &msg)
 {
+
+    if (prev_encoder_ticks == -1)
+    {
+        prev_encoder_ticks = msg->ticks;
+    }
+
     long int current_time = get_current_time_millis();
     long int dt = current_time - prev_encoder_time;
 
@@ -29,8 +35,8 @@ void Localizer::ENC_Callback(const robobuggy::ENC::ConstPtr &msg)
 void Localizer::GPS_Callback(const robobuggy::GPS::ConstPtr &msg)
 {
     geodesy::UTMPoint p;
-    p.easting = msg->Lat_m;
-    p.northing = msg->Long_m;
+    p.northing = msg->Lat_m;
+    p.easting = msg->Long_m;
     p.band = 'T';
     p.zone = 17;
     double heading = 0.0;
@@ -195,11 +201,12 @@ Localizer::Localizer()
     gettimeofday(&tp, NULL);
     previous_update_time_ms  = tp.tv_sec * 1000 + tp.tv_usec / 1000;
     prev_encoder_time = previous_update_time_ms;
+    prev_encoder_ticks = -1;
 
     // TODO Work IMU into KF
 //    imu_sub = nh.subscribe<robobuggy::IMU>("IMU", 1000, IMU_Callback);
     gps_sub = nh.subscribe<robobuggy::GPS>("GPS", 1000, &Localizer::GPS_Callback, this);
-    enc_sub = nh.subscribe<robobuggy::ENC>("ENC", 1000, &Localizer::ENC_Callback, this);
+    enc_sub = nh.subscribe<robobuggy::ENC>("Encoder", 1000, &Localizer::ENC_Callback, this);
     steering_sub = nh.subscribe<robobuggy::Steering>("Steering", 1000, &Localizer::Steering_Callback, this);
     pose_pub = nh.advertise<robobuggy::Pose>("Pose", 1000);
 
@@ -214,6 +221,8 @@ void Localizer::update_position_estimate()
     double heading = x_hat(3, 0);
 
     robobuggy::Pose p;
+    ros::Time time_now = ros::Time::now();
+    p.header.stamp = time_now;
     p.heading_rad = heading;
     p.latitude_deg = gps_point.latitude;
     p.longitude_deg = gps_point.longitude;
