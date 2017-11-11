@@ -36,7 +36,7 @@ void Transistor_LL_Broadcaster::parse_serial_msg(std::string serial_msg) {
     {
         ROS_ERROR("Error parsing from serial, message doesn't end in footer!");
         // skip it
-        returnhls;
+        return;
     }
 
 
