@@ -39,10 +39,10 @@ def start_subscriber_spin():
 
     rate = rospy.Rate(0.5)
     while not rospy.is_shutdown():
-        request = requests.post('https://robobuggy-web-server.herokuapp.com/gpsData', json = gps_json_dict)
-        request = requests.post('https://robobuggy-web-server.herokuapp.com/encoderData', json = enc_json_dict)
-        request = requests.post('https://robobuggy-web-server.herokuapp.com/diagnosticsData', json = diag_json_dict)
-        #request = requests.post('https:robobuggy-web-server.herokuapp.com/data', json = data_dict)
+        #request = requests.post('https://robobuggy-web-server.herokuapp.com/gpsData', json = gps_json_dict)
+        #request = requests.post('https://robobuggy-web-server.herokuapp.com/encoderData', json = enc_json_dict)
+        #request = requests.post('https://robobuggy-web-server.herokuapp.com/diagnosticsData', json = diag_json_dict)
+        request = requests.post('https://robobuggy-web-server.herokuapp.com/storeData', json = data_dict)
         rate.sleep()
 
 
