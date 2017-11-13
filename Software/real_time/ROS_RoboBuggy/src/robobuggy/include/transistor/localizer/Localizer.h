@@ -12,7 +12,7 @@
 #include <robobuggy/GPS.h>
 #include <robobuggy/Encoder.h>
 #include <robobuggy/Pose.h>
-#include <robobuggy/Steering.h>
+#include <robobuggy/Feedback.h>
 
 using Eigen::Matrix;
 using Eigen::MatrixXd;
@@ -61,7 +61,7 @@ private:
     void IMU_Callback(const robobuggy::IMU::ConstPtr& msg);
     void GPS_Callback(const robobuggy::GPS::ConstPtr& msg);
     void Encoder_Callback(const robobuggy::Encoder::ConstPtr& msg);
-    void Steering_Callback(const robobuggy::Steering::ConstPtr& msg);
+    void Feedback_Callback(const robobuggy::Feedback::ConstPtr& msg);
  
     void update_motion_model(double dt);
     double clamp_angle(double theta);

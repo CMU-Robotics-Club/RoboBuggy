@@ -9,10 +9,10 @@
 #include <robobuggy/Encoder.h>
 #include <robobuggy/Command.h>
 
-class LL_Broadcaster 
+class LowLevel_Broadcaster 
 {
 public:
-    LL_Broadcaster();
+    LowLevel_Broadcaster();
     static const std::string NODE_NAME;
     
     int handle_serial_messages();

@@ -146,13 +146,13 @@ include_directories(
 # add_executable(${PROJECT_NAME}_node src/robobuggy_node.cpp)
 add_executable(${PROJECT_NAME}_Transistor_Controller_Runner src/transistor/controller/Controller_Runner.cpp src/transistor/controller/Controller.cpp)
 add_executable(${PROJECT_NAME}_Transistor_IMU_Broadcaster_Runner src/transistor/imu/IMU_Broadcaster_Runner.cpp src/transistor/imu/IMU_Broadcaster.cpp)
-add_executable(${PROJECT_NAME}_Transistor_LL_Broadcaster_Runner src/transistor/low_level/LL_Broadcaster_Runner.cpp src/transistor/low_level/LL_Broadcaster.cpp)
+add_executable(${PROJECT_NAME}_Transistor_LowLevel_Broadcaster_Runner src/transistor/low_level/LowLevel_Broadcaster_Runner.cpp src/transistor/low_level/LowLevel_Broadcaster.cpp)
 add_executable(${PROJECT_NAME}_Transistor_GPS_Broadcaster_Runner src/transistor/gps/GPS_Broadcaster_Runner.cpp src/transistor/gps/GPS_Broadcaster.cpp)
 add_executable(${PROJECT_NAME}_Transistor_Localizer_Runner src/transistor/localizer/Localizer_Runner.cpp src/transistor/localizer/Localizer.cpp)
 
 add_dependencies(${PROJECT_NAME}_Transistor_Controller_Runner robobuggy_generate_messages_cpp)
 add_dependencies(${PROJECT_NAME}_Transistor_IMU_Broadcaster_Runner robobuggy_generate_messages_cpp)
-add_dependencies(${PROJECT_NAME}_Transistor_LL_Broadcaster_Runner robobuggy_generate_messages_cpp)
+add_dependencies(${PROJECT_NAME}_Transistor_LowLevel_Broadcaster_Runner robobuggy_generate_messages_cpp)
 add_dependencies(${PROJECT_NAME}_Transistor_GPS_Broadcaster_Runner robobuggy_generate_messages_cpp)
 add_dependencies(${PROJECT_NAME}_Transistor_Localizer_Runner robobuggy_generate_messages_cpp)
 
@@ -163,7 +163,7 @@ add_dependencies(${PROJECT_NAME}_Transistor_Localizer_Runner robobuggy_generate_
 # set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME node PREFIX "")
 set_target_properties(${PROJECT_NAME}_Transistor_Controller_Runner PROPERTIES OUTPUT_NAME Transistor_Controller PREFIX "")
 set_target_properties(${PROJECT_NAME}_Transistor_IMU_Broadcaster_Runner PROPERTIES OUTPUT_NAME Transistor_IMU_Broadcaster PREFIX "")
-set_target_properties(${PROJECT_NAME}_Transistor_LL_Broadcaster_Runner PROPERTIES OUTPUT_NAME Transistor_LL_Broadcaster PREFIX "")
+set_target_properties(${PROJECT_NAME}_Transistor_LowLevel_Broadcaster_Runner PROPERTIES OUTPUT_NAME Transistor_LowLevel_Broadcaster PREFIX "")
 set_target_properties(${PROJECT_NAME}_Transistor_GPS_Broadcaster_Runner PROPERTIES OUTPUT_NAME Transistor_GPS_Broadcaster PREFIX "")
 set_target_properties(${PROJECT_NAME}_Transistor_Localizer_Runner PROPERTIES OUTPUT_NAME Transistor_Localizer PREFIX "")
 
@@ -179,7 +179,7 @@ target_link_libraries(${PROJECT_NAME}_Transistor_IMU_Broadcaster_Runner
   ${catkin_LIBRARIES}
   freespace
 )
-target_link_libraries(${PROJECT_NAME}_Transistor_LL_Broadcaster_Runner
+target_link_libraries(${PROJECT_NAME}_Transistor_LowLevel_Broadcaster_Runner
   ${catkin_LIBRARIES}
 )
 target_link_libraries(${PROJECT_NAME}_Transistor_GPS_Broadcaster_Runner

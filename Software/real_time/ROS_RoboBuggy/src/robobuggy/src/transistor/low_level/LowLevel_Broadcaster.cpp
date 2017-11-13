@@ -1,10 +1,10 @@
-#include "transistor/low_level/LL_Broadcaster.h"
+#include "transistor/low_level/LowLevel_Broadcaster.h"
 #include "transistor/transistor_serial_messages.h"
 #include "serial/serial.h"
 
-const std::string LL_Broadcaster::NODE_NAME = "LL_Broadcaster";
+const std::string LowLevel_Broadcaster::NODE_NAME = "LowLevel_Broadcaster";
 
-LL_Broadcaster::LL_Broadcaster() 
+LowLevel_Broadcaster::LowLevel_Broadcaster() 
 {
     // Register publishers
     feedback_pub = nh.advertise<robobuggy::Feedback>("Feedback", 1000);
@@ -12,24 +12,32 @@ LL_Broadcaster::LL_Broadcaster()
     encoder_pub = nh.advertise<robobuggy::Encoder>("Encoder", 1000);
 
     // Register callback for serial command
-    command_sub = nh.subscribe<robobuggy::Command>("Command", 1000, &LL_Broadcaster::send_command, this);
+    command_sub = nh.subscribe<robobuggy::Command>("Command", 1000, &LowLevel_Broadcaster::send_command, this);
 }
 
-void LL_Broadcaster::publish_feedback_msg(robobuggy::Feedback msg)
+void LowLevel_Broadcaster::publish_feedback_msg(robobuggy::Feedback msg)
 {
     feedback_pub.publish(msg);
 }
-void LL_Broadcaster::publish_diagnostics_msg(robobuggy::Diagnostics msg)
+void LowLevel_Broadcaster::publish_diagnostics_msg(robobuggy::Diagnostics msg)
 {
     diagnostics_pub.publish(msg);
 }
-void LL_Broadcaster::publish_encoder_msg(robobuggy::Encoder msg)
+void LowLevel_Broadcaster::publish_encoder_msg(robobuggy::Encoder msg)
 {
     encoder_pub.publish(msg);
 }
 
-void LL_Broadcaster::parse_serial_msg(std::string serial_msg) 
+void LowLevel_Broadcaster::parse_serial_msg(std::string serial_msg) 
 {
+    // Verify that we actually read a full message
+    if ((serial_msg[5] & 0xFF) != RBSM_FOOTER)
+    {
+        ROS_ERROR("Error parsing from serial, message doesn't end in footer!");
+        // skip it
+        return;
+    }
+    
     uint32_t data = 0;
     data |= (serial_msg[1] & 0xFF);
     data <<= 8;
@@ -81,7 +89,7 @@ void LL_Broadcaster::parse_serial_msg(std::string serial_msg)
 
 }
 
-void LL_Broadcaster::send_command(const robobuggy::Command::ConstPtr& msg) {
+void LowLevel_Broadcaster::send_command(const robobuggy::Command::ConstPtr& msg) {
     // Construct and send the steering command
     uint8_t serial_msg[6];
     int data = msg->steer_cmd;
@@ -113,7 +121,7 @@ void LL_Broadcaster::send_command(const robobuggy::Command::ConstPtr& msg) {
     }
 }
 
-int LL_Broadcaster::handle_serial_messages() {
+int LowLevel_Broadcaster::handle_serial_messages() {
     // Initialize serial communication
     std::string serial_port;
     int serial_baud;
@@ -128,7 +136,6 @@ int LL_Broadcaster::handle_serial_messages() {
     }
 
     // Initialize serial communication
-    //serial::Serial rb_serial;
     try {
         rb_serial.setPort(serial_port);
         rb_serial.setBaudrate(serial_baud);
@@ -151,8 +158,6 @@ int LL_Broadcaster::handle_serial_messages() {
 
     // Clear the serial buffer
     rb_serial.flush();
-
-    //TODO: Ring buffer
 
     while(ros::ok()) {
         if (rb_serial.available()) {
