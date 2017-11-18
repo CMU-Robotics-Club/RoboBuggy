@@ -4514,7 +4514,6 @@ Warning: This is the KIT version of the AXIAL-0.3 package. This package has a sm
 <part name="FRAME1" library="frames" deviceset="LETTER_L" device=""/>
 <part name="P+1" library="supply1" deviceset="VCC" device="" value="3.3v"/>
 <part name="SOLENOID" library="pinhead" deviceset="PINHD-1X3" device=""/>
-<part name="UART1" library="pinhead" deviceset="PINHD-1X6" device=""/>
 <part name="UART2" library="pinhead" deviceset="PINHD-1X6" device=""/>
 <part name="UART3" library="pinhead" deviceset="PINHD-1X6" device=""/>
 <part name="PWR" library="pinhead" deviceset="PINHD-1X3" device=""/>
@@ -4553,7 +4552,6 @@ Warning: This is the KIT version of the AXIAL-0.3 package. This package has a sm
 <attribute name="VALUE" x="40.64" y="73.66" size="1.778" layer="96" rot="R90"/>
 </instance>
 <instance part="SOLENOID" gate="A" x="76.2" y="86.36"/>
-<instance part="UART1" gate="A" x="111.76" y="129.54" rot="R90"/>
 <instance part="UART2" gate="A" x="111.76" y="119.38" rot="R90"/>
 <instance part="UART3" gate="A" x="111.76" y="109.22" rot="R90"/>
 <instance part="PWR" gate="A" x="76.2" y="71.12"/>
@@ -4750,10 +4748,6 @@ Warning: This is the KIT version of the AXIAL-0.3 package. This package has a sm
 <segment>
 <pinref part="UART2" gate="A" pin="6"/>
 <wire x1="116.84" y1="116.84" x2="116.84" y2="114.3" width="0.1524" layer="91"/>
-</segment>
-<segment>
-<pinref part="UART1" gate="A" pin="6"/>
-<wire x1="116.84" y1="127" x2="116.84" y2="124.46" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="UART3" gate="A" pin="6"/>
@@ -4961,26 +4955,6 @@ Warning: This is the KIT version of the AXIAL-0.3 package. This package has a sm
 <segment>
 <pinref part="JP6" gate="A" pin="4"/>
 <wire x1="106.68" y1="139.7" x2="106.68" y2="137.16" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="UART1_TX" class="0">
-<segment>
-<pinref part="UART1" gate="A" pin="2"/>
-<wire x1="106.68" y1="127" x2="106.68" y2="124.46" width="0.1524" layer="91"/>
-</segment>
-<segment>
-<pinref part="JP6" gate="A" pin="5"/>
-<wire x1="109.22" y1="139.7" x2="109.22" y2="137.16" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="UART1_RX" class="0">
-<segment>
-<pinref part="UART1" gate="A" pin="3"/>
-<wire x1="109.22" y1="127" x2="109.22" y2="124.46" width="0.1524" layer="91"/>
-</segment>
-<segment>
-<pinref part="JP6" gate="A" pin="6"/>
-<wire x1="111.76" y1="139.7" x2="111.76" y2="137.16" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="UART3_TX" class="0">
