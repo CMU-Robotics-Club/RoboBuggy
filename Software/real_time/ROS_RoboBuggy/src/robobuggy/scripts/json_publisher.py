@@ -9,14 +9,14 @@ import requests
 diag_json_dict = { "batteryLevel" : -1 }
 enc_json_dict = { "ticks" : -1 }
 gps_json_dict = { "latitude" : -1, "longitude" : -1 }
-data_dict = { "batteryLevel" : -1, "autonState" : False, "error" : -1, "ticks" : -1, "latitude" : -1, "longitude" : -1, "brakeState" : False, "brakeCmdTeleop" : False, "brakeCmdAuton" : False }
+data_dict = { "batteryLevel" : -1, "autonState" : False, "diagnosticsError" : -1, "ticks" : -1, "latitude" : -1, "longitude" : -1, "brakeState" : False, "brakeCmdTeleop" : False, "brakeCmdAuton" : False }
 
 def subscriber_callback_Diagnostics(data):
     global diag_json_dict, data_dict
     battery_level = data.battery_level
     diag_json_dict = {"batteryLevel" : battery_level}
     data_dict["autonState"] = data.auton_state
-    data_dict["error"] = data.error
+    data_dict["diagnosticsError"] = data.error
     data_dict["batteryLevel"] = battery_level
     pass
 def subscriber_callback_ENC(data):
