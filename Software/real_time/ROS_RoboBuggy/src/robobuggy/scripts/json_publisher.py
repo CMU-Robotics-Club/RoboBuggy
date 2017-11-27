@@ -2,7 +2,7 @@
 
 import rospy
 import json
-from robobuggy.msg import ENC, GPS, Diagnostics
+from robobuggy.msg import ENC, GPS, Diagnostics, Brake
 import time
 import requests
 
