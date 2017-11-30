@@ -33,6 +33,7 @@ int IMU_Broadcaster::init_IMU()
         return err;
     }
 
+    memset(&message, 0, sizeof(message));
     // Configure device for motion outputs
     message.messageType = FREESPACE_MESSAGE_DATAMODECONTROLV2REQUEST;
     message.dataModeControlV2Request.packetSelect = 8;  // MotionEngine Outout
@@ -52,6 +53,14 @@ int IMU_Broadcaster::init_IMU()
         return err;
     }
 
+    err = freespace_readMessage(device, &message, 100);
+    if (err != FREESPACE_SUCCESS) {
+        ROS_ERROR("Failed to read back from IMU!\n");
+        return err;
+    }
+
+    ROS_INFO("Successfully Initialized IMU\n");
+
     return 0;
 }
 
@@ -59,7 +68,7 @@ void IMU_Broadcaster::publish_IMU_message()
 {
     robobuggy::IMU msg;
     int err;
-    
+
     err = freespace_readMessage(device, &message, 100);
 
     if ((err == FREESPACE_ERROR_TIMEOUT) || (err == FREESPACE_ERROR_INTERRUPTED)) {
