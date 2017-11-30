@@ -30,6 +30,16 @@ void Transistor_LL_Broadcaster::publish_encoder_msg(robobuggy::ENC msg)
 }
 
 void Transistor_LL_Broadcaster::parse_serial_msg(std::string serial_msg) {
+
+    // Verify that we actually read a full message
+    if ((serial_msg[5] & 0xFF) != RBSM_FOOTER)
+    {
+        ROS_ERROR("Error parsing from serial, message doesn't end in footer!");
+        // skip it
+        return;
+    }
+
+
     uint32_t data = 0;
     data |= (serial_msg[1] & 0xFF);
     data <<= 8;
