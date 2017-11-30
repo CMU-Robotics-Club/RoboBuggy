@@ -237,6 +237,11 @@ target_link_libraries(${PROJECT_NAME}_Transistor_Localizer_Runner
 #  target_link_libraries(${PROJECT_NAME}-imu-spoof-test ${catkin_LIBRARIES})
 #endif()
 
+catkin_add_gtest(${PROJECT_NAME}-transistor-gps-latlon-test test/gps/GPS_LatLon_Test.cpp src/gps/Transistor_GPS_Broadcaster.cpp)
+if (TARGET ${PROJECT_NAME}-transistor-gps-latlon-test)
+  target_link_libraries(${PROJECT_NAME}-transistor-gps-latlon-test ${catkin_LIBRARIES})
+endif()
+
 ## Add gtest based cpp test target and link libraries
 # catkin_add_gtest(${PROJECT_NAME}-test test/test_robobuggy.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
