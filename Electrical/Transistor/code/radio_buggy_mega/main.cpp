@@ -64,20 +64,16 @@
 #define RX_AUTON_INT  INT1_vect
 #define RX_AUTON_INTN 1
 
-#define STATUS_LIGHT_PORT_BLUE PORTE
-#define STATUS_LIGHT_PINN_BLUE PE3
-#define STATUS_LIGHT_DDR_BLUE DDRE
 #define STATUS_LIGHT_PORT_GREEN PORTE
-#define STATUS_LIGHT_PINN_GREEN PE5
+#define STATUS_LIGHT_PINN_GREEN PE3
 #define STATUS_LIGHT_DDR_GREEN DDRE
+#define STATUS_LIGHT_PORT_BLUE PORTE
+#define STATUS_LIGHT_PINN_BLUE PE5
+#define STATUS_LIGHT_DDR_BLUE DDRE
 #define STATUS_LIGHT_PORT_RED PORTH
 #define STATUS_LIGHT_PINN_RED PH6
 #define STATUS_LIGHT_DDR_RED DDRH
 
-#define ENCODER_DDR  DDRD
-#define ENCODER_PORT PORTD
-#define ENCODER_PIN  PIND
-#define ENCODER_PINN PD2 // arduino 19
 #define ENCODER_INT  INT2_vect
 
 #define ENCODER_STEERING_A_DDR  DDRB
@@ -174,15 +170,6 @@ int adc_read_blocking(uint8_t pin);
 void steer_set_velocity(long target_velocity);
 void steering_set(int angle);
 int8_t steering_center();
-
-// Lights
-void indicator_light_init();
-void voltage_too_low_light();
-void auton_timeout_light();
-void rc_timeout_failure_light();
-void voltage_too_low_light_reset();
-void auton_timeout_light_reset();
-void rc_timeout_failure_light_reset();
 
 // Brakes
 void brake_init();
@@ -426,8 +413,8 @@ int main(void) {
     unsigned long auton_brake_last = time_start;
     unsigned long auton_steer_last = time_start;
 
-    g_encoder_distance.Init(&ENCODER_PIN, ENCODER_PINN, &ENCODER_PORT, &ENCODER_DDR);
-    
+    g_encoder_distance.Init();
+
     g_encoder_steering.InitQuad(&ENCODER_STEERING_A_PIN,
                                 ENCODER_STEERING_A_PINN,
                                 &ENCODER_STEERING_B_PIN,
