@@ -1,36 +1,35 @@
-#include "low_level/Transistor_LL_Broadcaster.h"
-#include "transistor_serial_messages.h"
+#include "transistor/low_level/LowLevel_Broadcaster.h"
+#include "transistor/transistor_serial_messages.h"
 #include "serial/serial.h"
 
-std::string rb_serial_buffer;
-const std::string Transistor_LL_Broadcaster::NODE_NAME = "Transistor_LL_Broadcaster";
-Transistor_LL_Broadcaster::Transistor_LL_Broadcaster()
+const std::string LowLevel_Broadcaster::NODE_NAME = "LowLevel_Broadcaster";
+
+LowLevel_Broadcaster::LowLevel_Broadcaster()
 {
-    brake_pub = nh.advertise<robobuggy::Brake>("Brake", 1000);
-    steering_pub = nh.advertise<robobuggy::Steering>("Steering", 1000);
+    // Register publishers
+    feedback_pub = nh.advertise<robobuggy::Feedback>("Feedback", 1000);
     diagnostics_pub = nh.advertise<robobuggy::Diagnostics>("Diagnostics", 1000);
-    encoder_pub = nh.advertise<robobuggy::ENC>("Encoder", 1000);
+    encoder_pub = nh.advertise<robobuggy::Encoder>("Encoder", 1000);
+
+    // Register callback for serial command
+    command_sub = nh.subscribe<robobuggy::Command>("Command", 1000, &LowLevel_Broadcaster::send_command, this);
 }
 
-void Transistor_LL_Broadcaster::publish_brake_msg(robobuggy::Brake msg)
+void LowLevel_Broadcaster::publish_feedback_msg(robobuggy::Feedback msg)
 {
-    brake_pub.publish(msg);
+    feedback_pub.publish(msg);
 }
-void Transistor_LL_Broadcaster::publish_steering_msg(robobuggy::Steering msg)
-{
-    steering_pub.publish(msg);
-}
-void Transistor_LL_Broadcaster::publish_diagnostics_msg(robobuggy::Diagnostics msg)
+void LowLevel_Broadcaster::publish_diagnostics_msg(robobuggy::Diagnostics msg)
 {
     diagnostics_pub.publish(msg);
 }
-void Transistor_LL_Broadcaster::publish_encoder_msg(robobuggy::ENC msg)
+void LowLevel_Broadcaster::publish_encoder_msg(robobuggy::Encoder msg)
 {
     encoder_pub.publish(msg);
 }
 
-void Transistor_LL_Broadcaster::parse_serial_msg(std::string serial_msg) {
-
+void LowLevel_Broadcaster::parse_serial_msg(std::string serial_msg)
+{
     // Verify that we actually read a full message
     if ((serial_msg[5] & 0xFF) != RBSM_FOOTER)
     {
@@ -38,7 +37,6 @@ void Transistor_LL_Broadcaster::parse_serial_msg(std::string serial_msg) {
         // skip it
         return;
     }
-
 
     uint32_t data = 0;
     data |= (serial_msg[1] & 0xFF);
@@ -51,31 +49,26 @@ void Transistor_LL_Broadcaster::parse_serial_msg(std::string serial_msg) {
 
     // First byte is serial buffer
     switch((unsigned char)serial_msg[0]) {
-        case RBSM_MID_MEGA_STEER_ANGLE:
-            // Steering angle
-            steering_msg.steer_angle = (int32_t)data;
+        case RBSM_MID_MEGA_STEER_FEEDBACK:
+            feedback_msg.steer_angle = (int32_t)data;
             break;
         case RBSM_MID_MEGA_BRAKE_STATE:
-            // Brake state
-            brake_msg.brake_state = (bool)data;
+            feedback_msg.brake_state = (bool)data;
+            break;
+        case RBSM_MID_MEGA_TELEOP_BRAKE_COMMAND:
+            diagnostics_msg.teleop_brake_cmd_status = (bool)data;
+            break;
+        case RBSM_MID_MEGA_AUTON_BRAKE_COMMAND:
+            diagnostics_msg.auton_brake_cmd_status = (bool)data;
             break;
         case DEVICE_ID:
             diagnostics_msg.device_id = data;
-            break;
-        case RBSM_MID_MEGA_TELEOP_BRAKE_COMMAND:
-            brake_msg.brake_cmd_teleop = (bool)data;
-            break;
-        case RBSM_MID_MEGA_AUTON_BRAKE_COMMAND:
-            brake_msg.brake_cmd_auton = (bool)data;
             break;
         case RBSM_MID_MEGA_AUTON_STATE:
             diagnostics_msg.auton_state = (bool)data;
             break;
         case RBSM_MID_MEGA_BATTERY_LEVEL:
             diagnostics_msg.battery_level = data;
-            break;
-        case RBSM_MID_MEGA_STEER_FEEDBACK:
-            steering_msg.steer_feedback = (int32_t)data;
             break;
         case RBSM_MID_ENC_TICKS_RESET:
             encoder_msg.ticks = data;
@@ -89,34 +82,64 @@ void Transistor_LL_Broadcaster::parse_serial_msg(std::string serial_msg) {
 
     // Add timestamps to messages
     ros::Time timestamp = ros::Time::now();
-    brake_msg.header.stamp = timestamp;
-    steering_msg.header.stamp = timestamp;
+    feedback_msg.header.stamp = timestamp;
     diagnostics_msg.header.stamp = timestamp;
     encoder_msg.header.stamp = timestamp;
 
     // Publish messages
-    publish_brake_msg(brake_msg);
-    publish_steering_msg(steering_msg);
+    publish_feedback_msg(feedback_msg);
     publish_diagnostics_msg(diagnostics_msg);
     publish_encoder_msg(encoder_msg);
 
 }
 
-int Transistor_LL_Broadcaster::handle_serial_messages() {
+void LowLevel_Broadcaster::send_command(const robobuggy::Command::ConstPtr& msg) {
+    // Construct and send the steering command
+    uint8_t serial_msg[6];
+    int data = msg->steer_cmd;
+
+    ROS_INFO("Steering command: %d\n", data);
+    serial_msg[0] = RBSM_MID_MEGA_STEER_COMMAND;
+    serial_msg[1] = (data >> 24) & 0xFF;
+    serial_msg[2] = (data >> 16) & 0xFF;
+    serial_msg[3] = (data >> 8) & 0xFF;
+    serial_msg[4] = data & 0xFF;
+    serial_msg[5] = RBSM_FOOTER;
+
+    if (rb_serial.isOpen()) {
+        rb_serial.write(serial_msg, 6);
+    }
+
+    // Construct and send the brake command
+    data = msg->brake_cmd;
+
+    serial_msg[0] = RBSM_MID_MEGA_AUTON_BRAKE_COMMAND;
+    serial_msg[1] = (data >> 24) & 0xFF;
+    serial_msg[2] = (data >> 16) & 0xFF;
+    serial_msg[3] = (data >> 8) & 0xFF;
+    serial_msg[4] = data & 0xFF;
+    serial_msg[5] = RBSM_FOOTER;
+
+    if (rb_serial.isOpen()) {
+        rb_serial.write(serial_msg, 6);
+    }
+}
+
+int LowLevel_Broadcaster::handle_serial_messages() {
     // Initialize serial communication
     std::string serial_port;
     int serial_baud;
+
     if (!nh.getParam(NODE_NAME + "/serial_port", serial_port)) {
-        ROS_INFO_STREAM("Serial port parameter not found, using default");
+        ROS_INFO("Serial port parameter not found, using default");
         serial_port = "/dev/ttyACM1"; // Default value
     }
     if (!nh.getParam(NODE_NAME + "/serial_baud", serial_baud)) {
-        ROS_INFO_STREAM("Serial baud rate parameter not found, using default");
+        ROS_INFO("Serial baud rate parameter not found, using default");
         serial_baud = 57600; // Default value
     }
 
     // Initialize serial communication
-    serial::Serial rb_serial;
     try {
         rb_serial.setPort(serial_port);
         rb_serial.setBaudrate(serial_baud);
@@ -137,24 +160,24 @@ int Transistor_LL_Broadcaster::handle_serial_messages() {
         return -1;
     }
 
+    // Clear the serial buffer
     rb_serial.flush();
 
     while(ros::ok()) {
         if (rb_serial.available()) {
             // Read from the serial port
-           
-            rb_serial_buffer = rb_serial.read(rb_serial.available());
-            
+            ll_serial_buffer = rb_serial.read(rb_serial.available());
+
             int msg_len = 6;
 
-            for (int i = 0; i < rb_serial_buffer.length(); i++) {
-                if (rb_serial_buffer[i] == RBSM_FOOTER) {
+            for (int i = 0; i < ll_serial_buffer.length(); i++) {
+                if (ll_serial_buffer[i] == RBSM_FOOTER) {
                     // We've found the end of a message from low level
-                    if ((i+msg_len) < rb_serial_buffer.length()) {
+                    if ((i+msg_len) < ll_serial_buffer.length()) {
                         // There is a full message in the buffer, read it
                         // Otherwise, drop it
-                        std::string current_msg = rb_serial_buffer.substr(i+1, msg_len);
-                        
+                        std::string current_msg = ll_serial_buffer.substr(i+1, msg_len);
+
                         parse_serial_msg(current_msg);
                     }
                 }

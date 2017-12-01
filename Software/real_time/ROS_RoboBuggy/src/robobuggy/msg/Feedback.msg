@@ -1,4 +1,4 @@
 Header header
 
+bool brake_state
 int32 steer_angle
-int32 steer_feedback

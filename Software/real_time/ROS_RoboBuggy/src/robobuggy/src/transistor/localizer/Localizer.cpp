@@ -1,6 +1,6 @@
-#include "localizer/Localizer.h"
+#include "transistor/localizer/Localizer.h"
 
-void Localizer::ENC_Callback(const robobuggy::ENC::ConstPtr &msg)
+void Localizer::Encoder_Callback(const robobuggy::Encoder::ConstPtr &msg)
 {
 
     if (prev_encoder_ticks == -1)
@@ -70,9 +70,9 @@ void Localizer::IMU_Callback(const robobuggy::IMU::ConstPtr &msg)
 
 }
 
-void Localizer::Steering_Callback(const robobuggy::Steering::ConstPtr &msg)
+void Localizer::Feedback_Callback(const robobuggy::Feedback::ConstPtr &msg)
 {
-    current_steering_angle = msg->steer_feedback;
+    current_steering_angle = msg->steer_angle;
     current_steering_angle = current_steering_angle / 100;
     current_steering_angle = M_PI / 180 * current_steering_angle;
 }
@@ -186,6 +186,7 @@ void Localizer::init_x()
     ROS_INFO("Initialized x Matrix to : \n%s", s.str().c_str());
 }
 
+const std::string Localizer::NODE_NAME = "Localizer";
 Localizer::Localizer()
 {
     init_R();
@@ -206,8 +207,8 @@ Localizer::Localizer()
     // TODO Work IMU into KF
 //    imu_sub = nh.subscribe<robobuggy::IMU>("IMU", 1000, IMU_Callback);
     gps_sub = nh.subscribe<robobuggy::GPS>("GPS", 1000, &Localizer::GPS_Callback, this);
-    enc_sub = nh.subscribe<robobuggy::ENC>("Encoder", 1000, &Localizer::ENC_Callback, this);
-    steering_sub = nh.subscribe<robobuggy::Steering>("Steering", 1000, &Localizer::Steering_Callback, this);
+    enc_sub = nh.subscribe<robobuggy::Encoder>("Encoder", 1000, &Localizer::Encoder_Callback, this);
+    steering_sub = nh.subscribe<robobuggy::Feedback>("Feedback", 1000, &Localizer::Feedback_Callback, this);
     pose_pub = nh.advertise<robobuggy::Pose>("Pose", 1000);
 
 }

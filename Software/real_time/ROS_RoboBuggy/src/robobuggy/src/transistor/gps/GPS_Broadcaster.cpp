@@ -2,19 +2,19 @@
 // Created by bhai on 9/29/17.
 //
 
-#include <gps/Transistor_GPS_Broadcaster.h>
+#include <transistor/gps/GPS_Broadcaster.h>
 #include <geographic_msgs/GeoPoint.h>
 #include <geodesy/utm.h>
 
-const std::string Transistor_GPS_Broadcaster::NODE_NAME = "Transistor_GPS_Broadcaster";
-Transistor_GPS_Broadcaster::Transistor_GPS_Broadcaster()
+const std::string GPS_Broadcaster::NODE_NAME = "GPS_Broadcaster";
+GPS_Broadcaster::GPS_Broadcaster()
 {
     gps_pub = nh.advertise<robobuggy::GPS>("GPS", 1000);
 
     if (!nh.getParam(NODE_NAME + "/serial_port", serial_port))
     {
         ROS_INFO_STREAM("Serial Port Parameter not found, using default");
-        serial_port = "/dev/ttyACM0";
+        serial_port = "/dev/buggygps";
     }
     if (!nh.getParam(NODE_NAME + "/serial_baud", serial_baud))
     {
@@ -23,7 +23,7 @@ Transistor_GPS_Broadcaster::Transistor_GPS_Broadcaster()
     }
 }
 
-int Transistor_GPS_Broadcaster::handle_serial_messages()
+int GPS_Broadcaster::handle_serial_messages()
 {
     serial::Serial gps_serial;
     try
@@ -110,7 +110,7 @@ int Transistor_GPS_Broadcaster::handle_serial_messages()
     return 0;
 }
 
-double Transistor_GPS_Broadcaster::convert_to_latitude(std::string str)
+double GPS_Broadcaster::convert_to_latitude(std::string str)
 {
     double degrees = atof(str.substr(0, 2).c_str());
     double minutes = atof(str.substr(2).c_str());
@@ -118,7 +118,7 @@ double Transistor_GPS_Broadcaster::convert_to_latitude(std::string str)
     return degrees + minutes /  60.0;
 }
 
-double Transistor_GPS_Broadcaster::convert_to_longitude(std::string str)
+double GPS_Broadcaster::convert_to_longitude(std::string str)
 {
     double degrees = atof(str.substr(0, 3).c_str());
     double minutes = atof(str.substr(3).c_str());

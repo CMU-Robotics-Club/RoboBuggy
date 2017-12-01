@@ -10,22 +10,21 @@
 
 #include <robobuggy/IMU.h>
 #include <robobuggy/GPS.h>
-#include <robobuggy/ENC.h>
+#include <robobuggy/Encoder.h>
 #include <robobuggy/Pose.h>
-#include <robobuggy/Steering.h>
+#include <robobuggy/Feedback.h>
 
 using Eigen::Matrix;
 using Eigen::MatrixXd;
 
-class Localizer
+class Localizer 
 {
 public:
     Localizer();
-    void IMU_Callback(const robobuggy::IMU::ConstPtr& msg);
-    void GPS_Callback(const robobuggy::GPS::ConstPtr& msg);
-    void ENC_Callback(const robobuggy::ENC::ConstPtr& msg);
-    void Steering_Callback(const robobuggy::Steering::ConstPtr& msg);
+    static const std::string NODE_NAME;
+
     void update_position_estimate();
+
 private:
     geodesy::UTMPoint prev_position_utm;
     double prev_encoder_ticks;
@@ -59,6 +58,11 @@ private:
     void init_C_Encoder();
     void init_x();
 
+    void IMU_Callback(const robobuggy::IMU::ConstPtr& msg);
+    void GPS_Callback(const robobuggy::GPS::ConstPtr& msg);
+    void Encoder_Callback(const robobuggy::Encoder::ConstPtr& msg);
+    void Feedback_Callback(const robobuggy::Feedback::ConstPtr& msg);
+ 
     void update_motion_model(double dt);
     double clamp_angle(double theta);
     void propagate();
