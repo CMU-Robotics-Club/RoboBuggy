@@ -6,27 +6,6 @@ $(window).load(function() {
 });
 
 console.log("running");
-// $.get("https://robobuggy-web-server.herokuapp.com/encoderData", function(data){
-//    // alert("hi");
-//     /*console.log("yay");
-//     data = parseJSON(data);
-//     console.log(data);*/
-//     //$('#ticks').text(data[0]);
-//     var jsonString = JSON.stringify(data);
-//     var result = JSON.parse(jsonString);
-//     console.log(result); 
-//     $('#ticks').text(result);
-// });
-
-/*
-$.getJSON(" ", function(data){
-    $('#lat').text(data[0].latitude);
-    $('#long').text(data[0].longitude);
-});
-
-
-*/
-
 
 window.setInterval(function(){
     $.get("https://robobuggy-web-server.herokuapp.com/encoderData", function(data){

@@ -20,8 +20,6 @@ exports.saveEncoderData = function(req, res) {
 			res.send(404, "Error saving encoderData")
 		}
 
-		//res.render('index', {title:})
-
 		console.log("Success saving encoderData");
 
 		res.send(200, req.body.ticks);
@@ -34,18 +32,12 @@ exports.getLatestEncoderData = function(req, res) {
 		console.log("encoderData");
 
 		console.log(docs.length);
-	 	//console.log(docs[docs.length-1]);
 
 	 	if (docs.length == 0){
 	 		res.status(200).json("NO DATA");
 	 	}
 	 	else {
-
-	 	//res.send(200, docs[docs.length-1]);
 	 		res.status(200).json(docs[0]["ticks"]);
-	 	//return docs[docs.length-1]
-	 	//res.status(200).json(docs[docs.length-1]["id"]);
-	 	//res.status(200).send(docs[docs.length-1]["id"]);
 	 	}
 	});
 

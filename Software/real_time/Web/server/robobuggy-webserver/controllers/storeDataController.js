@@ -27,11 +27,8 @@ exports.saveData = function(req, res) {
 			res.send(404, "Error saving encoderData")
 		}
 
-		//res.render('index', {title:})
-
 		console.log("Success saving encoderData");
 
-		//res.send(200, req.body.ticks);
 	});
 
 	var gpsData = new GPS({
@@ -51,8 +48,6 @@ exports.saveData = function(req, res) {
 
 		console.log("Success saving gpsData");
 
-		//res.send(200, req.body.latitude);
-		//res.send(req.body.long);
 	});
 
 
@@ -73,11 +68,8 @@ exports.saveData = function(req, res) {
 			res.send(404, "Error saving diagnosticsData");
 		}
 
-		//res.render('index', {title:})
-
 		console.log("Success saving diagnosticsData");
 
-		//res.send(200, req.body.batteryLevel);
 	});
 
 	var brakesData = new Brakes({
