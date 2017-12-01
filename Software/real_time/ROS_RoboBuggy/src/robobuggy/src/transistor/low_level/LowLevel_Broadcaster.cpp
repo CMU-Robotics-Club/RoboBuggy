@@ -4,7 +4,7 @@
 
 const std::string LowLevel_Broadcaster::NODE_NAME = "LowLevel_Broadcaster";
 
-LowLevel_Broadcaster::LowLevel_Broadcaster() 
+LowLevel_Broadcaster::LowLevel_Broadcaster()
 {
     // Register publishers
     feedback_pub = nh.advertise<robobuggy::Feedback>("Feedback", 1000);
@@ -28,7 +28,7 @@ void LowLevel_Broadcaster::publish_encoder_msg(robobuggy::Encoder msg)
     encoder_pub.publish(msg);
 }
 
-void LowLevel_Broadcaster::parse_serial_msg(std::string serial_msg) 
+void LowLevel_Broadcaster::parse_serial_msg(std::string serial_msg)
 {
     // Verify that we actually read a full message
     if ((serial_msg[5] & 0xFF) != RBSM_FOOTER)
@@ -37,7 +37,7 @@ void LowLevel_Broadcaster::parse_serial_msg(std::string serial_msg)
         // skip it
         return;
     }
-    
+
     uint32_t data = 0;
     data |= (serial_msg[1] & 0xFF);
     data <<= 8;
@@ -56,10 +56,10 @@ void LowLevel_Broadcaster::parse_serial_msg(std::string serial_msg)
             feedback_msg.brake_state = (bool)data;
             break;
         case RBSM_MID_MEGA_TELEOP_BRAKE_COMMAND:
-            diagnostics_msg.teleop_brake_cmd_status;
+            diagnostics_msg.teleop_brake_cmd_status = (bool)data;
             break;
         case RBSM_MID_MEGA_AUTON_BRAKE_COMMAND:
-            diagnostics_msg.auton_brake_cmd_status;
+            diagnostics_msg.auton_brake_cmd_status = (bool)data;
             break;
         case DEVICE_ID:
             diagnostics_msg.device_id = data;
@@ -129,7 +129,7 @@ int LowLevel_Broadcaster::handle_serial_messages() {
     // Initialize serial communication
     std::string serial_port;
     int serial_baud;
-    
+
     if (!nh.getParam(NODE_NAME + "/serial_port", serial_port)) {
         ROS_INFO("Serial port parameter not found, using default");
         serial_port = "/dev/ttyACM1"; // Default value
@@ -167,7 +167,7 @@ int LowLevel_Broadcaster::handle_serial_messages() {
         if (rb_serial.available()) {
             // Read from the serial port
             ll_serial_buffer = rb_serial.read(rb_serial.available());
-            
+
             int msg_len = 6;
 
             for (int i = 0; i < ll_serial_buffer.length(); i++) {
@@ -177,7 +177,7 @@ int LowLevel_Broadcaster::handle_serial_messages() {
                         // There is a full message in the buffer, read it
                         // Otherwise, drop it
                         std::string current_msg = ll_serial_buffer.substr(i+1, msg_len);
-                        
+
                         parse_serial_msg(current_msg);
                     }
                 }
