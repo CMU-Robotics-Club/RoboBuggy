@@ -8,11 +8,16 @@ var mongoose = require('mongoose');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+var encoderData = require('./routes/encoderData');
+var gpsData = require('./routes/gpsData');
+var diagnosticsData = require('./routes/diagnosticsData');
+var brakesData = require('./routes/brakesData');
+var storeData = require('./routes/storeData');
 
 var app = express();
 
 //Set up mongoose connection
-var mongoDB = process.env.MONGODB_URI || "mongodb://*****:*****@ds111565.mlab.com:11565/robobuggy-server-db";
+var mongoDB = process.env.MONGODB_URI || "mongodb://********:********@ds111565.mlab.com:11565/robobuggy-server-db";
 mongoose.connect(mongoDB, {
   useMongoClient: true
 });
@@ -33,6 +38,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/users', users);
+app.use('/encoderData', encoderData);
+app.use('/gpsData', gpsData);
+app.use('/diagnosticsData', diagnosticsData);
+app.use('/brakesData', brakesData);
+app.use('/storeData', storeData);
+app.use('/img',express.static(path.join(__dirname, 'public/images')));
+app.use('/js',express.static(path.join(__dirname, 'public/javascripts')));
+app.use('/css',express.static(path.join(__dirname, 'public/stylesheets')));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
