@@ -581,11 +581,6 @@ Source: www.kingbright.com</description>
 <wire x1="304.8" y1="172.72" x2="292.1" y2="172.72" width="0.1524" layer="91"/>
 <label x="294.64" y="172.72" size="1.778" layer="95"/>
 </segment>
-<segment>
-<pinref part="LED1" gate="G$1" pin="A"/>
-<wire x1="259.08" y1="142.24" x2="259.08" y2="149.86" width="0.1524" layer="91"/>
-<label x="259.08" y="149.86" size="1.778" layer="95" rot="R270"/>
-</segment>
 </net>
 <net name="ROS" class="0">
 <segment>
@@ -593,22 +588,12 @@ Source: www.kingbright.com</description>
 <wire x1="304.8" y1="167.64" x2="292.1" y2="167.64" width="0.1524" layer="91"/>
 <label x="294.64" y="167.64" size="1.778" layer="95"/>
 </segment>
-<segment>
-<pinref part="LED2" gate="G$1" pin="A"/>
-<wire x1="266.7" y1="142.24" x2="266.7" y2="149.86" width="0.1524" layer="91"/>
-<label x="266.7" y="149.86" size="1.778" layer="95" rot="R270"/>
-</segment>
 </net>
 <net name="LOG" class="0">
 <segment>
 <pinref part="J1" gate="-5" pin="S"/>
 <wire x1="304.8" y1="162.56" x2="292.1" y2="162.56" width="0.1524" layer="91"/>
 <label x="294.64" y="162.56" size="1.778" layer="95"/>
-</segment>
-<segment>
-<pinref part="LED3" gate="G$1" pin="A"/>
-<wire x1="274.32" y1="142.24" x2="274.32" y2="149.86" width="0.1524" layer="91"/>
-<label x="274.32" y="149.86" size="1.778" layer="95" rot="R270"/>
 </segment>
 </net>
 <net name="GND" class="0">
