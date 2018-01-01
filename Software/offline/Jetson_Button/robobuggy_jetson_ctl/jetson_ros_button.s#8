@@ -297,13 +297,13 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 </plain>
 <instances>
 <instance part="FRAME1" gate="G$1" x="-22.86" y="-12.7"/>
-<instance part="J1" gate="-1" x="261.62" y="167.64" smashed="yes">
-<attribute name="NAME" x="264.16" y="166.878" size="1.524" layer="95"/>
-<attribute name="VALUE" x="260.858" y="169.037" size="1.778" layer="96"/>
+<instance part="J1" gate="-1" x="210.82" y="172.72" smashed="yes">
+<attribute name="NAME" x="213.36" y="171.958" size="1.524" layer="95"/>
+<attribute name="VALUE" x="210.058" y="174.117" size="1.778" layer="96"/>
 </instance>
-<instance part="J1" gate="-2" x="261.62" y="162.56"/>
-<instance part="J1" gate="-3" x="261.62" y="157.48"/>
-<instance part="J1" gate="-4" x="261.62" y="152.4"/>
+<instance part="J1" gate="-2" x="210.82" y="167.64"/>
+<instance part="J1" gate="-3" x="210.82" y="162.56"/>
+<instance part="J1" gate="-4" x="210.82" y="157.48"/>
 </instances>
 <busses>
 </busses>
