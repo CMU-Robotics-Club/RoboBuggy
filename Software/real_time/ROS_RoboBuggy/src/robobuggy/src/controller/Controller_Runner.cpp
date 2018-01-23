@@ -3,7 +3,7 @@
 //
 
 #include "controller/Controller.h"
-#include <json/json/json.h>
+#include <json/json.h>
 #include <fstream>
 
 int main(int argc, char **argv)
