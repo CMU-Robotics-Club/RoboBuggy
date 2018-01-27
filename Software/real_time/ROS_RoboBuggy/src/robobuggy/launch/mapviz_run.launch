@@ -1,0 +1,6 @@
+<launch>
+
+    <include file="$(find mapviz)/launch/mapviz.launch"/>
+    <include file="$(find rqt_bag)/launch/rqt_bag.launch"/>
+
+</launch>
