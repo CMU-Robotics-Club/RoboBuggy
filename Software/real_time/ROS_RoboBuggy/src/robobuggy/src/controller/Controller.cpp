@@ -8,9 +8,9 @@ void Controller::Pose_Callback(const robobuggy::Pose::ConstPtr& msg)
 }
 
 
-Controller::Controller(std::vector<robobuggy::GPS> initial_waypoint_list)
+Controller::Controller(std::vector<robobuggy::GPS>& initial_waypoint_list)
 {
-    this->waypoint_list = initial_waypoint_list;
+    waypoint_list = std::vector<robobuggy::GPS>(initial_waypoint_list);
     steering_pub = nh.advertise<robobuggy::Steering>("Steering_Command", 1000);
     pose_sub = nh.subscribe<robobuggy::Pose>("Pose", 1000, &Controller::Pose_Callback, this);
 }
@@ -83,6 +83,11 @@ double Controller::pure_pursuit_controller()
         {
             break;
         }
+    }
+
+    if (lookahead_index >= waypoint_list.size()) {
+        // run out of waypoints nearby, go straight
+        return 0.0;
     }
 
     robobuggy::GPS target_waypoint = waypoint_list.at(lookahead_index);

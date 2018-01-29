@@ -14,7 +14,7 @@ int main(int argc, char **argv)
 
     std::vector<robobuggy::GPS> waypoints;
 
-    std::ifstream waypoint_stream("../config/waypoints.txt");
+    std::ifstream waypoint_stream("src/robobuggy/config/waypoints.txt");
     std::string waypoint_str;
     while (std::getline(waypoint_stream, waypoint_str))
     {
@@ -29,6 +29,7 @@ int main(int argc, char **argv)
         waypoint_msg.Lat_deg = waypoint_json["latitude"].asFloat();
         waypoint_msg.Long_deg = waypoint_json["longitude"].asFloat();
         waypoints.push_back(waypoint_msg);
+
     }
 
     Controller controller(waypoints);

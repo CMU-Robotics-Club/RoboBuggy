@@ -16,13 +16,14 @@
 class Controller
 {
 public:
-    Controller(std::vector<robobuggy::GPS> initial_waypoint_list);
+    Controller(std::vector<robobuggy::GPS>& initial_waypoint_list);
     void Pose_Callback(const robobuggy::Pose::ConstPtr& msg);
     void update_steering_estimate();
     ros::NodeHandle nh;
 private:
     ros::Subscriber pose_sub;
     ros::Publisher steering_pub;
+    ros::Publisher waypoint_pub;
 
     robobuggy::Pose current_pose_estimate;
     robobuggy::GPS target_waypoint;
