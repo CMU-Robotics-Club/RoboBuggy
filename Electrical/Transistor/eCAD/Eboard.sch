@@ -4598,12 +4598,12 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <instance part="JP5" gate="A" x="86.36" y="170.18" rot="R180"/>
 <instance part="JP6" gate="A" x="116.84" y="170.18" rot="R180"/>
 <instance part="STEER_ENC" gate="A" x="203.2" y="76.2"/>
-<instance part="D1" gate="G$1" x="83.82" y="86.36" rot="R90"/>
+<instance part="D1" gate="G$1" x="86.36" y="96.52"/>
 <instance part="LIGHT_A_B" gate="G$1" x="193.04" y="121.92"/>
-<instance part="R4" gate="G$1" x="86.36" y="96.52" rot="R180"/>
+<instance part="R4" gate="G$1" x="86.36" y="86.36" rot="R270"/>
 <instance part="GND1" gate="1" x="134.62" y="55.88"/>
 <instance part="GND3" gate="1" x="147.32" y="116.84"/>
-<instance part="GND4" gate="1" x="99.06" y="88.9"/>
+<instance part="GND4" gate="1" x="86.36" y="78.74"/>
 <instance part="SUPPLY2" gate="G$1" x="165.1" y="83.82"/>
 <instance part="R5" gate="G$1" x="170.18" y="78.74" rot="R180"/>
 <instance part="GND5" gate="1" x="180.34" y="170.18"/>
@@ -4611,7 +4611,7 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <instance part="GND7" gate="1" x="139.7" y="124.46"/>
 <instance part="GND8" gate="1" x="134.62" y="121.92"/>
 <instance part="GND9" gate="1" x="66.04" y="106.68"/>
-<instance part="SUPPLY3" gate="G$1" x="71.12" y="91.44"/>
+<instance part="SUPPLY3" gate="G$1" x="86.36" y="99.06"/>
 <instance part="SUPPLY4" gate="G$1" x="58.42" y="139.7"/>
 </instances>
 <busses>
@@ -4661,18 +4661,13 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <junction x="160.02" y="76.2"/>
 </segment>
 <segment>
-<pinref part="D1" gate="G$1" pin="A"/>
-<pinref part="R4" gate="G$1" pin="2"/>
-<wire x1="81.28" y1="86.36" x2="81.28" y2="91.44" width="0.1524" layer="91"/>
-<pinref part="SUPPLY3" gate="G$1" pin="5V"/>
-<wire x1="81.28" y1="91.44" x2="81.28" y2="96.52" width="0.1524" layer="91"/>
-<wire x1="71.12" y1="91.44" x2="81.28" y2="91.44" width="0.1524" layer="91"/>
-<junction x="81.28" y="91.44"/>
-</segment>
-<segment>
 <pinref part="R5" gate="G$1" pin="2"/>
 <pinref part="SUPPLY2" gate="G$1" pin="5V"/>
 <wire x1="165.1" y1="78.74" x2="165.1" y2="83.82" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="D1" gate="G$1" pin="A"/>
+<pinref part="SUPPLY3" gate="G$1" pin="5V"/>
 </segment>
 </net>
 <net name="GND" class="0">
@@ -4751,16 +4746,6 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <wire x1="198.12" y1="119.38" x2="215.9" y2="119.38" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="D1" gate="G$1" pin="C"/>
-<wire x1="88.9" y1="86.36" x2="91.44" y2="86.36" width="0.1524" layer="91"/>
-<wire x1="91.44" y1="86.36" x2="91.44" y2="91.44" width="0.1524" layer="91"/>
-<pinref part="R4" gate="G$1" pin="1"/>
-<wire x1="91.44" y1="91.44" x2="91.44" y2="96.52" width="0.1524" layer="91"/>
-<wire x1="91.44" y1="91.44" x2="99.06" y2="91.44" width="0.1524" layer="91"/>
-<junction x="91.44" y="91.44"/>
-<pinref part="GND4" gate="1" pin="GND"/>
-</segment>
-<segment>
 <pinref part="UART2" gate="A" pin="6"/>
 <wire x1="160.02" y1="172.72" x2="180.34" y2="172.72" width="0.1524" layer="91"/>
 <pinref part="GND5" gate="1" pin="GND"/>
@@ -4774,6 +4759,10 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <pinref part="RESET" gate="G$1" pin="2"/>
 <pinref part="GND3" gate="1" pin="GND"/>
 <wire x1="152.4" y1="119.38" x2="147.32" y2="119.38" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="R4" gate="G$1" pin="2"/>
+<pinref part="GND4" gate="1" pin="GND"/>
 </segment>
 </net>
 <net name="12V" class="0">
@@ -5011,6 +5000,12 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <pinref part="JP6" gate="A" pin="7"/>
 <label x="124.46" y="175.26" size="1.778" layer="95"/>
 <wire x1="119.38" y1="175.26" x2="139.7" y2="175.26" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$1" class="0">
+<segment>
+<pinref part="R4" gate="G$1" pin="1"/>
+<pinref part="D1" gate="G$1" pin="C"/>
 </segment>
 </net>
 </nets>
