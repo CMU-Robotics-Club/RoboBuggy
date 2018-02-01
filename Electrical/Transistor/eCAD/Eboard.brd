@@ -1409,6 +1409,22 @@ Please make sure your boards conform to these design rules.</description>
 <wire x1="46.9392" y1="81.28" x2="45.72" y2="82.4992" width="0.254" layer="16"/>
 <wire x1="45.72" y1="82.4992" x2="45.72" y2="82.55" width="0.254" layer="16"/>
 </signal>
+<signal name="N$1">
+<polygon width="0.254" layer="16">
+<vertex x="2.54" y="99.06"/>
+<vertex x="2.54" y="43.18"/>
+<vertex x="73.66" y="43.18"/>
+<vertex x="73.66" y="99.06"/>
+</polygon>
+</signal>
+<signal name="N$2">
+<polygon width="0.254" layer="1">
+<vertex x="2.54" y="99.06"/>
+<vertex x="2.54" y="43.18"/>
+<vertex x="73.66" y="43.18"/>
+<vertex x="73.66" y="99.06"/>
+</polygon>
+</signal>
 </signals>
 </board>
 </drawing>
