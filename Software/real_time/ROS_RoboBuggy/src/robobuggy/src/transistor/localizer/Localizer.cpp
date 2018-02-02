@@ -19,7 +19,7 @@ void Localizer::Encoder_Callback(const robobuggy::Encoder::ConstPtr &msg)
     double ticks = msg->ticks;
     double dx = ticks - prev_encoder_ticks;
     dx = dx * 0.61 / 7.0;
-    double body_speed = dx / (dt / 1000);
+    double body_speed = dx / (dt / 1000.0);
 
     prev_encoder_time = current_time;
     prev_encoder_ticks = ticks;
