@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.4.0">
+<eagle version="8.4.1">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -868,6 +868,7 @@ Please make sure your boards conform to these design rules.</description>
 <param name="slThermalsForVias" value="0"/>
 <param name="dpMaxLengthDifference" value="10mm"/>
 <param name="dpGapFactor" value="2.5"/>
+<param name="checkAngle" value="0"/>
 <param name="checkFont" value="1"/>
 <param name="checkRestrict" value="1"/>
 <param name="checkStop" value="0"/>
@@ -1054,15 +1055,14 @@ Please make sure your boards conform to these design rules.</description>
 <wire x1="39.5478" y1="59.0296" x2="25.5778" y2="59.0296" width="0.4064" layer="1"/>
 <wire x1="39.5478" y1="58.0136" x2="39.5478" y2="59.0296" width="0.4064" layer="1"/>
 <wire x1="24.3078" y1="57.7596" x2="24.0778" y2="57.7596" width="0.254" layer="1"/>
-<wire x1="71.7296" y1="58.5216" x2="69.9008" y2="60.3504" width="0.254" layer="1"/>
-<wire x1="71.7296" y1="50.5968" x2="71.7296" y2="58.5216" width="0.254" layer="1"/>
-<wire x1="70.104" y1="48.9712" x2="71.7296" y2="50.5968" width="0.254" layer="1"/>
-<wire x1="69.9008" y1="60.3504" x2="69.9008" y2="60.4266" width="0.254" layer="1"/>
-<wire x1="70.104" y1="48.9712" x2="70.0278" y2="48.8696" width="0.254" layer="1"/>
-<wire x1="57.3024" y1="60.3504" x2="69.9008" y2="60.3504" width="0.254" layer="16"/>
+<wire x1="57.3024" y1="60.3504" x2="69.9008" y2="60.3504" width="0.4064" layer="16"/>
 <wire x1="55.0672" y1="58.1152" x2="57.3024" y2="60.3504" width="0.254" layer="16"/>
 <wire x1="69.9008" y1="60.3504" x2="69.9008" y2="60.4266" width="0.254" layer="16"/>
 <wire x1="55.0672" y1="58.1152" x2="54.9148" y2="58.0136" width="0.254" layer="16"/>
+<wire x1="70.0278" y1="53.13106875" x2="70.0278" y2="48.8696" width="0.4064" layer="1"/>
+<wire x1="71.7804" y1="54.88366875" x2="70.0278" y2="53.13106875" width="0.4064" layer="1"/>
+<wire x1="69.9008" y1="60.4266" x2="71.7804" y2="58.547" width="0.4064" layer="1"/>
+<wire x1="71.7804" y1="58.547" x2="71.7804" y2="54.88366875" width="0.4064" layer="1"/>
 </signal>
 <signal name="GND">
 <contactref element="RC_RECV" pad="16"/>
