@@ -5,6 +5,7 @@ import math
 from gps_common.msg import GPSFix
 from robobuggy.msg import GPS
 from robobuggy.msg import Pose
+from robobuggy.msg import Command
 
 viz_pub = None;
 
@@ -14,7 +15,7 @@ def pose_callback(data):
     rospy.loginfo("got Pose msg: %f degrees lat, %f degrees long, %f rad", data.latitude_deg, data.longitude_deg, data.heading_rad)
 
     #data.heading_rad is in Radians from north clockwise, but GPSFix requires degrees from north
-    float64 degrees_from_north = 180 * data.heading_rad / math.pi
+    degrees_from_north = (180 * data.heading_rad) / math.pi
 
     last_latitude = data.latitude_deg
     last_longitude = data.longitude_deg
@@ -41,9 +42,9 @@ def command_callback(data):
 def start_subscriber_spin():
     global viz_pub
 
-    global float64 last_latitude
-    global float64 last_longitude
-    global float64 last_heading
+    global last_latitude
+    global last_longitude
+    global last_heading
     
     rospy.init_node("GPS_Plotter", anonymous=True)
     viz_pub = rospy.Publisher('GPS_VIZ', GPSFix, queue_size=10);
