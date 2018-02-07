@@ -2,6 +2,9 @@
 
 import rospy
 import math
+import json
+import time
+import os
 from gps_common.msg import GPSFix
 from robobuggy.msg import GPS
 from robobuggy.msg import Pose
@@ -39,6 +42,22 @@ def command_callback(data):
 
     pass
 
+
+def waypoints_publisher():
+    waypoints_pub = rospy.Publisher('WAYPOINTS_VIZ',GPSFix, queue_size=10)
+    
+    # read from waypoints file, parse JSON, publish
+    waypoints = open("../RoboBuggy/Software/real_time/ROS_RoboBuggy/src/robobuggy/config/waypoints.txt", 'r')
+    line = waypoints.readline()
+    while line:
+    	data = json.loads(line)
+        viz_msg_waypoint = GPSFix(latitude=data['latitude'],longitude=data['longitude'])
+        waypoints_pub.publish(viz_msg_waypoint)
+        time.sleep(.01)       
+        line = waypoints.readline()
+    waypoints.close()
+    pass
+
 def start_subscriber_spin():
     global viz_pub
 
@@ -46,10 +65,13 @@ def start_subscriber_spin():
     global last_longitude
     global last_heading
     
+    cwd = os.getcwd()
+    print(cwd)
     rospy.init_node("GPS_Plotter", anonymous=True)
-    viz_pub = rospy.Publisher('GPS_VIZ', GPSFix, queue_size=10);
+    viz_pub = rospy.Publisher('GPS_VIZ', GPSFix, queue_size=10)
     rospy.Subscriber("Pose", Pose, pose_callback)
     rospy.Subscriber("Command", Command, command_callback)
+    waypoints_publisher() 
 
     rospy.spin()
 
