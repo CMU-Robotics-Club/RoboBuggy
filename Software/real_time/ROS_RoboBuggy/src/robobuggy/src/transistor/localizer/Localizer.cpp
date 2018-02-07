@@ -43,16 +43,16 @@ void Localizer::GPS_Callback(const robobuggy::GPS::ConstPtr &msg)
 
     if (prev_position_utm.northing != 0)
     {
-        double dx = p.easting - prev_position_utm.easting;
-        double dy = p.northing - prev_position_utm.northing;
+        double dy = p.easting - prev_position_utm.easting;
+        double dx = p.northing - prev_position_utm.northing;
 
         heading = atan2(dy, dx);
-        if (dx * dx + dy * dy < 0.25)
+        if (sqrt(dx * dx + dy * dy) < 0.25)
         {
-            heading = x(2, 0);
+            heading = x(3, 0);
         }
-        prev_position_utm = p;
     }
+    prev_position_utm = p;
 
     Matrix<double, 3, 1> z;
     z <<
@@ -287,7 +287,7 @@ void Localizer::kalman_filter(MatrixXd c, MatrixXd q, MatrixXd z)
     Matrix<double, 5, 1> x_pre = A * x;
     Matrix<double, 5, 5> P_pre = A * P * A.transpose() + R;
 
-    x_pre(2, 0) = clamp_angle(x_pre(2, 0));
+    x_pre(3, 0) = clamp_angle(x_pre(3, 0));
     x_pre(4, 0) = clamp_angle(x_pre(4, 0));
 
     MatrixXd residual = z - c * x_pre;
@@ -296,6 +296,6 @@ void Localizer::kalman_filter(MatrixXd c, MatrixXd q, MatrixXd z)
     x = x_pre + K * residual;
     P = (MatrixXd::Identity(5,5) - (K * c)) * P_pre;
 
-    x(2, 0) = clamp_angle(x(2, 0));
+    x(3, 0) = clamp_angle(x(3, 0));
     x(4, 0) = clamp_angle(x(4, 0));
 }
