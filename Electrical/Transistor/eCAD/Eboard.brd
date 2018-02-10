@@ -978,8 +978,8 @@ Please make sure your boards conform to these design rules.</description>
 <elements>
 <element name="D1" library="SparkFun-LED" library_urn="urn:adsk.eagle:library:529" package="LED-1206" package3d_urn="urn:adsk.eagle:package:39352/1" value="" x="25.5778" y="57.7596"/>
 <element name="DIST_ENC" library="pinhead" package="1X03" value="" x="54.7878" y="70.4596" rot="R270"/>
-<element name="J1" library="SparkFun-Connectors" package="1X06" value="" x="35.7378" y="83.1596">
-<attribute name="PROD_ID" value="CONN-08437" x="35.7378" y="83.1596" size="1.778" layer="27" display="off"/>
+<element name="J1" library="SparkFun-Connectors" package="1X06" value="" x="48.4378" y="83.1596" rot="R180">
+<attribute name="PROD_ID" value="CONN-08437" x="48.4378" y="83.1596" size="1.778" layer="27" rot="R180" display="off"/>
 </element>
 <element name="JP1" library="pinhead" package="1X06" value="" x="17.8054" y="47.6631" rot="R180"/>
 <element name="JP2" library="pinhead" package="1X08" value="" x="37.9857" y="47.625" rot="R180"/>
@@ -1404,43 +1404,42 @@ Please make sure your boards conform to these design rules.</description>
 <signal name="STEERING_RC">
 <contactref element="JP5" pad="6"/>
 <contactref element="J1" pad="1"/>
-<wire x1="40.4114" y1="86.7664" x2="40.8178" y2="86.7664" width="0.254" layer="1"/>
-<wire x1="39.3954" y1="85.7504" x2="40.4114" y2="86.7664" width="0.254" layer="1"/>
-<wire x1="39.3954" y1="85.344" x2="39.3954" y2="85.7504" width="0.254" layer="1"/>
-<wire x1="38.5826" y1="84.5312" x2="39.3954" y2="85.344" width="0.254" layer="1"/>
-<wire x1="36.957" y1="84.5312" x2="38.5826" y2="84.5312" width="0.254" layer="1"/>
-<wire x1="35.7378" y1="83.312" x2="36.957" y2="84.5312" width="0.254" layer="1"/>
-<wire x1="35.7378" y1="83.312" x2="35.7378" y2="83.1596" width="0.254" layer="1"/>
-<wire x1="42.3164" y1="88.265" x2="42.3164" y2="88.6709625" width="0.254" layer="1"/>
-<wire x1="42.3164" y1="88.6709625" x2="42.3672" y2="88.7217625" width="0.254" layer="1"/>
-<wire x1="42.3672" y1="88.7217625" x2="39.6875" y2="95.8088" width="0.254" layer="1"/>
-<wire x1="40.8178" y1="86.7664" x2="42.3164" y2="88.265" width="0.254" layer="1"/>
+<wire x1="46.1264" y1="89.408" x2="39.8272" y2="95.7072" width="0.254" layer="16"/>
+<wire x1="46.3296" y1="89.408" x2="46.1264" y2="89.408" width="0.254" layer="16"/>
+<wire x1="47.3456" y1="88.392" x2="46.3296" y2="89.408" width="0.254" layer="16"/>
+<wire x1="47.3456" y1="84.328" x2="47.3456" y2="88.392" width="0.254" layer="16"/>
+<wire x1="48.3616" y1="83.312" x2="47.3456" y2="84.328" width="0.254" layer="16"/>
+<wire x1="39.8272" y1="95.7072" x2="39.6875" y2="95.8088" width="0.254" layer="16"/>
+<wire x1="48.3616" y1="83.312" x2="48.4378" y2="83.1596" width="0.254" layer="16"/>
 </signal>
 <signal name="BRAKE_RC">
 <contactref element="JP6" pad="8"/>
 <contactref element="J1" pad="6"/>
-<wire x1="61.5696" y1="90.2208" x2="67.2592" y2="95.9104" width="0.254" layer="16"/>
-<wire x1="56.6928" y1="90.2208" x2="61.5696" y2="90.2208" width="0.254" layer="16"/>
-<wire x1="52.0192" y1="85.5472" x2="56.6928" y2="90.2208" width="0.254" layer="16"/>
-<wire x1="52.0192" y1="85.1408" x2="52.0192" y2="85.5472" width="0.254" layer="16"/>
-<wire x1="50.1904" y1="83.312" x2="52.0192" y2="85.1408" width="0.254" layer="16"/>
-<wire x1="48.5648" y1="83.312" x2="50.1904" y2="83.312" width="0.254" layer="16"/>
+<wire x1="60.7568" y1="89.408" x2="67.2592" y2="95.9104" width="0.254" layer="16"/>
+<wire x1="60.7568" y1="87.1728" x2="60.7568" y2="89.408" width="0.254" layer="16"/>
+<wire x1="58.7248" y1="85.1408" x2="60.7568" y2="87.1728" width="0.254" layer="16"/>
+<wire x1="52.6288" y1="85.1408" x2="58.7248" y2="85.1408" width="0.254" layer="16"/>
+<wire x1="49.3776" y1="81.8896" x2="52.6288" y2="85.1408" width="0.254" layer="16"/>
+<wire x1="36.9824" y1="81.8896" x2="49.3776" y2="81.8896" width="0.254" layer="1"/>
+<wire x1="35.7632" y1="83.1088" x2="36.9824" y2="81.8896" width="0.254" layer="1"/>
 <wire x1="67.2592" y1="95.9104" x2="67.437" y2="95.9358" width="0.254" layer="16"/>
-<wire x1="48.5648" y1="83.312" x2="48.4378" y2="83.1596" width="0.254" layer="16"/>
+<wire x1="35.7632" y1="83.1088" x2="35.7378" y2="83.1596" width="0.254" layer="1"/>
+<via x="49.3776" y="81.8896" extent="1-16" drill="0.3302"/>
 </signal>
 <signal name="AUTON_RC">
 <contactref element="J1" pad="5"/>
 <contactref element="JP6" pad="7"/>
-<wire x1="64.8208" y1="95.504" x2="64.8208" y2="95.9104" width="0.254" layer="16"/>
-<wire x1="59.944" y1="90.6272" x2="64.8208" y2="95.504" width="0.254" layer="16"/>
-<wire x1="54.864" y1="90.6272" x2="59.944" y2="90.6272" width="0.254" layer="16"/>
-<wire x1="51.0032" y1="86.7664" x2="54.864" y2="90.6272" width="0.254" layer="16"/>
-<wire x1="47.9552" y1="86.7664" x2="51.0032" y2="86.7664" width="0.254" layer="16"/>
-<wire x1="46.9392" y1="85.7504" x2="47.9552" y2="86.7664" width="0.254" layer="16"/>
-<wire x1="46.9392" y1="84.328" x2="46.9392" y2="85.7504" width="0.254" layer="16"/>
-<wire x1="45.9232" y1="83.312" x2="46.9392" y2="84.328" width="0.254" layer="16"/>
+<wire x1="59.1312" y1="90.2208" x2="64.8208" y2="95.9104" width="0.254" layer="16"/>
+<wire x1="56.6928" y1="90.2208" x2="59.1312" y2="90.2208" width="0.254" layer="16"/>
+<wire x1="52.0192" y1="85.5472" x2="56.6928" y2="90.2208" width="0.254" layer="16"/>
+<wire x1="52.0192" y1="85.1408" x2="52.0192" y2="85.5472" width="0.254" layer="16"/>
+<wire x1="51.4096" y1="84.5312" x2="52.0192" y2="85.1408" width="0.254" layer="16"/>
+<wire x1="49.1744" y1="84.5312" x2="51.4096" y2="84.5312" width="0.254" layer="16"/>
+<wire x1="39.624" y1="84.5312" x2="49.1744" y2="84.5312" width="0.254" layer="1"/>
+<wire x1="38.4048" y1="83.312" x2="39.624" y2="84.5312" width="0.254" layer="1"/>
 <wire x1="64.8208" y1="95.9104" x2="64.897" y2="95.9358" width="0.254" layer="16"/>
-<wire x1="45.9232" y1="83.312" x2="45.8978" y2="83.1596" width="0.254" layer="16"/>
+<wire x1="38.4048" y1="83.312" x2="38.2778" y2="83.1596" width="0.254" layer="1"/>
+<via x="49.1744" y="84.5312" extent="1-16" drill="0.3302"/>
 </signal>
 <signal name="N$1">
 <contactref element="D1" pad="C"/>
