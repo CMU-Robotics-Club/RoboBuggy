@@ -4649,20 +4649,6 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <junction x="58.42" y="132.08"/>
 </segment>
 <segment>
-<pinref part="PWR" gate="A" pin="2"/>
-<pinref part="SRVO_MTR" gate="A" pin="2"/>
-<wire x1="160.02" y1="76.2" x2="180.34" y2="76.2" width="0.1524" layer="91"/>
-<junction x="180.34" y="76.2"/>
-<pinref part="STEER_ENC" gate="A" pin="3"/>
-<label x="205.74" y="76.2" size="1.778" layer="95"/>
-<wire x1="200.66" y1="76.2" x2="223.52" y2="76.2" width="0.1524" layer="91"/>
-<junction x="200.66" y="76.2"/>
-<wire x1="180.34" y1="76.2" x2="200.66" y2="76.2" width="0.1524" layer="91"/>
-<pinref part="SUPPLY1" gate="G$1" pin="5V"/>
-<wire x1="152.4" y1="76.2" x2="160.02" y2="76.2" width="0.1524" layer="91"/>
-<junction x="160.02" y="76.2"/>
-</segment>
-<segment>
 <pinref part="R5" gate="G$1" pin="2"/>
 <pinref part="SUPPLY2" gate="G$1" pin="5V"/>
 <wire x1="165.1" y1="78.74" x2="165.1" y2="83.82" width="0.1524" layer="91"/>
@@ -4677,6 +4663,11 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <wire x1="119.38" y1="129.54" x2="127" y2="129.54" width="0.1524" layer="91"/>
 <wire x1="127" y1="129.54" x2="127" y2="134.62" width="0.1524" layer="91"/>
 <pinref part="SUPPLY5" gate="G$1" pin="5V"/>
+</segment>
+<segment>
+<pinref part="STEER_ENC" gate="A" pin="1"/>
+<label x="205.74" y="81.28" size="1.778" layer="95"/>
+<wire x1="200.66" y1="81.28" x2="223.52" y2="81.28" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="GND" class="0">
@@ -4834,19 +4825,28 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <wire x1="160.02" y1="99.06" x2="157.48" y2="99.06" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="STEER_ENC1" class="0">
-<segment>
-<pinref part="STEER_ENC" gate="A" pin="1"/>
-<label x="205.74" y="81.28" size="1.778" layer="95"/>
-<wire x1="200.66" y1="81.28" x2="223.52" y2="81.28" width="0.1524" layer="91"/>
-</segment>
+<net name="STEER_ENCA" class="0">
 <segment>
 <pinref part="JP4" gate="A" pin="6"/>
 <label x="63.5" y="172.72" size="1.778" layer="95"/>
 <wire x1="58.42" y1="172.72" x2="81.28" y2="172.72" width="0.1524" layer="91"/>
 </segment>
+<segment>
+<pinref part="PWR" gate="A" pin="2"/>
+<pinref part="SRVO_MTR" gate="A" pin="2"/>
+<wire x1="160.02" y1="76.2" x2="180.34" y2="76.2" width="0.1524" layer="91"/>
+<junction x="180.34" y="76.2"/>
+<pinref part="STEER_ENC" gate="A" pin="3"/>
+<label x="205.74" y="76.2" size="1.778" layer="95"/>
+<wire x1="200.66" y1="76.2" x2="223.52" y2="76.2" width="0.1524" layer="91"/>
+<junction x="200.66" y="76.2"/>
+<wire x1="180.34" y1="76.2" x2="200.66" y2="76.2" width="0.1524" layer="91"/>
+<pinref part="SUPPLY1" gate="G$1" pin="5V"/>
+<wire x1="152.4" y1="76.2" x2="160.02" y2="76.2" width="0.1524" layer="91"/>
+<junction x="160.02" y="76.2"/>
+</segment>
 </net>
-<net name="STEER_ENC2" class="0">
+<net name="STEER_ENCB" class="0">
 <segment>
 <pinref part="STEER_ENC" gate="A" pin="2"/>
 <label x="205.74" y="78.74" size="1.778" layer="95"/>
