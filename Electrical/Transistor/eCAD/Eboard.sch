@@ -4569,7 +4569,6 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <part name="GND9" library="SparkFun-PowerSymbols" library_urn="urn:adsk.eagle:library:530" deviceset="GND" device=""/>
 <part name="SUPPLY3" library="SparkFun-Aesthetics" deviceset="5V" device=""/>
 <part name="SUPPLY4" library="SparkFun-Aesthetics" deviceset="5V" device=""/>
-<part name="SUPPLY5" library="SparkFun-Aesthetics" deviceset="5V" device=""/>
 <part name="GND10" library="SparkFun-PowerSymbols" library_urn="urn:adsk.eagle:library:530" deviceset="GND" device=""/>
 <part name="GND2" library="SparkFun-PowerSymbols" library_urn="urn:adsk.eagle:library:530" deviceset="GND" device=""/>
 <part name="GND11" library="supply1" deviceset="GND" device=""/>
@@ -4618,7 +4617,6 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <instance part="GND9" gate="1" x="66.04" y="106.68"/>
 <instance part="SUPPLY3" gate="G$1" x="86.36" y="99.06"/>
 <instance part="SUPPLY4" gate="G$1" x="58.42" y="139.7"/>
-<instance part="SUPPLY5" gate="G$1" x="127" y="134.62"/>
 <instance part="GND10" gate="1" x="68.58" y="160.02"/>
 <instance part="GND2" gate="1" x="200.66" y="114.3"/>
 <instance part="GND11" gate="1" x="152.146" y="88.9"/>
@@ -4663,12 +4661,6 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <pinref part="D1" gate="G$1" pin="A"/>
 <pinref part="SUPPLY3" gate="G$1" pin="5V"/>
 <wire x1="86.36" y1="96.52" x2="86.36" y2="99.06" width="0.1524" layer="91"/>
-</segment>
-<segment>
-<pinref part="JP1" gate="A" pin="1"/>
-<wire x1="119.38" y1="129.54" x2="127" y2="129.54" width="0.1524" layer="91"/>
-<wire x1="127" y1="129.54" x2="127" y2="134.62" width="0.1524" layer="91"/>
-<pinref part="SUPPLY5" gate="G$1" pin="5V"/>
 </segment>
 <segment>
 <pinref part="PWR" gate="A" pin="2"/>
@@ -4948,26 +4940,26 @@ You are welcome to use this library for commercial purposes. For attribution, we
 </net>
 <net name="LIGHT_GREEN" class="0">
 <segment>
-<pinref part="LIGHT_A_B" gate="G$1" pin="4"/>
-<label x="198.12" y="127" size="1.778" layer="95"/>
-<wire x1="198.12" y1="127" x2="215.9" y2="127" width="0.1524" layer="91"/>
+<pinref part="JP5" gate="A" pin="3"/>
+<label x="93.98" y="165.1" size="1.778" layer="95"/>
+<wire x1="88.9" y1="165.1" x2="109.22" y2="165.1" width="0.1524" layer="91"/>
 </segment>
-<segment>
-<pinref part="JP5" gate="A" pin="5"/>
-<label x="93.98" y="170.18" size="1.778" layer="95"/>
-<wire x1="88.9" y1="170.18" x2="109.22" y2="170.18" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="LIGHT_BLUE" class="0">
 <segment>
 <pinref part="LIGHT_A_B" gate="G$1" pin="3"/>
 <label x="198.12" y="124.46" size="1.778" layer="95"/>
 <wire x1="198.12" y1="124.46" x2="215.9" y2="124.46" width="0.1524" layer="91"/>
 </segment>
+</net>
+<net name="LIGHT_BLUE" class="0">
 <segment>
-<pinref part="JP5" gate="A" pin="3"/>
-<label x="93.98" y="165.1" size="1.778" layer="95"/>
-<wire x1="88.9" y1="165.1" x2="109.22" y2="165.1" width="0.1524" layer="91"/>
+<pinref part="JP5" gate="A" pin="5"/>
+<label x="93.98" y="170.18" size="1.778" layer="95"/>
+<wire x1="88.9" y1="170.18" x2="109.22" y2="170.18" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="LIGHT_A_B" gate="G$1" pin="4"/>
+<label x="198.12" y="127" size="1.778" layer="95"/>
+<wire x1="198.12" y1="127" x2="215.9" y2="127" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="LIGHT_RED" class="0">
