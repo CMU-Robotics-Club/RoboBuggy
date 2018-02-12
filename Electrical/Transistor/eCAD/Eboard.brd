@@ -161,7 +161,7 @@
 <wire x1="73.6527" y1="98.8316" x2="2.5527" y2="98.8316" width="0" layer="20"/>
 <wire x1="2.5527" y1="98.8316" x2="2.5908" y2="44.7548" width="0" layer="20"/>
 <text x="24.0411" y="54.3433" size="1.778" layer="25">5V</text>
-<text x="63.5" y="76.2" size="2.54" layer="26" rot="MR0">ROBOBUGGY
+<text x="27.94" y="76.2" size="2.54" layer="26" rot="MR0">ROBOBUGGY
 REV 1.8</text>
 <text x="65.8368" y="62.5094" size="1.016" layer="25">5V</text>
 <text x="63.7667" y="60.1472" size="1.016" layer="25">ENCB</text>
@@ -183,15 +183,15 @@ REV 1.8</text>
 <dimension x1="35.8775" y1="95.8088" x2="58.547" y2="95.9358" x3="47.167775" y3="103.810971875" textsize="1.778" layer="51" unit="inch"/>
 <dimension x1="3.9624" y1="95.9358" x2="46.0248" y2="95.9358" x3="24.9936" y3="100.4697" textsize="1.778" layer="51" unit="inch"/>
 <dimension x1="25.654" y1="95.9358" x2="68.7578" y2="95.9358" x3="47.2059" y3="106.8959" textsize="1.778" layer="51" unit="inch"/>
-<text x="24.0411" y="63.6143" size="1.6764" layer="51" rot="R90">BLUE</text>
-<text x="26.4541" y="61.4172" size="1.6764" layer="51" rot="R90">GREEN</text>
-<text x="29.0068" y="64.7573" size="1.6764" layer="51" rot="R90">RED</text>
-<text x="31.6738" y="64.4779" size="1.6764" layer="51" rot="R90">GND</text>
 <text x="71.628" y="89.8017" size="1.016" layer="25" rot="R270">GND</text>
 <text x="71.628" y="84.7217" size="1.016" layer="25" rot="R270">GND</text>
 <text x="58.42" y="78.74" size="1.27" layer="25">TX</text>
 <text x="60.96" y="78.74" size="1.27" layer="25">RX</text>
 <text x="22.5044" y="57.4294" size="1.27" layer="25" rot="R90">--&gt;</text>
+<text x="23.4696" y="64.9097" size="1.27" layer="25" rot="R90">BLUE</text>
+<text x="26.2382" y="63.1444" size="1.27" layer="25" rot="R90">GREEN</text>
+<text x="28.7655" y="65.5066" size="1.27" layer="25" rot="R90">RED</text>
+<text x="31.4579" y="65.4177" size="1.27" layer="25" rot="R90">GND</text>
 </plain>
 <libraries>
 <library name="pinhead">
