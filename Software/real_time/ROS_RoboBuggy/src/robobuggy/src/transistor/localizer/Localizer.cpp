@@ -35,16 +35,16 @@ void Localizer::Encoder_Callback(const robobuggy::Encoder::ConstPtr &msg)
 void Localizer::GPS_Callback(const robobuggy::GPS::ConstPtr &msg)
 {
     geodesy::UTMPoint p;
-    p.northing = msg->Lat_m;
-    p.easting = msg->Long_m;
+    p.easting = msg->Lat_m;
+    p.northing = msg->Long_m;
     p.band = 'T';
     p.zone = 17;
     double heading = 0.0;
 
     if (prev_position_utm.northing != 0)
     {
-        double dy = p.easting - prev_position_utm.easting;
-        double dx = p.northing - prev_position_utm.northing;
+        double dx = p.easting - prev_position_utm.easting;
+        double dy = p.northing - prev_position_utm.northing;
 
         heading = atan2(dy, dx);
         if (sqrt(dx * dx + dy * dy) < 0.25)
@@ -217,7 +217,7 @@ void Localizer::update_position_estimate()
 {
     propagate();
 
-    geodesy::UTMPoint utm_point(x_hat(0, 0), x_hat(1, 0), 17, 'T');
+    geodesy::UTMPoint utm_point(x_hat(1, 0), x_hat(0, 0), 17, 'T');
     geographic_msgs::GeoPoint gps_point = geodesy::toMsg(utm_point);
     double heading = x_hat(3, 0);
 
