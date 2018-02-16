@@ -39,6 +39,7 @@ void Localizer::GPS_Callback(const robobuggy::GPS::ConstPtr &msg)
     p.northing = msg->Long_m;
     p.band = 'T';
     p.zone = 17;
+    
     double heading = 0.0;
 
     if (prev_position_utm.northing != 0)
@@ -67,7 +68,18 @@ void Localizer::GPS_Callback(const robobuggy::GPS::ConstPtr &msg)
 
 void Localizer::IMU_Callback(const robobuggy::IMU::ConstPtr &msg)
 {
+    double heading = 0.0;
 
+    heading = msg->Z_Mag;
+    //@TODO: Angle conversions to right units
+    //@TODO: Potentially integrate accelerometer and magnetometer + do more sophisticated sensor fusion
+
+    Matrix<double, 1, 1> z;
+    z <<
+        heading
+    ;
+
+    kalman_filter(C_IMU, Q_IMU, z);    
 }
 
 void Localizer::Feedback_Callback(const robobuggy::Feedback::ConstPtr &msg)
@@ -136,6 +148,18 @@ void Localizer::init_Q_Encoder()
     ROS_INFO("Initialized Q_Encoder matrix to : \n%s", s.str().c_str());
 }
 
+void Localizer::init_Q_IMU()
+{
+    Q_IMU <<
+        0.25
+    ;
+
+    std::stringstream s;
+    s << Q_IMU << std::endl;
+
+    ROS_INFO("Initialized Q_IMU matrix to : \n%s", s.str().c_str());
+}
+
 void Localizer::init_C_GPS()
 {
     C_GPS <<
@@ -160,6 +184,13 @@ void Localizer::init_C_Encoder()
     s << C_Encoder << std::endl;
 
     ROS_INFO("Initialized C_Encoder Matrix to : \n%s", s.str().c_str());
+}
+
+void Localizer::init_C_IMU()
+{
+    C_IMU <<
+        0, 0, 0, 1, 0
+    ;
 }
 
 void Localizer::init_x()
