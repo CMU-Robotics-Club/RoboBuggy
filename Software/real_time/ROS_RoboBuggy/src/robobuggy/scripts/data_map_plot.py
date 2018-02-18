@@ -4,13 +4,12 @@ import rospy
 import math
 import json
 import time
-import os
 from gps_common.msg import GPSFix
 from robobuggy.msg import GPS
 from robobuggy.msg import Pose
 from robobuggy.msg import Command
 
-viz_pub = None;
+
 
 def pose_callback(data):
     global viz_pub
@@ -38,7 +37,7 @@ def command_callback(data):
 
     viz_msg_steering = GPSFix(latitude=last_latitude, longitude=last_longitude, track = last_heading + data.steer_cmd)
  
-    viz_pub.publish(viz_msg_steering)
+    viz_command_pub.publish(viz_msg_steering)
 
     pass
 
@@ -60,15 +59,17 @@ def waypoints_publisher():
 
 def start_subscriber_spin():
     global viz_pub
+    global viz_command_pub
 
     global last_latitude
     global last_longitude
     global last_heading
     
-    cwd = os.getcwd()
-    print(cwd)
     rospy.init_node("GPS_Plotter", anonymous=True)
+    
     viz_pub = rospy.Publisher('GPS_VIZ', GPSFix, queue_size=10)
+    viz_command_pub = rospy.Publisher('GPS_COMMAND_VIZ', GPSFix, queue_size = 10)
+    
     rospy.Subscriber("Pose", Pose, pose_callback)
     rospy.Subscriber("Command", Command, command_callback)
     waypoints_publisher() 
