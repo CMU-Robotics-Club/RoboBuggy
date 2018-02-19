@@ -30,7 +30,7 @@ def pose_callback(data):
     pass
 
 def command_callback(data):
-    global viz_pub
+    global viz_command_pub
     
     #steer_cmd should be degrees
     rospy.loginfo("got Steering Command msg: %f degrees", data.steer_cmd)
@@ -68,7 +68,7 @@ def start_subscriber_spin():
     rospy.init_node("GPS_Plotter", anonymous=True)
     
     viz_pub = rospy.Publisher('GPS_VIZ', GPSFix, queue_size=10)
-    viz_command_pub = rospy.Publisher('GPS_COMMAND_VIZ', GPSFix, queue_size = 10)
+    viz_command_pub = rospy.Publisher('STEERING_COMMAND_VIZ', GPSFix, queue_size = 10)
     
     rospy.Subscriber("Pose", Pose, pose_callback)
     rospy.Subscriber("Command", Command, command_callback)
