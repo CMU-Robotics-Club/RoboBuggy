@@ -19,7 +19,7 @@ void Localizer::Encoder_Callback(const robobuggy::Encoder::ConstPtr &msg)
     double ticks = msg->ticks;
     double dx = ticks - prev_encoder_ticks;
     dx = dx * 0.61 / 7.0;
-    double body_speed = dx / (dt / 1000);
+    double body_speed = dx / (dt / 1000.0);
 
     prev_encoder_time = current_time;
     prev_encoder_ticks = ticks;
@@ -35,8 +35,8 @@ void Localizer::Encoder_Callback(const robobuggy::Encoder::ConstPtr &msg)
 void Localizer::GPS_Callback(const robobuggy::GPS::ConstPtr &msg)
 {
     geodesy::UTMPoint p;
-    p.northing = msg->Lat_m;
-    p.easting = msg->Long_m;
+    p.easting = msg->Lat_m;
+    p.northing = msg->Long_m;
     p.band = 'T';
     p.zone = 17;
     double heading = 0.0;
@@ -47,12 +47,12 @@ void Localizer::GPS_Callback(const robobuggy::GPS::ConstPtr &msg)
         double dy = p.northing - prev_position_utm.northing;
 
         heading = atan2(dy, dx);
-        if (dx * dx + dy * dy < 0.25)
+        if (sqrt(dx * dx + dy * dy) < 0.25)
         {
-            heading = x(2, 0);
+            heading = x(3, 0);
         }
-        prev_position_utm = p;
     }
+    prev_position_utm = p;
 
     Matrix<double, 3, 1> z;
     z <<
@@ -164,9 +164,17 @@ void Localizer::init_C_Encoder()
 
 void Localizer::init_x()
 {
+    double init_latitude = 40.442616;
+    double init_longitude = -79.943336;
+
+    geographic_msgs::GeoPoint gps_point;
+    gps_point.latitude = init_latitude;
+    gps_point.longitude = init_longitude;
+    geodesy::UTMPoint init_utm(gps_point);
+
     x <<
-      0, // TODO initial lat in UTM
-      0, // TODO initial lon in UTM
+      init_utm.easting, // TODO initial lat in UTM
+      init_utm.northing, // TODO initial lon in UTM
       0,
       0, // TODO initial heading in rad
       0
@@ -217,7 +225,7 @@ void Localizer::update_position_estimate()
 {
     propagate();
 
-    geodesy::UTMPoint utm_point(x_hat(0, 0), x_hat(1, 0), 17, 'T');
+    geodesy::UTMPoint utm_point(x_hat(1, 0), x_hat(0, 0), 17, 'T');
     geographic_msgs::GeoPoint gps_point = geodesy::toMsg(utm_point);
     double heading = x_hat(3, 0);
 
@@ -287,7 +295,7 @@ void Localizer::kalman_filter(MatrixXd c, MatrixXd q, MatrixXd z)
     Matrix<double, 5, 1> x_pre = A * x;
     Matrix<double, 5, 5> P_pre = A * P * A.transpose() + R;
 
-    x_pre(2, 0) = clamp_angle(x_pre(2, 0));
+    x_pre(3, 0) = clamp_angle(x_pre(3, 0));
     x_pre(4, 0) = clamp_angle(x_pre(4, 0));
 
     MatrixXd residual = z - c * x_pre;
@@ -296,6 +304,6 @@ void Localizer::kalman_filter(MatrixXd c, MatrixXd q, MatrixXd z)
     x = x_pre + K * residual;
     P = (MatrixXd::Identity(5,5) - (K * c)) * P_pre;
 
-    x(2, 0) = clamp_angle(x(2, 0));
+    x(3, 0) = clamp_angle(x(3, 0));
     x(4, 0) = clamp_angle(x(4, 0));
 }
