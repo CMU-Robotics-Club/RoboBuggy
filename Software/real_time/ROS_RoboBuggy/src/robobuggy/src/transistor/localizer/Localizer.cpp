@@ -70,8 +70,8 @@ void Localizer::IMU_Callback(const robobuggy::IMU::ConstPtr &msg)
 {
     double heading = 0.0;
 
-    heading = msg->Z_Mag;
-    //@TODO: Angle conversions to right units
+    heading = atan2(msg->Y_Mag, msg->X_Mag);
+    //@TODO: Use all 3 axes to compute heading to account for tilt
     //@TODO: Potentially integrate accelerometer and magnetometer + do more sophisticated sensor fusion
 
     Matrix<double, 1, 1> z;
@@ -151,7 +151,7 @@ void Localizer::init_Q_Encoder()
 void Localizer::init_Q_IMU()
 {
     Q_IMU <<
-        0.25
+        0
     ;
 
     std::stringstream s;
@@ -232,8 +232,10 @@ Localizer::Localizer()
     init_P();
     init_Q_GPS();
     init_Q_Encoder();
+    init_Q_IMU();
     init_C_GPS();
     init_C_Encoder();
+    init_C_IMU();
     init_x();
     update_motion_model(0);
 
@@ -244,7 +246,7 @@ Localizer::Localizer()
     prev_encoder_ticks = -1;
 
     // TODO Work IMU into KF
-//    imu_sub = nh.subscribe<robobuggy::IMU>("IMU", 1000, IMU_Callback);
+    imu_sub = nh.subscribe<robobuggy::IMU>("IMU", 1000, &Localizer::IMU_Callback, this);
     gps_sub = nh.subscribe<robobuggy::GPS>("GPS", 1000, &Localizer::GPS_Callback, this);
     enc_sub = nh.subscribe<robobuggy::Encoder>("Encoder", 1000, &Localizer::Encoder_Callback, this);
     steering_sub = nh.subscribe<robobuggy::Feedback>("Feedback", 1000, &Localizer::Feedback_Callback, this);
