@@ -195,9 +195,17 @@ void Localizer::init_C_IMU()
 
 void Localizer::init_x()
 {
+    double init_latitude = 40.442616;
+    double init_longitude = -79.943336;
+
+    geographic_msgs::GeoPoint gps_point;
+    gps_point.latitude = init_latitude;
+    gps_point.longitude = init_longitude;
+    geodesy::UTMPoint init_utm(gps_point);
+
     x <<
-      0, // TODO initial lat in UTM
-      0, // TODO initial lon in UTM
+      init_utm.easting, // TODO initial lat in UTM
+      init_utm.northing, // TODO initial lon in UTM
       0,
       0, // TODO initial heading in rad
       0
