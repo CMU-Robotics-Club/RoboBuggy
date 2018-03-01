@@ -425,16 +425,13 @@ int main(void) {
                                 &ENCODER_STEERING_B_DDR);
 
     // prepare uart0 (onboard usb) for rbsm
-    //uart0_init(UART_BAUD_SELECT(BAUD, F_CPU));
-    //uart0_fdevopen(&g_uart_rbsm);
+    uart0_init(UART_BAUD_SELECT(BAUD, F_CPU));
+    uart0_fdevopen(&g_uart_rbsm);
 
     // prepare uart2 (because servo conflicts with uart1) for debug output
     uart2_init(UART_BAUD_SELECT(BAUD, F_CPU));
     uart2_fdevopen(&g_uart_debug);
 
-    // prepare uart3 (because servo conflicts with uart1) for debug output
-    uart3_init(UART_BAUD_SELECT(BAUD, F_CPU));
-    uart3_fdevopen(&g_uart_debug);
     // map stdio for printf
     stdin = stdout = stderr = &g_uart_debug;
 
