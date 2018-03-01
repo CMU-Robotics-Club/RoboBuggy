@@ -58,7 +58,7 @@ void Localizer::GPS_Callback(const robobuggy::GPS::ConstPtr &msg)
     Matrix<double, 2, 1> z;
     z <<
       p.easting,
-      p.northing,
+      p.northing
     ;
 
     kalman_filter(C_GPS, Q_GPS, z);
