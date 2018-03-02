@@ -36,7 +36,7 @@ def subscriber_callback_GPS(data):
 
 def subscriber_callback_Command(data):
     global data_dict
-    data_dict["brakeCmd"] = data.brake_cmd
+    data_dict["brakeCmdAuton"] = data.brake_cmd
     data_dict["steerCmd"] = data.steer_cmd
     pass
 
