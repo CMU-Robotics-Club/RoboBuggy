@@ -201,8 +201,8 @@ void Localizer::init_x()
     geodesy::UTMPoint init_utm(gps_point);
 
     x <<
-      init_utm.easting, // TODO initial lat in UTM
-      init_utm.northing, // TODO initial lon in UTM
+      init_utm.northing, // TODO initial lat in UTM
+      init_utm.easting, // TODO initial lon in UTM
       0,
       0, // TODO initial heading in rad
       0
