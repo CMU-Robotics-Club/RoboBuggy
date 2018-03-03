@@ -147,12 +147,12 @@ RadioReceiver g_auton_rx;
 StatusLights lights_rc(STATUS_LIGHT_PINN_GREEN, 
                        &STATUS_LIGHT_PORT_GREEN, 
                        &STATUS_LIGHT_DDR_GREEN);
-StatusLights lights_auton(STATUS_LIGHT_PINN_RED, 
-                          &STATUS_LIGHT_PORT_RED, 
-                          &STATUS_LIGHT_DDR_RED);
-StatusLights lights_battery(STATUS_LIGHT_PINN_BLUE, 
-                            &STATUS_LIGHT_PORT_BLUE, 
-                            &STATUS_LIGHT_DDR_BLUE);
+StatusLights lights_auton(STATUS_LIGHT_PINN_BLUE, 
+                          &STATUS_LIGHT_PORT_BLUE, 
+                          &STATUS_LIGHT_DDR_BLUE);
+StatusLights lights_battery(STATUS_LIGHT_PINN_RED, 
+                            &STATUS_LIGHT_PORT_RED, 
+                            &STATUS_LIGHT_DDR_RED);
 Rotary g_encoder_distance;
 Quadrature g_encoder_steering;
 
