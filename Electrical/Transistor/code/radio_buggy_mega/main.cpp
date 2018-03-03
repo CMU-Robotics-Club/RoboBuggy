@@ -147,12 +147,12 @@ RadioReceiver g_auton_rx;
 StatusLights lights_rc(STATUS_LIGHT_PINN_GREEN, 
                        &STATUS_LIGHT_PORT_GREEN, 
                        &STATUS_LIGHT_DDR_GREEN);
-StatusLights lights_auton(STATUS_LIGHT_PINN_RED, 
-                          &STATUS_LIGHT_PORT_RED, 
-                          &STATUS_LIGHT_DDR_RED);
-StatusLights lights_battery(STATUS_LIGHT_PINN_BLUE, 
-                            &STATUS_LIGHT_PORT_BLUE, 
-                            &STATUS_LIGHT_DDR_BLUE);
+StatusLights lights_auton(STATUS_LIGHT_PINN_BLUE, 
+                          &STATUS_LIGHT_PORT_BLUE, 
+                          &STATUS_LIGHT_DDR_BLUE);
+StatusLights lights_battery(STATUS_LIGHT_PINN_RED, 
+                            &STATUS_LIGHT_PORT_RED, 
+                            &STATUS_LIGHT_DDR_RED);
 Rotary g_encoder_distance;
 Quadrature g_encoder_steering;
 
@@ -425,16 +425,13 @@ int main(void) {
                                 &ENCODER_STEERING_B_DDR);
 
     // prepare uart0 (onboard usb) for rbsm
-    //uart0_init(UART_BAUD_SELECT(BAUD, F_CPU));
-    //uart0_fdevopen(&g_uart_rbsm);
+    uart0_init(UART_BAUD_SELECT(BAUD, F_CPU));
+    uart0_fdevopen(&g_uart_rbsm);
 
     // prepare uart2 (because servo conflicts with uart1) for debug output
     uart2_init(UART_BAUD_SELECT(BAUD, F_CPU));
     uart2_fdevopen(&g_uart_debug);
 
-    // prepare uart3 (because servo conflicts with uart1) for debug output
-    uart3_init(UART_BAUD_SELECT(BAUD, F_CPU));
-    uart3_fdevopen(&g_uart_debug);
     // map stdio for printf
     stdin = stdout = stderr = &g_uart_debug;
 
