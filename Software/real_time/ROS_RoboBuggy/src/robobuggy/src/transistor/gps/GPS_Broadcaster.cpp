@@ -6,7 +6,7 @@
 #include <geographic_msgs/GeoPoint.h>
 #include <geodesy/utm.h>
 
-const std::string GPS_Broadcaster::NODE_NAME = "GPS_Broadcaster";
+const std::string GPS_Broadcaster::NODE_NAME = "Transistor_GPS_Broadcaster";
 GPS_Broadcaster::GPS_Broadcaster()
 {
     gps_pub = nh.advertise<robobuggy::GPS>("GPS", 1000);

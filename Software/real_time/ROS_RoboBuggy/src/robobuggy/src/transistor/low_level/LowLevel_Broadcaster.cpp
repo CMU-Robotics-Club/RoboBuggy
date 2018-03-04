@@ -2,7 +2,7 @@
 #include "transistor/transistor_serial_messages.h"
 #include "serial/serial.h"
 
-const std::string LowLevel_Broadcaster::NODE_NAME = "LowLevel_Broadcaster";
+const std::string LowLevel_Broadcaster::NODE_NAME = "Transistor_LowLevel_Broadcaster";
 
 LowLevel_Broadcaster::LowLevel_Broadcaster()
 {
