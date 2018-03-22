@@ -35,22 +35,22 @@ void Localizer::Encoder_Callback(const robobuggy::Encoder::ConstPtr &msg)
 void Localizer::GPS_Callback(const robobuggy::GPS::ConstPtr &msg)
 {
     geodesy::UTMPoint p;
-    p.easting = msg->Lat_m;
-    p.northing = msg->Long_m;
+    p.northing = msg->Lat_m;
+    p.easting = msg->Long_m;
     p.band = 'T';
     p.zone = 17;
     
-    double heading = 0.0;
+    double heading_cartesian = 0.0;
 
     if (prev_position_utm.northing != 0)
     {
         double dx = p.easting - prev_position_utm.easting;
         double dy = p.northing - prev_position_utm.northing;
 
-        heading = atan2(dy, dx);
+        heading_cartesian = atan2(dy, dx);
         if (sqrt(dx * dx + dy * dy) < 0.25)
         {
-            heading = x(3, 0);
+            heading_cartesian = x(3, 0);
         }
     }
     prev_position_utm = p;
@@ -67,15 +67,19 @@ void Localizer::GPS_Callback(const robobuggy::GPS::ConstPtr &msg)
 
 void Localizer::IMU_Callback(const robobuggy::IMU::ConstPtr &msg)
 {
-    double heading = 0.0;
+    double heading_bearing = 0.0;
 
-    heading = atan2(msg->Y_Mag, msg->X_Mag);
+    heading_bearing = atan2(msg->Y_Mag, msg->X_Mag);
     //@TODO: Use all 3 axes to compute heading to account for tilt
     //@TODO: Potentially integrate accelerometer and magnetometer + do more sophisticated sensor fusion
 
+    // We get the heading in the bearing coordinates: theta = 0 @ north, +theta = clockwise
+    // convert it to cartesian coordinates: theta = 0 @ east, +theta = counterclockwise
+    double heading_cartesian = -heading_bearing + M_PI / 2.0;
+
     Matrix<double, 1, 1> z;
     z <<
-        heading
+        heading_cartesian
     ;
 
     kalman_filter(C_IMU, Q_IMU, z);    
