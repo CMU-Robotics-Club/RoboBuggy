@@ -73,9 +73,9 @@ void Localizer::IMU_Callback(const robobuggy::IMU::ConstPtr &msg)
     //@TODO: Use all 3 axes to compute heading to account for tilt
     //@TODO: Potentially integrate accelerometer and magnetometer + do more sophisticated sensor fusion
 
-    // We get the heading in the bearing coordinates: theta = 0 @ north, +theta = clockwise
+    // We get the heading in a special version of bearing coordinates: theta = 0 @ north, +theta = counterclockwise
     // convert it to cartesian coordinates: theta = 0 @ east, +theta = counterclockwise
-    double heading_cartesian = -heading_bearing + M_PI / 2.0;
+    double heading_cartesian = heading_bearing + M_PI / 2.0;
 
     Matrix<double, 1, 1> z;
     z <<
