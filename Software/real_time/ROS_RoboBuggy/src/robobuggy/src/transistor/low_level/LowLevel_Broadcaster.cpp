@@ -33,7 +33,7 @@ void LowLevel_Broadcaster::parse_serial_msg(std::string serial_msg)
     // Verify that we actually read a full message
     if ((serial_msg[5] & 0xFF) != RBSM_FOOTER)
     {
-        ROS_ERROR("Error parsing from serial, message doesn't end in footer!");
+        ROS_WARN("serial message doesn't end in footer! Skipping");
         // skip it
         return;
     }

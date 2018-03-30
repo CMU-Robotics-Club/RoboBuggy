@@ -45,7 +45,7 @@ private:
     Matrix<double, 5, 1> x_hat;
     Matrix<double, 5, 5> R;
     Matrix<double, 5, 5> P;
-    Matrix<double, 2, 3> Q_GPS;
+    Matrix<double, 2, 2> Q_GPS;
     Matrix<double, 1, 1> Q_Encoder;
     Matrix<double, 1, 1> Q_IMU;
     Matrix<double, 2, 5> C_GPS;

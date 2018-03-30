@@ -22,7 +22,7 @@ def pose_callback(data):
     last_heading_deg = -degrees_from_north + 90
 
     viz_msg_heading = GPSFix(latitude=last_latitude, longitude=last_longitude, track = last_heading_deg)
-    rospy.loginfo("got Pose msg: %f degrees lat, %f degrees long, %f rad", last_latitude, last_longitude, last_heading_deg)
+    rospy.loginfo("got Pose msg: %f degrees lat, %f degrees long, %f bearing", last_latitude, last_longitude, last_heading_deg)
 
     viz_pub.publish(viz_msg_heading)
 
