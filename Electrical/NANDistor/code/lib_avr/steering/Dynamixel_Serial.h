@@ -1,5 +1,7 @@
 /*
 
+NANDistor
+
 Version 2.2
 
  This library is free software; you can redistribute it and/or
@@ -24,6 +26,12 @@ Version 2.2
 #include "../lib_avr/uart/uart_extra.h"
 #include "system_clock.h"
 
+ /* includes from rbsm code 
+#include <avr/io.h>
+#include <stdio.h>
+#include "../lib_avr/uart/uart_extra.h"
+#include "rbsm_config.h"
+*/
 
 //#########################################################################
 //################ define - Dynamixel Hex code table ######################
@@ -143,10 +151,39 @@ Version 2.2
 #define STATUS_PACKET_TIMEOUT           50      // in millis()
 #define STATUS_FRAME_BUFFER             5
 
+#define D_PIN_DDR                       DDRE
+#define D_PIN_PORT                      PORTE 
+#define D_PINN                          PE5 //digital 3
+
+ // Implementation Constants
+#define SERVO_BUFFER_OUT_LENGTH 16 // length Instruction_Packet_Array
+#define SERVO_BUFFER_IN_LENGTH 10 // length Status_Packet_Array
+#define SERVO_PACKET_LENGTH 10 //length Status_Packet_Array
+
+// Protocol Constants
+#define RBSM_ONE_BYTE_SIZE 8
+#define RBSM_TWO_BYTE_SIZE 16
+#define RBSM_THREE_BYTE_SIZE 24
+#define RBSM_ONE_BYTE_MASK 0xFF
+
+#define SERVO_ERROR_INSUFFICIENT_DATA  0
+
+// Message types are defined in rbsmheaders.h
+
+// Device Types
+#define RBSM_DID_MEGA 0
+
+ struct servo_message_t {
+  char message_id;
+  char data;
+};
+
 
 
 class DynamixelClass {
 public:
+    UARTFILE *_steering_uart;
+    FILE *out_file_;
     // Constructor
     DynamixelClass(): Direction_Pin(-1), Status_Return_Value(READ) { }
 
@@ -159,13 +196,25 @@ public:
     unsigned int servo(unsigned char, unsigned int, unsigned int);
     unsigned int readPosition(unsigned char);
 
+    int Init(UARTFILE *in_file, FILE *out_file);
+    int send(char id, char message); //change to char? sending unsigned chars
+    int read(servo_message_t* read_message); //change to char? sending unsigned chars
+    char AppendMessageToBuffer(char id,
+                                    char message,
+                                    char out_start_pos);
+
+    char InitMessageBuffer();
+    int InitReadBuffer();
+
 private:
 
     void transmitInstructionPacket(void);
     unsigned int readStatusPacket(void);
     void clearRXbuffer(void);
 
-    UARTFILE *_steering_uart;
+    char buffer_out_[SERVO_BUFFER_OUT_LENGTH];
+    char buffer_in_[SERVO_BUFFER_IN_LENGTH];
+    char buffer_in_pos_;
 
     unsigned char   Instruction_Packet_Array[14];   // Array to hold instruction packet data
     unsigned char   Status_Packet_Array[8];         // Array to hold returned status packet data

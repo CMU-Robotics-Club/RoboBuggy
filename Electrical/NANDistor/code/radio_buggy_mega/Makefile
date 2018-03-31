@@ -71,9 +71,9 @@ SRC += servo.c
 SRC += ../lib_avr/rbserialmessages/rbserialmessages.cpp
 SRC += ../lib_avr/radioreceiver/RadioReceiver.cpp
 SRC += ../lib_avr/radioreceiver/ServoReceiver.cpp
+SRC += ../lib_avr/steering/Dynamixel_Serial.cpp
 SRC += ../lib_avr/uart/uart.c
 SRC += ../lib_avr/encoder/Quadrature.cpp
-SRC += ../lib_avr/steering/Dynamixel_Serial.cpp
 #ff.o sd.o diskio.o rtc.o
 
 RBSM_CONFIG = ../../../../Common/rbsm_config.txt
@@ -119,7 +119,7 @@ CPPSTANDARD = -std=c++11
 
 
 # Place -D or -U options here
-CDEFS = -DF_CPU=$(F_CPU)UL -DUSART0_ENABLED -DUART1_ENABLED -DUSART2_ENABLED
+CDEFS = -DF_CPU=$(F_CPU)UL -DUSART0_ENABLED -DUSART1_ENABLED -DUSART2_ENABLED
 
 
 # Place -I options here

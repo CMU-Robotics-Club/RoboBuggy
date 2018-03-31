@@ -14,13 +14,13 @@
 #include <stdlib.h>
 #include <avr/wdt.h>
 
-#include "../lib_avr/steering/Dynamixel_Serial.h"
 #include "../lib_avr/rbserialmessages/rbserialmessages.h"
 #include "../lib_avr/radioreceiver/RadioReceiver.h"
 #include "../lib_avr/radioreceiver/ServoReceiver.h"
-#include "../lib_avr/uart/uart_extra.h"
-#include "servo.h"
 #include "system_clock.h"
+#include "../lib_avr/uart/uart_extra.h"
+#include "../lib_avr/steering/Dynamixel_Serial.h"
+#include "servo.h"
 #include "fingerprint.h"
 
 
