@@ -216,7 +216,7 @@ private:
     char buffer_in_[SERVO_BUFFER_IN_LENGTH];
     char buffer_in_pos_;
 
-    unsigned char   Instruction_Packet_Array[14];   // Array to hold instruction packet data
+    char   Instruction_Packet_Array[14];   // Array to hold instruction packet data
     unsigned char   Status_Packet_Array[8];         // Array to hold returned status packet data
     unsigned long   Time_Counter;                   // Timer for time out watchers
     char            Direction_Pin;                  // Pin to control TX/RX buffer chip

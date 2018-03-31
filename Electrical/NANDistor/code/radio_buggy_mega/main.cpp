@@ -228,6 +228,26 @@ void brake_drop() {
 }
 
 
+//This function is supposed to block until the buffer is done sending, 
+//  but it doesn't return.
+void flush()
+{
+
+  while (bit_is_set(UCSR1B, UDRIE0) || bit_is_clear(UCSR1A, TXC0)) {
+    if (bit_is_clear(SREG, SREG_I) && bit_is_set(UCSR1B, UDRIE0))
+    // Interrupts are globally disabled, but the DR empty
+    // interrupt should be enabled, so poll the DR empty flag to
+    // prevent deadlock
+    if (bit_is_set(UCSR1A, UDRE0))
+      // _tx_udr_empty_irq();
+        sbi(UCSR1A, TXC0);
+        cbi(UCSR1B, UDRIE0);
+  }
+  // If we get here, nothing is queued anymore (DRIE is disabled) and
+  // the hardware finished tranmission (TXC is set).
+}
+
+
 /*
 * Function: watchdog_init
 *
@@ -256,16 +276,6 @@ void watchdog_init() {
     sei();
 }
 
-void steering_set(long steering_angle_hundredths)
-{
-    //Offset by 180 because going from positive to negative angles on servo will cause undesirable effects
-    steering_angle_hundredths += 18000;
-    //TODO: Magic number
-    float ticks = steering_angle_hundredths/8.8;
-    ticks = max(min(ticks, 0xFFF), 0);
-    Dynamixel.servo(SERVO_ID, (unsigned int)ticks, 0x3FF); //0x3FF is max speed
-}
-
 
 int main(void) {
     // state variables
@@ -276,11 +286,11 @@ int main(void) {
     uart0_init(UART_BAUD_SELECT(BAUD, F_CPU));
     uart0_fdevopen(&g_uart_rbsm);
 
-    // prepare uart2 (because servo conflicts with uart1) for debug output
-    uart2_init(UART_BAUD_SELECT(BAUD, F_CPU));
-    uart2_fdevopen(&g_uart_debug);
+    // // prepare uart2 (because servo conflicts with uart1) for debug output
+    // uart2_init(UART_BAUD_SELECT(BAUD, F_CPU));
+    // uart2_fdevopen(&g_uart_debug);
 
-    uart1_init(UART_BAUD_SELECT(BAUD, F_CPU));
+    uart1_init(UART_BAUD_SELECT(100000, F_CPU));
     uart1_fdevopen(&g_uart_debug);
 
     // map stdio for printf
@@ -293,7 +303,7 @@ int main(void) {
     brake_init();
 
     //TODO: Magic numbers
-    Dynamixel.begin(57600);
+    //Dynamixel.begin(100000);
     //Dynamixel.Init(&_steering_uart, &_steering_uart);
     //Dynamixel.setMode(4, 0x001, 0xFFF);
 
@@ -358,7 +368,6 @@ int main(void) {
             g_errors &= ~_BV(RBSM_EID_RC_LOST_SIGNAL);
         }     
 
-        //steering_set(steer_angle);
         g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
         
         if (brake_cmd_teleop_engaged == true || brake_needs_reset == true) 
@@ -372,24 +381,44 @@ int main(void) {
             g_rbsm.Send(RBSM_MID_MEGA_BRAKE_STATE,(long unsigned)false);
         }
 
-        //TODO: Replace this block with the dynamixel command.
-        // long steering_feedback_angle = map_signal(g_encoder_steering.GetTicks(),
-        //                      0,
-        //                      MOTOR_ENCODER_TICKS_PER_REV,
-        //                      0,
-        //                      DEGREE_HUNDREDTHS_PER_REV);
-        //Dynamixel.send(4,0xFD);
-        char message [9];
-        message[0] = 0x4;
-        message[1] = 0x07;
-        message[2] = 0x04;
-        message[3] = 0x1E;
-        message[4] = 0xFD;
-        message[5] = 0x07;
-        message[6] = 0xFF;
-        message[7] = 0x03;
-        message[8] = 0x00;
-        fprintf(&g_uart_debug, message);
+        char message [12];
+
+        uint16_t steering_angle_hundredths = steer_angle + 18000;
+        //TODO: Magic number
+        float ticks = steering_angle_hundredths/8.8;
+        uint16_t int_ticks = (uint16_t)ticks;
+
+        PORTE |= _BV(PE5);
+
+        message[0] = 0xFF;
+        message[1] = 0xFF;
+        message[2] = SERVO_ID;
+        message[3] = SERVO_GOAL_LENGTH;
+        message[4] = COMMAND_WRITE_DATA;
+        message[5] = RAM_GOAL_POSITION_L;
+        message[6] = (char)(int_ticks);
+        message[7] = (char)((int_ticks & 0x0F00) >> 8);
+        message[8] = (char)(0x100);
+        message[9] = (char)((0x100 & 0x0F00) >> 8);
+
+        int checksum = 0;
+        for (int i = 2; i < 10; i++)
+        {
+            checksum += message[i];
+        }
+
+        message[10] = (char)(~checksum & 0xFF);
+
+        //fprintf(&g_uart_debug, message);
+        for (int i = 0; i < 11; i++)
+        {
+            fputc(message[i], &g_uart_debug);
+        }
+
+        //We're currently open loop, so we don't toggle the tristate buffer to receive 
+        //  data from the servo.  To achieve this we need to figure out how to synchronise 
+        //  flushing our data with toggling the data control line.
+
         // Send the rest of the telemetry messages
         g_rbsm.Send(DEVICE_ID, RBSM_DID_MEGA);
         g_rbsm.Send(RBSM_MID_MEGA_TELEOP_BRAKE_COMMAND, (long unsigned)brake_cmd_teleop_engaged);

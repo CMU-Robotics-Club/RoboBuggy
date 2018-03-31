@@ -31,8 +31,8 @@ void DynamixelClass::begin(long baud){
     uart1_init(UART_BAUD_SELECT(baud, F_CPU));
     uart1_fdevopen(_steering_uart);
 
-    D_PIN_DDR |= _BV(D_PINN);
-
+    PORTE &= ~_BV(PE5);
+    DDRE |= _BV(PE5);
 }
 
 int DynamixelClass::Init(UARTFILE *in_file, FILE *out_file) {
@@ -204,35 +204,37 @@ unsigned int DynamixelClass::ping(unsigned char ID){
 }
 
 
-unsigned int DynamixelClass::setMode(unsigned char ID, unsigned int Dynamixel_CW_Limit,unsigned int Dynamixel_CCW_Limit){
+// unsigned int DynamixelClass::setMode(unsigned char ID, unsigned int Dynamixel_CW_Limit,unsigned int Dynamixel_CCW_Limit){
 
-    Instruction_Packet_Array[0] = ID;
-    Instruction_Packet_Array[1] = SET_MODE_LENGTH;
-    Instruction_Packet_Array[2] = COMMAND_WRITE_DATA;
-    Instruction_Packet_Array[3] = EEPROM_CW_ANGLE_LIMIT_L;
+//     Instruction_Packet_Array[0] = ID;
+//     Instruction_Packet_Array[1] = SET_MODE_LENGTH;
+//     Instruction_Packet_Array[2] = COMMAND_WRITE_DATA;
+//     Instruction_Packet_Array[3] = EEPROM_CW_ANGLE_LIMIT_L;
 
-    //set SERVO mode
-    Instruction_Packet_Array[4] = (char)(Dynamixel_CW_Limit);
-    Instruction_Packet_Array[5] = (char)((Dynamixel_CW_Limit & 0x0F00) >> 8);
-    Instruction_Packet_Array[6] = (char)(Dynamixel_CCW_Limit);
-    Instruction_Packet_Array[7] = (char)((Dynamixel_CCW_Limit & 0x0F00) >> 8);
+//     //set SERVO mode
+//     Instruction_Packet_Array[4] = (char)(Dynamixel_CW_Limit);
+//     Instruction_Packet_Array[5] = (char)((Dynamixel_CW_Limit & 0x0F00) >> 8);
+//     Instruction_Packet_Array[6] = (char)(Dynamixel_CCW_Limit);
+//     Instruction_Packet_Array[7] = (char)((Dynamixel_CCW_Limit & 0x0F00) >> 8);
 
-    clearRXbuffer();
+//     clearRXbuffer();
 
-    transmitInstructionPacket();
+//     transmitInstructionPacket();
 
-    if (Status_Return_Value == ALL)
-    {
-        readStatusPacket();
-        if (Status_Packet_Array[2] != 0)
-        {
-            return (Status_Packet_Array[2] | 0xF000);   // If there is a error Returns error value
-        }
-    }
- }
+//     if (Status_Return_Value == ALL)
+//     {
+//         readStatusPacket();
+//         if (Status_Packet_Array[2] != 0)
+//         {
+//             return (Status_Packet_Array[2] | 0xF000);   // If there is a error Returns error value
+//         }
+//     }
+//  }
 
 
-unsigned int DynamixelClass::servo(unsigned char ID,unsigned int Position,unsigned int Speed){
+unsigned int DynamixelClass::servo(unsigned char ID,unsigned int Position,unsigned int Speed)
+{
+    PORTE &= ~ (_BV(PE5));
 
     Instruction_Packet_Array[0] = ID;
     Instruction_Packet_Array[1] = SERVO_GOAL_LENGTH;
@@ -244,8 +246,13 @@ unsigned int DynamixelClass::servo(unsigned char ID,unsigned int Position,unsign
     Instruction_Packet_Array[7] = (char)((Speed & 0x0F00) >> 8);
     Instruction_Packet_Array[8] = 0x00; // null terminator since we are printf-ing
 
-    fprintf(_steering_uart, Instruction_Packet_Array)
+    fprintf(_steering_uart, Instruction_Packet_Array);
 
+
+    PORTE |= _BV(PE5);
+
+
+    return 0;
     //TODO implement reading the status packet
 }
 
