@@ -21,12 +21,9 @@ Version 2.2
 #ifndef Dynamixel_Serial_h
 #define Dynamixel_Serial_h
 
-#if (ARDUINO >= 100)
- #include <Arduino.h>
-#else
- #include <WProgram.h>
- #include <pins_arduino.h>
-#endif
+#include "../lib_avr/uart/uart_extra.h"
+#include "system_clock.h"
+
 
 //#########################################################################
 //################ define - Dynamixel Hex code table ######################
@@ -125,10 +122,6 @@ Version 2.2
 
 //#########################################################################
 //############################ Specials ###################################
-#define PORT0                           0x00
-#define PORT1                           0x01
-#define PORT2                           0x02
-#define PORT3                           0x03
 
 #define OFF                             0x00
 #define ON                              0x01
@@ -158,46 +151,13 @@ public:
     DynamixelClass(): Direction_Pin(-1), Status_Return_Value(READ) { }
 
     void begin(long);
-    void begin(HardwareSerial&, long);
-    void begin(Stream&);
-    void end(void);
 
-    void setDirectionPin(unsigned char);
     unsigned int reset(unsigned char);
     unsigned int ping(unsigned char);
 
-    unsigned int setStatusPaketReturnDelay(unsigned char,unsigned char);
-    unsigned int setID(unsigned char, unsigned char);
-    unsigned int setBaudRate(unsigned char, long);
-    unsigned int setMaxTorque(unsigned char, int);
-    unsigned int setHoldingTorque(unsigned char, bool);
-    unsigned int setAlarmShutdown(unsigned char,unsigned char);
-    unsigned int setStatusPaket(unsigned char,unsigned char);
-    unsigned int setMode(unsigned char, bool, unsigned int, unsigned int);
-    unsigned int setPunch(unsigned char, unsigned int);
-    unsigned int setPID(unsigned char, unsigned char, unsigned char, unsigned char);
-    unsigned int setTemp(unsigned char, unsigned char);
-    unsigned int setVoltage(unsigned char, unsigned char, unsigned char);
-
+    unsigned int setMode(unsigned char, unsigned int, unsigned int);
     unsigned int servo(unsigned char, unsigned int, unsigned int);
-    unsigned int servoPreload(unsigned char, unsigned int, unsigned int);
-    unsigned int wheel(unsigned char, bool, unsigned int);
-    void wheelSync(unsigned char, bool, unsigned int, unsigned char, bool, unsigned int, unsigned char, bool, unsigned int);
-    unsigned int wheelPreload(unsigned char, bool, unsigned int);
-
-    unsigned int action(unsigned char);
-
-    unsigned int readTemperature(unsigned char);
-    unsigned int readVoltage(unsigned char);
     unsigned int readPosition(unsigned char);
-    unsigned int readLoad(unsigned char);
-    unsigned int readSpeed(unsigned char);
-
-    unsigned int checkRegister(unsigned char);
-    unsigned int checkMovement(unsigned char);
-    unsigned int checkLock(unsigned char);
-
-    unsigned int ledState(unsigned char, bool);
 
 private:
 
@@ -205,7 +165,7 @@ private:
     unsigned int readStatusPacket(void);
     void clearRXbuffer(void);
 
-    Stream *_serial;
+    UARTFILE *_steering_uart;
 
     unsigned char   Instruction_Packet_Array[14];   // Array to hold instruction packet data
     unsigned char   Status_Packet_Array[8];         // Array to hold returned status packet data
