@@ -374,7 +374,7 @@ int main(void) {
         //                      MOTOR_ENCODER_TICKS_PER_REV,
         //                      0,
         //                      DEGREE_HUNDREDTHS_PER_REV);
-
+        Dynamixel.send(4,0xFD);
         // Send the rest of the telemetry messages
         g_rbsm.Send(DEVICE_ID, RBSM_DID_MEGA);
         g_rbsm.Send(RBSM_MID_MEGA_TELEOP_BRAKE_COMMAND, (long unsigned)brake_cmd_teleop_engaged);
