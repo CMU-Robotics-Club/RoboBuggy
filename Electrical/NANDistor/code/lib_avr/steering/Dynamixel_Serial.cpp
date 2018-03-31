@@ -48,7 +48,7 @@ int DynamixelClass::Init(UARTFILE *in_file, FILE *out_file) {
 }
 
 int DynamixelClass::send(char id, char message) {
-    char buffer_pos;
+    /*char buffer_pos;
     buffer_pos = InitMessageBuffer();
     buffer_pos = AppendMessageToBuffer(id, message, buffer_pos);
 
@@ -56,7 +56,22 @@ int DynamixelClass::send(char id, char message) {
         fputc(buffer_out_[i], out_file_);
     }
 
-    // success
+    // success*/
+    //fprintf(_steering_uart, "test123456789\r\n");
+    // fputc('t', _steering_uart);
+    // fputc('e', _steering_uart);
+    // fputc('s', _steering_uart);
+    // fputc('t', _steering_uart);
+    char messages[8];
+    messages[0] = 0x4;
+    messages[1] = 0x07;
+    messages[2] = 0x04;
+    messages[3] = 0x1E;
+    messages[4] = 0xFD;
+    messages[5] = 0x07;
+    messages[6] = 0xFF;
+    messages[7] = 0x03;
+    fprintf(_steering_uart, messages);
     return 1;
 }
 
@@ -143,7 +158,6 @@ char DynamixelClass::InitMessageBuffer() {
 int DynamixelClass::InitReadBuffer() {
     buffer_in_pos_ = 0;
     //buffer_in_stream_lock_ = false;
-
     return 0;
 }
 

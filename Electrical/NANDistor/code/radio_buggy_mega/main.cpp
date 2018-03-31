@@ -280,6 +280,9 @@ int main(void) {
     uart2_init(UART_BAUD_SELECT(BAUD, F_CPU));
     uart2_fdevopen(&g_uart_debug);
 
+    uart1_init(UART_BAUD_SELECT(BAUD, F_CPU));
+    uart1_fdevopen(&g_uart_debug);
+
     // map stdio for printf
     stdin = stdout = stderr = &g_uart_debug;
 
@@ -291,7 +294,8 @@ int main(void) {
 
     //TODO: Magic numbers
     Dynamixel.begin(57600);
-    Dynamixel.setMode(4, 0x001, 0xFFF);
+    //Dynamixel.Init(&_steering_uart, &_steering_uart);
+    //Dynamixel.setMode(4, 0x001, 0xFFF);
 
     // setup rbsm
     g_rbsm.Init(&g_uart_rbsm, &g_uart_rbsm);
@@ -354,7 +358,7 @@ int main(void) {
             g_errors &= ~_BV(RBSM_EID_RC_LOST_SIGNAL);
         }     
 
-        steering_set(steer_angle);
+        //steering_set(steer_angle);
         g_rbsm.Send(RBSM_MID_MEGA_STEER_ANGLE, (long int)steer_angle);
         
         if (brake_cmd_teleop_engaged == true || brake_needs_reset == true) 
@@ -374,7 +378,18 @@ int main(void) {
         //                      MOTOR_ENCODER_TICKS_PER_REV,
         //                      0,
         //                      DEGREE_HUNDREDTHS_PER_REV);
-        Dynamixel.send(4,0xFD);
+        //Dynamixel.send(4,0xFD);
+        char message [9];
+        message[0] = 0x4;
+        message[1] = 0x07;
+        message[2] = 0x04;
+        message[3] = 0x1E;
+        message[4] = 0xFD;
+        message[5] = 0x07;
+        message[6] = 0xFF;
+        message[7] = 0x03;
+        message[8] = 0x00;
+        fprintf(&g_uart_debug, message);
         // Send the rest of the telemetry messages
         g_rbsm.Send(DEVICE_ID, RBSM_DID_MEGA);
         g_rbsm.Send(RBSM_MID_MEGA_TELEOP_BRAKE_COMMAND, (long unsigned)brake_cmd_teleop_engaged);
