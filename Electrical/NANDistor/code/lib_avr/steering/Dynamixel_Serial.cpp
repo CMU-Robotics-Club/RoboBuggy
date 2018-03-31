@@ -242,23 +242,11 @@ unsigned int DynamixelClass::servo(unsigned char ID,unsigned int Position,unsign
     Instruction_Packet_Array[5] = (char)((Position & 0x0F00) >> 8);
     Instruction_Packet_Array[6] = (char)(Speed);
     Instruction_Packet_Array[7] = (char)((Speed & 0x0F00) >> 8);
+    Instruction_Packet_Array[8] = 0x00; // null terminator since we are printf-ing
 
-    clearRXbuffer();
+    fprintf(_steering_uart, Instruction_Packet_Array)
 
-    transmitInstructionPacket();
-
-
-    if (ID == 0XFE || Status_Return_Value != ALL ){     // If ID of FE is used no status packets are returned so we do not need to check it
-        return (0x00);
-    }else{
-        readStatusPacket();
-        if (Status_Packet_Array[2] == 0){               // If there is no status packet error return value
-            return (Status_Packet_Array[0]);            // Return SERVO ID
-        }else{
-            return (Status_Packet_Array[2] | 0xF000);   // If there is a error Returns error value
-        }
-    }
-
+    //TODO implement reading the status packet
 }
 
 
