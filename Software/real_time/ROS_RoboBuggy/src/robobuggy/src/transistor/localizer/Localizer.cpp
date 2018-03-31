@@ -34,7 +34,6 @@ void Localizer::Encoder_Callback(const robobuggy::Encoder::ConstPtr &msg)
 
 void Localizer::GPS_Callback(const robobuggy::GPS::ConstPtr &msg)
 {
-    ROS_INFO("wheelbase = %f\n", WHEELBASE_M);
     geodesy::UTMPoint p;
     p.northing = msg->Lat_m;
     p.easting = msg->Long_m;
@@ -61,9 +60,7 @@ void Localizer::GPS_Callback(const robobuggy::GPS::ConstPtr &msg)
       p.easting,
       p.northing
     ;
-    ROS_INFO("before kalman\n");
     kalman_filter(C_GPS, Q_GPS, z);
-    ROS_INFO("after kalman\n");
 
 }
 
@@ -334,7 +331,6 @@ void Localizer::kalman_filter(MatrixXd c, MatrixXd q, MatrixXd z)
     Matrix<double, 5, 1> x_pre = A * x;
     Matrix<double, 5, 5> P_pre = A * P * A.transpose() + R;
 
-    ROS_INFO("b4 clamp 1\n");
     x_pre(3, 0) = clamp_angle(x_pre(3, 0));
     x_pre(4, 0) = clamp_angle(x_pre(4, 0));
 
@@ -344,8 +340,6 @@ void Localizer::kalman_filter(MatrixXd c, MatrixXd q, MatrixXd z)
     x = x_pre + K * residual;
     P = (MatrixXd::Identity(5,5) - (K * c)) * P_pre;
 
-    ROS_INFO("b4 clamp 2, xtheta = %f, xdtheta = %f\n", x(3, 0), x(4,0));
     x(3, 0) = clamp_angle(x(3, 0));
     x(4, 0) = clamp_angle(x(4, 0));
-    ROS_INFO("after clamp 2\n");
 }
