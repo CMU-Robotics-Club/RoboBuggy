@@ -67,10 +67,29 @@ void Localizer::GPS_Callback(const robobuggy::GPS::ConstPtr &msg)
 void Localizer::IMU_Callback(const robobuggy::IMU::ConstPtr &msg)
 {
     double heading_bearing = 0.0;
+    double heading_honeywell = 0.0;
 
     heading_bearing = atan2(msg->Y_Mag, msg->X_Mag);
     //@TODO: Use all 3 axes to compute heading to account for tilt
     //@TODO: Potentially integrate accelerometer and magnetometer + do more sophisticated sensor fusion
+
+    // honeywell imu orientation
+    // Direction (y>0) = 90 - [arcTAN(x/y)]*180/pi
+    // Direction (y<0) = 270 - [arcTAN(x/y)]*180/pi
+    // Direction (y=0, x<0) = 180.0
+    // Direction (y=0, x>0) = 0.0
+    double x = msg->X_Mag;
+    double y = msg->Y_Mag;
+
+    if (y > 0) 
+    {
+        heading_honeywell = M_PI / 2.0 - atan(x/y);
+    }
+    else if (y < 0) 
+    {
+        heading_honeywell = 3 * M_PI / 2.0 - atan(x/y);
+    }
+
 
     // We get the heading in a special version of bearing coordinates: theta = 0 @ north, +theta = counterclockwise
     // convert it to cartesian coordinates: theta = 0 @ east, +theta = counterclockwise
