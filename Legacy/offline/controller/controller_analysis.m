@@ -6,7 +6,7 @@ close all;
 addpath('../localizer/latlonutm/Codes/matlab');
 addpath('../localizer/altmany-export_fig');
 
-file = 'controller_v2.mat';
+file = 'controller_v3.mat';
 load(file, 'trajectory');
 save_plot = false;
 show_maps = true;
@@ -16,7 +16,7 @@ load('./waypoints_course_v2.mat');
 desired = [x y];
 desired = desired(112:(end-50), :);
 
-k = 1000;
+k = 1000;   
 if show_maps
     wmline(trajectory(6,1:k:end), trajectory(7,1:k:end), 'Color', 'r')
 end
@@ -25,7 +25,7 @@ heading = trajectory(4,1:k:end);
 figure();
 hold on;
 plot(trajectory(1,1:k:end), trajectory(2,1:k:end))
-quiver(trajectory(1,1:k:end), trajectory(2,1:k:end), cos(heading), sin(heading))
+quiver(trajectory(1,1:k:end), trajectory(2,1:k:end), cos(heading), sin(heading), 0.3)
 plot(desired(:,1), desired(:,2), 'g')
 hold off;
 title(['Map ', file]);

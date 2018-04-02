@@ -2,16 +2,45 @@
 // Created by bhai on 9/15/17.
 //
 
-#include "transistor/controller/Controller.h"
+#include "controller/Controller.h"
+#include <json/json.h>
+#include <fstream>
 
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "Controller");
     ros::NodeHandle nh;
+    ros::Rate loop_rate(10);
 
-    Controller controller;
+    std::vector<robobuggy::GPS> waypoints;
 
-    ros::spin();
+    std::ifstream waypoint_stream("src/robobuggy/config/waypoints.txt");
+    std::string waypoint_str;
+    while (std::getline(waypoint_stream, waypoint_str))
+    {
+        Json::Value waypoint_json;
+
+        // convert the line into a string stream so that we can put it easily in the jsoncpp
+        std::stringstream waypoint_str_stream(waypoint_str);
+        waypoint_str_stream >> waypoint_json;
+
+        // get a new GPS msg
+        robobuggy::GPS waypoint_msg;
+        waypoint_msg.Lat_deg = waypoint_json["latitude"].asFloat();
+        waypoint_msg.Long_deg = waypoint_json["longitude"].asFloat();
+        waypoints.push_back(waypoint_msg);
+
+    }
+
+    Controller controller(waypoints);
+
+    while (ros::ok())
+    {
+        controller.update_steering_estimate();
+
+        ros::spinOnce();
+        loop_rate.sleep();
+    }
 
     return 0;
 }

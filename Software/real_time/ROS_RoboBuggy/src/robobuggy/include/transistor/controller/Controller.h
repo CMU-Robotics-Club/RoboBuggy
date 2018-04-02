@@ -5,29 +5,37 @@
 #ifndef ROS_ROBOBUGGY_CONTROLLER_H
 #define ROS_ROBOBUGGY_CONTROLLER_H
 
-#include <robobuggy/Encoder.h>
 #include "ros/ros.h"
-#include "robobuggy/IMU.h"
-#include "robobuggy/GPS.h"
-#include "std_msgs/String.h"
+#include <robobuggy/Pose.h>
+#include <robobuggy/Steering.h>
+#include <robobuggy/GPS.h>
 #include <string>
+#include <geodesy/utm.h>
+#include <cmath>
 
 class Controller
 {
 public:
-    Controller();
-    static const std::string NODE_NAME;
-    
-private:
+    Controller(std::vector<robobuggy::GPS>& initial_waypoint_list);
+    void Pose_Callback(const robobuggy::Pose::ConstPtr& msg);
+    void update_steering_estimate();
     ros::NodeHandle nh;
-    
-    ros::Subscriber imu_sub;
-    ros::Subscriber encoder_sub;
-    ros::Subscriber gps_sub;
+private:
+    ros::Subscriber pose_sub;
+    ros::Publisher steering_pub;
+    ros::Publisher waypoint_pub;
 
-    static void IMU_Callback(const robobuggy::IMU::ConstPtr& msg);
-    static void GPS_Callback(const robobuggy::GPS::ConstPtr& msg);
-    static void Encoder_Callback(const robobuggy::Encoder::ConstPtr& msg);
+    robobuggy::Pose current_pose_estimate;
+    robobuggy::GPS target_waypoint;
+    std::vector<robobuggy::GPS> waypoint_list;
+    int last_closest_index;
+    const static int WAY_POINT_LOOKAHEAD_MAX = 50;
+
+    int get_closest_waypoint_index();
+    double pure_pursuit_controller();
+    bool get_deploy_brake_value();
+    double normalize_angle_rad(double radians);
+    double get_distance_from_pose(robobuggy::Pose pose_msg);
 };
 
 #endif //ROS_ROBOBUGGY_CONTROLLER_H
