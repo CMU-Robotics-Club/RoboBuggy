@@ -5,6 +5,7 @@ import math
 import json
 import time
 from gps_common.msg import GPSFix
+from robobuggy.msg import Command
 from robobuggy.msg import GPS
 from robobuggy.msg import Pose
 from robobuggy.msg import Command
@@ -13,6 +14,9 @@ from robobuggy.msg import Command
 
 def pose_callback(data):
     global viz_pub
+    global last_latitude
+    global last_longitude
+    global last_heading_deg
 
     #data.heading_rad is in Radians from north clockwise, but GPSFix requires degrees from north
     degrees_from_north = math.degrees(data.heading_rad)
@@ -30,6 +34,9 @@ def pose_callback(data):
 
 def command_callback(data):
     global viz_command_pub
+    global last_latitude
+    global last_longitude
+    global last_heading_deg
 
     #steer_cmd should be degrees
     rospy.loginfo("got Steering Command msg: %f degrees", data.steer_cmd)
