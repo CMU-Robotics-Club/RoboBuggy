@@ -144,15 +144,15 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/robobuggy_node.cpp)
-add_executable(${PROJECT_NAME}_Controller_Runner include/json/jsoncpp.cpp src/controller/Controller_Runner.cpp src/controller/Controller.cpp)
-add_executable(${PROJECT_NAME}_IMU_Broadcaster_Runner src/imu/IMU_Broadcaster_Runner.cpp src/imu/IMU_Broadcaster.cpp)
-add_executable(${PROJECT_NAME}_Transistor_LL_Broadcaster_Runner src/low_level/Transistor_LL_Broadcaster_Runner.cpp src/low_level/Transistor_LL_Broadcaster.cpp)
-add_executable(${PROJECT_NAME}_Transistor_GPS_Broadcaster_Runner src/gps/Transistor_GPS_Broadcaster_Runner.cpp src/gps/Transistor_GPS_Broadcaster.cpp)
-add_executable(${PROJECT_NAME}_Transistor_Localizer_Runner src/localizer/Localizer_Runner.cpp src/localizer/Localizer.cpp)
+add_executable(${PROJECT_NAME}_Transistor_Controller_Runner include/json/jsoncpp.cpp src/transistor/controller/Controller_Runner.cpp src/transistor/controller/Controller.cpp)
+add_executable(${PROJECT_NAME}_Transistor_IMU_Broadcaster_Runner src/transistor/imu/IMU_Broadcaster_Runner.cpp src/transistor/imu/IMU_Broadcaster.cpp)
+add_executable(${PROJECT_NAME}_Transistor_LowLevel_Broadcaster_Runner src/transistor/low_level/LowLevel_Broadcaster_Runner.cpp src/transistor/low_level/LowLevel_Broadcaster.cpp)
+add_executable(${PROJECT_NAME}_Transistor_GPS_Broadcaster_Runner src/transistor/gps/GPS_Broadcaster_Runner.cpp src/transistor/gps/GPS_Broadcaster.cpp)
+add_executable(${PROJECT_NAME}_Transistor_Localizer_Runner src/transistor/localizer/Localizer_Runner.cpp src/transistor/localizer/Localizer.cpp)
 
-add_dependencies(${PROJECT_NAME}_Controller_Runner robobuggy_generate_messages_cpp)
-add_dependencies(${PROJECT_NAME}_IMU_Broadcaster_Runner robobuggy_generate_messages_cpp)
-add_dependencies(${PROJECT_NAME}_Transistor_LL_Broadcaster_Runner robobuggy_generate_messages_cpp)
+add_dependencies(${PROJECT_NAME}_Transistor_Controller_Runner robobuggy_generate_messages_cpp)
+add_dependencies(${PROJECT_NAME}_Transistor_IMU_Broadcaster_Runner robobuggy_generate_messages_cpp)
+add_dependencies(${PROJECT_NAME}_Transistor_LowLevel_Broadcaster_Runner robobuggy_generate_messages_cpp)
 add_dependencies(${PROJECT_NAME}_Transistor_GPS_Broadcaster_Runner robobuggy_generate_messages_cpp)
 add_dependencies(${PROJECT_NAME}_Transistor_Localizer_Runner robobuggy_generate_messages_cpp)
 

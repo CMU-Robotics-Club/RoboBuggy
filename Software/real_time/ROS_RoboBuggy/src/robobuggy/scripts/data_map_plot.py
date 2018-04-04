@@ -39,9 +39,9 @@ def command_callback(data):
     global last_heading_deg
 
     #steer_cmd should be degrees
-    rospy.loginfo("got Steering Command msg: %f degrees", data.steer_cmd)
+    rospy.loginfo("got Steering Command msg: %f degrees", math.degrees(data.steer_cmd_rad))
 
-    viz_msg_steering = GPSFix(latitude=last_latitude, longitude=last_longitude, track = last_heading_deg + data.steer_cmd)
+    viz_msg_steering = GPSFix(latitude=last_latitude, longitude=last_longitude, track = last_heading_deg - math.degrees(data.steer_cmd_rad))
 
     viz_command_pub.publish(viz_msg_steering)
 
@@ -54,6 +54,7 @@ def waypoints_publisher():
     # read from waypoints file, parse JSON, publish
     waypoints = open("../RoboBuggy/Software/real_time/ROS_RoboBuggy/src/robobuggy/config/waypoints.txt", 'r')
     line = waypoints.readline()
+    time.sleep(5)
     while line:
     	data = json.loads(line)
         viz_msg_waypoint = GPSFix(latitude=data['latitude'],longitude=data['longitude'])

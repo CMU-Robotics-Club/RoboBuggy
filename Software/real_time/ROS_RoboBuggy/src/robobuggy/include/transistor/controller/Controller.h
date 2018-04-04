@@ -7,7 +7,7 @@
 
 #include "ros/ros.h"
 #include <robobuggy/Pose.h>
-#include <robobuggy/Steering.h>
+#include <robobuggy/Command.h>
 #include <robobuggy/GPS.h>
 #include <string>
 #include <geodesy/utm.h>

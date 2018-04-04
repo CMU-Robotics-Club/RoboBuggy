@@ -53,12 +53,12 @@ class ControllerTester:
     def command_callback(self, data):
         
         #steer_cmd should be radians
-        rospy.loginfo("got Steering Command msg: %f degrees", data.steer_cmd)
+        rospy.loginfo("got Steering Command msg: %f degrees", math.degrees(data.steer_cmd_rad))
 
 
         #data.steer_cmd is the information we get
         #this method will have to modify the model
-        self.steering = data.steer_cmd
+        self.steering = data.steer_cmd_rad
         self.model = self.updateModel(self.x)
 
         pass
@@ -95,7 +95,6 @@ def start_simulator_spin():
 
         simulator_pub.publish(simulated_pose)
         c_tester.updateModel(c_tester.x)
-        print(c_tester.x[2][0])
         #rospy.spin()
 
         c_tester.rate.sleep()

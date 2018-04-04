@@ -2,7 +2,7 @@
 // Created by bhai on 9/15/17.
 //
 
-#include "controller/Controller.h"
+#include "transistor/controller/Controller.h"
 #include <json/json.h>
 #include <fstream>
 
