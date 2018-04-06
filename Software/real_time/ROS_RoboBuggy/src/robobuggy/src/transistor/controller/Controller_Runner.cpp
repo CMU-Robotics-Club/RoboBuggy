@@ -32,6 +32,8 @@ int main(int argc, char **argv)
 
     }
 
+    ROS_INFO("Read in %lu waypoints\n", waypoints.size());
+
     Controller controller(waypoints);
 
     while (ros::ok())

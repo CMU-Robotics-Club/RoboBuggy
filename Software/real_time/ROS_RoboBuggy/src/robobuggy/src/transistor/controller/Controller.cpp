@@ -80,6 +80,7 @@ double Controller::pure_pursuit_controller()
     {
         lookahead = lookahead_upper_bound;
     }
+    ROS_INFO("lookahead = %f\n", lookahead);
 
     int lookahead_index = 0;
     for (lookahead_index = closest_index; lookahead_index < waypoint_list.size(); lookahead_index++)
@@ -88,6 +89,7 @@ double Controller::pure_pursuit_controller()
         gpsPoseMessage.latitude_deg = waypoint_list.at(lookahead_index).Lat_deg;
         gpsPoseMessage.longitude_deg = waypoint_list.at(lookahead_index).Long_deg;
 
+        ROS_INFO("candidate=%d, dist=%f\n", lookahead_index, get_distance_from_pose(gpsPoseMessage));
         if (get_distance_from_pose(gpsPoseMessage) > lookahead)
         {
             break;
