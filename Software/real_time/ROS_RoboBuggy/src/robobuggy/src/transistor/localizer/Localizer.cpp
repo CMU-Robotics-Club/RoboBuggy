@@ -47,7 +47,7 @@ void Localizer::GPS_Callback(const robobuggy::GPS::ConstPtr &msg)
         double dx = p.easting - prev_position_utm.easting;
         double dy = p.northing - prev_position_utm.northing;
 
-        heading_cartesian = atan2(dy, dx);
+        heading_cartesian = atan2(dx, dy);
         if (sqrt(dx * dx + dy * dy) < 0.25)
         {
             heading_cartesian = x(3, 0);
@@ -101,7 +101,7 @@ void Localizer::IMU_Callback(const robobuggy::IMU::ConstPtr &msg)
         heading_cartesian
     ;
 
-    kalman_filter(C_IMU, Q_IMU, z);    
+    //kalman_filter(C_IMU, Q_IMU, z);    
 }
 
 void Localizer::Feedback_Callback(const robobuggy::Feedback::ConstPtr &msg)
