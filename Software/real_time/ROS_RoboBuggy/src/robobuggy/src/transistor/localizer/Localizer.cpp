@@ -55,11 +55,10 @@ void Localizer::GPS_Callback(const robobuggy::GPS::ConstPtr &msg)
     }
     prev_position_utm = p;
 
-    Matrix<double, 3, 1> z;
+    Matrix<double, 2, 1> z;
     z <<
       p.easting,
-      p.northing,
-      heading_cartesian
+      p.northing
     ;
     kalman_filter(C_GPS, Q_GPS, z);
 
@@ -94,14 +93,16 @@ void Localizer::IMU_Callback(const robobuggy::IMU::ConstPtr &msg)
 
     // We get the heading in a special version of bearing coordinates: theta = 0 @ north, +theta = counterclockwise
     // convert it to cartesian coordinates: theta = 0 @ east, +theta = counterclockwise
-    double heading_cartesian = heading_bearing - M_PI / 2.0;
+    double heading_cartesian = heading_bearing + M_PI / 2.0;
+
+    ROS_INFO("heading cartesian = %f, heading bearing = %f\n", heading_cartesian, heading_bearing);
 
     Matrix<double, 1, 1> z;
     z <<
         heading_cartesian
     ;
 
-    //kalman_filter(C_IMU, Q_IMU, z);    
+    kalman_filter(C_IMU, Q_IMU, z);    
 }
 
 void Localizer::Feedback_Callback(const robobuggy::Feedback::ConstPtr &msg)
@@ -147,9 +148,8 @@ void Localizer::init_P()
 void Localizer::init_Q_GPS()
 {
     Q_GPS <<
-          1, 0, 0,
-          0, 1, 0,
-          0, 0, 0.01
+          1, 0,
+          0, 1
     ;
 
     std::stringstream s;
@@ -186,8 +186,7 @@ void Localizer::init_C_GPS()
 {
     C_GPS <<
           1, 0, 0, 0, 0,
-          0, 1, 0, 0, 0,
-          0, 0, 0, 1, 0
+          0, 1, 0, 0, 0
     ;
 
     std::stringstream s;
