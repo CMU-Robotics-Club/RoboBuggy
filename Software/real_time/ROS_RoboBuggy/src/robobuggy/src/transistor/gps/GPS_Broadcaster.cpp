@@ -6,7 +6,7 @@
 #include <geographic_msgs/GeoPoint.h>
 #include <geodesy/utm.h>
 
-const std::string GPS_Broadcaster::NODE_NAME = "GPS_Broadcaster";
+const std::string GPS_Broadcaster::NODE_NAME = "Transistor_GPS_Broadcaster";
 GPS_Broadcaster::GPS_Broadcaster()
 {
     gps_pub = nh.advertise<robobuggy::GPS>("GPS", 1000);
@@ -88,8 +88,8 @@ int GPS_Broadcaster::handle_serial_messages()
                     robobuggy::GPS gps_message;
                     gps_message.Lat_deg = static_cast<float>(latitude_deg);
                     gps_message.Long_deg = static_cast<float>(longitude_deg);
-                    gps_message.Lat_m = static_cast<float>(utm_point.northing);
-                    gps_message.Long_m = static_cast<float>(utm_point.easting);
+                    gps_message.Lat_m = static_cast<float>(utm_point.easting);
+                    gps_message.Long_m = static_cast<float>(utm_point.northing);
                     gps_pub.publish(gps_message);
                 }
 

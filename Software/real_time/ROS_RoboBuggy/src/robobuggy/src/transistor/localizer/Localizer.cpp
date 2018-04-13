@@ -18,8 +18,8 @@ void Localizer::Encoder_Callback(const robobuggy::Encoder::ConstPtr &msg)
 
     double ticks = msg->ticks;
     double dx = ticks - prev_encoder_ticks;
-    dx = dx * 0.61 / 7.0;
-    double body_speed = dx / (dt / 1000);
+    dx = dx * 0.61 / 7.0 * 0.3048 * 2;
+    double body_speed = dx / (dt / 1000.0);
 
     prev_encoder_time = current_time;
     prev_encoder_ticks = ticks;
@@ -39,35 +39,70 @@ void Localizer::GPS_Callback(const robobuggy::GPS::ConstPtr &msg)
     p.easting = msg->Long_m;
     p.band = 'T';
     p.zone = 17;
-    double heading = 0.0;
+    
+    double heading_cartesian = 0.0;
 
     if (prev_position_utm.northing != 0)
     {
         double dx = p.easting - prev_position_utm.easting;
         double dy = p.northing - prev_position_utm.northing;
 
-        heading = atan2(dy, dx);
-        if (dx * dx + dy * dy < 0.25)
+        heading_cartesian = atan2(dx, dy);
+        if (sqrt(dx * dx + dy * dy) < 0.25)
         {
-            heading = x(2, 0);
+            heading_cartesian = x(3, 0);
         }
-        prev_position_utm = p;
     }
+    prev_position_utm = p;
 
-    Matrix<double, 3, 1> z;
+    Matrix<double, 2, 1> z;
     z <<
       p.easting,
-      p.northing,
-      heading
+      p.northing
     ;
-
     kalman_filter(C_GPS, Q_GPS, z);
 
 }
 
 void Localizer::IMU_Callback(const robobuggy::IMU::ConstPtr &msg)
 {
+    double heading_bearing = 0.0;
+    double heading_honeywell = 0.0;
 
+    heading_bearing = atan2(msg->Y_Mag, msg->X_Mag);
+    //@TODO: Use all 3 axes to compute heading to account for tilt
+    //@TODO: Potentially integrate accelerometer and magnetometer + do more sophisticated sensor fusion
+
+    // honeywell imu orientation
+    // Direction (y>0) = 90 - [arcTAN(x/y)]*180/pi
+    // Direction (y<0) = 270 - [arcTAN(x/y)]*180/pi
+    // Direction (y=0, x<0) = 180.0
+    // Direction (y=0, x>0) = 0.0
+    double x = msg->X_Mag;
+    double y = msg->Y_Mag;
+
+    if (y > 0) 
+    {
+        heading_honeywell = M_PI / 2.0 - atan(x/y);
+    }
+    else if (y < 0) 
+    {
+        heading_honeywell = 3 * M_PI / 2.0 - atan(x/y);
+    }
+
+
+    // We get the heading in a special version of bearing coordinates: theta = 0 @ north, +theta = counterclockwise
+    // convert it to cartesian coordinates: theta = 0 @ east, +theta = counterclockwise
+    double heading_cartesian = heading_bearing + M_PI / 2.0;
+
+    ROS_INFO("heading cartesian = %f, heading bearing = %f\n", heading_cartesian, heading_bearing);
+
+    Matrix<double, 1, 1> z;
+    z <<
+        heading_cartesian
+    ;
+
+    kalman_filter(C_IMU, Q_IMU, z);    
 }
 
 void Localizer::Feedback_Callback(const robobuggy::Feedback::ConstPtr &msg)
@@ -113,9 +148,8 @@ void Localizer::init_P()
 void Localizer::init_Q_GPS()
 {
     Q_GPS <<
-          1, 0, 0,
-          0, 1, 0,
-          0, 0, 0.01
+          5, 0,
+          0, 5
     ;
 
     std::stringstream s;
@@ -136,12 +170,23 @@ void Localizer::init_Q_Encoder()
     ROS_INFO("Initialized Q_Encoder matrix to : \n%s", s.str().c_str());
 }
 
+void Localizer::init_Q_IMU()
+{
+    Q_IMU <<
+        0.05
+    ;
+
+    std::stringstream s;
+    s << Q_IMU << std::endl;
+
+    ROS_INFO("Initialized Q_IMU matrix to : \n%s", s.str().c_str());
+}
+
 void Localizer::init_C_GPS()
 {
     C_GPS <<
           1, 0, 0, 0, 0,
-          0, 1, 0, 0, 0,
-          0, 0, 0, 1, 0
+          0, 1, 0, 0, 0
     ;
 
     std::stringstream s;
@@ -162,11 +207,26 @@ void Localizer::init_C_Encoder()
     ROS_INFO("Initialized C_Encoder Matrix to : \n%s", s.str().c_str());
 }
 
+void Localizer::init_C_IMU()
+{
+    C_IMU <<
+        0, 0, 0, 1, 0
+    ;
+}
+
 void Localizer::init_x()
 {
+    double init_latitude = 40.442616;
+    double init_longitude = -79.943336;
+
+    geographic_msgs::GeoPoint gps_point;
+    gps_point.latitude = init_latitude;
+    gps_point.longitude = init_longitude;
+    geodesy::UTMPoint init_utm(gps_point);
+
     x <<
-      0, // TODO initial lat in UTM
-      0, // TODO initial lon in UTM
+      init_utm.northing, // TODO initial lat in UTM
+      init_utm.easting, // TODO initial lon in UTM
       0,
       0, // TODO initial heading in rad
       0
@@ -189,12 +249,17 @@ void Localizer::init_x()
 const std::string Localizer::NODE_NAME = "Localizer";
 Localizer::Localizer()
 {
+    current_steering_angle = 0;
+    WHEELBASE_M = 1.13;
+
     init_R();
     init_P();
     init_Q_GPS();
     init_Q_Encoder();
+    init_Q_IMU();
     init_C_GPS();
     init_C_Encoder();
+    init_C_IMU();
     init_x();
     update_motion_model(0);
 
@@ -205,7 +270,7 @@ Localizer::Localizer()
     prev_encoder_ticks = -1;
 
     // TODO Work IMU into KF
-//    imu_sub = nh.subscribe<robobuggy::IMU>("IMU", 1000, IMU_Callback);
+    imu_sub = nh.subscribe<robobuggy::IMU>("IMU", 1000, &Localizer::IMU_Callback, this);
     gps_sub = nh.subscribe<robobuggy::GPS>("GPS", 1000, &Localizer::GPS_Callback, this);
     enc_sub = nh.subscribe<robobuggy::Encoder>("Encoder", 1000, &Localizer::Encoder_Callback, this);
     steering_sub = nh.subscribe<robobuggy::Feedback>("Feedback", 1000, &Localizer::Feedback_Callback, this);
@@ -217,7 +282,7 @@ void Localizer::update_position_estimate()
 {
     propagate();
 
-    geodesy::UTMPoint utm_point(x_hat(0, 0), x_hat(1, 0), 17, 'T');
+    geodesy::UTMPoint utm_point(x_hat(1, 0), x_hat(0, 0), 17, 'T');
     geographic_msgs::GeoPoint gps_point = geodesy::toMsg(utm_point);
     double heading = x_hat(3, 0);
 
@@ -287,7 +352,7 @@ void Localizer::kalman_filter(MatrixXd c, MatrixXd q, MatrixXd z)
     Matrix<double, 5, 1> x_pre = A * x;
     Matrix<double, 5, 5> P_pre = A * P * A.transpose() + R;
 
-    x_pre(2, 0) = clamp_angle(x_pre(2, 0));
+    x_pre(3, 0) = clamp_angle(x_pre(3, 0));
     x_pre(4, 0) = clamp_angle(x_pre(4, 0));
 
     MatrixXd residual = z - c * x_pre;
@@ -296,6 +361,6 @@ void Localizer::kalman_filter(MatrixXd c, MatrixXd q, MatrixXd z)
     x = x_pre + K * residual;
     P = (MatrixXd::Identity(5,5) - (K * c)) * P_pre;
 
-    x(2, 0) = clamp_angle(x(2, 0));
+    x(3, 0) = clamp_angle(x(3, 0));
     x(4, 0) = clamp_angle(x(4, 0));
 }

@@ -2,7 +2,7 @@
 #include "transistor/transistor_serial_messages.h"
 #include "serial/serial.h"
 
-const std::string LowLevel_Broadcaster::NODE_NAME = "LowLevel_Broadcaster";
+const std::string LowLevel_Broadcaster::NODE_NAME = "Transistor_LowLevel_Broadcaster";
 
 LowLevel_Broadcaster::LowLevel_Broadcaster()
 {
@@ -33,7 +33,7 @@ void LowLevel_Broadcaster::parse_serial_msg(std::string serial_msg)
     // Verify that we actually read a full message
     if ((serial_msg[5] & 0xFF) != RBSM_FOOTER)
     {
-        ROS_ERROR("Error parsing from serial, message doesn't end in footer!");
+        ROS_WARN("serial message doesn't end in footer! Skipping");
         // skip it
         return;
     }
@@ -96,14 +96,17 @@ void LowLevel_Broadcaster::parse_serial_msg(std::string serial_msg)
 void LowLevel_Broadcaster::send_command(const robobuggy::Command::ConstPtr& msg) {
     // Construct and send the steering command
     uint8_t serial_msg[6];
-    int data = msg->steer_cmd;
+    double data = msg->steer_cmd_rad;
 
-    ROS_INFO("Steering command: %d\n", data);
+    // convert into hundredths of degrees
+    int steer_angle = data * 180 / M_PI * 100;
+
+    ROS_INFO("Steering command: %d\n", steer_angle);
     serial_msg[0] = RBSM_MID_MEGA_STEER_COMMAND;
-    serial_msg[1] = (data >> 24) & 0xFF;
-    serial_msg[2] = (data >> 16) & 0xFF;
-    serial_msg[3] = (data >> 8) & 0xFF;
-    serial_msg[4] = data & 0xFF;
+    serial_msg[1] = (steer_angle >> 24) & 0xFF;
+    serial_msg[2] = (steer_angle >> 16) & 0xFF;
+    serial_msg[3] = (steer_angle >> 8) & 0xFF;
+    serial_msg[4] = steer_angle & 0xFF;
     serial_msg[5] = RBSM_FOOTER;
 
     if (rb_serial.isOpen()) {
@@ -111,13 +114,13 @@ void LowLevel_Broadcaster::send_command(const robobuggy::Command::ConstPtr& msg)
     }
 
     // Construct and send the brake command
-    data = msg->brake_cmd;
+    int brake_data = msg->brake_cmd;
 
     serial_msg[0] = RBSM_MID_MEGA_AUTON_BRAKE_COMMAND;
-    serial_msg[1] = (data >> 24) & 0xFF;
-    serial_msg[2] = (data >> 16) & 0xFF;
-    serial_msg[3] = (data >> 8) & 0xFF;
-    serial_msg[4] = data & 0xFF;
+    serial_msg[1] = (brake_data >> 24) & 0xFF;
+    serial_msg[2] = (brake_data >> 16) & 0xFF;
+    serial_msg[3] = (brake_data >> 8) & 0xFF;
+    serial_msg[4] = brake_data & 0xFF;
     serial_msg[5] = RBSM_FOOTER;
 
     if (rb_serial.isOpen()) {
