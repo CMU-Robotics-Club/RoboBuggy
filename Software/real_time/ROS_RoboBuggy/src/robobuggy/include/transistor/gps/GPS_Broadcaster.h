@@ -17,12 +17,14 @@ public:
     GPS_Broadcaster();
     static const std::string NODE_NAME;
     
-    int handle_serial_messages();
-
+    int read_gps_message();
+    robobuggy::GPS* parse_tokens(std::string tokens[]);
+    
 private:
     ros::NodeHandle nh;
     
     ros::Publisher gps_pub;
+    robobuggy::GPS gps_message;
     
     std::string serial_port;
     int serial_baud;
