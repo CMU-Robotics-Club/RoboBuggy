@@ -18,7 +18,7 @@ void Localizer::Encoder_Callback(const robobuggy::Encoder::ConstPtr &msg)
 
     double ticks = msg->ticks;
     double dx = ticks - prev_encoder_ticks;
-    dx = dx * 0.61 / 7.0;
+    dx = dx * 0.61 / 7.0 * 0.3048 * 2;
     double body_speed = dx / (dt / 1000.0);
 
     prev_encoder_time = current_time;
@@ -148,8 +148,8 @@ void Localizer::init_P()
 void Localizer::init_Q_GPS()
 {
     Q_GPS <<
-          1, 0,
-          0, 1
+          5, 0,
+          0, 5
     ;
 
     std::stringstream s;
@@ -173,7 +173,7 @@ void Localizer::init_Q_Encoder()
 void Localizer::init_Q_IMU()
 {
     Q_IMU <<
-        0.1
+        0.05
     ;
 
     std::stringstream s;
