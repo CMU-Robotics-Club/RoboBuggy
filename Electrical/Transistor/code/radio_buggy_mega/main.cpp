@@ -134,7 +134,7 @@
 
 
 // Global state
-static bool g_is_autonomous;
+static bool g_is_autonomous = false;
 static unsigned long g_current_voltage; // in mV
 static int steer_angle;
 static int auto_steering_angle;
@@ -410,8 +410,8 @@ int main(void) {
     bool brake_cmd_teleop_engaged = false;
     bool brake_cmd_auton_engaged = false;
     unsigned long time_start = micros();
-    unsigned long auton_brake_last = time_start;
-    unsigned long auton_steer_last = time_start;
+    //unsigned long auton_brake_last = time_start;
+    //unsigned long auton_steer_last = time_start;
 
     g_encoder_distance.Init();
 
@@ -449,7 +449,7 @@ int main(void) {
     // set up rc receivers
     g_steering_rx.Init(&RX_STEERING_PIN, RX_STEERING_PINN, RX_STEERING_INTN);
     g_brake_rx.Init(&RX_BRAKE_PIN, RX_BRAKE_PINN, RX_BRAKE_INTN);
-    g_auton_rx.Init(&RX_AUTON_PIN, RX_AUTON_PINN, RX_AUTON_INTN);
+    //g_auton_rx.Init(&RX_AUTON_PIN, RX_AUTON_PINN, RX_AUTON_INTN);
 
     //Output information about code on arduino once to debug uart on startup.
     printf("Hello world! This is debug information\r\n");
@@ -487,12 +487,12 @@ int main(void) {
                         break;
                     case RBSM_MID_MEGA_STEER_COMMAND:
                         auto_steering_angle = (int)(long)new_command.data;
-                        auton_steer_last = micros();
+                        //auton_steer_last = micros();
                         dbg_printf("Got steering message for %d.\n", auto_steering_angle);
                         break;
                     case RBSM_MID_MEGA_AUTON_BRAKE_COMMAND:
-                        brake_cmd_auton_engaged = (bool)(long)new_command.data;
-                        auton_brake_last = micros();
+                        //brake_cmd_auton_engaged = (bool)(long)new_command.data;
+                        //auton_brake_last = micros();
                         dbg_printf("Got brake message for %d.\n", brake_cmd_auton_engaged);
                         break;
                     default:
@@ -517,13 +517,13 @@ int main(void) {
         // Check for RC commands
         steer_angle = g_steering_rx.GetAngleHundredths();
         brake_cmd_teleop_engaged = g_brake_rx.GetPulseWidth() > PWM_STATE_THRESHOLD;
-        g_is_autonomous = g_auton_rx.GetPulseWidth() > PWM_STATE_THRESHOLD;
+        //g_is_autonomous = g_auton_rx.GetPulseWidth() > PWM_STATE_THRESHOLD;
 
         // Detect dropped radio conections
 
         unsigned long time1 = g_steering_rx.GetLastTimestamp();
         unsigned long time2 = g_brake_rx.GetLastTimestamp();
-        unsigned long time3 = g_auton_rx.GetLastTimestamp();
+        //unsigned long time3 = g_auton_rx.GetLastTimestamp();
         //We need to call micros last because if we called it first, 
         //  time1, time2, or time3 could be greater than time_now if an interrupt
         //  fires and updates its timestamp and our delta values will underflow
@@ -533,19 +533,19 @@ int main(void) {
         //RC time deltas
         unsigned long delta1 = time_now - time1;
         unsigned long delta2 = time_now - time2;
-        unsigned long delta3 = time_now - time3;
+        //unsigned long delta3 = time_now - time3;
         //Auton time deltas
-        unsigned long delta5 = time_now - auton_steer_last;
-        unsigned long delta4 = time_now - auton_brake_last;
+        //unsigned long delta5 = time_now - auton_steer_last;
+        //unsigned long delta4 = time_now - auton_brake_last;
 
         bool rc_timeout = delta1 > CONNECTION_TIMEOUT_US ||
-                          delta2 > CONNECTION_TIMEOUT_US ||
-                          delta3 > CONNECTION_TIMEOUT_US;
+                          delta2 > CONNECTION_TIMEOUT_US;
+        /*
         bool auton_timeout = (g_is_autonomous == true) &&
                              (delta4 > CONNECTION_TIMEOUT_US ||
                               delta5 > CONNECTION_TIMEOUT_US);
-
-        if(rc_timeout || auton_timeout) {
+        */
+        if(rc_timeout) {
             // check for RC timout first
             if(rc_timeout) {
                 // we haven't heard from the RC receiver in too long
@@ -558,6 +558,7 @@ int main(void) {
             }
 
             // then check for timeout under autonomous
+            /*
             if(auton_timeout) {
                 g_errors |= _BV(RBSM_EID_AUTON_LOST_SIGNAL);
                 brake_needs_reset = true;
@@ -566,6 +567,7 @@ int main(void) {
             } else {
                 g_errors &= ~_BV(RBSM_EID_AUTON_LOST_SIGNAL);
             }
+            */
         // or reset the system if connection is back and driver engages brakes
         } else { 
             if(brake_cmd_teleop_engaged == true) {

@@ -332,7 +332,7 @@ int main(void) {
         unsigned long time_next_loop = micros() + STEERING_LOOP_TIME_US;
 
         // Check for RC commands
-        steer_angle = g_steering_rx.GetAngleHundredths();
+        steer_angle = -(g_steering_rx.GetAngleHundredths());
         brake_cmd_teleop_engaged = g_brake_rx.GetPulseWidth() > PWM_STATE_THRESHOLD;
 
         // Detect dropped radio conections
