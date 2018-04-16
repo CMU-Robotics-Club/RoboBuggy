@@ -32,24 +32,28 @@ int GPS_Broadcaster::read_gps_message()
 
     //set up serial port
     serial::Serial gps_serial;
-    try {
+    try
+    {
         gps_serial.setPort(serial_port);
         gps_serial.setBaudrate(serial_baud);
         serial::Timeout to = serial::Timeout::simpleTimeout(1000);
         gps_serial.setTimeout(to);
         gps_serial.open();
-    } catch (serial::IOException e){
+    }
+    catch (serial::IOException e)
+    {
         ROS_ERROR_STREAM("Unable to open port");
         ROS_ERROR_STREAM(serial_port);
         return -1;
     }
 
-    if (gps_serial.available()) {
-        
+    if (gps_serial.available())
+    {    
         gps_serial_buffer += gps_serial.read(gps_serial.available());
 
         size_t gpgga_pos = 0;
-         if ((gpgga_pos = gps_serial_buffer.find("$GPGGA")) != std::string::npos) {
+        if ((gpgga_pos = gps_serial_buffer.find("$GPGGA")) != std::string::npos)
+	{
             gps_serial_buffer = gps_serial_buffer.substr(gpgga_pos);
 
             std::istringstream ss(gps_serial_buffer);
@@ -85,16 +89,21 @@ robobuggy::GPS* GPS_Broadcaster::parse_tokens(std::string tokens[])
 {
     
     //parse token 0 (check if = 'GPGGA')
-    if (tokens[0] != "$GPGGA") {
+    if (tokens[0] != "$GPGGA")
+    {
         ROS_ERROR_STREAM("read a GPGGA when it wasn't!");
         return NULL;
     }
 
+    //we do not parse token 1 in the GPGGA string, since it represents time
+
+    
     //parse token 2 --> obtain Latitude value
     double latitude_deg = convert_to_latitude(tokens[2]);
 
     //parse token 3 - 'N' label for Latitude (check if = N)
-    if (tokens[3] != "N") {
+    if (tokens[3] != "N")
+    {
         latitude_deg *= -1;
     }
 
@@ -102,12 +111,14 @@ robobuggy::GPS* GPS_Broadcaster::parse_tokens(std::string tokens[])
     double longitude_deg = convert_to_longitude(tokens[4]);
 
     //parse token 5 - 'E' label for Longitude (check if = to E))
-    if (tokens[5] != "E") {
+    if (tokens[5] != "E")
+    {
         longitude_deg *= -1;
     }
 
     //parse token 6 - Fix quality (check if != 0)
-    if (atoi(tokens[6].c_str()) == 0) {
+    if (atoi(tokens[6].c_str()) == 0)
+    {
         ROS_ERROR_STREAM("Not locked yet!");
         return NULL;
     }
@@ -131,7 +142,8 @@ robobuggy::GPS* GPS_Broadcaster::parse_tokens(std::string tokens[])
 double GPS_Broadcaster::convert_to_latitude(std::string str)
 {
     //special case if gps not locked, string is length 0
-    if (str.size() == 0) {
+    if (str.size() == 0)
+    {
        return 0; //special case will get addressed later on 
     }
     double degrees = atof(str.substr(0, 2).c_str());
@@ -143,7 +155,8 @@ double GPS_Broadcaster::convert_to_latitude(std::string str)
 double GPS_Broadcaster::convert_to_longitude(std::string str)
 {
     //special case if gps not locked, string is length 0
-    if (str.size() == 0) {
+    if (str.size() == 0)
+    {
        return 0; //special case will get addressed later on 
     }
     
