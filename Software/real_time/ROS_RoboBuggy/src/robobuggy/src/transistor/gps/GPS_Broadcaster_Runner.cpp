@@ -10,7 +10,13 @@ int main(int argc, char **argv)
     ros::NodeHandle nh;
 
     GPS_Broadcaster broadcaster;
-    int err = broadcaster.handle_serial_messages();
-
-    return err;
+    while (ros::ok()) {
+        int result = broadcaster.read_gps_message(); 
+        if (result)
+        {
+            return result;
+        }
+    }
+    
+    return 0;
 }

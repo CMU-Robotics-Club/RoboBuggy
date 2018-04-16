@@ -1,0 +1,45 @@
+#include <gtest/gtest.h>
+#include <transistor/gps/GPS_Broadcaster.h>
+
+TEST(GPS_Tests, standard_message)
+{
+    GPS_Broadcaster broadcaster;
+    std::string token_string = "$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47";
+
+    std::istringstream ss(token_string);
+    std::string tokens[10];
+
+    for (int i = 0; i < 10; i++)
+    {
+        std::getline(ss, tokens[i], ',');
+    }
+
+    robobuggy::GPS* msg = broadcaster.parse_tokens(tokens);
+
+    ASSERT_NEAR(msg->Lat_deg, 48.1173, 0.001);
+    ASSERT_NEAR(msg->Long_deg, 11.51667, 0.001);
+}
+
+TEST(GPS_Tests, not_fixed)
+{
+    GPS_Broadcaster broadcaster;
+    std::string token_string = "$GPGGA,,,,,,0,,,,,,,,";
+
+    std::istringstream ss(token_string);
+    std::string tokens[10];
+
+    for (int i = 0; i < 10; i++)
+    {
+        std::getline(ss, tokens[i], ',');
+    }
+
+    robobuggy::GPS* msg = broadcaster.parse_tokens(tokens);
+    ASSERT_TRUE(msg==NULL);
+}
+
+// Run all the tests that were declared with TEST()
+int main(int argc, char **argv){
+    testing::InitGoogleTest(&argc, argv);
+    ros::init(argc, argv, "IMU_Tester");
+    return RUN_ALL_TESTS();
+}
