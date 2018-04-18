@@ -71,23 +71,6 @@ TEST(GPS_Tests,non_GGA_format)
     ASSERT_TRUE(msg==NULL);
 }
 
-TEST(GPS_Tests,missing_field)
-{
-    GPS_Broadcaster broadcaster;
-    std::string token_string = "$GPGGA,123519,4807.038,N,,E,1,08,0.9,545.4,M,46.9,M,,*47";
-
-    std::istringstream ss(token_string);
-    std::string tokens[10];
-
-    for (int i = 0; i < 10; i++)
-    {
-    std::getline(ss, tokens[i], ',');
-    }
-
-    robobuggy::GPS* msg = broadcaster.parse_tokens(tokens);
-    ASSERT_TRUE(msg==NULL);
-}
-
 TEST(GPS_Tests, not_fixed)
 {
     GPS_Broadcaster broadcaster;
