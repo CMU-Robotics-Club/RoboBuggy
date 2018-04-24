@@ -44,12 +44,9 @@ void GPS_Broadcaster::initialize_hardware()
 
 }
 
-
+//parse ONE NMEA string
 int GPS_Broadcaster::read_gps_message()
 {
-
-    //parse ONE NMEA string
-
     //set up serial port
 
     if (gps_serial.available())
