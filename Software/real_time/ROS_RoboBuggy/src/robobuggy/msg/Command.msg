@@ -1,4 +1,4 @@
 Header header
 
 bool brake_cmd
-int32 steer_cmd
+float32 steer_cmd_rad

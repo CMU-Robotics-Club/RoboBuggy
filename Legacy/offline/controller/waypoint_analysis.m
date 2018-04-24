@@ -6,7 +6,7 @@ close all;
 addpath('../localizer/latlonutm/Codes/matlab');
 show_maps = false;
 
-load('./waypoints_course.mat');
+load('./waypoints_course_v2.mat');
 [x, y, zone] = ll2utm(logs);
 desired = [x y];
 
