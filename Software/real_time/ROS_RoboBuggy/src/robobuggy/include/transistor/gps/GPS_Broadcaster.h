@@ -20,14 +20,14 @@ public:
 
     int read_gps_message();
     robobuggy::GPS* parse_tokens(std::string tokens[]);
-    
+    void initialize_hardware();
+
 private:
     ros::NodeHandle nh;
-    
+
     ros::Publisher gps_pub;
     robobuggy::GPS gps_message;
     serial::Serial gps_serial;
-    
     std::string serial_port;
     int serial_baud;
     std::string gps_serial_buffer;

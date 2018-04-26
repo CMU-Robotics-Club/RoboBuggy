@@ -3,7 +3,7 @@
     </node>
 
     <!-- Node that translates messages from low-level into ROS messages -->
-    <node name="Transistor_LL_Broadcaster" pkg="robobuggy" type="Transistor_LL_Broadcaster" required="true" output="screen">
+    <node name="Transistor_LowLevel_Broadcaster" pkg="robobuggy" type="Transistor_LowLevel_Broadcaster" required="true" output="screen">
         <!-- Serial port on device for the Arduino Mega -->
         <param name="serial_port" type="string" value="/dev/buggyarduino"/>
         <!-- Baud rate for communicating with low level -->
@@ -11,14 +11,14 @@
     </node>
 
     <!-- Node that translates messages from the GPS into ROS messages -->
-    <node name="Transistor_GPS_Broadcaster" pkg="robobuggy" type="Transistor_GPS_Broadcaster" required="true">
+    <node name="Transistor_GPS_Broadcaster" pkg="robobuggy" type="Transistor_GPS_Broadcaster" required="true" output="screen">
         <!-- Serial port on device for the UBLOX gps -->
         <param name="serial_port" type="string" value="/dev/buggygps"/>
         <!-- Baud rate for communicating with low level -->
         <param name="serial_baud" type="int" value="9600"/>
     </node>
 
-    <node name="IMU_Broadcaster" pkg="robobuggy" type="IMU_Broadcaster" required="true" output="screen">
+    <node name="Transistor_IMU_Broadcaster" pkg="robobuggy" type="Transistor_IMU_Broadcaster" required="true" output="screen">
     </node>
 
 </launch>

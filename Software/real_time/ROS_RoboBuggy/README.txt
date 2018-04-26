@@ -14,3 +14,6 @@ To do a clean build, delete the build/ and devel/ folders, and re-run catkin_mak
 Installing third-party libraries:
 1) libfreespace - for the IMU
 	- To install libfreespace, follow the instructions at https://github.com/hcrest/libfreespace
+
+Setting up udev rules for the IMU to load as a sudo-readable device by default:
+http://shukra.cedt.iisc.ernet.in/edwiki/EmSys:Accessing_Devices_without_Sudo

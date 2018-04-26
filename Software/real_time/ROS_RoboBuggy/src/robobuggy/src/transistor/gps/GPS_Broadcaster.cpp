@@ -18,8 +18,10 @@ GPS_Broadcaster::GPS_Broadcaster()
         serial_baud = 9600;
     }
 
-    //set up serial port
-    serial::Serial gps_serial;
+}
+
+void GPS_Broadcaster::initialize_hardware()
+{
     try
     {
         gps_serial.setPort(serial_port);
@@ -37,19 +39,16 @@ GPS_Broadcaster::GPS_Broadcaster()
 
 }
 
-
+//parse ONE NMEA string
 int GPS_Broadcaster::read_gps_message()
 {
-
-    //parse ONE NMEA string
-
     if (gps_serial.available())
-    {    
+    {
         gps_serial_buffer += gps_serial.read(gps_serial.available());
 
         size_t gpgga_pos = 0;
         if ((gpgga_pos = gps_serial_buffer.find("$GPGGA")) != std::string::npos)
-	{
+        {
             gps_serial_buffer = gps_serial_buffer.substr(gpgga_pos);
 
             std::istringstream ss(gps_serial_buffer);
@@ -75,7 +74,7 @@ int GPS_Broadcaster::read_gps_message()
             {
                 gps_serial_buffer = "";
             }
-         }
+        }
     }
 
     return 0;
@@ -83,7 +82,7 @@ int GPS_Broadcaster::read_gps_message()
 
 robobuggy::GPS* GPS_Broadcaster::parse_tokens(std::string tokens[])
 {
-    
+
     //parse token 0 (check if = 'GPGGA')
     if (tokens[0] != "$GPGGA")
     {
@@ -93,7 +92,7 @@ robobuggy::GPS* GPS_Broadcaster::parse_tokens(std::string tokens[])
 
     //we do not parse token 1 in the GPGGA string, since it represents time
 
-    
+
     //parse token 2 --> obtain Latitude value
     double latitude_deg = convert_to_latitude(tokens[2]);
 
@@ -140,7 +139,7 @@ double GPS_Broadcaster::convert_to_latitude(std::string str)
     //special case if gps not locked, string is length 0
     if (str.size() == 0)
     {
-       return 0; //special case will get addressed later on 
+        return 0; //special case will get addressed later on
     }
     double degrees = atof(str.substr(0, 2).c_str());
     double minutes = atof(str.substr(2).c_str());
@@ -153,9 +152,9 @@ double GPS_Broadcaster::convert_to_longitude(std::string str)
     //special case if gps not locked, string is length 0
     if (str.size() == 0)
     {
-       return 0; //special case will get addressed later on 
+        return 0; //special case will get addressed later on
     }
-    
+
     double degrees = atof(str.substr(0, 3).c_str());
     double minutes = atof(str.substr(3).c_str());
 
