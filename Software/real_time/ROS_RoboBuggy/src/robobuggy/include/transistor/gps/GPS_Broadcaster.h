@@ -8,7 +8,8 @@
 #include "ros/ros.h"
 #include "robobuggy/GPS.h"
 #include "serial/serial.h"
-
+#include <geographic_msgs/GeoPoint.h>
+#include <geodesy/utm.h>
 #include <sstream>
 
 class GPS_Broadcaster
@@ -16,7 +17,7 @@ class GPS_Broadcaster
 public:
     GPS_Broadcaster();
     static const std::string NODE_NAME;
-    
+
     int read_gps_message();
     robobuggy::GPS* parse_tokens(std::string tokens[]);
     
@@ -25,6 +26,7 @@ private:
     
     ros::Publisher gps_pub;
     robobuggy::GPS gps_message;
+    serial::Serial gps_serial;
     
     std::string serial_port;
     int serial_baud;
