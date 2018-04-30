@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.roboclub.robobuggy.nodes.localizers.LocalizerUtilTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2016-12-03T03:48:32" hostname="Girishs-MBP.wv.cc.cmu.edu" time="0.002">
-  <properties/>
-  <testcase name="testConvertMetersToLatLng" classname="com.roboclub.robobuggy.nodes.localizers.LocalizerUtilTest" time="0.001"/>
-  <testcase name="testConvertLatLngDeltaToMeters" classname="com.roboclub.robobuggy.nodes.localizers.LocalizerUtilTest" time="0.001"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

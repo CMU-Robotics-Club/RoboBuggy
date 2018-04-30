@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.roboclub.robobuggy.ui.BuggyStatusPanelTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2016-12-03T03:48:35" hostname="Girishs-MBP.wv.cc.cmu.edu" time="21.045">
-  <properties/>
-  <testcase name="testGuiBatteryLevelIncrease" classname="com.roboclub.robobuggy.ui.BuggyStatusPanelTest" time="1.003"/>
-  <testcase name="testGuiBrakesToggle" classname="com.roboclub.robobuggy.ui.BuggyStatusPanelTest" time="20.042"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
