@@ -83,13 +83,14 @@ int GPS_Broadcaster::handle_serial_messages()
                     gps_point.latitude = latitude_deg;
                     gps_point.longitude = longitude_deg;
 
+                    // northing is latitude, easting is longitude
                     geodesy::UTMPoint utm_point(gps_point);
 
                     robobuggy::GPS gps_message;
                     gps_message.Lat_deg = static_cast<float>(latitude_deg);
                     gps_message.Long_deg = static_cast<float>(longitude_deg);
-                    gps_message.Lat_m = static_cast<float>(utm_point.easting);
-                    gps_message.Long_m = static_cast<float>(utm_point.northing);
+                    gps_message.northing = static_cast<float>(utm_point.northing);
+                    gps_message.easting = static_cast<float>(utm_point.easting);
                     gps_pub.publish(gps_message);
                 }
 
