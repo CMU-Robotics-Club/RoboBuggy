@@ -35,8 +35,8 @@ void Localizer::Encoder_Callback(const robobuggy::Encoder::ConstPtr &msg)
 void Localizer::GPS_Callback(const robobuggy::GPS::ConstPtr &msg)
 {
     geodesy::UTMPoint p;
-    p.northing = msg->Lat_m;
-    p.easting = msg->Long_m;
+    p.northing = msg->northing;
+    p.easting = msg->easting;
     p.band = 'T';
     p.zone = 17;
     
