@@ -1,9 +1,5 @@
 
-
-//include ros library
-#include <transistor/gps/GPS_Broadcaster.h> 
-#include <geographic_msgs/GeoPoint.h>
-#include <geodesy/utm.h>
+#include <transistor/gps/GPS_Broadcaster.h>
 
 const std::string GPS_Broadcaster::NODE_NAME = "Transistor_GPS_Broadcaster";
 GPS_Broadcaster::GPS_Broadcaster()
@@ -22,16 +18,6 @@ GPS_Broadcaster::GPS_Broadcaster()
         serial_baud = 9600;
     }
 
-}
-
-int GPS_Broadcaster::read_gps_message()
-{
-
-    //parse ONE NMEA string
-
-    //set up serial port
-    serial::Serial gps_serial;
-
     try
     {
         gps_serial.setPort(serial_port);
@@ -44,7 +30,6 @@ int GPS_Broadcaster::read_gps_message()
     {
         ROS_ERROR_STREAM("Unable to open port");
         ROS_ERROR_STREAM(serial_port);
-        return -1;
     }
 
 }
