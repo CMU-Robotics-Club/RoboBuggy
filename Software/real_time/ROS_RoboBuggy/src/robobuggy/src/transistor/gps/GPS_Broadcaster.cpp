@@ -55,6 +55,8 @@ int GPS_Broadcaster::read_gps_message()
             }
 
             robobuggy::GPS* gps_message = parse_tokens(tokens);
+
+
             if (gps_message != NULL)
             {
                 gps_pub.publish(*gps_message);
@@ -123,8 +125,8 @@ robobuggy::GPS* GPS_Broadcaster::parse_tokens(std::string tokens[])
 
     gps_message.Lat_deg = static_cast<float>(latitude_deg);
     gps_message.Long_deg = static_cast<float>(longitude_deg);
-    gps_message.Lat_m = static_cast<float>(utm_point.easting);
-    gps_message.Long_m = static_cast<float>(utm_point.northing);
+    gps_message.northing = static_cast<float>(utm_point.northing);
+    gps_message.easting = static_cast<float>(utm_point.easting);
 
     return &gps_message;
 }
