@@ -18,6 +18,12 @@ GPS_Broadcaster::GPS_Broadcaster()
         serial_baud = 9600;
     }
 
+    
+
+}
+
+void GPS_Broadcaster::initialize_hardware()
+{
     try
     {
         gps_serial.setPort(serial_port);
@@ -31,7 +37,6 @@ GPS_Broadcaster::GPS_Broadcaster()
         ROS_ERROR_STREAM("Unable to open port");
         ROS_ERROR_STREAM(serial_port);
     }
-
 }
 
 //parse ONE NMEA string

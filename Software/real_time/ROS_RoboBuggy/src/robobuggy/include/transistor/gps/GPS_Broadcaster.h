@@ -8,6 +8,8 @@
 #include "ros/ros.h"
 #include "robobuggy/GPS.h"
 #include "serial/serial.h"
+#include <geographic_msgs/GeoPoint.h>
+#include <geodesy/utm.h>
 
 #include <sstream>
 
@@ -30,6 +32,7 @@ private:
     std::string serial_port;
     int serial_baud;
     std::string gps_serial_buffer;
+    serial::Serial gps_serial;
 
     double convert_to_latitude(std::string str);
     double convert_to_longitude(std::string str);
