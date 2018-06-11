@@ -24,6 +24,7 @@ class Simulator:
         self.gps_update_rate_hz = 2
         self.odom_update_rate_hz = 5
         self.imu_update_rate_hz = 5
+        self.ground_truth_update_rate_hz = 5
         self.utm_letter = 'T'
         self.utm_zone = 17
         self.velocity = 3
@@ -102,6 +103,9 @@ def main():
     rospy.init_node("Full_System_Simulator")
     gps_pub = rospy.Publisher('GPS', GPS, queue_size=10)
     odom_pub = rospy.Publisher('Encoder', Encoder, queue_size=10)
+    ground_truth_pub = rospy.Publisher("SIM_Ground_Truth", GPS, queue_size=10)
+    # TODO
+    # imu_pub = rospy.Publisher('IMU', IMU, queue_size=10)
 
     # 5m stddev
     sigma_gps = 5
@@ -109,15 +113,44 @@ def main():
     # 0.1m stddev
     sigma_odom = 0.1
 
-    # read in waypoints from waypoint file, figure out first one
+    # TODO: read in waypoints from waypoint file, figure out first one
     start_x = 0
     start_y = 0
     start_th = 0
 
     s = Simulator(sigma_gps, sigma_odom, (start_x, start_y, start_th))
-    command_sub = rospy.Publisher('Command', Command, s.command_callback)
+    command_sub = rospy.Publisher('Command', Command, s.apply_control_input)
 
-    pass
+    # spin infinitely, while stepping each appropriate tick
+    rate = rospy.Rate(s.sim_update_hz)
+    loop_counter = 0
+    while not rospy.is_shutdown():
+        # Take a step
+        s.step()
+
+        # If needed, generate and publish messages
+        if loop_counter % s.gps_update_rate_hz:
+            gps_msg = s.generate_gps_message()
+            gps_pub.publish(gps_msg)
+
+        if loop_counter % s.odom_update_rate_hz:
+            odom_msg = s.generate_odometry_message()
+            odom_pub.publish(odom_msg)
+        
+        if loop_counter % s.ground_truth_update_rate_hz:
+            gt_msg = s.generate_ground_truth_message()
+            ground_truth_pub.publish(gt_msg)
+
+        # TODO
+        # if loop_counter % s.imu_update_rate_hz:
+        #     imu_msg = s.generate_imu_message()
+        #     imu_pub.publish(imu_msg)
+
+        loop_counter += 1
+        rate.sleep()
+
+        
+
 
 if __name__ == "__main__":
     main()
