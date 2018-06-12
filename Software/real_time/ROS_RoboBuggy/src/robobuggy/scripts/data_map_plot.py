@@ -47,6 +47,17 @@ def command_callback(data):
 
     pass
 
+def ground_truth_callback(data):
+    global viz_grndtruth_pub
+
+    degrees_from_north = -math.degrees(data.heading_rad) + 90
+
+    rospy.loginfo("Got Ground Truth message: (%f, %f, %f)", data.latitude_deg, data.longitude_deg, degrees_from_north)
+
+    viz_msg_groundtruth = GPSFix(latitude=data.latitude_deg, longitude=data.longitude_deg, track=degrees_from_north)
+    viz_grndtruth_pub.publish(viz_msg_groundtruth)
+    pass
+
 
 def waypoints_publisher():
     waypoints_pub = rospy.Publisher('WAYPOINTS_VIZ',GPSFix, queue_size=10)
@@ -76,9 +87,11 @@ def start_subscriber_spin():
 
     viz_pub = rospy.Publisher('GPS_VIZ', GPSFix, queue_size=10)
     viz_command_pub = rospy.Publisher('STEERING_COMMAND_VIZ', GPSFix, queue_size = 10)
+    viz_grndtruth_pub = rospy.Publisher("SIM_GROUNDTRUTH_VIZ", GPSFix, queue_size=10)
 
     rospy.Subscriber("Pose", Pose, pose_callback)
     rospy.Subscriber("Command", Command, command_callback)
+    rospy.Subscriber("SIM_Ground_Truth", GPS, ground_truth_callback)
     waypoints_publisher()
 
     rospy.spin()

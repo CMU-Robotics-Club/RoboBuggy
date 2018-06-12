@@ -9,6 +9,7 @@ import math
 from robobuggy.msg import GPS
 from robobuggy.msg import Encoder
 from robobuggy.msg import Command
+import json
 
 class Simulator:
 
@@ -100,7 +101,8 @@ class Simulator:
 def main():
 
     # init
-    rospy.init_node("Full_System_Simulator")
+    NODE_NAME = "Full_System_Simulator"
+    rospy.init_node(NODE_NAME)
     gps_pub = rospy.Publisher('GPS', GPS, queue_size=10)
     odom_pub = rospy.Publisher('Encoder', Encoder, queue_size=10)
     ground_truth_pub = rospy.Publisher("SIM_Ground_Truth", GPS, queue_size=10)
@@ -113,10 +115,14 @@ def main():
     # 0.1m stddev
     sigma_odom = 0.1
 
-    # TODO: read in waypoints from waypoint file, figure out first one
     start_x = 0
     start_y = 0
-    start_th = 0
+    start_th = math.radians(250) # TODO calculate based on two waypoints
+    waypoint_file = rospy.get_param("/{}/waypoint_file".format(NODE_NAME))
+    with open(waypoint_file) as f:
+        first_waypoint_str = f.readline()
+        first_waypoint_json = json.loads(first_waypoint_str)
+        first_waypoint = utm.from_latlon(first_waypoint_json['latitude'], first_waypoint_json['longitude'])
 
     s = Simulator(sigma_gps, sigma_odom, (start_x, start_y, start_th))
     command_sub = rospy.Publisher('Command', Command, s.apply_control_input)
