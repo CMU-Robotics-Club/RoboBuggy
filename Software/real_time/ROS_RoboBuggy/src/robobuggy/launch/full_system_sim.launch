@@ -1,0 +1,7 @@
+<launch>
+
+    <include file="$(find mapviz)/launch/mapviz.launch"/>
+    <node pkg="robobuggy" name="data_map_plot" type="data_map_plot.py" output="screen"></node>    
+    <node pkg="robobuggy" name="full_system_sim" type="full_system_sim.py" output="screen"></node>
+
+</launch>
