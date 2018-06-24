@@ -25,12 +25,11 @@ def pose_callback(data):
     last_longitude = data.longitude_deg
     last_heading_deg = -degrees_from_north + 90
 
-    viz_msg_heading = GPSFix(latitude=last_latitude, longitude=last_longitude, track = last_heading_deg)
     rospy.loginfo("got Pose msg: %f degrees lat, %f degrees long, %f bearing", last_latitude, last_longitude, last_heading_deg)
 
+    viz_msg_heading = GPSFix(latitude=last_latitude, longitude=last_longitude, track=last_heading_deg)
     viz_pose_pub.publish(viz_msg_heading)
 
-    pass
 
 def gps_callback(data):
     global viz_gps_pub
@@ -92,10 +91,10 @@ def start_subscriber_spin():
     global last_heading_deg
     last_heading_deg = 0
 
-    rospy.init_node("GPS_Plotter", anonymous=True)
+    rospy.init_node("Data Visualizer", anonymous=True)
 
     viz_gps_pub = rospy.Publisher("GPS_VIZ", GPSFix, queue_size=10)
-    viz_pose_pub = rospy.Publisher('POSE_VIZ', GPSFix, queue_size=10)
+    viz_pose_pub = rospy.Publisher("POSE_VIZ", GPSFix, queue_size=10)
     viz_command_pub = rospy.Publisher('STEERING_COMMAND_VIZ', GPSFix, queue_size = 10)
     viz_grndtruth_pub = rospy.Publisher("SIM_GROUNDTRUTH_VIZ", GPSFix, queue_size=10)
 
@@ -107,7 +106,6 @@ def start_subscriber_spin():
 
     rospy.spin()
 
-    pass
 
 if __name__ == "__main__":
     start_subscriber_spin()

@@ -47,7 +47,7 @@ void Localizer::GPS_Callback(const robobuggy::GPS::ConstPtr &msg)
         double dx = p.easting - prev_position_utm.easting;
         double dy = p.northing - prev_position_utm.northing;
 
-        heading_cartesian = atan2(dx, dy);
+        heading_cartesian = atan2(dy, dx);
         if (sqrt(dx * dx + dy * dy) < 0.25)
         {
             heading_cartesian = x(3, 0);
@@ -55,10 +55,11 @@ void Localizer::GPS_Callback(const robobuggy::GPS::ConstPtr &msg)
     }
     prev_position_utm = p;
 
-    Matrix<double, 2, 1> z;
+    Matrix<double, 3, 1> z;
     z <<
       p.easting,
-      p.northing
+      p.northing,
+      heading_cartesian
     ;
     kalman_filter(C_GPS, Q_GPS, z);
 
@@ -148,8 +149,9 @@ void Localizer::init_P()
 void Localizer::init_Q_GPS()
 {
     Q_GPS <<
-          5, 0,
-          0, 5
+          10, 0, 0,
+          0, 10, 0,
+          0, 0, 0.1
     ;
 
     std::stringstream s;
@@ -186,7 +188,8 @@ void Localizer::init_C_GPS()
 {
     C_GPS <<
           1, 0, 0, 0, 0,
-          0, 1, 0, 0, 0
+          0, 1, 0, 0, 0,
+          0, 0, 0, 1, 0
     ;
 
     std::stringstream s;

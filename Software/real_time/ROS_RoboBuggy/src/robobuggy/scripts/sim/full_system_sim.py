@@ -13,7 +13,7 @@ from robobuggy.msg import Encoder
 from robobuggy.msg import Command
 from robobuggy.msg import Pose
 import json
-import pdb
+import time
 
 class Simulator:
 
@@ -111,7 +111,7 @@ def main():
     # imu_pub = rospy.Publisher('IMU', IMU, queue_size=10)
 
     # 5m stddev
-    sigma_gps = 2
+    sigma_gps = 0.5
 
     # 0.1m stddev
     sigma_odom = 0.1
@@ -135,8 +135,6 @@ def main():
     rate = rospy.Rate(s.sim_update_hz)
     loop_counter = 0
     while not rospy.is_shutdown():
-        print loop_counter
-
         # Take a step
         s.step()
 

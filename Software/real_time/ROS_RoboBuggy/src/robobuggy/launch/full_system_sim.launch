@@ -4,4 +4,10 @@
     <node pkg="robobuggy" name="data_map_plot" type="data_map_plot.py" output="screen"></node>    
     <node pkg="robobuggy" name="full_system_sim" type="full_system_sim.py" output="screen"></node>
 
+    <node name="Transistor_Localizer" pkg="robobuggy" type="Transistor_Localizer" required="true" output="screen">
+    </node>
+
+    <node name="Transistor_Controller" pkg="robobuggy" type="Transistor_Controller" required="true" output="screen">
+    </node>
+
 </launch>
