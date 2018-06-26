@@ -33,6 +33,12 @@ private:
     long int previous_update_time_ms;
     long int prev_encoder_time;
 
+    const int ROW_X = 0;
+    const int ROW_Y = 1;
+    const int ROW_VEL = 2;
+    const int ROW_HEADING = 3;
+    const int ROW_TH_DOT = 4;
+
     ros::NodeHandle nh;
     ros::Publisher pose_pub;
     ros::Subscriber gps_sub;

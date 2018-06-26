@@ -282,9 +282,11 @@ void Localizer::update_position_estimate()
 {
     propagate();
 
-    geodesy::UTMPoint utm_point(x_hat(1, 0), x_hat(0, 0), 17, 'T');
+    double easting_x = x_hat(ROW_X, 0)
+    double northing_y = x_hat(ROW_Y, 0)
+    geodesy::UTMPoint utm_point(easting_x, northing_y, 17, 'T');
     geographic_msgs::GeoPoint gps_point = geodesy::toMsg(utm_point);
-    double heading = x_hat(3, 0);
+    double heading = x_hat(ROW_HEADING, 0);
 
     robobuggy::Pose p;
     ros::Time time_now = ros::Time::now();
@@ -301,8 +303,8 @@ void Localizer::update_motion_model(double dt)
 {
 
     A <<
-      1, 0, dt * cos(x(3, 0)), 0, 0,
-      0, 1, dt * sin(x(3, 0)), 0, 0,
+      1, 0, dt * cos(x(ROW_HEADING, 0)), 0, 0,
+      0, 1, dt * sin(x(ROW_HEADING, 0)), 0, 0,
       0, 0, 1, 0, 0,
       0, 0, 0, 1, dt,
       0, 0, tan(current_steering_angle) / WHEELBASE_M, 0, 0
@@ -352,8 +354,8 @@ void Localizer::kalman_filter(MatrixXd c, MatrixXd q, MatrixXd z)
     Matrix<double, 5, 1> x_pre = A * x;
     Matrix<double, 5, 5> P_pre = A * P * A.transpose() + R;
 
-    x_pre(3, 0) = clamp_angle(x_pre(3, 0));
-    x_pre(4, 0) = clamp_angle(x_pre(4, 0));
+    x_pre(ROW_HEADING, 0) = clamp_angle(x_pre(ROW_HEADING, 0));
+    x_pre(ROW_TH_DOT, 0) = clamp_angle(x_pre(ROW_TH_DOT, 0));
 
     MatrixXd residual = z - c * x_pre;
     MatrixXd K = c * P_pre * c.transpose() + q;
@@ -361,6 +363,6 @@ void Localizer::kalman_filter(MatrixXd c, MatrixXd q, MatrixXd z)
     x = x_pre + K * residual;
     P = (MatrixXd::Identity(5,5) - (K * c)) * P_pre;
 
-    x(3, 0) = clamp_angle(x(3, 0));
-    x(4, 0) = clamp_angle(x(4, 0));
+    x(ROW_HEADING, 0) = clamp_angle(x(ROW_HEADING, 0));
+    x(ROW_TH_DOT, 0) = clamp_angle(x(ROW_TH_DOT, 0));
 }
