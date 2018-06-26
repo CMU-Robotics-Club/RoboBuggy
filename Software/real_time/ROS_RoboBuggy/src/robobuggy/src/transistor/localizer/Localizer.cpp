@@ -282,8 +282,8 @@ void Localizer::update_position_estimate()
 {
     propagate();
 
-    double easting_x = x_hat(ROW_X, 0)
-    double northing_y = x_hat(ROW_Y, 0)
+    double easting_x = x_hat(ROW_X, 0);
+    double northing_y = x_hat(ROW_Y, 0);
     geodesy::UTMPoint utm_point(easting_x, northing_y, 17, 'T');
     geographic_msgs::GeoPoint gps_point = geodesy::toMsg(utm_point);
     double heading = x_hat(ROW_HEADING, 0);
