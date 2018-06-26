@@ -55,11 +55,10 @@ void Localizer::GPS_Callback(const robobuggy::GPS::ConstPtr &msg)
     }
     prev_position_utm = p;
 
-    Matrix<double, 3, 1> z;
+    Matrix<double, 2, 1> z;
     z <<
       p.easting,
       p.northing,
-      heading_cartesian
     ;
     kalman_filter(C_GPS, Q_GPS, z);
 
@@ -186,7 +185,7 @@ void Localizer::init_Q_IMU()
 
 void Localizer::init_C_GPS()
 {
-    C_GPS <<
+          0, 1, 0, 0, 0,
           1, 0, 0, 0, 0,
           0, 1, 0, 0, 0,
           0, 0, 0, 1, 0
@@ -282,11 +281,9 @@ Localizer::Localizer()
 }
 
 void Localizer::update_position_estimate()
-{
-    propagate();
-
     geodesy::UTMPoint utm_point(x_hat(1, 0), x_hat(0, 0), 17, 'T');
-    geographic_msgs::GeoPoint gps_point = geodesy::toMsg(utm_point);
+    geodesy::UTMPoint utm_point(x_hat(1, 0), x_hat(0, 0), 17, 'T');
+    double heading = x_hat(3, 0);
     double heading = x_hat(3, 0);
 
     robobuggy::Pose p;
@@ -303,8 +300,8 @@ void Localizer::update_position_estimate()
 void Localizer::update_motion_model(double dt)
 {
 
-    A <<
       1, 0, dt * cos(x(3, 0)), 0, 0,
+      0, 1, dt * sin(x(3, 0)), 0, 0,
       0, 1, dt * sin(x(3, 0)), 0, 0,
       0, 0, 1, 0, 0,
       0, 0, 0, 1, dt,
@@ -354,8 +351,8 @@ void Localizer::kalman_filter(MatrixXd c, MatrixXd q, MatrixXd z)
 
     Matrix<double, 5, 1> x_pre = A * x;
     Matrix<double, 5, 5> P_pre = A * P * A.transpose() + R;
-
     x_pre(3, 0) = clamp_angle(x_pre(3, 0));
+    x_pre(4, 0) = clamp_angle(x_pre(4, 0));
     x_pre(4, 0) = clamp_angle(x_pre(4, 0));
 
     MatrixXd residual = z - c * x_pre;
@@ -363,7 +360,7 @@ void Localizer::kalman_filter(MatrixXd c, MatrixXd q, MatrixXd z)
     K = P_pre * c.transpose() * K.inverse();
     x = x_pre + K * residual;
     P = (MatrixXd::Identity(5,5) - (K * c)) * P_pre;
-
     x(3, 0) = clamp_angle(x(3, 0));
+    x(4, 0) = clamp_angle(x(4, 0));
     x(4, 0) = clamp_angle(x(4, 0));
 }
