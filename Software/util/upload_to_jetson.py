@@ -2,6 +2,9 @@
 
 # Python 2.7 script for uploading current changes to a Jetson
 # Make sure to run this file from the util/ directory, otherwise paths will get messed up
+# Note that this assumes:
+#   - You've already configured the target Jetson to be on the correct branch
+#   - You aren't using the ubuntu version of ping, you're using the macos version (ping -t is timeout on mac)
 
 import argparse
 import subprocess
