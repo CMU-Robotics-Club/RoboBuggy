@@ -23,13 +23,6 @@ void Localizer::Encoder_Callback(const robobuggy::Encoder::ConstPtr &msg)
 
     prev_encoder_time = current_time;
     prev_encoder_ticks = ticks;
-
-    Matrix<double, 1, 1> z;
-    z <<
-      body_speed
-    ;
-
-    kalman_filter(C_Encoder, Q_Encoder, z);
 }
 
 void Localizer::GPS_Callback(const robobuggy::GPS::ConstPtr &msg)
@@ -54,55 +47,10 @@ void Localizer::GPS_Callback(const robobuggy::GPS::ConstPtr &msg)
         }
     }
     prev_position_utm = p;
-
-    Matrix<double, 2, 1> z;
-    z <<
-      p.easting,
-      p.northing
-    ;
-    kalman_filter(C_GPS, Q_GPS, z);
-
 }
 
 void Localizer::IMU_Callback(const robobuggy::IMU::ConstPtr &msg)
 {
-    double heading_bearing = 0.0;
-    double heading_honeywell = 0.0;
-
-    heading_bearing = atan2(msg->Y_Mag, msg->X_Mag);
-    //@TODO: Use all 3 axes to compute heading to account for tilt
-    //@TODO: Potentially integrate accelerometer and magnetometer + do more sophisticated sensor fusion
-
-    // honeywell imu orientation
-    // Direction (y>0) = 90 - [arcTAN(x/y)]*180/pi
-    // Direction (y<0) = 270 - [arcTAN(x/y)]*180/pi
-    // Direction (y=0, x<0) = 180.0
-    // Direction (y=0, x>0) = 0.0
-    double x = msg->X_Mag;
-    double y = msg->Y_Mag;
-
-    if (y > 0) 
-    {
-        heading_honeywell = M_PI / 2.0 - atan(x/y);
-    }
-    else if (y < 0) 
-    {
-        heading_honeywell = 3 * M_PI / 2.0 - atan(x/y);
-    }
-
-
-    // We get the heading in a special version of bearing coordinates: theta = 0 @ north, +theta = counterclockwise
-    // convert it to cartesian coordinates: theta = 0 @ east, +theta = counterclockwise
-    double heading_cartesian = heading_bearing + M_PI / 2.0;
-
-    ROS_INFO("heading cartesian = %f, heading bearing = %f\n", heading_cartesian, heading_bearing);
-
-    Matrix<double, 1, 1> z;
-    z <<
-        heading_cartesian
-    ;
-
-    kalman_filter(C_IMU, Q_IMU, z);    
 }
 
 void Localizer::Feedback_Callback(const robobuggy::Feedback::ConstPtr &msg)
@@ -115,11 +63,6 @@ void Localizer::Feedback_Callback(const robobuggy::Feedback::ConstPtr &msg)
 void Localizer::init_R()
 {
     R <<
-      4, 0, 0, 0, 0,
-      0, 4, 0, 0, 0,
-      0, 0, 0.25, 0, 0,
-      0, 0, 0, 0.01, 0,
-      0, 0, 0, 0, 0.01
     ;
 
     std::stringstream s;
@@ -132,11 +75,6 @@ void Localizer::init_P()
 {
 
     P <<
-      25, 0, 0, 0, 0,
-      0, 25, 0, 0, 0,
-      0, 0, 0.25, 0, 0,
-      0, 0, 0, 2.46, 0,
-      0, 0, 0, 0, 2.46
     ;
 
     std::stringstream s;
@@ -148,8 +86,6 @@ void Localizer::init_P()
 void Localizer::init_Q_GPS()
 {
     Q_GPS <<
-          5, 0,
-          0, 5
     ;
 
     std::stringstream s;
@@ -161,7 +97,6 @@ void Localizer::init_Q_GPS()
 void Localizer::init_Q_Encoder()
 {
     Q_Encoder <<
-              0.25
     ;
 
     std::stringstream s;
@@ -173,7 +108,6 @@ void Localizer::init_Q_Encoder()
 void Localizer::init_Q_IMU()
 {
     Q_IMU <<
-        0.05
     ;
 
     std::stringstream s;
@@ -185,8 +119,6 @@ void Localizer::init_Q_IMU()
 void Localizer::init_C_GPS()
 {
     C_GPS <<
-          1, 0, 0, 0, 0,
-          0, 1, 0, 0, 0
     ;
 
     std::stringstream s;
@@ -198,7 +130,6 @@ void Localizer::init_C_GPS()
 void Localizer::init_C_Encoder()
 {
     C_Encoder <<
-              0, 0, 1, 0, 0
     ;
 
     std::stringstream s;
@@ -210,7 +141,6 @@ void Localizer::init_C_Encoder()
 void Localizer::init_C_IMU()
 {
     C_IMU <<
-        0, 0, 0, 1, 0
     ;
 }
 
@@ -280,8 +210,6 @@ Localizer::Localizer()
 
 void Localizer::update_position_estimate()
 {
-    propagate();
-
     double easting_x = x_hat(ROW_X, 0);
     double northing_y = x_hat(ROW_Y, 0);
     geodesy::UTMPoint utm_point(easting_x, northing_y, 17, 'T');
@@ -345,24 +273,4 @@ long Localizer::get_current_time_millis()
 
 void Localizer::kalman_filter(MatrixXd c, MatrixXd q, MatrixXd z)
 {
-    long int current_time = get_current_time_millis();
-    double dt = (current_time - previous_update_time_ms) / 1000.0;
-    previous_update_time_ms = current_time;
-
-    update_motion_model(dt);
-
-    Matrix<double, 5, 1> x_pre = A * x;
-    Matrix<double, 5, 5> P_pre = A * P * A.transpose() + R;
-
-    x_pre(ROW_HEADING, 0) = clamp_angle(x_pre(ROW_HEADING, 0));
-    x_pre(ROW_TH_DOT, 0) = clamp_angle(x_pre(ROW_TH_DOT, 0));
-
-    MatrixXd residual = z - c * x_pre;
-    MatrixXd K = c * P_pre * c.transpose() + q;
-    K = P_pre * c.transpose() * K.inverse();
-    x = x_pre + K * residual;
-    P = (MatrixXd::Identity(5,5) - (K * c)) * P_pre;
-
-    x(ROW_HEADING, 0) = clamp_angle(x(ROW_HEADING, 0));
-    x(ROW_TH_DOT, 0) = clamp_angle(x(ROW_TH_DOT, 0));
 }
