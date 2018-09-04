@@ -123,6 +123,14 @@ double Controller::pure_pursuit_controller()
     return commanded_angle;
 }
 
+double Controller::stanley_controller()
+{
+    // first get the closest waypoint to us
+    // get the track heading by getting the heading between it and the next waypoint
+
+    // calculate cross track error
+}
+
 bool Controller::get_deploy_brake_value()
 {
     return false;

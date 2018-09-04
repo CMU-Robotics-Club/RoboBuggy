@@ -33,6 +33,7 @@ private:
 
     int get_closest_waypoint_index();
     double pure_pursuit_controller();
+    double stanley_controller();
     bool get_deploy_brake_value();
     double normalize_angle_rad(double radians);
     double get_distance_from_pose(robobuggy::Pose pose_msg);
