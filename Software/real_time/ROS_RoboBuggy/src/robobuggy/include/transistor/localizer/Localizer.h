@@ -22,6 +22,7 @@ class Localizer
 public:
     Localizer();
     static const std::string NODE_NAME;
+    static const int UPDATE_KALMAN_RATE_HZ = 5;
 
     void update_position_estimate();
 
@@ -33,11 +34,17 @@ private:
     long int previous_update_time_ms;
     long int prev_encoder_time;
 
+    double z_gps_latitude;
+    double z_gps_longitude;
+    double z_enc_ticks;
+    double z_imu_heading;
+
     const int ROW_X = 0;
     const int ROW_Y = 1;
     const int ROW_VEL = 2;
     const int ROW_HEADING = 3;
     const int ROW_TH_DOT = 4;
+    const int x_len = 5;
 
     ros::NodeHandle nh;
     ros::Publisher pose_pub;
@@ -47,25 +54,18 @@ private:
     ros::Subscriber steering_sub;
 
     Matrix<double, 5, 5> A;
+    Matrix<double, 5, 1> B;
     Matrix<double, 5, 1> x;
-    Matrix<double, 5, 1> x_hat;
     Matrix<double, 5, 5> R;
-    Matrix<double, 5, 5> P;
-    Matrix<double, 2, 2> Q_GPS;
-    Matrix<double, 1, 1> Q_Encoder;
-    Matrix<double, 1, 1> Q_IMU;
-    Matrix<double, 2, 5> C_GPS;
-    Matrix<double, 1, 5> C_Encoder;
-    Matrix<double, 1, 5> C_IMU;
+    MAtrix<double, 4, 1> z;
+    Matrix<double, 5, 5> SIGMA;
+    Matrix<double, 4, 4> Q;
+    Matrix<double, 4, 5> C;
 
     void init_R();
-    void init_P();
-    void init_Q_GPS();
-    void init_Q_Encoder();
-    void init_Q_IMU();
-    void init_C_GPS();
-    void init_C_Encoder();
-    void init_C_IMU();
+    void init_SIGMA();
+    void init_Q();
+    void init_C();
     void init_x();
 
     void IMU_Callback(const robobuggy::IMU::ConstPtr& msg);
@@ -74,8 +74,8 @@ private:
     void Feedback_Callback(const robobuggy::Feedback::ConstPtr& msg);
  
     void update_motion_model(double dt);
+    void update_control_model();
     double clamp_angle(double theta);
-    void propagate();
     long get_current_time_millis();
-    void kalman_filter(MatrixXd c, MatrixXd q, MatrixXd z);
+    void kalman_filter();
 };

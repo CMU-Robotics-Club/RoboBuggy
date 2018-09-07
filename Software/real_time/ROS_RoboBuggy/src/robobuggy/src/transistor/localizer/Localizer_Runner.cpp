@@ -4,7 +4,7 @@ int main(int argc, char **argv)
 {
     ros::init(argc, argv, Localizer::NODE_NAME);
     ros::NodeHandle nh;
-    ros::Rate loop_rate(10);
+    ros::Rate loop_rate(Localizer::UPDATE_KALMAN_RATE_HZ); // 5Hz update rate
 
     Localizer l;
 

@@ -1,5 +1,6 @@
 #include "transistor/localizer/Localizer.h"
 
+const std::string Localizer::NODE_NAME = "Localizer";
 void Localizer::Encoder_Callback(const robobuggy::Encoder::ConstPtr &msg)
 {
 
@@ -71,77 +72,16 @@ void Localizer::init_R()
     ROS_INFO("Initialized R Matrix to : \n%s", s.str().c_str());
 }
 
-void Localizer::init_P()
+void Localizer::init_SIGMA()
 {
 
-    P <<
+    SIGMA <<
     ;
 
     std::stringstream s;
-    s << P << std::endl;
+    s << SIGMA << std::endl;
 
-    ROS_INFO("Initialized P Matrix to : \n%s", s.str().c_str());
-}
-
-void Localizer::init_Q_GPS()
-{
-    Q_GPS <<
-    ;
-
-    std::stringstream s;
-    s << Q_GPS << std::endl;
-
-    ROS_INFO("Initialized Q_GPS Matrix to : \n%s", s.str().c_str());
-}
-
-void Localizer::init_Q_Encoder()
-{
-    Q_Encoder <<
-    ;
-
-    std::stringstream s;
-    s << Q_Encoder << std::endl;
-
-    ROS_INFO("Initialized Q_Encoder matrix to : \n%s", s.str().c_str());
-}
-
-void Localizer::init_Q_IMU()
-{
-    Q_IMU <<
-    ;
-
-    std::stringstream s;
-    s << Q_IMU << std::endl;
-
-    ROS_INFO("Initialized Q_IMU matrix to : \n%s", s.str().c_str());
-}
-
-void Localizer::init_C_GPS()
-{
-    C_GPS <<
-    ;
-
-    std::stringstream s;
-    s << C_GPS << std::endl;
-
-    ROS_INFO("Initialized C_GPS Matrix to : \n%s", s.str().c_str());
-}
-
-void Localizer::init_C_Encoder()
-{
-    C_Encoder <<
-    ;
-
-    std::stringstream s;
-    s << C_Encoder << std::endl;
-
-    ROS_INFO("Initialized C_Encoder Matrix to : \n%s", s.str().c_str());
-}
-
-void Localizer::init_C_IMU()
-{
-    C_IMU <<
-    ;
+    ROS_INFO("Initialized SIGMA Matrix to : \n%s", s.str().c_str());
 }
 
 void Localizer::init_x()
@@ -155,19 +95,11 @@ void Localizer::init_x()
     geodesy::UTMPoint init_utm(gps_point);
 
     x <<
-      init_utm.northing, // TODO initial lat in UTM
-      init_utm.easting, // TODO initial lon in UTM
+      init_utm.northing, 
+      init_utm.easting, 
       0,
       0, // TODO initial heading in rad
       0
-    ;
-
-    x_hat <<
-          0,
-          0,
-          0,
-          0,
-          0
     ;
 
     std::stringstream s;
@@ -176,20 +108,15 @@ void Localizer::init_x()
     ROS_INFO("Initialized x Matrix to : \n%s", s.str().c_str());
 }
 
-const std::string Localizer::NODE_NAME = "Localizer";
 Localizer::Localizer()
 {
     current_steering_angle = 0;
     WHEELBASE_M = 1.13;
 
     init_R();
-    init_P();
-    init_Q_GPS();
-    init_Q_Encoder();
-    init_Q_IMU();
-    init_C_GPS();
-    init_C_Encoder();
-    init_C_IMU();
+    init_SIGMA();
+    init_Q();
+    init_C();
     init_x();
     update_motion_model(0);
 
@@ -210,12 +137,17 @@ Localizer::Localizer()
 
 void Localizer::update_position_estimate()
 {
-    double easting_x = x_hat(ROW_X, 0);
-    double northing_y = x_hat(ROW_Y, 0);
+    // update the filter
+    kalman_filter();
+
+    // convert the UTM understanding to Pose compliant form
+    double easting_x = x(ROW_X, 0);
+    double northing_y = x(ROW_Y, 0);
     geodesy::UTMPoint utm_point(easting_x, northing_y, 17, 'T');
     geographic_msgs::GeoPoint gps_point = geodesy::toMsg(utm_point);
-    double heading = x_hat(ROW_HEADING, 0);
+    double heading = x(ROW_HEADING, 0);
 
+    // create the pose message
     robobuggy::Pose p;
     ros::Time time_now = ros::Time::now();
     p.header.stamp = time_now;
@@ -235,9 +167,19 @@ void Localizer::update_motion_model(double dt)
       0, 1, dt * sin(x(ROW_HEADING, 0)), 0, 0,
       0, 0, 1, 0, 0,
       0, 0, 0, 1, dt,
-      0, 0, tan(current_steering_angle) / WHEELBASE_M, 0, 0
+      0, 0, 0, 0, 1
     ;
 
+}
+
+void Localizer::update_control_model()
+{
+    B <<
+        0,
+        0,
+        0,
+        0,
+        1/WHEELBASE_M
 }
 
 double Localizer::clamp_angle(double theta)
@@ -254,16 +196,6 @@ double Localizer::clamp_angle(double theta)
     return theta;
 }
 
-void Localizer::propagate()
-{
-    long int current_time = get_current_time_millis();
-    // convert to seconds
-    double dt = (current_time - previous_update_time_ms) / 1000.0;
-
-    update_motion_model(dt);
-    x_hat = A * x;
-}
-
 long Localizer::get_current_time_millis()
 {
     struct timeval tp;
@@ -271,6 +203,29 @@ long Localizer::get_current_time_millis()
     return tp.tv_sec * 1000 + tp.tv_usec / 1000;
 }
 
-void Localizer::kalman_filter(MatrixXd c, MatrixXd q, MatrixXd z)
+void Localizer::kalman_filter()
 {
+    // run kalman prediction
+    // propagate prediction forwards using motion model
+    update_motion_model(1.0 / Localizer::UPDATE_KALMAN_RATE_HZ);
+    update_control_model();
+    x = A * x + B * tan(current_steering_angle);
+    // update covariances using predicted covariance
+    SIGMA = A * SIGMA * A.T + R;
+
+    // Get all the measurements together into a single vector
+    z <<
+        z_gps_latitude,
+        z_gps_longitude,
+        z_imu_heading,
+        z_enc_ticks
+    ;
+
+    // run kalman correction
+    // Calculate Kalman Gain
+    K = SIGMA * C.T * (C*SIGMA*C.T + Q).inverse();
+    // compute corrected state
+    x = x + K*(z - C*x);
+    // compute corrected covariance
+    SIGMA = (MatrixXd::Identity(x_len, x_len) - K*C)*SIGMA
 }
