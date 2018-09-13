@@ -34,9 +34,10 @@ private:
     long int previous_update_time_ms;
     long int prev_encoder_time;
 
-    double z_gps_latitude;
-    double z_gps_longitude;
-    double z_enc_ticks;
+    double z_gps_easting;
+    double z_gps_northing;
+    double z_enc_ticks_dx;
+    double z_enc_vel;
     double z_imu_heading;
 
     const int ROW_X = 0;
@@ -57,10 +58,10 @@ private:
     Matrix<double, 5, 1> B;
     Matrix<double, 5, 1> x;
     Matrix<double, 5, 5> R;
-    MAtrix<double, 4, 1> z;
+    MAtrix<double, 5, 1> z;
     Matrix<double, 5, 5> SIGMA;
-    Matrix<double, 4, 4> Q;
-    Matrix<double, 4, 5> C;
+    Matrix<double, 5, 5> Q;
+    Matrix<double, 5, 5> C;
 
     void init_R();
     void init_SIGMA();

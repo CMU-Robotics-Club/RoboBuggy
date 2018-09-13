@@ -3,6 +3,7 @@
 const std::string Localizer::NODE_NAME = "Localizer";
 void Localizer::Encoder_Callback(const robobuggy::Encoder::ConstPtr &msg)
 {
+    // todo aggregate and then reset once kf is finished
 
     if (prev_encoder_ticks == -1)
     {
@@ -19,11 +20,15 @@ void Localizer::Encoder_Callback(const robobuggy::Encoder::ConstPtr &msg)
 
     double ticks = msg->ticks;
     double dx = ticks - prev_encoder_ticks;
+    // TODO make this clearer
     dx = dx * 0.61 / 7.0 * 0.3048 * 2;
     double body_speed = dx / (dt / 1000.0);
 
     prev_encoder_time = current_time;
     prev_encoder_ticks = ticks;
+
+    z_enc_ticks_dx = dx;
+    z_enc_vel = body_speed;
 }
 
 void Localizer::GPS_Callback(const robobuggy::GPS::ConstPtr &msg)
@@ -48,6 +53,11 @@ void Localizer::GPS_Callback(const robobuggy::GPS::ConstPtr &msg)
         }
     }
     prev_position_utm = p;
+    z_gps_easting = p.easting;
+    z_gps_northing = p.northing;
+
+    // TODO until we get the IMU in, this will have to do:
+    z_imu_heading = heading_cartesian;
 }
 
 void Localizer::IMU_Callback(const robobuggy::IMU::ConstPtr &msg)
@@ -64,6 +74,11 @@ void Localizer::Feedback_Callback(const robobuggy::Feedback::ConstPtr &msg)
 void Localizer::init_R()
 {
     R <<
+    0.0025, 0, 0, 0, 0,
+    0, 0.0025, 0, 0, 0,
+    0, 0, 0.0001, 0, 0,
+    0, 0, 0, 0.00001, 0, 0,
+    0, 0, 0, 0, 0.00001
     ;
 
     std::stringstream s;
@@ -76,12 +91,52 @@ void Localizer::init_SIGMA()
 {
 
     SIGMA <<
+    1, 0, 0, 0, 0,
+    0, 1, 0, 0, 0,
+    0, 0, 0.25, 0, 0,
+    0, 0, 0, 0.0004, 0,
+    0, 0, 0, 0, 0.0004
     ;
 
     std::stringstream s;
     s << SIGMA << std::endl;
 
     ROS_INFO("Initialized SIGMA Matrix to : \n%s", s.str().c_str());
+}
+
+void Localizer::init_C()
+{
+    // update at a constant rate, this allows C to stay constant
+    double t = 1.0 / Localizer::UPDATE_KALMAN_RATE_HZ;
+
+    C <<
+    1, 0, 0, 0, 0
+    0, 1, 0, 0, 0,
+    0, 0, 0, 1, 0,
+    0, 0, t, 0, 0,
+    0, 0, 1, 0, 0
+    ;
+
+    std::stringstream s;
+    s << C << std::endl;
+
+    ROS_INFO("Initialized C Matrix to : \n%s", s.str().c_str());
+}
+
+void Localizer::init_Q() 
+{
+    Q <<
+    4, 0, 0, 0, 0,
+    0, 4, 0, 0, 0,
+    0, 0, 0.01, 0, 0,
+    0, 0, 0, 0.000025, 0,
+    0, 0, 0, 0, 1
+    ;
+
+    std::stringstream s;
+    s << Q << std::endl;
+
+    ROS_INFO("Initialized Q matrix to : \n%s", s.str().c_str());
 }
 
 void Localizer::init_x()
@@ -215,10 +270,11 @@ void Localizer::kalman_filter()
 
     // Get all the measurements together into a single vector
     z <<
-        z_gps_latitude,
-        z_gps_longitude,
+        z_gps_easting,
+        z_gps_northing,
         z_imu_heading,
-        z_enc_ticks
+        z_enc_ticks_dx,
+        z_enc_vel
     ;
 
     // run kalman correction
