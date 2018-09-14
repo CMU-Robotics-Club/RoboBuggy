@@ -58,7 +58,7 @@ private:
     Matrix<double, 5, 1> B;
     Matrix<double, 5, 1> x;
     Matrix<double, 5, 5> R;
-    MAtrix<double, 5, 1> z;
+    Matrix<double, 5, 1> z;
     Matrix<double, 5, 5> SIGMA;
     Matrix<double, 5, 5> Q;
     Matrix<double, 5, 5> C;

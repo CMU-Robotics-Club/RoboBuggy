@@ -77,7 +77,7 @@ void Localizer::init_R()
     0.0025, 0, 0, 0, 0,
     0, 0.0025, 0, 0, 0,
     0, 0, 0.0001, 0, 0,
-    0, 0, 0, 0.00001, 0, 0,
+    0, 0, 0, 0.00001, 0,
     0, 0, 0, 0, 0.00001
     ;
 
@@ -110,7 +110,7 @@ void Localizer::init_C()
     double t = 1.0 / Localizer::UPDATE_KALMAN_RATE_HZ;
 
     C <<
-    1, 0, 0, 0, 0
+    1, 0, 0, 0, 0,
     0, 1, 0, 0, 0,
     0, 0, 0, 1, 0,
     0, 0, t, 0, 0,
@@ -165,6 +165,8 @@ void Localizer::init_x()
 
 Localizer::Localizer()
 {
+    ROS_INFO("Initializing Localizer\n");
+
     current_steering_angle = 0;
     WHEELBASE_M = 1.13;
 
@@ -235,6 +237,7 @@ void Localizer::update_control_model()
         0,
         0,
         1/WHEELBASE_M
+    ;
 }
 
 double Localizer::clamp_angle(double theta)
@@ -266,7 +269,7 @@ void Localizer::kalman_filter()
     update_control_model();
     x = A * x + B * tan(current_steering_angle);
     // update covariances using predicted covariance
-    SIGMA = A * SIGMA * A.T + R;
+    SIGMA = A * SIGMA * A.transpose() + R;
 
     // Get all the measurements together into a single vector
     z <<
@@ -279,9 +282,9 @@ void Localizer::kalman_filter()
 
     // run kalman correction
     // Calculate Kalman Gain
-    K = SIGMA * C.T * (C*SIGMA*C.T + Q).inverse();
+    Matrix<double, 5, 5> K = SIGMA * C.transpose() * (C*SIGMA*C.transpose() + Q).inverse();
     // compute corrected state
     x = x + K*(z - C*x);
     // compute corrected covariance
-    SIGMA = (MatrixXd::Identity(x_len, x_len) - K*C)*SIGMA
+    SIGMA = (MatrixXd::Identity(x_len, x_len) - K*C)*SIGMA;
 }
