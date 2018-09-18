@@ -14,7 +14,7 @@ int main(int argc, char **argv)
 
     std::vector<robobuggy::GPS> waypoints;
 
-    std::ifstream waypoint_stream("src/robobuggy/config/waypoints.txt");
+    std::ifstream waypoint_stream("/home/robobuggy/RoboBuggy/Software/real_time/ROS_RoboBuggy/src/robobuggy/config/waypoints_course.txt");
     std::string waypoint_str;
     while (std::getline(waypoint_stream, waypoint_str))
     {
@@ -33,6 +33,10 @@ int main(int argc, char **argv)
     }
 
     ROS_INFO("Read in %lu waypoints\n", waypoints.size());
+
+    if (waypoints.size() == 0) {
+        return 1;
+    }
 
     Controller controller(waypoints);
 

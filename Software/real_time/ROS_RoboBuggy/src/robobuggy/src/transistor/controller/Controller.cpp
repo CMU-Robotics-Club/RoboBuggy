@@ -65,7 +65,7 @@ int Controller::get_closest_waypoint_index()
 double Controller::pure_pursuit_controller()
 {
     int closest_index = get_closest_waypoint_index();
-    ROS_INFO("closest waypoint = %d\n", closest_index);
+    // ROS_INFO("closest waypoint = %d\n", closest_index);
     double k = 2.5;
     double velocity = 3; // TODO bake velocity into pose messages
     double lookahead_lower_bound = 5.0;
@@ -80,7 +80,6 @@ double Controller::pure_pursuit_controller()
     {
         lookahead = lookahead_upper_bound;
     }
-    ROS_INFO("lookahead = %f\n", lookahead);
 
     int lookahead_index = 0;
     for (lookahead_index = closest_index; lookahead_index < waypoint_list.size(); lookahead_index++)
@@ -89,7 +88,6 @@ double Controller::pure_pursuit_controller()
         gpsPoseMessage.latitude_deg = waypoint_list.at(lookahead_index).Lat_deg;
         gpsPoseMessage.longitude_deg = waypoint_list.at(lookahead_index).Long_deg;
 
-        ROS_INFO("candidate=%d, dist=%f\n", lookahead_index, get_distance_from_pose(gpsPoseMessage));
         if (get_distance_from_pose(gpsPoseMessage) > lookahead)
         {
             break;
@@ -99,11 +97,12 @@ double Controller::pure_pursuit_controller()
     if (lookahead_index >= waypoint_list.size()) {
         // run out of waypoints nearby, go straight
         ROS_INFO("uh oh, out of waypoints!\n");
+
         return 0.0;
     }
 
     robobuggy::GPS target_waypoint = waypoint_list.at(lookahead_index);
-    ROS_INFO("target waypoint = (%f, %f)\n", target_waypoint.Lat_deg, target_waypoint.Long_deg);
+    // ROS_INFO("target waypoint = (%f, %f)\n", target_waypoint.Lat_deg, target_waypoint.Long_deg);
     
     geographic_msgs::GeoPoint gps_point;
     gps_point.latitude = target_waypoint.Lat_deg;
@@ -119,7 +118,6 @@ double Controller::pure_pursuit_controller()
     double dy = utm_waypoint.northing - utm_pose.northing;
     double theta = atan2(dy, dx) - current_pose_estimate.heading_rad;
 
-    ROS_INFO("dx = %f, dy = %f, waypoint heading = %f, current heading = %f, dtheta = %f\n", dx, dy, 180/M_PI*atan2(dy, dx), 180/M_PI*current_pose_estimate.heading_rad, 180/M_PI*normalize_angle_rad(theta));
 
     double commanded_angle = normalize_angle_rad(atan2(2 * 1.13 * sin(theta), lookahead));
     return commanded_angle;

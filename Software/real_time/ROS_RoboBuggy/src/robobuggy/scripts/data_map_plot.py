@@ -68,7 +68,7 @@ def waypoints_publisher():
     waypoints_pub = rospy.Publisher('WAYPOINTS_VIZ',GPSFix, queue_size=10)
 
     # read from waypoints file, parse JSON, publish
-    waypoints = open("/home/robobuggy/RoboBuggy/Software/real_time/ROS_RoboBuggy/src/robobuggy/config/waypoints.txt", 'r')
+    waypoints = open("/home/robobuggy/RoboBuggy/Software/real_time/ROS_RoboBuggy/src/robobuggy/config/waypoints_course.txt", 'r')
     line = waypoints.readline()
     time.sleep(5)
     while line:
