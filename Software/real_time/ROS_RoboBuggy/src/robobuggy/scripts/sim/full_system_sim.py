@@ -69,13 +69,13 @@ class Simulator:
         A = self.calculate_new_motion_model()
         self.x = A * self.x
 
-        # th = self.x[3];
-        # while th > 2*math.pi:
-        #     th -= 2*math.pi
-        # while th < 0:
-        #     th += 2*math.pi
+        th = self.x[3];
+        while th > math.pi:
+            th -= 2*math.pi
+        while th < -math.pi:
+            th += 2*math.pi
 
-        # self.x[3] = th;
+        self.x[3] = th;
 
     def generate_gps_message(self):
         (x, y) = (self.x[0], self.x[1])

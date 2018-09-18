@@ -64,7 +64,6 @@ void Localizer::GPS_Callback(const robobuggy::GPS::ConstPtr &msg)
 void Localizer::IMU_Callback(const robobuggy::IMU::ConstPtr &msg)
 {
     z_imu_heading = atan2(msg->Y_Mag, msg->X_Mag);
-    ROS_INFO("Got IMU Heading of %f -> %f, %f", z_imu_heading * 180 / M_PI, msg->Y_Mag, msg->X_Mag);
 }
 
 void Localizer::Feedback_Callback(const robobuggy::Feedback::ConstPtr &msg)
@@ -129,8 +128,8 @@ void Localizer::init_C()
 void Localizer::init_Q() 
 {
     Q <<
-    1, 0, 0, 0, 0,
-    0, 1, 0, 0, 0,
+    2, 0, 0, 0, 0,
+    0, 2, 0, 0, 0,
     0, 0, 0.000025, 0, 0,
     0, 0, 0, 4, 0,
     0, 0, 0, 0, 1
