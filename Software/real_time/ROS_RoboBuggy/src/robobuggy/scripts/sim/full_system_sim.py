@@ -120,7 +120,7 @@ def main():
     start_y = 0
     start_th = math.radians(250) # TODO calculate based on two waypoints
     # waypoint_file = rospy.get_param("/{}/waypoint_file".format(NODE_NAME))
-    waypoint_file = "/home/bhai/RoboBuggy/Software/real_time/ROS_RoboBuggy/src/robobuggy/config/waypoints.txt"
+    waypoint_file = "/home/robobuggy/RoboBuggy/Software/real_time/ROS_RoboBuggy/src/robobuggy/config/waypoints.txt"
     with open(waypoint_file) as f:
         first_waypoint_str = f.readline()
         first_waypoint_json = json.loads(first_waypoint_str)
@@ -134,6 +134,7 @@ def main():
     # spin infinitely, while stepping each appropriate tick
     rate = rospy.Rate(s.sim_update_hz)
     loop_counter = 0
+    stationary_counter = 200
     while not rospy.is_shutdown():
         # Take a step
         s.step()

@@ -27,7 +27,7 @@ void Localizer::Encoder_Callback(const robobuggy::Encoder::ConstPtr &msg)
     prev_encoder_time = current_time;
     prev_encoder_ticks = ticks;
 
-    z_enc_ticks_dx = dx;
+    z_enc_ticks_dx += dx;
     z_enc_vel = body_speed;
 }
 
@@ -91,8 +91,8 @@ void Localizer::init_SIGMA()
 {
 
     SIGMA <<
-    1, 0, 0, 0, 0,
-    0, 1, 0, 0, 0,
+    4, 0, 0, 0, 0,
+    0, 4, 0, 0, 0,
     0, 0, 0.25, 0, 0,
     0, 0, 0, 0.0004, 0,
     0, 0, 0, 0, 0.0004
@@ -126,10 +126,10 @@ void Localizer::init_C()
 void Localizer::init_Q() 
 {
     Q <<
-    4, 0, 0, 0, 0,
-    0, 4, 0, 0, 0,
-    0, 0, 0.01, 0, 0,
-    0, 0, 0, 0.000025, 0,
+    0.25, 0, 0, 0, 0,
+    0, 0.25, 0, 0, 0,
+    0, 0, 0.0001, 0, 0,
+    0, 0, 0, 0.0025, 0,
     0, 0, 0, 0, 1
     ;
 
@@ -294,4 +294,7 @@ void Localizer::kalman_filter()
     x = x + K*(z - C*x);
     // compute corrected covariance
     SIGMA = (MatrixXd::Identity(x_len, x_len) - K*C)*SIGMA;
+
+    // reset amalgamated values
+    z_enc_ticks_dx = 0;
 }
