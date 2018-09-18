@@ -58,11 +58,13 @@ void Localizer::GPS_Callback(const robobuggy::GPS::ConstPtr &msg)
     updated_gps_measurement = true;
 
     // TODO until we get the IMU in, this will have to do:
-    z_imu_heading = heading_cartesian;
+    // z_imu_heading = heading_cartesian;
 }
 
 void Localizer::IMU_Callback(const robobuggy::IMU::ConstPtr &msg)
 {
+    z_imu_heading = atan2(msg->Y_Mag, msg->X_Mag);
+    ROS_INFO("Got IMU Heading of %f -> %f, %f", z_imu_heading * 180 / M_PI, msg->Y_Mag, msg->X_Mag);
 }
 
 void Localizer::Feedback_Callback(const robobuggy::Feedback::ConstPtr &msg)
@@ -95,7 +97,7 @@ void Localizer::init_SIGMA()
     4, 0, 0, 0, 0,
     0, 4, 0, 0, 0,
     0, 0, 0.01, 0, 0,
-    0, 0, 0, 0.04, 0,
+    0, 0, 0, 1, 0,
     0, 0, 0, 0, 0.04
     ;
 
@@ -130,7 +132,7 @@ void Localizer::init_Q()
     1, 0, 0, 0, 0,
     0, 1, 0, 0, 0,
     0, 0, 0.000025, 0, 0,
-    0, 0, 0, 0.1, 0,
+    0, 0, 0, 4, 0,
     0, 0, 0, 0, 1
     ;
 
@@ -271,8 +273,6 @@ long Localizer::get_current_time_millis()
 
 void Localizer::kalman_filter()
 {
-    ROS_INFO("updating with dx = %f", z_enc_ticks_dx);
-
     // run kalman prediction
     // propagate prediction forwards using motion model
     update_motion_model(1.0 / Localizer::UPDATE_KALMAN_RATE_HZ);
@@ -281,24 +281,10 @@ void Localizer::kalman_filter()
     // update covariances using predicted covariance
     SIGMA = A * SIGMA * A.transpose() + R;
 
-    // since we know that our GPS updates way slower, we're going to spoof the
-    // measurement until we know we have one that's recent
-    double gps_easting = 0.0;
-    double gps_northing = 0.0;
-    // if (updated_gps_measurement) {
-    if (true) {
-        gps_easting = z_gps_easting;
-        gps_northing = z_gps_northing;
-    }
-    else {
-        gps_easting = x(ROW_X);
-        gps_northing = x(ROW_Y);
-    }
-
     // Get all the measurements together into a single vector
     z <<
-        gps_easting,
-        gps_northing,
+        z_gps_easting,
+        z_gps_northing,
         z_imu_heading,
         z_enc_ticks_dx,
         z_enc_vel

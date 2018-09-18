@@ -12,26 +12,35 @@ from robobuggy.msg import GPS
 from robobuggy.msg import Encoder
 from robobuggy.msg import Command
 from robobuggy.msg import Pose
+from robobuggy.msg import Feedback
+from robobuggy.msg import IMU
+
 import json
 import time
 
 class Simulator:
 
-    def __init__(self, sigma_gps, sigma_odom, start_position):
+    def __init__(self, sigma_gps, sigma_odom, sigma_steering, sigma_theta, start_position):
         self.sigma_gps = sigma_gps
         self.sigma_odom = sigma_odom
-        self.steering_angle = 0
+        self.sigma_steering = sigma_steering
+        self.sigma_theta = sigma_theta
+
         self.sim_update_hz = 10
-        self.dt = 1.0 / self.sim_update_hz
-        self.wheelbase = 1.13
         self.gps_update_rate_hz = 2
         self.odom_update_rate_hz = 5
         self.imu_update_rate_hz = 5
         self.ground_truth_update_rate_hz = 5
+        self.steering_update_rate_hz = 5
+        
         self.utm_letter = 'T'
         self.utm_zone = 17
+        self.dt = 1.0 / self.sim_update_hz
+        self.wheelbase = 1.13
+
         self.velocity = 0
-        self.ticks = 0;
+        self.ticks = 0
+        self.steering_angle = 0
 
         x = [
             start_position[0],
@@ -59,7 +68,14 @@ class Simulator:
     def step(self):
         A = self.calculate_new_motion_model()
         self.x = A * self.x
-        pass
+
+        # th = self.x[3];
+        # while th > 2*math.pi:
+        #     th -= 2*math.pi
+        # while th < 0:
+        #     th += 2*math.pi
+
+        # self.x[3] = th;
 
     def generate_gps_message(self):
         (x, y) = (self.x[0], self.x[1])
@@ -87,6 +103,15 @@ class Simulator:
         noisy_msg.ticks = self.ticks
 
         return noisy_msg
+
+    def generate_steering_message(self):
+        approx_angle = self.steering_angle;
+        approx_angle = np.random.normal(approx_angle, self.sigma_steering);
+
+        noisy_msg = Feedback();
+        noisy_msg.steer_angle = approx_angle;
+
+        return noisy_msg;
     
     def generate_ground_truth_message(self):
         (x, y) = (self.x[0], self.x[1])
@@ -100,8 +125,24 @@ class Simulator:
         return msg
 
     def generate_imu_message(self):
-        # TODO
-        pass
+        approx_theta = self.x[3];
+        approx_theta = np.random.normal(approx_theta, self.sigma_theta);
+
+        # our formula for figuring out orientation is arctan2(magY / magX)
+        mag_y = math.tan(approx_theta);
+
+        # now figure out which quadrant theta is in so we can decide x
+        mag_x = 1.0;
+        if math.pi / 2 < approx_theta < math.pi or -math.pi < approx_theta < -math.pi / 2:
+            mag_x = -1.0;
+        if -math.pi < approx_theta < 0:
+            mag_y = -mag_y;
+        
+        noisy_msg = IMU();
+        noisy_msg.X_Mag = mag_x;
+        noisy_msg.Y_Mag = mag_y;
+
+        return noisy_msg
 
 def main():
 
@@ -111,6 +152,8 @@ def main():
     gps_pub = rospy.Publisher('GPS', GPS, queue_size=10)
     odom_pub = rospy.Publisher('Encoder', Encoder, queue_size=10)
     ground_truth_pub = rospy.Publisher("SIM_Ground_Truth", Pose, queue_size=10)
+    steering_pub = rospy.Publisher("Feedback", Feedback, queue_size=10)
+    imu_pub = rospy.Publisher("IMU", IMU, queue_size=10)
     # TODO
     # imu_pub = rospy.Publisher('IMU', IMU, queue_size=10)
 
@@ -119,10 +162,16 @@ def main():
 
     # 0.01m stddev
     sigma_odom = 0.01
+    
+    # 0.001 rad stddev
+    sigma_steering = 0.001
+
+    # 0.01 rad stddev
+    sigma_theta = 0.01
 
     start_x = 0
     start_y = 0
-    start_th = math.radians(250) # TODO calculate based on two waypoints
+    start_th = math.radians(-110) # TODO calculate based on two waypoints
     # waypoint_file = rospy.get_param("/{}/waypoint_file".format(NODE_NAME))
     waypoint_file = "/home/robobuggy/RoboBuggy/Software/real_time/ROS_RoboBuggy/src/robobuggy/config/waypoints.txt"
     with open(waypoint_file) as f:
@@ -132,7 +181,7 @@ def main():
         start_x = first_waypoint[0]
         start_y = first_waypoint[1]
 
-    s = Simulator(sigma_gps, sigma_odom, (start_x, start_y, start_th))
+    s = Simulator(sigma_gps, sigma_odom, sigma_steering, sigma_theta, (start_x, start_y, start_th))
     command_sub = rospy.Subscriber('Command', Command, s.apply_control_input)
 
     # spin infinitely, while stepping each appropriate tick
@@ -156,10 +205,13 @@ def main():
             gt_msg = s.generate_ground_truth_message()
             ground_truth_pub.publish(gt_msg)
 
-        # TODO
-        # if loop_counter % s.imu_update_rate_hz:
-        #     imu_msg = s.generate_imu_message()
-        #     imu_pub.publish(imu_msg)
+        if loop_counter % (s.sim_update_hz / s.steering_update_rate_hz) == 0:
+            steer_msg = s.generate_steering_message();
+            steering_pub.publish(steer_msg)
+
+        if loop_counter % s.imu_update_rate_hz:
+            imu_msg = s.generate_imu_message()
+            imu_pub.publish(imu_msg)
 
         if stationary_counter <= 0:
             s.x[2] = 3;
