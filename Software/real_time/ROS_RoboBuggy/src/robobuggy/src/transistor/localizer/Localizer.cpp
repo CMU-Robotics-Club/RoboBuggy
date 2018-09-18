@@ -150,8 +150,8 @@ void Localizer::init_x()
     geodesy::UTMPoint init_utm(gps_point);
 
     x <<
-      init_utm.northing, 
       init_utm.easting, 
+      init_utm.northing, 
       0,
       0, // TODO initial heading in rad
       0
@@ -176,6 +176,13 @@ Localizer::Localizer()
     init_C();
     init_x();
     update_motion_model(0);
+
+    // initialize our measurements so that we're stationary
+    z_enc_ticks_dx = 0;
+    z_enc_vel = 0;
+    z_gps_easting = x(ROW_X);
+    z_gps_northing = x(ROW_Y);
+    z_imu_heading = 0;
 
     struct timeval tp;
     gettimeofday(&tp, NULL);
