@@ -30,7 +30,8 @@ class Simulator:
         self.ground_truth_update_rate_hz = 5
         self.utm_letter = 'T'
         self.utm_zone = 17
-        self.velocity = 3
+        self.velocity = 0
+        self.ticks = 0;
 
         x = [
             start_position[0],
@@ -79,8 +80,11 @@ class Simulator:
         approx_distance = self.velocity * self.dt * self.sim_update_hz / self.odom_update_rate_hz
         approx_distance = np.random.normal(approx_distance, self.sigma_odom)
 
+        if approx_distance < 0: approx_distance = 0;
+
         noisy_msg = Encoder()
-        noisy_msg.ticks = approx_distance * 1.0 / (0.61 / 7.0 * 0.3048 * 2)
+        self.ticks += approx_distance * 1.0 / (0.61 / 7.0 * 0.3048 * 2)
+        noisy_msg.ticks = self.ticks
 
         return noisy_msg
     
@@ -113,8 +117,8 @@ def main():
     # 5m stddev
     sigma_gps = 0.5
 
-    # 0.1m stddev
-    sigma_odom = 0.1
+    # 0.01m stddev
+    sigma_odom = 0.01
 
     start_x = 0
     start_y = 0
@@ -134,7 +138,7 @@ def main():
     # spin infinitely, while stepping each appropriate tick
     rate = rospy.Rate(s.sim_update_hz)
     loop_counter = 0
-    stationary_counter = 200
+    stationary_counter = 100
     while not rospy.is_shutdown():
         # Take a step
         s.step()
@@ -156,6 +160,12 @@ def main():
         # if loop_counter % s.imu_update_rate_hz:
         #     imu_msg = s.generate_imu_message()
         #     imu_pub.publish(imu_msg)
+
+        if stationary_counter <= 0:
+            s.x[2] = 3;
+            s.velocity = 3;
+        else:
+            stationary_counter -= 1;
 
         loop_counter += 1
         rate.sleep()
