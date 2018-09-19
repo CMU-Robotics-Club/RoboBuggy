@@ -129,14 +129,14 @@ bool Controller::get_deploy_brake_value()
 }
 
 double Controller::normalize_angle_rad(double radians) {
-    while (radians < 0.0) 
+    while (radians < -M_PI) 
     {
         radians = radians + 2 * M_PI;
     }
 
-    if (radians > M_PI) 
+    while (radians > M_PI) 
     {
-        radians = radians - 2.0 * M_PI;
+        radians = radians - 2 * M_PI;
     }
     return radians;
 

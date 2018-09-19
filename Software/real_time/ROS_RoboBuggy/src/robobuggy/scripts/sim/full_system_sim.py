@@ -132,11 +132,20 @@ class Simulator:
         mag_y = math.tan(approx_theta);
 
         # now figure out which quadrant theta is in so we can decide x
+        # somewhat complicated, but basically based on how atan2 works, we can craft y= +/-tan(), x=+/-1
         mag_x = 1.0;
-        if math.pi / 2 < approx_theta < math.pi or -math.pi < approx_theta < -math.pi / 2:
+        if -math.pi / 2 <= approx_theta < math.pi / 2:
+            # signs are already taken care of, no need to change them
+            pass
+        elif math.pi / 2 < approx_theta <= math.pi:
+            # x needs to be negative, y needs to be positive
             mag_x = -1.0;
-        if -math.pi < approx_theta < 0:
+            mag_y = abs(mag_y);
+        elif -math.pi < approx_theta <= math.pi/2:
             mag_y = -mag_y;
+            mag_x = -1.0;
+        else:
+            pass;
         
         noisy_msg = IMU();
         noisy_msg.X_Mag = mag_x;

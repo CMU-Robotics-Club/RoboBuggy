@@ -55,7 +55,6 @@ void Localizer::GPS_Callback(const robobuggy::GPS::ConstPtr &msg)
     prev_position_utm = p;
     z_gps_easting = p.easting;
     z_gps_northing = p.northing;
-    updated_gps_measurement = true;
 
     // TODO until we get the IMU in, this will have to do:
     // z_imu_heading = heading_cartesian;
@@ -297,7 +296,16 @@ void Localizer::kalman_filter()
     // compute corrected covariance
     SIGMA = (MatrixXd::Identity(x_len, x_len) - K*C)*SIGMA;
 
+    // normalize x (want to clamp our angles within [-pi, pi])
+    double th = x(ROW_HEADING);
+    double th_d = x(ROW_TH_DOT);
+
+    double th_norm = clamp_angle(th);
+    double th_d_norm = clamp_angle(th_d);
+
+    x(ROW_HEADING) = th_norm;
+    x(ROW_TH_DOT) = th_d_norm;
+
     // reset amalgamated values
     z_enc_ticks_dx = 0;
-    updated_gps_measurement = false;
 }

@@ -33,7 +33,6 @@ private:
     double WHEELBASE_M;
     long int previous_update_time_ms;
     long int prev_encoder_time;
-    bool updated_gps_measurement;
 
     double z_gps_easting;
     double z_gps_northing;
