@@ -5,6 +5,7 @@
 
 # TODO Currently reports only GPS and encoder, include IMU as well
 import rospy
+import rospkg
 import numpy as np
 import utm
 import math
@@ -119,8 +120,13 @@ def main():
     start_x = 0
     start_y = 0
     start_th = math.radians(250) # TODO calculate based on two waypoints
-    # waypoint_file = rospy.get_param("/{}/waypoint_file".format(NODE_NAME))
-    waypoint_file = "/mnt/c/Users/bhai/Documents/RoboBuggy/Software/real_time/ROS_RoboBuggy/src/robobuggy/config/waypoints.txt"
+
+    # Get location of waypoint file by getting package path and then moving from there
+    rospack = rospkg.RosPack()
+    robobuggy_path = rospack.get_path("robobuggy");
+    config_file_loc = "/config/waypoints.txt"
+
+    waypoint_file = robobuggy_path + config_file_loc;
     with open(waypoint_file) as f:
         first_waypoint_str = f.readline()
         first_waypoint_json = json.loads(first_waypoint_str)

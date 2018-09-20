@@ -6,6 +6,7 @@
 #define ROS_ROBOBUGGY_CONTROLLER_H
 
 #include "ros/ros.h"
+#include <ros/package.h>
 #include <robobuggy/Pose.h>
 #include <robobuggy/Command.h>
 #include <robobuggy/GPS.h>
