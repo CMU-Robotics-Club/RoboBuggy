@@ -14,7 +14,10 @@ int main(int argc, char **argv)
 
     std::vector<robobuggy::GPS> waypoints;
 
-    std::ifstream waypoint_stream("src/robobuggy/config/waypoints.txt");
+    std::string package_path = ros::package::getPath("robobuggy");
+    std::string config_path = "/config/waypoints.txt";
+
+    std::ifstream waypoint_stream(package_path + config_path);
     std::string waypoint_str;
     while (std::getline(waypoint_stream, waypoint_str))
     {
