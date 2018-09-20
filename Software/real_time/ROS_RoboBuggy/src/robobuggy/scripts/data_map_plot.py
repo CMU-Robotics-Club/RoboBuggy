@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import rospy
+import rospkg
 import math
 import json
 import time
@@ -67,8 +68,15 @@ def ground_truth_callback(data):
 def waypoints_publisher():
     waypoints_pub = rospy.Publisher('WAYPOINTS_VIZ',GPSFix, queue_size=10)
 
+    # Get location of waypoint file by getting package path and then moving from there
+    rospack = rospkg.RosPack()
+    robobuggy_path = rospack.get_path("robobuggy");
+    config_file_loc = "/config/waypoints.txt"
+
+    waypoint_file = robobuggy_path + config_file_loc;
+
     # read from waypoints file, parse JSON, publish
-    waypoints = open("/home/robobuggy/RoboBuggy/Software/real_time/ROS_RoboBuggy/src/robobuggy/config/waypoints_course.txt", 'r')
+    waypoints = open(waypoint_file);
     line = waypoints.readline()
     time.sleep(5)
     while line:
