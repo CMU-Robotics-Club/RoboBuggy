@@ -101,6 +101,6 @@ TEST(GPS_Tests, not_fixed)
 // Run all the tests that were declared with TEST()
 int main(int argc, char **argv){
     testing::InitGoogleTest(&argc, argv);
-    ros::init(argc, argv, "IMU_Tester");
+    ros::init(argc, argv, "GPS_Tester");
     return RUN_ALL_TESTS();
 }

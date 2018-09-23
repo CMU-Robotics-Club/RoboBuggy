@@ -236,9 +236,16 @@ target_link_libraries(${PROJECT_NAME}_Transistor_Localizer_Runner
 #endif()
 
 catkin_add_gtest(${PROJECT_NAME}_GPS_Broadcaster_Test test/gps/GPS_Broadcaster_Test.cpp src/transistor/gps/GPS_Broadcaster.cpp)
+catkin_add_gtest(${PROJECT_NAME}_LL_Broadcaster_Test test/low_level/Low_Level_Tests.cpp src/transistor/low_level/LowLevel_Broadcaster.cpp)
+
 if (TARGET ${PROJECT_NAME}_GPS_Broadcaster_Test)
   target_link_libraries(${PROJECT_NAME}_GPS_Broadcaster_Test ${catkin_LIBRARIES})
 endif()
+
+if (TARGET ${PROJECT_NAME}_LL_Broadcaster_Test)
+  target_link_libraries(${PROJECT_NAME}_LL_Broadcaster_Test ${catkin_LIBRARIES})
+endif()
+
 ## Add gtest based cpp test target and link libraries
 # catkin_add_gtest(${PROJECT_NAME}-test test/test_robobuggy.cpp)
 # if(TARGET ${PROJECT_NAME}-test)

@@ -12,7 +12,7 @@ LowLevel_Broadcaster::LowLevel_Broadcaster()
     encoder_pub = nh.advertise<robobuggy::Encoder>("Encoder", 1000);
 
     // Register callback for serial command
-    command_sub = nh.subscribe<robobuggy::Command>("Command", 1000, &LowLevel_Broadcaster::send_command, this);
+    command_sub = nh.subscribe<robobuggy::Command>("Command", 1000, &LowLevel_Broadcaster::command_callback, this);
 }
 
 void LowLevel_Broadcaster::publish_feedback_msg(robobuggy::Feedback msg)
@@ -93,9 +93,15 @@ void LowLevel_Broadcaster::parse_serial_msg(std::string serial_msg)
 
 }
 
-void LowLevel_Broadcaster::send_command(const robobuggy::Command::ConstPtr& msg) {
+void LowLevel_Broadcaster::command_callback(const robobuggy::Command::ConstPtr& msg) {
+    uint8_t serial_data[RB_PACKET_LEN];
+    send_command(msg, serial_data);
+} 
+
+// serial_msg is an empty RB_PACKET_LEN size array where the serial message will be placed
+// used as a testing convenience
+uint8_t* LowLevel_Broadcaster::send_command(const robobuggy::Command::ConstPtr& msg, uint8_t* serial_msg) {
     // Construct and send the steering command
-    uint8_t serial_msg[6];
     double data = msg->steer_cmd_rad;
 
     // convert into hundredths of degrees
@@ -126,10 +132,14 @@ void LowLevel_Broadcaster::send_command(const robobuggy::Command::ConstPtr& msg)
     if (rb_serial.isOpen()) {
         rb_serial.write(serial_msg, 6);
     }
+
+    // returned as a testing hook
+    return serial_msg;
 }
 
-int LowLevel_Broadcaster::handle_serial_messages() {
-    // Initialize serial communication
+int LowLevel_Broadcaster::initialize_hardware()
+{
+     // Initialize serial communication
     std::string serial_port;
     int serial_baud;
 
@@ -161,31 +171,33 @@ int LowLevel_Broadcaster::handle_serial_messages() {
     }
     else {
         return -1;
-    }
-
+   }
     // Clear the serial buffer
     rb_serial.flush();
+}
 
-    while(ros::ok()) {
-        if (rb_serial.available()) {
-            // Read from the serial port
-            ll_serial_buffer = rb_serial.read(rb_serial.available());
+void LowLevel_Broadcaster::read_msgs_from_hardware() {
+    if (rb_serial.available()) {
+        // Read from the serial port
+        std::string ll_serial_buffer = rb_serial.read(rb_serial.available());
+        handle_serial_messages(ll_serial_buffer);
+    }
+}
 
-            int msg_len = 6;
+void LowLevel_Broadcaster::handle_serial_messages(std::string ll_serial_buffer) {
 
-            for (int i = 0; i < ll_serial_buffer.length(); i++) {
-                if (ll_serial_buffer[i] == RBSM_FOOTER) {
-                    // We've found the end of a message from low level
-                    if ((i+msg_len) < ll_serial_buffer.length()) {
-                        // There is a full message in the buffer, read it
-                        // Otherwise, drop it
-                        std::string current_msg = ll_serial_buffer.substr(i+1, msg_len);
+    int msg_len = RB_PACKET_LEN;
 
-                        parse_serial_msg(current_msg);
-                    }
-                }
+    for (int i = 0; i < ll_serial_buffer.length(); i++) {
+        if (ll_serial_buffer[i] == RBSM_FOOTER) {
+            // We've found the end of a message from low level
+            if ((i+msg_len) < ll_serial_buffer.length()) {
+                // There is a full message in the buffer, read it
+                // Otherwise, drop it
+                std::string current_msg = ll_serial_buffer.substr(i+1, msg_len);
+
+                parse_serial_msg(current_msg);
             }
         }
-        ros::spinOnce();
     }
 }

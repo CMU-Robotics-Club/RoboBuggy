@@ -15,10 +15,15 @@ public:
     LowLevel_Broadcaster();
     static const std::string NODE_NAME;
     
-    int handle_serial_messages();
-    void send_command(const robobuggy::Command::ConstPtr& msg);
+    int initialize_hardware();
+    void read_msgs_from_hardware();
+    void handle_serial_messages(std::string ll_serial_buffer);
+    uint8_t* send_command(const robobuggy::Command::ConstPtr& msg, uint8_t* serial_msg);
+    void command_callback(const robobuggy::Command::ConstPtr& msg);
 
 private:
+    const int RB_PACKET_LEN = 6;
+
     ros::NodeHandle nh;
     
     ros::Publisher feedback_pub;
@@ -34,7 +39,6 @@ private:
     serial::Serial rb_serial;
     std::string serial_port;
     int serial_baud;
-    std::string ll_serial_buffer;
 
     void publish_feedback_msg(robobuggy::Feedback msg);
     void publish_diagnostics_msg(robobuggy::Diagnostics msg);
