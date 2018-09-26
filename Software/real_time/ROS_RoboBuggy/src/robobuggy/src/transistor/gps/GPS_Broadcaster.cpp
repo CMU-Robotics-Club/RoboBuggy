@@ -22,7 +22,7 @@ GPS_Broadcaster::GPS_Broadcaster()
 
 }
 
-void GPS_Broadcaster::initialize_hardware()
+int GPS_Broadcaster::initialize_hardware()
 {
     try
     {
@@ -31,16 +31,18 @@ void GPS_Broadcaster::initialize_hardware()
         serial::Timeout to = serial::Timeout::simpleTimeout(1000);
         gps_serial.setTimeout(to);
         gps_serial.open();
+        return 0;
     }
     catch (serial::IOException e)
     {
         ROS_ERROR_STREAM("Unable to open port");
         ROS_ERROR_STREAM(serial_port);
+        return -1;
     }
 }
 
 //parse ONE NMEA string
-int GPS_Broadcaster::read_gps_message()
+void GPS_Broadcaster::read_gps_message()
 {
     if (gps_serial.available())
     {
@@ -78,8 +80,6 @@ int GPS_Broadcaster::read_gps_message()
             }
         }
     }
-
-    return 0;
 }
 
 robobuggy::GPS* GPS_Broadcaster::parse_tokens(std::string tokens[])
