@@ -123,19 +123,9 @@ void Localizer::init_R()
     ;
 
     std::stringstream s;
-    XmlRpc::XmlRpcValue v;
-    nh.param("/Transistor_Localizer/init_r_diagonal", v, v);
-    for (int i = 0; i < 5; i++)
-    {
-         R(i,i) = v[i];
-        // std::cerr << "R diagonal value: " << v[i] << std::endl;
-    }
-
     s << R << std::endl;
 
     ROS_INFO("Initialized R Matrix to : \n%s", s.str().c_str());
-
-
 }
 
 void Localizer::init_P()
@@ -150,15 +140,6 @@ void Localizer::init_P()
     ;
 
     std::stringstream s;
-    XmlRpc::XmlRpcValue v;
-    nh.param("/Transistor_Localizer/init_p_diagonal", v, v);
-    for (int i = 0; i < 5; i++)
-    {
-         P(i,i) = v[i];
-         //std::cerr << "P diagonal value : " << v[i] << std::endl;
-    }
-
-
     s << P << std::endl;
 
     ROS_INFO("Initialized P Matrix to : \n%s", s.str().c_str());
