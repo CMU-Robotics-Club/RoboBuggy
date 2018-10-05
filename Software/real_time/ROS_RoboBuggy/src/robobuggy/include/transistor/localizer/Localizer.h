@@ -7,6 +7,7 @@
 #include <sys/time.h>
 
 #include <eigen3/Eigen/Dense>
+#include <XmlRpcValue.h>
 
 #include <robobuggy/IMU.h>
 #include <robobuggy/GPS.h>
@@ -16,6 +17,7 @@
 
 using Eigen::Matrix;
 using Eigen::MatrixXd;
+using XmlRpc::XmlRpcValue;
 
 class Localizer 
 {
