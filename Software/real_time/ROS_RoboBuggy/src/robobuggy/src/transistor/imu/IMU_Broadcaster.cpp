@@ -131,9 +131,10 @@ void IMU_Broadcaster::publish_IMU_message()
         err = freespace_util_getAngPos(&message.motionEngineOutput, &reading);
         if (err == 0) {
             // Load our IMU message with the data
-            msg.X_AngPos = reading.x;
-            msg.Y_AngPos = reading.y;
-            msg.Z_AngPos = reading.z;
+            msg.A_AngPos = reading.w;
+            msg.B_AngPos = reading.x;
+            msg.C_AngPos = reading.y;
+            msg.D_AngPos = reading.z;
         } else {
             ROS_ERROR_STREAM("Error receiving angular position data");
         }
