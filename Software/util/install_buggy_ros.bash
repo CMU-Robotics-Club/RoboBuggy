@@ -1,5 +1,10 @@
 # script to install the dependencies for the buggy system
 
+if [ -z "$ROS_DISTRO" ]
+    echo "ROS not found on this system, install ROS"
+    exit(1);
+fi
+
 # update apt
 sudo apt-get update
 
@@ -48,3 +53,12 @@ catkin_make
 # add the package to the bashrc
 echo "Adding robobuggy package to the ros package path"
 echo "source $PWD/devel/setup.bash" >> ~/.bashrc
+source ~/.bashrc
+
+# install the python libraries we need too
+pip_exists=$(dpkg -l | grep python-pip)
+if [ -z "$pip_exists" ]
+    sudo apt-get install python-pip
+fi
+pip install utm
+pip install numpy
