@@ -1,8 +1,8 @@
 # script to install the dependencies for the buggy system
 
 if [ -z "$ROS_DISTRO" ]
+then
     echo "ROS not found on this system, install ROS"
-    exit(1);
 fi
 
 # update apt
@@ -58,6 +58,7 @@ source ~/.bashrc
 # install the python libraries we need too
 pip_exists=$(dpkg -l | grep python-pip)
 if [ -z "$pip_exists" ]
+then
     sudo apt-get install python-pip
 fi
 pip install utm

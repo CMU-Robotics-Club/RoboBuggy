@@ -62,7 +62,15 @@ void Localizer::GPS_Callback(const robobuggy::GPS::ConstPtr &msg)
 
 void Localizer::IMU_Callback(const robobuggy::IMU::ConstPtr &msg)
 {
-    z_imu_heading = atan2(msg->Y_Mag, msg->X_Mag);
+    float q0 = msg->A_AngPos;
+    float q1 = msg->B_AngPos;
+    float q2 = msg->C_AngPos;
+    float q3 = msg->D_AngPos;
+
+    float yaw = atan2(2*(q0*q3 + q1*q2), 1-2*(q2*q2 + q3*q3));
+    yaw += M_PI_2; // 0 for imu is straight north
+
+    z_imu_heading = yaw;
 }
 
 void Localizer::Feedback_Callback(const robobuggy::Feedback::ConstPtr &msg)
