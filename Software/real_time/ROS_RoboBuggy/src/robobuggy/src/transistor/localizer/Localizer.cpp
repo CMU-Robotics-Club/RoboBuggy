@@ -123,12 +123,12 @@ void Localizer::init_R()
     ;
 
     std::stringstream s;
-    XmlRpc::XmlRpcValue v;
-    nh.param("/Transistor_Localizer/init_r_diagonal", v, v);
-    for (int i = 0; i < 5; i++)
+    std::vector<double> init_r_diagonal;    
+
+    nh.getParam("/Transistor_Localizer/init_r_diagonal", init_r_diagonal);
+    for (int i = 0; i < init_r_diagonal.size(); i++)
     {
-         R(i,i) = v[i];
-        // std::cerr << "R diagonal value: " << v[i] << std::endl;
+        R(i,i) = init_r_diagonal[i];
     }
 
     s << R << std::endl;
