@@ -18,7 +18,7 @@ def imu_callback(data):
     pass
 
 def main():
-    rospy.init_node("IMU Roll-Pitch-Yaw");
+    rospy.init_node("IMU_Roll_Pitch_Yaw");
     rospy.Subscriber("IMU", IMU, imu_callback);
     rospy.spin();
 
