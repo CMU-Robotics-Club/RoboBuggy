@@ -1,5 +1,6 @@
 #include "transistor/localizer/Localizer.h"
 
+//const std::string Localizer::NODE_NAME = "Transistor_Localizer";
 void Localizer::Encoder_Callback(const robobuggy::Encoder::ConstPtr &msg)
 {
 
@@ -125,7 +126,11 @@ void Localizer::init_R()
     std::stringstream s;
     std::vector<double> init_r_diagonal;    
 
-    nh.getParam("/Transistor_Localizer/init_r_diagonal", init_r_diagonal);
+    if(!nh.getParam("/Transistor_Localizer/init_r_diagonal", init_r_diagonal)){
+	ROS_INFO_STREAM("R Matrix Diagonal Parameter not found, using default");
+        init_r_diagonal = {2.0, 2.0, 2.0, 2.0, 2.0};
+    }
+
     for (int i = 0; i < init_r_diagonal.size(); i++)
     {
         R(i,i) = init_r_diagonal[i];
@@ -150,12 +155,16 @@ void Localizer::init_P()
     ;
 
     std::stringstream s;
-    XmlRpc::XmlRpcValue v;
-    nh.param("/Transistor_Localizer/init_p_diagonal", v, v);
-    for (int i = 0; i < 5; i++)
+    std::vector<double> init_p_diagonal; 
+
+    if(!nh.getParam(NODE_NAME + "/init_p_diagonal",init_p_diagonal)){
+	ROS_INFO_STREAM("P Matrix Diagonal Parameter not found, using default");
+        init_p_diagonal = {25.0, 25.0, 25.0, 25.0, 25.0};
+    }
+
+    for (int i = 0; i < init_p_diagonal.size(); i++)
     {
-         P(i,i) = v[i];
-         //std::cerr << "P diagonal value : " << v[i] << std::endl;
+         P(i,i) = init_p_diagonal[i];
     }
 
 
