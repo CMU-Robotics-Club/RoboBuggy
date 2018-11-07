@@ -1,4 +1,5 @@
 #include <ros/ros.h>
+#include <robobuggy/IMU_Ctl.h>
 #include <freespace/freespace.h>
 #include <freespace/freespace_util.h>
 #include <freespace/freespace_printers.h>
@@ -105,18 +106,22 @@ int get_flash_memory_angpossmooth()
         // max error is Q29
         float max_error = data[2] * pow(2, -29);
 
-        ROS_INFO("Scaling: %f", scaling);
-        ROS_INFO("Max Rot: %f", max_rotation);
-        ROS_INFO("Max Err: %f", max_error);
+        ROS_INFO("Scaling: %f, raw = %i", scaling, data[0]);
+        ROS_INFO("Max Rot: %f, raw = %i", max_rotation, data[1]);
+        ROS_INFO("Max Err: %f, raw = %i", max_error, data[2]);
 
     }
 
     return 0;
 }
 
-void imu_command_callback()
+void imu_command_callback(const robobuggy::IMU_Ctl::ConstPtr &msg)
 {
-    
+    std::string cmd = msg->command;
+    if (command == "read_flash_angpos")
+    {
+        get_flash_memory_angpossmooth();
+    }
 }
 
 int main(int argc, char** argv)
