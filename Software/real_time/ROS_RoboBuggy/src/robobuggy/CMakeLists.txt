@@ -60,6 +60,7 @@ add_message_files(
   Feedback.msg
   Diagnostics.msg
   Pose.msg
+  util/IMU_Ctl.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -150,12 +151,14 @@ add_executable(${PROJECT_NAME}_Transistor_IMU_Broadcaster_Runner src/transistor/
 add_executable(${PROJECT_NAME}_Transistor_LowLevel_Broadcaster_Runner src/transistor/low_level/LowLevel_Broadcaster_Runner.cpp src/transistor/low_level/LowLevel_Broadcaster.cpp)
 add_executable(${PROJECT_NAME}_Transistor_GPS_Broadcaster_Runner src/transistor/gps/GPS_Broadcaster_Runner.cpp src/transistor/gps/GPS_Broadcaster.cpp)
 add_executable(${PROJECT_NAME}_Transistor_Localizer_Runner src/transistor/localizer/Localizer_Runner.cpp src/transistor/localizer/Localizer.cpp)
+add_executable(${PROJECT_NAME}_Transistor_IMU_Controller util/IMU/IMU_Ctl.cpp)
 
 add_dependencies(${PROJECT_NAME}_Transistor_Controller_Runner robobuggy_generate_messages_cpp)
 add_dependencies(${PROJECT_NAME}_Transistor_IMU_Broadcaster_Runner robobuggy_generate_messages_cpp)
 add_dependencies(${PROJECT_NAME}_Transistor_LowLevel_Broadcaster_Runner robobuggy_generate_messages_cpp)
 add_dependencies(${PROJECT_NAME}_Transistor_GPS_Broadcaster_Runner robobuggy_generate_messages_cpp)
 add_dependencies(${PROJECT_NAME}_Transistor_Localizer_Runner robobuggy_generate_messages_cpp)
+add_dependencies(${PROJECT_NAME}_Transistor_IMU_Controller robobuggy_generate_messages_cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -167,6 +170,7 @@ set_target_properties(${PROJECT_NAME}_Transistor_IMU_Broadcaster_Runner PROPERTI
 set_target_properties(${PROJECT_NAME}_Transistor_LowLevel_Broadcaster_Runner PROPERTIES OUTPUT_NAME Transistor_LowLevel_Broadcaster PREFIX "")
 set_target_properties(${PROJECT_NAME}_Transistor_GPS_Broadcaster_Runner PROPERTIES OUTPUT_NAME Transistor_GPS_Broadcaster PREFIX "")
 set_target_properties(${PROJECT_NAME}_Transistor_Localizer_Runner PROPERTIES OUTPUT_NAME Transistor_Localizer PREFIX "")
+set_target_properties(${PROJECT_NAME}_Transistor_IMU_Controller PROPERTIES OUTPUT_NAME IMU_Controller PREFIX "")
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -188,6 +192,10 @@ target_link_libraries(${PROJECT_NAME}_Transistor_GPS_Broadcaster_Runner
 )
 target_link_libraries(${PROJECT_NAME}_Transistor_Localizer_Runner
   ${catkin_LIBRARIES}
+)
+target_link_libraries(${PROJECT_NAME}_Transistor_IMU_Controller
+  ${catkin_LIBRARIES}
+  freespace
 )
 
 #############
