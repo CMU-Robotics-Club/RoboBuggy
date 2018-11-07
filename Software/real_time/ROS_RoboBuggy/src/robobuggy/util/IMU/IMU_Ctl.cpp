@@ -4,12 +4,12 @@
 #include <freespace/freespace_util.h>
 #include <freespace/freespace_printers.h>
 
-struct freespace_message message;
 FreespaceDeviceId device;
 int numIds;
 
 int init_imu()
 {
+    struct freespace_message message;
     int err;
     err = freespace_init();
     if (err != FREESPACE_SUCCESS) {
@@ -70,46 +70,74 @@ int init_imu()
 // for the angular position smoothing parameters
 int get_flash_memory_angpossmooth()
 {
+    struct freespace_message message;
     memset(&message, 0, sizeof(message));
 
-    message.messageType = FREESPACE_MESSAGE_FRSEFLASHREADREQUEST;
+    message.messageType = FREESPACE_MESSAGE_FRSREADREQUEST;
     message.fRSReadRequest.readOffset = 0;
     message.fRSReadRequest.FRStype = 0x3E2D; 
     message.fRSReadRequest.BlockSize = 0;
 
-    int err = freespace_sendMessage(device, &message);
-    if (err != FREESPACE_SUCCESS)
+    int err;
+    err = freespace_flush(device);
+    if (err != FREESPACE_SUCCESS) 
     {
-        ROS_ERROR("Failed to send message to the IMU");
-    }
-
-    err = freespace_readMessage(device, &message, 1000);
-    if ((err == FREESPACE_ERROR_TIMEOUT) || (err == FREESPACE_ERROR_INTERRUPTED))
-    {
+        ROS_ERROR("Failed to flush %i", err);
         return err;
     }
 
-    if (message.messageType == FREESPACE_MESSAGE_FRSREADRESPONSE)
+    err = freespace_sendMessage(device, &message);
+    if (err != FREESPACE_SUCCESS)
     {
-        int status = message.fRSReadResponse.status;
-        if (status != 3)
+        ROS_ERROR("Failed to send message to the IMU");
+        ROS_ERROR("%i", err);
+        return err;
+    }
+
+    while (err == FREESPACE_SUCCESS)
+    {
+        err = freespace_readMessage(device, &message, 1000);
+        if (err != FREESPACE_SUCCESS)
         {
-            return status;
+            ROS_INFO("Error reading message, %i", err);
+            return err;
         }
 
-        uint32_t *data = message.fRSReadResponse.data;
+        if ((err == FREESPACE_ERROR_TIMEOUT) || (err == FREESPACE_ERROR_INTERRUPTED))
+        {
+            ROS_INFO("Error reading message, %i", err);
+            return err;
+        }
 
-        // scaling is Q30
-        float scaling = data[0] * pow(2, -30);
-        // max rotation is Q29
-        float max_rotation = data[1] * pow(2, -29);
-        // max error is Q29
-        float max_error = data[2] * pow(2, -29);
+        if (message.messageType == FREESPACE_MESSAGE_FRSREADRESPONSE)
+        {
+            int status = message.fRSReadResponse.status;
+            if (status != 3 && status != 0)
+            {
+                ROS_INFO("Error reading message, status %i", status);
+                return status;
+            }
 
-        ROS_INFO("Scaling: %f, raw = %i", scaling, data[0]);
-        ROS_INFO("Max Rot: %f, raw = %i", max_rotation, data[1]);
-        ROS_INFO("Max Err: %f, raw = %i", max_error, data[2]);
+            uint32_t *data = message.fRSReadResponse.data;
 
+            // scaling is Q30
+            float scaling = data[0] * pow(2, -30);
+            // max rotation is Q29
+            float max_rotation = data[1] * pow(2, -29);
+            // max error is Q29
+            float max_error = data[2] * pow(2, -29);
+
+            ROS_INFO("Scaling: %f, raw = %i", scaling, data[0]);
+            ROS_INFO("Max Rot: %f, raw = %i", max_rotation, data[1]);
+            ROS_INFO("Max Err: %f, raw = %i", max_error, data[2]);
+
+            break;
+        }
+        else 
+        {
+            ROS_INFO("message type = %i", message.messageType);
+        }
+        
     }
 
     return 0;
@@ -118,7 +146,7 @@ int get_flash_memory_angpossmooth()
 void imu_command_callback(const robobuggy::IMU_Ctl::ConstPtr &msg)
 {
     std::string cmd = msg->command;
-    if (command == "read_flash_angpos")
+    if (cmd == "read_flash_angpos")
     {
         get_flash_memory_angpossmooth();
     }
@@ -136,6 +164,7 @@ int main(int argc, char** argv)
         return err;
     }
 
+    ros::Subscriber imu_cmd_sub = nh.subscribe<robobuggy::IMU_Ctl>("IMU_CTL", 1000, &imu_command_callback);
 
     while (ros::ok()) 
     {
