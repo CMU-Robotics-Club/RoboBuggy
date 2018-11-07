@@ -133,14 +133,87 @@ int get_flash_memory_angpossmooth()
 
             break;
         }
-        else 
-        {
-            ROS_INFO("message type = %i", message.messageType);
-        }
         
     }
 
     return 0;
+}
+
+int set_flash_memory_angpossmooth(uint32_t scaling, uint32_t max_rotation, uint32_t max_error, uint32_t stability_mag)
+{
+    struct freespace_message message;
+    struct freespace_message rcv;
+    int err;
+
+    float fscaling = scaling * pow(2, -30);
+    float frot = max_rotation * pow(2, -29);
+    float ferr = max_error * pow(2, -29);
+    float fstab = stability_mag * pow(2, -29);
+    ROS_INFO("Writing %f, %f, %f, %f to flash memory", fscaling, frot, ferr, fstab);
+
+    memset(&message, 0, sizeof(message));
+    message.messageType = FREESPACE_MESSAGE_FRSWRITEREQUEST;
+    message.fRSWriteRequest.length = 4;
+    message.fRSWriteRequest.FRStype = 0x3E2D;
+    err = freespace_sendMessage(device, &message);
+    if (err != FREESPACE_SUCCESS)
+    {
+        ROS_ERROR("Error sending write request");
+        ROS_ERROR("%i", err);
+        return err;
+    }
+    
+    // write scaling
+    memset(&message, 0, sizeof(message));
+    message.messageType = FREESPACE_MESSAGE_FRSWRITEDATA;
+    message.fRSWriteData.wordOffset = 0;
+    message.fRSWriteData.data = scaling;
+    err = freespace_sendMessage(device, &message);
+    if (err != FREESPACE_SUCCESS)
+    {
+        ROS_ERROR("Error sending write request");
+        ROS_ERROR("%i", err);
+        return err;
+    }
+
+    // write max rotation
+    memset(&message, 0, sizeof(message));
+    message.messageType = FREESPACE_MESSAGE_FRSWRITEDATA;
+    message.fRSWriteData.wordOffset = 1;
+    message.fRSWriteData.data = max_rotation;
+    err = freespace_sendMessage(device, &message);
+    if (err != FREESPACE_SUCCESS)
+    {
+        ROS_ERROR("Error sending write request");
+        ROS_ERROR("%i", err);
+        return err;
+    }
+
+    // write max error
+    memset(&message, 0, sizeof(message));
+    message.messageType = FREESPACE_MESSAGE_FRSWRITEDATA;
+    message.fRSWriteData.wordOffset = 2;
+    message.fRSWriteData.data = max_error;
+    err = freespace_sendMessage(device, &message);
+    if (err != FREESPACE_SUCCESS)
+    {
+        ROS_ERROR("Error sending write request");
+        ROS_ERROR("%i", err);
+        return err;
+    }
+
+    // write max error
+    memset(&message, 0, sizeof(message));
+    message.messageType = FREESPACE_MESSAGE_FRSWRITEDATA;
+    message.fRSWriteData.wordOffset = 3;
+    message.fRSWriteData.data = stability_mag;
+    err = freespace_sendMessage(device, &message);
+    if (err != FREESPACE_SUCCESS)
+    {
+        ROS_ERROR("Error sending write request");
+        ROS_ERROR("%i", err);
+        return err;
+    }
 }
 
 void imu_command_callback(const robobuggy::IMU_Ctl::ConstPtr &msg)
@@ -149,6 +222,10 @@ void imu_command_callback(const robobuggy::IMU_Ctl::ConstPtr &msg)
     if (cmd == "read_flash_angpos")
     {
         get_flash_memory_angpossmooth();
+    }
+    else if (cmd == "write_flash_angpos")
+    {
+        set_flash_memory_angpossmooth(msg->a, msg->b, msg->c, msg->d);
     }
 }
 

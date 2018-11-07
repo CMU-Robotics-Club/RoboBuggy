@@ -2,7 +2,7 @@ Header header
 
 string command
 
-float32 a
-float32 b
-float32 c
-float32 d
+uint32 a
+uint32 b
+uint32 c
+uint32 d
