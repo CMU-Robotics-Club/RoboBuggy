@@ -70,6 +70,11 @@ void Localizer::IMU_Callback(const robobuggy::IMU::ConstPtr &msg)
     float yaw = atan2(2*(q0*q3 + q1*q2), 1-2*(q2*q2 + q3*q3));
     yaw += M_PI_2; // 0 for imu is straight north
 
+    // however, the IMU points to magnetic north
+    // we need it to point to true north
+    float rad_offset = M_PI * 9.366667 / 180.0;
+    yaw += rad_offset;
+
     z_imu_heading = yaw;
 }
 
