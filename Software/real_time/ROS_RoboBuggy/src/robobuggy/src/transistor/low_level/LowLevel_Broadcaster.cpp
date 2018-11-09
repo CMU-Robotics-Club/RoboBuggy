@@ -98,8 +98,12 @@ void LowLevel_Broadcaster::send_command(const robobuggy::Command::ConstPtr& msg)
     uint8_t serial_msg[6];
     double data = msg->steer_cmd_rad;
 
-    // convert into hundredths of degrees
-    int steer_angle = data * 180 / M_PI * 100;
+    // convert into degrees
+    int ll_steer_center = 1200;
+    int steer_angle_deg = data * 180 / M_PI;
+    int deg_to_ticks = 11;
+
+    int steer_angle = steer_angle_deg * deg_to_ticks + ll_steer_center;
 
     ROS_INFO("Steering command: %d\n", steer_angle);
     serial_msg[0] = RBSM_MID_MEGA_STEER_COMMAND;
