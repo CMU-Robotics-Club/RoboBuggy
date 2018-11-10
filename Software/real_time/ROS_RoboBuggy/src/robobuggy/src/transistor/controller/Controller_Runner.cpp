@@ -41,6 +41,9 @@ int main(int argc, char **argv)
         return 1;
     }
 
+    ros::Duration init_sleep_time(5);
+    init_sleep_time.sleep();
+
     Controller controller(waypoints);
 
     while (ros::ok())
