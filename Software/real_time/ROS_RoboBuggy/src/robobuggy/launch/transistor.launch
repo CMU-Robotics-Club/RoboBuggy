@@ -21,4 +21,7 @@
     <node name="Transistor_IMU_Broadcaster" pkg="robobuggy" type="Transistor_IMU_Broadcaster" required="true" output="screen">
     </node>
 
+    <node name="Transistor_Controller" pkg="robobuggy" type="Transistor_Controller" required="true" output="screen">
+    </node>
+
 </launch>
