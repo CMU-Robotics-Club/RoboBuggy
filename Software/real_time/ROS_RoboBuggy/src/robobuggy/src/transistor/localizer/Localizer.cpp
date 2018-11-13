@@ -75,6 +75,8 @@ void Localizer::IMU_Callback(const robobuggy::IMU::ConstPtr &msg)
     float rad_offset = M_PI * 9.366667 / 180.0;
     yaw += rad_offset;
 
+    // TODO run a low-pass filter on the data here
+
     z_imu_heading = yaw;
 }
 
@@ -143,7 +145,7 @@ void Localizer::init_Q()
     2, 0, 0, 0, 0,
     0, 2, 0, 0, 0,
     0, 0, 0.000025, 0, 0,
-    0, 0, 0, 4, 0,
+    0, 0, 0, 1, 0,
     0, 0, 0, 0, 1
     ;
 
@@ -166,7 +168,7 @@ void Localizer::init_x()
     x <<
       init_utm.easting, 
       init_utm.northing, 
-      0,
+      1,
       0, // TODO initial heading in rad
       0
     ;

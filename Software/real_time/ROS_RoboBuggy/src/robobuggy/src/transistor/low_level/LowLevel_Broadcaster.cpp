@@ -50,7 +50,10 @@ void LowLevel_Broadcaster::parse_serial_msg(std::string serial_msg)
     // First byte is serial buffer
     switch((unsigned char)serial_msg[0]) {
         case RBSM_MID_MEGA_STEER_FEEDBACK:
-            feedback_msg.steer_angle = (int32_t)data;
+            int32_t steering_ticks = data;
+            int32_t steering_degrees = ((data / 11) - 1200);
+            int32_t steering_hund_degs = steering_degrees * 100;
+            feedback_msg.steer_angle = steering_hund_degs;
             break;
         case RBSM_MID_MEGA_BRAKE_STATE:
             feedback_msg.brake_state = (bool)data;
