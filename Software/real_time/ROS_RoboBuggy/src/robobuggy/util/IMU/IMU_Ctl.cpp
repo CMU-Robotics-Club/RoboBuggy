@@ -216,6 +216,58 @@ int set_flash_memory_angpossmooth(uint32_t scaling, uint32_t max_rotation, uint3
     }
 }
 
+void get_sensor_period(int sensor_num)
+{
+    struct freespace_message message;
+    message.messageType = FREESPACE_MESSAGE_SENSORPERIODREQUEST;
+    message.sensorPeriodRequest.commit = 0;
+    message.sensorPeriodRequest.get = 1;
+    message.sensorPeriodRequest.sensor = sensor_num;
+    message.sensorPeriodRequest.period = 0;
+
+    int err = freespace_sendMessage(device, &message);
+    if (err != FREESPACE_SUCCESS)
+    {
+        ROS_ERROR("Error sending sensor period get request")
+        ROS_ERROR("%i", err);
+    }
+
+    while (err == FREESPACE_SUCCESS)
+    {
+        err = freespace_readMessage(device, &message, 1000);
+        if (err != FREESPACE_SUCCESS)
+        {
+            ROS_ERROR("Error reading sensor period response")
+            ROS_ERROR("%i", err);
+        }
+
+        if (message.messageType == FREESPACE_MESSAGE_SENSORPERIODRESPONSE)
+        {
+            uint8_t sensor = message.sensorPeriodResponse.sensor;
+            uint32_t period = message.sensorPeriodResponse.period;
+            ROS_INFO("Sensor = %d, Period = %d", sensor, period);
+            return;
+        }
+    }
+}
+
+void set_sensor_period(int sensor_num, int period_ms)
+{
+    struct freespace_message message;
+    message.messageType = FREESPACE_MESSAGE_SENSORPERIODREQUEST;
+    message.sensorPeriodRequest.commit = 1;
+    message.sensorPeriodRequest.get = 0;
+    message.sensorPeriodRequest.sensor = sensor_num;
+    message.sensorPeriodRequest.period = period_ms;
+
+    int err = freespace_sendMessage(device, &message);
+    if (err != FREESPACE_SUCCESS)
+    {
+        ROS_ERROR("Error sending sensor period get request")
+        ROS_ERROR("%i", err);
+    }
+}
+
 void imu_command_callback(const robobuggy::IMU_Ctl::ConstPtr &msg)
 {
     std::string cmd = msg->command;
@@ -226,6 +278,14 @@ void imu_command_callback(const robobuggy::IMU_Ctl::ConstPtr &msg)
     else if (cmd == "write_flash_angpos")
     {
         set_flash_memory_angpossmooth(msg->a, msg->b, msg->c, msg->d);
+    }
+    else if (cmd == "get_sensor_period")
+    {
+        get_sensor_period(msg->a);
+    }
+    else if (cmd == "set_sensor_period")
+    {
+        set_sensor_period(msg->a, msg->b);
     }
 }
 
