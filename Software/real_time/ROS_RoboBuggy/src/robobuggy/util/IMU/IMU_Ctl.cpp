@@ -228,7 +228,7 @@ void get_sensor_period(int sensor_num)
     int err = freespace_sendMessage(device, &message);
     if (err != FREESPACE_SUCCESS)
     {
-        ROS_ERROR("Error sending sensor period get request")
+        ROS_ERROR("Error sending sensor period get request");
         ROS_ERROR("%i", err);
     }
 
@@ -237,7 +237,7 @@ void get_sensor_period(int sensor_num)
         err = freespace_readMessage(device, &message, 1000);
         if (err != FREESPACE_SUCCESS)
         {
-            ROS_ERROR("Error reading sensor period response")
+            ROS_ERROR("Error reading sensor period response");
             ROS_ERROR("%i", err);
         }
 
@@ -263,7 +263,7 @@ void set_sensor_period(int sensor_num, int period_ms)
     int err = freespace_sendMessage(device, &message);
     if (err != FREESPACE_SUCCESS)
     {
-        ROS_ERROR("Error sending sensor period get request")
+        ROS_ERROR("Error sending sensor period get request");
         ROS_ERROR("%i", err);
     }
 }
