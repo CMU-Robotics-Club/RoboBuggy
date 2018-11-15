@@ -4,7 +4,7 @@ int main(int argc, char **argv)
 {
     ros::init(argc, argv, IMU_Broadcaster::NODE_NAME);
     ros::NodeHandle nh;
-    ros::Rate loop_rate(10);
+    ros::Rate loop_rate(50);
 
     IMU_Broadcaster broadcaster;
 

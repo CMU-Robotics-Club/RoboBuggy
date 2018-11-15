@@ -13,6 +13,7 @@
 #include <robobuggy/Encoder.h>
 #include <robobuggy/Pose.h>
 #include <robobuggy/Feedback.h>
+#include <deque>
 
 using Eigen::Matrix;
 using Eigen::MatrixXd;
@@ -22,7 +23,7 @@ class Localizer
 public:
     Localizer();
     static const std::string NODE_NAME;
-    static const int UPDATE_KALMAN_RATE_HZ = 5;
+    static const int UPDATE_KALMAN_RATE_HZ = 10;
 
     void update_position_estimate();
 
@@ -33,6 +34,7 @@ private:
     double WHEELBASE_M;
     long int previous_update_time_ms;
     long int prev_encoder_time;
+    std::deque<double> prev_imu_measurements = { 0, 0, 0 };
 
     double z_gps_easting;
     double z_gps_northing;
