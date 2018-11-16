@@ -1,6 +1,5 @@
 #include "transistor/localizer/Localizer.h"
 
-//const std::string Localizer::NODE_NAME = "Transistor_Localizer";
 void Localizer::Encoder_Callback(const robobuggy::Encoder::ConstPtr &msg)
 {
 
@@ -126,7 +125,7 @@ void Localizer::init_R()
     std::stringstream s;
     std::vector<double> init_r_diagonal;    
 
-    if(!nh.getParam("/Transistor_Localizer/init_r_diagonal", init_r_diagonal)){
+    if(!nh.getParam(NODE_NAME + "/init_r_diagonal", init_r_diagonal)){
 	ROS_INFO_STREAM("R Matrix Diagonal Parameter not found, using default");
         init_r_diagonal = {2.0, 2.0, 2.0, 2.0, 2.0};
     }

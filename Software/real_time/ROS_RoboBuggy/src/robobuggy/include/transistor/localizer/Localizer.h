@@ -16,7 +16,6 @@
 
 using Eigen::Matrix;
 using Eigen::MatrixXd;
-using XmlRpc::XmlRpcValue;
 
 class Localizer 
 {
