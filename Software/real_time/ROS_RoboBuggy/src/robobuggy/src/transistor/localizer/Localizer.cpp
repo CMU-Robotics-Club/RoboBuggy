@@ -135,11 +135,10 @@ void Localizer::init_R()
         R(i,i) = init_r_diagonal[i];
     }
 
+
     s << R << std::endl;
 
     ROS_INFO("Initialized R Matrix to : \n%s", s.str().c_str());
-
-
 }
 
 void Localizer::init_P()
@@ -165,7 +164,6 @@ void Localizer::init_P()
     {
          P(i,i) = init_p_diagonal[i];
     }
-
 
     s << P << std::endl;
 
