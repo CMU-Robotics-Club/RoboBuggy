@@ -1,25 +1,25 @@
+import os
+
 import numpy as np
 
-import imutils
 import cv2 as cv
 
-cap = cv.VideoCapture("example.flv")
+cap = cv.VideoCapture("video1.avi")
 # read return type None?
 ret, frame = cap.read()
 
-image = cv.imread("example.png")  # will be frame from footage
-cv.imshow("Image", image)
-(h, w, d) = image.shape  # d for depth (num color channels)
-
+# image = cv.imread("example.png")  # will be frame from footage
+# cv.imshow("Image", image)
+#(h, w, d) = image.shape  # d for depth (num color channels)
 # for example take screenshot of stop sign footage
 
-startY = 0
-startX = 0
-width = 0
-height = 0
+startY = 259
+startX = 931
+endY = 316
+endX = 968
+width = endX - startX
+height = endY - startY
 
-endY = startY + height
-endX = startX + width
 track_window = (startX, startY, width, height)
 
 # ROI setup (region of interest)
