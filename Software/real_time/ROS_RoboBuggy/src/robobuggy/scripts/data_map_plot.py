@@ -26,15 +26,12 @@ def pose_callback(data):
     last_longitude = data.longitude_deg
     last_heading_deg = -degrees_from_north + 90
 
-    rospy.loginfo("got Pose msg: %f degrees lat, %f degrees long, %f bearing", last_latitude, last_longitude, last_heading_deg)
-
     viz_msg_heading = GPSFix(latitude=last_latitude, longitude=last_longitude, track=last_heading_deg)
     viz_pose_pub.publish(viz_msg_heading)
 
 
 def gps_callback(data):
     global viz_gps_pub
-    rospy.loginfo("Got GPS message: %f lat, %f lon", data.Lat_deg, data.Long_deg)
     viz_msg_gps = GPSFix(latitude=data.Lat_deg, longitude=data.Long_deg)
     viz_gps_pub.publish(viz_msg_gps)
 
@@ -43,9 +40,6 @@ def command_callback(data):
     global last_latitude
     global last_longitude
     global last_heading_deg
-
-    #steer_cmd should be degrees
-    rospy.loginfo("got Steering Command msg: %f degrees", math.degrees(data.steer_cmd_rad))
 
     viz_msg_steering = GPSFix(latitude=last_latitude, longitude=last_longitude, track = last_heading_deg - math.degrees(data.steer_cmd_rad))
 
@@ -57,8 +51,6 @@ def ground_truth_callback(data):
     global viz_grndtruth_pub
 
     degrees_from_north = -math.degrees(data.heading_rad) + 90
-
-    rospy.loginfo("Got Ground Truth message: (%f, %f, %f)", data.latitude_deg, data.longitude_deg, degrees_from_north)
 
     viz_msg_groundtruth = GPSFix(latitude=data.latitude_deg, longitude=data.longitude_deg, track=degrees_from_north)
     viz_grndtruth_pub.publish(viz_msg_groundtruth)

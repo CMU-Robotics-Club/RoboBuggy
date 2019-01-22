@@ -19,6 +19,11 @@ from robobuggy.msg import IMU
 import json
 import time
 
+DEBUG_MODE = False;
+
+if DEBUG_MODE:
+    from Tkinter import *
+
 class Simulator:
 
     def __init__(self, sigma_gps, sigma_odom, sigma_steering, sigma_theta, start_position):
@@ -54,7 +59,12 @@ class Simulator:
         self.x = np.reshape(x, [5,1])
 
     def apply_control_input(self, data):
-        self.steering_angle = data.steer_cmd_rad
+        if (data.steer_cmd_rad > math.radians(15)):
+            self.steering_angle = math.radians(15);
+        elif (data.steer_cmd_rad < math.radians(-15)):
+            self.steering_angle = math.radians(-15);
+        else:
+            self.steering_angle = data.steer_cmd_rad
 
     def calculate_new_motion_model(self):
         A = [
@@ -129,32 +139,32 @@ class Simulator:
         approx_theta = self.x[3];
         approx_theta = np.random.normal(approx_theta, self.sigma_theta);
 
-        # our formula for figuring out orientation is arctan2(magY / magX)
-        mag_y = math.tan(approx_theta);
+        # first convert it into the same reference frame as the physical IMU
+        # bearing orientation, cartesian directions
+        # also need to account for magnetic north to true north transformation
+        approx_theta -= (math.pi/2 + math.radians(9.36667));
 
-        # now figure out which quadrant theta is in so we can decide x
-        # somewhat complicated, but basically based on how atan2 works, we can craft y= +/-tan(), x=+/-1
-        mag_x = 1.0;
-        if -math.pi / 2 <= approx_theta < math.pi / 2:
-            # signs are already taken care of, no need to change them
-            pass
-        elif math.pi / 2 < approx_theta <= math.pi:
-            # x needs to be negative, y needs to be positive
-            mag_x = -1.0;
-            mag_y = abs(mag_y);
-        elif -math.pi < approx_theta <= math.pi/2:
-            mag_y = -mag_y;
-            mag_x = -1.0;
-        else:
-            pass;
-        
+        # convert the theta (which is yaw) into quaternions
+        # by assuming roll and pitch are 0, we simplify this by a lot
+
+        q0 = math.cos(approx_theta / 2.0);
+        q1 = 0;
+        q2 = 0;
+        q3 = math.sin(approx_theta / 2.0);
+
         noisy_msg = IMU();
-        noisy_msg.X_Mag = mag_x;
-        noisy_msg.Y_Mag = mag_y;
+        noisy_msg.A_AngPos = q0;
+        noisy_msg.B_AngPos = q1;
+        noisy_msg.C_AngPos = q2;
+        noisy_msg.D_AngPos = q3;
 
         return noisy_msg
 
+
+pause_exec = False;
+
 def main():
+    global pause_exec
 
     # init
     NODE_NAME = "Full_System_Simulator"
@@ -164,8 +174,17 @@ def main():
     ground_truth_pub = rospy.Publisher("SIM_Ground_Truth", Pose, queue_size=10)
     steering_pub = rospy.Publisher("Feedback", Feedback, queue_size=10)
     imu_pub = rospy.Publisher("IMU", IMU, queue_size=10)
-    # TODO
-    # imu_pub = rospy.Publisher('IMU', IMU, queue_size=10)
+
+    if DEBUG_MODE:
+        window = Tk();
+        window.title("Simulator control");
+        def step_sim():
+            global pause_exec
+            pause_exec = True;
+        adv = Button(window, text="advance", command=step_sim);
+        adv.grid(column=0, row=0);
+        window.protocol("WM_DELETE_WINDOW", step_sim);
+        # window.mainloop();
 
     # 5m stddev
     sigma_gps = 0.5
@@ -204,6 +223,12 @@ def main():
     loop_counter = 0
     stationary_counter = 100
     while not rospy.is_shutdown():
+
+        while (DEBUG_MODE and not pause_exec):
+            window.tk.dooneevent();
+
+        pause_exec = False
+
         # Take a step
         s.step()
 

@@ -30,13 +30,16 @@ private:
     robobuggy::GPS target_waypoint;
     std::vector<robobuggy::GPS> waypoint_list;
     int last_closest_index;
-    const static int WAY_POINT_LOOKAHEAD_MAX = 50;
+    const static int WAY_POINT_LOOKAHEAD_MAX = 10;
 
+    void fill_waypoint_utms(std::vector<robobuggy::GPS>& waypoint_list);
     int get_closest_waypoint_index();
-    double pure_pursuit_controller();
+    double stanley_controller();
     bool get_deploy_brake_value();
     double normalize_angle_rad(double radians);
-    double get_distance_from_pose(robobuggy::Pose pose_msg);
+    double get_distance_from_pose(robobuggy::GPS pose_msg);
+    double get_angle_from_pose(robobuggy::GPS waypoint);
+    double get_path_angle(robobuggy::GPS w1, robobuggy::GPS w2);
 };
 
 #endif //ROS_ROBOBUGGY_CONTROLLER_H

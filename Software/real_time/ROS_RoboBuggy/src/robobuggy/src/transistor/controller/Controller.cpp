@@ -11,9 +11,23 @@ void Controller::Pose_Callback(const robobuggy::Pose::ConstPtr& msg)
 Controller::Controller(std::vector<robobuggy::GPS>& initial_waypoint_list)
 {
     waypoint_list = std::vector<robobuggy::GPS>(initial_waypoint_list);
+    fill_waypoint_utms(waypoint_list);
     steering_pub = nh.advertise<robobuggy::Command>("Command", 1000);
     pose_sub = nh.subscribe<robobuggy::Pose>("Pose", 1000, &Controller::Pose_Callback, this);
-    last_closest_index = 0;
+    last_closest_index = 12;
+}
+
+void Controller::fill_waypoint_utms(std::vector<robobuggy::GPS>& waypoint_list)
+{
+    for (robobuggy::GPS& waypoint : waypoint_list)
+    {
+        geographic_msgs::GeoPoint gps_point;
+        gps_point.latitude = waypoint.Lat_deg;
+        gps_point.longitude = waypoint.Long_deg;
+        geodesy::UTMPoint utm_point(gps_point);
+        waypoint.easting = utm_point.easting;
+        waypoint.northing = utm_point.northing;
+    }
 }
 
 void Controller::update_steering_estimate()
@@ -26,18 +40,44 @@ void Controller::update_steering_estimate()
     }
 
     robobuggy::Command steering_msg;
-    double steering_rad = pure_pursuit_controller();
+    double steering_rad = stanley_controller();
     steering_msg.steer_cmd_rad = steering_rad;
 
     steering_pub.publish(steering_msg);
 }
 
-double Controller::get_distance_from_pose(robobuggy::Pose pose_msg)
+double Controller::get_distance_from_pose(robobuggy::GPS pose_msg)
 {
-    double dx = (current_pose_estimate.longitude_deg - pose_msg.longitude_deg) * 111319.9;
-    double dy = (current_pose_estimate.latitude_deg - pose_msg.latitude_deg) * 84723.58765;
+    geographic_msgs::GeoPoint curr_point;
+    curr_point.latitude = current_pose_estimate.latitude_deg;
+    curr_point.longitude = current_pose_estimate.longitude_deg;
+    geodesy::UTMPoint utm_point(curr_point);
+
+    double dx = utm_point.easting - pose_msg.easting;
+    double dy = utm_point.northing - pose_msg.northing;
 
     return std::sqrt(dx * dx + dy * dy);
+}
+
+double Controller::get_angle_from_pose(robobuggy::GPS waypoint)
+{
+    geographic_msgs::GeoPoint curr_point;
+    curr_point.latitude = current_pose_estimate.latitude_deg;
+    curr_point.longitude = current_pose_estimate.longitude_deg;
+    geodesy::UTMPoint utm_point(curr_point);
+
+    double dx = utm_point.easting - waypoint.easting;
+    double dy = utm_point.northing - waypoint.northing;
+
+    return atan2(dy, dx);
+}
+
+double Controller::get_path_angle(robobuggy::GPS w1, robobuggy::GPS w2)
+{
+    double dx = w1.easting - w2.easting;
+    double dy = w1.northing - w2.northing;
+
+    return atan2(dy, dx);
 }
 
 int Controller::get_closest_waypoint_index()
@@ -47,11 +87,7 @@ int Controller::get_closest_waypoint_index()
     
     int closestIndex = last_closest_index;
     for(int i = last_closest_index; i < (last_closest_index + WAY_POINT_LOOKAHEAD_MAX) && i < waypoint_list.size(); i++) {
-        robobuggy::Pose gpsPoseMessage;
-        gpsPoseMessage.latitude_deg = waypoint_list.at(i).Lat_deg;
-        gpsPoseMessage.longitude_deg = waypoint_list.at(i).Long_deg;
-
-        double d = get_distance_from_pose(gpsPoseMessage);
+        double d = get_distance_from_pose(waypoint_list.at(i));
 
         if (d < min) {
             min = d;
@@ -62,65 +98,41 @@ int Controller::get_closest_waypoint_index()
     return closestIndex;
 }
 
-double Controller::pure_pursuit_controller()
+double Controller::stanley_controller()
 {
+    // figure out theta_p, or the angle of the path
+    // get the closest waypoint to us, and get the angle to it and the one behind it
     int closest_index = get_closest_waypoint_index();
-    // ROS_INFO("closest waypoint = %d\n", closest_index);
-    double k = 2.5;
-    double velocity = 3; // TODO bake velocity into pose messages
-    double lookahead_lower_bound = 5.0;
-    double lookahead_upper_bound = 25.0;
-    double lookahead = (k*velocity) / 2.0;
+    int second_closest = closest_index - 1;
+    robobuggy::GPS closest_waypoint = waypoint_list.at(closest_index);
+    robobuggy::GPS prev_waypoint = waypoint_list.at(second_closest);
+    double theta_p = get_path_angle(closest_waypoint, prev_waypoint);
+    // subtract it from theta to get our theta error
+    double theta_e = normalize_angle_rad(theta_p - current_pose_estimate.heading_rad);
 
-    if(lookahead < lookahead_lower_bound) 
-    {
-        lookahead = lookahead_lower_bound;
-    }
-    else if(lookahead > lookahead_upper_bound) 
-    {
-        lookahead = lookahead_upper_bound;
-    }
+    // calculate cross-track error
+    // we have the angle between the buggy and the path
+    double buggy_wp_angle = get_angle_from_pose(prev_waypoint);
+    // and we have the line segment between the closest waypoint and the buggy
+    double pose_wp_dist = get_distance_from_pose(prev_waypoint);
+    // so we can use the pythagorean theorem to figure out the distance between buggy and path
+    double d_buggy_path_angle = buggy_wp_angle - theta_p;
+    double cross_track_err = -1 * pose_wp_dist * sin(d_buggy_path_angle);
+    double k = 0.5; // define gain
+    // TEMP assume velocity = 3m/s
+    double current_velocity = 3.0;
 
-    int lookahead_index = 0;
-    for (lookahead_index = closest_index; lookahead_index < waypoint_list.size(); lookahead_index++)
-    {
-        robobuggy::Pose gpsPoseMessage;
-        gpsPoseMessage.latitude_deg = waypoint_list.at(lookahead_index).Lat_deg;
-        gpsPoseMessage.longitude_deg = waypoint_list.at(lookahead_index).Long_deg;
+    // combine it together into the stanley control formula
+    // delta = theta_e + atan(k * xtrack_e / velocity)
+    double delta = theta_e + atan2(k * cross_track_err, current_velocity);
 
-        if (get_distance_from_pose(gpsPoseMessage) > lookahead)
-        {
-            break;
-        }
-    }
+    ROS_INFO("current heading = %f", current_pose_estimate.heading_rad);
+    ROS_INFO("theta_p = %f", theta_p);
+    ROS_INFO("theta_e = %f", theta_e);
+    ROS_INFO("xtrack err = %f", cross_track_err);
+    ROS_INFO("delta = %f\n", delta);
 
-    if (lookahead_index >= waypoint_list.size()) {
-        // run out of waypoints nearby, go straight
-        ROS_INFO("uh oh, out of waypoints!\n");
-
-        return 0.0;
-    }
-
-    robobuggy::GPS target_waypoint = waypoint_list.at(lookahead_index);
-    // ROS_INFO("target waypoint = (%f, %f)\n", target_waypoint.Lat_deg, target_waypoint.Long_deg);
-    
-    geographic_msgs::GeoPoint gps_point;
-    gps_point.latitude = target_waypoint.Lat_deg;
-    gps_point.longitude = target_waypoint.Long_deg;
-
-    geodesy::UTMPoint utm_waypoint(gps_point);
-
-    gps_point.latitude = current_pose_estimate.latitude_deg;
-    gps_point.longitude = current_pose_estimate.longitude_deg;
-    geodesy::UTMPoint utm_pose(gps_point);
-
-    double dx = utm_waypoint.easting - utm_pose.easting;
-    double dy = utm_waypoint.northing - utm_pose.northing;
-    double theta = atan2(dy, dx) - current_pose_estimate.heading_rad;
-
-
-    double commanded_angle = normalize_angle_rad(atan2(2 * 1.13 * sin(theta), lookahead));
-    return commanded_angle;
+    return normalize_angle_rad(delta);
 }
 
 bool Controller::get_deploy_brake_value()
