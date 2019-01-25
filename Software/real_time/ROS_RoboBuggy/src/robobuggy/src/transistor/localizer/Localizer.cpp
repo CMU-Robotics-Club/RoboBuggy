@@ -76,16 +76,6 @@ void Localizer::IMU_Callback(const robobuggy::IMU::ConstPtr &msg)
     float rad_offset = M_PI * 9.366667 / 180.0;
     yaw += rad_offset;
 
-    prev_imu_measurements.pop_front();
-    prev_imu_measurements.push_back(yaw);
-
-    yaw = 0;
-    for (auto n : prev_imu_measurements)
-    {
-        yaw += n;
-    }
-    yaw /= prev_imu_measurements.size();
-
     z_imu_heading = yaw;
 }
 
