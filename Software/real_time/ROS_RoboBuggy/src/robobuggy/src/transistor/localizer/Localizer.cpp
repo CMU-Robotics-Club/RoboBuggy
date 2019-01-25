@@ -123,6 +123,19 @@ void Localizer::init_R()
     ;
 
     std::stringstream s;
+    std::vector<double> init_r_diagonal;    
+
+    if(!nh.getParam(NODE_NAME + "/init_r_diagonal", init_r_diagonal)){
+        ROS_INFO_STREAM("R Matrix Diagonal Parameter not found, using default");
+        init_r_diagonal = {2.0, 2.0, 2.0, 2.0, 2.0};
+    }
+
+    for (int i = 0; i < init_r_diagonal.size(); i++)
+    {
+        R(i,i) = init_r_diagonal[i];
+    }
+
+
     s << R << std::endl;
 
     ROS_INFO("Initialized R Matrix to : \n%s", s.str().c_str());
@@ -140,6 +153,18 @@ void Localizer::init_P()
     ;
 
     std::stringstream s;
+    std::vector<double> init_p_diagonal; 
+
+    if(!nh.getParam(NODE_NAME + "/init_p_diagonal",init_p_diagonal)){
+        ROS_INFO_STREAM("P Matrix Diagonal Parameter not found, using default");
+        init_p_diagonal = {25.0, 25.0, 25.0, 25.0, 25.0};
+    }
+
+    for (int i = 0; i < init_p_diagonal.size(); i++)
+    {
+         P(i,i) = init_p_diagonal[i];
+    }
+
     s << P << std::endl;
 
     ROS_INFO("Initialized P Matrix to : \n%s", s.str().c_str());
