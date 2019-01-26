@@ -118,19 +118,13 @@ double Controller::stanley_controller()
     // so we can use the pythagorean theorem to figure out the distance between buggy and path
     double d_buggy_path_angle = buggy_wp_angle - theta_p;
     double cross_track_err = -1 * pose_wp_dist * sin(d_buggy_path_angle);
-    double k = 5; // define gain
+    double k = 2; // define gain
     // TEMP assume velocity = 3m/s
     double current_velocity = 3.0;
 
     // combine it together into the stanley control formula
     // delta = theta_e + atan(k * xtrack_e / velocity)
     double delta = theta_e + atan2(k * cross_track_err, current_velocity);
-
-    ROS_INFO("current heading = %f", current_pose_estimate.heading_rad);
-    ROS_INFO("theta_p = %f", theta_p);
-    ROS_INFO("theta_e = %f", theta_e);
-    ROS_INFO("xtrack err = %f", cross_track_err);
-    ROS_INFO("delta = %f\n", delta);
 
     return normalize_angle_rad(delta);
 }
