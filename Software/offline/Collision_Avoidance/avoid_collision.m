@@ -1,6 +1,6 @@
 function new_delta = avoid_collision(x, delta, relative_locs)
 
-% define tolderance, step size, max iter, etc
+% define tolerance, step size, max iter, etc
 
 % initialize new_delta to max right
 % todo run this again but use full left as well, see if they converge in
@@ -10,6 +10,7 @@ function new_delta = avoid_collision(x, delta, relative_locs)
 % determine the gradient
 
 % get the radius of the circle drawn with delta'
+% from http://www.davdata.nl/math/turning_radius.html
 
 % use the circle formula on each landmark to figure out if it's on the path
 
