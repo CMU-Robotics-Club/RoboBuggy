@@ -6,6 +6,9 @@
 % initialize simulation parameters
 dt = 0.5;
 figurenum_simwindow = 1;
+prev_robot_locations = [
+    0 0
+];
 
 % initialize robot
 x = [
@@ -31,10 +34,7 @@ goal_loc = [
 ];
 
 % initialize GUI
-figure(figurenum_simwindow);
-hold on
-scatter(obstacle_locs(:, 1), obstacle_locs(:, 2), 36, 'b', 'o', 'filled');
-scatter(goal_loc(:,1), goal_loc(:,2), 36, 'g', 'x');
+update_sim_gui(figurenum_simwindow, obstacle_locs, goal_loc, prev_robot_locations, x);
 
 % check if robot has reached the goal
 % if it has, end the sim and freeze frame
@@ -48,11 +48,12 @@ while (~robot_reached_goal(x, goal_loc))
     relative_locs = get_relative_object_locs(x, obstacle_locs);
     
     % run the robot control algo
-    delta = avoid_collision(x, relative_locs);
+    delta = avoid_collision(x, delta, relative_locs);
     
     % update the robot's parameters
     % already did it, set delta
     
     % update the GUI
-    
+    update_sim_gui(figurenum_simwindow, obstacle_locs, goal_loc, prev_robot_locations, x);
+
 end
