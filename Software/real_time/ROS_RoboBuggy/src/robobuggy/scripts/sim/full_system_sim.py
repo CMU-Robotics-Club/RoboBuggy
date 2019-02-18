@@ -18,6 +18,8 @@ from robobuggy.msg import IMU
 
 import json
 import time
+from matplotlib import pyplot as plt
+from matplotlib import style
 
 DEBUG_MODE = False;
 
@@ -57,6 +59,21 @@ class Simulator:
         ]
         self.x = np.array(x)
         self.x = np.reshape(x, [5,1])
+
+        self.pose_err_figure = plt.figure();
+        self.pose_err_history = np.array([0]);
+        self.pose_err_plot_length = 25;
+        style.use('fivethirtyeight');
+        self.ax1 = self.pose_err_figure.add_subplot(1,1,1)
+        plt.ion();
+        plt.show();
+
+    def plot_pose_err(self, data):
+        (x, y, zone, num) = utm.from_latlon(data.latitude_deg, data.longitude_deg);
+        dx = self.x[0] - x;
+        dy = self.x[1] - y;
+        d = math.sqrt(dx*dx + dy*dy);
+        self.pose_err_history = np.append(self.pose_err_history, d);
 
     def apply_control_input(self, data):
         if (data.steer_cmd_rad > math.radians(15)):
@@ -217,6 +234,7 @@ def main():
 
     s = Simulator(sigma_gps, sigma_odom, sigma_steering, sigma_theta, (start_x, start_y, start_th))
     command_sub = rospy.Subscriber('Command', Command, s.apply_control_input)
+    pose_sub = rospy.Subscriber("Pose", Pose, s.plot_pose_err);
 
     # spin infinitely, while stepping each appropriate tick
     rate = rospy.Rate(s.sim_update_hz)
@@ -258,6 +276,14 @@ def main():
             s.velocity = 3;
         else:
             stationary_counter -= 1;
+ 
+        if len(s.pose_err_history) > s.pose_err_plot_length:
+            s.ax1.clear()
+            s.ax1.plot(np.arange(len(s.pose_err_history) - s.pose_err_plot_length, len(s.pose_err_history)), s.pose_err_history[-s.pose_err_plot_length:]);
+        else:
+            s.ax1.plot(np.arange(len(s.pose_err_history)), s.pose_err_history)
+        plt.pause(0.05);
+
 
         loop_counter += 1
         rate.sleep()
