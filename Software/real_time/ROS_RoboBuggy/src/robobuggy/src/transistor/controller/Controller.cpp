@@ -104,7 +104,7 @@ double Controller::stanley_controller()
     // get the closest waypoint to us, and get the angle to it and the one behind it
     int closest_index = get_closest_waypoint_index();
     int second_closest = closest_index - 1;
-    robobuggy::GPS closest_waypoint = waypoint_list.at(closest_index);
+    robobuggy::GPS closest_waypoint = waypoint_list.at(closest_index+1);
     robobuggy::GPS prev_waypoint = waypoint_list.at(second_closest);
     double theta_p = get_path_angle(closest_waypoint, prev_waypoint);
     // subtract it from theta to get our theta error
@@ -118,7 +118,7 @@ double Controller::stanley_controller()
     // so we can use the pythagorean theorem to figure out the distance between buggy and path
     double d_buggy_path_angle = buggy_wp_angle - theta_p;
     double cross_track_err = -1 * pose_wp_dist * sin(d_buggy_path_angle);
-    double k = 1.5; // define gain
+    double k = 0.5; // define gain
     // TEMP assume velocity = 3m/s
     double current_velocity = 3.0;
 
