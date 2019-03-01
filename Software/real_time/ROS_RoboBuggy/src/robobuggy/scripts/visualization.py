@@ -10,11 +10,17 @@ from Tkinter import *
 # battery level and visualize them on a user interfate
 
 def commandUpdate(data):
-    steer_cmd_rad = "%10.4d" % data.steer_cmd_rad
+    if data.steer_cmd_rad>0:
+        steer_cmd_rad = "%10.4f rad left" % data.steer_cmd_rad
+    elif data.steer_cmd_rad=0:
+        steer_cmd_rad = "Straight"
+    else:
+        steer_cmd_rad = "%10.4f rad right" % (data.steer_cmd_rad * -1)
     canvas.itemconfigure(t1, text=steer_cmd_rad)
 
 def diagnosticsUpdate(data):
-    battery_level = "%d" % data.battery_level
+    voltage = data.battery_level / 1000.00
+    battery_level = "%10.3f V" % voltage
     canvas.itemconfigure(t2, text=battery_level)
 
 def feedbackUpdate(data):
