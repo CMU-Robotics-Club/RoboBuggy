@@ -141,7 +141,7 @@ void setup() {
   // new radio
   radio.begin();
   radio.openReadingPipe(0, address);
-  radio.setPALevel(RF24_PA_MIN);
+  radio.setPALevel(RF24_PA_MAX);
   radio.startListening();
   //Setup brake output.
   pinMode(BRAKE_PIN, OUTPUT);
@@ -171,13 +171,7 @@ void setup() {
   pinMode(TRISTATE_TOGGLE_PIN, OUTPUT);
 
 #if !SERIAL_MODE
-  //Set up radio input.
-  //pinMode(RADIO_BRAKE_PIN, INPUT_PULLUP);
-  //pinMode(RADIO_STEERING_PIN, INPUT_PULLUP);
-  //pinMode(RADIO_AUTON_PIN, INPUT_PULLUP);
-  //attachInterrupt(digitalPinToInterrupt(RADIO_BRAKE_PIN), trackBrakeRiseFall, CHANGE);
-  //attachInterrupt(digitalPinToInterrupt(RADIO_STEERING_PIN), trackSteeringRiseFall, CHANGE);
-  //attachInterrupt(digitalPinToInterrupt(RADIO_AUTON_PIN), trackAutonRiseFall, CHANGE);
+
 #endif
 
   setupStatusLight(BATTERY_LOW_STATUS_LIGHT);
@@ -208,7 +202,6 @@ void loop() {
       desiredState.steeringPosition = inputString.substring(5).toInt();
       Serial.print("Moving to ");
       Serial.println(desiredState.steeringPosition);
-      //Dynamixel.servo(SERVO_ID, desiredState.steeringPosition, DEFAULT_SPEED);
     }
     if (inputString.substring(0, 12).equalsIgnoreCase("torquelimit "))
     {
@@ -247,8 +240,10 @@ void loop() {
   int text[32];
   if (radio.available()) {
     radio.read(&text, sizeof(text));
-    brakes.lastFallTime = micros();
-    steering.lastFallTime = micros();
+    if(text[0]!=0) {
+      brakes.lastFallTime = micros();
+      steering.lastFallTime = micros();
+    }
     radioConnected = true;
     if(text[0] & (1<<11))
     {
@@ -277,11 +272,6 @@ void loop() {
   }
   calculateRadioDesiredState(); 
 #endif
-  if (verboseMode)
-  {
-    Serial.print("Steering Pulse Width: ");
-    Serial.println(getSteeringPulseWidth());
-  }
 
   //AUTON MODE INPUT~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #ifdef FORCE_AUTONOMOUS

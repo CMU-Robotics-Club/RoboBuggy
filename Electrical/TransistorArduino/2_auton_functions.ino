@@ -9,6 +9,14 @@ void addToAutonBuffer(unsigned char a)
   last = last->next;
 }
 
+void clearBufferTillMessage()
+{
+  first = messageStart->next;
+  free(messageStart);
+  messageStart = first;
+  messageEnd = messageEnd->next;
+  if (messageEnd == NULL) return;
+}
 
 void calculateAutonDesiredState()
 {
@@ -37,13 +45,12 @@ void calculateAutonDesiredState()
                                                   | ((unsigned long)(messageStart->next->next->value) << 16)
                                                   | ((unsigned long)(messageStart->next->next->next->value) << 8)
                                                   | ((unsigned long)(messageStart->next->next->next->next->value)));
-
             break;
 
           case RBSM_MID_MEGA_AUTON_BRAKE_COMMAND:
             desiredState.brakesDeployed = (boolean)(messageStart->next->next->next->next->value);
             break;
-	  default:
+	        default:
             error_message |= 1<<RBSM_EID_RBSM_INVALID_MID;
         }
         for (uint8_t i = 0; i < 5; i++)
@@ -65,7 +72,22 @@ void calculateAutonDesiredState()
       }
     }
   }
+  else
+  {
+    while(messageStart!=NULL)
+    {
+      first = messageStart->next;
+      free(messageStart);
+      messageStart = first;
+      if(messageEnd!=NULL)
+      {
+        messageEnd = messageEnd->next;
+      }
+    }
+  }
 }
+
+
 
 void sendMessage(unsigned char header, unsigned long data)
 {
