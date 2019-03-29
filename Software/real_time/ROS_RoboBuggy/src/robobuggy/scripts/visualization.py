@@ -11,7 +11,7 @@ import math
 # battery level and visualize them on a user interfate
 
 def commandUpdate(data):
-    steer_cmd_deg = data.steer_cmd_rad * 180 / math.pi
+    steer_cmd_deg = math.degrees(data.steer_cmd_rad)
     if abs(steer_cmd_deg) < 0.1:
         steer_cmd = "Straight"
     elif steer_cmd_deg > 0:
@@ -32,7 +32,7 @@ def feedbackUpdate(data):
         t2.set("Suspended   ")
 
 def poseUpdate(data):
-    heading_deg = data.heading_rad * 180 / math.pi
+    heading_deg = math.degrees(data.heading_rad)
     heading = "%10.1f deg heading " % heading_deg
     if abs(heading_deg) < 0.1:
         heading += "E"
