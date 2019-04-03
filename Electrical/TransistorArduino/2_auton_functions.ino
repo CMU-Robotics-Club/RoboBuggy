@@ -11,11 +11,11 @@ void addToAutonBuffer(unsigned char a)
 
 void clearBufferTillMessage()
 {
-  first = messageStart->next;
-  free(messageStart);
-  messageStart = first;
-  messageEnd = messageEnd->next;
-  if (messageEnd == NULL) return;
+  //first = messageStart->next;
+  //free(messageStart);
+  //messageStart = first;
+  //messageEnd = messageEnd->next;
+  //if (messageEnd == NULL) return;
 }
 
 void calculateAutonDesiredState()
@@ -36,7 +36,7 @@ void calculateAutonDesiredState()
 
     while (messageEnd != NULL)
     {
-      if (messageEnd->value == '\n')
+      if (messageEnd->value == '\n' && (messageStart->value == RBSM_MID_MEGA_STEER_COMMAND || messageStart->value == RBSM_MID_MEGA_AUTON_BRAKE_COMMAND))
       {
         switch (messageStart->value)
         {
@@ -63,7 +63,7 @@ void calculateAutonDesiredState()
         }
 
       }
-      else
+      while(messageEnd->value != '\n' && messageEnd != NULL &&(messageStart->value != RBSM_MID_MEGA_STEER_COMMAND || messageStart->value != RBSM_MID_MEGA_AUTON_BRAKE_COMMAND))
       {
         first = messageStart->next;
         free(messageStart);
@@ -72,19 +72,15 @@ void calculateAutonDesiredState()
       }
     }
   }
-  else
+  /*else
   {
-    while(messageStart!=NULL)
+    while(first!=NULL)
     {
-      first = messageStart->next;
+      struct autonBufferElem* messageStart = first;
+      first = first->next;
       free(messageStart);
-      messageStart = first;
-      if(messageEnd!=NULL)
-      {
-        messageEnd = messageEnd->next;
-      }
     }
-  }
+  }*/
 }
 
 
