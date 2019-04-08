@@ -3,7 +3,7 @@
 
 #include "transistor/low_level/LowLevel_Broadcaster.h"
 
-int main(int argc, char **argv) 
+int main(int argc, char **argv)
 {
     ros::init(argc, argv, LowLevel_Broadcaster::NODE_NAME);
     ros::NodeHandle nh;

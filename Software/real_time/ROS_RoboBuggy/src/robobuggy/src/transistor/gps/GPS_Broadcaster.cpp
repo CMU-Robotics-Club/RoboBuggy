@@ -18,7 +18,7 @@ GPS_Broadcaster::GPS_Broadcaster()
         serial_baud = 9600;
     }
 
-    
+
 
 }
 

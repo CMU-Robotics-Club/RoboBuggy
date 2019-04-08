@@ -38,7 +38,7 @@ void Localizer::GPS_Callback(const robobuggy::GPS::ConstPtr &msg)
     p.easting = msg->easting;
     p.band = 'T';
     p.zone = 17;
-    
+
     double heading_cartesian = 0.0;
 
     if (prev_position_utm.northing != 0)
@@ -138,7 +138,7 @@ void Localizer::init_C()
     ROS_INFO("Initialized C Matrix to : \n%s", s.str().c_str());
 }
 
-void Localizer::init_Q() 
+void Localizer::init_Q()
 {
     Q <<
     9, 0, 0, 0, 0,
@@ -165,8 +165,8 @@ void Localizer::init_x()
     geodesy::UTMPoint init_utm(gps_point);
 
     x <<
-      init_utm.easting, 
-      init_utm.northing, 
+      init_utm.easting,
+      init_utm.northing,
       1,
       0, // TODO initial heading in rad
       0

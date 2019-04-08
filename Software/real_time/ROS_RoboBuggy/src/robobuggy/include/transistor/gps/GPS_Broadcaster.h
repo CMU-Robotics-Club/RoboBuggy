@@ -18,7 +18,7 @@ class GPS_Broadcaster
 public:
     GPS_Broadcaster();
     static const std::string NODE_NAME;
-    
+
     void read_gps_message();
     robobuggy::GPS* parse_tokens(std::string tokens[]);
     int initialize_hardware();

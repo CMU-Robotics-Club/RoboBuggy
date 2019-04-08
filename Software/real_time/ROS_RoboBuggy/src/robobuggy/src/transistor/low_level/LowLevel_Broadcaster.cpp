@@ -49,12 +49,12 @@ void LowLevel_Broadcaster::parse_serial_msg(std::string serial_msg)
 
     // First byte is serial buffer
     switch((unsigned char)serial_msg[0]) {
-        case RBSM_MID_MEGA_STEER_FEEDBACK:
+        case RBSM_MID_MEGA_STEER_ANGLE:
         {
             int32_t steering_ticks = data;
-            int32_t steering_degrees = ((data / 11) - 1200);
-            int32_t steering_hund_degs = steering_degrees * 100;
-            feedback_msg.steer_angle = steering_hund_degs;
+            //int32_t steering_degrees = ((data / 11) - 1200);
+            //int32_t steering_hund_degs = steering_degrees * 100;
+            feedback_msg.steer_angle = data;
         }
             break;
         case RBSM_MID_MEGA_BRAKE_STATE:
@@ -144,7 +144,7 @@ int LowLevel_Broadcaster::handle_serial_messages() {
 
     if (!nh.getParam(NODE_NAME + "/serial_port", serial_port)) {
         ROS_INFO("Serial port parameter not found, using default");
-        serial_port = "/dev/ttyACM1"; // Default value
+        serial_port = "/dev/buggyarduino"; // Default value
     }
     if (!nh.getParam(NODE_NAME + "/serial_baud", serial_baud)) {
         ROS_INFO("Serial baud rate parameter not found, using default");
