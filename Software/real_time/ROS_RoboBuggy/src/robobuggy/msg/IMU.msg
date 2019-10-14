@@ -12,9 +12,10 @@ float32 X_AngVel
 float32 Y_AngVel
 float32 Z_AngVel
 
-float32 X_AngPos
-float32 Y_AngPos
-float32 Z_AngPos
+float32 A_AngPos
+float32 B_AngPos
+float32 C_AngPos
+float32 D_AngPos
 
 float32 X_Mag
 float32 Y_Mag

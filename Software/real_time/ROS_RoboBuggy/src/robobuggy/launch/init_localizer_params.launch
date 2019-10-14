@@ -1,0 +1,6 @@
+<launch>
+    <node name="Transistor_Localizer" pkg="robobuggy" type="Transistor_Localizer" required="true" output="screen">
+        <rosparam param="init_r_diagonal">[2.0, 2.0, 2.0, 2.00, 2.00]</rosparam>
+        <rosparam param="init_p_diagonal">[25.0, 25.0, 25.0, 25.0, 25.0]</rosparam>
+    </node>
+</launch>

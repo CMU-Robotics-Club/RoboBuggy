@@ -1,2 +1,5 @@
 build/
 devel/
+
+src/robobuggy/config/
+src/robobuggy/include/json/

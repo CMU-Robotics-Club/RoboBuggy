@@ -37,7 +37,7 @@ int IMU_Broadcaster::init_IMU()
     // Configure device for motion outputs
     message.messageType = FREESPACE_MESSAGE_DATAMODECONTROLV2REQUEST;
     message.dataModeControlV2Request.packetSelect = 8;  // MotionEngine Outout
-    message.dataModeControlV2Request.mode = 0;          // Set full motion
+    message.dataModeControlV2Request.mode = 4;          // Set full motion (without going to sleep)
     message.dataModeControlV2Request.formatSelect = 0;  // MEOut format 0
     message.dataModeControlV2Request.ff0 = 1;           // Pointer fields
 	message.dataModeControlV2Request.ff1 = 1;           // Linear Acceleration
@@ -131,9 +131,10 @@ void IMU_Broadcaster::publish_IMU_message()
         err = freespace_util_getAngPos(&message.motionEngineOutput, &reading);
         if (err == 0) {
             // Load our IMU message with the data
-            msg.X_AngPos = reading.x;
-            msg.Y_AngPos = reading.y;
-            msg.Z_AngPos = reading.z;
+            msg.A_AngPos = reading.w;
+            msg.B_AngPos = reading.x;
+            msg.C_AngPos = reading.y;
+            msg.D_AngPos = reading.z;
         } else {
             ROS_ERROR_STREAM("Error receiving angular position data");
         }

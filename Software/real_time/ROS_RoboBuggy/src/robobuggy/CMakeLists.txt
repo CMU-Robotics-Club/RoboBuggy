@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(robobuggy)
 
 ## Add support for C++11, supported in ROS Kinetic and newer
-# add_definitions(-std=c++11)
+add_definitions(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -14,6 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
   serial
   geodesy
+  roslib
 )
 
 ## System dependencies are found with CMake's conventions
@@ -144,7 +145,7 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/robobuggy_node.cpp)
-add_executable(${PROJECT_NAME}_Transistor_Controller_Runner src/transistor/controller/Controller_Runner.cpp src/transistor/controller/Controller.cpp)
+add_executable(${PROJECT_NAME}_Transistor_Controller_Runner include/json/jsoncpp.cpp src/transistor/controller/Controller_Runner.cpp src/transistor/controller/Controller.cpp)
 add_executable(${PROJECT_NAME}_Transistor_IMU_Broadcaster_Runner src/transistor/imu/IMU_Broadcaster_Runner.cpp src/transistor/imu/IMU_Broadcaster.cpp)
 add_executable(${PROJECT_NAME}_Transistor_LowLevel_Broadcaster_Runner src/transistor/low_level/LowLevel_Broadcaster_Runner.cpp src/transistor/low_level/LowLevel_Broadcaster.cpp)
 add_executable(${PROJECT_NAME}_Transistor_GPS_Broadcaster_Runner src/transistor/gps/GPS_Broadcaster_Runner.cpp src/transistor/gps/GPS_Broadcaster.cpp)
@@ -235,6 +236,10 @@ target_link_libraries(${PROJECT_NAME}_Transistor_Localizer_Runner
 #  target_link_libraries(${PROJECT_NAME}-imu-spoof-test ${catkin_LIBRARIES})
 #endif()
 
+catkin_add_gtest(${PROJECT_NAME}_GPS_Broadcaster_Test test/gps/GPS_Broadcaster_Test.cpp src/transistor/gps/GPS_Broadcaster.cpp)
+if (TARGET ${PROJECT_NAME}_GPS_Broadcaster_Test)
+  target_link_libraries(${PROJECT_NAME}_GPS_Broadcaster_Test ${catkin_LIBRARIES})
+endif()
 ## Add gtest based cpp test target and link libraries
 # catkin_add_gtest(${PROJECT_NAME}-test test/test_robobuggy.cpp)
 # if(TARGET ${PROJECT_NAME}-test)

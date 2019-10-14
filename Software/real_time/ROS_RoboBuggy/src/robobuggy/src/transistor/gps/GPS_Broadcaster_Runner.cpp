@@ -8,9 +8,19 @@ int main(int argc, char **argv)
 {
     ros::init(argc, argv, GPS_Broadcaster::NODE_NAME);
     ros::NodeHandle nh;
+    ros::Rate loop_rate(10); //run at 10 hz
 
     GPS_Broadcaster broadcaster;
-    int err = broadcaster.handle_serial_messages();
+    int err = broadcaster.initialize_hardware();
+    if (err) {
+        return err;
+    }
 
-    return err;
+    while (ros::ok()) {
+        broadcaster.read_gps_message();
+        ros::spinOnce();
+        loop_rate.sleep();
+    }
+
+    return 0;
 }

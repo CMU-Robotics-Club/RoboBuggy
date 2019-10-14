@@ -555,6 +555,7 @@ int main(void) {
                 dbg_printf("RC Timeout! %lu %lu %lu\n", delta1, delta2, delta3);
             } else {
                 g_errors &= ~_BV(RBSM_EID_RC_LOST_SIGNAL);
+                lights_rc.Disable();
             }
 
             // then check for timeout under autonomous
@@ -565,6 +566,7 @@ int main(void) {
                 dbg_printf("Auton Timeout! %lu %lu\n", delta4, delta5);
             } else {
                 g_errors &= ~_BV(RBSM_EID_AUTON_LOST_SIGNAL);
+                lights_auton.Disable();
             }
         // or reset the system if connection is back and driver engages brakes
         } else { 

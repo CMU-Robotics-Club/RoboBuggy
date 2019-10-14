@@ -33,6 +33,12 @@ private:
     long int previous_update_time_ms;
     long int prev_encoder_time;
 
+    const int ROW_X = 0;
+    const int ROW_Y = 1;
+    const int ROW_VEL = 2;
+    const int ROW_HEADING = 3;
+    const int ROW_TH_DOT = 4;
+
     ros::NodeHandle nh;
     ros::Publisher pose_pub;
     ros::Subscriber gps_sub;
@@ -45,17 +51,21 @@ private:
     Matrix<double, 5, 1> x_hat;
     Matrix<double, 5, 5> R;
     Matrix<double, 5, 5> P;
-    Matrix<double, 3, 3> Q_GPS;
+    Matrix<double, 2, 2> Q_GPS;
     Matrix<double, 1, 1> Q_Encoder;
-    Matrix<double, 3, 5> C_GPS;
+    Matrix<double, 1, 1> Q_IMU;
+    Matrix<double, 2, 5> C_GPS;
     Matrix<double, 1, 5> C_Encoder;
+    Matrix<double, 1, 5> C_IMU;
 
     void init_R();
     void init_P();
     void init_Q_GPS();
     void init_Q_Encoder();
+    void init_Q_IMU();
     void init_C_GPS();
     void init_C_Encoder();
+    void init_C_IMU();
     void init_x();
 
     void IMU_Callback(const robobuggy::IMU::ConstPtr& msg);
