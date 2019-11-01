@@ -1,5 +1,5 @@
 #if !SERIAL_MODE
-#define radio_loss_time 100000
+#define radio_loss_time 1000000
 
 void calculateRadioDesiredState()
 {

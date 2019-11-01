@@ -20,7 +20,15 @@ void clearBufferTillMessage()
 
 void calculateAutonDesiredState()
 {
-  if (autonMode)
+
+  if(autonMode)
+  {
+     int angle_desired =map(26600-steering.prevRiseTime, 0, 19800, 975,1425);
+     //Serial.println(steering.prevRiseTime);
+     Serial.println(angle_desired);
+     if(steering.prevRiseTime > 0) desiredState.steeringPosition = angle_desired;
+  }
+  /*if (autonMode)
   {
     //If we have new messages from high-level
     if (first == NULL) return;
@@ -50,7 +58,7 @@ void calculateAutonDesiredState()
           case RBSM_MID_MEGA_AUTON_BRAKE_COMMAND:
             desiredState.brakesDeployed = (boolean)(messageStart->next->next->next->next->value);
             break;
-	        default:
+          default:
             error_message |= 1<<RBSM_EID_RBSM_INVALID_MID;
         }
         for (uint8_t i = 0; i < 5; i++)
@@ -61,20 +69,20 @@ void calculateAutonDesiredState()
           messageEnd = messageEnd->next;
           if (messageEnd == NULL) return;
         }
-
       }
-      while(messageEnd->value != '\n' && messageEnd != NULL &&(messageStart->value != RBSM_MID_MEGA_STEER_COMMAND || messageStart->value != RBSM_MID_MEGA_AUTON_BRAKE_COMMAND))
+      if(messageEnd->value != '\n' || (messageStart->value != RBSM_MID_MEGA_STEER_COMMAND && messageStart->value != RBSM_MID_MEGA_AUTON_BRAKE_COMMAND))
       {
         first = messageStart->next;
         free(messageStart);
         messageStart = first;
         messageEnd = messageEnd->next;
+        if (messageEnd == NULL) return;
       }
     }
   }
-  /*else
+  else
   {
-    while(first!=NULL)
+    while(first!=NULL && first!=last)
     {
       struct autonBufferElem* messageStart = first;
       first = first->next;
@@ -101,21 +109,47 @@ void sendMessage(unsigned char header, unsigned long data)
   }
 }
 
-void sendAutonFeedback()
+void sendAutonFeedback(int autonFeedbackPart)
 {
-  sendMessage(RBSM_MID_MEGA_STEER_ANGLE, (unsigned long)desiredState.steeringPosition);
-  sendMessage(RBSM_MID_MEGA_BRAKE_STATE, (unsigned long)currentState.brakesDeployed);
-  sendMessage(DEVICE_ID, (unsigned long)0); //The Mega's device ID is zero.
-  sendMessage(RBSM_MID_MEGA_TELEOP_BRAKE_COMMAND, (unsigned long)desiredState.brakesDeployed);
-  sendMessage(RBSM_MID_MEGA_AUTON_BRAKE_COMMAND, (unsigned long)desiredState.brakesDeployed);
-  sendMessage(RBSM_MID_MEGA_AUTON_STATE, (unsigned long)autonMode);
-  sendMessage(RBSM_MID_MEGA_BATTERY_LEVEL, (unsigned long)42); // :D
-  sendMessage(RBSM_MID_MEGA_STEER_FEEDBACK, (unsigned long)currentState.steeringPosition);
-  sendMessage(RBSM_MID_ENC_TICKS_RESET, (unsigned long)encoderTicks);
-  sendMessage(RBSM_MID_MEGA_TIMESTAMP, millis());
-  sendMessage(RBSM_MID_COMP_HASH, (unsigned long)42);
-  sendMessage(RBSM_MID_ERROR, (unsigned long)error_message);
-  error_message = 0;
+  switch(autonFeedbackPart)
+  {
+  case 1:
+    sendMessage(RBSM_MID_MEGA_STEER_ANGLE, (unsigned long)desiredState.steeringPosition);
+    break;
+  case 2:
+    sendMessage(RBSM_MID_MEGA_BRAKE_STATE, (unsigned long)currentState.brakesDeployed);
+    break;
+  case 3:
+    sendMessage(DEVICE_ID, (unsigned long)0); //The Mega's device ID is zero.
+    break;
+  case 4:
+    sendMessage(RBSM_MID_MEGA_TELEOP_BRAKE_COMMAND, (unsigned long)desiredState.brakesDeployed);
+    break;
+  case 5:
+    sendMessage(RBSM_MID_MEGA_AUTON_BRAKE_COMMAND, (unsigned long)desiredState.brakesDeployed);
+    break;
+  case 6:
+    sendMessage(RBSM_MID_MEGA_AUTON_STATE, (unsigned long)autonMode);
+    break;
+  case 7:
+    sendMessage(RBSM_MID_MEGA_BATTERY_LEVEL, (unsigned long)time_taken);
+    break;
+  case 8:
+    sendMessage(RBSM_MID_MEGA_STEER_FEEDBACK, (unsigned long)currentState.steeringPosition);
+    break;
+  case 9:
+    sendMessage(RBSM_MID_ENC_TICKS_RESET, (unsigned long)encoderTicks);
+    break;
+  case 10:
+    sendMessage(RBSM_MID_MEGA_TIMESTAMP, millis());
+    break;
+  case 11:
+    sendMessage(RBSM_MID_COMP_HASH, (unsigned long)messages_received);
+    break;
+  case 0:
+    sendMessage(RBSM_MID_ERROR, (unsigned long)error_message);
+    error_message = 0;
+  }
 }
 
 #endif

@@ -1,14 +1,15 @@
 #include "Dynamixel_Serial.h"
-#include <SPI.h>
-#include "nRF24L01.h"
-#include "RF24.h"
 
 #include <avr/wdt.h>
 
+
 //Constants to do with the Dynamixel.
 #define SERIAL_MODE 0
-#define FORCE_AUTONOMOUS = true; //This should only be defined for debug purposes.
-#define DYNAMIXEL_BAUD 57600
+#define FORCE_AUTONOMOUS false //This should only be defined for debug purposes.
+#define SEND_AUTON_FEEDBACK true
+#define NO_DYNAMIXEL false
+#define HIGH_LEVEL_INTER false
+#define DYNAMIXEL_BAUD 1000000
 #define SERVO_ID 0xFE
 #define SERVO_RECEIVE_ID 0x01 //0x04
 #define CW_LIMIT_ANGLE 975
@@ -26,14 +27,13 @@
 #define RADIO_AUTON_PIN 20
 #define BRAKE_PIN 31
 #define TRISTATE_TOGGLE_PIN 3
-#define ENCODER_PIN 38
+#define ENCODER_PIN 21
 #define BATTERY_LOW_STATUS_LIGHT 42
 #define RC_LOST_SIGNAL 44
 #define AUTON_LOST_SIGNAL 46
 
 //Constants to do with RBSM
 #define RBSM_BAUD 57600
-#define RADIO_BAUD 115200
 
 // Message Types
 #define RBSM_MID_ENC_TICKS_RESET 1
@@ -59,6 +59,20 @@
 #define RBSM_EID_RBSM_INVALID_MID 2
 #define RBSM_EID_RC_LOST_SIGNAL 3
 #define RBSM_EID_AUTON_LOST_SIGNAL 4
+
+#define steer_pin 2
+
+// new radio
+uint16_t channels[20];
+uint16_t zeros[4] = {0,0,0,0};//{991,991,991,991};
+boolean en = false;
+boolean failsafe = true;
+uint32_t timeOfLastRx = 0;
+
+int time_taken = 0;
+int start_time = millis();
+int end_time = 0;
+int messages_received = 0;
 
 bool verboseMode = false;
 
@@ -118,14 +132,18 @@ struct radioValue auton = {.lastRiseTime = 0, .lastFallTime = 0,
 };
 #endif
 
+
+
 volatile long encoderTicks = 0;
 
 long lastStatusUpdate = millis();
-long UPDATE_INTERVAL = 50; //How many milliseconds before the next time we write to the dynamixel.
+long UPDATE_INTERVAL = 100; //How many milliseconds before the next time we write to the dynamixel.
 
 long lastAutonFeedback = millis();
 long FEEDBACK_INTERVAL = 200; //How many milliseconds between each time we update the auton system on our status.
 unsigned long error_message = 0;
+
+int autonFeedbackPart = 0;
 
 void setupWatchDogTimer()
 {
@@ -136,70 +154,44 @@ void setupWatchDogTimer()
   // reinable interupts
   sei();
 }
-// new radio
-RF24 radio(7, 8); // CE, CSN
-const byte address[6] = "00001";
 
-int get_3char_hex(char char1, char char2, char char3)
-{
-  int result = 0;
-  char1-='0';
-  if(char1>9){
-    char1+='0';
-    char1-='a';
-    char1+=10;
-  }
-  char2-='0';
-  if(char2>9){
-    char2+='0';
-    char2-='a';
-    char2+=10;
-  }
-  char3-='0';
-  if(char3>9){
-    char3+='0';
-    char3-='a';
-    char3+=10;
-  }
-  return (int) ((((uint16_t)char1)<<8) + (char2<<4) + char3);
-}
 
 void setup() {
-  // new radio
-  //radio.begin();
-  //radio.openReadingPipe(0, address);
-  //radio.setPALevel(RF24_PA_MAX);
- // radio.startListening();
   //Setup brake output.
   pinMode(BRAKE_PIN, OUTPUT);
   deployBrakes();
-
+  pinMode(10,OUTPUT);
+  pinMode(11,OUTPUT);
+  digitalWrite(10,0);
+  digitalWrite(11,0);
   pinMode(ENCODER_PIN,INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(ENCODER_PIN), incrementEncoderTicks, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(ENCODER_PIN), incrementEncoderTicks, RISING);
+#if HIGH_LEVEL_INTER
+  attachInterrupt(digitalPinToInterrupt(steer_pin), changeSteering, CHANGE);
+#endif
+  
 
 #if SERIAL_MODE
   //Setup serial communication with user.
   Serial.begin(9600);
   inputString.reserve(200);
-
 #else
+//#if SEND_AUTON_FEEDBACK
   Serial.begin(RBSM_BAUD);
+//#endif
   first->value = 0;
   first->next = NULL;
-  Serial2.begin(RADIO_BAUD);
+   Serial2.begin(100000, SERIAL_8E2);
 #endif
 
   //Set up communication with Dynamixel Servo
+#if !NO_DYNAMIXEL
   Dynamixel.begin(DYNAMIXEL_BAUD);
   Dynamixel.setDirectionPin(TRISTATE_TOGGLE_PIN);
+  Dynamixel.setHoldingTorque(SERVO_ID, true);
   Dynamixel.setMode(SERVO_ID, SERVO, CW_LIMIT_ANGLE,CCW_LIMIT_ANGLE);
   Dynamixel.setID(SERVO_ID, SERVO_RECEIVE_ID); //Set up the Dynamixel's ID for receiving messages.
   Dynamixel.servo(SERVO_ID, desiredState.steeringPosition, DEFAULT_SPEED); //Steer to a neutral position.
-
-  pinMode(TRISTATE_TOGGLE_PIN, OUTPUT);
-
-#if !SERIAL_MODE
-
 #endif
 
   setupStatusLight(BATTERY_LOW_STATUS_LIGHT);
@@ -221,9 +213,9 @@ void loop() {
 
     if (inputString.equalsIgnoreCase("verbose\n")) verboseMode = true;
     if (inputString.equalsIgnoreCase("noverbose\n")) verboseMode = false;
-
+#if !NO_DYNAMIXEL
     if (inputString.equalsIgnoreCase("torque\n")) Serial.println(Dynamixel.readLoad(SERVO_RECEIVE_ID), HEX);
-
+#endif
     if (inputString.equalsIgnoreCase("ticks\n")) Serial.println(encoderTicks);
     if (inputString.substring(0, 5).equalsIgnoreCase("move "))
     {
@@ -234,7 +226,9 @@ void loop() {
     if (inputString.substring(0, 12).equalsIgnoreCase("torquelimit "))
     {
       int limitTorque = inputString.substring(12).toInt();
+#if !NO_DYNAMIXEL
       Dynamixel.setMaxTorque(SERVO_RECEIVE_ID, limitTorque);
+#endif
       Serial.print("Torque Limited to ");
       Serial.println(limitTorque);
     }
@@ -261,171 +255,179 @@ void loop() {
 
 
 #if !SERIAL_MODE
+  // get timing for diagnostic
+  end_time = micros();
+  time_taken = end_time - start_time;
+  start_time = end_time;
   //RADIO MODE INPUT~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   //From the radio rise and fall times, calculate what the current state should be.
-#ifndef FORCE_AUTONOMOUS
+#if !FORCE_AUTONOMOUS
   // put this into radio functions
+  static uint32_t serial_pd = 0;
+  if(millis()-serial_pd > 100){
+    serial_pd=millis();
+    digitalWrite(13,LOW);
+  }
+  if(millis()-timeOfLastRx > 100){
+    failsafe = true;
+    en=false;
+  }
+  if(failsafe){
+    digitalWrite(13,(millis()%200)>100);
+  }
   
-  /*char radio_data[RADIO_MESSAGE_MAX+1];
-  radio_data[RADIO_MESSAGE_MAX]=0;
-  int cur_char = 0;
-  char giveup = 0;
-  
-  while(Serial2.available()>0 && Serial2.read() != '\r') {}
-  if(Serial2.read() == '\n') {
-    while(cur_char<RADIO_MESSAGE_MAX)
-    {
-      while(Serial2.available() == 0){}
-      radio_data[cur_char] = Serial2.read();
-      if(radio_data[cur_char] == '\r' || radio_data[cur_char] == '\n'){
-        giveup=1;
+  boolean doExit = false;
+  //SBUS decoder
+  uint32_t start = millis();
+  uint32_t loopStart = millis();
+  messages_received = 0;
+  while(Serial2.available() && !doExit && (millis()-loopStart < 40)) {
+    //digitalWrite(13,HIGH);
+    uint32_t maxTime = 20;
+    if(millis()-start > maxTime){
+      doExit = true;
+      break;
+    }
+    uint8_t srd = Serial2.read();
+    if(srd == 0x0F){
+      start = millis();
+      while(!Serial2.available() && !doExit){
+        if(millis()-start > maxTime){
+          doExit=true;
+          break;
+        }
+      }
+      //read in data
+      uint8_t bytes[25];
+      for(int i=0;i<22 && !doExit;i++){
+        while(!Serial2.available() && !doExit){
+          if(millis()-start > maxTime){
+            doExit=true;
+            //Serial.println("not enough data");
+            break;
+          }
+        }
+        bytes[i] = Serial2.read();
+        messages_received++;
+      }
+      while(!Serial2.available() && !doExit){
+        if(millis()-start > maxTime){
+          doExit=true;
+        }
+      }
+      byte fs = Serial2.read();
+      messages_received++;
+      while(!Serial2.available() && !doExit){
+        if(millis()-start > maxTime){
+          doExit=true;
+        }
+      }
+      byte footer = Serial2.read();
+      messages_received++;
+      //seems like the parser is catching Fs in the datastream as start bytes, 
+      //but channel 4 shows up in two places, so compare those against each other
+      uint16_t chan4 = (bytes[5]>>4) | ((uint16_t)(bytes[6]&0x7F))<<4;
+      if(chan4 != 172 && chan4!=1811){
+        doExit=true;
+        digitalWrite(10,1);
+      }else{
+        digitalWrite(10,0);
+      }
+      if(footer == 0 && !doExit){
+        if(fs & 0x08){
+          failsafe = true;
+          digitalWrite(11,1);
+          en=false;
+        }else{
+          failsafe=false;
+          digitalWrite(11,0);
+        }
+        timeOfLastRx = millis();
+        channels[0] = bytes[0] | ((uint16_t)(bytes[1] & 0x7))<<8;
+        channels[1] = (bytes[1]>>3) | ((uint16_t)(bytes[2]&0x3F))<<5;
+        channels[2] = (bytes[2]>>6) | ((uint16_t)bytes[3])<<2 | ((uint16_t)bytes[4]&1)<<10;
+        channels[3] = (bytes[4]>>1) | ((uint16_t)(bytes[5]&0xF))<<7;
+        channels[4] = (bytes[5]>>4) | ((uint16_t)(bytes[6]&0x7F))<<4;
+        channels[5] = (bytes[6]>>7) | ((uint16_t)(bytes[7]))<<1 | ((uint16_t)bytes[8]&0x3)<<9;
+        doExit=true;
+        if(channels[1]!=0) // radio message received
+        {
+          
+          brakes.lastFallTime = micros();
+          steering.lastFallTime = micros();
+          if(channels[4]<1800)
+          {
+            desiredState.brakesDeployed = true;
+          }
+          else
+          {
+            desiredState.brakesDeployed = false;
+          }
+          // auton is at either 1299 or 275, it switches sometimes
+          if(channels[5]<200)
+          {
+            autonMode = true;
+          }
+          else
+          {
+            autonMode = false;
+            int remap_steering = 1811+172-channels[1];
+            desiredState.steeringPosition = map(remap_steering,172,1811,975,1425);
+          }
+        }
+        
+      }
+    }
+  }
+  if(doExit){
+    for(int i=0;i<60;i++){
+      if(!Serial2.available()){
+        i=100;
         break;
       }
-      cur_char++;
+      Serial2.read();
+      messages_received++;
     }
   }
-  //Serial.println(radio_data);
-  
-  if(cur_char >= RADIO_MESSAGE_MAX-2 && giveup==0)
-  {
-    //String radio_message(radio_data);
-    if(radio_data[0] == 'T' && radio_data[4] == 'Y')
-    {
-      //Serial.println(radio_data);
-      brakes.lastFallTime = micros();
-      steering.lastFallTime = micros();
-      //int T_data = radio_message.substring(1,4).toInt();
-      //int Y_data = radio_message.substring(5,8).toInt();
-      //int P_data = radio_message.substring(9,12).toInt();
-      int R_data = get_3char_hex(radio_data[13],radio_data[14],radio_data[15]);//radio_message.substring(13,16).StrToHex();
-      int data1 = get_3char_hex(radio_data[17],radio_data[18],radio_data[19]);//radio_message.substring(17,20).toInt();
-      int data2 = get_3char_hex(radio_data[21],radio_data[22],radio_data[23]);//radio_message.substring(21,24).toInt();
-      if(data1 > 200)
-      {
-        desiredState.brakesDeployed = true;
-      }
-      else
-      {
-        desiredState.brakesDeployed = false;
-      }
-      if(data2 > 200)
-      {
-        autonMode = false;
-      }else{
-        autonMode=true;
-      }
-      R_data = 1000-R_data;
-      if(R_data < 0){
-        R_data=0;
-      }
-      desiredState.steeringPosition = map(R_data,0,1000,975,1425);
-      Serial.print(R_data);
-      Serial.print('\t');
-      Serial.print(data1);
-      Serial.print('\t');
-      Serial.println(data2);
-    }
-  }*/
-    /*
-    //while(Serial2.read()!='\n'){}
-    for(int i=0;i<10;i++){
-    while(Serial2.available()<4){}
-    switch(Serial2.read()){
-      case 'R':
-      int R_data = get_3char_hex(Serial2.read(),Serial2.read(),Serial2.read());//radio_message.substring(13,16).StrToHex();
-      R_data = 1000-R_data;
-      if(R_data < 0){
-        R_data=0;
-      }
-      if(R_data != 0){
-        desiredState.steeringPosition = map(R_data,0,1000,975,1425);
-      }
-      Serial.print("\n");
-      Serial.print(R_data);
-      Serial.print("  ");
-      break;
-      case 'O':
-      int data1 = get_3char_hex(Serial2.read(),Serial2.read(),Serial2.read());//radio_message.substring(17,20).toInt();
-      //radio_message.substring(21,24).toInt();
-      Serial.print("\n");
-      Serial.print(data1);
-      if(data1 > 200)
-      {
-        desiredState.brakesDeployed = true;
-      }
-      else
-      {
-        desiredState.brakesDeployed = false;
-      }
-      break;
-      case 'N':
-      int data2 = get_3char_hex(Serial2.read(),Serial2.read(),Serial2.read());
-      //if(data2 > 200)
-      //{
-        autonMode = false;
-      //}else{
-      //  autonMode=true;
-      //}
-      //Serial.print("\n");
-      //Serial.print(data2);
-      break;
-    }
-    }*/
-    //Serial.println(radio_message);
-  //}
-  //while(Serial2.available()>0)
-  //{
-    // flush if did not align to the messages
-  //  Serial2.read();
-  //}
-
-  /*
-  int text[32];
-  if (radio.available()) {
-    radio.read(&text, sizeof(text));
-    if(text[0]!=0) {
-      brakes.lastFallTime = micros();
-      steering.lastFallTime = micros();
-    }
-    radioConnected = true;
-    if(text[0] & (1<<11))
-    {
-      autonMode = true;
-      if(text[0] & (1<<10)) {
-        desiredState.brakesDeployed = true;
-      }
-      else
-      {
-        desiredState.brakesDeployed = false;
-      }
-    }
-    else
-    {
-      autonMode = false;
-      if(text[0] & (1<<10)) {
-        desiredState.brakesDeployed = true;
-      }
-      else
-      {
-        desiredState.brakesDeployed = false;
-      }
-      // 218 to 950 to 975 to 1425
-      desiredState.steeringPosition = map(text[0]&0x3FF,180,880,975,1425);
-    }
-  }
-*/
   calculateRadioDesiredState(); 
 #endif
 
   //AUTON MODE INPUT~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#ifdef FORCE_AUTONOMOUS
+#if FORCE_AUTONOMOUS
   autonMode = true;
 #endif
-  calculateAutonDesiredState();
   if (millis() - lastAutonFeedback > FEEDBACK_INTERVAL)
   {
-    sendAutonFeedback();
+    if(autonFeedbackPart == 11)
+    {
+#if SEND_AUTON_FEEDBACK
+      sendAutonFeedback(autonFeedbackPart);
+#endif
+      autonFeedbackPart++;
+    }
+    else
+    {
+      autonFeedbackPart = 0;
+    }
     lastAutonFeedback = millis();
+  }
+  if(autonFeedbackPart < 11)
+  {
+#if SEND_AUTON_FEEDBACK
+      sendAutonFeedback(autonFeedbackPart);
+#endif
+    autonFeedbackPart++;
+  }
+  else if(autonFeedbackPart > 6 && autonFeedbackPart < 12)
+  {
+#if SEND_AUTON_FEEDBACK
+      sendAutonFeedback(autonFeedbackPart);
+#endif
+    autonFeedbackPart++;
+    if(autonFeedbackPart <= 12)
+    {
+      autonFeedbackPart = 0;
+    }
   }
 #endif
 
@@ -435,7 +437,10 @@ void loop() {
   if (millis() - lastStatusUpdate > UPDATE_INTERVAL)
   {
     //First, we want to read from the dynamixel what its current position is.
-    currentState.steeringPosition = Dynamixel.readPosition(SERVO_RECEIVE_ID);
+#if !NO_DYNAMIXEL
+    // since we have no indication of actual steering position
+    //currentState.steeringPosition = desiredState.steeringPosition;//Dynamixel.readPosition(SERVO_RECEIVE_ID);
+#endif
     delay(1);
     if (verboseMode)
     {
@@ -452,6 +457,7 @@ void loop() {
     {
       retractBrakes();
     }
+    calculateAutonDesiredState();
     //If we're more than 25 away from our desired position, we will steer in the right direction as well.
     if (abs(desiredState.steeringPosition - currentState.steeringPosition) > 25)
     {
@@ -464,11 +470,13 @@ void loop() {
         Serial.print("Steering to... ");
         Serial.println(actualTargetAngle);
       }
-      Dynamixel.servo(SERVO_ID, desiredState.steeringPosition, DEFAULT_SPEED);
+#if !NO_DYNAMIXEL
+      Dynamixel.servo(SERVO_ID, actualTargetAngle, DEFAULT_SPEED);
+#endif
+       currentState.steeringPosition = desiredState.steeringPosition;
     }
     //Update the timer.
     lastStatusUpdate = millis();
-
   }
   // prevent system from reseting
   wdt_reset();
@@ -511,13 +519,33 @@ void serialEvent() {
 
 #else
 
+
 //Alternative serialEvent to handle incoming strings from the high-level auton system.
+#if SEND_AUTON_FEEDBACK
 void serialEvent() {
   while (Serial.available()) {
     // get the new byte:
     char inChar = (char)Serial.read();
     // add it to the inputString:
     addToAutonBuffer((unsigned char)inChar);
+  }
+}
+#endif
+#endif
+
+#if HIGH_LEVEL_INTER
+void changeSteering()
+{
+  int this_time = micros();
+  int this_state = digitalRead(steer_pin);
+  if(this_state == HIGH)
+  {
+    steering.lastRiseTime = this_time;
+  }
+  else
+  {
+    steering.lastFallTime = this_time;
+    steering.prevRiseTime = steering.lastFallTime - steering.lastRiseTime;
   }
 }
 #endif
