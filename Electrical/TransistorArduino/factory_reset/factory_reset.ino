@@ -16,7 +16,7 @@
 #include "Dynamixel_Serial.h"    // Library needed to control Dynamixal servo
 #define SERVO_ID 0xFE        // ID of which we will set Dynamixel too 
 #define SERVO_ControlPin 0x02    // Control pin of buffer chip, NOTE: this does not matter becasue we are not using a half to full contorl buffer.
-#define SERVO_SET_Baudrate 100000 // Baud rate speed which the Dynamixel will be set too (1Mbps)
+#define SERVO_SET_Baudrate 1000000 // Baud rate speed which the Dynamixel will be set too (1Mbps)
 #define LED13 0x0D         // Pin of Visual indication for runing "heart beat" using onboard LED
 void setup() {
  pinMode(LED13, OUTPUT);      // Pin setup for Visual indication of runing (heart beat) program using onboard LED
