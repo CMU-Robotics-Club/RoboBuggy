@@ -1,8 +1,10 @@
 #include "Dynamixel_Serial.h"
 #include <avr/wdt.h>
 
+#define I2C_ADDRESS 0x23
+
 #define TRISTATE_TOGGLE_PIN 3
-#define DYNAMIXEL_BAUD 1000000
+#define DYNAMIXEL_BAUD 57600
 #define SERVO_ID 0xFE
 #define SERVO_RECEIVE_ID 0x01 //0x04
 #define CW_LIMIT_ANGLE 975
@@ -29,6 +31,9 @@ void setup() {
   // put your setup code here, to run once:
   pinMode(ENCODER_PIN,INPUT_PULLUP);
   //attachInterrupt(digitalPinToInterrupt(ENCODER_PIN), incrementEncoderTicks, RISING);
+  Wire.begin(I2C_ADDRESS);                // join i2c bus with address #8
+  Wire.onRequest(messageRequest); // register event
+  // dynamixel
   Dynamixel.begin(DYNAMIXEL_BAUD);
   Dynamixel.setDirectionPin(TRISTATE_TOGGLE_PIN);
   Dynamixel.setHoldingTorque(SERVO_ID, true);
@@ -57,3 +62,11 @@ void incrementEncoderTicks()
 {
   encoderTicks++;
 }
+
+// for now this just receives steering data but in future will need to deal with sending back encoder ticks
+void messageRequest(int howMany) {
+  while(Wire.available() > 0) {
+    desired_steering_pos = Wire.read();
+  }
+}
+
