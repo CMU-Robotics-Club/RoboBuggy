@@ -44,11 +44,6 @@ void format_data() {
   send_data = steering_angle | (1 << 15) | (auton << 14) | (brake << 13); 
 }
 
-boolean is_radio_disconnected()
-{
-  return false;
-}
-
 void serialEvent() {
   uint8_t msg = Serial.read();
   int is_radio_connected = 0;
@@ -81,10 +76,16 @@ void loop() {
 
 void send_radio_data_to_pi() {
   // sends send_data over i2c
-  char i2c_message [2];
-  i2c_message[0] = (send_data & 0xff00) >> 8;
-  i2c_message[1] = send_data & 0xff;  
-  Wire.write(i2c_message, 2);
-//  Wire.write(radio_data, RADIO_MESSAGE_LEN);
-  send_data = 0x0000;
+//  char i2c_message [2];
+////  i2c_message[0] = (send_data & 0xff00) >> 8;
+////  i2c_message[1] = send_data & 0xff;  
+//  i2c_message[0] = 0x01;
+//  i2c_message[1] = 0x02;
+//  Wire.write(i2c_message, 2);
+////  Wire.write(radio_data, RADIO_MESSAGE_LEN);
+//  send_data = 0x0000;
+  byte test[2];
+  test[0] = 1;
+  test[1] = 2;
+  Wire.write(test, 2);
 }
